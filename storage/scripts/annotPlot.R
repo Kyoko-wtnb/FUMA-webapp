@@ -21,14 +21,16 @@ snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
 loci.table <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
 ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
 if(type=="leadSNP"){
-  ld <- ld[ld$SNP1==loci.table$uniqID[rowI],]
-  snps <- snps[snps$uniqID %in% ld$SNP2,]
+  i <- loci.table$interval[rowI]
+  snps <- snps[snps$Interval==i,]
+  ld <- ld[ld$SNP2 %in% snps$uniqID,]
   snps$ld <- 0
+  snps$ld[snps$uniqID %in% ld$SNP2[ld$SNP1==loci.table$uniqID[rowI]]] <- 1
   snps$ld[snps$uniqID == loci.table$uniqID[rowI]] <- 2
 }else if(type=="interval"){
   snps <- snps[snps$Interval==rowI,]
   ld <- ld[ld$SNP2 %in% snps$uniqID,]
-  snps$ld <- 0
+  snps$ld <- 1
   snps$ld[snps$uniqID %in% ld$SNP1] <- 2
 }
 rm(ld, loci.table)
@@ -58,23 +60,25 @@ if(eqtlplot==1){
       snps$eqtl[i] <- paste(apply(eqtl[eqtl$uniqID==snps$uniqID[i],c(2,3,11,6,8)], 1, paste, collapse=":"), collapse="<br/>")
     }
   }
-  eqtl <- subset(eqtl, select=c("gene", "symbol", "tissue", "pos", "logP"))
+  eqtl$ld <- snps$ld[match(eqtl$uniqID, snps$uniqID)]
+  eqtl <- subset(eqtl, select=c("gene", "symbol", "tissue", "pos", "logP", "ld"))
   write.table(eqtl, paste(filedir, "eqtlplot.txt", sep=""), quote=F, row.names=F, sep="\t")
 }
 write.table(snps, paste(filedir, "annotPlot.txt", sep=""), quote=F, row.names=F, sep="\t")
 
-load(paste(filedir, "../../data/ENSG.all.genes.RData", sep=""))
+load(paste(filedir, "../../data/ENSG.all.genes.RData", sep="")) #local
+#webserver load("/data/ENSG/ENSG.all.genes.RData")
+
 xmin <- min(snps$pos)
 xmax <- max(snps$pos)
-g <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==snps$chr[1] &
-  ((ENSG.all.genes$start_position <= xmin & ENSG.all.genes$end_position>=xmax)
+ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name==snps$chr[1],]
+g <- ENSG.all.genes$ensembl_gene_id[(ENSG.all.genes$start_position <= xmin & ENSG.all.genes$end_position>=xmax)
   | (ENSG.all.genes$start_position>=xmin & ENSG.all.genes$start_position<=xmax)
   | (ENSG.all.genes$end_position>=xmin & ENSG.all.genes$end_position<=xmax)
-  | (ENSG.all.genes$start_position >= xmin & ENSG.all.genes$end_position<=xmax))
+  | (ENSG.all.genes$start_position >= xmin & ENSG.all.genes$end_position<=xmax)
 ]
 
 if(length(g)==0){
-  ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name==snps$chr[1],]
   start <- min(abs(ENSG.all.genes$end_position-xmin))
   end <- min(abs(ENSG.all.genes$start_position-xmax))
   g <- ENSG.all.genes$ensembl_gene_id[which(abs(ENSG.all.genes$end_position-xmin)==start)]
@@ -84,12 +88,21 @@ if(length(g)==0){
 if(eqtlplot==1){
   g <- unique(c(g, eqtl$gene))
 }
+
+gmin <- min(ENSG.all.genes$start_position)
+gmax <- max(ENSG.all.genes$end_position)
+
+g <- unique(c(g, ENSG.all.genes$ensembl_gene_id[
+  (ENSG.all.genes$start_position>=gmin & ENSG.all.genes$start_position<=gmax)
+  | (ENSG.all.genes$end_position>=gmin & ENSG.all.genes$end_position<=gmax)
+]))
+
 write.table(length(g), paste(filedir, "test.txt", sep=""))
 rm(ENSG.all.genes)
 library(biomaRt)
 ensembl <- useMart(biomart = "ENSEMBL_MART_ENSEMBL", host="grch37.ensembl.org", path="/biomart/martservice", dataset="hsapiens_gene_ensembl")
-exons <- getBM(attributes = c("ensembl_gene_id", "external_gene_name", "start_position", "end_position", "strand", "exon_chrom_start", "exon_chrom_end"), filter="ensembl_gene_id", values=g, mart = ensembl)
-genes <- unique(exons[,1:5])
+exons <- getBM(attributes = c("ensembl_gene_id", "external_gene_name", "start_position", "end_position", "strand", "gene_biotype", "exon_chrom_start", "exon_chrom_end"), filter="ensembl_gene_id", values=g, mart = ensembl)
+genes <- unique(exons[,1:6])
 #genes$start_cut <- 0
 #genes$end_cut <- 0
 #n <- which(genes$start_position <= xmin-(xmax-xmin)*0.05)

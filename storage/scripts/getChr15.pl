@@ -27,7 +27,8 @@ close IN;
 open(OUT, ">$out") or die "$out";
 print OUT "cell\tstart\tend\tstate\n";
 foreach my $cell (sort @cells){
-  my $file="/media/sf_Documents/VU/Data/Chr15States/States/$cell\_core15.bed.gz";
+  my $file="/media/sf_Documents/VU/Data/Chr15States/States/$cell\_core15.bed.gz"; #local
+  #webserver my $file="/data/Chr15States/$cell\_core15.bed.gz";
   my @line = split(/\n/, `tabix $file $chr:$start-$end`);
   foreach my $l (@line){
     my @epi = split(/\s/, $l);

@@ -32,15 +32,16 @@ while(length(leadSNPs)>0){
   j <- nrow(loci.table)+1
   ls <- snps$uniqID[snps$uniqID %in% leadSNPs][which.min(snps$gwasP[snps$uniqID %in% leadSNPs])]
   loci.table[j,2] <- ls
-  loci.table[j,3] <- snps$rsID[snps$uniqID==ls]
-  loci.table[j,4] <- snps$chr[snps$uniqID==ls]
-  loci.table[j,5] <- snps$pos[snps$uniqID==ls]
-  loci.table[j,6] <- snps$gwasP[snps$uniqID==ls]
+  loci.table[j,3] <- snps$rsID[which(snps$uniqID==ls)]
+  loci.table[j,4] <- snps$chr[which(snps$uniqID==ls)]
+  loci.table[j,5] <- snps$pos[which(snps$uniqID==ls)]
+  loci.table[j,6] <- snps$gwasP[which(snps$uniqID==ls)]
   loci.table[j,7] <- length(which(ld$SNP1==ls))
   loci.table[j,8] <- length(which(ld$SNP2[ld$SNP1==ls] %in% snps$uniqID[!is.na(snps$gwasP)]))
 
-  leadSNPs <- leadSNPs[!(leadSNPs %in% ld$SNP2[ld$SNP1==ls])]
+  leadSNPs <- leadSNPs[!(leadSNPs %in% ld$SNP2[which(ld$SNP1==ls)])]
 }
+
 loci.table <- loci.table[order(loci.table$pos),]
 loci.table <- loci.table[order(loci.table$chr),]
 loci.table$No <- 1:nrow(loci.table)

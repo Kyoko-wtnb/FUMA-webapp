@@ -155,6 +155,10 @@ div.tooltip{
   left: 0;
 }
 
+.canvasarea {
+  position: absolute;
+}
+
 /*
 html{height: 100%;}
 

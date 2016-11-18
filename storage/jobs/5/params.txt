@@ -1,0 +1,31 @@
+Job created	2016-10-27 22:01:56
+Job title	test
+input GWAS summary statistics file	input.gwas
+input lead SNPs file	Not given
+Identify additional lead SNPs	1
+input genetic regions file	Not given
+exclude MHC	0
+extended MHC region	NA
+gene type	protein_coding
+lead SNP P-value	5e-8
+r2	0.6
+GWAS tagged SNPs P-value	0.05
+MAF	0.01
+Include 1000G SNPs	1
+Interval merge max distance	250
+Positional mapping	1
+posMap Window based	0
+posMap Window size	NA
+posMap Annotation based	exonic:splicing
+posMap min CADD	12.37
+posMap min RegulomeDB	NA
+posMap chromatin state filterinf tissues	NA
+posMap max chromatin state	NA
+posMap chromatin state filtering method	NA
+eQTL mapping	1
+eqtlMap tissues all
+eqtlMap min CADD	0
+eqtlMap min RegulomeDB	NA
+eqtlMap chromatin state filterinf tissues	NA
+eqtlMap max chromatin state	NA
+eqtlMap chromatin state filtering method	NA

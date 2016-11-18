@@ -1,13 +1,19 @@
 var leadSNPtable_selected=null;
 var intervalTable_selected=null;
 var SNPtable_selected=null;
+var posAnnotPlot;
 $(document).ready(function(){
   var job = IPGAPvar.jobtype;
   var email = IPGAPvar.email;
   var filedir = IPGAPvar.filedir;
   var jobID = IPGAPvar.jobID;
+  var jobtitle = IPGAPvar.jobtitle;
 
   $('#annotPlotSubmit').attr("disabled", true);
+  $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
+  if($('#annotPlot_Chrom15').is(":checked")==false){
+    $('#annotPlotChr15Opt').hide();
+  }
 
   if(job==="newjob"){
     $("#results").hide();
@@ -16,6 +22,7 @@ $(document).ready(function(){
     var regionfile = IPGAPvar.regionsfileup;
     var gwasformat = IPGAPvar.gwasformat;
     var addleadSNPs = IPGAPvar.addleadSNPs;
+    var N = IPGAPvar.N;
     var leadP = IPGAPvar.leadP;
     var r2 = IPGAPvar.r2;
     var gwasP = IPGAPvar.gwasP;
@@ -23,6 +30,7 @@ $(document).ready(function(){
     var KGSNPs = IPGAPvar.KGSNPs;
     var maf = IPGAPvar.maf;
     var mergeDist = IPGAPvar.mergeDist;
+    var Xchr = IPGAPvar.Xchr;
 
     var exMHC = IPGAPvar.exMHC;
     var extMHC = IPGAPvar.extMHC;
@@ -41,8 +49,8 @@ $(document).ready(function(){
 
     var eqtlMap = IPGAPvar.eqtlMap;
     var eqtlMaptss = IPGAPvar.eqtlMaptss;
-    var eqtlMapSigeqtl = IPGAPvar.sigeqtl;
-    var eqtlMapeqtlP = IPGAPvar.eqtlP;
+    var eqtlMapSigeqtl = IPGAPvar.eqtlMapSigeqtl;
+    var eqtlMapeqtlP = IPGAPvar.eqtlMapeqtlP;
     var eqtlMapCADDth = IPGAPvar.eqtlMapCADDth;
     var eqtlMapRDBth = IPGAPvar.eqtlMapRDBth;
     var eqtlMapChr15 = IPGAPvar.eqtlMapChr15;
@@ -59,11 +67,14 @@ $(document).ready(function(){
       url: 'CandidateSelection',
       type: 'POST',
       data: {
+          email: email,
+          jobtitle: jobtitle,
           filedir: filedir,
           gwasformat: gwasformat,
           leadfile: leadfile,
           addleadSNPs: addleadSNPs,
           regionfile: regionfile,
+          N: N,
           leadP: leadP,
           r2: r2,
           gwasP: gwasP,
@@ -71,6 +82,7 @@ $(document).ready(function(){
           KGSNPs: KGSNPs,
           maf: maf,
           mergeDist: mergeDist,
+          Xchr: Xchr,
           exMHC: exMHC,
           extMHC: extMHC,
           genetype: genetype,
@@ -102,7 +114,7 @@ $(document).ready(function(){
         // $('#test').html(data);
       },
       error: function(){
-        alert("Error occored (SNPfilt)");
+        // alert("Error occored (SNPfilt)");
       },
       complete: function(){
         $('#logs').hide();
@@ -174,6 +186,20 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
   }
 
   $.ajax({
+    url: "jobInfo",
+    type: "POST",
+    data: {
+      jobID: jobID,
+    },
+    error: function(){
+      alert("jobInfo error");
+    },
+    success: function(data){
+      $('#jobInfoTable').html(data);
+    }
+  });
+
+  $.ajax({
     url: "paramTable",
     type: "POST",
     data: {
@@ -205,7 +231,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
   var file = "leadSNPs.txt";
   var leadTable = $('#leadSNPtable').DataTable({
       "processing": true,
-      "serverSide": false,
+      serverSide: false,
       select: true,
       "ajax" : {
         url: "DTfile",
@@ -238,7 +264,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
   file = "intervals.txt";
   var intervalTable = $('#intervalTable').DataTable({
       "processing": true,
-      "serverSide": false,
+      serverSide: false,
       select: true,
       "ajax" : {
         url: "DTfile",
@@ -343,15 +369,15 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
   });
 
   file = "genes.txt";
-  var thead = "<thead><tr><td>Gene</td><td>Symbol</td><td>entrezID</td><td>Interval</td><td>chr</td><td>start</td><td>end</td>";
-  thead += "<td>strand</td><td>status</td><td>type</td><td>HUGO</td>";
+  var thead = "<thead><tr><th>Gene</th><th>Symbol</th><th>entrezID</th><th>Interval</th><th>chr</th><th>start</th><th>end</th>";
+  thead += "<th>strand</th><th>status</th><th>type</th><th>HUGO</th>";
   if(posMap==1){
-    thead += "<td>posMapSNPs</td><td>posMapMaxCADD</td>";
+    thead += "<th>posMapSNPs</th><th>posMapMaxCADD</th>";
   }
   if(eqtlMap==1){
-    thead += "<td>eqtlMapSNPs</td><td>eqtlMapminP</td><td>eqtlMapminQ</td><td>eqtlMapts</td>";
+    thead += "<th>eqtlMapSNPs</th><th>eqtlMapminP</th><th>eqtlMapminQ</th><th>eqtlMapts</th><th>eqtlDirection</th>";
   }
-  thead += "<td>minGwasP</td><td>leadSNPs</td></tr></thead>";
+  thead += "<th>minGwasP</th><th>leadSNPs</th></tr></thead>";
 
   $('#geneTable').append(thead);
   var geneTable;
@@ -386,6 +412,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         {"data": "eqtlMapminP", name:"eqtlMapminP"},
         {"data": "eqtlMapminQ", name:"eqtlMapminQ"},
         {"data": "eqtlMapts", name:"eqtlMapts"},
+        {"data": "eqtlDirection", name:"eqtlDirection"},
         {"data": "minGwasP", name:"minGwasP"},
         {"data": "leadSNPs", name:"leadSNPs"}
       ],
@@ -458,6 +485,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         {"data": "eqtlMapminP", name:"eqtlMapminP"},
         {"data": "eqtlMapminQ", name:"eqtlMapminQ"},
         {"data": "eqtlMapts", name:"eqtlMapts"},
+        {"data": "eqtlDirection", name:"eqtlDirection"},
         {"data": "minGwasP", name:"minGwasP"},
         {"data": "leadSNPs", name:"leadSNPs"}
       ],
@@ -486,10 +514,10 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         {"data": "uniqID", name:"uniqID"},
         {"data": "chr", name:"chr"},
         {"data": "pos", name:"bp"},
-        {"data": "gene", name:"Gene"},
-        {"data": "symbol", name:"Symbol"},
         {"data": "db", name:"DB"},
         {"data": "tissue", name:"tissue"},
+        {"data": "gene", name:"Gene"},
+        {"data": "symbol", name:"Symbol"},
         {"data": "p", name:"P-value"},
         {"data": "FDR", name:"FDR"},
         {"data": "tz", name:"t/z"}
@@ -499,56 +527,93 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
       "iDisplayLength": 10,
       dom: 'lBfrtip',
       buttons: ['csv']
+      // deferLoading: 25
     });
   }
 
-  file = "ExAC.txt";
-  var eqtlTable = $('#exacTable').DataTable({
+  file = "gwascatalog.txt";
+  var gwascatTable = $('#gwascatTable').DataTable({
     processing: true,
     serverSide: false,
     select: true,
     ajax:{
-      url: 'DTfile',
-      type: "POST",
-      data: {
-        filedir: filedir,
-        infile: file,
-      }
-    },
-    columns:[
-      {"data": "Interval", name:"Interval"},
-      {"data": "uniqID", name:"uniqID"},
-      {"data": "chr", name:"chr"},
-      {"data": "pos", name:"bp"},
-      {"data": "ref", name:"ref"},
-      {"data": "alt", name:"alt"},
-      {"data": "annot", name:"Annotation"},
-      {"data": "gene", name:"Gene"},
-      {"data": "MAF", name:"MAF"},
-      {"data": "MAF_FIN", name:"MAF(FIN)"},
-      {"data": "MAF_NFE", name:"MAF(NFE)"},
-      {"data": "MAF_AMR", name:"MAF(AMR)"},
-      {"data": "MAF_AFR", name:"MAF(AFR)"},
-      {"data": "MAF_EAS", name:"MAF(EAS)"},
-      {"data": "MAF_SAS", name:"MAF(SAS)"},
-      {"data": "MAF_OTH", name:"MAF(OTH)"},
-    ],
-    "order": [[2, 'asc'], [3, 'asc']],
-    "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-    "iDisplayLength": 10,
-    dom: 'lBfrtip',
-    buttons: ['csv']
+        url: 'DTfile',
+        type: "POST",
+        data: {
+          filedir: filedir,
+          infile: file,
+        }
+      },
+      columns:[
+          {"data": "Interval", name:"Interval"},
+          {"data": "leadSNP", name:"lead SNP"},
+          {"data": "chr", name:"chr"},
+          {"data": "bp", name:"bp"},
+          {"data": "snp", name:"rsID"},
+          {"data": "PMID", name:"PMID"},
+          {"data": "Trait", name:"Trait"},
+          {"data": "FirstAuth", name:"FirstAuth"},
+          {"data": "Date", name:"Date"},
+          {"data": "P", name:"P-value"}
+        ],
+        "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "iDisplayLength": 10,
+        dom: 'lBfrtip',
+        buttons: ['csv']
   });
+  // file = "ExAC.txt";
+  // var eqtlTable = $('#exacTable').DataTable({
+  //   processing: true,
+  //   serverSide: false,
+  //   select: true,
+  //   ajax:{
+  //     url: 'DTfile',
+  //     type: "POST",
+  //     data: {
+  //       filedir: filedir,
+  //       infile: file,
+  //     }
+  //   },
+  //   columns:[
+  //     {"data": "Interval", name:"Interval"},
+  //     {"data": "uniqID", name:"uniqID"},
+  //     {"data": "chr", name:"chr"},
+  //     {"data": "pos", name:"bp"},
+  //     {"data": "ref", name:"ref"},
+  //     {"data": "alt", name:"alt"},
+  //     {"data": "annot", name:"Annotation"},
+  //     {"data": "gene", name:"Gene"},
+  //     {"data": "MAF", name:"MAF"},
+  //     {"data": "MAF_FIN", name:"MAF(FIN)"},
+  //     {"data": "MAF_NFE", name:"MAF(NFE)"},
+  //     {"data": "MAF_AMR", name:"MAF(AMR)"},
+  //     {"data": "MAF_AFR", name:"MAF(AFR)"},
+  //     {"data": "MAF_EAS", name:"MAF(EAS)"},
+  //     {"data": "MAF_SAS", name:"MAF(SAS)"},
+  //     {"data": "MAF_OTH", name:"MAF(OTH)"},
+  //   ],
+  //   "order": [[2, 'asc'], [3, 'asc']],
+  //   "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+  //   "iDisplayLength": 10,
+  //   dom: 'lBfrtip',
+  //   buttons: ['csv']
+  // });
 
 
   $('#leadSNPtable tbody').on('click', 'tr', function(){
     $('#plotClear').show();
     var rowI = leadTable.row(this).index();
     leadSNPtable_selected=rowI;
-    if($('#annotPlotSelect_leadSNP').is(':checked')===true){
-      $('#annotPlotSubmit').attr('disabled',false);
-      document.getElementById('annotPlotSelect_leadSNP').value=leadSNPtable_selected;
+    document.getElementById('annotPlotSelect_leadSNP').value=leadSNPtable_selected;
+
+    if(document.getElementById('annotPlotSelect_leadSNP').checked===true){
+      document.getElementById('annotPlotSubmit').disabled=false;
+      annotSelect('leadSNP');
     }
+    // if($('#annotPlotSelect_leadSNP').is(':checked')===true){
+    //   $('#annotPlotSubmit').attr('disabled',false);
+    //   document.getElementById('annotPlotSelect_leadSNP').value=leadSNPtable_selected;
+    // }
     var rowData = leadTable.row(rowI).data();
     var chr = rowData['chr'];
     // create plot space
@@ -691,9 +756,11 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
     $('#plotClear').show();
     var rowI = intervalTable.row(this).index();
     intervalTable_selected=rowI;
+    document.getElementById('annotPlotSelect_interval').value=intervalTable_selected;
+
     if(document.getElementById('annotPlotSelect_interval').checked===true){
       document.getElementById('annotPlotSubmit').disabled=false;
-      document.getElementById('annotPlotSelect_interval').value=intervalTable_selected;
+      annotSelect('interval');
     }
     var rowData = intervalTable.row(rowI).data();
     var chr = rowData['chr'];
@@ -833,9 +900,15 @@ function PlotSNPAnnot(jobID){
   var xAxis = d3.svg.axis().scale(x).orient("bottom");
   var yAxis = d3.svg.axis().scale(y).orient("left");
   var svg = d3.select('#snpAnnotPlot').append('svg')
+            .attr("id", "SnpAnnotPlotsvg")
             .attr("width", width+margin.left+margin.right)
             .attr("height", height+margin.top+margin.bottom)
             .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
+  // var svg = d3.select('#SnpAnnotPlotSVG')
+  //           .attr("width", width+margin.left+margin.right)
+  //           .attr("height", height+margin.top+margin.bottom)
+  //           .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
+
   var tip = d3.tip()
       .attr('class', 'd3-tip')
       .offset([-5, 0])
@@ -869,6 +942,7 @@ function PlotSNPAnnot(jobID){
       .attr("dy", ".71em")
       .style("text-anchor", "end");
   });
+
 }
 
 function PlotIntervalSum(jobID){
@@ -884,8 +958,8 @@ function PlotIntervalSum(jobID){
     var y_element = data.map(function(d){return d.label;});
     var margin = {top:30, right: 30, bottom:50, left:150},
         width = 600,
-        height = 20*y_element.length;
-    var y = d3.scale.ordinal().domain(y_element).rangeRoundBands([0, height], 0.1);
+        height = 15*y_element.length;
+    var y = d3.scale.ordinal().domain(y_element).rangeBands([0, height], 0.1);
     var yAxis = d3.svg.axis().scale(y).orient("left");
     var svg = d3.select('#intervalPlot').append('svg')
               .attr("width", width+margin.left+margin.right)
@@ -1043,48 +1117,78 @@ function PlotIntervalSum(jobID){
 }
 
 function annotSelect(i){
-  if(i==="leadSNP"){
-    if(document.getElementById('annotPlotSelect_leadSNP').checked===true){
-      document.getElementById('annotPlotSelect_interval').checked=false;
-      // document.getElementById('annotPlotSelect_SNP').checked=false;
+  if(i=="leadSNP"){
+    if($('#annotPlotSelect_leadSNP').is(":checked")==true){
+      $('#annotPlotSelect_interval').attr("checked", false);
       if(leadSNPtable_selected===null){
-        document.getElementById('annotPlotSubmit').disabled=true;
+        $('#annotPlotSubmit').attr("disabled", true);
+        $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">You haven\'t selected any lead SNP. Please click one of the row of lead SNP table.</div>');
         alert("Lead SNP is not selected.\nPlease select one from the table.")
       }else{
-        document.getElementById('annotPlotSubmit').disabled=false;
-        // document.getElementById('annotPlotSelect_leadSNP').value=leadSNPtable_selected;
+        Chr15Select();
       }
-    }else{document.getElementById('annotPlotSubmit').disabled=true;}
-  }else if(i==="interval"){
-    if(document.getElementById('annotPlotSelect_interval').checked===true){
-      document.getElementById('annotPlotSelect_leadSNP').checked=false;
-      // document.getElementById('annotPlotSelect_SNP').checked=false;
+    }else{
+      $('#annotPlotSubmit').attr("disabled", true);
+      $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
+    }
+  }else if(i=="interval"){
+    if($('#annotPlotSelect_interval').is(":checked")==true){
+      $('#annotPlotSelect_leadSNP').attr("checked", false);
       if(intervalTable_selected===null){
-        document.getElementById('annotPlotSubmit').disabled=true;
-        alert("Interval is not selected.\nPlease select one from the table.")
+        $('#annotPlotSubmit').attr("disabled", true);
+        $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">You haven\'t selected any lead SNP. Please click one of the row of lead SNP table.</div>');
+        alert("Lead SNP is not selected.\nPlease select one from the table.")
       }else{
-        document.getElementById('annotPlotSubmit').disabled=false;
-        document.getElementById('annotPlotSelect_interval').value=intervalTable_selected;
+        Chr15Select();
       }
-    }else{document.getElementById('annotPlotSubmit').disabled=true;}
+    }else{
+      $('#annotPlotSubmit').attr("disabled", true);
+      $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
+    }
+  }else{
+    if($('#annotPlotSelect_leadSNP').is(":checked")==false && $('#annotPlotSelect_interval').is(":checked")==false){
+      $('#annotPlotSubmit').attr("disabled", true);
+      $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
+    }else{
+      Chr15Select();
+    }
   }
-  // }else if(i==="SNP"){
-  //   if(document.getElementById('annotPlotSelect_SNP').checked===true){
-  //     document.getElementById('annotPlotSelect_leadSNP').checked=false;
-  //     document.getElementById('annotPlotSelect_interval').checked=false;
-  //     if(SNPtable_selected===null){
-  //       document.getElementById('annotPlotSubmit').disabled=true;
-  //       alert("SNP is not selected.\nPlease select one from the table.")
-  //     }else{
-  //       document.getElementById('annotPlotSubmit').disabled=false;
-  //       document.getElementById('annotPlotSelect_SNP').value=SNPtable_selected;
-  //     }
-  //   }else{document.getElementById('annotPlotSubmit').disabled=true;}
-  // }
-  if(document.getElementById('annotPlot_Chrom15').checked==true){
+}
+
+function Chr15Select(){
+  if($('#annotPlot_Chrom15').is(":checked")==true){
     $('#annotPlotChr15Opt').show();
+    var ts = [];
+    var tmp = document.getElementById('annotPlotChr15Ts');
+    for(var i=0; i<tmp.options.length; i++){
+      if(tmp.options[i].selected===true){
+        ts.push(tmp.options[i].value);
+      }
+    }
+    var gts = [];
+    var tmp = document.getElementById('annotPlotChr15Gts');
+    for(var i=0; i<tmp.options.length; i++){
+      if(tmp.options[i].selected===true){
+        gts.push(tmp.options[i].value);
+      }
+    }
+    if(ts.length===0 && gts.length===0){
+      $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">You have selected to plot 15-core chromatin state. Please select at least one tissue/cell type.</div>');
+      $('#annotPlotSubmit').attr("disabled", true);
+    }else if(ts.length>0 && gts.length>0){
+      $('#CheckAnnotPlotOpt').html("<br/><div class='alert alert-warning'>OK. Both individual and general tisue/cell types are selected.<br/>All selected tissue/cell types will be used for filtering.</div>");
+      $('#annotPlotSubmit').attr("disabled", false);
+    }else if(ts.length>0){
+      $('#CheckAnnotPlotOpt').html("<br/><div class='alert alert-success'>OK. Selected individual tissue/cell types will be used for chromatine state filtering.</div>");
+      $('#annotPlotSubmit').attr("disabled", false);
+    }else if(gts.length>0){
+      $('#CheckAnnotPlotOpt').html("<br/><div class='alert alert-success'>OK. Selected general tissue/cell types will be used for chromatine state filtering.</div>");
+      $('#annotPlotSubmit').attr("disabled", false);
+    }
   }else{
     $('#annotPlotChr15Opt').hide();
+    $('#annotPlotSubmit').attr("disabled", false);
+    $('#CheckAnnotPlotOpt').html('<div class="alert alert-success">OK. Good to go. Click "Plot" to create regional plot with selected annotations.</div>');
   }
 }
 

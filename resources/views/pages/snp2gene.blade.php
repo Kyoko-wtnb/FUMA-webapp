@@ -1,10 +1,16 @@
 @extends('layouts.master')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 @section('content')
-
+<meta name="csrf-token" content="{{ csrf_token() }}"/>
+<script type="text/javascript">
+  $.ajaxSetup({
+    headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
+  });
+</script>
 <script type="text/javascript" src="{!! URL::asset('js/InputParameters.js') !!}"></script>
+
 {!! Form::open(array('url' => 'snp2gene/queryJob')) !!}
 <!-- Query existing job -->
 <h3>Query existing job</h3>
@@ -21,6 +27,10 @@
 </div>
 <input class="btn" type="submit" value="Go to Job" name="go2job" id="go2job"/>
 {!! Form::close() !!}
+
+<!-- {!! Form::open(array('url'=>'snp2gene/sendMail')) !!}
+<input class="btn" type="submit" value="Mail test" name="Mail" id="Mail"/>
+{!! Form::close() !!} -->
 
 {!! Form::open(array('url' => 'snp2gene/newJob', 'files' => true)) !!}
 <!-- New -->
@@ -49,6 +59,7 @@
         <option value="PLINK" selected>PLINK</option>
         <option value="SNPTEST">SNPTEST</option>
         <option value="GCTA">GCTA</option>
+        <option value="METAL">METAL</option>
         <option value="Plain">Plain text</option>
       </select><br/>
     <br/>
@@ -69,7 +80,7 @@
   <div class="panel-body">
     <tab><input type="checkbox" name="MHCregion" id="MHCregion" value="exMHC" checked>Exclude MHC region<br/>
     <tab>Extended MHC region: <input type="text" style="width: 150px" name="extMHCregion" id="extMHCregion"/><br/>
-    <tab>*e.g. 250000-330000<br/>
+    <tab>*e.g. 25000000-33000000<br/>
     <tab>*If this is not filled, usual MHC region will be used.<br/>
   </div>
 </div>
@@ -80,6 +91,7 @@
   </div>
   <div class="panel-body">
     <h4> Step 1. Candidate SNPs filtering</h4>
+    <tab>Sample size (N): <input type="number" id="N" name="N"><br/>
     <tab>Maximum lead SNP P-value: <input type="number" id="leadP" name="leadP" value="5e-8"/><br/>
     <tab>Minimum r2: <input type="number" id="r2" name="r2" value="0.6"><br/>
     <tab>Maximum GWAS P-value: <input type="number" id="gwasP" name="gwasP" value="0.05"/><br/>
@@ -87,6 +99,7 @@
     <tab>Include 1000 genome variants: <select id="KGSNPs" name="KGSNPs"><option selected>Yes</option><option>No</option></select><br/>
     <tab>Minimum MAF: <input type="number" id="maf" name="maf" value="0.01"/><br/>
     <tab>Maximum merge distance of LD: <input type="number" id="mergeDist" name="mergeDist" value="250"/>kb<br/>
+    <tab>Include X chromosome: <select id="Xchr" name="Xchr"><option selected>Yes</option><option>No</option></select><br/>
 
     <h4> Step 3. Gene mapping</h4>
     <div class="panel panel-default"><div class="panel-body">

@@ -1,31 +1,37 @@
 @extends('layouts.master')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.0/css/select.dataTables.min.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/select/1.2.0/css/select.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
+<script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 <script type="text/javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
 <script type="text/javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
-<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+<script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}"/>
+<script type="text/javascript">
+  $.ajaxSetup({
+    headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
+  });
+  var public_path = "{{ URL::asset('/image/ajax-loader2.gif') }}";
+  var storage_path = "<?php echo storage_path();?>";
+</script>
+<script type="text/javascript" src="{!! URL::asset('js/simg/src/simg.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/snp2geneResults.js') !!}"></script>
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 
 
-<script type="text/javascript">
-  var public_path = "{{ URL::asset('/image/ajax-loader2.gif') }}";
-  var storage_path = "<?php echo storage_path();?>";
-</script>
-
 @section('content')
+
+<!-- loading panel -->
 <div class="row" id="logs">
   <div class="col-md-2"></div>
   <div class="col-md-8">
@@ -40,31 +46,52 @@
   </div>
   <div class="col-md-2"></div>
 </div>
-<div id="test"></div>
+
+<!-- results panel -->
 <div id="results">
-  <div class="panel panel-default" id="tables">
-    <div class="panel-body">
-      <h3 style="color: #00004d">Result tables</h3>
-      <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#summaryTable" aria-controls="summaryTable" rolw="tab" data-toggle="tab">Summary</a></li>
-        <li role="presentation"><a href="#leadSNPtablePane" aria-controls="leadSNPtablePane" rolw="tab" data-toggle="tab">lead SNPs</a></li>
-        <li role="presentation"><a href="#intervalTablePane" aria-controls="intervalTablePane" rolw="tab" data-toggle="tab">Intervals</a></li>
-        <li role="presentation"><a href="#SNPtablePane" aria-controls="SNPtablePane" rolw="tab" data-toggle="tab">SNPs (annotations)</a></li>
-        <li role="presentation"><a href="#annovTablePane" aria-controls="annovTablePane" rolw="tab" data-toggle="tab">ANNOVAR</a></li>
-        <li role="presentation"><a href="#geneTablePane" aria-controls="geneTablePane" rolw="tab" data-toggle="tab">Genes</a></li>
-        <li role="presentation" id="eqtlTableTab"><a href="#eqtlTablePane" aria-controls="eqtlTablePane" rolw="tab" data-toggle="tab">eQTL</a></li>
-        <li role="presentation"><a href="#exacTablePane" aria-controls="exacTablePane" rolw="tab" data-toggle="tab">ExAC</a></li>
-        <li role="presentation"><a href="#paramsPane" aria-controls="paramsPane" rolw="tab" data-toggle="tab">Parameters</a></li>
-        <li role="presentation"><a href="#downloads" aria-controls="downloads" rolw="tab" data-toggle="tab">Downloads</a></li>
-      </ul>
-      <!-- Tab panes -->
-      <div class="tab-content">
+  <div id="test"></div>
+  <!-- job info table -->
+  <div class="panel panel-default"><div class="panel-body" id="jobInfo">
+    <h3 style="color: #00004d">Information of your job</h3>
+    <div id="jobInfoTable"></div>
+  </div></div>
+  <!-- result tables -->
+  <div id="tables">
+    <div class="panel panel-default"><div class="panel-body">
+      <a href="#tablesPanel" data-toggle="collapse" style="color: #00004d"><h3>Result tables</h3></a>
+        <div id="tablesPanel" class="collapse in">
+        <form action="geneSubmit" method="post" target="_blank">
+          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
+          <input type="submit" class="btn" id="geneQuerySubmit" name="geneQuerySubmit" value="Use results for GENE2FUNC (open new tab)">
+        </form>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+          <li role="presentation" class="active"><a href="#summaryTable" aria-controls="summaryTable" rolw="tab" data-toggle="tab">Summary</a></li>
+          <li role="presentation"><a href="#leadSNPtablePane" aria-controls="leadSNPtablePane" rolw="tab" data-toggle="tab">lead SNPs</a></li>
+          <li role="presentation"><a href="#intervalTablePane" aria-controls="intervalTablePane" rolw="tab" data-toggle="tab">Intervals</a></li>
+          <li role="presentation"><a href="#SNPtablePane" aria-controls="SNPtablePane" rolw="tab" data-toggle="tab">SNPs (annotations)</a></li>
+          <li role="presentation"><a href="#annovTablePane" aria-controls="annovTablePane" rolw="tab" data-toggle="tab">ANNOVAR</a></li>
+          <li role="presentation"><a href="#geneTablePane" aria-controls="geneTablePane" rolw="tab" data-toggle="tab">Genes</a></li>
+          <li role="presentation" id="eqtlTableTab"><a href="#eqtlTablePane" aria-controls="eqtlTablePane" rolw="tab" data-toggle="tab">eQTL</a></li>
+          <li role="presentation" id="gwascatTableTab"><a href="#gwascatTablePane" aria-controls="gwascatTablePane" rolw="tab" data-toggle="tab">GWAScatalog</a></li>
+          <!-- <li role="presentation"><a href="#exacTablePane" aria-controls="exacTablePane" rolw="tab" data-toggle="tab">ExAC</a></li> -->
+          <li role="presentation"><a href="#paramsPane" aria-controls="paramsPane" rolw="tab" data-toggle="tab">Parameters</a></li>
+          <li role="presentation"><a href="#downloads" aria-controls="downloads" rolw="tab" data-toggle="tab">Downloads</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="summaryTable">
           <br/>
           <div class="row">
-            <div class="col-md-5" id="sumTable" style="text-align:center;"><h4>Summray of SNPs and mapped genes</h4></div>
-            <div class="col-md-7" id="snpAnnotPlot" style="text-align:center;"><h4>Positional annotation of candidate SNPs</h4></div>
+            <div class="col-md-5" id="sumTable" style="text-align:center;">
+              <h4>Summary of SNPs and mapped genes</h4>
+            </div>
+            <div class="col-md-7" id="snpAnnotPlot" style="text-align:center;">
+              <h4>Positional annotations of candidate SNPs</h4>
+              <!-- <svg id="SnpAnnotPlotSVG"></svg><br/> -->
+              <!-- <button class="btn" id="posAnnotPlotDown" value="Download img">Download img</button><br/> -->
+            </div>
           </div>
           <br/>
           <div id="intervalPlot" style="text-align:center;"><h4>Summary per interval</h4></div>
@@ -126,7 +153,18 @@
             </thead>
           </table>
         </div>
-        <div role="tabpanel" class="tab-pane" id="exacTablePane">
+        <div role="tabpanel" class="tab-pane" id="gwascatTablePane">
+          <br/>
+          <p>Please download a output file (gwascatalog.txt) from "Download" tab to get full information</p>
+          <table id="gwascatTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+            <thead>
+              <tr>
+                <th>Interval</th><th>lead SNP</th><th>chr</th><th>bp</th><th>rsID</th><th>PMID</th><th>Trait</th><th>FirstAuth</th><th>Date</th><th>P-value</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+        <!-- <div role="tabpanel" class="tab-pane" id="exacTablePane">
           <br/>
           <table id="exacTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
             <thead>
@@ -136,7 +174,7 @@
               </tr>
             </thead>
           </table>
-        </div>
+        </div> -->
         <div role="tabpanel" class="tab-pane" id="paramsPane">
           <br/>
           <div id="paramTable"></div>
@@ -165,9 +203,11 @@
           </div></div>
         </div>
       </div>
-    </div>
+      </div>
+    </div></div>
   </div>
-  <!-- <br/> -->
+
+  <!-- resion plot -->
   <div id="regionalPlot">
     <div class="panel panel-default"><div class="panel-body">
       <a href="#regionalPlotPanel" data-toggle="collapse" style="color: #00004d"><h3>Regional Plot (GWAS association)</h3></a>
@@ -183,12 +223,16 @@
       </div>
     </div></div>
   </div>
+
+  <!-- result Query -->
   <div id="resultsQuery">
     <div class="panel panel-default"><div class="panel-body">
       <a href="#resultsQueryPanel" data-toggle="collapse" style="color: #00004d"><h3>Query results</h3></a>
-
+      <h5>Under construction. Will be available soon.</h5>
     </div></div>
   </div>
+
+  <!-- Annotation plot options -->
   <div id="annotPlot">
     <div class="panel panel-default"><div class="panel-body">
       <a href="#annotPlotPanel" data-toggle="collapse" style="color: #00004d"><h3>Regional plot with annotation</h3></a>
@@ -196,21 +240,22 @@
         <!-- {!! Form::open(array('url' => 'snp2gene/annotPlot')) !!} -->
         <!-- {!! Form::token() !!} -->
         <form action="annotPlot" method="post" target="_blank">
-        Select region:<br/>
+        Select region to plot: <span style="color:red">Mandatory</span><br/>
         <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
         <tab><input type="checkbox" name="annotPlotSelect_leadSNP" id="annotPlotSelect_leadSNP" value="null" onchange="annotSelect('leadSNP')"/>LD block of selected lead SNP<br/>
         <tab><input type="checkbox" name="annotPlotSelect_interval" id="annotPlotSelect_interval" value="null" onchange="annotSelect('interval')"/>Selected interval<br/>
         <!-- <tab><input type="checkbox" name="annotPlotSelect_SNP" id="annotPlotSelect_SNP" value="null" onchange="annotSelect('SNP')"/>LD block which selected SNP belongs<br/> -->
         <!-- <tab><input type="checkbox" id="annotPlotSelect" value="leadSNP"/>Create regional plot for all intervals<br/> -->
-        Select Annotation to plot:<br/>
+        Select annotation(s) to plot:<br/>
         <tab><input type="checkbox" name="annotPlot_GWASp" id="annotPlot_GWASp" checked/>GWAS association statistics<br/>
         <tab><input type="checkbox" name="annotPlot_CADD" id="annotPlot_CADD" checked/>CADD score<br/>
         <tab><input type="checkbox" name="annotPlot_RDB" id="annotPlot_RDB" checked/>RegulomeDB score<br/>
-        <tab><input type="checkbox" name="annotPlot_Chrom15" id="annotPlot_Chrom15" checked onchange="annotSelect();"/>Chromatine 15 state
+        <tab><input type="checkbox" name="annotPlot_Chrom15" id="annotPlot_Chrom15" onchange="annotSelect();"/>Chromatine 15 state
           <div id="annotPlotChr15Opt">
+          <tab><tab><span style="color:red;">Please select at least one tissue type.</span><br/>
           <tab><tab>Individual tissue/cell types: <a id="annotPlotChr15TsClear">clear</a><br/>
-          <tab><tab><select multiple size="5" id="annotPlotChr15Ts" name="annotPlotChr15Ts[]">
+          <tab><tab><select multiple size="5" id="annotPlotChr15Ts" name="annotPlotChr15Ts[]" onchange="annotSelect()">
             <option value="all">All</option>
             <option value='E001'>E001 (ESC) ES-I3 Cells</option>
             <option value='E002'>E002 (ESC) ES-WA7 Cells</option>
@@ -342,7 +387,7 @@
           </select><br/>
 
           <tab><tab>General tissue/cell types: <a id="annotPlotChr15GtsClear">clear</a><br/>
-          <tab><tab><select multiple size="5" id="annotPlotChr15Gts" name="annotPlotChr15Gts[]">
+          <tab><tab><select multiple size="5" id="annotPlotChr15Gts" name="annotPlotChr15Gts[]" onchange="annotSelect()">
             <option value="all">All</option>
             <option value='E080'>Adrenal (1)</option>
             <option value='E062:E034:E045:E033:E044:E043:E039:E041:E042:E040:E037:E048:E038:E047:E029:E031:E035:E051:E050:E036:E032:E046:E030:E115:E116:E123:E124'>Blood (27)</option>
@@ -377,6 +422,7 @@
           </div>
           <br/>
         <div id="check_eqtl_annotPlot"><tab><input type="checkbox" name="annotPlot_eqtl" id="annotPlot_eqtl" checked/>eQTL<br/></div>
+        <div id="CheckAnnotPlotOpt"></div>
         <input class="btn" type="submit" name="submit" id= "annotPlotSubmit" value="Plot"><br/>
         </form>
       </div>

@@ -148,7 +148,8 @@ function JobQueryCheck(){
   if(Email.length>0 && jobtitle.length>0){
     $.ajax({
       // url: "/jobcheck",
-      url: "/jobcheck",
+      url: "/jobcheck", //local
+      //webserver url: "/IPGAP/snp2gene/jobcheck",
       type: 'POST',
       data: {
         'Email': Email,
@@ -176,7 +177,8 @@ function NewJobCheck(){
   var jobtitle = $('#NewJobTitle').val();
   if(Email.length>0 && jobtitle.length>0){
     $.ajax({
-      url: '/jobcheck',
+      url: '/jobcheck', //local
+      //webserver url: "/IPGAP/snp2gene/jobcheck",
       type: 'POST',
       data: {
         'Email': Email,

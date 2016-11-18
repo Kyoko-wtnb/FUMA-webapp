@@ -17,12 +17,15 @@
   </div>
   <div class="collapse navbar-collapse" id="myNavbar">
     <ul class="nav navbar-nav navbar-right">
+      <!-- local_start -->
       <li class="{{ Request::is('/') ? 'active' : ''}}"><a href="/">Home</a></li>
       <li class="{{ Request::is('tutorial') ? 'active' : ''}}"><a href="/tutorial">Tutorial</a></li>
+      <li class="{{ Request::is('GWASresult*') ? 'active' : ''}}"><a href="/GWASresult">GWASresult</a></li>
       <li class="{{ Request::is('snp2gene*') ? 'active' : ''}}"><a href="/snp2gene">SNP2GENE</a></li>
-      <li class="{{ Request::is('gene2func') ? 'active' : ''}}"><a href="/gene2func">GENE2FUNC</a></li>
+      <li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="/gene2func">GENE2FUNC</a></li>
       <li class="{{ Request::is('links') ? 'active' : ''}}"><a href="/links">Links</a></li>
       <li class="{{ Request::is('contact') ? 'active' : ''}}"><a href="/contact">Contact</a></li>
+      <!-- local_end -->
     </ul>
   </div>
 </nav>

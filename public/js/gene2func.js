@@ -1,32 +1,55 @@
 $(document).ready(function(){
-  $('#results').hide();
-  var g = document.getElementById('genes').value;
-  if(g.length > 0){
-    $('#geneSubmit').attr("disabled", false);
-  }
+  // $('#test').html("Status: "+status+"<br/>");
+  if(status=="new"){
+    checkInput();
+    $('#results').hide();
+  }else if(status=="query"){
+    $('#geneSubmit').attr("disabled", true);
+    var filedir = IPGAPvar.filedir;
+    var gtype = IPGAPvar.gtype;
+    var gval = IPGAPvar.gval;
+    var bkgtype = IPGAPvar.bkgtype;
+    var bkgval = IPGAPvar.bkgval;
+    var Xchr = IPGAPvar.Xchr;
+    var MHC = IPGAPvar.MHC;
 
-  $('#geneSubmit').on('click', function(){
-    var g = document.getElementById('genes').value;
-    var genes = g.replace(/\n/g, ":");
-    g = g.split("\n");
-
-    var bkgenes=[];
-    var tmp = document.getElementById('genetype');
-    for(var i=0; i<tmp.options.length; i++){
-      if(tmp.options[i].selected===true){
-        bkgenes.push(tmp.options[i].value);
-      }
+    if(gtype=="text"){
+      $('#genes').val(gval.replace(/:/g, '\n'));
     }
-    bkgenes = bkgenes.join(":");
+
+    if(bkgtype == "select"){
+      // var s = bkgval.split(':');
+      var tmp = document.getElementById('genetype');
+      for(var i=0; i<tmp.options.length; i++){
+        if(bkgval.indexOf(tmp.options[i].value)>=0){
+          tmp.options[i].selected=true;
+        }
+      }
+    }else if(bkgtype == "text"){
+      $('#bkgenes').val() = bkgval.replace(/:/g, '\n');
+    }
+
+    if(Xchr==1){
+      $('#Xchr').attr('checked', true);
+    }
+
+    if(MHC==1){
+      $('#MHC').attr('checked', true);
+    }
 
     d3.select('#expHeat').select('svg').remove();
     d3.select('#tsEnrichBar').select('svg').remove();
     $.ajax({
-      url: "gene2func/geneQuery",
+      url: "geneQuery",
       type: "POST",
       data: {
-        genes : genes,
-        bkgenes : bkgenes
+        filedir: filedir,
+        gtype: gtype,
+        gval: gval,
+        bkgtype: bkgtype,
+        bkgval: bkgval,
+        Xchr: Xchr,
+        MHC: MHC
       },
       beforeSend: function(){
         $('#results').hide();
@@ -39,21 +62,131 @@ $(document).ready(function(){
         $('#results').show();
       },
       complete: function(){
-        expHeatMap(g);
+        checkInput();
+        expHeatMap();
         tsEnrich();
         tsGeneralEnrich();
         GeneSet();
       }
     });
+  }
 
-  });
+  // $('#geneSubmit').on('click', function(){
+  //   var g = document.getElementById('genes').value;
+  //   var gfile = $('#genesfile').val();
+  //   var bkg_select = 0;
+  //   var tmp = document.getElementById('genetype');
+  //   for(var i=0; i<tmp.options.length; i++){
+  //     if(tmp.options[i].selected===true){
+  //       bkg_select = 1;
+  //       break;
+  //     }
+  //   }
+  //   var bkg = document.getElementById('bkgenes').value;
+  //   var bkgfile = $('#bkgenesfile').val();
+  //
+  //   var gtype;
+  //   var bkgtype;
+  //   if(g.length>0){
+  //     gtype=1; //textbox
+  //   }else{
+  //     gtype=2; //file
+  //   }
+  //
+  //   if(bkg_select==1){
+  //     bkgtype = 0; //select
+  //   }else if(bkg.length>0){
+  //     bkgtype = 1; //text box
+  //   }else{
+  //     bkgtype = 2; //file
+  //   }
+  //
+  //   var genes = g.replace(/\n/g, ":");
+  //   g = g.split("\n");
+  //
+  //   var bkgenes=[];
+  //   var tmp = document.getElementById('genetype');
+  //   for(var i=0; i<tmp.options.length; i++){
+  //     if(tmp.options[i].selected===true){
+  //       bkgenes.push(tmp.options[i].value);
+  //     }
+  //   }
+  //   bkgenes = bkgenes.join(":");
+  //
+  //   d3.select('#expHeat').select('svg').remove();
+  //   d3.select('#tsEnrichBar').select('svg').remove();
+  //   $.ajax({
+  //     url: "gene2func/geneQuery",
+  //     type: "POST",
+  //     data: {
+  //       genes : genes,
+  //       bkgenes : bkgenes
+  //     },
+  //     beforeSend: function(){
+  //       $('#results').hide();
+  //       $('#loadingGeneQuery').show();
+  //       $('#loadingGeneQuery').html('<h4>Running gene query</h4><img src="'+public_path+'" width="50" height="50"/><br/><br/>');
+  //     },
+  //     success: function(){
+  //       $('#loadingGeneQuery').html("");
+  //       $('#loadingGeneQuery').hide();
+  //       $('#results').show();
+  //     },
+  //     complete: function(){
+  //       expHeatMap();
+  //       tsEnrich();
+  //       tsGeneralEnrich();
+  //       GeneSet();
+  //     }
+  //   });
+  //
+  // });
 });
 
 function checkInput(){
   var g = document.getElementById('genes').value;
-  if(g.length > 0){
+  var gfile = $('#genesfile').val().length;
+  if(g.length==0 && gfile==0){
+    $('#GeneCheck').html('<div class="alert alert-danger" style="padding-bottom: 10; padding-top: 10;">Please either copy-paste or upload a liet of genes to test.</div>');
+    $('#geneSubmit').attr("disabled", true);
+  }else if(g.length>0 && gfile>0){
+    $('#GeneCheck').html('<div class="alert alert-warning" style="padding-bottom: 10; padding-top: 10;">OK. Genes in the text box will be used. To use uploaded file, please clear the text box.</div>');
+  }else if(g.length > 0){
+    $('#GeneCheck').html('<div class="alert alert-success" style="padding-bottom: 10; padding-top: 10;">OK. Genes in the text box will be used.</div>');
+  }else if(gfile > 0){
+    $('#GeneCheck').html('<div class="alert alert-success" style="padding-bottom: 10; padding-top: 10;">OK. The uploaded file will be used.</div>');
+  }
+
+  var bkg_select = 0;
+  var tmp = document.getElementById('genetype');
+  for(var i=0; i<tmp.options.length; i++){
+    if(tmp.options[i].selected===true){
+      bkg_select = 1;
+      break;
+    }
+  }
+  var bkg = document.getElementById('bkgenes').value;
+  var bkgfile = $('#bkgenesfile').val().length;
+
+  if(bkg_select==0 && bkg.length==0 && bkgfile==0){
+    $('#bkGeneCheck').html('<div class="alert alert-danger" style="padding-bottom: 10; padding-top: 10;">Please provide backgrond genes.</div>');
+    $('#geneSubmit').attr("disabled", true);
+  }else if(bkg_select==1 && (bkg.length>0 || bkgfile>0)){
+    $('#bkGeneCheck').html('<div class="alert alert-warning" style="padding-bottom: 10; padding-top: 10;">OK. You have provided multiple options. Selected gene types are used as background gene. To use other options, please clear the selection.</div>');
+  }else if(bkg_select==1){
+    $('#bkGeneCheck').html('<div class="alert alert-success" style="padding-bottom: 10; padding-top: 10;">OK. Selected gene type will be used as background.</div>');
+  }else if(bkg.length>0 && bkgfile>0){
+    $('#bkGeneCheck').html('<div class="alert alert-warning" style="padding-bottom: 10; padding-top: 10;">OK. You have provided multiple options. Genes in the text box will be used as background. To use other options, please clear the text box.</div>');
+  }else if(bkg.length>0){
+    $('#bkGeneCheck').html('<div class="alert alert-success" style="padding-bottom: 10; padding-top: 10;">OK. Genes in the text box will be used.</div>');
+  }else if(bkgfile>0){
+    $('#bkGeneCheck').html('<div class="alert alert-success" style="padding-bottom: 10; padding-top: 10;">OK. The uploaded file will be used.</div>');
+  }
+
+  if(g.length+gfile > 0 && (bkg_select==1 || bkg.length+bkgfile>0)){
     $('#geneSubmit').attr("disabled", false);
   }
+
 };
 
 function GeneSetPlot(category){
@@ -70,11 +203,11 @@ Array.prototype.unique = function(a){
     return function(){ return this.filter(a) }
 }(function(a,b,c){ return c.indexOf(a,b+1) < 0 });
 
-function expHeatMap(g){
+function expHeatMap(){
   d3.select('#expHeat').select("svg").remove();
   var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
 
-  d3.json("gene2func/d3text/gene2func/exp.txt", function(response){
+  d3.json("d3text/gene2func/exp.txt", function(response){
     var data = response.map(function(item){
       var newItem = {};
       newItem.tissue = item.tissue;
@@ -164,7 +297,7 @@ function tsEnrich(){
           .attr("stop-color", "#606060")
           .attr("stop-ocupacity", 1);
 
-  d3.json("gene2func/d3text/gene2func/DEG.txt", function(data){
+  d3.json("d3text/gene2func/DEG.txt", function(data){
     data.forEach(function(d){
       d.logFDR = +d.logFDR;
       d.logP = +d.logP;
@@ -298,7 +431,7 @@ function tsGeneralEnrich(){
   gradient2.append("stop").attr("offset", "100%")
           .attr("stop-color", "#606060")
           .attr("stop-ocupacity", 1);
-  d3.json("gene2func/d3text/gene2func/DEGgeneral.txt", function(data){
+  d3.json("d3text/gene2func/DEGgeneral.txt", function(data){
     data.forEach(function(d){
       d.logFDR = +d.logFDR;
       d.logP = +d.logP;
@@ -420,7 +553,7 @@ function GeneSet(){
                   'Wikipathways' : 'Wikipathways (Curated version 20161010)',
                   'GWAScatalog' : 'GWAS catalog (reported genes, ver. e84 20160313)'
                 };
-  d3.json("gene2func/d3text/gene2func/GS.txt", function(data){
+  d3.json("d3text/gene2func/GS.txt", function(data){
     // data.forEach(function(d){
     //   d.logP = +d.logP;
     //   d.logFDR = +d.logFDR;

@@ -26,7 +26,8 @@ eqtlMapChr15Meth <- args[22]
 #write.table(c(filedir, genetype, exMHC, extMHC, posMap, posMapWindow, posMapWindowSize, posMapAnnot, posMapCADDth, posMapRDBth, posMapChr15, posMapChr15Max, posMapChr15Meth,
 #  eqtlMap, eqtlMaptss, eqtlMapSigeqtl, eqtlP, eqtlMapCADDth, eqtlMapRDBth, eqtlMapChr15, eqtlMapChr15Max, eqtlMapChr15Meth), "../files/1/test.txt")
 
-load("../data/ENSG.all.genes.RData")
+load("../data/ENSG.all.genes.RData") #local
+#webserver load("/data/ENSG/ENSG.all.genes.RData")
 if(genetype!="all"){
   genetype <- unique(unlist(strsplit(genetype, ":")))
   ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$gene_biotype %in% genetype,]
@@ -152,6 +153,8 @@ if(nrow(geneTable)>0){
     geneTable$eqtlMapminP <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){min(eqtl$p[eqtl$gene==x])}else{NA}})
     geneTable$eqtlMapminQ <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene[!is.na(eqtl$FDR)]){min(eqtl$FDR[eqtl$gene==x & !is.na(eqtl$FDR)])}else{NA}})
     geneTable$eqtlMapts <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){paste(sub("gtex.", "",unique(eqtl$tissue[eqtl$gene==x])), collapse = ":")}else{NA}})
+    geneTable$eqtlDirection <- NA
+    geneTable$eqtlDirection <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){if(length(which(eqtl$tz[eqtl$gene==x]>0))>=length(which(eqtl$tz[eqtl$gene==x]<0))){"+"}else{"-"}}else{"NA"}})
   }
   if(posMap==1 & eqtlMap==1){
     geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & (snps$uniqID %in% annov$uniqID[annov$gene==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])))>0)
