@@ -24,7 +24,7 @@
   var public_path = "{{ URL::asset('/image/ajax-loader2.gif') }}";
   var storage_path = "<?php echo storage_path();?>";
 </script>
-<script type="text/javascript" src="{!! URL::asset('js/simg/src/simg.js') !!}"></script>
+<!-- <script type="text/javascript" src="{!! URL::asset('js/simg/src/simg.js') !!}"></script> -->
 <script type="text/javascript" src="{!! URL::asset('js/snp2geneResults.js') !!}"></script>
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 
@@ -54,6 +54,27 @@
   <div class="panel panel-default"><div class="panel-body" id="jobInfo">
     <h3 style="color: #00004d">Information of your job</h3>
     <div id="jobInfoTable"></div>
+  </div></div>
+  <!-- genome wide plots -->
+  <div class="panel panel-default"><div class="panel-body" id="genomePlots">
+    <a href="#gPlotPanel" data-toggle="collapse" style="color: #00004d"><h3>Genome Wide Plot</h3></a>
+    <div id="gPlotPanel" class="collapse in">
+      <div id="manhattanPane" style="position: relative;">
+        <h3>Manhattan Plot (GWAS summary statistics)</h3>
+        <div id="manhattan" class="canvasarea"></div>
+      </div>
+      <div id="geneManhattanPane" style="position: relative;">
+        <h3>Mahattan Plot (gene-based test)</h3>
+        <div id="genesManhattan" class="canvasarea"></div>
+      </div>
+      <div id="QQplotPane" style="position: relative;">
+        <h3>QQ plots</h3>
+        <div class="col-md-6" id="QQplot" class="canvasarea">
+        </div>
+        <div class="col-md-6" id="geneQQplot" class="canvasarea">
+        </div>
+      </div>
+    </div>
   </div></div>
   <!-- result tables -->
   <div id="tables">
@@ -112,7 +133,7 @@
           <table id="intervalTable" class="display dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
             <thead>
               <tr>
-                <th>Interval</th><th>toprsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nLeadSNPs</th><th>start</th><th>end</th><th>nSNPs</th><th>nGWASSNPs</th>
+                <th>Interval</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nLeadSNPs</th><th>start</th><th>end</th><th>nSNPs</th><th>nGWASSNPs</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -195,7 +216,8 @@
               <input type="checkbox" name="annotfile" id="annotfile" checked onchange="DownloadFiles();">Annotations (CADD, RDB and Chromatin state of 127 tissue/cell types)<br/>
               <input type="checkbox" name="genefile" id="genefile" checked onchange="DownloadFiles();">Gene table (mapped genes)<br/>
               <div id="eqtlfiledown"><input type="checkbox" name="eqtlfile" id="eqtlfile" checked onchange="DownloadFiles();">eQTL table (eQTL of selected tissue types)<br/></div>
-              <input type="checkbox" name="exacfile" id="exacfile" checked onchange="DownloadFiles();">ExAC variants (rare variants from ExAC within intervals)<br/>
+              <!-- <input type="checkbox" name="exacfile" id="exacfile" checked onchange="DownloadFiles();">ExAC variants (rare variants from ExAC within intervals)<br/> -->
+              <input type="checkbox" name="gwascatfile" id="gwascatfile" checked onchange="DownloadFiles();">GWAScatalog (full recode from GWAScatalog)<br/>
               <a id="allfiles"> Select All </a><tab><a id="clearfiles"> Clear</a><br/>
               <br/>
               <input class="btn" type="submit" name="download" id="download" value="Download files"/>

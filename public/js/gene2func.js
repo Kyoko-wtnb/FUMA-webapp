@@ -5,6 +5,7 @@ $(document).ready(function(){
     $('#results').hide();
   }else if(status=="query"){
     $('#geneSubmit').attr("disabled", true);
+    var id = IPGAPvar.id;
     var filedir = IPGAPvar.filedir;
     var gtype = IPGAPvar.gtype;
     var gval = IPGAPvar.gval;
@@ -63,11 +64,21 @@ $(document).ready(function(){
       },
       complete: function(){
         checkInput();
-        expHeatMap();
-        tsEnrich();
-        tsGeneralEnrich();
-        GeneSet();
+        expHeatMap(id);
+        tsEnrich(id);
+        tsGeneralEnrich(id);
+        GeneSet(id);
       }
+    });
+
+    // $('#DEGdown').on('click', function(){
+    //   fileDown('DEG.txt', id);
+    // });
+    $('#DEGgdown').on('click', function(){
+      fileDown('DEGgeneral.txt', id);
+    });
+    $('#GSdown').on('click', function(){
+      filedown('GS.txt', id);
     });
   }
 
@@ -203,11 +214,11 @@ Array.prototype.unique = function(a){
     return function(){ return this.filter(a) }
 }(function(a,b,c){ return c.indexOf(a,b+1) < 0 });
 
-function expHeatMap(){
+function expHeatMap(id){
   d3.select('#expHeat').select("svg").remove();
   var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
 
-  d3.json("d3text/gene2func/exp.txt", function(response){
+  d3.json("d3text/"+id+"/exp.txt", function(response){
     var data = response.map(function(item){
       var newItem = {};
       newItem.tissue = item.tissue;
@@ -254,7 +265,7 @@ function expHeatMap(){
   });
 }
 
-function tsEnrich(){
+function tsEnrich(id){
   d3.select('#tsEnrichBar').select('svg').remove();
   var span = 150;
   var currentHeight = 0;
@@ -297,7 +308,7 @@ function tsEnrich(){
           .attr("stop-color", "#606060")
           .attr("stop-ocupacity", 1);
 
-  d3.json("d3text/gene2func/DEG.txt", function(data){
+  d3.json("d3text/"+id+"/DEG.txt", function(data){
     data.forEach(function(d){
       d.logFDR = +d.logFDR;
       d.logP = +d.logP;
@@ -389,7 +400,7 @@ function tsEnrich(){
   });
 }
 
-function tsGeneralEnrich(){
+function tsGeneralEnrich(id){
   d3.select('#tsGeneralEnrichBar').select('svg').remove();
   var span = 150;
   var currentHeight = 0;
@@ -431,7 +442,7 @@ function tsGeneralEnrich(){
   gradient2.append("stop").attr("offset", "100%")
           .attr("stop-color", "#606060")
           .attr("stop-ocupacity", 1);
-  d3.json("d3text/gene2func/DEGgeneral.txt", function(data){
+  d3.json("d3text/"+id+"/DEGgeneral.txt", function(data){
     data.forEach(function(d){
       d.logFDR = +d.logFDR;
       d.logP = +d.logP;
@@ -523,7 +534,7 @@ function tsGeneralEnrich(){
   });
 }
 
-function GeneSet(){
+function GeneSet(id){
   $('#GeneSet').html("");
   var category = ['Hallmark_gene_sets', 'Positional_gene_sets', 'Curetaed_gene_sets',
                   'Chemical_and_Genetic_pertubation', 'Canonical_Pathways', 'BioCarta', 'KEGG', 'Reactome',
@@ -553,7 +564,7 @@ function GeneSet(){
                   'Wikipathways' : 'Wikipathways (Curated version 20161010)',
                   'GWAScatalog' : 'GWAS catalog (reported genes, ver. e84 20160313)'
                 };
-  d3.json("d3text/gene2func/GS.txt", function(data){
+  d3.json("d3text/"+id+"/GS.txt", function(data){
     // data.forEach(function(d){
     //   d.logP = +d.logP;
     //   d.logFDR = +d.logFDR;
@@ -703,3 +714,17 @@ function GeneSet(){
     }
   });
 }
+
+// function fileDown(file, id){
+//   $.ajax({
+//     url: 'fileDown',
+//     type: 'POST',
+//     data: {
+//       file: file,
+//       id: id
+//     },
+//     success: function(){
+//       window.location = "fileDown";
+//     }
+//   });
+// }

@@ -313,7 +313,7 @@ $(document).ready(function(){
               .call(xAxis).selectAll("text").remove();
             svg.append("g").attr("class", "y axis").call(yAxis);
             svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+(-margin.left/2)+","+(currentHeight+100)+")rotate(-90)")
+              .attr("transform", "translate("+(-10-margin.left/2)+","+(currentHeight+100)+")rotate(-90)")
               .text("-log10 P-value");
             svg.append("text").attr("text-anchor", "middle")
               .attr("transform", "translate("+(-margin.left/2)+", -15)")
@@ -332,7 +332,7 @@ $(document).ready(function(){
               .attr("r", 3.5)
               .attr("cx", function(d){return x(d.pos);})
               .attr("cy", function(d){return y(d.CADD);})
-              .style("fill", function(d){if(d.ld==0){return "grey";}else{return "skyblue";}})
+              .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
               .on("click", function(d){
                 table = '<table class="table" style="font-size: 10;">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
@@ -357,7 +357,7 @@ $(document).ready(function(){
                 $('#annotTable').html(table);
               });
             svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+(-margin.left/2)+","+(currentHeight+75)+")rotate(-90)")
+              .attr("transform", "translate("+(-10-margin.left/2)+","+(currentHeight+75)+")rotate(-90)")
               .text("CADD score");
             if(RDBplot==1 || Chr15==1 || (eqtl==1 && eqtlplot==1)){
               svg.append("g").attr("class", "x axis CADD")
@@ -409,7 +409,7 @@ $(document).ready(function(){
                 table += '</table>'
                 $('#annotTable').html(table);
               });            svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+(-margin.left/2)+","+(currentHeight+75)+")rotate(-90)")
+              .attr("transform", "translate("+(-10-margin.left/2)+","+(currentHeight+75)+")rotate(-90)")
               .text("RegulomeDB score");
             if(Chr15==1 || (eqtl==1 && eqtlplot==1)){
               svg.append("g").attr("class", "x axis RDB")
@@ -898,7 +898,7 @@ $(document).ready(function(){
       .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "purple"}})
       .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black"}});
     svg.selectAll(".CADDdot").attr("cx", function(d){return x(d.pos);})
-      .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey"}else{return "skyblue"}});
+      .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey"}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue"}});
     svg.selectAll(".RDBdot").attr("cx", function(d){return x(d.pos);})
       .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey"}else{return "MediumAquaMarine"}});
     svg.selectAll(".genesrect").attr("x", function(d){

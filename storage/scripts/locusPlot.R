@@ -21,11 +21,11 @@ if(type=="leadSNP"){
   snps$ld[snps$uniqID %in% ld$SNP2] <- 1
   snps$ld[snps$uniqID == ls] <- 2
 }else{
-  regions <- fread(paste(filedir, "intervals.txt", sep=""), data.table=F)
-  regions <- data.frame(regions)
-  ls <- snps$uniqID[snps$rsID %in% unlist(strsplit(regions$leadSNPs[i], ":"))]
+  intervals <- fread(paste(filedir, "intervals.txt", sep=""), data.table=F)
+  intervals <- data.frame(intervals)
+  ls <- snps$uniqID[snps$rsID %in% unlist(strsplit(intervals$leadSNPs[i], ":"))]
   ld <- ld[ld$SNP1 %in% ls,]
-  chr <- regions$chr[i]
+  chr <- intervals$chr[i]
   snps <- snps[snps$chr==chr,]
   snps <- snps[snps$uniqID %in% ld$SNP2[ld$SNP1 %in% ls],]
   snps$logP <- -log10(snps$gwasP)

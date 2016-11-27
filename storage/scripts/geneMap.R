@@ -191,7 +191,7 @@ summary[4,2] <- length(which(!is.na(snps$gwasP)))
 summary[5,2] <- nrow(geneTable)
 write.table(summary, paste(filedir, "summary.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
 
-int.table <- data.frame(interval=intervals$No, label=NA, nSNPs=NA, size=NA, nGenes=NA, nWithinGene=NA)
+int.table <- data.frame(interval=intervals$Interval, label=NA, nSNPs=NA, size=NA, nGenes=NA, nWithinGene=NA)
 int.table$label <- paste(intervals$chr, paste(intervals$start, intervals$end, sep="-"), sep=":")
 temp <- table(snps$Interval)
 temp <- data.frame(name=names(temp), n=as.numeric(temp))

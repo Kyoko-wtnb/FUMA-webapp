@@ -399,11 +399,11 @@ foreach my $chr (1..23){
 	#	}
 	#}else{
 	print "Start chr $chr: \n";
-	my $ldfile = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.ld.gz"; #local
-	#webserver my $ldfile = "/data/1KG/Phase3/EUR/EUR.chr$chr.ld.gz";
+	my $ldfile = "/media/sf_SAMSUNG/1KG/Phase3/".$pop."/".$pop.".chr$chr.ld.gz"; #local
+	#webserver my $ldfile = "/data/1KG/Phase3/".$pop."/".$pop.".chr$chr.ld.gz";
 	# my $maffile = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
-	my $maffile = "/media/sf_SAMSUNG/1KG/Phase3/EUR_annot/chr$chr.data.txt.gz"; #local
-	#webserver my $maffile = "/data/1KG/Phase3/EUR/chr$chr.data.txt.gz";
+	my $maffile = "/media/sf_SAMSUNG/1KG/Phase3/".$pop."_annot/chr$chr.data.txt.gz"; #local
+	#webserver my $maffile = "/data/1KG/Phase3/".$pop."/chr$chr.data.txt.gz";
 	if(exists $leadSNPs{$chr}){
 		#print "Checking input lead SNPs\n";
 		my $count = 0;

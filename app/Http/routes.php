@@ -32,8 +32,8 @@ Route::get('GWASresult', function(){
 });
 
 Route::get('gene2func', function(){
-  return view('pages.gene2func', ['status'=>'new']); #local
-  #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'new']);
+  return view('pages.gene2func', ['status'=>'new', 'id'=>'none']); #local
+  #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'new', 'id'=>'none']);
 });
 
 Route::get('links', function(){
@@ -59,6 +59,10 @@ Route::post('snp2gene/DTfile', 'JsController@DTfile');
 
 Route::post('snp2gene/jobInfo', 'JsController@jobInfo');
 
+Route::get('snp2gene/manhattan/{type}/{jobID}/{file}', 'D3jsController@manhattan');
+
+Route::get('snp2gene/QQplot/{type}/{jobID}/{plot}', 'D3jsController@QQplot');
+
 Route::post('snp2gene/paramTable', 'JsController@paramTable');
 
 Route::post('snp2gene/sumTable', 'JsController@sumTable');
@@ -78,6 +82,8 @@ Route::post('gene2func/submit', 'JobController@gene2funcSubmit');
 Route::post('gene2func/geneQuery', 'JobController@geneQuery');
 Route::post('snp2gene/geneQuery', 'JobController@geneQuery');
 
+Route::post('gene2func/fileDown', 'JobController@gene2funcFileDown');
+
 Route::get('gene2func/d3text/{jobID}/{file}', 'D3jsController@d3js_textfile');
 
 Route::get('GWASresult/d3text/{dbName}/{file}', 'D3jsController@d3js_GWAS_textfile');
@@ -85,3 +91,11 @@ Route::get('GWASresult/d3text/{dbName}/{file}', 'D3jsController@d3js_GWAS_textfi
 Route::get('GWASresult/QQplot/{dbName}/{type}', 'D3jsController@d3js_GWAS_QQ');
 
 Route::post('GWASresult/gwasDBtable', 'JobController@gwasDBtable');
+
+Route::post('GWASresult/SelectOption', 'JobController@SelectOption');
+
+Route::post('GWASresult/selectTable', 'JobController@selectTable');
+
+Route::get('GWASresult/manhattan/{type}/{jobID}/{file}', 'D3jsController@manhattan');
+
+Route::get('GWASresult/QQplot/{type}/{jobID}/{plot}', 'D3jsController@QQplot');

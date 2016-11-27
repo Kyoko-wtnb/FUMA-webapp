@@ -110,10 +110,22 @@
     <a href='#tsEnrichBarPanel' data-toggle="collapse" style="color: #00004d;"><h3>Tissue specificity</h3></a>
     <div id="tsEnrichBarPanel" class="collapse">
       <h4>Differentially expressed genes among 53 tissues (GTEx)</h4>
-      <input type="submit" class="btn" id="DEGdown" name="DEGdown" value="Download text file"><br/>
+      <!-- <button class="btn" id="DEGdown" name="DEGdown">Download text file</button><br/> -->
+      <form action="fileDown" method="post" target="_blank">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="id" value="{{$id}}"/>
+        <input type="hidden" name="file" value="DEG.txt"/>
+        <input type="submit" class="btn" id="DEGdown" name="DEGdown" value="Download text file"><br/>
+      </form>
       <div id="tsEnrichBar"></div>
       <h4>Differrentially expressed genes among 30 general tissue types (GTEx)</h4>
-      <input type="submit" class="btn" id="DEGgdown" name="DEGgdown" value="Download text file"><br/>
+      <!-- <button class="btn" id="DEGgdown" name="DEGgdown">Download text file</button><br/> -->
+      <form action="fileDown" method="post" target="_blank">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="id" value="{{$id}}"/>
+        <input type="hidden" name="file" value="DEGgeneral.txt"/>
+        <input type="submit" class="btn" id="DEGgdown" name="DEGgdown" value="Download text file"><br/>
+      </form>
       <div id="tsGeneralEnrichBar"></div>
     </div>
   </div></div>
@@ -121,32 +133,14 @@
   <div class="panel panel-default"><div class="panel-body">
     <a href="#GeneSetPanel" data-toggle="collapse" style="color: #00004d"><h3>Gene Set Enrichment</h3></a>
     <div id="GeneSetPanel" class="collapse">
-      <input type="submit" class="btn" id="GSdown" name="GSdown" value="Download text file"><br/><br/>
+      <!-- <button class="btn" id="GSdown" name="GSdown">Download text file</button><br/><br/> -->
+      <form action="fileDown" method="post" target="_blank">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="id" value="{{$id}}"/>
+        <input type="hidden" name="file" value="GS.txt"/>
+        <input type="submit" class="btn" id="GSdown" name="GSdown" value="Download text file"><br/>
+      </form>
       <div id="GeneSet">
-        <!-- <div class="row">
-          <div class="col-md-6" id="Canonical_Pathways">
-            <h4>Canonical Pathways</h4>
-          </div>
-          <div class="col-md-6" id="Canonical_PathwaysTable"></div>
-        </div>
-        <div class="row">
-          <div class="col-md-6" id="GO_bp">
-            <h4>GO biological process</h4>
-          </div>
-          <div class="col-md-6" id="GO_bpTable"></div>
-        </div>
-        <div class="row">
-          <div class="col-md-6" id="GO_cc">
-            <h4>GO cellular component</h4>
-          </div>
-          <div class="col-md-6" id="GO_ccTable"></div>
-        </div>
-        <div class="row">
-          <div class="col-md-6" id="GO_mf">
-            <h4>GO molecular function</h4>
-          </div>
-          <div class="col-md-6" id="GO_mfTable"></div>
-        </div> -->
       </div>
     </div>
   </div></div>

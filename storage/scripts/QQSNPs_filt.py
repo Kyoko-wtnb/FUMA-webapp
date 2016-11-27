@@ -33,7 +33,8 @@ expP = -np.log10(expP)
 xMax = max(expP)
 yMax = max(obsP)
 l = xMax/width
-h = yMax/width
+h = yMax/height
+filtlimit = -math.log10(1e-5)
 
 mat = np.column_stack((expP, obsP))
 mat = np.array(mat)
@@ -43,11 +44,17 @@ plot.append(['exp', 'obs'])
 
 cur_x = 0
 while cur_x < xMax:
-	cur_h = 0
-	while cur_h < 5:
-		temp = mat[mat[:,0]>=cur_x]
-		temp = temp[temp[:,0]<cur_x+l]
-		temp = temp[temp[:,1]>=cur_h]
+	temp1 = mat[mat[:,0]>=cur_x]
+	temp1 = temp1[temp1[:,0]<cur_x+l]
+	if temp1.shape[0]==0:
+		cur_x += l
+		continue
+	cur_h = min(list(temp1[:,1]))
+	max_h = max(list(temp1[:,1]))
+	while cur_h < filtlimit:
+		if cur_h > max_h:
+			break
+		temp = temp1[temp1[:,1]>=cur_h]
 		temp = temp[temp[:,1]<cur_h+h]
 		if temp.shape[0]==0:
 			cur_h += h
@@ -60,7 +67,7 @@ while cur_x < xMax:
 		cur_h += h
 	cur_x += l
 
-for i in mat[mat[:,1]>=5]:
+for i in mat[mat[:,1]>=filtlimit]:
 	plot.append(i.tolist())
 
 outfile = open(filedir+"QQSNPs.txt", 'w')

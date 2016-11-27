@@ -30,7 +30,7 @@
     <div class="col-md-1"></div>
     <div class="col-md-10">
       <h3>News and Updates</h3>
-
+      
     </div>
     <div class="col-md-1"></div>
   </div>

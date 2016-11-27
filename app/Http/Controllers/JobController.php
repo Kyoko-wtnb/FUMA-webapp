@@ -573,7 +573,8 @@ class JobController extends Controller
       if($request -> has('annotfile')){$files[] = $filedir."annot.txt";}
       if($request -> has('genefile')){$files[] = $filedir."genes.txt";}
       if($request -> has('eqtlfile')){$files[] = $filedir."eqtl.txt";}
-      if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
+      // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
+      if($request -> has('gwascatfile')){$files[] = $filedir."gwascatalog.txt";}
       $zip_name = $filedir."IPGAP.zip";
       Zipper::make($zip_name)->add($files);
       return response() -> download($zip_name);
@@ -624,6 +625,7 @@ class JobController extends Controller
       // echo "<p>gtype: $gtype<br/>gval: $gval<br/>bkgtype: $bkgtype<br/>bkgval: $bkgval</p>";
 
       JavaScript::put([
+        'id' => 'gene2func',
         'filedir' => $filedir,
         'gtype' => $gtype,
         'gval' => $gval,
@@ -633,8 +635,8 @@ class JobController extends Controller
         'MHC' => $MHC
       ]);
 
-      return view('pages.gene2func', ['status'=>'query']); #local
-      #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'query']);
+      return view('pages.gene2func', ['status'=>'query', 'id'=>'gene2func']); #local
+      #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'query', 'id'=>'gene2func']);
     }
 
     public function geneQuery(Request $request){
@@ -648,7 +650,7 @@ class JobController extends Controller
 
 
       $script = storage_path()."/scripts/gene2func.R";
-      #exec("Rscript $script $filedir $gtype $gval $bkgtype $bkgval $Xchr $MHC");
+      exec("Rscript $script $filedir $gtype $gval $bkgtype $bkgval $Xchr $MHC");
     }
 
     public function snp2geneGeneQuery(Request $request){
@@ -675,6 +677,7 @@ class JobController extends Controller
       }
 
       JavaScript::put([
+        'id' => $jobID,
         'filedir' => $filedir,
         'gtype' => $gtype,
         'gval' => $gval,
@@ -684,8 +687,229 @@ class JobController extends Controller
         'MHC' => $MHC
       ]);
 
-      return view('pages.gene2func', ['status'=>'query']); #local
-      #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'query']);
+      return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]); #local
+      #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'query', 'id'=>$jobID]);
+    }
+
+    public function SelectOption(Request $request){
+      $type = $request -> input('type');
+      $domain = $request -> input('domain');
+      $chapter = $request -> input('chapter');
+      $subchapter = $request -> input('subchapter');
+
+      if(strcmp($type, 'Domain')==0){
+        if($domain==null){
+          $Domain = [];
+          $results = DB::select('SELECT * FROM gwasDB');
+          foreach($results as $row){
+            $d = $row->Domain;
+            if(array_key_exists($d, $Domain)){
+              $Domain[$d] += 1;
+            }else{
+              $Domain[$d] = 1;
+            }
+          }
+          // $keys = array_keys($Domain);
+          // $json = "";
+          // foreach($keys as $k){
+          //   if(strcmp($json, "")==0){
+          //     $json = '{0:"'.$k.'", 1:'.$Domain[$k].'}';
+          //   }else{
+          //     $json .= ',{0:"'.$k.'", 1:'.$Domain[$k].'}';
+          //   }
+          // }
+          // $json = '{Domain:['.$json.']}';
+          $json = array("Domain" => $Domain);
+          // $json = json_encode($json);
+          echo json_encode($json);
+        }else{
+          $results = DB::select('SELECT * FROM gwasDB WHERE Domain=?', [$domain]);
+          $Chapter = [];
+          $Subchapter = [];
+          $Trait = [];
+          foreach($results as $row){
+            $c = $row->ChapterLevel;
+            $s = $row->SubchapterLevel;
+            $t = $row->Trait;
+            if(array_key_exists($c, $Chapter)){
+              $Chapter[$c] += 1;
+            }else{
+              $Chapter[$c] = 1;
+            }
+            if(array_key_exists($s, $Subchapter)){
+              $Subchapter[$s] += 1;
+            }else{
+              $Subchapter[$s] = 1;
+            }
+            if(array_key_exists($t, $Trait)){
+              $Trait[$t] += 1;
+            }else{
+              $Trait[$t] = 1;
+            }
+          }
+          $json = array("Chapter"=>$Chapter, "Subchapter"=>$Subchapter, "Trait"=>$Trait);
+          echo json_encode($json);
+        }
+
+      }else if(strcmp($type, 'Chapter')==0){
+        if($chapter==null){
+          $results = DB::select('SELECT * FROM gwasDB WHERE Domain=?', [$domain]);
+          $Chapter = [];
+          $Subchapter = [];
+          $Trait = [];
+          foreach($results as $row){
+            $c = $row->ChapterLevel;
+            $s = $row->SubchapterLevel;
+            $t = $row->Trait;
+            if(array_key_exists($c, $Chapter)){
+              $Chapter[$c] += 1;
+            }else{
+              $Chapter[$c] = 1;
+            }
+            if(array_key_exists($s, $Subchapter)){
+              $Subchapter[$s] += 1;
+            }else{
+              $Subchapter[$s] = 1;
+            }
+            if(array_key_exists($t, $Trait)){
+              $Trait[$t] += 1;
+            }else{
+              $Trait[$t] = 1;
+            }
+          }
+          $json = array("Chapter"=>$Chapter, "Subchapter"=>$Subchapter, "Trait"=>$Trait);
+          echo json_encode($json);
+        }else{
+          $results = DB::select('SELECT * FROM gwasDB WHERE Domain=? AND ChapterLevel=?', [$domain, $chapter]);
+          $Subchapter = [];
+          $Trait = [];
+          foreach($results as $row){
+            $s = $row->SubchapterLevel;
+            $t = $row->Trait;
+            if(array_key_exists($s, $Subchapter)){
+              $Subchapter[$s] += 1;
+            }else{
+              $Subchapter[$s] = 1;
+            }
+            if(array_key_exists($t, $Trait)){
+              $Trait[$t] += 1;
+            }else{
+              $Trait[$t] = 1;
+            }
+          }
+          $json = array("Subchapter"=>$Subchapter, "Trait"=>$Trait);
+          echo json_encode($json);
+        }
+      }else if(strcmp($type, 'Subchapter')==0){
+        if($chapter==null && $subchapter==null){
+          $results = DB::select('SELECT * FROM gwasDB WHERE Domain=?', [$domain]);
+          $Chapter = [];
+          $Subchapter = [];
+          $Trait = [];
+          foreach($results as $row){
+            $c = $row->ChapterLevel;
+            $s = $row->SubchapterLevel;
+            $t = $row->Trait;
+            if(array_key_exists($c, $Chapter)){
+              $Chapter[$c] += 1;
+            }else{
+              $Chapter[$c] = 1;
+            }
+            if(array_key_exists($s, $Subchapter)){
+              $Subchapter[$s] += 1;
+            }else{
+              $Subchapter[$s] = 1;
+            }
+            if(array_key_exists($t, $Trait)){
+              $Trait[$t] += 1;
+            }else{
+              $Trait[$t] = 1;
+            }
+          }
+          $json = array("Chapter"=>$Chapter, "Subchapter"=>$Subchapter, "Trait"=>$Trait);
+          echo json_encode($json);
+        }
+        else if($subchapter==null){
+          $results = DB::select('SELECT * FROM gwasDB WHERE Domain=? AND ChapterLevel=?', [$domain, $chapter]);
+          $Subchapter = [];
+          $Trait = [];
+          foreach($results as $row){
+            $s = $row->SubchapterLevel;
+            $t = $row->Trait;
+            if(array_key_exists($s, $Subchapter)){
+              $Subchapter[$s] += 1;
+            }else{
+              $Subchapter[$s] = 1;
+            }
+            if(array_key_exists($t, $Trait)){
+              $Trait[$t] += 1;
+            }else{
+              $Trait[$t] = 1;
+            }
+          }
+          $json = array("Subchapter"=>$Subchapter, "Trait"=>$Trait);
+          echo json_encode($json);
+        }else{
+          $results = DB::select('SELECT * FROM gwasDB WHERE Domain=? AND SubchapterLevel=?', [$domain, $subchapter]);
+          $Trait = [];
+          foreach($results as $row){
+            $t = $row->Trait;
+            if(array_key_exists($t, $Trait)){
+              $Trait[$t] += 1;
+            }else{
+              $Trait[$t] = 1;
+            }
+          }
+          $json = array("Trait"=>$Trait);
+          echo json_encode($json);
+        }
+      }else{
+
+      }
+
+    }
+
+    public function selectTable(Request $request){
+      $type = $request -> input('type');
+      $domain = $request -> input('domain');
+      $chapter = $request -> input('chapter');
+      $subchapter = $request -> input('subchapter');
+      $trait = $request -> input('trait');
+
+      if(strcmp($domain, "null")==0 | (strcmp($domain, "null")==0 && strcmp($chapter, "null")==0 && strcmp($subchapter, "null")==0 && strcmp($trait, "null")==0)){
+        echo '{"data":[]}';
+      }else{
+        $query = 'SELECT ID,PMID,Year,Domain,ChapterLevel,SubchapterLevel,Trait,Ncase,Ncontrol,N,Population,SNPh2,website FROM gwasDB WHERE';
+        $head = ['ID','PMID','Year','Domain','ChapterLevel','SubchapterLevel','Trait','Ncase','Ncontrol','N','Population','SNPh2','website'];
+        $val = [];
+        if(strcmp($domain, "null")!=0){
+          $query .= ' Domain=?';
+          $val[] = $domain;
+        }
+        if(strcmp($chapter, "null")!=0){
+          if(count($val)!=0){$query .= " AND";}
+          $query .= ' ChapterLevel=?';
+          $val[] = $chapter;
+        }
+        if(strcmp($subchapter, "null")!=0){
+          if(count($val)!=0){$query .= " AND";}
+          $query .= ' SubchapterLevel=?';
+          $val[] = $subchapter;
+        }
+        if(strcmp($trait, "null")!=0){
+          if(count($val)!=0){$query .= " AND";}
+          $query .= ' Trait=?';
+          $val[] = $trait;
+        }
+        $results = DB::select($query, $val);
+        $results = json_decode(json_encode($results), true);
+        $all_row = array();
+        foreach($results as $row){
+          $all_row[] = array_combine($head, $row);
+        }
+        $json = array('data'=>$all_row);
+        echo json_encode($json);
+      }
     }
 
     public function gwasDBtable(Request $request){
@@ -721,6 +945,15 @@ class JobController extends Controller
       // }
       // $json = array('data'=>$all_row);
       echo json_encode($json);
+    }
+
+    public function gene2funcFileDown(Request $request){
+      $file = $request -> input('file');
+      $id = $request -> input('id');
+
+      $filedir = storage_path().'/jobs/'.$id.'/'.$file; #local
+      #webserver $filedir = '/data/IPGAP/jobs/'.$id.'/';
+      return response() -> download($filedir);
     }
 
     public function sendMail(Request $request){

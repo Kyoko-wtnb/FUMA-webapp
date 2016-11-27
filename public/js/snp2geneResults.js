@@ -119,6 +119,8 @@ $(document).ready(function(){
       complete: function(){
         $('#logs').hide();
         $('#results').show();
+        GWplot(jobID);
+        QQplot(jobID);
         showResultTables(filedir, jobID, posMap, eqtlMap);
         // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
       }
@@ -129,6 +131,8 @@ $(document).ready(function(){
     var posMap = IPGAPvar.posMap;
     var eqtlMap = IPGAPvar.eqtlMap;
     // $('#test').html("<p>posMap: "+posMap+" eqtlMap: "+eqtlMap+"</p>");
+    GWplot(jobID);
+    QQplot(jobID);
     showResultTables(filedir, jobID, posMap, eqtlMap);
   }
 
@@ -173,6 +177,295 @@ $(document).ready(function(){
   });
 
 });
+
+function GWplot(jobID){
+  var chromSize = [249250621, 243199373, 198022430, 191154276, 180915260, 171115067,
+    159138663, 146364022, 141213431, 135534747, 135006516, 133851895, 115169878, 107349540,
+    102531392, 90354753, 81195210, 78077248, 63025520, 59128983, 48129895, 51304566, 155270560];
+  var chromStart = [];
+  chromStart.push(0);
+  for(var i=1; i<chromSize.length; i++){
+    chromStart.push(chromStart[i-1]+chromSize[i-1]);
+  }
+
+  var margin = {top:30, right: 30, bottom:50, left:50},
+      width = 800,
+      height = 300;
+  d3.select("#manhattanPane").style("height", height+margin.top+margin.bottom);
+  d3.select("#geneManhattanPane").style("height", height+margin.top+margin.bottom);
+  var svg = d3.select("#manhattan").append("svg")
+            .attr("width", width+margin.left+margin.right)
+            .attr("height", height+margin.top+margin.bottom)
+            .append("g")
+            .attr("transform", "translate("+margin.left+","+margin.top+")");
+  var canvas1 = d3.select('#manhattan').append("div").attr("class", "canvasarea")
+  	           .style("left", margin.left)
+            	.style("top", margin.top)
+            	.append("canvas")
+            	.attr("class", "canvasarea")
+            	.attr("width", width)
+            	.attr("height", height)
+            	.node().getContext('2d');
+  var svg2 = d3.select("#genesManhattan").append("svg")
+            .attr("width", width+margin.left+margin.right)
+            .attr("height", height+margin.top+margin.bottom)
+            .append("g")
+            .attr("transform", "translate("+margin.left+","+margin.top+")");
+  var canvas2 = d3.select('#genesManhattan').append("div").attr("class", "canvasarea")
+  	           .style("left", margin.left)
+            	.style("top", margin.top)
+            	.append("canvas")
+            	.attr("class", "canvasarea")
+            	.attr("width", width)
+            	.attr("height", height)
+            	.node().getContext('2d');
+  d3.json("manhattan/jobs/"+jobID+"/manhattan.txt", function(data){
+    data.forEach(function(d){
+  		// d.chr = +d.chr;
+  		// d.bp = +d.bp;
+  		// d.p = +d.p;
+      // d.y = 0;
+      d[0] = +d[0]; //chr
+      d[1] = +d[1]; // bp
+      d[2] = +d[2]; // p
+  	});
+    // var chr = d3.set(data.map(function(d){return d.chr;})).values();
+    var chr = d3.set(data.map(function(d){return d[0];})).values();
+
+    var max_chr = chr.length;
+    var x = d3.scale.linear().range([0, width]);
+    x.domain([0, (chromStart[max_chr-1]+chromSize[max_chr-1])]);
+    var xAxis = d3.svg.axis().scale(x).orient("bottom");
+    var y = d3.scale.linear().range([height, 0]);
+    // y.domain([0, d3.max(data, function(d){return -Math.log10(d.p);})+1]);
+    y.domain([0, d3.max(data, function(d){return -Math.log10(d[2]);})+1]);
+
+    var yAxis = d3.svg.axis().scale(y).orient("left");
+
+    data.forEach(function(d){
+    		// if(d.p<=0.005 || d.bp%200==0){
+    			canvas1.beginPath();
+    			// canvas1.arc( x(d.bp+chromStart[d.chr-1]), y(-Math.log10(d.p)), 2, 0, 2*Math.PI);
+          canvas1.arc( x(d[1]+chromStart[d[0]-1]), y(-Math.log10(d[2])), 2, 0, 2*Math.PI);
+    			// if(d.chr%2==0){canvas1.fillStyle="steelblue";}
+          if(d[0]%2==0){canvas1.fillStyle="steelblue";}
+    			else{canvas1.fillStyle="blue";}
+    			canvas1.fill();
+    		// }
+    	});
+
+    svg.append("line")
+  	 .attr("x1", 0).attr("x2", width)
+    	.attr("y1", y(-Math.log10(5e-8))).attr("y2", y(-Math.log10(5e-8)))
+    	.style("stroke", "red")
+    	.style("stroke-dasharray", ("3,3"));
+  	svg.append("g").attr("class", "x axis")
+      .attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
+    svg.append("g").attr("class", "y axis").call(yAxis);
+
+    //Chr label
+  	for(var i=0; i<chr.length; i++){
+  		svg.append("text").attr("text-anchor", "middle")
+  		.attr("transform", "translate("+x((chromStart[i]*2+chromSize[i])/2)+","+(height+20)+")")
+  		.text(chr[i])
+      .style("font-size", "10px");
+  	}
+  	svg.append("text").attr("text-anchor", "middle")
+  	 .attr("transform", "translate("+width/2+","+(height+35)+")")
+  	  .text("Chromosome");
+    svg.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(-35)+","+(height/2)+")rotate(-90)")
+      .text("-log10 P-value");
+  });
+
+  d3.json("manhattan/jobs/"+jobID+"/magma.genes.out", function(data){
+    data.forEach(function(d){
+      // d.CHR = +d.CHR;
+  		// d.START = +d.START;
+  		// d.STOP = +d.STOP;
+  		// d.P = +d.P;
+      // d.y = 0;
+      d[0] = +d[0]; //chr
+      d[1] = +d[1]; //start
+      d[2] = +d[2]; //stop
+      d[3] = +d[3]; //p
+  	});
+
+    // var chr = d3.set(data.map(function(d){return d.CHR;})).values();
+    var chr = d3.set(data.map(function(d){return d[0];})).values();
+    var max_chr = chr.length;
+    var x = d3.scale.linear().range([0, width]);
+    x.domain([0, (chromStart[max_chr-1]+chromSize[max_chr-1])]);
+    var xAxis = d3.svg.axis().scale(x).orient("bottom");
+    var y = d3.scale.linear().range([height, 0]);
+    // y.domain([0, d3.max(data, function(d){return -Math.log10(d.P);})+1]);
+    y.domain([0, d3.max(data, function(d){return -Math.log10(d[3]);})+1]);
+    var yAxis = d3.svg.axis().scale(y).orient("left");
+
+    data.forEach(function(d){
+    		canvas2.beginPath();
+    		// canvas2.arc( x((d.START+d.STOP)/2+chromStart[d.CHR-1]), y(-Math.log10(d.P)), 2, 0, 2*Math.PI);
+        canvas2.arc( x((d[1]+d[2])/2+chromStart[d[0]-1]), y(-Math.log10(d[3])), 2, 0, 2*Math.PI);
+    		// if(d.CHR%2==0){canvas2.fillStyle="steelblue";}
+        if(d[0]%2==0){canvas2.fillStyle="steelblue";}
+    		else{canvas2.fillStyle="blue";}
+    		canvas2.fill();
+    	});
+    svg2.append("line")
+  	 .attr("x1", 0).attr("x2", width)
+    	.attr("y1", y(-Math.log10(5e-8))).attr("y2", y(-Math.log10(5e-8)))
+    	.style("stroke", "red")
+    	.style("stroke-dasharray", ("3,3"));
+  	svg2.append("g").attr("class", "x axis")
+      .attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
+    svg2.append("g").attr("class", "y axis").transition().duration(3000).call(yAxis);
+
+  	//Chr label
+  	for(var i=0; i<chr.length; i++){
+  		svg2.append("text").attr("text-anchor", "middle")
+  		.attr("transform", "translate("+x((chromStart[i]*2+chromSize[i])/2)+","+(height+20)+")")
+  		.text(chr[i])
+      .style("font-size", "10px");
+  	}
+  	svg2.append("text").attr("text-anchor", "middle")
+  	 .attr("transform", "translate("+width/2+","+(height+35)+")")
+  	  .text("Chromosome");
+    svg2.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(-35)+","+(height/2)+")rotate(-90)")
+      .text("-log10 P-value");
+  });
+}
+
+function QQplot(jobID){
+  var margin = {top:30, right: 30, bottom:50, left:50},
+      width = 300,
+      height = 300;
+  d3.select("#QQplotPane").style("height", height+margin.top+margin.bottom);
+  // create svg and canvas objects
+  var qqSNP = d3.select("#QQplot").append("svg")
+              .attr("width", width+margin.left+margin.right)
+              .attr("height", height+margin.top+margin.bottom)
+              .append("g")
+              .attr("transform", "translate("+margin.left+","+margin.top+")");
+  var canvasSNP = d3.select('#QQplot')
+                  .append("div")
+                  .attr("class", "canvasarea")
+                	.style("left", margin.left)
+                	.style("top", margin.top)
+                	.append("canvas")
+                	.attr("class", "canvasarea")
+                	.attr("width", width+margin.right)
+                	.attr("height", height+margin.bottom)
+                	.node().getContext('2d');
+
+  var qqGene = d3.select("#geneQQplot").append("svg")
+                .attr("width", width+margin.left+margin.right)
+                .attr("height", height+margin.top+margin.bottom)
+                .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
+  var canvasGene = d3.select('#geneQQplot').append("div")
+                    .attr("class", "canvasarea")
+                  	.style("left", margin.left)
+                  	.style("top", margin.top)
+                  	.append("canvas")
+                  	.attr("class", "canvasarea")
+                  	.attr("width", width+margin.right)
+                  	.attr("height", height+margin.bottom)
+                  	.node().getContext('2d');
+  d3.json('QQplot/jobs/'+jobID+'/SNP', function(data){
+  	data.forEach(function(d){
+  		d.obs = +d.obs;
+  		d.exp = +d.exp;
+  		// d.n = +d.n;
+  	});
+
+  	var x = d3.scale.linear().range([0, width]);
+  	var y = d3.scale.linear().range([height, 0]);
+    var xMax = d3.max(data, function(d){return d.exp;});
+    var yMax = d3.max(data, function(d){return d.obs;});
+  	x.domain([0, (xMax+xMax*0.01)]);
+  	y.domain([0, (yMax+yMax*0.01)]);
+  	var yAxis = d3.svg.axis().scale(y).orient("left");
+  	var xAxis = d3.svg.axis().scale(x).orient("bottom");
+
+  	// var maxP = Math.min(d3.max(data, function(d){return d.exp;}), d3.max(data, function(d){return d.obs;}));
+    var maxP = Math.min(xMax, yMax);
+
+    data.forEach(function(d){
+  		// if(d.obs>1.5 | d.n%100==0){
+  			canvasSNP.beginPath();
+  			canvasSNP.arc(x(d.exp), y(d.obs), 2, 0, 2*Math.PI);
+  			canvasSNP.fillStyle="grey";
+  			canvasSNP.fill();
+  		// }
+  	});
+
+  	qqSNP.append("g").attr("class", "x axis")
+          .attr("transform", "translate(0,"+height+")").call(xAxis);
+    qqSNP.append("g").attr("class", "y axis").call(yAxis);
+    qqSNP.append("line")
+  	    .attr("x1", 0).attr("x2", x(maxP))
+        .attr("y1", y(0)).attr("y2", y(maxP))
+        .style("stroke", "red")
+        .style("stroke-dasharray", ("3,3"));
+    qqSNP.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+width/2+","+(-15)+")")
+      .text("GWAS summary statistics")
+      .style("font-size", "20px");
+    qqSNP.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(-35)+","+height/2+")rotate(-90)")
+      .text("Observed -log10 P-value");
+    qqSNP.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(width/2)+","+(height+35)+")")
+      .text("Expected -log10 P-value");
+
+  });
+
+  d3.json('QQplot/jobs/'+jobID+'/Gene', function(data){
+  	data.forEach(function(d){
+  		d.obs = +d.obs;
+  		d.exp = +d.exp;
+  		d.n = +d.n;
+  	});
+
+  	var x = d3.scale.linear().range([0, width]);
+  	var y = d3.scale.linear().range([height, 0]);
+    var xMax = d3.max(data, function(d){return d.exp;});
+    var yMax = d3.max(data, function(d){return d.obs;});
+  	x.domain([0, (xMax+xMax*0.01)]);
+  	y.domain([0, (yMax+yMax*0.01)]);
+  	var yAxis = d3.svg.axis().scale(y).orient("left");
+  	var xAxis = d3.svg.axis().scale(x).orient("bottom");
+
+  	// var maxP = Math.min(d3.max(data, function(d){return d.exp;}), d3.max(data, function(d){return d.obs;}));
+    var maxP = Math.min(xMax, yMax);
+
+    data.forEach(function(d){
+  		canvasGene.beginPath();
+  		canvasGene.arc(x(d.exp), y(d.obs), 2, 0, 2*Math.PI);
+  		canvasGene.fillStyle="grey";
+  		canvasGene.fill();
+  	});
+
+  	qqGene.append("g").attr("class", "x axis")
+          .attr("transform", "translate(0,"+height+")").call(xAxis);
+        	qqGene.append("g").attr("class", "y axis").call(yAxis);
+  	qqGene.append("line")
+    	.attr("x1", 0).attr("x2", x(maxP))
+    	.attr("y1", y(0)).attr("y2", y(maxP))
+    	.style("stroke", "red")
+    	.style("stroke-dasharray", ("3,3"));
+    qqGene.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+width/2+","+(-15)+")")
+      .text("Gene-based statistics")
+      .style("font-size", "20");
+    qqGene.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(-35)+","+height/2+")rotate(-90)")
+      .text("Observed -log10 P-value");
+    qqGene.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(width/2)+","+(height+35)+")")
+      .text("Expected -log10 P-value");
+  });
+}
 
 function showResultTables(filedir, jobID, posMap, eqtlMap){
   $('#plotClear').hide();
@@ -278,8 +571,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         alert("interval table error");
       },
       "columns":[
-        {"data": "No", name: "Interval"},
-        {"data": "toprsID", name: "toprsID"},
+        {"data": "Interval", name: "Interval"},
+        {"data": "uniqID", name: "uniqID"},
+        {"data": "rsID", name: "rsID"},
         {"data": "chr", name: "chr"},
         {"data": "pos", name: "pos"},
         {"data": "p", name: "P-value"},
@@ -900,7 +1194,7 @@ function PlotSNPAnnot(jobID){
   var xAxis = d3.svg.axis().scale(x).orient("bottom");
   var yAxis = d3.svg.axis().scale(y).orient("left");
   var svg = d3.select('#snpAnnotPlot').append('svg')
-            .attr("id", "SnpAnnotPlotsvg")
+            // .attr("id", "SnpAnnotPlotsvg")
             .attr("width", width+margin.left+margin.right)
             .attr("height", height+margin.top+margin.bottom)
             .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");

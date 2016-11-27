@@ -2,19 +2,22 @@ body
 { /*background: #F6F4F0;*/
   color: #635B53;}
 
-#logo
+#foot
 { /*width: 950px;*/
-  height: 150px;
+  /*height: 150px;*/
   position: relative;
-  background-color: #00004d;
+  /*background-color: #00004d;*/
+  background-color: #222222;
   padding-top: 5px;
-  padding-left: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 5px;
 }
 
-#logo h1
+/*#logo h1
 {
   color: #b3b3cc;
-}
+}*/
 
 .btn.active, .btn:active{
   background-color: #b3b3cc;
@@ -82,7 +85,45 @@ button.accordion.active, button.accordion:hover {
 div.panel.show {
   display: block !important;
 }*/
+/*.sidebar-nav{
+  position:fixed;
+  width:100%;
+}*/
+/*.affix-sidebar{
+  position:fixed;
+  top: 30px;
+  padding-right:0;
+  font-size:small;
+  padding-left: 0;
+}*/
 
+/*#sidebar.affix{
+  position; fixed;
+  top: 50px;
+  width: 250;
+}*/
+
+/*#sidebar.affix-top{
+  position: static;
+  margin-top: 30px;
+}*/
+
+/*#sidebar li.active {
+  border:0 #00004d solid;
+  border-left-width:5px;
+}*/
+
+/*#sidebar a{
+  color: black;
+  font-size: 15px;
+}*/
+
+blockquote p{
+  font-size: 14px;
+}
+blockquote table{
+  font-size: 14px;
+}
 
 /*Styles for D3.js plots*/
 .axis path,

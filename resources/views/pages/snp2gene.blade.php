@@ -52,7 +52,7 @@
     <div class="panel-title">Input files</div>
   </div>
   <div class="panel-body">
-    GWAS summary statistics:
+    GWAS summary statistics: (<span style="color: red;">Mandatory</span>)
     <input type="file" name="GWASsummary" id="GWASsummary" onchange="buttonEnable()"/>
     <tab>GWAS file format:
       <select name="gwasformat" id="gwasformat">
@@ -63,11 +63,11 @@
         <option value="Plain">Plain text</option>
       </select><br/>
     <br/>
-    Predefined lead SNPs:
+    Predefined lead SNPs: (<span style="color: blue;">Optional</span>)
     <input type="file" name="leadSNPs" id="leadSNPs" onchange="buttonEnable()"/>
     <div id="addleadSNPsOpt"><tab><input type="checkbox" name="addleadSNPs" id="addleadSNPs" value="1" checked> Identify additional lead SNPs (please uncheck if you'd like to use only input lead SNPs)<br/></div>
     <br/>
-    Predefined genetic regions:
+    Predefined genetic regions: (<span style="color: blue;">Optional</span>)
     <input type="file" name="regions" id="regions" onchange="buttonEnable()"/>
     <div id="fileCheck"></div>
   </div>
@@ -95,7 +95,14 @@
     <tab>Maximum lead SNP P-value: <input type="number" id="leadP" name="leadP" value="5e-8"/><br/>
     <tab>Minimum r2: <input type="number" id="r2" name="r2" value="0.6"><br/>
     <tab>Maximum GWAS P-value: <input type="number" id="gwasP" name="gwasP" value="0.05"/><br/>
-    <tab>Population: <select id="pop" name="pop"><option selected>EUR</option><option>AMF</option></select><br/>
+    <tab>Population:
+      <select id="pop" name="pop">
+        <option selected>EUR</option>
+        <option>AMR</option>
+        <option>AFR</option>
+        <option>SAS</option>
+        <option>EAS</option>
+      </select><br/>
     <tab>Include 1000 genome variants: <select id="KGSNPs" name="KGSNPs"><option selected>Yes</option><option>No</option></select><br/>
     <tab>Minimum MAF: <input type="number" id="maf" name="maf" value="0.01"/><br/>
     <tab>Maximum merge distance of LD: <input type="number" id="mergeDist" name="mergeDist" value="250"/>kb<br/>
@@ -287,7 +294,11 @@
             <option value='E065:E122'>Vascular (2)</option>
           </select>
           <br/><tab><tab>Maximum state: <input type="number" id="posMapChr15Max" name="posMapChr15Max" value="7"/> in
-          <select id="posMapChr15Meth" name="posMapChr15Meth"><option selected value="any">any</option><option value="majority">majority</option><option value="all">all</option></select> of selected tissue/cell types.<br/>
+          <select id="posMapChr15Meth" name="posMapChr15Meth">
+            <option selected value="any">any</option>
+            <option value="majority">majority</option>
+            <option value="all">all</option>
+          </select> of selected tissue/cell types.<br/>
         </div>
         <div id="posMapCheck"> <br/><div class='alert alert-success'>Positional mapping will be performed for 10kb window.</div></div>
         <div id="posMapCheckChr15"></div>

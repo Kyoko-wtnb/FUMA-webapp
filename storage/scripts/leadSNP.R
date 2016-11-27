@@ -50,7 +50,7 @@ ld <- ld[ld$SNP1 %in% loci.table$uniqID,]
 snps <- snps[snps$uniqID %in% ld$SNP2,]
 
 loci.table$interval <- NA
-intervals <- data.frame(matrix(vector(), 0, 12, dimnames=list(c(), c("No","uniqID", "toprsID", "chr", "pos", "p", "nLeadSNPs", "start", "end", "leadSNPs", "nSNPs", "nGWASSNPs"))))
+intervals <- data.frame(matrix(vector(), 0, 12, dimnames=list(c(), c("Interval","uniqID", "rsID", "chr", "pos", "p", "nLeadSNPs", "start", "end", "leadSNPs", "nSNPs", "nGWASSNPs"))))
 j<-1
 intervals[j,1] <- j
 intervals[j,2] <- loci.table$uniqID[1]
