@@ -157,7 +157,7 @@ $(document).ready(function(){
       $('#logs').hide();
       $('#results').show();
       $('#resultsSide').show();
-
+      // get parameters
       var email = IPGAPvar.email;
       var filedir = IPGAPvar.filedir;
       var jobID = IPGAPvar.jobID;

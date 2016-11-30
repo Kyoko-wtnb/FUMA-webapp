@@ -2,17 +2,19 @@
 use strict;
 use warnings;
 
+die "ERROR: Not enough argument.\nUSAGE: ./getChr15.pl <filedir> <ts>\n" if(@ARGV<2);
+
 my $filedir = $ARGV[0];
 my @cells = split(/:/,$ARGV[1]);
 my $in = $filedir."annotPlot.txt";
 my $out = $filedir."Chr15.txt";
 
 if($cells[0] eq 'all'){
-  my @cells = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`; #local
-  #webserver my @cells = `/data/Chr15States/*.bed.gz`;
+  @cells = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`; #local
+  #webserver @cells = `ls /data/Chr15States/*.bed.gz`;
   chomp @cells;
   foreach my $i (0..$#cells){
-    $cells[$i] =~ s/\/(E\d+)\.bed/$1/;
+    $cells[$i] =~ s/.*\/(E\d+)_core.*/$1/;
   }
 }
 

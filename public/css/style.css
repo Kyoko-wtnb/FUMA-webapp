@@ -100,6 +100,20 @@ button.accordion.active, button.accordion:hover {
   padding: 10px 10px 10px 10px;
 }
 
+/*#NewsFeed hr {
+  border-top: 2px dotted #222222;
+}*/
+
+#NewsFeed a{
+  color: #222222;
+}
+/*.newsfeed {
+  padding: 10px;
+}*/
+/*.newsfeed.active{
+  background-color: #ccdfff;
+}*/
+
 /*div.panel {
   padding: 0 18px;
   display: none;

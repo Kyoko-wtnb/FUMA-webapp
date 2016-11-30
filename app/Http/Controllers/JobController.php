@@ -18,16 +18,21 @@ class JobController extends Controller
     public function queryJob(Request $request){
       $email = $request -> input('JobQueryEmail');
       $jobtitle = $request -> input('JobQueryTitle');
-      $results = DB::select('SELECT * FROM jobs WHERE email=?', [$email]);
-      $exists = false;
+      $results = DB::select('SELECT * FROM jobs WHERE email=? AND title=?', [$email, $jobtitle]);
+      // $exists = false;
       $jobID = 0;
       foreach($results as $row){
-        if($row->title==$jobtitle){
-          $exists = true;
+        // if($row->title==$jobtitle){
+          // $exists = true;
           $jobID = $row->jobID;
-          break;
-        }
+          // break;
+        // }
       }
+
+      $date = date('Y-m-d H:i:s');
+      DB::table('jobs') -> where('jobID', $jobID)
+                        -> update(['last_access'=>$date]);
+
       $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
       #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");

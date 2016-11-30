@@ -36,7 +36,7 @@ $(document).ready(function(){
   var margin = {top:50, right:250, left:50, bottom:100},
       // height = (GWASplot*1+Chr15*1)*210+(CADDplot*1+RDBplot*1)*160+60+eqtl*(eqtlNgenes*55),
       width = 600;
-  var side = (xMax_init*1-xMin_init*1)*0.05;
+  var side = (xMax_init*1-xMin_init*1+1)*0.05;
   // var currentHeight=0;
   // var currentHeight2 = (200+10)*GWASplot+50+10+(150+10)*CADDplot+(150+10)*RDBplot;
   var xAxisLabel = "gene";
@@ -219,7 +219,7 @@ $(document).ready(function(){
           rdbTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot;
           chrTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot;
           var cells = Chr15cells.split(":");
-          if(cells.length>20){chrHeight=200;}
+          if(cells.length>30 || cells[0]=="all"){chrHeight=300;}
           else{chrHeight = 10*cells.length;}
           eqtlTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15;
           eqtlHeight = eqtl*(eqtlNgenes*55);
@@ -631,7 +631,7 @@ $(document).ready(function(){
               var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
               var tileHeight = 10;
               if(y_element.length>20){
-                tileHeight = 200/y_element.length;
+                tileHeight = chrHeight/y_element.length;
               }
               // var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([currentHeight2, currentHeight2+y_element.length*tileHeight]);
               var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([chrTop, chrTop+chrHeight]);
@@ -793,7 +793,7 @@ $(document).ready(function(){
               var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
               var tileHeight = 10;
               if(y_element.length>20){
-                tileHeight = 200/y_element.length;
+                tileHeight = chrHeight/y_element.length;
               }
               // var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([currentHeight2, currentHeight2+y_element.length*tileHeight]);
               var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([chrTop, chrTop+chrHeight]);

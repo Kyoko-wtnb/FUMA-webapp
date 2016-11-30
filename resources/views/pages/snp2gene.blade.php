@@ -24,7 +24,7 @@
     headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
   });
   var status = "{{$status}}";
-  var jobID = "{{$jobID}}";
+  // var jobID = "{{$jobID}}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/InputParameters.js') !!}"></script>

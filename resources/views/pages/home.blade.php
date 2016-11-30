@@ -1,4 +1,7 @@
 @extends('layouts.master')
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
 <script type="text/javascript">
   <!--hide
   var password;
@@ -10,31 +13,62 @@
     window.location="http://www.google.com";
   }
   //-->
+  // $(document).ready(function(){
+  //   $('.newsfeedPanel').each(function(){
+  //     if($(this).parent().hasClass('active')){
+  //       $(this).show();
+  //     }else{
+  //       $(this).hide()
+  //     }
+  //   });
+  //
+  //   $('.newsfeed a').on('click', function(){
+  //     if($(this).parent().hasClass('active')){
+  //       $(this).parent().removeClass('active');
+  //     }else{
+  //       $("#NewsFeed.newsfeed").find(".active").removeClass("active");
+  //       $(this).parent().addClass('active');
+  //     }
+  //     $('.newsfeedPanel').each(function(){
+  //       if($(this).parent().hasClass('active')){
+  //         $(this).show();
+  //       }else{
+  //         $(this).hide()
+  //       }
+  //     });
+  //   });
+  // });
 </script>
 @section('content')
+<div class="container" style="padding-top:50px;">
   <div style="text-align: center;">
-    <h2>Welcome to IPGAP web applciation!!</h2>
+    <h2>Welcome to IPGAP web application!!</h2>
   </div>
-  <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-      <p>IPGAP is a pilot which systematically process GWAS summary statistics and extract relevant biological information from multiple databases.
-        All you need to prepare is to get GWAS summary statistics of phenotype of interest.
-        If you are here at first time, please follow the tutorial carefully since IPGAP provides a variety of parameters.</p>
-      <p>Databases used in this pilot can be accessed from link tab.</p>
-      <br/>
-    </div>
-    <div class="col-md-1"></div>
-  </div>
-  <div class="row">
-    <div class="col-md-1"></div>
-    <div class="col-md-10">
-      <h3>News and Updates</h3>
-      
-    </div>
-    <div class="col-md-1"></div>
-  </div>
-
-
+  <p>IPGAP is a web application which systematically process GWAS summary statistics and extract relevant biological information from multiple databases.
+    All you need to prepare is to get GWAS summary statistics of phenotype of interest.
+    If you are here at first time, please follow the tutorial carefully since IPGAP provides a variety of parameters.</p>
+  <p>Databases used in this pilot can be accessed from <a href="/links">links</a> tab.</p>
   <br/>
+
+  <h3>News and Updates</h3>
+  <div id="NewsFeed" class="container" style="overflow:auto; max-height:500px;">
+    <div class="panel panel-info">
+      <div class="panel-heading" data-toggle="collapse" data-target="#news2">
+        <h4><a>2016-11-30 (Wed): Update of the tutorial page.</a></h4>
+      </div>
+      <div class="panel-body collapse in" id="news2">
+        Tutorial has been updated.
+      </div>
+    </div>
+    <div class="panel panel-info">
+      <div class="panel-heading" data-toggle="collapse" data-target="#news1">
+        <h4><a>2016-11-26 (Sat): Update of the style.</a></h4>
+      </div>
+      <div class="panel-body collapse" id="news1">
+        Test news feed. Design has been updated.
+      </div>
+    </div>
+  </div>
+</div>
+</br>
 @stop

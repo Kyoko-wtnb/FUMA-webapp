@@ -5,54 +5,6 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $('#overview').show();
-  //   // $(document).on('scroll', onScroll);
-  //   //
-  //   // $('#sidebar').affix({
-  //   //   offset:{
-  //   //     top:205
-  //   //   }
-  //   // });
-  //   //
-  //   //
-  //   $('.sidePanel').each(function(){
-  //     $('#'+this.id).hide();
-  //   });
-  //
-  //   $('#overview').show();
-  //
-  //   $('#sidebar.sidebar-nav li a').click(function(){
-  //     $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-  //     $(this).parent().addClass("active");
-  //     var id = $(this).attr("href");
-  //
-  //     $('.sidePanel').each(function(){
-  //       $('#'+this.id).hide()
-  //     });
-  //     $(id).show();
-  //   });
-  //   //
-  //   // $('a[href*="#"]:not([href="#"])').click(function() {
-  //   //   if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-  //   //     var target = $(this.hash);
-  //   //     target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-  //   //     if (target.length) {
-  //   //       $('html,body').animate({
-  //   //         scrollTop: target.offset().top - 50
-  //   //       }, 500);
-  //   //       return false;
-  //   //     }
-  //   //   }
-  //   // });
-  //
-  //   $("#menu-toggle").click(function(e) {
-  //       e.preventDefault();
-  //       $("#wrapper").toggleClass("active");
-  //       if($('#wrapper').attr("class")=="active"){
-  //         $('#main_icon').attr("class", "glyphicon glyphicon-chevron-left");
-  //       }else{
-  //         $('#main_icon').attr("class", "glyphicon glyphicon-chevron-right");
-  //       }
-  //   });
   });
 
   // function onScroll(event){
@@ -574,7 +526,9 @@
         <h4 id="1-information-of-your-job">1. Information of your job</h4>
         <p>This panel contains your email address, job title and the date of job submission.</p>
         <h4 id="2-result-tables">2. Result tables</h4>
-        <p>This panel contain multiple tables of your results.</p>
+        <p>This panel contain multiple tables of your results.
+        Here are descriptions for columns in each tables.
+        Downloadable text files have the same column as shown in the interface unless methioned.</p>
         <div style="margin-left: 40px;">
           <ul>
             <li>Summary<ul>
@@ -585,7 +539,7 @@
             </li>
           </ul>
           <ul>
-            <li><p>lead SNPs</p>
+            <li><p>lead SNPs / leadSNPs.txt</p>
             <p>All independent lead SNPs identified by IPGAP.</p>
             <ul>
               <li><strong>No</strong> : Index of lead SNPs</li>
@@ -601,7 +555,7 @@
             </li>
           </ul>
           <ul>
-            <li><p>Intervals</p>
+            <li><p>Intervals / intervals.txt</p>
             <p>Genomic intervals defined from independent lead SNPs.
             Each interval is represented by the top lead SNP which has the minimum P-value in the interval.</p>
             <ul>
@@ -620,19 +574,44 @@
             </li>
           </ul>
           <ul>
-            <li><p>SNPs (annotation)</p>
+            <li><p>SNPs (annotation) / snps.txt</p>
             <p>All candidate SNPs with annotations. Note that depending on your mapping criterion, not all candidate SNPs are mapped to genes.</p>
             <ul>
               <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
               <li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
               <li><strong>chr</strong> : chromosome</li>
               <li><strong>pos</strong> : position on hg19</li>
-              <li><strong>P-value</strong> : P-value (from the input file).</li>
+              <li><strong>ref</strong> : Reference allele. Non-effect allele if it is provided in the input GWAS summary statistics file. If not, this is the reference allele in 1000G.</li>
+              <li><strong>alt</strong> : Alternative allele. Effect allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.</li>
+              <li><strong>MAF</strong> : Minor allele frequency computed based on 1000G.</li>
+              <li><strong>gwasP</strong> : P-value (from the input file).</li>
+              <li><strong>r2</strong> : The maximum r2 of the SNP with one of the independent lead SNP (this dosen't have to be top lead SNPs in the intervals).</li>
+              <li><strong>leadSNP</strong> : rsID of a independent lead SNP which has the maximum r2 of the SNP.</li>
+              <li><strong>Interval</strong> : Index of the interval.</li>
+              <li><strong>nearestGene</strong> : The nearest Gene of the SNP. Genes are ecoded in symbol, if it is available. If not, ENSG ID is shown. Genes here include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.</li>
+              <li><strong>dist</strong> : Distance to the nearest gene.</li>
+              <li><strong>func</strong> : Potisional annotation obtained from ANNOVAR. For exonic SNPs, detail annotation (e.g. non-synonymous, stop gain and so on) is available in ANNOVAR table (annov.txt).</li>
+              <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al(ref).</li>
+              <li><strong>RDB</strong> : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.</li>
+              <li><strong>minChrState</strong> : The minimum 15-core chromatin state over 127 tissue/cell type.</li>
+              <li><strong>commonChrState</strong> : The majority of the 15-core chromatin state over 127 tissue/cell types.</li>
             </ul>
             </li>
           </ul>
           <ul>
-            <li><p>ANNOVAR</p>
+            <li><p>annot.txt (Not shown in the interface but downloadable)</p></li>
+            <p>This file contains annotation of candidate SNPs.
+              CADD score, RegulomeDB score and summarized chromatin state are shown in the SNPs table.
+              This file contains all 127 tissue/cell types of chromatin states</p>
+            <ul>
+              <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
+              <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al(ref).</li>
+              <li><strong>RDB</strong> : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.</li>
+              <li><strong>E001~E129</strong> : Chromatin state predicted by ChrHMM. ID of tissue cell types and description of 15 states are available under external data sources secton.</li>
+            </ul>
+          </ul>
+          <ul>
+            <li><p>ANNOVAR / annov.txt</p>
             <p>Since one SNP can be annotated multiple positional information, the table of ANNOVAR output is separated from SNPs table. This table contain unique SNP-annotation combination.</p>
             <ul>
               <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
@@ -663,14 +642,14 @@
               <li><strong>strand</strong> : strand od gene</li>
               <li><strong>status</strong> : status of gene from Ensembl</li>
               <li><strong>type</strong> : gene biotype from Ensembl</li>
-              <li><strong>HUGO</strong> : HUGO gene symbol</li>
+              <li><strong>HUGO</strong> : HUGO (HGNC) gene symbol</li>
               <li><strong>posMapSNPs</strong> (posMap): The number of SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).</li>
               <li><strong>posMapMaxCADD</strong> (posMap): The maximum CADD score of mapped SNPs by positional mapping.</li>
               <li><strong>eqtlMapSNPs</strong> (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.</li>
-              <li><strong>eqtlMapminP</strong> : The minimum eQTL P-value of mapped SNPs.</li>
-              <li><strong>eqtlMapmin!</strong> : The minimum eQTL FDR of mapped SNPs.</li>
-              <li><strong>eqtlMapts</strong> : Tissue types of mapped eQTL SNPs.</li>
-              <li><strong>eqtlDirection</strong> : consecutive direction of mapped eQTL SNPs.</li>
+              <li><strong>eqtlMapminP</strong> (eqtlMap): The minimum eQTL P-value of mapped SNPs.</li>
+              <li><strong>eqtlMapmin!</strong> (eqtlMap): The minimum eQTL FDR of mapped SNPs.</li>
+              <li><strong>eqtlMapts</strong> (eqtlMap): Tissue types of mapped eQTL SNPs.</li>
+              <li><strong>eqtlDirection</strong> (eqtlMap): consecutive direction of mapped eQTL SNPs.</li>
               <li><strong>minGwasP</strong> : The minimum P-value of mapped SNPs.</li>
               <li><strong>leadSNPs</strong> : All independent lead SNPs of mapped SNPs.</li>
             </ul>
@@ -690,7 +669,7 @@
               <li><strong>Symbol</strong> : Gene symbol</li>
               <li><strong>P-value</strong> : P-value of eQTLs</li>
               <li><strong>FDR</strong> : FDR of eQTLs. Note that method to compute FDR differs between data sources. Please refer &quot;External Data sources&quot; for details.</li>
-              <li><strong>t/z</strong> : T-statistics or z score depends on data source.</li>
+              <li><strong>tz</strong> : T-statistics or z score depends on data source.</li>
             </ul>
             </li>
           </ul>
