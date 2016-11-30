@@ -7,6 +7,15 @@ my @cells = split(/:/,$ARGV[1]);
 my $in = $filedir."annotPlot.txt";
 my $out = $filedir."Chr15.txt";
 
+if($cells[0] eq 'all'){
+  my @cells = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`; #local
+  #webserver my @cells = `/data/Chr15States/*.bed.gz`;
+  chomp @cells;
+  foreach my $i (0..$#cells){
+    $cells[$i] =~ s/\/(E\d+)\.bed/$1/;
+  }
+}
+
 my $start = 0;
 my $end = 0;
 my $chr = 0;

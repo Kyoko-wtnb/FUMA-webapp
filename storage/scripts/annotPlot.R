@@ -89,8 +89,8 @@ if(eqtlplot==1){
   g <- unique(c(g, eqtl$gene))
 }
 
-gmin <- min(ENSG.all.genes$start_position)
-gmax <- max(ENSG.all.genes$end_position)
+gmin <- min(ENSG.all.genes$start_position[ENSG.all.genes$ensembl_gene_id %in% g])
+gmax <- max(ENSG.all.genes$end_position[ENSG.all.genes$ensembl_gene_id %in% g])
 
 g <- unique(c(g, ENSG.all.genes$ensembl_gene_id[
   (ENSG.all.genes$start_position>=gmin & ENSG.all.genes$start_position<=gmax)
@@ -103,6 +103,8 @@ library(biomaRt)
 ensembl <- useMart(biomart = "ENSEMBL_MART_ENSEMBL", host="grch37.ensembl.org", path="/biomart/martservice", dataset="hsapiens_gene_ensembl")
 exons <- getBM(attributes = c("ensembl_gene_id", "external_gene_name", "start_position", "end_position", "strand", "gene_biotype", "exon_chrom_start", "exon_chrom_end"), filter="ensembl_gene_id", values=g, mart = ensembl)
 genes <- unique(exons[,1:6])
+genes <- genes[order(genes$start_position),]
+
 #genes$start_cut <- 0
 #genes$end_cut <- 0
 #n <- which(genes$start_position <= xmin-(xmax-xmin)*0.05)

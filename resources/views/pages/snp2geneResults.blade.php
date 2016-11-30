@@ -30,7 +30,7 @@
 
 
 @section('content')
-
+<div class="container" style="padding-top: 50px;">
 <!-- loading panel -->
 <div class="row" id="logs">
   <div class="col-md-2"></div>
@@ -453,4 +453,5 @@
 </div>
 
 <br/>
+</div>
 @stop

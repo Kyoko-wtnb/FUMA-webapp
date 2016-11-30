@@ -1,4 +1,6 @@
 $(document).ready(function(){
+  $("#newJob").show();
+  $("#resultsSide").hide();
   $('#SubmitNewJob').attr('disabled',true);
   $('#go2job').attr('disabled',true);
   $('#NewJobFiles').hide();

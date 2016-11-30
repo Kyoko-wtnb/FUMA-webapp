@@ -71,7 +71,7 @@ foreach my $f (@files){
 
 ##### Scripts
 $dir = "storage/scripts/";
-@files = qw(gwas_file.pl getLD.pl SNPannot.R getExAC.pl geteQTL.pl geneMap.R annotPlot.R gene2func.R GeneSet.R getChr15.pl getGWAScatalog.pl magma.pl);
+@files = qw(gwas_file.pl getLD.pl SNPannot.R getExAC.pl geteQTL.pl geneMap.R annotPlot.R gene2func.R GeneSet.R getChr15.pl getGWAScatalog.pl magma.pl GeneSet.py);
 
 foreach my $f (@files){
 	open(IN, $dir.$f);

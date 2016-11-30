@@ -1,52 +1,58 @@
 @extends('layouts.master')
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-
+<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-    // $(document).on('scroll', onScroll);
-    //
-    // $('#sidebar').affix({
-    //   offset:{
-    //     top:205
-    //   }
-    // });
-    //
-    //
-    $('.sidePanel').each(function(){
-      $('#'+this.id).hide();
-    });
-
     $('#overview').show();
-
-    $('#sidebar.sidebar-nav li a').click(function(){
-      $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-      $(this).parent().addClass("active");
-      var id = $(this).attr("href");
-
-      $('.sidePanel').each(function(){
-        $('#'+this.id).hide()
-      });
-      $(id).show();
-    });
-    //
-    // $('a[href*="#"]:not([href="#"])').click(function() {
-    //   if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-    //     var target = $(this.hash);
-    //     target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-    //     if (target.length) {
-    //       $('html,body').animate({
-    //         scrollTop: target.offset().top - 50
-    //       }, 500);
-    //       return false;
-    //     }
-    //   }
-    // });
-
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("active");
-    });
+  //   // $(document).on('scroll', onScroll);
+  //   //
+  //   // $('#sidebar').affix({
+  //   //   offset:{
+  //   //     top:205
+  //   //   }
+  //   // });
+  //   //
+  //   //
+  //   $('.sidePanel').each(function(){
+  //     $('#'+this.id).hide();
+  //   });
+  //
+  //   $('#overview').show();
+  //
+  //   $('#sidebar.sidebar-nav li a').click(function(){
+  //     $("#sidebar.sidebar-nav").find(".active").removeClass("active");
+  //     $(this).parent().addClass("active");
+  //     var id = $(this).attr("href");
+  //
+  //     $('.sidePanel').each(function(){
+  //       $('#'+this.id).hide()
+  //     });
+  //     $(id).show();
+  //   });
+  //   //
+  //   // $('a[href*="#"]:not([href="#"])').click(function() {
+  //   //   if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+  //   //     var target = $(this.hash);
+  //   //     target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+  //   //     if (target.length) {
+  //   //       $('html,body').animate({
+  //   //         scrollTop: target.offset().top - 50
+  //   //       }, 500);
+  //   //       return false;
+  //   //     }
+  //   //   }
+  //   // });
+  //
+  //   $("#menu-toggle").click(function(e) {
+  //       e.preventDefault();
+  //       $("#wrapper").toggleClass("active");
+  //       if($('#wrapper').attr("class")=="active"){
+  //         $('#main_icon').attr("class", "glyphicon glyphicon-chevron-left");
+  //       }else{
+  //         $('#main_icon').attr("class", "glyphicon glyphicon-chevron-right");
+  //       }
+  //   });
   });
 
   // function onScroll(event){
@@ -65,13 +71,28 @@
 <div id="wrapper" class="active">
 <div id="sidebar-wrapper">
   <ul class="sidebar-nav" id="sidebar-menu">
-    <li class="sidebar-brand"><a id="menu-toggle"><tab><span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+    <li class="sidebar-brand"><a id="menu-toggle"><tab><i id="main_icon" class="fa fa-chevron-left"></i></a></li>
   </ul>
   <ul class="sidebar-nav" id="sidebar">
-    <li class="active"><a href="#overview">Overview<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
-    <li><a href="#quick-start">Quick Start<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
-    <li><a href="#snp2gene">SNP2GENE<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
-    <li><a href="#gene2func">GENE2FUNC<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
+    <li class="active"><a href="#overview">Overview<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
+    <li><a href="#quick-start">Quick Start<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
+      <div class="subside" id="quick-startsub">
+        <a href="#getCandidate">Get candiates</a>
+        <a href="#geneQuery">Qury gene functions</a>
+      </div>
+    <li><a href="#snp2gene">SNP2GENE<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
+      <div class="subside" id="snp2genesub">
+        <a href="#prepare-input-files">Input files</a>
+        <a href="#parameters">Parameters</a>
+        <a href="#submit-job">Subit your job</a>
+        <a href="#outputs">Outputs</a>
+        <a href="#examples">Example senarios</a>
+      </div>
+    <li><a href="#gene2func">GENE2FUNC<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
+      <div class="subside" id="gene2funcsub">
+        <a href="#submit-genes">Submit your genes</a>
+        <a href="#gene2funcOutputs">Outputs</a>
+      </div>
   </ul>
 </div>
 
@@ -93,12 +114,12 @@
   </div> -->
 
   <!-- <div class="col-md-10"> -->
-<div id="page-content-wrapper">
+<div id="page-content-wrapper" class="container">
   <div class="page-content inset">
     <div id="test"></div>
     <div id="overview" class="sidePanel" style="padding-top:50;">
-      <h1 >Tutorial</h1>
-      <p>Please read this tutorial carefully to use PARROT.
+      <h2 >Tutorial</h2>
+      <p>Please read this tutorial carefully to use IPGAP.
         There are various parameters provided by this pipeline.
         Those will be explained in detail. To start using right away, follow the quick start,
         then you will know a minimum knowledge how to use this pipeline.</p>
@@ -106,43 +127,51 @@
       <p>If you have any question or suggestion, please do not hesitate to contact us!!</p>
       <br/>
 
-      <h2>Overview of the ANNOTATOR</h2>
-      <blockquote>
-      <p>The platform mainly consists of two separate process, SNP2GENE and GENE2FUNC.</p>
-      <p>To annotate and obtain candidates from your GWAS summary statistics, go to <strong>SNP2GENE</strong> which compute LD structure,
-        annotate SNPs, and prioritize candidate genes</p>
-      <p>If you already have a list of genes, go to <strong>GENE2FUNC</strong> to check expressiion pattern and shared molecular functions.<p/>
-      <br/>
-      <img src="{{ URL::asset('/image/pipeline.png') }}" width="500" height="730" align="middle">
-
+      <h2>Overview of the IPGAP</h2>
+      <div style="margin-left: 40px;">
+        <p>The platform mainly consists of two separate process, SNP2GENE and GENE2FUNC.</p>
+        <p>To annotate and obtain candidates from your GWAS summary statistics, go to <strong>SNP2GENE</strong> which compute LD structure,
+          annotate SNPs, and prioritize candidate genes.</p>
+        <p>If you already have a list of genes, go to <strong>GENE2FUNC</strong> to check expressiion pattern and shared molecular functions.<p/>
+        <br/>
+        <img src="{{ URL::asset('/image/pipeline.png') }}" width="500" height="730" align="middle">
+      </div>
     </div>
 
     <div id="quick-start" class="sidePanel" style="padding-top:50;">
       <h2>Quick Start</h2>
-      <blockquote>
-        <p>In this page, we quickly go through what you can do and what you can get from the ANNOTATOR.
-          You will get a minimum knowledge of the ANNOTATOR and will be able to start using.
+      <div style="margin-left: 40px;">
+        <p>In this page, we quickly go through what you can do and what you can get from the IPGAP.
+          You will get a minimum knowledge of the IPGAP and will be able to start using.
           Whenevr you get questions, please go back to tutorial for detail explanations.</p>
-        <h3>Get candidates from your own GWAS summary statistics</h3>
+        <h3 id="getCandidate">Get candidates from your own GWAS summary statistics</h3>
+        <div style="margin-left: 40px">
+          <p>1. Go to <code>SNP2GENE</code> and upload GWAS summary statistics file.</p>
+          <p>2. Set parameters.</p>
+          <p>3. Wait until you get a email.</p>
+          <p>4. Check your results.<br/>
+          <tab>Go pack to <code>SNP2GENE</code> and enter you email address and job title.
+              This will query your job and show all results.</p>
+        </div>
+        <br/>
+        <h3 id="geneQuery">Identify tissue specificity and shared biological functions of a list of genes</h3>
 
         <br/>
-        <h3>Identify tissue specificity and shared biological functions of a list of genes</h3>
-
-        <br/>
+      </div>
     </div>
 
     <div id="snp2gene" class="sidePanel" style="padding-top:50;">
       <h2>SNP2GENE</h2>
-      <blockquote>
+      <div style="margin-left: 40px;">
         <h3 id="prepare-input-files">Prepare Input Files</h3>
-        <p>GWAS summary statistics is a mandatory input of <code>SNP2GENE</code> process. PARROT accept various types of format. As default, <code>PLINK</code> for mat is selected, but please choose the format of your input file since this will cause error during process. Each option requires the following format.</p>
+        <p>GWAS summary statistics is a mandatory input of <code>SNP2GENE</code> process. IPGAP accept various types of format. As default, <code>PLINK</code> for mat is selected, but please choose the format of your input file since this will cause error during process. Each option requires the following format.</p>
         <p>The input file must include P-value and either rsID or chromosome index and genetic position on hg19 reference genome. Alleles are not mandatory but if only one allele is provided, that is considered as affected allele. When two alleles are provided, it will depends on header. If alleles are not provided, they will be extracted from dbSNP build 146 as minor allele as affected alleles.</p>
         <p>If you are not sure which format to use, either edit your header or select <code>Plain Text</code> which will cover most of common column names.</p>
         <p>Delimiter can be any of white space including single space, multiple space and tab. Because of this, column name must not include any space.</p>
         <p>The column of chromosome can be string like &quot;chr1&quot; or just integer &quot;1&quot;. When &quot;chr&quot; is attached, this will be removed from outputs. When the input file contains chromosome X, this will be encoded as chromosome 23, however, input file can be leave as &quot;X&quot;.</p>
-        <blockquote>
+        <div style="margin-left: 40px;">
           <h4 id="1-plink-format">1. <code>PLINK</code> format</h4>
-          <p>&ensp;As the most common file format, <code>PLINK</code> is the default option. Some options in PLINK do not return both A1 and A2 but as long as the file contains either SNP or CHR and BP, PARROT will cover missing values.</p>
+          <p>&ensp;As the most common file format, <code>PLINK</code> is the default option. Some options in PLINK do not return both A1 and A2 but as long as the file contains either SNP or CHR and BP, IPGAP will cover missing values.</p>
           <ul>
             <li><strong>SNP</strong>: rsID</li>
             <li><strong>CHR</strong>: chromosome</li>
@@ -190,12 +219,12 @@
           </ul>
           <hr>
           <h4 id="note-and-tips">Note and Tips</h4>
-          <p>The pipeline only support human genome hg19. If your input file is not in hg19, please update the genomic position using liftOver from UCSC. However, there is an option for you!! When you provide only rsID without chromosome index and genomic position, PARROT will extract them from dbSNP as hg19 genome. To do this, remove columns of chromosome index and genomic position.</p>
+          <p>The pipeline only support human genome hg19. If your input file is not in hg19, please update the genomic position using liftOver from UCSC. However, there is an option for you!! When you provide only rsID without chromosome index and genomic position, IPGAP will extract them from dbSNP as hg19 genome. To do this, remove columns of chromosome index and genomic position.</p>
           <hr>
-        </blockquote>
+        </div>
         <h3 id="parameters">Parameters</h3>
-        <p>PARROT provide a variety of parameters. Default setting will perform naive positional mapping which gives you all genes within LD blocks of lead SNPs. In this section, every parameter will be described details.</p>
-        <blockquote>
+        <p>IPGAP provide a variety of parameters. Default setting will perform naive positional mapping which gives you all genes within LD blocks of lead SNPs. In this section, every parameter will be described details.</p>
+        <div style="margin-left: 40px;">
           <h4 id="input-files">Input files</h4>
           <table class="table table-bordered">
             <thead>
@@ -232,7 +261,7 @@
               <tr>
                 <td>Predefined genetic region</td>
                 <td>Optional</td>
-                <td>Optionally, user can provide specific genomic region to perform PARROT. PARROT only look provided regions to identify lead SNPs and candidate SNPs. If you are only interested in specific regions, this will increase a speed of job.</td>
+                <td>Optionally, user can provide specific genomic region to perform IPGAP. IPGAP only look provided regions to identify lead SNPs and candidate SNPs. If you are only interested in specific regions, this will increase a speed of job.</td>
                 <td>File upload</td>
                 <td>none</td>
               </tr>
@@ -262,7 +291,7 @@
               <tr>
                 <td>Maximum lead SNP P-value (&lt;=)</td>
                 <td>Mandatory</td>
-                <td>PARROT identifies lead SNPs wiht P-value less than or equal to this threshold. This should not me changed unless GWAS is under-powered and only a few peaks are significant.</td>
+                <td>IPGAP identifies lead SNPs wiht P-value less than or equal to this threshold. This should not me changed unless GWAS is under-powered and only a few peaks are significant.</td>
                 <td>numeric</td>
                 <td>5e-8</td>
                 <td>lower: decrease #lead SNPs. higher: increase #lead SNPs which most likely increate noises</td>
@@ -294,7 +323,7 @@
               <tr>
                 <td>Include 1000 genome variants</td>
                 <td>Mandatory</td>
-                <td>If checked, PARROT include all SNPs in strong LD with any of lead SNPs even for non-GWAS-tagged SNPs.</td>
+                <td>If checked, IPGAP include all SNPs in strong LD with any of lead SNPs even for non-GWAS-tagged SNPs.</td>
                 <td>Yes/No</td>
                 <td>Yes</td>
                 <td>-</td>
@@ -317,199 +346,198 @@
               </tr>
             </tbody>
           </table>
-
+          <br/>
           <h4 id="mhc-region">MHC region</h4>
-          <blockquote>
-            <p>MHC region is often excluded due to the complicated LD structure. Therefore, this option is checked by default. Please uncheck to include MHC region. It doesn&#39;t change any results if there is no significant hit in the MHC region.</p>
-            <p>Default region is defined as between &quot;MOG&quot; and &quot;COL11A2&quot; genes. To define user own MHC region, please provide in the text box. The input format should be like &quot;25000000-34000000&quot;.</p>
-          </blockquote>
+          <p>MHC region is often excluded due to the complicated LD structure. Therefore, this option is checked by default. Please uncheck to include MHC region. It doesn&#39;t change any results if there is no significant hit in the MHC region.</p>
+          <p>Default region is defined as between &quot;MOG&quot; and &quot;COL11A2&quot; genes. To define user own MHC region, please provide in the text box. The input format should be like &quot;25000000-34000000&quot;.</p>
+          <br/>
           <h4 id="parameters-for-gene-mapping">Parameters for gene mapping</h4>
           <p>There are two options for gene mapping; positional and eQTL mappings. By default, positional mapping with maximum distance 10kb is defined. Since this parameter setting largely reflect to the result of mapped genes, please set carefully.</p>
-          <blockquote>
-            <h4 id="positional-mapping">Positional mapping</h4>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Mandatory</th>
-                  <th>Description</th>
-                  <th>Type</th>
-                  <th>Default</th>
-                  <th>Direction</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Position mapping</td>
-                  <td>Optional</td>
-                  <td>Whether perform positional mapping or not.</td>
-                  <td>Check</td>
-                  <td>Checked</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Gene window</td>
-                  <td>Optional</td>
-                  <td>Map SNPs to gene based on physical distance</td>
-                  <td>Check</td>
-                  <td>Checked</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Gene window size (&lt;=)</td>
-                  <td>Optional</td>
-                  <td>The maximum distance to map SNPs to genes</td>
-                  <td>numeric</td>
-                  <td>10kb</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Annotations based mapping</td>
-                  <td>Optional</td>
-                  <td>Map SNPs to genes baed on positional mapping such as exonic, intronic splicing, etc...</td>
-                  <td>Check</td>
-                  <td>Unchecked</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Annotations</td>
-                  <td>Mandatory only when Annotation based mapping is activated</td>
-                  <td>Positional annotation to map SNPs to genes</td>
-                  <td>Multiple selection</td>
-                  <td>none</td>
-                  <td>-</td>
-                </tr>
-              </tbody>
-            </table>
-            <h4 id="eqtl-mapping">eQTL mapping</h4>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Mandatory</th>
-                  <th>Description</th>
-                  <th>Type</th>
-                  <th>Default</th>
-                  <th>Direction</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>eQTL mapping</td>
-                  <td>Optional</td>
-                  <td>Whether perform eQTL mapping or not</td>
-                  <td>Check</td>
-                  <td>Unchecked</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Tissue types</td>
-                  <td>Mandatory if eQTL mapping is activated</td>
-                  <td>All available tissue types with Data sources are shown in the select box. <code>Tissue type</code> selection contain individual tissue types and <code>General tissue types</code> contain broad area of organ and each general tissue contains multiple individual tissue types.</td>
-                  <td>Multiple selection</td>
-                  <td>none</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Significant eQTL only (FDR&lt;=0.05)</td>
-                  <td>Optional</td>
-                  <td>To map only significant eQTL at FDR 0.05</td>
-                  <td>Check</td>
-                  <td>Checked</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>eQTL maximum P-value (&lt;=)</td>
-                  <td>Mandatory if Significant eQTL only is unchecked</td>
-                  <td>This option will show up on the screen only when <code>Significant eQTL only</code> is unchecked. This can be used as threshold of eQTL uncorrected P-value.</td>
-                  <td>numeric</td>
-                  <td>1e-3</td>
-                  <td>-</td>
-                </tr>
-              </tbody>
-            </table>
-            <h4 id="functional-annotation-filtering">Functional annotation filtering</h4>
-            <p>Both positional and eQTL mappings have same options for the filtering of SNPs based on functional annotation, but parameters have to be set for each mapping separately.</p>
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Mandatory</th>
-                  <th>Description</th>
-                  <th>Type</th>
-                  <th>Default</th>
-                  <th>Direction</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>CADD score</td>
-                  <td>Optional</td>
-                  <td>Whether perform filtering of SNPs by CADD score or not.</td>
-                  <td>Check</td>
-                  <td>Unchecked</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Minimum CADD score (&gt;=)</td>
-                  <td>Mandatory if <code>CADD score</code> is checked</td>
-                  <td>The higher CADD score, the more deleterious.</td>
-                  <td>numeric</td>
-                  <td>12.37</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>RegulomeDB score</td>
-                  <td>Optional</td>
-                  <td>Whether perform filtering of SNPs by RegulomeDB score or not.</td>
-                  <td>Check</td>
-                  <td>Unchecked</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Minimum RegulomeDB score (&gt;=)</td>
-                  <td>Mandatory if <code>RegulomeDB score</code> is checked</td>
-                  <td>RegulomeDB score is a categorical (from 1a to 7). Please refer link for details. 1a is the most likely affect regulation. Note that not all SNPs in 1000G Phase3 has this score. Those SNPs are recorded as NA. Those SNPs will be filtered out when RegulomeDB score filtering is performed.</td>
-                  <td>string</td>
-                  <td>7</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>15-core chromatin state</td>
-                  <td>Optional</td>
-                  <td>Whether perform filtering of SNPs by chromatin state or not.</td>
-                  <td>Check</td>
-                  <td>Unchecked</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>15-core chromatin state tissue/cell types</td>
-                  <td>Mandatory if <code>15-core chromatin state</code> is checked</td>
-                  <td>Multiple tissue/cell types can be selected from either list of individual types or general types.</td>
-                  <td>Multiple selection</td>
-                  <td>none</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Maximum state of chromatin(&lt;=)</td>
-                  <td>Mandatory if <code>15-core chromatin state</code> is checked</td>
-                  <td>The maximum state to filter SNPs. Between 1 and 15. Generally, above 7 is open state. Please refer link for further details.</td>
-                  <td>numeric</td>
-                  <td>7</td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <td>Method for 15-core chromatin state filtering</td>
-                  <td>Mandatory if <code>15-core chromatin state</code> is checked</td>
-                  <td>When multiple tissue/cell types are selected, either <code>any</code> (a SNP has state above than threshold in any of selected tissue/cell types), <code>majority</code> (a SNP has state above than threshold in majority (&gt;=50%) of selected tissue/cell type), or <code>all</code> (a SNP has state above than threshold in all of selected tissue/cell type).</td>
-                  <td>Selection</td>
-                  <td>any</td>
-                  <td>-</td>
-                </tr>
-              </tbody>
-            </table>
-          </blockquote>
-        </blockquote>
+          <br/>
+          <h4 id="positional-mapping">Positional mapping</h4>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Mandatory</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Direction</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Position mapping</td>
+                <td>Optional</td>
+                <td>Whether perform positional mapping or not.</td>
+                <td>Check</td>
+                <td>Checked</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Gene window</td>
+                <td>Optional</td>
+                <td>Map SNPs to gene based on physical distance</td>
+                <td>Check</td>
+                <td>Checked</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Gene window size (&lt;=)</td>
+                <td>Optional</td>
+                <td>The maximum distance to map SNPs to genes</td>
+                <td>numeric</td>
+                <td>10kb</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Annotations based mapping</td>
+                <td>Optional</td>
+                <td>Map SNPs to genes baed on positional mapping such as exonic, intronic splicing, etc...</td>
+                <td>Check</td>
+                <td>Unchecked</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Annotations</td>
+                <td>Mandatory only when Annotation based mapping is activated</td>
+                <td>Positional annotation to map SNPs to genes</td>
+                <td>Multiple selection</td>
+                <td>none</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+          <h4 id="eqtl-mapping">eQTL mapping</h4>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Mandatory</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Direction</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>eQTL mapping</td>
+                <td>Optional</td>
+                <td>Whether perform eQTL mapping or not</td>
+                <td>Check</td>
+                <td>Unchecked</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Tissue types</td>
+                <td>Mandatory if eQTL mapping is activated</td>
+                <td>All available tissue types with Data sources are shown in the select box. <code>Tissue type</code> selection contain individual tissue types and <code>General tissue types</code> contain broad area of organ and each general tissue contains multiple individual tissue types.</td>
+                <td>Multiple selection</td>
+                <td>none</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Significant eQTL only (FDR&lt;=0.05)</td>
+                <td>Optional</td>
+                <td>To map only significant eQTL at FDR 0.05</td>
+                <td>Check</td>
+                <td>Checked</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>eQTL maximum P-value (&lt;=)</td>
+                <td>Mandatory if Significant eQTL only is unchecked</td>
+                <td>This option will show up on the screen only when <code>Significant eQTL only</code> is unchecked. This can be used as threshold of eQTL uncorrected P-value.</td>
+                <td>numeric</td>
+                <td>1e-3</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+          <h4 id="functional-annotation-filtering">Functional annotation filtering</h4>
+          <p>Both positional and eQTL mappings have same options for the filtering of SNPs based on functional annotation, but parameters have to be set for each mapping separately.</p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Parameter</th>
+                <th>Mandatory</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Default</th>
+                <th>Direction</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CADD score</td>
+                <td>Optional</td>
+                <td>Whether perform filtering of SNPs by CADD score or not.</td>
+                <td>Check</td>
+                <td>Unchecked</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Minimum CADD score (&gt;=)</td>
+                <td>Mandatory if <code>CADD score</code> is checked</td>
+                <td>The higher CADD score, the more deleterious.</td>
+                <td>numeric</td>
+                <td>12.37</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>RegulomeDB score</td>
+                <td>Optional</td>
+                <td>Whether perform filtering of SNPs by RegulomeDB score or not.</td>
+                <td>Check</td>
+                <td>Unchecked</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Minimum RegulomeDB score (&gt;=)</td>
+                <td>Mandatory if <code>RegulomeDB score</code> is checked</td>
+                <td>RegulomeDB score is a categorical (from 1a to 7). Please refer link for details. 1a is the most likely affect regulation. Note that not all SNPs in 1000G Phase3 has this score. Those SNPs are recorded as NA. Those SNPs will be filtered out when RegulomeDB score filtering is performed.</td>
+                <td>string</td>
+                <td>7</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>15-core chromatin state</td>
+                <td>Optional</td>
+                <td>Whether perform filtering of SNPs by chromatin state or not.</td>
+                <td>Check</td>
+                <td>Unchecked</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>15-core chromatin state tissue/cell types</td>
+                <td>Mandatory if <code>15-core chromatin state</code> is checked</td>
+                <td>Multiple tissue/cell types can be selected from either list of individual types or general types.</td>
+                <td>Multiple selection</td>
+                <td>none</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Maximum state of chromatin(&lt;=)</td>
+                <td>Mandatory if <code>15-core chromatin state</code> is checked</td>
+                <td>The maximum state to filter SNPs. Between 1 and 15. Generally, above 7 is open state. Please refer link for further details.</td>
+                <td>numeric</td>
+                <td>7</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Method for 15-core chromatin state filtering</td>
+                <td>Mandatory if <code>15-core chromatin state</code> is checked</td>
+                <td>When multiple tissue/cell types are selected, either <code>any</code> (a SNP has state above than threshold in any of selected tissue/cell types), <code>majority</code> (a SNP has state above than threshold in majority (&gt;=50%) of selected tissue/cell type), or <code>all</code> (a SNP has state above than threshold in all of selected tissue/cell type).</td>
+                <td>Selection</td>
+                <td>any</td>
+                <td>-</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
         <h3 id="submit-job">Submit your job</h3>
         <p>The submission page will show parameter option step by step. For example, you can only see the option for uploading files after providing email address and job title.
         Each option will guide you with messages like the followings.</p>
@@ -525,7 +553,7 @@
         <div class="alert alert-warning">
           This is the warning message. You are allowed to go further but please pay attention.
         </div>
-        <blockquote>
+        <div style="margin-left: 40px;">
           <h4 id="1-enter-email-address-and-job-title">1. Enter email address and job title</h4>
           <p>Email address and job title are mandatory to submit a new job. The combination of these two will create unique ID to store results. Email address will be only used to inform the completion of your job. If warning message is shown, the job with the same title already exists but you can overwrite.</p>
           <h4 id="2-select-input-files">2. Select input files</h4>
@@ -539,7 +567,7 @@
           Usually, the job takes 20 min to 1 hour depending on parameters.
           If you provide pre-defined genomic region or significant signals in the input GWAS is a few, it more likely to finish job quickly.
           In that case, you can stay in the submitted page, and as soon as job is done, page will be updated to your results.</p>
-        </blockquote>
+        </div>
         <h3 id="outputs">Outputs</h3>
         <p>Go to SNP2GENE and in the &quot;Query existing job&quot; panel, enter your email address and job title. If both are correct, &quot;Go to Job&quot; button is enabled.</p>
         <p>There are 5 panels in the result page.</p>
@@ -547,7 +575,7 @@
         <p>This panel contains your email address, job title and the date of job submission.</p>
         <h4 id="2-result-tables">2. Result tables</h4>
         <p>This panel contain multiple tables of your results.</p>
-        <blockquote>
+        <div style="margin-left: 40px;">
           <ul>
             <li>Summary<ul>
               <li>Summary of SNPs and mapped genes</li>
@@ -558,7 +586,7 @@
           </ul>
           <ul>
             <li><p>lead SNPs</p>
-            <p>All independent lead SNPs identified by ANNOTATOR.</p>
+            <p>All independent lead SNPs identified by IPGAP.</p>
             <ul>
               <li><strong>No</strong> : Index of lead SNPs</li>
               <li><strong>Interval</strong> : Index of assigned genomic interval. This matches with the index of interval table.</li>
@@ -728,7 +756,7 @@
             <p>To download multiple tables at the same time, go to &quot;Downloads&quot; tab and select files you want to download.</p>
             </li>
           </ul>
-        </blockquote>
+        </div>
         <h4 id="3-regional-plot">3. Regional plot</h4>
         <p>When you click any lead SNP or interval, regional plot will be shown in this panel. To plot with genes and other annotations, please go to &quot;Regional plot with annotation&quot; panel.</p>
         <h4 id="4-query-results">4. Query results</h4>
@@ -736,14 +764,20 @@
         <h4 id="5-regional-plot-with-annotation">5. Regional plot with annotation</h4>
         <p>This panel contains options to create regional plot with annotations.
         The plot will be created in a new tab.</p>
-      </blockquote>
+
+        <h3 id="examples">Example senarios</h3>
+        <h4>Senario 1: You have got a new results of GWAS and want to know which genes are there.</h4>
+        <h4>Senario 2: You have got a new results of GWAS and want to prioritize candidate SNPs and genes with a sprcific criteria</h4>
+        <h4>Senario 3: You are interested in a specific locus with significant hit in GWAS</h4>
+
+      </div>
     </div>
 
     <div id="gene2func" class="sidePanel" style="padding-top:50;">
       <h2>GENE2FUNC</h2>
-      <blockquote>
+      <div style="padding-left: 40px;">
         <h3 id="submit-genes">Submit genes</h3>
-        <blockquote>
+        <div style="padding-left: 40px;">
           <h4 id="use-mapped-genes-from-snp2gene">Use mapped genes from SNP2GENE</h4>
           <p>If you want to use mapped genes from SNP2GENE, just click a button in the result table panel of result page.
           It will open a new tab and automatically start analyses.
@@ -754,16 +788,16 @@
           Genes can be provided in the text are (one gene per line) or uploading file in the left panel. When you upload a file, genes have to be in the first column with header. Header can be anything (even just a new line is fine) but start your genes from second row.</p>
           <p>To analyse your genes, you need to specify background genes. You can choose from the gene types which is the easiest way. However, in the case that you need to use specific background genes, please provide them either in the text area of by uploading a file of the right panel.
           File format should be same as described for genes on interest.</p>
-        </blockquote>
-        <blockquote>
-          <h3 id="check-your-results">Check your results</h3>
+        </div>
+
+        <h3 id="gene2funcOutputs">Results and Outputs</h3>
+        <div style="padding-left: 40px;">
           <p>Once analysis is done, the three panel will be appear in the same page.</p>
           <h4 id="gene-expression-heatmap">Gene Expression Heatmap</h4>
           <h4 id="tissue-specificity">Tissue specificity</h4>
           <h4 id="molecular-functions">Molecular functions</h4>
-        </blockquote>
-      </blockquote>
-
+        </div>
+      </div>
     </div>
   </div>
 

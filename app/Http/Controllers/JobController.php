@@ -43,13 +43,15 @@ class JobController extends Controller
         'posMap'=>$posMap,
         'eqtlMap'=>$eqtlMap
       ]);
-      return view('pages.snp2geneResults', ['jobID'=>$jobID]); #local
-      #webserver return view('pages.snp2geneResults', ['jobID'=>$jobID, 'subdir'=>'/IPGAP']);
+      return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']); #local
+      #webserver return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'jobquery', 'subdir'=>'/IPGAP']);
     }
 
     public function newJob(Request $request){
       $email = $request -> input('NewJobEmail');
       $jobtitle = $request -> input('NewJobTitle');
+
+      $sessionID = $request->session()->get('key');
 
       // obtain jobID and create directory
       $results = DB::select('SELECT * FROM jobs WHERE email=?', [$email]);
@@ -302,8 +304,8 @@ class JobController extends Controller
         'eqtlMapChr15Meth'=>$eqtlMapChr15Meth
       ]);
 
-      return view('pages.snp2geneResults', ['jobID'=>$jobID]); #local
-      #webserver return view('pages.snp2geneResults', ['jobID'=>$jobID, 'subdir'=>'/IPGAP']);
+      return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local
+      #webserver return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob','subdir'=>'/IPGAP']);
     }
 
     public function CandidateSelection(Request $request){
@@ -357,7 +359,7 @@ class JobController extends Controller
       <body>
       Thank you for submitting a job.<br/>
       We will inform you ones job is done with link to the result page.<br/>
-      It usutally takes 30 minuts to 1 hour (depending on file size and parameters).<br/>
+      It usutally takes 10 minuts to 1 hour (depending on file size and parameters).<br/>
       <br/>
       <h4>Job summary</h4>
       your email: ".$email."<br/>
@@ -417,6 +419,7 @@ class JobController extends Controller
       <body>
       Your job has been completed.<br/>
       Pleas follow the link to go to the results page.<br/>
+      <a href=".'"http://ctg.labs.vu.nl/IPGAP/SNP2GENE/"'.">SNP2GENE job query</a><br/>
       <br/>
       <h4>Job summary</h4>
       your email: ".$email."<br/>
@@ -581,8 +584,13 @@ class JobController extends Controller
     }
 
     public function gene2funcSubmit(Request $request){
-      $filedir = storage_path().'/jobs/gene2func/'; #local
-      #webserver $filedir = "/data/IPGAP/jobs/gene2func/";
+      $id = uniqid();
+      $filedir = storage_path().'/jobs/'.$id; #local
+      #webserver $filedir = "/data/IPGAP/jobs/".$id;
+      File::makeDirectory($filedir);
+      $filedir = $filedir.'/';
+      #$id = "gene2func";
+      #$filedir = storage_path().'/jobs/gene2func/';
 
       if($request -> has('genes')){
         $gtype = "text";
@@ -593,7 +601,7 @@ class JobController extends Controller
       }else{
         $gtype = "file";
         $gval = "genesQuery.txt";
-        $request -> file('genefile')->move($filedir, "genesQuery.txt");
+        $request -> file('genesfile')->move($filedir, "genesQuery.txt");
       }
 
       if($request -> has('genetype')){
@@ -624,15 +632,22 @@ class JobController extends Controller
       }
       // echo "<p>gtype: $gtype<br/>gval: $gval<br/>bkgtype: $bkgtype<br/>bkgval: $bkgval</p>";
 
+      $adjPmeth = $request -> input('adjPmeth');
+      $adjPcut = $request -> input('adjPcut');
+      $minOverlap = $request -> input('minOverlap');
+
       JavaScript::put([
-        'id' => 'gene2func',
+        'id' => $id,
         'filedir' => $filedir,
         'gtype' => $gtype,
         'gval' => $gval,
         'bkgtype' => $bkgtype,
         'bkgval' => $bkgval,
         'Xchr' => $Xchr,
-        'MHC' => $MHC
+        'MHC' => $MHC,
+        'adjPmeth' => $adjPmeth,
+        'adjPcut' => $adjPcut,
+        'minOverlap' => $minOverlap
       ]);
 
       return view('pages.gene2func', ['status'=>'query', 'id'=>'gene2func']); #local
@@ -647,10 +662,14 @@ class JobController extends Controller
       $bkgval = $request -> input('bkgval');
       $Xchr = $request -> input('Xchr');
       $MHC = $request -> input('MHC');
-
+      $adjPmeth = $request -> input('adjPmeth');
+      $adjPcut = $request -> input('adjPcut');
+      $minOverlap = $request -> input('minOverlap');
 
       $script = storage_path()."/scripts/gene2func.R";
       exec("Rscript $script $filedir $gtype $gval $bkgtype $bkgval $Xchr $MHC");
+      $script = storage_path()."/scripts/GeneSet.py";
+      exec("$script $filedir $gtype $gval $bkgtype $bkgval $Xchr $MHC $adjPmeth $adjPcut $minOverlap");
     }
 
     public function snp2geneGeneQuery(Request $request){
@@ -664,6 +683,9 @@ class JobController extends Controller
       $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
       $MHC = preg_split("/[\t]/", chop($params[7]))[1];
       $bkgval = preg_split("/[\t]/", chop($params[10]))[1];
+      $adjPmeth = "fdr_bh";
+      $adjPcut = 0.05;
+      $minOverlap = 2;
 
       $gval = null;
       $f = fopen($filedir."genes.txt", 'r');
@@ -684,7 +706,10 @@ class JobController extends Controller
         'bkgtype' => $bkgtype,
         'bkgval' => $bkgval,
         'Xchr' => $Xchr,
-        'MHC' => $MHC
+        'MHC' => $MHC,
+        'adjPmeth' => $adjPmeth,
+        'adjPcut' => $adjPcut,
+        'minOverlap' => $minOverlap
       ]);
 
       return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]); #local
@@ -876,7 +901,7 @@ class JobController extends Controller
       $subchapter = $request -> input('subchapter');
       $trait = $request -> input('trait');
 
-      if(strcmp($domain, "null")==0 | (strcmp($domain, "null")==0 && strcmp($chapter, "null")==0 && strcmp($subchapter, "null")==0 && strcmp($trait, "null")==0)){
+      if(strcmp($domain, "null")==0 || (strcmp($domain, "null")==0 && strcmp($chapter, "null")==0 && strcmp($subchapter, "null")==0 && strcmp($trait, "null")==0)){
         echo '{"data":[]}';
       }else{
         $query = 'SELECT ID,PMID,Year,Domain,ChapterLevel,SubchapterLevel,Trait,Ncase,Ncontrol,N,Population,SNPh2,website FROM gwasDB WHERE';
@@ -886,17 +911,17 @@ class JobController extends Controller
           $query .= ' Domain=?';
           $val[] = $domain;
         }
-        if(strcmp($chapter, "null")!=0){
+        if(strcmp($chapter, "null")!=0 && strcmp($type, "Domain")!=0){
           if(count($val)!=0){$query .= " AND";}
           $query .= ' ChapterLevel=?';
           $val[] = $chapter;
         }
-        if(strcmp($subchapter, "null")!=0){
+        if(strcmp($subchapter, "null")!=0 && strcmp($type, "Domain")!=0 && strcmp($type, "Chapter")!=0){
           if(count($val)!=0){$query .= " AND";}
           $query .= ' SubchapterLevel=?';
           $val[] = $subchapter;
         }
-        if(strcmp($trait, "null")!=0){
+        if(strcmp($trait, "null")!=0 && strcmp($type, "Domain")!=0 && strcmp($type, "Chapter")!=0 && strcmp($type, "Subchapter")!=0){
           if(count($val)!=0){$query .= " AND";}
           $query .= ' Trait=?';
           $val[] = $trait;

@@ -8,6 +8,7 @@ put public/js/* public/js/
 put public/css/* public/css/
 put public/image/* public/image/
 put resources/views/includes/* resources/views/includes/
+put resources/views/layouts/* resources/views/layouts/
 put resources/views/pages/* resources/views/pages/
 put storage/scripts/* storage/scripts
 #put database/database.sqlite database/

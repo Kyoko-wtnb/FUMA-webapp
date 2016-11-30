@@ -1,8 +1,10 @@
 $(document).ready(function(){
   // $('#test').html("Status: "+status+"<br/>");
+  $('#newquery').show();
   if(status=="new"){
     checkInput();
-    $('#results').hide();
+    $('#resultSide').hide()
+    // $('#results').hide();
   }else if(status=="query"){
     $('#geneSubmit').attr("disabled", true);
     var id = IPGAPvar.id;
@@ -13,6 +15,10 @@ $(document).ready(function(){
     var bkgval = IPGAPvar.bkgval;
     var Xchr = IPGAPvar.Xchr;
     var MHC = IPGAPvar.MHC;
+    var adjPmeth = IPGAPvar.adjPmeth;
+    var adjPcut = IPGAPvar.adjPcut;
+    var minOverlap = IPGAPvar.minOverlap;
+    // $('#test').html("adjPmeth: "+adjPmeth);
 
     if(gtype=="text"){
       $('#genes').val(gval.replace(/:/g, '\n'));
@@ -50,17 +56,24 @@ $(document).ready(function(){
         bkgtype: bkgtype,
         bkgval: bkgval,
         Xchr: Xchr,
-        MHC: MHC
+        MHC: MHC,
+        adjPmeth: adjPmeth,
+        adjPcut: adjPcut,
+        minOverlap: minOverlap
       },
       beforeSend: function(){
-        $('#results').hide();
-        $('#loadingGeneQuery').show();
-        $('#loadingGeneQuery').html('<h4>Running gene query</h4><img src="'+public_path+'" width="50" height="50"/><br/><br/>');
+        // $('#results').hide();
+        $('#resultSide').hide()
+        // $('#loadingGeneQuery').show();
+        // $('#loadingGeneQuery').html('<h4>Running gene query</h4><img src="'+public_path+'" width="50" height="50"/><br/><br/>');
+        AjaxLoad();
       },
       success: function(){
-        $('#loadingGeneQuery').html("");
-        $('#loadingGeneQuery').hide();
-        $('#results').show();
+        // $('#loadingGeneQuery').html("");
+        // $('#loadingGeneQuery').hide();
+        $('#resultSide').show()
+        // $('#results').show();
+        $('#overlay').remove();
       },
       complete: function(){
         checkInput();
@@ -199,6 +212,15 @@ function checkInput(){
   }
 
 };
+function AjaxLoad(){
+  var over = '<div id="overlay"><div id="loading">'
+          +'<h4>Running gene test</h4>'
+          +'<p>Please wait a moment</br>'
+          +'<p>Currentry this job takes 2-4 min</p>'
+          +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
+          +'</div></div>';
+  $(over).appendTo('body');
+}
 
 function GeneSetPlot(category){
   $('#'+category).show();
@@ -562,7 +584,7 @@ function GeneSet(id){
                   'Oncogenetic_signatures' : 'Oncogenetic signatures (MsigDB v5.2 c6)',
                   'Immunologic_signatures' : 'Immunologic signatures (MsigDB v5.2 c7)',
                   'Wikipathways' : 'Wikipathways (Curated version 20161010)',
-                  'GWAScatalog' : 'GWAS catalog (reported genes, ver. e84 20160313)'
+                  'GWAScatalog' : 'GWAS catalog (reported genes, ver. e85 20160927)'
                 };
   d3.json("d3text/"+id+"/GS.txt", function(data){
     // data.forEach(function(d){
@@ -617,7 +639,7 @@ function GeneSet(id){
         var ngs = gs.length;
         var barplotwidth = 150;
 
-        var margin = {top: 10, right: 10, bottom: 80, left: gs_max*5.3},
+        var margin = {top: 10, right: 10, bottom: 80, left: gs_max*5.5},
             width = barplotwidth+10+(genes.length*15),
             height = 15*ngs;
         // $('#test').append("<p>"+category[i]+" width: "+width+"</p>")

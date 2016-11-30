@@ -32,25 +32,45 @@ $(document).ready(function(){
   var xMin_init = IPGAPvar.xMin_init;
   var xMax_init = IPGAPvar.xMax_init;
   // $('#test').html("<p>xMax: "+xMax+" xMin: "+xMin+"</p>");
+
   var margin = {top:50, right:250, left:50, bottom:100},
-      height = (GWASplot*1+Chr15*1)*210+(CADDplot*1+RDBplot*1)*160+60+eqtl*(eqtlNgenes*55),
+      // height = (GWASplot*1+Chr15*1)*210+(CADDplot*1+RDBplot*1)*160+60+eqtl*(eqtlNgenes*55),
       width = 600;
   var side = (xMax_init*1-xMin_init*1)*0.05;
-  var currentHeight=0;
-  var currentHeight2 = (200+10)*GWASplot+50+10+(150+10)*CADDplot+(150+10)*RDBplot;
-  var xAxisLabel;
+  // var currentHeight=0;
+  // var currentHeight2 = (200+10)*GWASplot+50+10+(150+10)*CADDplot+(150+10)*RDBplot;
+  var xAxisLabel = "gene";
+
+  var height;
+  // height of each plot
+  var genesHeight;
+  var gwasHeight=200;
+  var caddHeight=150;
+  var rdbHeight=150;
+  var chrHeight;
+  var eqtlHeight;
+  // min Y for each plot
+  var gwasTop = 0;
+  var genesTop = (gwasHeight+gwasTop+10)*GWASplot;
+  var caddTop;
+  var rdbTop;
+  var chrTop;
+  var eqtlTop;
 
   var x = d3.scale.linear().range([0, width]);
   var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
   x.domain([(xMin_init*1-side), (xMax_init*1+side)]);
-  var svg = d3.select('#annotPlot').append('svg')
-            .attr("width", width+margin.left+margin.right)
-            .attr("height", height+margin.top+margin.bottom)
-            .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
 
-  // zoom
-  var zoom = d3.behavior.zoom().x(x).scaleExtent([0,1000]).on("zoom", zoomed);
-  svg.call(zoom);
+  var svg;
+  var zoom;
+  // var svg = d3.select('#annotPlot').append('svg')
+  //           .attr("width", width+margin.left+margin.right)
+  //           .attr("height", height+margin.top+margin.bottom)
+  //           .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
+  //
+  // // zoom
+  // var zoom = d3.behavior.zoom().x(x).scaleExtent([0,1000]).on("zoom", zoomed);
+  // svg.call(zoom);
 
   // define colors
   var colorScale = d3.scale.linear().domain([0.2,0.6,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
@@ -80,31 +100,31 @@ $(document).ready(function(){
     eQTLcolors[ts[i]] = cols[i];
   }
 
-  // vertical line
-  var vertical = svg.append("rect")
-                    .attr("class", "vertical")
-                    .attr("z-index", "500")
-                    .attr("width", 5)
-                    .attr("height", height+25)
-                    .attr("x", 0)
-                    .attr("y", -25)
-                    .style("fill", "transparent");
-
-  svg.append("rect")
-    .attr("width", width).attr("height", height)
-    .style("fill", "transparent")
-    .style("shape-rendering", "crispEdges")
-    .on("mousemove", function(){
-      var mousex = d3.mouse(this)[0];
-      vertical.attr("x", mousex);
-    })
-    .on("mouseover", function(){
-      var mousex = d3.mouse(this)[0];
-      vertical.attr("x", mousex).style("stroke", "grey");
-    })
-    .on("mouseout", function(){
-      vertical.style("stroke", "transparent")
-    });
+  // // vertical line
+  // var vertical = svg.append("rect")
+  //                   .attr("class", "vertical")
+  //                   .attr("z-index", "500")
+  //                   .attr("width", 5)
+  //                   .attr("height", height+25)
+  //                   .attr("x", 0)
+  //                   .attr("y", -25)
+  //                   .style("fill", "transparent");
+  //
+  // svg.append("rect")
+  //   .attr("width", width).attr("height", height)
+  //   .style("fill", "transparent")
+  //   .style("shape-rendering", "crispEdges")
+  //   .on("mousemove", function(){
+  //     var mousex = d3.mouse(this)[0];
+  //     vertical.attr("x", mousex);
+  //   })
+  //   .on("mouseover", function(){
+  //     var mousex = d3.mouse(this)[0];
+  //     vertical.attr("x", mousex).style("stroke", "grey");
+  //   })
+  //   .on("mouseout", function(){
+  //     vertical.style("stroke", "transparent")
+  //   });
 
   // Plots
   // if((Chr15==0 & eqtl==0) | (Chr15==0 & eqtl==1 & eqtlplot==0)){
@@ -164,17 +184,179 @@ $(document).ready(function(){
   //           var data_eqtl = data[4];
   //         });
   // }
-  var data1;
-  var xaxistext="genes";
+  // var data1;
+  // var xaxistext="genes";
   queue().defer(d3.json, "d3text/"+jobID+"/annotPlot.txt")
         .defer(d3.json, "d3text/"+jobID+"/genesplot.txt")
         .defer(d3.json, "d3text/"+jobID+"/exons.txt")
         //.defer(d3.tsv, filedir+"Chr15.txt")
         .awaitAll(function(error, data){
-          data1 = data[0];
+          var data1 = data[0];
           var data2 = data[1];
           var data3 = data[2];
           //var data4 = data[3];
+
+          //gene plot
+          data2.forEach(function(d){
+            d.start_position = +d.start_position;
+            d.end_position = +d.end_position;
+            // d.strand = +d.strand;
+            d.y = 1;
+            if(d.strand==1){
+              d.external_gene_name = d.external_gene_name+"\u2192";
+            }else{
+              d.external_gene_name = "\u2190"+d.external_gene_name;
+            }
+
+          });
+          // console.log(data2[0]);
+          data2 = geneOver(data2, x, width);
+          console.log(data2[0]);
+
+          // height define
+          genesHeight = 20*(d3.max(data2, function(d){return d.y;})+1);
+          caddTop = (genesTop+genesHeight+10);
+          rdbTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot;
+          chrTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot;
+          var cells = Chr15cells.split(":");
+          if(cells.length>20){chrHeight=200;}
+          else{chrHeight = 10*cells.length;}
+          eqtlTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15;
+          eqtlHeight = eqtl*(eqtlNgenes*55);
+          height = genesHeight+gwasHeight+caddHeight+rdbHeight+chrHeight+eqtlHeight+10*(GWASplot*1+CADDplot*1+RDBplot*1+Chr15*1+eqtlplot*1);
+
+          // Prepare svg
+          svg = d3.select('#annotPlot').append('svg')
+                    .attr("width", width+margin.left+margin.right)
+                    .attr("height", height+margin.top+margin.bottom)
+                    .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
+
+          // zoom
+          zoom = d3.behavior.zoom().x(x).scaleExtent([0,1000]).on("zoom", zoomed);
+          svg.call(zoom);
+          // vertical line
+          var vertical = svg.append("rect")
+                            .attr("class", "vertical")
+                            .attr("z-index", "500")
+                            .attr("width", 5)
+                            .attr("height", height+25)
+                            .attr("x", 0)
+                            .attr("y", -25)
+                            .style("fill", "transparent");
+
+          svg.append("rect")
+            .attr("width", width).attr("height", height)
+            .style("fill", "transparent")
+            .style("shape-rendering", "crispEdges")
+            .on("mousemove", function(){
+              var mousex = d3.mouse(this)[0];
+              vertical.attr("x", mousex);
+            })
+            .on("mouseover", function(){
+              var mousex = d3.mouse(this)[0];
+              vertical.attr("x", mousex).style("stroke", "grey");
+            })
+            .on("mouseout", function(){
+              vertical.style("stroke", "transparent")
+            });
+
+          // genes plot
+          var y = d3.scale.linear().range([genesTop+genesHeight, genesTop]);
+          // y.domain([-2.5,2.5]);
+          y.domain([d3.max(data2, function(d){return d.y;})+1, 0]);
+          console.log(d3.max(data2, function(d){return d.y;}))
+
+          svg.selectAll('rect.gene').data(data2).enter().append("g")
+            .insert('rect').attr("class", "cell").attr("class", "genesrect")
+            .attr("x", function(d){
+              if(x(d.start_position)<0 || x(d.end_position)<0){return 0;}
+              else{return x(d.start_position);}
+            })
+            // .attr("y", function(d){return y(d.strand)})
+            .attr("y", function(d){return y(d.y)})
+            .attr("width", function(d){
+              if(x(d.end_position)<0 || x(d.start_position)>width){return 0;}
+              else if(x(d.start_position)<0 && x(d.end_position)>width){return width;}
+              else if(x(d.start_position)<0){return x(d.end_position);}
+              else if(x(d.end_position)>width){return width-x(d.start_position);}
+              else{return x(d.end_position)-x(d.start_position)}
+            })
+            .attr("height", 1)
+            .attr("fill", function(d){
+              if(x(d.end)<0 || x(d.start)>width){return "transparent";}
+              else if(d.gene_biotype=="protein_coding"){return "blue";}
+              else{return "#383838"}
+            });
+          svg.selectAll("text.genes").data(data2).enter()
+            .append("text").attr("class", "geneName").attr("text-anchor", "middle")
+            .attr("x", function(d){
+              if(x(d.start_position)<0 && x(d.end_position)>width){return width/2;}
+              else if(x(d.start_position)<0){return x(d.end_position)/2;}
+              else if(x(d.end_position)>width){return x(d.start_position)+(width-x(d.start_position))/2;}
+              else{return x(((d.end_position-d.start_position)/2)+d.start_position);}
+            })
+            .attr("y", function(d){return y(d.y);})
+            .attr("dy", "-.7em")
+            .text(function(d){return d.external_gene_name;})
+            .style("font-size", "9px")
+            .style("font-family", "sans-serif")
+            .style("fill", function(d){
+              if(x(d.end_position)<0 || x(d.start_position)>width){return "transparent";}
+              else{return "black";}
+            });
+          if(CADDplot==1 || RDBplot==1 || Chr15==1 || (eqtl==1 && eqtlplot==1)){
+            svg.append("g").attr("class", "x axis genes")
+              .attr("transform", "translate(0,"+(genesTop+genesHeight)+")")
+              .call(xAxis).selectAll("text").remove();
+          }else{
+            xAxisLabel = "genes";
+            svg.append("g").attr("class", "x axis genes")
+              .attr("transform", "translate(0,"+(genesTop+genesHeight)+")")
+              .call(xAxis);
+            svg.append("text").attr("text-anchor", "middle")
+              .attr("transform", "translate("+width/2+","+(height+30)+")")
+              .text("Chromosome "+chr);
+          }
+          // svg.append("g").attr("class", "y axis").call(yAxis)
+          //   .selectAll("text").remove();
+
+          //exon plot
+          // var test = data2.filter(function(d2){if(d2.ensembl_gene_id=="ENSG00000140718"){return d2.y;}})[0].y;
+          // console.log(test)
+          data3.forEach(function(d){
+            d.exon_chrom_start = +d.exon_chrom_start;
+            d.exon_chrom_end = +d.exon_chrom_end;
+            d.strand = +d.strand;
+            d.y = data2.filter(function(d2){if(d2.ensembl_gene_id==d.ensembl_gene_id){return d2;}})[0].y;
+          });
+          svg.selectAll('rect.exon').data(data3).enter().append("g")
+            .insert('rect').attr("class", "cell").attr("class", "exons")
+            .attr("x", function(d){
+              if(x(d.exon_chrom_start)<0 || x(d.exon_chrom_end)<0){return 0;}
+              else{return x(d.exon_chrom_start);}
+            })
+            // .attr("y", function(d){return y(d.strand)-4.5})
+            .attr("y", function(d){return y(d.y)-4.5})
+            .attr("width", function(d){
+              if(x(d.exon_chrom_end)<0 || x(d.exon_chrom_start)>width){return 0;}
+              else if(x(d.exon_chrom_start)<0 && x(d.exon_chrom_end)>width){return width;}
+              else if(x(d.exon_chrom_start)<0){return x(d.exon_chrom_end);}
+              else if(x(d.exon_chrom_end)>width){return width-x(d.exon_chrom_start);}
+              else{return x(d.exon_chrom_end)-x(d.exon_chrom_start);}
+            })
+            .attr("height", 9)
+            .attr("fill", function(d){
+              if(x(d.exon_chrom_start)>width || x(d.exon_chrom_end)<0){return "transparent";}
+              else if(d.gene_biotype=="protein_coding"){return "blue";}
+              else{return "#383838"}
+            });
+
+            if(Chr15==0 && eqtl==1 && eqtlplot==0){
+              svg.append("text").attr("text-anchor", "middle")
+                  .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-30)+")")
+                  .text("No eQTL of selected tissues exists in this region.");
+            }
+
           data1.forEach(function(d){
             d.pos = +d.pos;
             d.logP = +d.logP;
@@ -183,7 +365,8 @@ $(document).ready(function(){
             d.CADD = +d.CADD;
           });
           if(GWASplot==1){
-            var y = d3.scale.linear().range([currentHeight+200, currentHeight]);
+            // var y = d3.scale.linear().range([currentHeight+200, currentHeight]);
+            var y = d3.scale.linear().range([gwasTop+gwasHeight, gwasTop]);
             var yAxis = d3.svg.axis().scale(y).orient("left");
             var legData = [];
             for(i=10; i>1; i--){
@@ -309,21 +492,22 @@ $(document).ready(function(){
             //       i = bisectD
             // }
             svg.append("g").attr("class", "x axis GWAS")
-              .attr("transform", "translate(0,"+(currentHeight+200)+")")
+              .attr("transform", "translate(0,"+(gwasTop+gwasHeight)+")")
               .call(xAxis).selectAll("text").remove();
             svg.append("g").attr("class", "y axis").call(yAxis);
             svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+(-10-margin.left/2)+","+(currentHeight+100)+")rotate(-90)")
+              .attr("transform", "translate("+(-10-margin.left/2)+","+(gwasTop+gwasHeight/2)+")rotate(-90)")
               .text("-log10 P-value");
             svg.append("text").attr("text-anchor", "middle")
               .attr("transform", "translate("+(-margin.left/2)+", -15)")
               .style("font-size", "8px")
               .text("1000G SNPs");
-            currentHeight = currentHeight+210;
+            // currentHeight = currentHeight+210;
           }
-          currentHeight = currentHeight+60;
+          // currentHeight = currentHeight+60;
           if(CADDplot==1){
-            var y = d3.scale.linear().range([currentHeight+150, currentHeight]);
+            // var y = d3.scale.linear().range([currentHeight+150, currentHeight]);
+            var y = d3.scale.linear().range([caddTop+caddHeight, caddTop]);
             var yAxis = d3.svg.axis().scale(y).orient("left");
             y.domain([0, d3.max(data1, function(d){return d.CADD})+1]);
             svg.selectAll("dot").data(data1).enter()
@@ -357,27 +541,28 @@ $(document).ready(function(){
                 $('#annotTable').html(table);
               });
             svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+(-10-margin.left/2)+","+(currentHeight+75)+")rotate(-90)")
+              .attr("transform", "translate("+(-10-margin.left/2)+","+(caddTop+caddHeight/2)+")rotate(-90)")
               .text("CADD score");
             if(RDBplot==1 || Chr15==1 || (eqtl==1 && eqtlplot==1)){
               svg.append("g").attr("class", "x axis CADD")
-                .attr("transform", "translate(0,"+(currentHeight+150)+")")
+                .attr("transform", "translate(0,"+(caddTop+caddHeight)+")")
                 .call(xAxis).selectAll("text").remove();
             }else{
               xAxisLabel = "CADD";
               svg.append("g").attr("class", "x axis CADD")
-                .attr("transform", "translate(0,"+(currentHeight+150)+")")
+                .attr("transform", "translate(0,"+(caddTop+caddHeight)+")")
                 .call(xAxis);
               svg.append("text").attr("text-anchor", "middle")
-                .attr("transform", "translate("+width/2+","+(currentHeight+160+30)+")")
+                .attr("transform", "translate("+width/2+","+(height+30)+")")
                 .text("Chromosome "+chr);
             }
             svg.append("g").attr("class", "y axis").call(yAxis);
-            currentHeight = currentHeight+160;
+            // currentHeight = currentHeight+160;
           }
           if(RDBplot==1){
             var y_element = ["1a", "1b", "1c", "1d", "1e", "1f", "2a", "2b" ,"2c", "3a", "3b", "4", "5", "6", "7"];
-            var y = d3.scale.ordinal().domain(y_element).rangePoints([currentHeight, currentHeight+150]);
+            // var y = d3.scale.ordinal().domain(y_element).rangePoints([currentHeight, currentHeight+150]);
+            var y = d3.scale.ordinal().domain(y_element).rangePoints([rdbTop, rdbTop+rdbHeight]);
             var yAxis = d3.svg.axis().scale(y).tickFormat(function(d){return d;}).orient("left");
             svg.selectAll("dot").data(data1.filter(function(d){if(d.RDB!=="NA"){return d;}})).enter()
               .append("circle")
@@ -409,456 +594,701 @@ $(document).ready(function(){
                 table += '</table>'
                 $('#annotTable').html(table);
               });            svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+(-10-margin.left/2)+","+(currentHeight+75)+")rotate(-90)")
+              .attr("transform", "translate("+(-10-margin.left/2)+","+(rdbTop+rdbHeight/2)+")rotate(-90)")
               .text("RegulomeDB score");
             if(Chr15==1 || (eqtl==1 && eqtlplot==1)){
               svg.append("g").attr("class", "x axis RDB")
-                .attr("transform", "translate(0,"+(currentHeight+150)+")")
+                .attr("transform", "translate(0,"+(rdbTop+rdbHeight)+")")
                 .call(xAxis).selectAll("text").remove();
             }else{
               xAxisLabel = "RDB";
               svg.append("g").attr("class", "x axis RDB")
-                .attr("transform", "translate(0,"+(currentHeight+150)+")")
+                .attr("transform", "translate(0,"+(rdbTop+rdbHeight)+")")
                 .call(xAxis);
               svg.append("text").attr("text-anchor", "middle")
-                .attr("transform", "translate("+width/2+","+(currentHeight+160+30)+")")
+                .attr("transform", "translate("+width/2+","+(height+30)+")")
                 .text("Chromosome "+chr);
             }
             svg.append("g").attr("class", "y axis").call(yAxis);
-            currentHeight = currentHeight+160;
+            // currentHeight = currentHeight+160;
           }
-          if(GWASplot==1){var ch = 210+60;}
-          else{var ch = 60;}
-          var y = d3.scale.linear().range([ch-10, ch-60]);
-          //gene plot
-          data2.forEach(function(d){
-            d.start_position = +d.start_position;
-            d.end_position = +d.end_position;
-            d.strand = +d.strand;
-          });
-          y.domain([-2.5,2.5]);
 
-          svg.selectAll('rect.gene').data(data2).enter().append("g")
-            .insert('rect').attr("class", "cell").attr("class", "genesrect")
-            .attr("x", function(d){
-              if(x(d.start_position)<0 || x(d.end_position)<0){return 0;}
-              else{return x(d.start_position);}
-            })
-            .attr("y", function(d){return y(d.strand)})
-            .attr("width", function(d){
-              if(x(d.end_position)<0 || x(d.start_position)>width){return 0;}
-              else if(x(d.start_position)<0 && x(d.end_position)>width){return width;}
-              else if(x(d.start_position)<0){return x(d.end_position);}
-              else if(x(d.end_position)>width){return width-x(d.start_position);}
-              else{return x(d.end_position)-x(d.start_position)}
-            })
-            .attr("height", 1)
-            .attr("fill", function(d){
-              if(x(d.end)<0 || x(d.start)>width){return "transparent";}
-              else if(d.gene_biotype=="protein_coding"){return "blue";}
-              else{return "khaki"}
-            });
-          svg.selectAll("text.genes").data(data2).enter()
-            .append("text").attr("class", "geneName").attr("text-anchor", "middle")
-            .attr("x", function(d){
-              if(x(d.start_position)<0 && x(d.end_position)>width){return width/2;}
-              else if(x(d.start_position)<0){return x(d.end_position)/2;}
-              else if(x(d.end_position)>width){return x(d.start_position)+(width-x(d.start_position))/2;}
-              else{return x(((d.end_position-d.start_position)/2)+d.start_position);}
-            })
-            .attr("y", function(d){return y(d.strand);})
-            .attr("dy", "-.7em")
-            .text(function(d){return d.external_gene_name;})
-            .style("font-size", "9px")
-            .style("font-family", "sans-serif")
-            .style("fill", function(d){
-              if(x(d.end_position)<0 || x(d.start_position)>width){return "transparent";}
-              else{return "black";}
-            });
-          if(CADDplot==1 || RDBplot==1 || Chr15==1 || (eqtl==1 && eqtlplot==1)){
-            svg.append("g").attr("class", "x axis genes")
-              .attr("transform", "translate(0,"+(ch-10)+")")
-              .call(xAxis).selectAll("text").remove();
-          }else{
-            xAxisLabel = "genes";
-            svg.append("g").attr("class", "x axis genes")
-              .attr("transform", "translate(0,"+(ch-10)+")")
-              .call(xAxis);
-            svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+width/2+","+(currentHeight+30)+")")
-              .text("Chromosome "+chr);
-          }
-          // svg.append("g").attr("class", "y axis").call(yAxis)
-          //   .selectAll("text").remove();
+          //chr15 and eqtl plot
+          if(Chr15==1 && eqtl==1 && eqtlplot==1){
+            xAxisLabel = "eqtl";
+            queue().defer(d3.json, "d3text/"+jobID+"/Chr15.txt")
+            .defer(d3.json, "d3text/"+jobID+"/eqtlplot.txt")
+            .awaitAll(function(error, data){
+              var data1 = data[0];
+              var data2 = data[1];
+              data1.forEach(function(d){
+                d.start = +d.start;
+                d.end = +d.end;
+                d.state = +d.state;
+              });
+              // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
 
-          //exon plot
-          data3.forEach(function(d){
-            d.exon_chrom_start = +d.exon_chrom_start;
-            d.exon_chrom_end = +d.exon_chrom_end;
-            d.strand = +d.strand;
-          });
-          svg.selectAll('rect.exon').data(data3).enter().append("g")
-            .insert('rect').attr("class", "cell").attr("class", "exons")
-            .attr("x", function(d){
-              if(x(d.exon_chrom_start)<0 || x(d.exon_chrom_end)<0){return 0;}
-              else{return x(d.exon_chrom_start);}
-            })
-            .attr("y", function(d){return y(d.strand)-4.5})
-            .attr("width", function(d){
-              if(x(d.exon_chrom_end)<0 || x(d.exon_chrom_start)>width){return 0;}
-              else if(x(d.exon_chrom_start)<0 && x(d.exon_chrom_end)>width){return width;}
-              else if(x(d.exon_chrom_start)<0){return x(d.exon_chrom_end);}
-              else if(x(d.exon_chrom_end)>width){return width-x(d.exon_chrom_start);}
-              else{return x(d.exon_chrom_end)-x(d.exon_chrom_start);}
-            })
-            .attr("height", 9)
-            .attr("fill", function(d){
-              if(x(d.exon_chrom_start)>width || x(d.exon_chrom_end)<0){return "transparent";}
-              else if(d.gene_biotype=="protein_coding"){return "blue";}
-              else{return "khaki"}
-            });
+              var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
+              var tileHeight = 10;
+              if(y_element.length>20){
+                tileHeight = 200/y_element.length;
+              }
+              // var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([currentHeight2, currentHeight2+y_element.length*tileHeight]);
+              var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([chrTop, chrTop+chrHeight]);
+              var yAxisChr15 = d3.svg.axis().scale(yChr15).tickFormat(function(d){return d;}).orient("left");
 
-            if(Chr15==0 && eqtl==1 && eqtlplot==0){
+              var states = ["TssA", "TssAFlnk", "TxFlnk", "Tx", "Tx/Wk", "EnhG", "Enh", "ZNF/Rpts", "Het", "TssBiv", "BivFlnk", "EnhBiv", "ReprPC", "ReprPCWk", "Quies"];
+              var legData = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+              var legendChr15 = svg.selectAll(".legendChr15")
+                .data(legData)
+                .enter()
+                .append("g").attr("class", "legend");
+              if(y_element.length>10){
+                var legHead = chrTop+y_element.length*tileHeight/2-8*7.5;
+                legendChr15.append("rect")
+                  .attr("x", width+10)
+                  .attr("y", function(d){return legHead+d*8;})
+                  .attr("width", 20)
+                  .attr("height", 8)
+                  .style("fill", function(d){return Chr15colors[d]})
+                  .style("stroke", "grey")
+                  .style("stroke-width", "0.5");
+                legendChr15.append("text")
+                  .attr("text-anchor", "start")
+                  .attr("x", width+10+22)
+                  .attr("y", function(d){return legHead+d*8+8;})
+                  .text(function(d){return states[d]})
+                  .style("font-size", "9px");
+              }else{
+                var legHead = chrTop+y_element.length*tileHeight/2-8*4;
+                legendChr15.append("rect")
+                  .attr("x", function(d){if(d<7){return width+10;}else{return width+70;}})
+                  .attr("y", function(d){if(d<7){return legHead+d*8;}else{return legHead+(d-7)*8}})
+                  .attr("width", 20)
+                  .attr("height", 8)
+                  .style("fill", function(d){return Chr15colors[d]})
+                  .style("stroke", "grey")
+                  .style("stroke-width", "0.5");
+                legendChr15.append("text")
+                  .attr("text-anchor", "start")
+                  .attr("x", function(d){if(d<7){return width+10+22;}else{return width+70+22;}})
+                  .attr("y", function(d){if(d<7){return legHead+d*8+8;}else{return legHead+(d-7)*8+8}})
+                  .text(function(d){return states[d]})
+                  .style("font-size", "9px");
+              }
+
+              svg.selectAll("rect.chr").data(data1).enter().append("g")
+                .insert('rect').attr('class', 'cell').attr("class", "Chr15rect")
+                .attr("width", function(d){return x(d.end)-x(d.start);})
+                .attr("height", tileHeight)
+                .attr('x', function(d){return x(d.start);})
+                .attr('y', function(d){return yChr15(d.cell)})
+                .attr("fill", function(d){return Chr15colors[d.state*1-1];})
+                .on("mousemove", function(){
+                  var mousex = d3.mouse(this)[0];
+                  vertical.attr("x", mousex);
+                })
+                .on("mouseover", function(){
+                  var mousex = d3.mouse(this)[0];
+                  vertical.attr("x", mousex).style("stroke", "grey");
+                })
+                .on("mouseout", function(){
+                  vertical.style("stroke", "transparent")
+                });
               svg.append("text").attr("text-anchor", "middle")
-                  .attr("transform", "translate("+(width/2)+","+(currentHeight+margin.bottom-30)+")")
-                  .text("No eQTL of selected tissues exists in this region.");
-            }
-      });
+                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
+                .text("Chromatin state");
 
-  if(Chr15==1 && eqtl==1 && eqtlplot==1){
-    xAxisLabel = "eqtl";
-    queue().defer(d3.json, "d3text/"+jobID+"/Chr15.txt")
-    .defer(d3.json, "d3text/"+jobID+"/eqtlplot.txt")
-    .awaitAll(function(error, data){
-      var data1 = data[0];
-      var data2 = data[1];
-      data1.forEach(function(d){
-        d.start = +d.start;
-        d.end = +d.end;
-        d.state = +d.state;
-      });
-      // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
+              svg.append("g").attr("class", "x axis Chr15")
+                .attr("transform", "translate(0,"+(chrTop+y_element.length*tileHeight)+")")
+                .call(xAxis).selectAll("text").remove();
+              svg.append("g").attr("class", "y axis").call(yAxisChr15).style("font-size", "8px");
+              // currentHeight2 = currentHeight2+y_element.length*tileHeight+10;
 
-      var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
-      var tileHeight = 10;
-      if(y_element.length>20){
-        tileHeight = 200/y_element.length;
-      }
-      var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([currentHeight2, currentHeight2+y_element.length*tileHeight]);
-      var yAxisChr15 = d3.svg.axis().scale(yChr15).tickFormat(function(d){return d;}).orient("left");
+              data2.forEach(function(d){
+                d.pos = +d.pos;
+                d.logP = +d.logP;
+                d.ld = +d.ld;
+              });
+              var genes = d3.set(data2.map(function(d){return d.symbol;})).values();
+              var tissue = d3.set(data2.map(function(d){return d.tissue;})).values();
+              // neqtl = genes.length;
 
-      var states = ["TssA", "TssAFlnk", "TxFlnk", "Tx", "Tx/Wk", "EnhG", "Enh", "ZNF/Rpts", "Het", "TssBiv", "BivFlnk", "EnhBiv", "ReprPC", "ReprPCWk", "Quies"];
-      var legData = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
-      var legendChr15 = svg.selectAll(".legendChr15")
-        .data(legData)
-        .enter()
-        .append("g").attr("class", "legend");
-      if(y_element.length>10){
-        var legHead = currentHeight2+y_element.length*tileHeight/2-8*7.5;
-        legendChr15.append("rect")
-          .attr("x", width+10)
-          .attr("y", function(d){return legHead+d*8;})
-          .attr("width", 20)
-          .attr("height", 8)
-          .style("fill", function(d){return Chr15colors[d]})
-          .style("stroke", "grey")
-          .style("stroke-width", "0.5");
-        legendChr15.append("text")
-          .attr("text-anchor", "start")
-          .attr("x", width+10+22)
-          .attr("y", function(d){return legHead+d*8+8;})
-          .text(function(d){return states[d]})
-          .style("font-size", "9px");
-      }else{
-        var legHead = currentHeight2+y_element.length*tileHeight/2-8*4;
-        legendChr15.append("rect")
-          .attr("x", function(d){if(d<7){return width+10;}else{return width+70;}})
-          .attr("y", function(d){if(d<7){return legHead+d*8;}else{return legHead+(d-7)*8}})
-          .attr("width", 20)
-          .attr("height", 8)
-          .style("fill", function(d){return Chr15colors[d]})
-          .style("stroke", "grey")
-          .style("stroke-width", "0.5");
-        legendChr15.append("text")
-          .attr("text-anchor", "start")
-          .attr("x", function(d){if(d<7){return width+10+22;}else{return width+70+22;}})
-          .attr("y", function(d){if(d<7){return legHead+d*8+8;}else{return legHead+(d-7)*8+8}})
-          .text(function(d){return states[d]})
-          .style("font-size", "9px");
-      }
+              var legData = [];
+              for(i=0; i<tissue.length; i++){
+                legData.push(i);
+              }
+              var legendEqtl = svg.selectAll(".legendEqtl")
+                .data(legData)
+                .enter()
+                .append("g").attr("class", "legend")
+              legendEqtl.append("circle")
+                .attr("r", 3.5)
+                .attr("cx", width+10)
+                .attr("cy", function(d){return eqtlTop+15+d*10})
+                .style("fill", function(d){return eQTLcolors[tissue[d]]});
+              legendEqtl.append("text")
+                .attr("text-anchor", "start")
+                .attr("x", width+15)
+                .attr("y", function(d){return eqtlTop+18+d*10;})
+                .text(function(d){return tissue[d]})
+                .style("font-size", "10px");
+              for(i=0; i<genes.length; i++){
+                // var y = d3.scale.linear().range([currentHeight2+50, currentHeight2]);
+                var y = d3.scale.linear().range([eqtlTop+55*i+50, eqtlTop+55*i]);
+                var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
+                y.domain([0, d3.max(data2, function(d){return d.logP})+0.5]);
+                svg.selectAll("dot").data(data2.filter(function(d){if(d.symbol===genes[i]){return d}})).enter()
+                  .append("circle").attr("class", "eqtldot")
+                  .attr("r", 3.5)
+                  .attr("cx", function(d){return x(d.pos);})
+                  .attr("cy", function(d){return y(d.logP);})
+                  .style("fill", function(d){if(d.ld==0){return "grey"}else{return eQTLcolors[d.tissue]}})
+                  .on("click", function(d){
 
-      svg.selectAll("rect.chr").data(data1).enter().append("g")
-        .insert('rect').attr('class', 'cell').attr("class", "Chr15rect")
-        .attr("width", function(d){return x(d.end)-x(d.start);})
-        .attr("height", tileHeight)
-        .attr('x', function(d){return x(d.start);})
-        .attr('y', function(d){return yChr15(d.cell)})
-        .attr("fill", function(d){return Chr15colors[d.state*1-1];})
-        .on("mousemove", function(){
-          var mousex = d3.mouse(this)[0];
-          vertical.attr("x", mousex);
-        })
-        .on("mouseover", function(){
-          var mousex = d3.mouse(this)[0];
-          vertical.attr("x", mousex).style("stroke", "grey");
-        })
-        .on("mouseout", function(){
-          vertical.style("stroke", "transparent")
-        });
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-15)+","+(currentHeight2+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
-        .text("Chromatin state");
+                  });
+                svg.append("text").attr("text-anchor", "middle")
+                  .attr("transform", "translate("+(-margin.left/2)+","+(eqtlTop+i*55+25)+")rotate(-90)")
+                  .text(genes[i])
+                  .style("font-size", "10px");
+                if(i==genes.length-1){
+                  svg.append("g").attr("class", "x axis eqtlend")
+                    .attr("transform", "translate(0,"+(eqtlTop+55*i+50)+")")
+                    .call(xAxis);
+                  svg.append("text").attr("text-anchor", "middle")
+                    .attr("transform", "translate("+width/2+","+(height+30)+")")
+                    .text("Chromosome "+chr);
+                }else{
+                  // eqtlclass = "eqtl"+i;
+                  svg.append("rect")
+                    .attr("x", 0).attr("y", y(0))
+                    .attr("width", width).attr("height", 0.3)
+                    .style("fill", "grey");
+                  // svg.append("g").attr("class", "x axis eqtl"+i)
+                  //   // .attr("class", eqtlclass)
+                  //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
+                  //   .call(xAxis).selectAll("text").remove();
+                }
+                svg.append("g").attr("class", "y axis").call(yAxis);
+                // currentHeight2 = currentHeight2+55;
+              }
 
-      svg.append("g").attr("class", "x axis Chr15")
-        .attr("transform", "translate(0,"+(currentHeight2+y_element.length*tileHeight)+")")
-        .call(xAxis).selectAll("text").remove();
-      svg.append("g").attr("class", "y axis").call(yAxisChr15);
-      currentHeight2 = currentHeight2+y_element.length*tileHeight+10;
+              svg.append("text").attr("text-anchor", "middle")
+                .attr("transform", "translate("+(-margin.left/2-15)+","+(eqtlTop+eqtlHeight/2)+")rotate(-90)")
+                .text("eQTL -log10 P-value")
+                .style("font-size", "10px");
+            });
 
-      data2.forEach(function(d){
-        d.pos = +d.pos;
-        d.logP = +d.logP;
-        d.ld = +d.ld;
-      });
-      var genes = d3.set(data2.map(function(d){return d.symbol;})).values();
-      var tissue = d3.set(data2.map(function(d){return d.tissue;})).values();
-      // neqtl = genes.length;
+          }else if(Chr15==1 && eqtlplot==0){
+            xAxisLabel="chr15";
+            queue().defer(d3.json, "d3text/"+jobID+"/Chr15.txt")
+            .awaitAll(function(error, data){
+              var data1 = data[0];
+              data1.forEach(function(d){
+                d.start = +d.start;
+                d.end = +d.end;
+                d.state = +d.state;
+              });
+              // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
+              var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
+              var tileHeight = 10;
+              if(y_element.length>20){
+                tileHeight = 200/y_element.length;
+              }
+              // var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([currentHeight2, currentHeight2+y_element.length*tileHeight]);
+              var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([chrTop, chrTop+chrHeight]);
+              var yAxisChr15 = d3.svg.axis().scale(yChr15).tickFormat(function(d){return d;}).orient("left");
 
-      var legData = [];
-      for(i=0; i<tissue.length; i++){
-        legData.push(i);
-      }
-      var legendEqtl = svg.selectAll(".legendEqtl")
-        .data(legData)
-        .enter()
-        .append("g").attr("class", "legend")
-      legendEqtl.append("circle")
-        .attr("r", 3.5)
-        .attr("cx", width+10)
-        .attr("cy", function(d){return currentHeight2+15+d*10})
-        .style("fill", function(d){return eQTLcolors[tissue[d]]});
-      legendEqtl.append("text")
-        .attr("text-anchor", "start")
-        .attr("x", width+15)
-        .attr("y", function(d){return currentHeight2+18+d*10;})
-        .text(function(d){return tissue[d]})
-        .style("font-size", "10px");
-      for(i=0; i<genes.length; i++){
-        var y = d3.scale.linear().range([currentHeight2+50, currentHeight2]);
-        var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
-        y.domain([0, d3.max(data2, function(d){return d.logP})+0.5]);
-        svg.selectAll("dot").data(data2.filter(function(d){if(d.symbol===genes[i]){return d}})).enter()
-          .append("circle").attr("class", "eqtldot")
-          .attr("r", 3.5)
-          .attr("cx", function(d){return x(d.pos);})
-          .attr("cy", function(d){return y(d.logP);})
-          .style("fill", function(d){if(d.ld==0){return "grey"}else{return eQTLcolors[d.tissue]}})
-          .on("click", function(d){
+              var states = ["TssA", "TssAFlnk", "TxFlnk", "Tx", "Tx/Wk", "EnhG", "Enh", "ZNF/Rpts", "Het", "TssBiv", "BivFlnk", "EnhBiv", "ReprPC", "ReprPCWk", "Quies"];
+              var legData = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+              var legendChr15 = svg.selectAll(".legendChr15")
+                .data(legData)
+                .enter()
+                .append("g").attr("class", "legend");
+              if(y_element.length>10){
+                var legHead = chrTop+y_element.length*tileHeight/2-8*7.5;
+                legendChr15.append("rect")
+                  .attr("x", width+10)
+                  .attr("y", function(d){return legHead+d*8;})
+                  .attr("width", 20)
+                  .attr("height", 8)
+                  .style("fill", function(d){return Chr15colors[d]})
+                  .style("stroke", "grey")
+                  .style("stroke-width", "0.5");
+                legendChr15.append("text")
+                  .attr("text-anchor", "start")
+                  .attr("x", width+10+22)
+                  .attr("y", function(d){return legHead+d*8+8;})
+                  .text(function(d){return states[d]})
+                  .style("font-size", "9px");
+              }else{
+                var legHead = chrTop+y_element.length*tileHeight/2-8*4;
+                legendChr15.append("rect")
+                  .attr("x", function(d){if(d<7){return width+10;}else{return width+70;}})
+                  .attr("y", function(d){if(d<7){return legHead+d*8;}else{return legHead+(d-7)*8}})
+                  .attr("width", 20)
+                  .attr("height", 8)
+                  .style("fill", function(d){return Chr15colors[d]})
+                  .style("stroke", "grey")
+                  .style("stroke-width", "0.5");
+                legendChr15.append("text")
+                  .attr("text-anchor", "start")
+                  .attr("x", function(d){if(d<7){return width+10+22;}else{return width+70+22;}})
+                  .attr("y", function(d){if(d<7){return legHead+d*8+8;}else{return legHead+(d-7)*8+8}})
+                  .text(function(d){return states[d]})
+                  .style("font-size", "9px");
+              }
 
-          });
-        svg.append("text").attr("text-anchor", "middle")
-          .attr("transform", "translate("+(-margin.left/2)+","+(currentHeight2+25)+")rotate(-90)")
-          .text(genes[i])
-          .style("font-size", "10px");
-        if(i==genes.length-1){
-          svg.append("g").attr("class", "x axis eqtlend")
-            .attr("transform", "translate(0,"+(currentHeight2+50)+")")
-            .call(xAxis);
-          svg.append("text").attr("text-anchor", "middle")
-            .attr("transform", "translate("+width/2+","+(currentHeight2+55+30)+")")
-            .text("Chromosome "+chr);
-        }else{
-          // eqtlclass = "eqtl"+i;
-          svg.append("rect")
-            .attr("x", 0).attr("y", y(0))
-            .attr("width", width).attr("height", 0.3)
-            .style("fill", "grey");
-          // svg.append("g").attr("class", "x axis eqtl"+i)
-          //   // .attr("class", eqtlclass)
-          //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
-          //   .call(xAxis).selectAll("text").remove();
-        }
-        svg.append("g").attr("class", "y axis").call(yAxis);
-        currentHeight2 = currentHeight2+55;
-      }
+              svg.selectAll("rect.chr").data(data1).enter().append("g")
+                .insert('rect').attr('class', 'cell').attr("class", "Chr15rect")
+                .attr("width", function(d){return x(d.end)-x(d.start);})
+                .attr("height", tileHeight)
+                .attr('x', function(d){return x(d.start);})
+                .attr('y', function(d){return yChr15(d.cell)})
+                .attr("fill", function(d){return Chr15colors[d.state*1-1];})
+                .on("mousemove", function(){
+                  var mousex = d3.mouse(this)[0];
+                  vertical.attr("x", mousex);
+                })
+                .on("mouseover", function(){
+                  var mousex = d3.mouse(this)[0];
+                  vertical.attr("x", mousex).style("stroke", "grey");
+                })
+                .on("mouseout", function(){
+                  vertical.style("stroke", "transparent")
+                });
+              svg.append("text").attr("text-anchor", "middle")
+                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
+                .text("Chromatin state");
 
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-15)+","+(currentHeight2-30*genes.length)+")rotate(-90)")
-        .text("eQTL -log10 P-value")
-        .style("font-size", "10px");
-    });
+              svg.append("g").attr("class", "x axis Chr15")
+                .attr("transform", "translate(0,"+(chrTop+y_element.length*tileHeight)+")")
+                .call(xAxis);
+              svg.append("g").attr("class", "y axis").call(yAxisChr15);
+              // currentHeight2 = currentHeight2+y_element.length*tileHeight+10;
+              svg.append("text").attr("text-anchor", "middle")
+                .attr("transform", "translate("+width/2+","+(height+30)+")")
+                .text("Chromosome "+chr);
+              if(eqtl==1 && eqtlplot==0){
+                svg.append("text").attr("text-anchor", "middle")
+                    .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-30)+")")
+                    .text("No eQTL of selected tissues exists in this region.");
+              }
+            });
+          }else if(eqtl==1 && eqtlplot==1){
+            xAxisLabel="eqtl";
+              queue().defer(d3.json, "d3text/"+jobID+"/eqtlplot.txt")
+              .awaitAll(function(error, data){
+                var data = data[0];
+                data.forEach(function(d){
+                  d.pos = +d.pos;
+                  d.logP = +d.logP;
+                  d.ld = +d.ld;
+                });
+                var genes = d3.set(data.map(function(d){return d.symbol;})).values();
+                var tissue = d3.set(data.map(function(d){return d.tissue;})).values();
+                // neqtl = genes.length;
 
-  }else if(Chr15==1 && eqtlplot==0){
-    xAxisLabel="chr15";
-    queue().defer(d3.json, "d3text/"+jobID+"/Chr15.txt")
-    .awaitAll(function(error, data){
-      var data1 = data[0];
-      data1.forEach(function(d){
-        d.start = +d.start;
-        d.end = +d.end;
-        d.state = +d.state;
-      });
-      // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
-      var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
-      var tileHeight = 10;
-      if(y_element.length>20){
-        tileHeight = 200/y_element.length;
-      }
-      var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([currentHeight2, currentHeight2+y_element.length*tileHeight]);
-      var yAxisChr15 = d3.svg.axis().scale(yChr15).tickFormat(function(d){return d;}).orient("left");
+                var legData = [];
+                for(i=0; i<tissue.length; i++){
+                  legData.push(i);
+                }
+                var legendEqtl = svg.selectAll(".legendEqtl")
+                  .data(legData)
+                  .enter()
+                  .append("g").attr("class", "legend")
+                legendEqtl.append("circle")
+                  .attr("r", 3.5)
+                  .attr("cx", width+10)
+                  .attr("cy", function(d){return eqtlTop+15+d*10})
+                  .style("fill", function(d){return eQTLcolors[tissue[d]]});
+                legendEqtl.append("text")
+                  .attr("text-anchor", "start")
+                  .attr("x", width+15)
+                  .attr("y", function(d){return eqtlTop+18+d*10;})
+                  .text(function(d){return tissue[d]})
+                  .style("font-size", "10px");
 
-      var states = ["TssA", "TssAFlnk", "TxFlnk", "Tx", "Tx/Wk", "EnhG", "Enh", "ZNF/Rpts", "Het", "TssBiv", "BivFlnk", "EnhBiv", "ReprPC", "ReprPCWk", "Quies"];
-      var legData = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
-      var legendChr15 = svg.selectAll(".legendChr15")
-        .data(legData)
-        .enter()
-        .append("g").attr("class", "legend");
-      if(y_element.length>10){
-        var legHead = currentHeight2+y_element.length*tileHeight/2-8*7.5;
-        legendChr15.append("rect")
-          .attr("x", width+10)
-          .attr("y", function(d){return legHead+d*8;})
-          .attr("width", 20)
-          .attr("height", 8)
-          .style("fill", function(d){return Chr15colors[d]})
-          .style("stroke", "grey")
-          .style("stroke-width", "0.5");
-        legendChr15.append("text")
-          .attr("text-anchor", "start")
-          .attr("x", width+10+22)
-          .attr("y", function(d){return legHead+d*8+8;})
-          .text(function(d){return states[d]})
-          .style("font-size", "9px");
-      }else{
-        var legHead = currentHeight2+y_element.length*tileHeight/2-8*4;
-        legendChr15.append("rect")
-          .attr("x", function(d){if(d<7){return width+10;}else{return width+70;}})
-          .attr("y", function(d){if(d<7){return legHead+d*8;}else{return legHead+(d-7)*8}})
-          .attr("width", 20)
-          .attr("height", 8)
-          .style("fill", function(d){return Chr15colors[d]})
-          .style("stroke", "grey")
-          .style("stroke-width", "0.5");
-        legendChr15.append("text")
-          .attr("text-anchor", "start")
-          .attr("x", function(d){if(d<7){return width+10+22;}else{return width+70+22;}})
-          .attr("y", function(d){if(d<7){return legHead+d*8+8;}else{return legHead+(d-7)*8+8}})
-          .text(function(d){return states[d]})
-          .style("font-size", "9px");
-      }
+                for(i=0; i<genes.length; i++){
+                  // var y = d3.scale.linear().range([currentHeight2+50, currentHeight2]);
+                  var y = d3.scale.linear().range([eqtlTop+55*i+50, eqtlTop+55*i]);
+                  var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
+                  y.domain([0, d3.max(data, function(d){return d.logP})+0.5]);
+                  svg.selectAll("dot").data(data.filter(function(d){if(d.symbol===genes[i]){return d}})).enter()
+                    .append("circle").attr("class", "eqtldot")
+                    .attr("r", 3.5)
+                    .attr("cx", function(d){return x(d.pos);})
+                    .attr("cy", function(d){return y(d.logP);})
+                    .style("fill", function(d){if(d.ld==0){return "grey"}else{return eQTLcolors[d.tissue]}});
+                  svg.append("text").attr("text-anchor", "middle")
+                    .attr("transform", "translate("+(-margin.left/2)+","+(eqtlTop+i*55+25)+")rotate(-90)")
+                    .text(genes[i])
+                    .style("font-size", "10px");
+                  if(i==genes.length-1){
+                    svg.append("g").attr("class", "x axis eqtlend")
+                      .attr("transform", "translate(0,"+(eqtlTop+55*i+50)+")")
+                      .call(xAxis);
+                    svg.append("text").attr("text-anchor", "middle")
+                      .attr("transform", "translate("+width/2+","+(height+30)+")")
+                      .text("Chromosome "+chr);
+                  }else{
+                    // eqtlclass = "eqtl"+i;
+                    svg.append("rect")
+                      .attr("x", 0).attr("y", y(0))
+                      .attr("width", width).attr("height", 0.3)
+                      .style("fill", "grey");
 
-      svg.selectAll("rect.chr").data(data1).enter().append("g")
-        .insert('rect').attr('class', 'cell').attr("class", "Chr15rect")
-        .attr("width", function(d){return x(d.end)-x(d.start);})
-        .attr("height", tileHeight)
-        .attr('x', function(d){return x(d.start);})
-        .attr('y', function(d){return yChr15(d.cell)})
-        .attr("fill", function(d){return Chr15colors[d.state*1-1];})
-        .on("mousemove", function(){
-          var mousex = d3.mouse(this)[0];
-          vertical.attr("x", mousex);
-        })
-        .on("mouseover", function(){
-          var mousex = d3.mouse(this)[0];
-          vertical.attr("x", mousex).style("stroke", "grey");
-        })
-        .on("mouseout", function(){
-          vertical.style("stroke", "transparent")
-        });
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-15)+","+(currentHeight2+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
-        .text("Chromatin state");
-
-      svg.append("g").attr("class", "x axis Chr15")
-        .attr("transform", "translate(0,"+(currentHeight2+y_element.length*tileHeight)+")")
-        .call(xAxis);
-      svg.append("g").attr("class", "y axis").call(yAxisChr15);
-      currentHeight2 = currentHeight2+y_element.length*tileHeight+10;
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+width/2+","+(currentHeight2+25)+")")
-        .text("Chromosome "+chr);
-      if(eqtl==1 && eqtlplot==0){
-        svg.append("text").attr("text-anchor", "middle")
-            .attr("transform", "translate("+(width/2)+","+(currentHeight2+margin.bottom-30)+")")
-            .text("No eQTL of selected tissues exists in this region.");
-      }
-    });
-  }else if(eqtl==1 && eqtlplot==1){
-    xAxisLabel="eqtl";
-      queue().defer(d3.json, "d3text/"+jobID+"/eqtlplot.txt")
-      .awaitAll(function(error, data){
-        var data = data[0];
-        data.forEach(function(d){
-          d.pos = +d.pos;
-          d.logP = +d.logP;
-          d.ld = +d.ld;
-        });
-        var genes = d3.set(data.map(function(d){return d.symbol;})).values();
-        var tissue = d3.set(data.map(function(d){return d.tissue;})).values();
-        // neqtl = genes.length;
-
-        var legData = [];
-        for(i=0; i<tissue.length; i++){
-          legData.push(i);
-        }
-        var legendEqtl = svg.selectAll(".legendEqtl")
-          .data(legData)
-          .enter()
-          .append("g").attr("class", "legend")
-        legendEqtl.append("circle")
-          .attr("r", 3.5)
-          .attr("cx", width+10)
-          .attr("cy", function(d){return currentHeight2+15+d*10})
-          .style("fill", function(d){return eQTLcolors[tissue[d]]});
-        legendEqtl.append("text")
-          .attr("text-anchor", "start")
-          .attr("x", width+15)
-          .attr("y", function(d){return currentHeight2+18+d*10;})
-          .text(function(d){return tissue[d]})
-          .style("font-size", "10px");
-
-        for(i=0; i<genes.length; i++){
-          var y = d3.scale.linear().range([currentHeight2+50, currentHeight2]);
-          var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
-          y.domain([0, d3.max(data, function(d){return d.logP})+0.5]);
-          svg.selectAll("dot").data(data.filter(function(d){if(d.symbol===genes[i]){return d}})).enter()
-            .append("circle").attr("class", "eqtldot")
-            .attr("r", 3.5)
-            .attr("cx", function(d){return x(d.pos);})
-            .attr("cy", function(d){return y(d.logP);})
-            .style("fill", function(d){if(d.ld==0){return "grey"}else{return eQTLcolors[d.tissue]}});
-          svg.append("text").attr("text-anchor", "middle")
-            .attr("transform", "translate("+(-margin.left/2)+","+(currentHeight2+25)+")rotate(-90)")
-            .text(genes[i])
-            .style("font-size", "10px");
-          if(i==genes.length-1){
-            svg.append("g").attr("class", "x axis eqtlend")
-              .attr("transform", "translate(0,"+(currentHeight2+50)+")")
-              .call(xAxis);
-            svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+width/2+","+(currentHeight2+55+30)+")")
-              .text("Chromosome "+chr);
-          }else{
-            // eqtlclass = "eqtl"+i;
-            svg.append("rect")
-              .attr("x", 0).attr("y", y(0))
-              .attr("width", width).attr("height", 0.3)
-              .style("fill", "grey");
-
-            // svg.append("g").attr("class", "x axis eqtl"+i)
-            //   // .attr("class", eqtlclass)
-            //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
-            //   .call(xAxis).selectAll("text").remove();
+                    // svg.append("g").attr("class", "x axis eqtl"+i)
+                    //   // .attr("class", eqtlclass)
+                    //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
+                    //   .call(xAxis).selectAll("text").remove();
+                  }
+                  svg.append("g").attr("class", "y axis").call(yAxis);
+                  // currentHeight2 = currentHeight2+55;
+                }
+                svg.append("text").attr("text-anchor", "middle")
+                  .attr("transform", "translate("+(-margin.left/2-15)+","+(eqtlTop+eqtlHeight/2)+")rotate(-90)")
+                  .text("eQTL -log10 P-value")
+                  .style("font-size", "10px");
+              });
           }
-          svg.append("g").attr("class", "y axis").call(yAxis);
-          currentHeight2 = currentHeight2+55;
-        }
-        svg.append("text").attr("text-anchor", "middle")
-          .attr("transform", "translate("+(-margin.left/2-15)+","+(currentHeight2-30*genes.length)+")rotate(-90)")
-          .text("eQTL -log10 P-value")
-          .style("font-size", "10px");
+
       });
-  }
+
+  // if(Chr15==1 && eqtl==1 && eqtlplot==1){
+  //   xAxisLabel = "eqtl";
+  //   queue().defer(d3.json, "d3text/"+jobID+"/Chr15.txt")
+  //   .defer(d3.json, "d3text/"+jobID+"/eqtlplot.txt")
+  //   .awaitAll(function(error, data){
+  //     var data1 = data[0];
+  //     var data2 = data[1];
+  //     data1.forEach(function(d){
+  //       d.start = +d.start;
+  //       d.end = +d.end;
+  //       d.state = +d.state;
+  //     });
+  //     // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
+  //
+  //     var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
+  //     var tileHeight = 10;
+  //     if(y_element.length>20){
+  //       tileHeight = 200/y_element.length;
+  //     }
+  //     var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([currentHeight2, currentHeight2+y_element.length*tileHeight]);
+  //     var yAxisChr15 = d3.svg.axis().scale(yChr15).tickFormat(function(d){return d;}).orient("left");
+  //
+  //     var states = ["TssA", "TssAFlnk", "TxFlnk", "Tx", "Tx/Wk", "EnhG", "Enh", "ZNF/Rpts", "Het", "TssBiv", "BivFlnk", "EnhBiv", "ReprPC", "ReprPCWk", "Quies"];
+  //     var legData = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+  //     var legendChr15 = svg.selectAll(".legendChr15")
+  //       .data(legData)
+  //       .enter()
+  //       .append("g").attr("class", "legend");
+  //     if(y_element.length>10){
+  //       var legHead = currentHeight2+y_element.length*tileHeight/2-8*7.5;
+  //       legendChr15.append("rect")
+  //         .attr("x", width+10)
+  //         .attr("y", function(d){return legHead+d*8;})
+  //         .attr("width", 20)
+  //         .attr("height", 8)
+  //         .style("fill", function(d){return Chr15colors[d]})
+  //         .style("stroke", "grey")
+  //         .style("stroke-width", "0.5");
+  //       legendChr15.append("text")
+  //         .attr("text-anchor", "start")
+  //         .attr("x", width+10+22)
+  //         .attr("y", function(d){return legHead+d*8+8;})
+  //         .text(function(d){return states[d]})
+  //         .style("font-size", "9px");
+  //     }else{
+  //       var legHead = currentHeight2+y_element.length*tileHeight/2-8*4;
+  //       legendChr15.append("rect")
+  //         .attr("x", function(d){if(d<7){return width+10;}else{return width+70;}})
+  //         .attr("y", function(d){if(d<7){return legHead+d*8;}else{return legHead+(d-7)*8}})
+  //         .attr("width", 20)
+  //         .attr("height", 8)
+  //         .style("fill", function(d){return Chr15colors[d]})
+  //         .style("stroke", "grey")
+  //         .style("stroke-width", "0.5");
+  //       legendChr15.append("text")
+  //         .attr("text-anchor", "start")
+  //         .attr("x", function(d){if(d<7){return width+10+22;}else{return width+70+22;}})
+  //         .attr("y", function(d){if(d<7){return legHead+d*8+8;}else{return legHead+(d-7)*8+8}})
+  //         .text(function(d){return states[d]})
+  //         .style("font-size", "9px");
+  //     }
+  //
+  //     svg.selectAll("rect.chr").data(data1).enter().append("g")
+  //       .insert('rect').attr('class', 'cell').attr("class", "Chr15rect")
+  //       .attr("width", function(d){return x(d.end)-x(d.start);})
+  //       .attr("height", tileHeight)
+  //       .attr('x', function(d){return x(d.start);})
+  //       .attr('y', function(d){return yChr15(d.cell)})
+  //       .attr("fill", function(d){return Chr15colors[d.state*1-1];})
+  //       .on("mousemove", function(){
+  //         var mousex = d3.mouse(this)[0];
+  //         vertical.attr("x", mousex);
+  //       })
+  //       .on("mouseover", function(){
+  //         var mousex = d3.mouse(this)[0];
+  //         vertical.attr("x", mousex).style("stroke", "grey");
+  //       })
+  //       .on("mouseout", function(){
+  //         vertical.style("stroke", "transparent")
+  //       });
+  //     svg.append("text").attr("text-anchor", "middle")
+  //       .attr("transform", "translate("+(-margin.left/2-15)+","+(currentHeight2+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
+  //       .text("Chromatin state");
+  //
+  //     svg.append("g").attr("class", "x axis Chr15")
+  //       .attr("transform", "translate(0,"+(currentHeight2+y_element.length*tileHeight)+")")
+  //       .call(xAxis).selectAll("text").remove();
+  //     svg.append("g").attr("class", "y axis").call(yAxisChr15).style("font-size", "8px");
+  //     currentHeight2 = currentHeight2+y_element.length*tileHeight+10;
+  //
+  //     data2.forEach(function(d){
+  //       d.pos = +d.pos;
+  //       d.logP = +d.logP;
+  //       d.ld = +d.ld;
+  //     });
+  //     var genes = d3.set(data2.map(function(d){return d.symbol;})).values();
+  //     var tissue = d3.set(data2.map(function(d){return d.tissue;})).values();
+  //     // neqtl = genes.length;
+  //
+  //     var legData = [];
+  //     for(i=0; i<tissue.length; i++){
+  //       legData.push(i);
+  //     }
+  //     var legendEqtl = svg.selectAll(".legendEqtl")
+  //       .data(legData)
+  //       .enter()
+  //       .append("g").attr("class", "legend")
+  //     legendEqtl.append("circle")
+  //       .attr("r", 3.5)
+  //       .attr("cx", width+10)
+  //       .attr("cy", function(d){return currentHeight2+15+d*10})
+  //       .style("fill", function(d){return eQTLcolors[tissue[d]]});
+  //     legendEqtl.append("text")
+  //       .attr("text-anchor", "start")
+  //       .attr("x", width+15)
+  //       .attr("y", function(d){return currentHeight2+18+d*10;})
+  //       .text(function(d){return tissue[d]})
+  //       .style("font-size", "10px");
+  //     for(i=0; i<genes.length; i++){
+  //       var y = d3.scale.linear().range([currentHeight2+50, currentHeight2]);
+  //       var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
+  //       y.domain([0, d3.max(data2, function(d){return d.logP})+0.5]);
+  //       svg.selectAll("dot").data(data2.filter(function(d){if(d.symbol===genes[i]){return d}})).enter()
+  //         .append("circle").attr("class", "eqtldot")
+  //         .attr("r", 3.5)
+  //         .attr("cx", function(d){return x(d.pos);})
+  //         .attr("cy", function(d){return y(d.logP);})
+  //         .style("fill", function(d){if(d.ld==0){return "grey"}else{return eQTLcolors[d.tissue]}})
+  //         .on("click", function(d){
+  //
+  //         });
+  //       svg.append("text").attr("text-anchor", "middle")
+  //         .attr("transform", "translate("+(-margin.left/2)+","+(currentHeight2+25)+")rotate(-90)")
+  //         .text(genes[i])
+  //         .style("font-size", "10px");
+  //       if(i==genes.length-1){
+  //         svg.append("g").attr("class", "x axis eqtlend")
+  //           .attr("transform", "translate(0,"+(currentHeight2+50)+")")
+  //           .call(xAxis);
+  //         svg.append("text").attr("text-anchor", "middle")
+  //           .attr("transform", "translate("+width/2+","+(currentHeight2+55+30)+")")
+  //           .text("Chromosome "+chr);
+  //       }else{
+  //         // eqtlclass = "eqtl"+i;
+  //         svg.append("rect")
+  //           .attr("x", 0).attr("y", y(0))
+  //           .attr("width", width).attr("height", 0.3)
+  //           .style("fill", "grey");
+  //         // svg.append("g").attr("class", "x axis eqtl"+i)
+  //         //   // .attr("class", eqtlclass)
+  //         //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
+  //         //   .call(xAxis).selectAll("text").remove();
+  //       }
+  //       svg.append("g").attr("class", "y axis").call(yAxis);
+  //       currentHeight2 = currentHeight2+55;
+  //     }
+  //
+  //     svg.append("text").attr("text-anchor", "middle")
+  //       .attr("transform", "translate("+(-margin.left/2-15)+","+(currentHeight2-30*genes.length)+")rotate(-90)")
+  //       .text("eQTL -log10 P-value")
+  //       .style("font-size", "10px");
+  //   });
+  //
+  // }else if(Chr15==1 && eqtlplot==0){
+  //   xAxisLabel="chr15";
+  //   queue().defer(d3.json, "d3text/"+jobID+"/Chr15.txt")
+  //   .awaitAll(function(error, data){
+  //     var data1 = data[0];
+  //     data1.forEach(function(d){
+  //       d.start = +d.start;
+  //       d.end = +d.end;
+  //       d.state = +d.state;
+  //     });
+  //     // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
+  //     var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
+  //     var tileHeight = 10;
+  //     if(y_element.length>20){
+  //       tileHeight = 200/y_element.length;
+  //     }
+  //     var yChr15 = d3.scale.ordinal().domain(y_element).rangeBands([currentHeight2, currentHeight2+y_element.length*tileHeight]);
+  //     var yAxisChr15 = d3.svg.axis().scale(yChr15).tickFormat(function(d){return d;}).orient("left");
+  //
+  //     var states = ["TssA", "TssAFlnk", "TxFlnk", "Tx", "Tx/Wk", "EnhG", "Enh", "ZNF/Rpts", "Het", "TssBiv", "BivFlnk", "EnhBiv", "ReprPC", "ReprPCWk", "Quies"];
+  //     var legData = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14];
+  //     var legendChr15 = svg.selectAll(".legendChr15")
+  //       .data(legData)
+  //       .enter()
+  //       .append("g").attr("class", "legend");
+  //     if(y_element.length>10){
+  //       var legHead = currentHeight2+y_element.length*tileHeight/2-8*7.5;
+  //       legendChr15.append("rect")
+  //         .attr("x", width+10)
+  //         .attr("y", function(d){return legHead+d*8;})
+  //         .attr("width", 20)
+  //         .attr("height", 8)
+  //         .style("fill", function(d){return Chr15colors[d]})
+  //         .style("stroke", "grey")
+  //         .style("stroke-width", "0.5");
+  //       legendChr15.append("text")
+  //         .attr("text-anchor", "start")
+  //         .attr("x", width+10+22)
+  //         .attr("y", function(d){return legHead+d*8+8;})
+  //         .text(function(d){return states[d]})
+  //         .style("font-size", "9px");
+  //     }else{
+  //       var legHead = currentHeight2+y_element.length*tileHeight/2-8*4;
+  //       legendChr15.append("rect")
+  //         .attr("x", function(d){if(d<7){return width+10;}else{return width+70;}})
+  //         .attr("y", function(d){if(d<7){return legHead+d*8;}else{return legHead+(d-7)*8}})
+  //         .attr("width", 20)
+  //         .attr("height", 8)
+  //         .style("fill", function(d){return Chr15colors[d]})
+  //         .style("stroke", "grey")
+  //         .style("stroke-width", "0.5");
+  //       legendChr15.append("text")
+  //         .attr("text-anchor", "start")
+  //         .attr("x", function(d){if(d<7){return width+10+22;}else{return width+70+22;}})
+  //         .attr("y", function(d){if(d<7){return legHead+d*8+8;}else{return legHead+(d-7)*8+8}})
+  //         .text(function(d){return states[d]})
+  //         .style("font-size", "9px");
+  //     }
+  //
+  //     svg.selectAll("rect.chr").data(data1).enter().append("g")
+  //       .insert('rect').attr('class', 'cell').attr("class", "Chr15rect")
+  //       .attr("width", function(d){return x(d.end)-x(d.start);})
+  //       .attr("height", tileHeight)
+  //       .attr('x', function(d){return x(d.start);})
+  //       .attr('y', function(d){return yChr15(d.cell)})
+  //       .attr("fill", function(d){return Chr15colors[d.state*1-1];})
+  //       .on("mousemove", function(){
+  //         var mousex = d3.mouse(this)[0];
+  //         vertical.attr("x", mousex);
+  //       })
+  //       .on("mouseover", function(){
+  //         var mousex = d3.mouse(this)[0];
+  //         vertical.attr("x", mousex).style("stroke", "grey");
+  //       })
+  //       .on("mouseout", function(){
+  //         vertical.style("stroke", "transparent")
+  //       });
+  //     svg.append("text").attr("text-anchor", "middle")
+  //       .attr("transform", "translate("+(-margin.left/2-15)+","+(currentHeight2+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
+  //       .text("Chromatin state");
+  //
+  //     svg.append("g").attr("class", "x axis Chr15")
+  //       .attr("transform", "translate(0,"+(currentHeight2+y_element.length*tileHeight)+")")
+  //       .call(xAxis);
+  //     svg.append("g").attr("class", "y axis").call(yAxisChr15);
+  //     currentHeight2 = currentHeight2+y_element.length*tileHeight+10;
+  //     svg.append("text").attr("text-anchor", "middle")
+  //       .attr("transform", "translate("+width/2+","+(currentHeight2+25)+")")
+  //       .text("Chromosome "+chr);
+  //     if(eqtl==1 && eqtlplot==0){
+  //       svg.append("text").attr("text-anchor", "middle")
+  //           .attr("transform", "translate("+(width/2)+","+(currentHeight2+margin.bottom-30)+")")
+  //           .text("No eQTL of selected tissues exists in this region.");
+  //     }
+  //   });
+  // }else if(eqtl==1 && eqtlplot==1){
+  //   xAxisLabel="eqtl";
+  //     queue().defer(d3.json, "d3text/"+jobID+"/eqtlplot.txt")
+  //     .awaitAll(function(error, data){
+  //       var data = data[0];
+  //       data.forEach(function(d){
+  //         d.pos = +d.pos;
+  //         d.logP = +d.logP;
+  //         d.ld = +d.ld;
+  //       });
+  //       var genes = d3.set(data.map(function(d){return d.symbol;})).values();
+  //       var tissue = d3.set(data.map(function(d){return d.tissue;})).values();
+  //       // neqtl = genes.length;
+  //
+  //       var legData = [];
+  //       for(i=0; i<tissue.length; i++){
+  //         legData.push(i);
+  //       }
+  //       var legendEqtl = svg.selectAll(".legendEqtl")
+  //         .data(legData)
+  //         .enter()
+  //         .append("g").attr("class", "legend")
+  //       legendEqtl.append("circle")
+  //         .attr("r", 3.5)
+  //         .attr("cx", width+10)
+  //         .attr("cy", function(d){return currentHeight2+15+d*10})
+  //         .style("fill", function(d){return eQTLcolors[tissue[d]]});
+  //       legendEqtl.append("text")
+  //         .attr("text-anchor", "start")
+  //         .attr("x", width+15)
+  //         .attr("y", function(d){return currentHeight2+18+d*10;})
+  //         .text(function(d){return tissue[d]})
+  //         .style("font-size", "10px");
+  //
+  //       for(i=0; i<genes.length; i++){
+  //         var y = d3.scale.linear().range([currentHeight2+50, currentHeight2]);
+  //         var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
+  //         y.domain([0, d3.max(data, function(d){return d.logP})+0.5]);
+  //         svg.selectAll("dot").data(data.filter(function(d){if(d.symbol===genes[i]){return d}})).enter()
+  //           .append("circle").attr("class", "eqtldot")
+  //           .attr("r", 3.5)
+  //           .attr("cx", function(d){return x(d.pos);})
+  //           .attr("cy", function(d){return y(d.logP);})
+  //           .style("fill", function(d){if(d.ld==0){return "grey"}else{return eQTLcolors[d.tissue]}});
+  //         svg.append("text").attr("text-anchor", "middle")
+  //           .attr("transform", "translate("+(-margin.left/2)+","+(currentHeight2+25)+")rotate(-90)")
+  //           .text(genes[i])
+  //           .style("font-size", "10px");
+  //         if(i==genes.length-1){
+  //           svg.append("g").attr("class", "x axis eqtlend")
+  //             .attr("transform", "translate(0,"+(currentHeight2+50)+")")
+  //             .call(xAxis);
+  //           svg.append("text").attr("text-anchor", "middle")
+  //             .attr("transform", "translate("+width/2+","+(currentHeight2+55+30)+")")
+  //             .text("Chromosome "+chr);
+  //         }else{
+  //           // eqtlclass = "eqtl"+i;
+  //           svg.append("rect")
+  //             .attr("x", 0).attr("y", y(0))
+  //             .attr("width", width).attr("height", 0.3)
+  //             .style("fill", "grey");
+  //
+  //           // svg.append("g").attr("class", "x axis eqtl"+i)
+  //           //   // .attr("class", eqtlclass)
+  //           //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
+  //           //   .call(xAxis).selectAll("text").remove();
+  //         }
+  //         svg.append("g").attr("class", "y axis").call(yAxis);
+  //         currentHeight2 = currentHeight2+55;
+  //       }
+  //       svg.append("text").attr("text-anchor", "middle")
+  //         .attr("transform", "translate("+(-margin.left/2-15)+","+(currentHeight2-30*genes.length)+")rotate(-90)")
+  //         .text("eQTL -log10 P-value")
+  //         .style("font-size", "10px");
+  //     });
+  // }
 
   // reset();
 
@@ -914,7 +1344,7 @@ $(document).ready(function(){
       })
       .style("fill", function(d){if(x(d.end_position)<0 || x(d.start_position)>width){return "transparent";}
         else if(d.gene_biotype=="protein_coding"){return "blue";}
-        else{return "khaki"}
+        else{return "#383838"}
       });
     svg.selectAll(".geneName")
     .attr("x", function(d){
@@ -940,7 +1370,7 @@ $(document).ready(function(){
       })
       .style("fill", function(d){if(x(d.exon_chrom_end)<0 || x(d.exon_chrom_start)>width){return "transparent";}
         else if(d.gene_biotype=="protein_coding"){return "blue";}
-        else{return "khaki"}
+        else{return "#383838"}
       })
     svg.selectAll(".Chr15rect")
       .attr("x", function(d){
@@ -975,6 +1405,33 @@ $(document).ready(function(){
     });
   }
 });
+
+function geneOver(genes, x, width){
+  var tg = genes;
+  // genes.forEach(function(d){
+  //   if(x(d.end_position)>0 && x(d.start_position)<width){tg.push(d);}
+  // })
+
+  for(var i=0; i<tg.length; i++){
+    var temp = tg.filter(function(d2){
+      if((d2.end_position>=tg[i].start_position && d2.end_position<=tg[i].end_position)
+        // || (d2.start_position>=d.start_position && d2.start_position<=d.end_position)
+        || (d2.start_position<=tg[i].start_position && d2.end_position>=tg[i].end_position)
+      ){return d2;}
+      else if(x((d2.end_position+d2.start_position+d2.external_gene_name.length*5)/2)>=x((tg[i].end_position+tg[i].start_position)/2)-((tg[i].external_gene_name.length*5)/2)
+          && x((d2.end_position+d2.start_position+d2.external_gene_name.length*5)/2)<=x((tg[i].end_position+tg[i].start_position)/2)+((tg[i].external_gene_name.length*5)/2)
+        ){return d2}
+    })
+    if(temp.length>1){
+      tg[i].y = d3.max(temp, function(d){return d.y})+1;
+    }else{
+      tg[i].y = 1;
+    }
+  }
+
+  return tg;
+}
+
 </script>
 
 @section('content')

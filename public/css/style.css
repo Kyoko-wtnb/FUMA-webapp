@@ -19,6 +19,29 @@ body
   color: #b3b3cc;
 }*/
 
+#overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  background: #000;
+  opacity: 0.8;
+  filter: alpha(opacity=50);
+}
+
+#loading {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  vertical-align:middle;
+  top: 40%;
+  /*left: 50%;*/
+  /*margin: -28px 0 0 -25px;*/
+  color: #fff;
+}
+
 .btn.active, .btn:active{
   background-color: #b3b3cc;
 }

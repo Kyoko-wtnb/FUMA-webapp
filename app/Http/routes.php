@@ -21,9 +21,9 @@ Route::get('tutorial', function(){
   #webserver return view('pages.tutorial', ['subdir' => '/IPGAP']);
 });
 
-Route::get('snp2gene', function(){
-  return view('pages.snp2gene'); #local
-  #webserver return view('pages.snp2gene', ['subdir' => '/IPGAP']);
+Route::get('snp2gene/{jobID?}', function($jobID=null){
+  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]); #local
+  #webserver return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>null]);
 });
 
 Route::get('GWASresult', function(){
@@ -80,9 +80,11 @@ Route::post('snp2gene/geneSubmit', 'JobController@snp2geneGeneQuery');
 Route::post('gene2func/submit', 'JobController@gene2funcSubmit');
 
 Route::post('gene2func/geneQuery', 'JobController@geneQuery');
+
 Route::post('snp2gene/geneQuery', 'JobController@geneQuery');
 
 Route::post('gene2func/fileDown', 'JobController@gene2funcFileDown');
+Route::post('snp2gene/fileDown', 'JobController@gene2funcFileDown');
 
 Route::get('gene2func/d3text/{jobID}/{file}', 'D3jsController@d3js_textfile');
 

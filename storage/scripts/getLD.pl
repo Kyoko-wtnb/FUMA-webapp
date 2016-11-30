@@ -599,13 +599,13 @@ foreach my $chr (1..23){
 							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"annot"}=$maf{$line[3]}{"annot"};
 						}
 					}
-					if($KGSNPs==0){
-						if(exists $GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"p"}){
-							if($GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"p"}<=$gwasP && $GWAS{$chr}{$maf{$line[3]}{"pos"}}{"p"} >= $GWAS{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"p"}){
-								print LD $maf{$line[2]}{"uniqID"},"\t", $maf{$line[3]}{"uniqID"},"\t$line[4]\n";
-							}
-						}
-					}else{
+					# if($KGSNPs==0){
+					# 	if(exists $GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"p"}){
+					# 		if($GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"p"}<=$gwasP && $GWAS{$chr}{$maf{$line[3]}{"pos"}}{"p"} >= $GWAS{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"p"}){
+					# 			print LD $maf{$line[2]}{"uniqID"},"\t", $maf{$line[3]}{"uniqID"},"\t$line[4]\n";
+					# 		}
+					# 	}
+					# }else{
 						if(exists $GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"p"}){
 							if($GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"p"}<=$gwasP && $GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"p"} >= $GWAS{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"p"}){
 								print LD $maf{$line[2]}{"uniqID"},"\t", $maf{$line[3]}{"uniqID"},"\t$line[4]\n";
@@ -613,7 +613,7 @@ foreach my $chr (1..23){
 						}else{
 							print LD $maf{$line[2]}{"uniqID"},"\t", $maf{$line[3]}{"uniqID"},"\t$line[4]\n";
 						}
-					}
+					# }
 				}
 			}
 		}

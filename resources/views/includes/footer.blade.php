@@ -1,4 +1,4 @@
-<div id="foot">
+<div id="foot" style="width:100%;">
   <br/>
   <div class="row" style="color: #818588;">
     <div class="col-md-6">

@@ -30,6 +30,7 @@
   var public_path = "{{ URL::asset('/image/ajax-loader.gif') }}";
 </script>
 @section('content')
+<div class="container" style="padding-top: 50px;">
 <div class="panel panel-default">
   <div class="panel-heading">
     <div class="panel-title">Select GWASs from database</div>
@@ -168,5 +169,6 @@
     </div>
   </div>
   <br/>
+</div>
 </div>
 @stop

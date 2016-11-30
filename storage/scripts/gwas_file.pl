@@ -160,8 +160,8 @@ if(defined $chrcol && defined $poscol){
 		my @line = split(/\s/, $_);
 		$line[$rsIDcol] = $rsID{$line[$rsIDcol]} if(exists $rsID{$line[$rsIDcol]});
 		$GWAS{$line[$rsIDcol]}{"p"}=$line[$pcol];
-		$GWAS{$line[$rsIDcol]}{"ref"}=uc($line[$refcol]);
-		$GWAS{$line[$rsIDcol]}{"alt"}=uc($line[$altcol]);
+		$GWAS{$line[$rsIDcol]}{"ref"}=uc($line[$refcol]) if(defined $refcol);
+		$GWAS{$line[$rsIDcol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);
 	}
 
 	my $dbSNP = "/media/sf_SAMSUNG/dbSNP/snp146_pos_allele.txt"; #local
@@ -172,7 +172,15 @@ if(defined $chrcol && defined $poscol){
 	while(<DB>){
 		my @line = split(/\s/, $_);
 		if(exists $GWAS{$line[3]}){
-			print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"}, "\n" if(($line[4] eq $GWAS{$line[3]}{"ref"} && $line[5] eq $GWAS{$line[3]}{"alt"}) || ($line[5] eq $GWAS{$line[3]}{"ref"} && $line[4] eq $GWAS{$line[3]}{"alt"}));
+			if(defined $refcol && defined $altcol){
+				print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"}, "\n" if(($line[4] eq $GWAS{$line[3]}{"ref"} && $line[5] eq $GWAS{$line[3]}{"alt"}) || ($line[5] eq $GWAS{$line[3]}{"ref"} && $line[4] eq $GWAS{$line[3]}{"alt"}));
+			}elsif(defined $refcol){
+				print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"}, "\n" if($line[5] eq $GWAS{$line[3]}{"ref"} || $line[4] eq $GWAS{$line[3]}{"ref"});
+			}elsif(defined $altcol){
+				print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"}, "\n" if($line[5] eq $GWAS{$line[3]}{"alt"} || $line[4] eq $GWAS{$line[3]}{"alt"});
+			}else{
+				print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"}, "\n";
+			}
 		}
 	}
 	close DB;
