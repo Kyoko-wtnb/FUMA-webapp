@@ -1,7 +1,0 @@
-ensg	symbol	chr	start	end	strand	status	type	entrezID	HUGO	posMapSNPs	posMapMaxCADD	eqtlMapSNPs	eqtlMapminP	eqtlMapminQ	eqtlMapts	minGwasP	leadSNPs	interval
-ENSG00000196189	SEMA4A	1	156117157	156147543	1	KNOWN	protein_coding	64218	SEMA4A	0	0	35	4.46839e-11	0.0002244938	Esophagus_Mucosa:Skin_Sun_Exposed_Lower_leg:Stomach:Thyroid:Whole_Blood	2.542e-12	rs1052053	1
-ENSG00000160785	SLC25A44	1	156163880	156182587	1	KNOWN	protein_coding	9673	SLC25A44	0	0	59	4.65062e-11	0.00022267933	Adipose_Subcutaneous:Artery_Tibial:Cells_Transformed_fibroblasts:Lung:Nerve_Tibial:Skin_Sun_Exposed_Lower_leg:Thyroid	2.542e-12	rs1052053	1
-ENSG00000260238	PMF1-BGLAP	1	156182773	156213123	1	KNOWN	protein_coding	100527963	PMF1-BGLAP	1	12.5	1	1.84e-42	0	BIOS_eQTL_geneLevel	2.589e-08	rs1052053	1
-ENSG00000160783	PMF1	1	156182784	156212874	1	KNOWN	protein_coding	11243	PMF1	1	12.5	2	1.84e-42	0	BIOS_eQTL_geneLevel	2.865e-11	rs1052053	1
-ENSG00000111275	ALDH2	12	112204691	112247782	1	KNOWN	protein_coding	217	ALDH2	0	0	71	1.09627e-16	4.7e-05	Artery_Tibial:Esophagus_Mucosa:Skin_Not_Sun_Exposed_Suprapubic:Skin_Sun_Exposed_Lower_leg:BIOS_eQTL_geneLevel	4.042e-12	rs10774624:rs847892:rs4766897:rs11066283	7
-ENSG00000136141	LRCH1	13	47127303	47327175	1	KNOWN	protein_coding	23143	LRCH1	0	0	4	3.10979e-08	0.00059688435	Heart_Left_Ventricle	3.98e-08	rs4942561:rs4942570	8
