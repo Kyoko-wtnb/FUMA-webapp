@@ -4,40 +4,15 @@
 
 <script type="text/javascript">
   <!--hide
-  var password;
-  var pass1 = "CTGLab01";
-  password = prompt("Please enter password to go IPGAP website");
-  if(password==pass1){
-    alert("Correct password, click 'OK' to enter!!");
-  }else{
-    window.location="http://www.google.com";
-  }
+  // var password;
+  // var pass1 = "CTGLab01";
+  // password = prompt("Please enter password to go IPGAP website");
+  // if(password==pass1){
+  //   alert("Correct password, click 'OK' to enter!!");
+  // }else{
+  //   window.location="http://www.google.com";
+  // }
   //-->
-  // $(document).ready(function(){
-  //   $('.newsfeedPanel').each(function(){
-  //     if($(this).parent().hasClass('active')){
-  //       $(this).show();
-  //     }else{
-  //       $(this).hide()
-  //     }
-  //   });
-  //
-  //   $('.newsfeed a').on('click', function(){
-  //     if($(this).parent().hasClass('active')){
-  //       $(this).parent().removeClass('active');
-  //     }else{
-  //       $("#NewsFeed.newsfeed").find(".active").removeClass("active");
-  //       $(this).parent().addClass('active');
-  //     }
-  //     $('.newsfeedPanel').each(function(){
-  //       if($(this).parent().hasClass('active')){
-  //         $(this).show();
-  //       }else{
-  //         $(this).hide()
-  //       }
-  //     });
-  //   });
-  // });
 </script>
 @section('content')
 <div class="container" style="padding-top:50px;">

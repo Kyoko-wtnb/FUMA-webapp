@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 ##### resources/views/includes/header.blade.php
+=begin
 my $in = "resources/views/includes/header.blade.php";
 open(IN, "$in") or die "Cannot open $in\n";
 open(OUT, ">temp.txt");
@@ -33,6 +34,7 @@ while(<IN>){
 close IN;
 close OUT;
 system "mv temp.txt $in";
+=cut
 
 ##### Controllers
 my $dir = "app/Http/Controllers/";

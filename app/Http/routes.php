@@ -12,42 +12,34 @@
 */
 
 Route::get('/', function () {
-  return view('pages.home'); #local
-  #webserver return view('pages.home', ['subdir' => '/IPGAP']);
+  return view('pages.home', ['subdir' => '/IPGAP']);
 });
 
 Route::get('tutorial', function(){
-  return view('pages.tutorial'); #local
-  #webserver return view('pages.tutorial', ['subdir' => '/IPGAP']);
+  return view('pages.tutorial', ['subdir' => '/IPGAP']);
 });
 
 Route::get('snp2gene/{jobID?}', function($jobID=null){
-  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]); #local
-  #webserver return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>null]);
+  return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>null]);
 });
 
 Route::get('GWASresult', function(){
-  return view('pages.GWASresult'); #local
-  #webserver return view('pages.GWASresult', ['subdir' => '/IPGAP']);
+  return view('pages.GWASresult', ['subdir' => '/IPGAP']);
 });
 
 Route::get('gene2func', function(){
-  return view('pages.gene2func', ['status'=>'new', 'id'=>'none']); #local
-  #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'new', 'id'=>'none']);
+  return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'new', 'id'=>'none']);
 });
 
 Route::get('links', function(){
-  return view('pages.links'); #local
-  #webserver return view('pages.links', ['subdir' => '/IPGAP']);
+  return view('pages.links', ['subdir' => '/IPGAP']);
 });
 
 Route::get('contact', function(){
-  return view('pages.contact'); #local
-  #webserver return view('pages.contact', ['subdir' => '/IPGAP']);
+  return view('pages.contact', ['subdir' => '/IPGAP']);
 });
 
-Route::post('jobcheck', 'JobCheck@index'); #local
-#webserver Route::post('snp2gene/jobcheck', 'JobCheck@index');
+Route::post('snp2gene/jobcheck', 'JobCheck@index');
 
 Route::post('snp2gene/newJob', 'JobController@newJob');
 
