@@ -901,7 +901,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
           {"data": "leadSNP", name:"lead SNP"},
           {"data": "chr", name:"chr"},
           {"data": "bp", name:"bp"},
-          {"data": "snp", name:"rsID"},
+          {"data": "snp", name:"snp"},
           {"data": "PMID", name:"PMID"},
           {"data": "Trait", name:"Trait"},
           {"data": "FirstAuth", name:"FirstAuth"},

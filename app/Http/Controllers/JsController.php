@@ -43,11 +43,12 @@ class JsController extends Controller
 
     public function paramTable(Request $request){
       $filedir = $request -> input('filedir');
-      $table = '<table class="table table-striped" style="width: 100%; margin-right:auto; margin-left:auto; text-align: right;"><tbody style="display:block; overflow-y:scroll; height: 500px;">';
+      //  style="display:block; overflow-y:scroll; height: 500px;"
+      $table = '<table class="table table-striped" style="width: 100%; margin-left: 10px; margin-right: 10px;ext-align: right;"><tbody>';
       $lines = file($filedir."params.txt");
       foreach($lines as $l){
         $line = preg_split("/[\t]/", chop($l));
-        $table .= "<tr><td>".$line[0]."</td><td>".$line[1]."</td></tr>";
+        $table .= "<tr><td>".$line[0].'</td><td style="word-break: break-all;">'.$line[1]."</td></tr>";
       }
       $table .= "</tbody></table>";
       echo $table;

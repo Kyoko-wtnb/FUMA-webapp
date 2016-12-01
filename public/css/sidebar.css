@@ -35,9 +35,9 @@
 
 #page-content-wrapper {
     /*padding-top: 50px;*/
-    padding-left: 50;
+    /*padding-left: 50;*/
     /*margin-left: 0;*/
-    /*width: 100%;*/
+    width: 100%;
     height: auto;
 }
 #wrapper.active {
@@ -45,10 +45,6 @@
 }
 #wrapper.active #sidebar-wrapper {
     left: 150px;
-}
-
-#page-content-wrapper {
-  width: 100%;
 }
 
 #sidebar_menu li a, .sidebar-nav li a, .subside a {
@@ -91,7 +87,7 @@
   text-decoration: none;
 }
 
-h3:target, div:target{
+h3:target{
   padding-top: 60px;
 }
 

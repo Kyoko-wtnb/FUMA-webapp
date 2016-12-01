@@ -66,10 +66,10 @@
   </div> -->
 
   <!-- <div class="col-md-10"> -->
-<div id="page-content-wrapper" class="container">
+<div id="page-content-wrapper">
   <div class="page-content inset">
     <div id="test"></div>
-    <div id="overview" class="sidePanel" style="padding-top:50;">
+    <div id="overview" class="sidePanel container" style="padding-top:50;">
       <h2 >Tutorial</h2>
       <p>Please read this tutorial carefully to use IPGAP.
         There are various parameters provided by this pipeline.
@@ -90,20 +90,41 @@
       </div>
     </div>
 
-    <div id="quick-start" class="sidePanel" style="padding-top:50;">
+    <div id="quick-start" class="sidePanel container" style="padding-top:50;">
       <h2>Quick Start</h2>
+      <p>In this page, we quickly go through what you can do and what you can get from the IPGAP.
+        You will get a minimum knowledge of the IPGAP and will be able to start using.
+        Whenever you get questions, please go back to tutorial for detail explanations.
+        If you cannot find out your question, we are welcome you to send us email.
+      </p>
       <div style="margin-left: 40px;">
-        <p>In this page, we quickly go through what you can do and what you can get from the IPGAP.
-          You will get a minimum knowledge of the IPGAP and will be able to start using.
-          Whenevr you get questions, please go back to tutorial for detail explanations.</p>
         <h3 id="getCandidate">Get candidates from your own GWAS summary statistics</h3>
+        <p>You can obtain functional annotation of SNPs and map them to genes.
+          By setting parameter, you are also able to prioritize genes by your criterion.</p>
         <div style="margin-left: 40px">
-          <p>1. Go to <code>SNP2GENE</code> and upload GWAS summary statistics file.</p>
-          <p>2. Set parameters.</p>
-          <p>3. Wait until you get a email.</p>
+          <p>1. Go to <code>SNP2GENE</code> and upload GWAS summary statistics file.<br/>
+            <tab>Avariety of input formats are supported. Please refer tutorial of <a href="#snp2gene">SNP2GENE</a> for details.
+            If you are not sure, chose <code>Plain text</code> which fits most of the headers.<br/>
+            Optionally, if you already know lead SNPs and you want to use them as lead SNPs, you can upload a file with 3 column; rsID, chromosome and position.<br/>
+            In addition, if you are interested in specific genomic regions, you can also provide them by uploading file with 3 columns; chromosome, start and end position.<br/>
+          </p>
+
+          <p>2. Set parameters.<br/>
+            <tab>Please check your parameter carefully. Default setting perform identification of lead SNPs at r2=0.6 and maps SNPs to genes up to 10kb apart.<br/>
+            To filter SNPs by functional annotations and use eQTL mapping, please refer parmeter section under <a href="#snp2gene">SNP2GENE</a>.</p>
+          </p>
+
+          <p>3. Wait until you get a email.<br/>
+            <tab>Once job is submitted, you will receive one email for "Job submission" and another one for "Job completion".
+            You can stay at the page which shows loading page and will redirect to results page automatically, but you can query your job later on.
+            Once you get a "Job completer" email, you are redy to query your results.
+          </p>
+
           <p>4. Check your results.<br/>
-          <tab>Go pack to <code>SNP2GENE</code> and enter you email address and job title.
-              This will query your job and show all results.</p>
+            <tab>Go back to <code>SNP2GENE</code> and enter you email address and job title.
+            This will query your job and show all results.<br/>
+            In the results page, you can brows your results, download them, and create regionsl plots.
+          </p>
         </div>
         <br/>
         <h3 id="geneQuery">Identify tissue specificity and shared biological functions of a list of genes</h3>
@@ -523,21 +544,49 @@
         <h3 id="outputs">Outputs</h3>
         <p>Go to SNP2GENE and in the &quot;Query existing job&quot; panel, enter your email address and job title. If both are correct, &quot;Go to Job&quot; button is enabled.</p>
         <p>There are 5 panels in the result page.</p>
-        <h4 id="1-information-of-your-job">1. Information of your job</h4>
+        <h4>1. Information of your job</h4>
         <p>This panel contains your email address, job title and the date of job submission.</p>
-        <h4 id="2-result-tables">2. Result tables</h4>
+        <h4>2. Genome-wide plots</h4>
+        <p>This panel displays manhattan plots and Q-Q plots for both SNP and gene-based association test.</p>
+        <ul>
+          <li>Plots for SNPs<br/>
+            To minimize overlapped data points in the plot, they are filtered based on the following criteria.
+            Please be aware that, since majority od overlapped data points are not displayed in the plot, those plots are approximated plots.
+            <ul>
+              <li>Manhattan plot: </li>
+              <li>Q-Q plot: </li>
+            </ul>
+          </li>
+          <li>Plots for gene-based test<br/>
+            Gene based test was performed by using MAGMA with default setting.
+            SNPs were assigned to the genes obtained from Ensembl build 85 (only protein-coding genes).
+            MAGMA results are available from the download button.
+          </li>
+        </ul>
+
+        <h4>3. Summary of results</h4>
+        <p>This panel shows summary of your GWAS input.</p>
+        <ul>
+          <li>Summary of SNPs and mapped genes<ul>
+            <li><strong>#lead SNPs</strong>: The number of independent lead SNPs identified.</li>
+            <li><strong>#Intervals</strong>: The number of genomic intervals defined from the independent lead SNPs.</li>
+            <li><strong>#candidate SNPs</strong>: The number of candidate SNPs which are in LD (given r2) of one of the independet lead SNPs.
+              This includes non-GWAS tagged SNPs which is extracted from 1000G reference panel.
+              When SNPs were filtered based on functional annotation for gene mapping, this number if before the functional filtering.</li>
+            <li><strong>#candidate GWAS tagged SNPs</strong>: The number of candidate SNPs (described above) which are tagged in GWAS (exists in your input file).</li>
+            <li><strong>#mapped genes</strong>: The number of genes mapped by user-defined parameters.</li>
+          </ul></li>
+          <li>Positional annotation of candidate SNPs</li>
+
+          <li>Summary per interval</li>
+        </ul>
+        <h4>4. Result tables</h4>
         <p>This panel contain multiple tables of your results.
         Here are descriptions for columns in each tables.
         Downloadable text files have the same column as shown in the interface unless methioned.</p>
+        <p>By clicking one of the rows of tables of independent lead SNPs or genomic intervals, it will create regional plots of candidate SNPs (GWAS P-value).
+          To create plots with genes and other functional annotations, please go to Regional plot panel.</p>
         <div style="margin-left: 40px;">
-          <ul>
-            <li>Summary<ul>
-              <li>Summary of SNPs and mapped genes</li>
-              <li>Positional annotation of candidate SNPs</li>
-              <li>Summary per interval</li>
-            </ul>
-            </li>
-          </ul>
           <ul>
             <li><p>lead SNPs / leadSNPs.txt</p>
             <p>All independent lead SNPs identified by IPGAP.</p>
@@ -627,7 +676,7 @@
             </li>
           </ul>
           <ul>
-            <li><p>Genes</p>
+            <li><p>Genes / genes.txt</p>
             <p>The summary of mapped genes based on your defined mapping criterion.
              Columns change for positional and eQTL mappings.
              When both mappings are performed, all columns exit in the table.</p>
@@ -656,7 +705,7 @@
             </li>
           </ul>
           <ul>
-            <li><p>eQTL</p>
+            <li><p>eQTL / eqtl.txt</p>
             <p>This table is only shown when you performed eQTL mapping.
              The table contain unique pair of SNP-gene-tissue, therefore, the same SNP could appear in the table multiple times.</p>
             <ul>
@@ -674,14 +723,14 @@
             </li>
           </ul>
           <ul>
-            <li><p>GWAScatalog</p>
+            <li><p>GWAScatalog / gwascatalog.txt</p>
               <p>List of SNPs reported in GWAScatalog which are candidate SNPs of your GWAS summary statistics. The table does not contain all recode from GWAScatalog. To get full information, please download from &quot;Downloads&quot; tab.</p>
               <ul>
                 <li><strong>Interval</strong> : Index of interval.</li>
                 <li><strong>lead SNP</strong> : The lad SNP of the SNP in GWAScatalog.</li>
                 <li><strong>chr</strong> : chromosome</li>
                 <li><strong>bp</strong> : position on hg19</li>
-                <li><strong>rsID</strong> : rsID</li>
+                <li><strong>snp</strong> : rsID of reported SNP in GWAS catalog</li>
                 <li><strong>PMID</strong> : PubMed ID</li>
                 <li><strong>Trait</strong> : The trait reported in GWAScatalog</li>
                 <li><strong>FirthAuth</strong> : First author reported in GWAScatalog</li>
@@ -691,7 +740,7 @@
             </li>
           </ul>
           <ul>
-            <li><p>Parameters</p>
+            <li><p>Parameters / params.txt</p>
             <p>The table of input parameters.</p>
             <ul>
               <li><strong>Job created</strong> : Date of job created</li>
@@ -725,24 +774,24 @@
               <li><strong>eqtlMap min CADD</strong> : The minimum CADD score for SNP filtering</li>
               <li><strong>eqtlMap min RegulomeDB</strong> : The minimum RegulomeDB score for SNP filtering</li>
               <li><strong>eqtlMap chromatin state filterinf tissues</strong> : Select tissue/cell types, NA otherwise</li>
-              <li><strong>eqtlMap max chromatin state</strong> : The maximum 15-core chromatin state</li>
+              <li><strong>eqtlMap max  chromatin state</strong> : The maximum 15-core chromatin state</li>
               <li><strong>eqtlMap chromatin state filtering method</strong> : The method of chromatin state filtering</li>
             </ul>
             </li>
           </ul>
-          <ul>
-            <li><p>Doenloads</p>
-            <p>To download multiple tables at the same time, go to &quot;Downloads&quot; tab and select files you want to download.</p>
-            </li>
-          </ul>
         </div>
-        <h4 id="3-regional-plot">3. Regional plot</h4>
-        <p>When you click any lead SNP or interval, regional plot will be shown in this panel. To plot with genes and other annotations, please go to &quot;Regional plot with annotation&quot; panel.</p>
-        <h4 id="4-query-results">4. Query results</h4>
-        <p>This is still under construction. Will be available soon.</p>
-        <h4 id="5-regional-plot-with-annotation">5. Regional plot with annotation</h4>
+        <br/>
+
+        <h4>5. Downloads</h4>
+        <p>To download multiple tables at the same time, go to &quot;Downloads&quot; tab and select files you want to download.</p>
+        <!-- <h4>4. Query results</h4>
+        <p>This is still under construction. Will be available soon.</p> -->
+        <br/>
+
+        <h4>6. Regional plot (with annotation)</h4>
         <p>This panel contains options to create regional plot with annotations.
         The plot will be created in a new tab.</p>
+        <br/>
 
         <h3 id="examples">Example senarios</h3>
         <h4>Senario 1: You have got a new results of GWAS and want to know which genes are there.</h4>

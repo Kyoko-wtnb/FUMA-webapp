@@ -1,0 +1,5 @@
+#lead SNPs	165
+#Intervals	53
+#candidate SNPs	7605
+#candidate GWAS tagged SNPs	1248
+#mapped genes	89

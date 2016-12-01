@@ -35,6 +35,11 @@ while(<IN>){
 }
 close IN;
 
+if($end-$start == 0){
+  $end += 500;
+  $start -= 500;
+}
+
 open(OUT, ">$out") or die "$out";
 print OUT "cell\tstart\tend\tstate\n";
 foreach my $cell (sort @cells){

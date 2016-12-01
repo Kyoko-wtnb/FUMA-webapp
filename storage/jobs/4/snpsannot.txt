@@ -1,0 +1,11 @@
+annot	count
+UTR3	126
+UTR5	67
+downstream	133
+exonic	166
+intergenic	2231
+intronic	3783
+ncRNA_exonic	92
+ncRNA_intronic	856
+splicing	2
+upstream	110

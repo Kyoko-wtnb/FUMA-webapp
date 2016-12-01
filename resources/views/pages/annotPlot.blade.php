@@ -36,7 +36,8 @@ $(document).ready(function(){
   var margin = {top:50, right:250, left:50, bottom:100},
       // height = (GWASplot*1+Chr15*1)*210+(CADDplot*1+RDBplot*1)*160+60+eqtl*(eqtlNgenes*55),
       width = 600;
-  var side = (xMax_init*1-xMin_init*1+1)*0.05;
+  var side = (xMax_init*1-xMin_init*1)*0.05;
+  if(side==0){side=500;}
   // var currentHeight=0;
   // var currentHeight2 = (200+10)*GWASplot+50+10+(150+10)*CADDplot+(150+10)*RDBplot;
   var xAxisLabel = "gene";
@@ -75,7 +76,54 @@ $(document).ready(function(){
   // define colors
   var colorScale = d3.scale.linear().domain([0.2,0.6,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
   var Chr15colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
-  var cols = ['rgb(0,10,255)', 'rgb(0,38,255)', 'rgb(0,67,255)', 'rgb(0,96,255)', 'rgb(0,125,255)', 'rgb(0,154,255)', 'rgb(0,183,255)',
+  var Chr15eid = ["E017", "E002", "E008", "E001", "E015", "E014", "E016", "E003", "E024", "E020", "E019", "E018", "E021",
+                  "E022", "E007", "E009", "E010", "E013", "E012", "E011", "E004", "E005", "E006", "E062", "E034", "E045",
+                  "E033", "E044", "E043", "E039", "E041", "E042", "E040", "E037", "E048", "E038", "E047", "E029", "E031",
+                  "E035", "E051", "E050", "E036", "E032", "E046", "E030", "E026", "E049", "E025", "E023", "E052", "E055",
+                  "E056", "E059", "E061", "E057", "E058", "E028", "E027", "E054", "E053", "E112", "E093", "E071", "E074",
+                  "E068", "E069", "E072", "E067", "E073", "E070", "E082", "E081", "E063", "E100", "E108", "E107", "E089",
+                  "E090", "E083", "E104", "E095", "E105", "E065", "E078", "E076", "E103", "E111", "E092", "E085", "E084",
+                  "E109", "E106", "E075", "E101", "E102", "E110", "E077", "E079", "E094", "E099", "E086", "E088", "E097",
+                  "E087", "E080", "E091", "E066", "E098", "E096", "E113", "E114", "E115", "E116", "E117", "E118", "E119",
+                  "E120", "E121", "E122", "E123", "E124", "E125", "E126", "E127", "E128", "E129"];
+  var Chr15group = ["IMR90", "ESC", "ESC", "ESC", "ESC", "ESC", "ESC", "ESC", "ESC", "iPSC", "iPSC", "iPSC", "iPSC",
+                   "iPSC", "ES-deriv", "ES-deriv", "ES-deriv", "ES-deriv", "ES-deriv", "ES-deriv", "ES-deriv",
+                   "ES-deriv", "ES-deriv", "Blood & T-cell", "Blood & T-cell", "Blood & T-cell", "Blood & T-cell",
+                   "Blood & T-cell", "Blood & T-cell", "Blood & T-cell", "Blood & T-cell", "Blood & T-cell",
+                   "Blood & T-cell", "Blood & T-cell", "Blood & T-cell", "Blood & T-cell", "Blood & T-cell",
+                   "HSC & B-cell", "HSC & B-cell", "HSC & B-cell", "HSC & B-cell", "HSC & B-cell", "HSC & B-cell",
+                   "HSC & B-cell", "HSC & B-cell", "HSC & B-cell", "Mesench", "Mesench", "Mesench", "Mesench", "Myosat",
+                   "Epithelial", "Epithelial", "Epithelial", "Epithelial", "Epithelial", "Epithelial", "Epithelial",
+                   "Epithelial", "Neurosph", "Neurosph", "Thymus", "Thymus", "Brain", "Brain", "Brain", "Brain", "Brain",
+                   "Brain", "Brain", "Brain", "Brain", "Brain", "Adipose", "Muscle", "Muscle", "Muscle", "Muscle", "Muscle",
+                   "Heart", "Heart", "Heart", "Heart", "Heart", "Sm. Muscle", "Sm. Muscle", "Sm. Muscle", "Sm. Muscle",
+                   "Digestive", "Digestive", "Digestive", "Digestive", "Digestive", "Digestive", "Digestive", "Digestive",
+                   "Digestive", "Digestive", "Digestive", "Digestive", "Other", "Other", "Other", "Other", "Other", "Other",
+                   "Other", "Other", "Other", "Other", "Other", "ENCODE2012", "ENCODE2012", "ENCODE2012", "ENCODE2012",
+                   "ENCODE2012", "ENCODE2012", "ENCODE2012", "ENCODE2012", "ENCODE2012", "ENCODE2012", "ENCODE2012",
+                   "ENCODE2012", "ENCODE2012", "ENCODE2012", "ENCODE2012", "ENCODE2012"];
+  var Chr15GroupCols = ["#E41A1C", "#924965", "#924965", "#924965", "#924965", "#924965", "#924965", "#924965", "#924965",
+                        "#69608A", "#69608A", "#69608A", "#69608A", "#69608A", "#4178AE", "#4178AE", "#4178AE", "#4178AE",
+                        "#4178AE", "#4178AE", "#4178AE", "#4178AE", "#4178AE", "#55A354", "#55A354", "#55A354", "#55A354",
+                        "#55A354", "#55A354", "#55A354", "#55A354", "#55A354", "#55A354", "#55A354", "#55A354", "#55A354",
+                        "#55A354", "#678C69", "#678C69", "#678C69", "#678C69", "#678C69", "#678C69", "#678C69", "#678C69",
+                        "#678C69", "#B65C73", "#B65C73", "#B65C73", "#B65C73", "#E67326", "#FF9D0C", "#FF9D0C", "#FF9D0C",
+                        "#FF9D0C", "#FF9D0C", "#FF9D0C", "#FF9D0C", "#FF9D0C", "#FFD924", "#FFD924", "#DAB92E", "#DAB92E",
+                        "#C5912B", "#C5912B", "#C5912B", "#C5912B", "#C5912B", "#C5912B", "#C5912B", "#C5912B", "#C5912B",
+                        "#C5912B", "#AF5B39", "#C2655D", "#C2655D", "#C2655D", "#C2655D", "#C2655D", "#D56F80", "#D56F80",
+                        "#D56F80", "#D56F80", "#D56F80", "#F182BC", "#F182BC", "#F182BC", "#F182BC", "#C58DAA", "#C58DAA",
+                        "#C58DAA", "#C58DAA", "#C58DAA", "#C58DAA", "#C58DAA", "#C58DAA", "#C58DAA", "#C58DAA", "#C58DAA",
+                        "#C58DAA", "#999999", "#999999", "#999999", "#999999", "#999999", "#999999", "#999999", "#999999",
+                        "#999999", "#999999", "#999999", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000",
+                        "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000",
+                        "#000000"]
+  //  var Chr15EidTs = {};
+  //  for(i=0; i<Chr15eid.length; i++){
+  //    Chr15EidTs[Chr15eid[i]] = Chr15ts[i];
+  //  }
+
+
+  var eqtlcols = ['rgb(0,10,255)', 'rgb(0,38,255)', 'rgb(0,67,255)', 'rgb(0,96,255)', 'rgb(0,125,255)', 'rgb(0,154,255)', 'rgb(0,183,255)',
               'rgb(0,212,255)', 'rgb(0,241,255)', 'rgb(0,255,10)', 'rgb(0,255,38)', 'rgb(0,255,67)', 'rgb(0,255,96)', 'rgb(0,255,125)',
               'rgb(0,255,154)', 'rgb(0,255,183)', 'rgb(0,255,212)', 'rgb(0,255,241)', 'rgb(19,0,255)', 'rgb(19,255,0)', 'rgb(48,0,255)',
               'rgb(48,255,0)', 'rgb(77,0,255)', 'rgb(77,255,0)', 'rgb(106,0,255)', 'rgb(106,255,0)', 'rgb(135,0,255)', 'rgb(135,255,0)',
@@ -83,7 +131,7 @@ $(document).ready(function(){
               'rgb(250,255,0)', 'rgb(255,0,0)', 'rgb(255,0,29)', 'rgb(255,0,58)', 'rgb(255,0,87)', 'rgb(255,0,115)', 'rgb(255,0,144)',
               'rgb(255,0,173)', 'rgb(255,0,202)', 'rgb(255,0,231)', 'rgb(255,29,0)', 'rgb(255,58,0)', 'rgb(255,87,0)', 'rgb(255,115,0)',
               'rgb(255,144,0)', 'rgb(255,173,0)', 'rgb(255,202,0)', 'rgb(255,231,0)', 'rgb(68, 36, 17)', 'rgb(47, 48, 51)'];
-  var ts = ["Adipose_Subcutaneous", "Adipose_Visceral_Omentum", "Adrenal_Gland", "Bladder",
+  var eqtlts = ["Adipose_Subcutaneous", "Adipose_Visceral_Omentum", "Adrenal_Gland", "Bladder",
             "Cells_EBV-transformed_lymphocytes", "Whole_Blood", "Artery_Aorta", "Artery_Coronary",
             "Artery_Tibial", "Brain_Amygdala", "Brain_Anterior_cingulate_cortex_BA24", "Brain_Caudate_basal_ganglia",
             "Brain_Cerebellar_Hemisphere", "Brain_Cerebellum", "Brain_Cortex", "Brain_Frontal_Cortex_BA9",
@@ -96,8 +144,8 @@ $(document).ready(function(){
             "Skin_Not_Sun_Exposed_Suprapubic", "Skin_Sun_Exposed_Lower_leg", "Small_Intestine_Terminal_Ileum", "Spleen",
             "Stomach", "Testis", "Thyroid", "Uterus", "Vagina", "BloodeQTL", "BIOS_eQTL_geneLevel"];
   var eQTLcolors = {};
-  for(i=0; i<cols.length; i++){
-    eQTLcolors[ts[i]] = cols[i];
+  for(i=0; i<eqtlcols.length; i++){
+    eQTLcolors[eqtlts[i]] = eqtlcols[i];
   }
 
   // // vertical line
@@ -223,7 +271,7 @@ $(document).ready(function(){
           else{chrHeight = 10*cells.length;}
           eqtlTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15;
           eqtlHeight = eqtl*(eqtlNgenes*55);
-          height = genesHeight+gwasHeight+caddHeight+rdbHeight+chrHeight+eqtlHeight+10*(GWASplot*1+CADDplot*1+RDBplot*1+Chr15*1+eqtlplot*1);
+          height = genesHeight+gwasHeight*GWASplot+caddHeight*CADDplot+rdbHeight*RDBplot+chrHeight*Chr15+eqtlHeight*eqtlplot+10*(GWASplot*1+CADDplot*1+RDBplot*1+Chr15*1+eqtlplot*1);
 
           // Prepare svg
           svg = d3.select('#annotPlot').append('svg')
@@ -628,7 +676,15 @@ $(document).ready(function(){
               });
               // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
 
-              var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
+              var cells = d3.set(data1.map(function(d){return d.cell;})).values();
+              var chr15gcol = [];
+              var y_element = [];
+              for(var i=0; i<Chr15eid.length; i++){
+                if(cells.indexOf(Chr15eid[i])>=0){
+                  y_element.push(Chr15eid[i]);
+                  chr15gcol.push(Chr15GroupCols[i]);
+                }
+              }
               var tileHeight = 10;
               if(y_element.length>20){
                 tileHeight = chrHeight/y_element.length;
@@ -702,7 +758,16 @@ $(document).ready(function(){
               svg.append("g").attr("class", "x axis Chr15")
                 .attr("transform", "translate(0,"+(chrTop+y_element.length*tileHeight)+")")
                 .call(xAxis).selectAll("text").remove();
-              svg.append("g").attr("class", "y axis").call(yAxisChr15).style("font-size", "8px");
+              if(y_element.length>30){
+                svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").remove();
+              }else{
+                svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").attr("dx", "-.5em").style("font-size", "10px");
+              }
+              for(var i=0; i<y_element.length; i++){
+                svg.append("rect").attr("x", -10).attr("y", yChr15(y_element[i]))
+                  .attr("width", 10).attr("height",tileHeight)
+                  .attr("fill", chr15gcol[i]);
+              }
               // currentHeight2 = currentHeight2+y_element.length*tileHeight+10;
 
               data2.forEach(function(d){
@@ -790,7 +855,16 @@ $(document).ready(function(){
                 d.state = +d.state;
               });
               // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
-              var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
+              // var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
+              var cells = d3.set(data1.map(function(d){return d.cell;})).values();
+              var chr15gcol = [];
+              var y_element = [];
+              for(var i=0; i<Chr15eid.length; i++){
+                if(cells.indexOf(Chr15eid[i])>=0){
+                  y_element.push(Chr15eid[i]);
+                  chr15gcol.push(Chr15GroupCols[i]);
+                }
+              }
               var tileHeight = 10;
               if(y_element.length>20){
                 tileHeight = chrHeight/y_element.length;
@@ -864,7 +938,17 @@ $(document).ready(function(){
               svg.append("g").attr("class", "x axis Chr15")
                 .attr("transform", "translate(0,"+(chrTop+y_element.length*tileHeight)+")")
                 .call(xAxis);
-              svg.append("g").attr("class", "y axis").call(yAxisChr15);
+              // svg.append("g").attr("class", "y axis").call(yAxisChr15);
+              if(y_element.length>30){
+                svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").remove();
+              }else{
+                svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").attr("dx", "-.5em").style("font-size", "10px");
+              }
+              for(var i=0; i<y_element.length; i++){
+                svg.append("rect").attr("x", -10).attr("y", yChr15(y_element[i]))
+                  .attr("width", 10).attr("height",tileHeight)
+                  .attr("fill", chr15gcol[i]);
+              }
               // currentHeight2 = currentHeight2+y_element.length*tileHeight+10;
               svg.append("text").attr("text-anchor", "middle")
                 .attr("transform", "translate("+width/2+","+(height+30)+")")
