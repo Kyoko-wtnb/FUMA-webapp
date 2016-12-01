@@ -1,2 +1,0 @@
-gene	symbol	tissue	pos	logP	ld
-ENSG00000116704	SLC35D1	Whole_Blood	67519435	6.60133392364127	1
