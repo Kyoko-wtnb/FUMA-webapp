@@ -1,7 +1,7 @@
 /vendor
 /node_modules
-/public/storage/jobs/
-/public/storage/data/
+/storage/jobs/
+/storage/data/
 Homestead.yaml
 Homestead.json
 .env
