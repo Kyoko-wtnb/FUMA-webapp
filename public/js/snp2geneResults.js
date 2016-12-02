@@ -42,7 +42,7 @@ $(document).ready(function(){
       var KGSNPs = IPGAPvar.KGSNPs;
       var maf = IPGAPvar.maf;
       var mergeDist = IPGAPvar.mergeDist;
-      var Xchr = IPGAPvar.Xchr;
+      // var Xchr = IPGAPvar.Xchr;
 
       var exMHC = IPGAPvar.exMHC;
       var extMHC = IPGAPvar.extMHC;
@@ -94,7 +94,7 @@ $(document).ready(function(){
             KGSNPs: KGSNPs,
             maf: maf,
             mergeDist: mergeDist,
-            Xchr: Xchr,
+            // Xchr: Xchr,
             exMHC: exMHC,
             extMHC: extMHC,
             genetype: genetype,

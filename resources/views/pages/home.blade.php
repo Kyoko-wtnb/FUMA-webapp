@@ -22,7 +22,7 @@
   <p>IPGAP is a web application which systematically process GWAS summary statistics and extract relevant biological information from multiple databases.
     All you need to prepare is to get GWAS summary statistics of phenotype of interest.
     If you are here at first time, please follow the tutorial carefully since IPGAP provides a variety of parameters.</p>
-  <p>Databases used in this pilot can be accessed from <a href="/links">links</a> tab.</p>
+  <p>Databases used in this pilot can be accessed from <a href="/IPGAP/links">links</a> tab.</p>
   <br/>
 
   <h3>News and Updates</h3>

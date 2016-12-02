@@ -4,7 +4,29 @@
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript">
   $(document).ready(function(){
-    $('#overview').show();
+    var hashid = window.location.hash;
+    var side = [];
+    $('.sidebar-nav li a').each(function(){
+      side.push($(this).attr("href"));
+    })
+    if(hashid==""){
+      $('#overview').show();
+    }else{
+      if(side.indexOf(hashid)>=0){
+        // $(hashid).show();
+        $('a[href*="'+hashid+'"]').trigger('click');
+      }else{
+
+        $('.subside a').each(function(){
+          if($(this).attr("href")==hashid){
+            var parent = '#'+$(this).parent().attr("id").replace("sub", "");
+            // $(parent).show();
+            $('a[href*="'+parent+'"]').trigger('click');
+            $(this).trigger('click');
+          }
+        });
+      }
+    }
   });
 
   // function onScroll(event){
@@ -133,7 +155,7 @@
       </div>
     </div>
 
-    <div id="snp2gene" class="sidePanel" style="padding-top:50;">
+    <div id="snp2gene" class="sidePanel container" style="padding-top:50;">
       <h2>SNP2GENE</h2>
       <div style="margin-left: 40px;">
         <h3 id="prepare-input-files">Prepare Input Files</h3>
@@ -801,7 +823,7 @@
       </div>
     </div>
 
-    <div id="gene2func" class="sidePanel" style="padding-top:50;">
+    <div id="gene2func" class="sidePanel container" style="padding-top:50;">
       <h2>GENE2FUNC</h2>
       <div style="padding-left: 40px;">
         <h3 id="submit-genes">Submit genes</h3>

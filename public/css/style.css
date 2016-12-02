@@ -58,6 +58,10 @@ tab {
   font-size: 14px;
 }
 
+.table tr td{
+  vertical-align: middle;
+}
+
 table.display{
   font-size: 16px;
 }

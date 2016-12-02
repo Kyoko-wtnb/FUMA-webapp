@@ -36,8 +36,8 @@ class JobController extends Controller
       $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
       #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");
-      $posMap = preg_split("/[\t]/", chop($params[17]))[1];
-      $eqtlMap = preg_split("/[\t]/", chop($params[26]))[1];
+      $posMap = preg_split("/[\t]/", chop($params[16]))[1];
+      $eqtlMap = preg_split("/[\t]/", chop($params[25]))[1];
       // get jobID
       // update last_access date
       JavaScript::put([
@@ -53,40 +53,56 @@ class JobController extends Controller
     }
 
     public function newJob(Request $request){
-      $email = $request -> input('NewJobEmail');
-      $jobtitle = $request -> input('NewJobTitle');
-
-      $sessionID = $request->session()->get('key');
-
-      // obtain jobID and create directory
-      $results = DB::select('SELECT * FROM jobs WHERE email=?', [$email]);
-      $exists = false;
-      $jobID = 0;
-      foreach($results as $row){
-        if($row->title==$jobtitle){
-          $exists = true;
-          $jobID = $row->jobID;
-          break;
-        }
-      }
-      $filedir;
       $date = date('Y-m-d H:i:s');
-      if($exists){
-        $filedir = storage_path().'/jobs/'.$jobID; #local
-        #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
-        File::cleanDirectory($filedir);
-        DB::table('jobs') -> where('jobID', $jobID)
-                          -> update(['created_date'=>$date, 'last_access'=>$date]);
+      $jobID;
+      $filedir;
+      if($request->has("NewJobEmail")){
+        $email = null;
       }else{
-        $jobID = DB::select('SELECT MAX(jobID) as max FROM jobs')[0];
-        $jobID = $jobID->max;
-        $jobID++;
-        $filedir = storage_path().'/jobs/'.$jobID; #local
-        #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
-        File::makeDirectory($filedir);
+        $email = $request -> input('NewJobEmail');
+      }
+      if($request->has("NewJobTitle")){
+        $jobtitle = "None";
+      }else{
+        $jobtitle = $request -> input('NewJobTitle');
+      }
+
+      if($email==null){
+        $jobID = uniqid();
         DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
                                       'created_date'=>$date, 'last_access'=>$date]);
+        $filedir = storage_path().'/jobs/'.$jobID;
+        File::makeDirectory($filedir);
+      }else{
+        $results = DB::select('SELECT * FROM jobs WHERE email=?', [$email]);
+        $exists = false;
+        foreach($results as $row){
+          if($row->title==$jobtitle){
+            $exists = true;
+            $jobID = $row->jobID;
+            break;
+          }
+        }
+
+        if($exists){
+          $filedir = storage_path().'/jobs/'.$jobID; #local
+          #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
+          File::cleanDirectory($filedir);
+          DB::table('jobs') -> where('jobID', $jobID)
+                            -> update(['created_date'=>$date, 'last_access'=>$date]);
+        }else{
+          $jobID = DB::select('SELECT MAX(jobID) as max FROM jobs')[0];
+          $jobID = $jobID->max;
+          $jobID++;
+          $filedir = storage_path().'/jobs/'.$jobID; #local
+          #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
+          File::makeDirectory($filedir);
+          DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
+                                        'created_date'=>$date, 'last_access'=>$date]);
+        }
       }
+
+      $sessionID = $request->session()->get('key');
 
       // upload input Filesystem
       $leadSNPs = "input.lead";
@@ -130,9 +146,9 @@ class JobController extends Controller
       else{$KGSNPs=0;}
       $maf = $request -> input('maf');
       $mergeDist = $request -> input('mergeDist');
-      $Xchr = $request -> input('Xchr');
-      if(strcmp($Xchr, "Yes")==0){$Xchr=1;}
-      else{$Xchr=0;}
+      // $Xchr = $request -> input('Xchr');
+      // if(strcmp($Xchr, "Yes")==0){$Xchr=1;}
+      // else{$Xchr=0;}
       if($request -> has('posMap')){$posMap=1;}
       else{$posMap=0;}
       if($request -> has('windowCheck')){
@@ -242,7 +258,7 @@ class JobController extends Controller
       File::append($paramfile, "sample size\t$N\n");
       File::append($paramfile, "exclude MHC\t$exMHC\n");
       File::append($paramfile, "extended MHC region\t$extMHC\n");
-      File::append($paramfile, "include chromosome X\t$Xchr\n");
+      // File::append($paramfile, "include chromosome X\t$Xchr\n");
       File::append($paramfile, "gene type\t$genetype\n");
       File::append($paramfile, "lead SNP P-value\t$leadP\n");
       File::append($paramfile, "r2\t$r2\n");
@@ -285,7 +301,7 @@ class JobController extends Controller
         'KGSNPs'=>$KGSNPs,
         'maf'=>$maf,
         'mergeDist'=>$mergeDist,
-        'Xchr' => $Xchr,
+        // 'Xchr' => $Xchr,
         'exMHC'=>$exMHC,
         'extMHC'=>$extMHC,
         'genetype'=>$genetype,

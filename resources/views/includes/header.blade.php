@@ -14,15 +14,12 @@
 <!-- Tab bar -->
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/IPGAP/"><span style="color: #1E90FF; font-size: 130%;">IPGAP</span></a>
-      <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNuvbar">
-        <sapn class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button> -->
+    <div class="navbar-header" style="padding-left: 30px;">
+      <!-- <a class="navbar-brand" href="/IPGAP/"><span style="color: #1E90FF; font-size: 130%;">IPGAP</span></a> -->
+      <a class="navbar-brand" href="/IPGAP/" style="padding-top: 5px;"><img src="{!! URL::asset('image/logo.png') !!}" height="45px;" width="200px"></a>
     </div>
-    <div class="collapse navbar-collapse" id="headNav">
+
+    <div class="collapse navbar-collapse" id="headNav" style="padding-right: 50px;">
       <ul class="nav navbar-nav navbar-right">
         <!-- local_start -->
         <li class="{{ Request::is('/') ? 'active' : ''}}"><a href="/IPGAP/">Home</a></li>
