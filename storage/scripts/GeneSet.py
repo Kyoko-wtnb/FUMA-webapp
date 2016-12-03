@@ -24,9 +24,9 @@ def ArrayIn(a1, a2):
 	#	for i in a2:
 	#		results = results+list(np.where(a1==i)[0])
 	return results
-	
 
-if len(sys.argv)<7:
+
+if len(sys.argv)<9:
 	raise Exception('ERROR: not enough arguments\nUSAGE ./gene2func.py <filedir> <gtype> <gval> <bkgtype> <bkgval> <X chrom> <MHC> <adjPmeth> <adjPcutoff> <minOverlap> <testCategory>\n')
 
 filedir = sys.argv[1]
@@ -34,11 +34,11 @@ gtype = sys.argv[2]
 gval = sys.argv[3]
 bkgtype = sys.argv[4]
 bkgval = sys.argv[5]
-Xchr = int(sys.argv[6]) #1 for exclude
-MHC = int(sys.argv[7]) #1 for exclude
-adjPmeth = sys.argv[8]
-adjPcut = float(sys.argv[9])
-minOverlap = int(sys.argv[10])
+#Xchr = int(sys.argv[6]) #1 for exclude
+MHC = int(sys.argv[6]) #1 for exclude
+adjPmeth = sys.argv[7]
+adjPcut = float(sys.argv[8])
+minOverlap = int(sys.argv[9])
 #testCategory = sys.argv[11]
 
 if gtype == "text":
@@ -67,7 +67,7 @@ else:
 	bkgenes = lsit(lines[:,0])
 #Ninbkg = len(bkgenes)
 #print "Input bkg: "+str(Ninbkg)
-	
+
 if Xchr == 1:
 	ENSG = ENSG[ENSG[:,3]!=23,]
 if MHC == 1:
@@ -138,7 +138,7 @@ for f in files:
 	gs = pd.read_table(f)
 	gs = np.array(gs)
 	#print gs[0:3]
-	
+
 	tmp = []
 	for l in gs:
 		g = l[2].split(":")
@@ -164,7 +164,7 @@ for f in files:
 		#	tmp.append([c.group(1), l[0], n, x, p, 1.0, ""])
 			#if(p<1e-5):
 			#	print l[0]+" x:"+str(x)+" n:"+str(n)+" p:"+str(p)
-		
+
 	tmp = np.array(tmp)
 	padj = multicomp.multipletests(list(tmp[:,4].astype(float)), alpha=0.05, method=adjPmeth, is_sorted=False, returnsorted=False)
 	tmp[:, 5] = padj[1]
@@ -180,7 +180,7 @@ for f in files:
 		#g = ":".join(list(entrez2symbol[ArrayIn(entrez2symbol[:,1], g),0]))
 		i[6]=g
 		out.write("\t".join(i)+"\n")
-		#results.append(list(i))	
+		#results.append(list(i))
 
 #GeneSetTest(genes, bkgenes, "BH", 0.05, True, 2)
 
@@ -190,4 +190,4 @@ for f in files:
 
 stop = timeit.default_timer()
 
-print stop - start 
+print stop - start

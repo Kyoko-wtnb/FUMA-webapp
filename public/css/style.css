@@ -58,21 +58,34 @@ tab {
   font-size: 14px;
 }
 
-.table tr td{
-  vertical-align: middle;
-}
-
 table.display{
   font-size: 16px;
 }
 
+/*.inputTable{
+  background-color: #f4f4f4;
+  border: none;
+  border-color: #004f99;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+.table.inputTable td{
+  border-color: #004f99;
+  border: none;
+}*/
+
+.table.inputTable tr td{
+  vertical-align: middle;
+}
+
 input[type=number]{
-  width: 80px;
-  height: 25px;
+  width: 200px;
+  height: 30px;
 }
 input[type=text]{
   width: 200px;
-  height: 25px;
+  height: 30px;
 }
 
 table.smallTable{

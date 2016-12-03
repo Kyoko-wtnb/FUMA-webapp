@@ -1,5 +1,6 @@
 $(document).ready(function(){
   $("#newJob").show();
+  $("#jobinfoSide").hide();
   $("#resultsSide").hide();
   $('#SubmitNewJob').attr('disabled',true);
   $('#go2job').attr('disabled',true);
@@ -353,10 +354,14 @@ function CheckAll(){
       if(ms==0){
         $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Please check distance based mapping or select annotations for positional mapping.</div></td>');
+        $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+          +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
         submit=false;
       }else{
         $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+        $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+          +'<i class="fa fa-exclamation-circle"></i> Optional. This option is only valid when distance based mapping is checked.</div></td>');
       }
     }
   }else{
@@ -374,7 +379,7 @@ function CheckAll(){
 
   if(ms>0){
     $(table.rows[3].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-check"></i> OK.</div></td>');
+      +'<i class="fa fa-check"></i> OK. only selected annotations will be used for positional mapping.</div></td>');
   }else{
     if($('#windowCheck').is(':checked')==true){
       $(table.rows[3].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
@@ -391,16 +396,16 @@ function CheckAll(){
     $(table.rows[0].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
     if($('#posMapCADDth').val().length==0){
-      $(table.rows[1].cells[3]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Mandatory input.</div></td>');
       submit=false;
     }else{
       if(isNaN($('#posMapCADDth').val())){
-        $(table.rows[1].cells[3]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
         submit=false;
       }else{
-        $(table.rows[1].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-check"></i> OK.</div></td>');
       }
     }
@@ -427,11 +432,11 @@ function CheckAll(){
     $(table.rows[4].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
     var ts = 0;
-    $('#posMapChr15Ts optioin').each(function(){
-      if($(this).is(":checked")==true){ts++;}
+    $('#posMapChr15Ts option').each(function(){
+      if($(this).is(":selected")){ts++;}
     });
-    $('#posMapChr15Gts optioin').each(function(){
-      if($(this).is(":checked")==true){ts++;}
+    $('#posMapChr15Gts option').each(function(){
+      if($(this).is(":selected")){ts++;}
     });
     if(ts==0){
       $(table.rows[5].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
@@ -528,16 +533,16 @@ function CheckAll(){
     $(table.rows[0].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
     if($('#eqtlMapCADDth').val().length==0){
-      $(table.rows[1].cells[3]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Mandatory input.</div></td>');
       submit=false;
     }else{
       if(isNaN($('#eqtlMapCADDth').val())){
-        $(table.rows[1].cells[3]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
         submit=false;
       }else{
-        $(table.rows[1].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-check"></i> OK.</div></td>');
       }
     }
@@ -564,11 +569,11 @@ function CheckAll(){
     $(table.rows[4].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
     var ts = 0;
-    $('#eqtlMapChr15Ts optioin').each(function(){
-      if($(this).is(":checked")==true){ts++;}
+    $('#eqtlMapChr15Ts option').each(function(){
+      if($(this).is(":selected")){ts++;}
     });
-    $('#eqtlMapChr15Gts optioin').each(function(){
-      if($(this).is(":checked")==true){ts++;}
+    $('#eqtlMapChr15Gts option').each(function(){
+      if($(this).is(":selected")){ts++;}
     });
     if(ts==0){
       $(table.rows[5].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'

@@ -3,14 +3,15 @@ var intervalTable_selected=null;
 var SNPtable_selected=null;
 var posAnnotPlot;
 $(document).ready(function(){
+  // var jobID = "{{$jobID}}";
   // console.log(status);
-  // console.log(jobID);
+  console.log(jobid);
   // console.log(status.length);
   // $('#resultsSide').hide();
   if(status.length==0){
     // console.log("status:NULL");
   }else{
-    var job = IPGAPvar.jobtype;
+    // var job = IPGAPvar.jobtype;
     // var email = IPGAPvar.email;
     // var filedir = IPGAPvar.filedir;
     // var jobID = IPGAPvar.jobID;
@@ -22,7 +23,7 @@ $(document).ready(function(){
       $('#annotPlotChr15Opt').hide();
     }
 
-    if(job==="newjob"){
+    if(status==="newjob"){
       $("#results").hide();
       // get parameters
       // var job = IPGAPvar.jobtype;
@@ -79,6 +80,7 @@ $(document).ready(function(){
         url: 'CandidateSelection',
         type: 'POST',
         data: {
+            jobID: jobID,
             email: email,
             jobtitle: jobtitle,
             filedir: filedir,
@@ -120,7 +122,7 @@ $(document).ready(function(){
         processing: true,
         beforeSend: function(){
           // $('#logSNPfiltering').append('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-          AjaxLoad();
+          JobRunLoad();
         },
         success: function(data){
           // $('#logSNPfiltering').html('<div class="alert alert-success"><h4> Step 1. Candidate SNPs filtering is done</h4></div>');
@@ -133,6 +135,7 @@ $(document).ready(function(){
         complete: function(){
           $('#logs').hide();
           $('#results').show();
+          $('#jobinfoSide').show();
           $('#resultsSide').show();
           $('.sidePanel').each(function(){
             if(this.id=="jobInfo"){
@@ -147,6 +150,7 @@ $(document).ready(function(){
               $(this).parent().addClass("active");
             }
           });
+          jobinfo(jobID);
           GWplot(jobID);
           QQplot(jobID);
           showResultTables(filedir, jobID, posMap, eqtlMap);
@@ -155,16 +159,24 @@ $(document).ready(function(){
       });
     }else{
       $('#logs').hide();
-      $('#results').show();
-      $('#resultsSide').show();
+      // $('#results').show();
+      // $('#resultsSide').show();
+      // console.log(jobid);
+      // console.log(status);
       // get parameters
-      var email = IPGAPvar.email;
-      var filedir = IPGAPvar.filedir;
-      var jobID = IPGAPvar.jobID;
-      var jobtitle = IPGAPvar.jobtitle;
-      var posMap = IPGAPvar.posMap;
-      var eqtlMap = IPGAPvar.eqtlMap;
+      // var email = IPGAPvar.email;
+      // var filedir = IPGAPvar.filedir;
+      // var jobID = IPGAPvar.jobID;
+      // var jobtitle = IPGAPvar.jobtitle;
+      // var posMap = IPGAPvar.posMap;
+      // var eqtlMap = IPGAPvar.eqtlMap;
       // $('#test').html("<p>posMap: "+posMap+" eqtlMap: "+eqtlMap+"</p>");
+      var filedir;
+      var posMap;
+      var eqtlMap;
+      var jobStatus;
+      AjaxLoad();
+      $('#jobinfoSide').show();
       $('.sidePanel').each(function(){
         if(this.id=="jobInfo"){
           $('#'+this.id).show();
@@ -178,9 +190,66 @@ $(document).ready(function(){
           $(this).parent().addClass("active");
         }
       });
-      GWplot(jobID);
-      QQplot(jobID);
-      showResultTables(filedir, jobID, posMap, eqtlMap);
+      var jobcheck = setInterval(function(){
+        $.ajax({
+          url: 'checkJobStatus',
+          type: "POST",
+          data: {
+            jobID: jobid,
+          },
+          error: function(){
+            alert("ERROR: checkJobStatus")
+          },
+          success: function(data){
+            $('#test').html(data);
+            jobStatus = data;
+            // $('#results').show();
+            // $('#resultsSide').show();
+          },
+          complete: function(){
+            if(jobStatus!="RUNNING"){
+              $('#overlay').remove();
+              // $('#test').append(" timer is done");
+              clearInterval(jobcheck);
+              if(jobStatus=="OK"){
+                loadResults();
+              }else{
+                // errorHandling(jobStatus);
+                jobInfo(jobid);
+              }
+              return;
+            }
+          }
+        });
+      }, 5000);
+
+      function loadResults(){
+        $.ajax({
+            url: 'getParams',
+            type: 'POST',
+            data:{
+              jobID: jobid
+            },
+            error: function(){
+              alert("JobQuery getParams error");
+            },
+            success: function(data){
+              // $('#test').html(data)
+              var tmp = data.split(":");
+              filedir = tmp[0];
+              posMap = parseInt(tmp[1]);
+              eqtlMap = parseInt(tmp[2]);
+            },
+            complete: function(){
+              jobInfo(jobid);
+              GWplot(jobid);
+              QQplot(jobid);
+              showResultTables(filedir, jobid, posMap, eqtlMap);
+              $('#results').show();
+              $('#resultsSide').show();
+            }
+        });
+      }
     }
   }
 
@@ -226,7 +295,7 @@ $(document).ready(function(){
 
 });
 
-function AjaxLoad(){
+function JobRunLoad(){
   var over = '<div id="overlay"><div id="loading">'
         +'<p>Your job is runnning. Please wait for a moment.'
         +'<br/>We will send you an email after the job is done.'
@@ -234,6 +303,30 @@ function AjaxLoad(){
         +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
         +'</div></div>';
   $(over).appendTo('body');
+}
+
+function AjaxLoad(){
+  var over = '<div id="overlay"><div id="loading">'
+        +'<p>Loading results ...</p>'
+        +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
+        +'</div></div>';
+  $(over).appendTo('body');
+}
+
+function jobInfo(jobID){
+  $.ajax({
+    url: "jobInfo",
+    type: "POST",
+    data: {
+      jobID: jobID,
+    },
+    error: function(){
+      alert("jobInfo error");
+    },
+    success: function(data){
+      $('#jobInfoTable').html(data);
+    }
+  });
 }
 
 function GWplot(jobID){
@@ -278,6 +371,8 @@ function GWplot(jobID){
             	.attr("height", height)
             	.node().getContext('2d');
   d3.json("manhattan/jobs/"+jobID+"/manhattan.txt", function(data){
+  // d3.tsv("/../IPGAP/sotrage/jobs/"+jobID+"/manhattan.txt", function(error, data){
+
     data.forEach(function(d){
   		// d.chr = +d.chr;
   		// d.bp = +d.bp;
@@ -535,20 +630,6 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
     $('#eqtlfiledown').hide();
     $('#eqtlfile').prop('checked',false);
   }
-
-  $.ajax({
-    url: "jobInfo",
-    type: "POST",
-    data: {
-      jobID: jobID,
-    },
-    error: function(){
-      alert("jobInfo error");
-    },
-    success: function(data){
-      $('#jobInfoTable').html(data);
-    }
-  });
 
   $.ajax({
     url: "paramTable",

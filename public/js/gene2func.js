@@ -13,7 +13,7 @@ $(document).ready(function(){
     var gval = IPGAPvar.gval;
     var bkgtype = IPGAPvar.bkgtype;
     var bkgval = IPGAPvar.bkgval;
-    var Xchr = IPGAPvar.Xchr;
+    // var Xchr = IPGAPvar.Xchr;
     var MHC = IPGAPvar.MHC;
     var adjPmeth = IPGAPvar.adjPmeth;
     var adjPcut = IPGAPvar.adjPcut;
@@ -36,9 +36,9 @@ $(document).ready(function(){
       $('#bkgenes').val() = bkgval.replace(/:/g, '\n');
     }
 
-    if(Xchr==1){
-      $('#Xchr').attr('checked', true);
-    }
+    // if(Xchr==1){
+    //   $('#Xchr').attr('checked', true);
+    // }
 
     if(MHC==1){
       $('#MHC').attr('checked', true);
@@ -55,7 +55,7 @@ $(document).ready(function(){
         gval: gval,
         bkgtype: bkgtype,
         bkgval: bkgval,
-        Xchr: Xchr,
+        // Xchr: Xchr,
         MHC: MHC,
         adjPmeth: adjPmeth,
         adjPcut: adjPcut,

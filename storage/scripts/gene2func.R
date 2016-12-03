@@ -5,8 +5,7 @@ gtype <- args[2]
 gval <- args[3]
 bkgtype <- args[4]
 bkgval <- args[5]
-Xchr <- as.numeric(args[6])
-MHC <- as.numeric(args[7])
+MHC <- as.numeric(args[6])
 
 if(gtype == "text"){
   genes <- unlist(strsplit(gval, ":"))

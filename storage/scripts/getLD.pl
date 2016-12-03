@@ -11,7 +11,7 @@ use File::Basename;
 my $dir = dirname(__FILE__);
 
 #die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <gwas file format> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC>\n" if (@ARGV < 13);
-die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC> <X chrom>\n" if (@ARGV < 14);
+die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC>\n" if (@ARGV < 13);
 
 my $filedir = $ARGV[0];
 my $pop = $ARGV[1];
@@ -40,7 +40,7 @@ unless($extMHC eq "NA"){
 	$MHCstart = $temp[0];
 	$MHCend = $temp[1];
 }
-my $Xchr = $ARGV[13];
+# my $Xchr = $ARGV[13];
 
 ## Input files
 ## $leadSNPs and $regions are file name only when file is provided
@@ -195,7 +195,7 @@ if($regions){
 ### Process per chr because of memory exeed for big GWAS data
 foreach my $chr (1..23){
 	#next unless($chr==1);
-	last if($chr==23 && $Xchr==0);
+	# last if($chr==23 && $Xchr==0);
 	my %GWAS;
 	##$GWAS{$chr}{$pos}{$uniqID}{p/ref/alt/rsID}
 	my %plead;

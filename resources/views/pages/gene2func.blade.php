@@ -104,7 +104,7 @@
     </div>
     <div class="panel panel-default">
       <div class="panel-body" style="padding:10;">
-        <tab><input type="checkbox" id="Xchr" name="Xchr">&nbsp;Execlude genes on X chromosome. <span style="color: #004d99">*Please check to EXCLUDE X chromosome.</span><br/>
+        <!-- <tab><input type="checkbox" id="Xchr" name="Xchr">&nbsp;Execlude genes on X chromosome. <span style="color: #004d99">*Please check to EXCLUDE X chromosome.</span><br/> -->
         <tab><input type="checkbox" id="MHC" name="MHC">&nbsp;Execlude the MHC region. <span style="color: #004d99">*Please check to EXCLUDE genes in MHC region.</span><br/>
         <tab>Multiple test correction method:
           <select id="adjPmeth" name="adjPmeth">

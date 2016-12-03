@@ -15,9 +15,19 @@ use Zipper;
 
 class JobController extends Controller
 {
-    public function queryJob(Request $request){
-      $email = $request -> input('JobQueryEmail');
-      $jobtitle = $request -> input('JobQueryTitle');
+    public function getJobID(Request $request){
+      if($request -> has('JobQueryEmail')){
+        $email = $request -> input('JobQueryEmail');
+      }else{
+        $email = null;
+      }
+
+      if($request -> has('JobQueryTitle')){
+        $jobtitle = $request -> input('JobQueryTitle');
+      }else{
+        $jobtitle = " None";
+      }
+
       $results = DB::select('SELECT * FROM jobs WHERE email=? AND title=?', [$email, $jobtitle]);
       // $exists = false;
       $jobID = 0;
@@ -29,6 +39,24 @@ class JobController extends Controller
         // }
       }
 
+      return redirect("/snp2gene/$jobID");
+    }
+
+    public function checkJobStatus(Request $request){
+      $jobID = $request->input('jobID');
+      $results = DB::select('SELECT * FROM jobs WHERE jobID=?', [$jobID]);
+      if(count($results)==0){
+        return "Notfound";
+      }else{
+        foreach($results as $row){
+          $status = $row->status;
+          return $status;
+        }
+      }
+    }
+
+    public function getParams(Request $request){
+      $jobID = $request->input('jobID');
       $date = date('Y-m-d H:i:s');
       DB::table('jobs') -> where('jobID', $jobID)
                         -> update(['last_access'=>$date]);
@@ -40,19 +68,25 @@ class JobController extends Controller
       $eqtlMap = preg_split("/[\t]/", chop($params[25]))[1];
       // get jobID
       // update last_access date
-      JavaScript::put([
-        'jobtype'=>'jobquery',
-        'email'=>$email,
-        'jobID'=>$jobID,
-        'filedir'=>$filedir,
-        'posMap'=>$posMap,
-        'eqtlMap'=>$eqtlMap
-      ]);
-      return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']); #local
-      #webserver return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'jobquery', 'subdir'=>'/IPGAP']);
+      // JavaScript::put([
+      //   'jobtype'=>'jobquery',
+      //   // 'email'=>$email,
+      //   'jobID'=>$jobID,
+      //   'filedir'=>$filedir,
+      //   'posMap'=>$posMap,
+      //   'eqtlMap'=>$eqtlMap
+      // ]);
+      #return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']); #local
+      // return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'jobquery', 'subdir'=>'/IPGAP']);
+      // return redirect("/snp2gene/$jobID");
+      echo "$filedir:$posMap:$eqtlMap";
     }
 
     public function newJob(Request $request){
+      session_start();
+      $_SESSION['snp2gene'] = $jobID;
+      $_SESSION['gene2func'] = $jobID;
+      print_r ($_SESSION);
       $date = date('Y-m-d H:i:s');
       $jobID;
       $filedir;
@@ -70,7 +104,7 @@ class JobController extends Controller
       if($email==null){
         $jobID = uniqid();
         DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
-                                      'created_date'=>$date, 'last_access'=>$date]);
+                                      'created_date'=>$date, 'last_access'=>$date, 'status'=>"RUNNING"]);
         $filedir = storage_path().'/jobs/'.$jobID;
         File::makeDirectory($filedir);
       }else{
@@ -89,7 +123,7 @@ class JobController extends Controller
           #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
           File::cleanDirectory($filedir);
           DB::table('jobs') -> where('jobID', $jobID)
-                            -> update(['created_date'=>$date, 'last_access'=>$date]);
+                            -> update(['created_date'=>$date, 'last_access'=>$date, 'status'=>'RUNNING']);
         }else{
           $jobID = DB::select('SELECT MAX(jobID) as max FROM jobs')[0];
           $jobID = $jobID->max;
@@ -98,7 +132,7 @@ class JobController extends Controller
           #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
           File::makeDirectory($filedir);
           DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
-                                        'created_date'=>$date, 'last_access'=>$date]);
+                                        'created_date'=>$date, 'last_access'=>$date, 'status'=>'RUNNING']);
         }
       }
 
@@ -334,6 +368,7 @@ class JobController extends Controller
       // $args = json_encode($args);
       // $script = storage_path().'/scripts/snp2gene.py';
       // exec("python $script $args");
+      $jobID = $request->input('jobID');
       $email = $request -> input('email');
       $jobtitle = $request -> input('jobtitle');
       $filedir = $request -> input('filedir');
@@ -349,7 +384,7 @@ class JobController extends Controller
       $KGSNPs = $request -> input('KGSNPs');
       $maf = $request -> input('maf');
       $mergeDist = $request -> input('mergeDist');
-      $Xchr = $request -> input('Xchr');
+      // $Xchr = $request -> input('Xchr');
       $exMHC = $request -> input('exMHC');
       $extMHC = $request -> input('extMHC');
       $genetype = $request -> input('genetype');
@@ -373,35 +408,35 @@ class JobController extends Controller
       $eqtlMapChr15Meth = $request -> input('eqtlMapChr15Meth');
 
       // send job started mail
-      $subject = "IPGAP job submitted";
-      $message = "
-      <html>
-      <head><h3>IPGAP job has been submitted</h3></head>
-      <body>
-      Thank you for submitting a job.<br/>
-      We will inform you ones job is done with link to the result page.<br/>
-      It usutally takes 10 minuts to 1 hour (depending on file size and parameters).<br/>
-      <br/>
-      <h4>Job summary</h4>
-      your email: ".$email."<br/>
-      your job title: ".$jobtitle."<br/>
-      you can use those information to qury your results.<br/>
-      <br/>
-      Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
-
-      Kyoko Watanabe<br/>
-      VU University Amsterdam<br/>
-      Dept. Complex Trait Genetics<br/>
-      De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
-      k.watanabe@vu.nl<br/>
-      </body>
-      </html>
-      ";
-      $headers = "MIME-Version: 1.0". "\r\n";
-      $headers .= "Content-type:text/html;charset=UTF-8"."\r\n";
-      $headers .= "From: <k.watanabe@vu.nl>"."\r\n";
-
-      mail($email, $subject, $message, $headers, "-r $email");
+      // $subject = "IPGAP job submitted";
+      // $message = "
+      // <html>
+      // <head><h3>IPGAP job has been submitted</h3></head>
+      // <body>
+      // Thank you for submitting a job.<br/>
+      // We will inform you ones job is done with link to the result page.<br/>
+      // It usutally takes 10 minuts to 1 hour (depending on file size and parameters).<br/>
+      // <br/>
+      // <h4>Job summary</h4>
+      // your email: ".$email."<br/>
+      // your job title: ".$jobtitle."<br/>
+      // you can use those information to qury your results.<br/>
+      // <br/>
+      // Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
+      //
+      // Kyoko Watanabe<br/>
+      // VU University Amsterdam<br/>
+      // Dept. Complex Trait Genetics<br/>
+      // De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
+      // k.watanabe@vu.nl<br/>
+      // </body>
+      // </html>
+      // ";
+      // $headers = "MIME-Version: 1.0". "\r\n";
+      // $headers .= "Content-type:text/html;charset=UTF-8"."\r\n";
+      // $headers .= "From: <k.watanabe@vu.nl>"."\r\n";
+      //
+      // mail($email, $subject, $message, $headers, "-r $email");
 
 
       $script = storage_path().'/scripts/gwas_file.pl';
@@ -431,6 +466,10 @@ class JobController extends Controller
 
       $script = storage_path().'/scripts/geneMap.R';
       exec("Rscript $script $filedir $genetype $exMHC $extMHC $posMap $posMapWindow $posMapWindowSize $posMapAnnot $posMapCADDth $posMapRDBth $posMapChr15 $posMapChr15Max $posMapChr15Meth $eqtlMap $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP $eqtlMapCADDth $eqtlMapRDBth $eqtlMapChr15 $eqtlMapChr15Max $eqtlMapChr15Meth");
+
+      DB::table('jobs') -> where('jobID', $jobID)
+                        -> update(['status'=>'OK']);
+
 
       // send job completed mail
       $subject = "IPGAP job has been completed";
@@ -640,11 +679,11 @@ class JobController extends Controller
         $request -> file('bkgenesfile') -> move($filedir, "bkgenes.txt");
       }
 
-      if($request -> has('Xchr')){
-        $Xchr = 1;
-      }else{
-        $Xchr = 0;
-      }
+      // if($request -> has('Xchr')){
+      //   $Xchr = 1;
+      // }else{
+      //   $Xchr = 0;
+      // }
 
       if($request -> has('MHC')){
         $MHC = 1;
@@ -664,7 +703,7 @@ class JobController extends Controller
         'gval' => $gval,
         'bkgtype' => $bkgtype,
         'bkgval' => $bkgval,
-        'Xchr' => $Xchr,
+        // 'Xchr' => $Xchr,
         'MHC' => $MHC,
         'adjPmeth' => $adjPmeth,
         'adjPcut' => $adjPcut,
@@ -681,16 +720,16 @@ class JobController extends Controller
       $gval = $request -> input('gval');
       $bkgtype = $request -> input('bkgtype');
       $bkgval = $request -> input('bkgval');
-      $Xchr = $request -> input('Xchr');
+      // $Xchr = $request -> input('Xchr');
       $MHC = $request -> input('MHC');
       $adjPmeth = $request -> input('adjPmeth');
       $adjPcut = $request -> input('adjPcut');
       $minOverlap = $request -> input('minOverlap');
 
       $script = storage_path()."/scripts/gene2func.R";
-      exec("Rscript $script $filedir $gtype $gval $bkgtype $bkgval $Xchr $MHC");
+      exec("Rscript $script $filedir $gtype $gval $bkgtype $bkgval $MHC");
       $script = storage_path()."/scripts/GeneSet.py";
-      exec("$script $filedir $gtype $gval $bkgtype $bkgval $Xchr $MHC $adjPmeth $adjPcut $minOverlap");
+      exec("$script $filedir $gtype $gval $bkgtype $bkgval $MHC $adjPmeth $adjPcut $minOverlap");
     }
 
     public function snp2geneGeneQuery(Request $request){
@@ -701,9 +740,9 @@ class JobController extends Controller
       $bkgtype="select";
 
       $params = file($filedir."params.txt");
-      $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
+      // $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
       $MHC = preg_split("/[\t]/", chop($params[7]))[1];
-      $bkgval = preg_split("/[\t]/", chop($params[10]))[1];
+      $bkgval = preg_split("/[\t]/", chop($params[9]))[1];
       $adjPmeth = "fdr_bh";
       $adjPcut = 0.05;
       $minOverlap = 2;
@@ -726,7 +765,7 @@ class JobController extends Controller
         'gval' => $gval,
         'bkgtype' => $bkgtype,
         'bkgval' => $bkgval,
-        'Xchr' => $Xchr,
+        // 'Xchr' => $Xchr,
         'MHC' => $MHC,
         'adjPmeth' => $adjPmeth,
         'adjPcut' => $adjPcut,

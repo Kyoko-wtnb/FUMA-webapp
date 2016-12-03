@@ -25,7 +25,10 @@
     headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
   });
   var status = "{{$status}}";
-  // var jobID = "{{$jobID}}";
+  var id = "{{$jobID}}";
+  console.log(id);
+  var jobid = id;
+  // console.log(jobID);
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/InputParameters.js') !!}"></script>
@@ -40,8 +43,10 @@
     <ul class="sidebar-nav" id="sidebar">
       <li class="active"><a href="#newJob">New Job<i class="sub_icon fa fa-upload"></i></a></li>
       <li><a href="#queryJob">Query Existing Job<i class="sub_icon fa fa-search"></i></a></li>
-      <div id="resultsSide">
+      <div id="jobinfoSide">
         <li><a href="#jobInfo">Job Info<i class="sub_icon fa fa-info-circle"></i></a></li>
+      </div>
+      <div id="resultsSide">
         <li><a href="#genomePlots">Genome-wide plots<i class="sub_icon fa fa-bar-chart"></i></a></li>
         <li><a href="#summaryTable">Summary of results<i class="sub_icon fa fa-bar-chart"></i></a></li>
         <li><a href="#tables">Tables<i class="sub_icon fa fa-table"></i></a></li>
@@ -77,8 +82,8 @@
         <!-- New -->
         <h3>New job submission</h3>
         <!-- Input files upload -->
-        <h4>1. Uploadi nput files</h4>
-        <table class="table table-bordered" id="NewJobFiles" style="width: auto;">
+        <h4>1. Upload input files</h4>
+        <table class="table table-bordered inputTable" id="NewJobFiles" style="width: auto;">
           <tr>
             <td>GWAS summary statistics</td>
             <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary" onchange="CheckAll()"/></td>
@@ -87,7 +92,7 @@
           <tr>
             <td>GWAS file format</td>
             <td>
-              <select class="selectpicker" name="gwasformat" id="gwasformat" onchange="CheckAll()">
+              <select class="form-control" name="gwasformat" id="gwasformat" onchange="CheckAll()">
                 <option value="PLINK" selected>PLINK</option>
                 <option value="SNPTEST">SNPTEST</option>
                 <option value="GCTA">GCTA</option>
@@ -116,8 +121,8 @@
         <br/>
 
         <!-- Parameters for lead SNPs and candidate SNPs -->
-        <h4>2. Parameters for lead SNP and candidate SNPs identification</h4>
-        <table class="table table-bordered" id="NewJobParams" style="width: auto;">
+        <h4>2. Parameters for lead SNPs and candidate SNPs identification</h4>
+        <table class="table table-bordered inputTable" id="NewJobParams" style="width: auto;">
           <tr>
             <td>Sample size (N)</td>
             <td><input type="number" class="form-control" id="N" name="N" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
@@ -125,23 +130,23 @@
           </tr>
           <tr>
             <td>P-value for lead SNPs (&le;)</td>
-            <td><input type="number" class="form-control" id="leadP" name="leadP" value="5e-8"/></td>
+            <td><input type="number" class="form-control" id="leadP" name="leadP" value="5e-8" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
             <td></td>
           </tr>
           <tr>
             <td>Minimum r2 to be in LD (&ge;)</td>
-            <td><input type="number" class="form-control" id="r2" name="r2" value="0.6"></td>
+            <td><input type="number" class="form-control" id="r2" name="r2" value="0.6" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
             <td></td>
           </tr>
           <tr>
             <td>GWAS P-value cutoff (&le;)</td>
-            <td><input type="number" class="form-control" id="gwasP" name="gwasP" value="0.05"/></td>
+            <td><input type="number" class="form-control" id="gwasP" name="gwasP" value="0.05" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
             <td></td>
           </tr>
           <tr>
             <td>Population</td>
             <td>
-              <select class="selectpicker" id="pop" name="pop">
+              <select class="form-control" id="pop" name="pop">
                 <option selected>EUR</option>
                 <option>AMR</option>
                 <option>AFR</option>
@@ -158,7 +163,7 @@
           <tr>
             <td>Include 1000 genome variant (non-GWAS tagged SNPs in LD)</td>
             <td>
-              <select class="selectpicker" id="KGSNPs" name="KGSNPs">
+              <select class="form-control" id="KGSNPs" name="KGSNPs">
                 <option selected>Yes</option>
                 <option>No</option>
               </select>
@@ -171,12 +176,12 @@
           </tr>
           <tr>
             <td>MAF cutoff (&ge;)</td>
-            <td><input type="number" class="form-control" id="maf" name="maf" value="0.01"/></td>
+            <td><input type="number" class="form-control" id="maf" name="maf" value="0.01" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
             <td></td>
           </tr>
           <tr>
             <td>Maximum distance between LD blocks to merge into intervals (&le; kb)</td>
-            <td><span class="form-inline"><input type="number" class="form-control" id="mergeDist" name="mergeDist" value="250"/> kb</span></td>
+            <td><span class="form-inline"><input type="number" class="form-control" id="mergeDist" name="mergeDist" value="250" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/> kb</span></td>
             <td></td>
           </tr>
         </table>
@@ -186,7 +191,7 @@
         <h4>3. Parameters for gene mapping</h4>
         <div class="panel panel-default"><div class="panel-body">
           <h4>Positional mapping</h4>
-          <table class="table table-bordered" id="NewJobPosMap" style="width: auto;">
+          <table class="table table-bordered inputTable" id="NewJobPosMap" style="width: auto;">
             <tr>
               <td>Perform positional mapping</td>
               <td><input type="checkbox" class="form-check-input" name="posMap" id="posMap" checked onchange="CheckAll();"></td>
@@ -200,7 +205,7 @@
               </tr>
               <tr class="posMapOptions">
                 <td>Maximum distance to genes (&le; kb)</td>
-                <td><span class="form-inline"><input type="number" class="form-control" id="posMapWindow" name="posMapWindow" value="10" min="0" max="1000" onkeyup="CheckAll();"> kb</span></td>
+                <td><span class="form-inline"><input type="number" class="form-control" id="posMapWindow" name="posMapWindow" value="10" min="0" max="1000" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"> kb</span></td>
                 <td></td>
               </tr>
               <tr class="posMapOptions">
@@ -226,29 +231,29 @@
 
           <div id="posMapOptFilt">
             Optional SNP filtering by functional annotation
-            <table class="table table-bordered" id="posMapOptFiltTable" style="width: auto;">
+            <table class="table table-bordered inputTable" id="posMapOptFiltTable" style="width: auto;">
               <tr>
                 <td rowspan="2">CADD</td>
                 <td>Perform SNPs filtering based on CADD score.</td>
-                <td><input type="checkbox" class="form-check-input" name="posMapCADDcheck" id="posMapCADDcheck"></td>
+                <td><input type="checkbox" class="form-check-input" name="posMapCADDcheck" id="posMapCADDcheck" onchange="CheckAll();"></td>
                 <td></td>
               </tr>
               <tr>
                 <td>Minimum CADD score (&ge;)</td>
-                <td><input type="number" class="form-control" id="posMapCADDth" name="posMapCADDth" value="12.37"></td>
+                <td><input type="number" class="form-control" id="posMapCADDth" name="posMapCADDth" value="12.37" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
                 <td></td>
               </tr>
               <tr>
                 <td rowspan="2">RegulomeDB</td>
                 <td>Perform SNPs filtering baed on ReguomeDB score</td>
-                <td><input type="checkbox" class="form-check-input" name="posMapRDBcheck" id="posMapRDBcheck"></td>
+                <td><input type="checkbox" class="form-check-input" name="posMapRDBcheck" id="posMapRDBcheck" onchange="CheckAll();"></td>
                 <td></td>
               </tr>
               <tr>
                 <td>Maximum RegulomeDB score (categorical)</td>
                 <td>
                   <!-- <input type="text" class="form-control" id="posMapRDBth" name="posMapRDBth" value="7" style="width: 80px;"> -->
-                  <select class="selectpicker" id="posMapRDBth" name="posMapRDBth">
+                  <select class="form-control" id="posMapRDBth" name="posMapRDBth" onchange="CheckAll();">
                     <option>1a</option>
                     <option>1b</option>
                     <option>1c</option>
@@ -451,13 +456,13 @@
               </tr>
               <tr>
                 <td>15-core chromatin state maximum state</td>
-                <td><input type="number" class="form-control" id="posMapChr15Max" name="posMapChr15Max" value="7"/></td>
+                <td><input type="number" class="form-control" id="posMapChr15Max" name="posMapChr15Max" value="7" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
                 <td></td>
               </tr>
               <tr>
                 <td>15-core chromatin state filtering method</td>
                 <td>
-                  <select  class="form-control" id="posMapChr15Meth" name="posMapChr15Meth">
+                  <select  class="form-control" id="posMapChr15Meth" name="posMapChr15Meth" onchange="CheckAll();">
                     <option selected value="any">any</option>
                     <option value="majority">majority</option>
                     <option value="all">all</option>
@@ -471,7 +476,7 @@
 
         <div class="panel panel-default"><div class="panel-body">
           <h4>eQTL mapping</h4>
-          <table class="table table-bordered" id="NewJobEqtlMap" style="width: auto;">
+          <table class="table table-bordered inputTable" id="NewJobEqtlMap" style="width: auto;">
             <tr>
               <td>Perform eQTL mapping</td>
               <td><input type="checkbox" calss="form-control" name="eqtlMap", id="eqtlMap" onchange="CheckAll();"></td>
@@ -582,27 +587,47 @@
 
           <div id="eqtlMapOptFilt">
             Optional SNP filtering by functional annotation
-            <table class="table table-bordered" id="eqtlMapOptFiltTable">
+            <table class="table table-bordered inputTable" id="eqtlMapOptFiltTable">
               <tr>
                 <td rowspan="2">CADD</td>
                 <td>Perform SNPs filtering based on CADD score.</td>
-                <td><input type="checkbox" class="form-check-input" name="eqtlMapCADDcheck" id="eqtlMapCADDcheck"></td>
+                <td><input type="checkbox" class="form-check-input" name="eqtlMapCADDcheck" id="eqtlMapCADDcheck" onchange="CheckAll();"></td>
                 <td></td>
               </tr>
               <tr>
                 <td>Minimum CADD score (&ge;)</td>
-                <td><input type="number" class="form-control" id="eqtlMapCADDth" name="eqtlMapCADDth" value="12.37"></td>
+                <td><input type="number" class="form-control" id="eqtlMapCADDth" name="eqtlMapCADDth" value="12.37" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
                 <td></td>
               </tr>
               <tr>
                 <td rowspan="2">RegulomeDB</td>
                 <td>Perform SNPs filtering baed on ReguomeDB score</td>
-                <td><input type="checkbox" class="form-check-input" name="eqtlMapRDBcheck" id="eqtlMapRDBcheck"></td>
+                <td><input type="checkbox" class="form-check-input" name="eqtlMapRDBcheck" id="eqtlMapRDBcheck" onchange="CheckAll();"></td>
                 <td></td>
               </tr>
               <tr>
                 <td>Maximum RegulomeDB score (categorical)</td>
-                <td><input type="text" class="form-control" id="eqtlMapRDBth" name="eqtlMapRDBth" value="7" style="width: 80px;"></td>
+                <td>
+                  <!-- <input type="text" class="form-control" id="eqtlMapRDBth" name="eqtlMapRDBth" value="7"> -->
+                  <select class="form-control" id="eqtlMapRDBth" name="eqtlMapRDBth" onchange="CheckAll();">
+                    <option>1a</option>
+                    <option>1b</option>
+                    <option>1c</option>
+                    <option>1d</option>
+                    <option>1e</option>
+                    <option>1f</option>
+                    <option>2a</option>
+                    <option>2b</option>
+                    <option>2c</option>
+                    <option>3a</option>
+                    <option>3b</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option selected>7</option>
+                  </select>
+
+                </td>
                 <td></td>
               </tr>
               <tr>
@@ -787,13 +812,13 @@
               </tr>
               <tr>
                 <td>15-core chromatin state maximum state</td>
-                <td><input type="number" class="form-control" id="eqtlMapChr15Max" name="eqtlMapChr15Max" value="7"/></td>
+                <td><input type="number" class="form-control" id="eqtlMapChr15Max" name="eqtlMapChr15Max" value="7" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
                 <td></td>
               </tr>
               <tr>
                 <td>15-core chromatin state filtering method</td>
                 <td>
-                  <select  class="form-control" id="eqtlMapChr15Meth" name="eqtlMapChr15Meth">
+                  <select  class="form-control" id="eqtlMapChr15Meth" name="eqtlMapChr15Meth" onchange="CheckAll();">
                     <option selected value="any">any</option>
                     <option value="majority">majority</option>
                     <option value="all">all</option>
@@ -808,7 +833,7 @@
 
         <!-- Gene type multiple selection -->
         <h4>4. Gene types</h4>
-        <table class="table table-bordered" id="NewJobGene" style="width: auto;">
+        <table class="table table-bordered inputTable" id="NewJobGene" style="width: auto;">
           <tr>
             <td>Gene type</td>
             <td>
@@ -833,7 +858,7 @@
         <br/>
         <!-- MHC regions -->
         <h4>5. MHC region</h4>
-        <table class="table table-bordered" id="NewJobMHC" style="width: auto;">
+        <table class="table table-bordered inputTable" id="NewJobMHC" style="width: auto;">
           <tr>
             <td>Exclude MHC region</td>
             <td><input type="checkbox" class="form-check-input" name="MHCregion" id="MHCregion" value="exMHC" checked onchange="CheckAll();"></td>
@@ -842,7 +867,7 @@
           <tr>
             <td>Extended MHC region<br/><tab>*e.g. 25000000-33000000<br/>
             <tab>*If this is not filled, usual MHC region will be used.<br/></td>
-            <td><input type="text" class="form-control" style="width: 150px" name="extMHCregion" id="extMHCregion" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
+            <td><input type="text" class="form-control" name="extMHCregion" id="extMHCregion" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
             <td></td>
           </tr>
         </table>
@@ -850,7 +875,7 @@
 
         <!-- email and job title -->
         <h4>6. email and job title</h4>
-        <table class="table table-bordered" id="NewJobSubmit" style="width: auto;">
+        <table class="table table-bordered inputTable" id="NewJobSubmit" style="width: auto;">
           <tr>
             <td>E-mail address</td>
             <td><input type="text" class="form-control" name="NewJobEmail" id="NewJobEmail" onkeyup="CheckAll();" onpaste="CheckAll();"  oninput="CheckAll();"/></td>
@@ -873,6 +898,7 @@
       <div class="sidePanel container" style="padding-top:50px;" id="jobInfo">
         <h3 style="color: #00004d">Information of your job</h3>
         <div id="jobInfoTable"></div>
+        <div id="test"></div>
       </div>
 
       <!-- genome wide plots -->
