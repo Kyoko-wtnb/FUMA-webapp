@@ -33,9 +33,9 @@ if(bkgtype == "select"){
   blgenes = bkgenes[,1]
 }
 
-if(Xchr==1){
-  ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name != 23,]
-}
+#if(Xchr==1){
+#  ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name != 23,]
+#}
 
 if(MHC==1){
   MHC = FALSE
@@ -71,11 +71,12 @@ if(length(which(bkgenes %in% ENSG.all.genes$external_gene_name))>0){
 #bkg <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$gene_biotype %in% bkg]
 
 gtex.exp <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
-if(type==0){
-  rownames(gtex.exp) <- paste(rownames(gtex.exp), ENSG.all.genes$external_gene_name[match(rownames(gtex.exp), ENSG.all.genes$ensembl_gene_id)], sep=":")
-}else if(type==2){
-  rownames(gtex.exp) <- paste(rownames(gtex.exp), ENSG.all.genes$entrezID[match(rownames(gtex.exp), ENSG.all.genes$ensembl_gene_id)], sep=":")
-}
+#if(type==0){
+#  rownames(gtex.exp) <- paste(rownames(gtex.exp), ENSG.all.genes$external_gene_name[match(rownames(gtex.exp), ENSG.all.genes$ensembl_gene_id)], sep=":")
+#}else if(type==2){
+#  rownames(gtex.exp) <- paste(rownames(gtex.exp), ENSG.all.genes$entrezID[match(rownames(gtex.exp), ENSG.all.genes$ensembl_gene_id)], sep=":")
+#}
+rownames(gtex.exp) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp), ENSG.all.genes$ensembl_gene_id)]
 
 hc <- hclust(dist(gtex.exp), method="average")
 gtex.exp <- gtex.exp[rownames(gtex.exp)[hc$order],]
@@ -99,6 +100,22 @@ DEGgeneral$logP <- -log10(DEGgeneral$p)
 DEGgeneral$logFDR <- -log10(DEGgeneral$FDR)
 write.table(DEGgeneral, paste(filedir, "DEGgeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
 rm(DEGgeneral)
+
+geneTable <- ENSG.all.genes[ENSG.all.genes$ensembl_gene_id %in% genes,]
+geneTable <- subset(geneTable, select=c("ensembl_gene_id", "entrezID", "external_gene_name"))
+colnames(geneTable) <- c("ensg", "entrezID", "symbol")
+load(paste(filedir, "../../data/entrez2mim.RData", sep="")) #local
+#webserver load("/data/genes/entrez2mim.RData")
+load(paste(filedir, "../../data/entrez2uniprot.RData", sep="")) #local
+#webserver load("/data/genes/entrez2uniprot.RData")
+geneTable$OMIM <- entrez2mim$mim[match(geneTable$entrezID, entrez2mim$entrezID)]
+geneTable$uniprotID <- entrez2uniprot$uniprotID[match(geneTable$entrezID, entrez2uniprot$entrezID)]
+geneTable$DrugBank <- NA
+load(paste(filedir, "../../data/DrugBank.RData", sep="")) #local
+#webserver load("/data/genes/DrugBank.RData")
+geneTable$DrugBank <- DrugBank$DrugBank[match(geneTable$uniprotID, DrugBank$uniprotID)]
+write.table(geneTable, paste(filedir, "geneTable.txt", sep=""), quote=F, row.names=F, sep="\t")
+
 #GS <- GeneSetTest(unique(ENSG.all.genes$entrezID[ENSG.all.genes$ensembl_gene_id %in% genes]), allgenes=unique(ENSG.all.genes$entrezID[ENSG.all.genes$ensembl_gene_id %in% bkgenes]), MHC=MHC)
 #GS <- entrez2symbol(GS)
 #GS$logP <- -log10(GS$p)

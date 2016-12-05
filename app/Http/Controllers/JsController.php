@@ -66,4 +66,36 @@ class JsController extends Controller
 
         echo $table;
     }
+
+    public function geneTable(Request $request){
+      $jobID = $request->input('id');
+      $filedir = storage_path()."/jobs/".$jobID."/"; #local
+      #webserver $filedir = "/data/IPGAP/jobs/".$jobID."/";
+      $f = fopen($filedir."geneTable.txt", 'r');
+      $head = fgetcsv($f, 0, "\t");
+      $head[] = "GeneCard";
+      $all_rows = [];
+      while($row = fgetcsv($f, 0, "\t")){
+        if(strcmp($row[3], "NA")!=0){
+          $row[3] = '<a href="https://www.omim.org/entry/'.$row[3].'" target="_blank">'.$row[3].'</a>';
+        }
+        if(strcmp($row[5], "NA")!=0){
+          $db = explode(":", $row[5]);
+          $row[5] = "";
+          foreach ($db as $i){
+            if(strlen($row[5])==0){
+              $row[5] = '<a href="https://www.drugbank.ca/drugs/'.$i.'" target="_blank">'.$i.'</a>';
+            }else{
+              $row[5] .= ', <a href="https://www.drugbank.ca/drugs/'.$i.'" target="_blank">'.$i.'</a>';
+            }
+          }
+        }
+        $row[] = '<a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene='.$row[2].'" target="GeneCards_iframe">GeneCard</a>';
+        $all_rows[] = array_combine($head, $row);
+      }
+
+      $json = array('data'=>$all_rows);
+      echo json_encode($json);
+    }
+
 }

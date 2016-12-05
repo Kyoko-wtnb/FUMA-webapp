@@ -89,6 +89,9 @@ Route::post('snp2gene/geneQuery', 'JobController@geneQuery');
 Route::post('gene2func/fileDown', 'JobController@gene2funcFileDown');
 Route::post('snp2gene/fileDown', 'JobController@gene2funcFileDown');
 
+Route::post('gene2func/geneTable', 'JsController@geneTable');
+Route::post('snp2gene/geneTable', 'JsController@geneTable');
+
 Route::get('gene2func/d3text/{jobID}/{file}', 'D3jsController@d3js_textfile');
 
 Route::get('GWASresult/d3text/{dbName}/{file}', 'D3jsController@d3js_GWAS_textfile');

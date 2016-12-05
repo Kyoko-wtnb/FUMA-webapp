@@ -64,8 +64,8 @@ class JobController extends Controller
       $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
       #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");
-      $posMap = preg_split("/[\t]/", chop($params[16]))[1];
-      $eqtlMap = preg_split("/[\t]/", chop($params[25]))[1];
+      $posMap = preg_split("/[\t]/", chop($params[18]))[1];
+      $eqtlMap = preg_split("/[\t]/", chop($params[27]))[1];
       // get jobID
       // update last_access date
       // JavaScript::put([
@@ -84,27 +84,25 @@ class JobController extends Controller
 
     public function newJob(Request $request){
       session_start();
-      $_SESSION['snp2gene'] = $jobID;
-      $_SESSION['gene2func'] = $jobID;
-      print_r ($_SESSION);
+
       $date = date('Y-m-d H:i:s');
       $jobID;
       $filedir;
       if($request->has("NewJobEmail")){
-        $email = null;
-      }else{
         $email = $request -> input('NewJobEmail');
+      }else{
+        $email=null;
       }
       if($request->has("NewJobTitle")){
-        $jobtitle = "None";
-      }else{
         $jobtitle = $request -> input('NewJobTitle');
+      }else{
+        $jobtitle="None";
       }
 
       if($email==null){
         $jobID = uniqid();
-        DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
-                                      'created_date'=>$date, 'last_access'=>$date, 'status'=>"RUNNING"]);
+        DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
+                                      'created_date'=>$date, 'last_access'=>$date, 'status'=>"NEW"]);
         $filedir = storage_path().'/jobs/'.$jobID;
         File::makeDirectory($filedir);
       }else{
@@ -123,20 +121,22 @@ class JobController extends Controller
           #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
           File::cleanDirectory($filedir);
           DB::table('jobs') -> where('jobID', $jobID)
-                            -> update(['created_date'=>$date, 'last_access'=>$date, 'status'=>'RUNNING']);
+                            -> update(['created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
         }else{
-          $jobID = DB::select('SELECT MAX(jobID) as max FROM jobs')[0];
-          $jobID = $jobID->max;
+          $jobID = DB::select('SELECT COUNT(jobID) as njob FROM jobs')[0];
+          $jobID = $jobID->njob;
           $jobID++;
           $filedir = storage_path().'/jobs/'.$jobID; #local
           #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
           File::makeDirectory($filedir);
           DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
-                                        'created_date'=>$date, 'last_access'=>$date, 'status'=>'RUNNING']);
+                                        'created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
         }
       }
-
-      $sessionID = $request->session()->get('key');
+      $_SESSION['snp2gene'] = $jobID;
+      $_SESSION['gene2func'] = $jobID;
+      print_r ($_SESSION);
+      // $sessionID = $request->session()->get('key');
 
       // upload input Filesystem
       $leadSNPs = "input.lead";
@@ -284,6 +284,7 @@ class JobController extends Controller
       File::append($paramfile, "Job title\t$jobtitle\n");
       if($GWASfileup==1){File::append($paramfile, "input GWAS summary statistics file\t".$_FILES["GWASsummary"]["name"]."\n");}
       else{File::append($paramfile, "input GWAS summary statistics file\tNot given\n");}
+      File::append($paramfile, "GWAS summary statistics file format\t$gwasformat\n");
       if($leadSNPsfileup==1){File::append($paramfile, "input lead SNPs file\t".$_FILES["leadSNPs"]["name"]."\n");}
       else{File::append($paramfile, "input lead SNPs file\tNot given\n");}
       File::append($paramfile, "Identify additional lead SNPs\t$addleadSNPs\n");
@@ -297,6 +298,7 @@ class JobController extends Controller
       File::append($paramfile, "lead SNP P-value\t$leadP\n");
       File::append($paramfile, "r2\t$r2\n");
       File::append($paramfile, "GWAS tagged SNPs P-value\t$gwasP\n");
+      File::append($paramfile, "Population\t$pop\n");
       File::append($paramfile, "MAF\t$maf\n");
       File::append($paramfile, "Include 1000G SNPs\t$KGSNPs\n");
       File::append($paramfile, "Interval merge max distance\t$mergeDist\n");
@@ -311,56 +313,59 @@ class JobController extends Controller
       File::append($paramfile, "posMap chromatin state filtering method\t$posMapChr15Meth\n");
       File::append($paramfile, "eQTL mapping\t$eqtlMap\n");
       File::append($paramfile, "eqtlMap tissues\t$eqtlMaptss\n");
+      File::append($paramfile, "eqtlMap significant only\t$sigeqtl\n");
+      File::append($paramfile, "eqtlMap P-value\t$eqtlP\n");
       File::append($paramfile, "eqtlMap min CADD\t$eqtlMapCADDth\n");
       File::append($paramfile, "eqtlMap min RegulomeDB\t$eqtlMapRDBth\n");
       File::append($paramfile, "eqtlMap chromatin state filterinf tissues\t$eqtlMapChr15\n");
       File::append($paramfile, "eqtlMap max chromatin state\t$eqtlMapChr15Max\n");
       File::append($paramfile, "eqtlMap chromatin state filtering method\t$eqtlMapChr15Meth\n");
 
-      JavaScript::put([
-        'jobtype'=>'newjob',
-        'email'=>$email,
-        'jobtitle'=>$jobtitle,
-        'jobID'=>$jobID,
-        'filedir'=>$filedir.'/',
-        'leadSNPsfileup'=>$leadSNPsfileup,
-        'regionsfileup'=>$regionsfileup,
-        'gwasformat'=>$gwasformat,
-        'addleadSNPs'=>$addleadSNPs,
-        'N' => $N,
-        'leadP'=>$leadP,
-        'r2'=>$r2,
-        'gwasP'=>$gwasP,
-        'pop'=>$pop,
-        'KGSNPs'=>$KGSNPs,
-        'maf'=>$maf,
-        'mergeDist'=>$mergeDist,
-        // 'Xchr' => $Xchr,
-        'exMHC'=>$exMHC,
-        'extMHC'=>$extMHC,
-        'genetype'=>$genetype,
-        'posMap'=>$posMap,
-        'posMapWindow'=>$posMapWindow,
-        'posMapWindowSize'=>$posMapWindowSize,
-        'posMapAnnot'=>$posMapAnnot,
-        'posMapCADDth'=>$posMapCADDth,
-        'posMapRDBth'=>$posMapRDBth,
-        'posMapChr15'=>$posMapChr15,
-        'posMapChr15Max'=>$posMapChr15Max,
-        'posMapChr15Meth'=>$posMapChr15Meth,
-        'eqtlMap'=>$eqtlMap,
-        'eqtlMaptss'=>$eqtlMaptss,
-        'eqtlMapSigeqtl'=>$sigeqtl,
-        'eqtlMapeqtlP'=>$eqtlP,
-        'eqtlMapCADDth'=>$eqtlMapCADDth,
-        'eqtlMapRDBth'=>$eqtlMapRDBth,
-        'eqtlMapChr15'=>$eqtlMapChr15,
-        'eqtlMapChr15Max'=>$eqtlMapChr15Max,
-        'eqtlMapChr15Meth'=>$eqtlMapChr15Meth
-      ]);
+      // JavaScript::put([
+      //   'jobtype'=>'newjob',
+      //   'email'=>$email,
+      //   'jobtitle'=>$jobtitle,
+      //   'jobID'=>$jobID,
+      //   'filedir'=>$filedir.'/',
+      //   'leadSNPsfileup'=>$leadSNPsfileup,
+      //   'regionsfileup'=>$regionsfileup,
+      //   'gwasformat'=>$gwasformat,
+      //   'addleadSNPs'=>$addleadSNPs,
+      //   'N' => $N,
+      //   'leadP'=>$leadP,
+      //   'r2'=>$r2,
+      //   'gwasP'=>$gwasP,
+      //   'pop'=>$pop,
+      //   'KGSNPs'=>$KGSNPs,
+      //   'maf'=>$maf,
+      //   'mergeDist'=>$mergeDist,
+      //   // 'Xchr' => $Xchr,
+      //   'exMHC'=>$exMHC,
+      //   'extMHC'=>$extMHC,
+      //   'genetype'=>$genetype,
+      //   'posMap'=>$posMap,
+      //   'posMapWindow'=>$posMapWindow,
+      //   'posMapWindowSize'=>$posMapWindowSize,
+      //   'posMapAnnot'=>$posMapAnnot,
+      //   'posMapCADDth'=>$posMapCADDth,
+      //   'posMapRDBth'=>$posMapRDBth,
+      //   'posMapChr15'=>$posMapChr15,
+      //   'posMapChr15Max'=>$posMapChr15Max,
+      //   'posMapChr15Meth'=>$posMapChr15Meth,
+      //   'eqtlMap'=>$eqtlMap,
+      //   'eqtlMaptss'=>$eqtlMaptss,
+      //   'eqtlMapSigeqtl'=>$sigeqtl,
+      //   'eqtlMapeqtlP'=>$eqtlP,
+      //   'eqtlMapCADDth'=>$eqtlMapCADDth,
+      //   'eqtlMapRDBth'=>$eqtlMapRDBth,
+      //   'eqtlMapChr15'=>$eqtlMapChr15,
+      //   'eqtlMapChr15Max'=>$eqtlMapChr15Max,
+      //   'eqtlMapChr15Meth'=>$eqtlMapChr15Meth
+      // ]);
 
-      return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local
-      #webserver return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob','subdir'=>'/IPGAP']);
+      // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local
+      # return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob','subdir'=>'/IPGAP']);
+      return redirect("/snp2gene/$jobID");
     }
 
     public function CandidateSelection(Request $request){
@@ -369,43 +374,52 @@ class JobController extends Controller
       // $script = storage_path().'/scripts/snp2gene.py';
       // exec("python $script $args");
       $jobID = $request->input('jobID');
-      $email = $request -> input('email');
-      $jobtitle = $request -> input('jobtitle');
-      $filedir = $request -> input('filedir');
-      $gwasformat = $request -> input('gwasformat');
-      $leadfile = $request -> input('leadfile');
-      $addleadSNPs = $request -> input('addleadSNPs');
-      $regionfile = $request -> input('regionfile');
-      $N = $request -> input('N');
-      $leadP = $request -> input('leadP');
-      $r2 = $request -> input('r2');
-      $gwasP = $request -> input('gwasP');
-      $pop = $request -> input('pop');
-      $KGSNPs = $request -> input('KGSNPs');
-      $maf = $request -> input('maf');
-      $mergeDist = $request -> input('mergeDist');
+      // $email = $request -> input('email');
+      // $jobtitle = $request -> input('jobtitle');
+      // $filedir = $request -> input('filedir');
+
+      $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
+      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $params = file($filedir."params.txt");
+
+      $gwasformat = preg_split("/[\t]/", chop($params[3]))[1];
+      $leadfile = preg_split("/[\t]/", chop($params[4]))[1];
+      if(strcmp($leadfile, "Not given")==0){$leadfile=0;}
+      else{$leadfile=1;}
+      $addleadSNPs = preg_split("/[\t]/", chop($params[5]))[1];
+      $regionfile = preg_split("/[\t]/", chop($params[6]))[1];
+      if(strcmp($regionfile, "Not given")==0){$regionfile=0;}
+      else{$regionfile=1;}
+      $N = preg_split("/[\t]/", chop($params[7]))[1];
+      $leadP = preg_split("/[\t]/", chop($params[11]))[1];
+      $r2 = preg_split("/[\t]/", chop($params[12]))[1];
+      $gwasP = preg_split("/[\t]/", chop($params[13]))[1];
+      $pop = preg_split("/[\t]/", chop($params[14]))[1];
+      $maf = preg_split("/[\t]/", chop($params[15]))[1];
+      $KGSNPs = preg_split("/[\t]/", chop($params[16]))[1];
+      $mergeDist = preg_split("/[\t]/", chop($params[17]))[1];
       // $Xchr = $request -> input('Xchr');
-      $exMHC = $request -> input('exMHC');
-      $extMHC = $request -> input('extMHC');
-      $genetype = $request -> input('genetype');
-      $posMap = $request -> input('posMap');
-      $posMapWindow = $request -> input('posMapWindow');
-      $posMapWindowSize = $request -> input('posMapWindowSize');
-      $posMapAnnot = $request -> input('posMapAnnot');
-      $posMapCADDth = $request -> input('posMapCADDth');
-      $posMapRDBth = $request -> input('posMapRDBth');
-      $posMapChr15 = $request -> input('posMapChr15');
-      $posMapChr15Max = $request -> input('posMapChr15Max');
-      $posMapChr15Meth = $request -> input('posMapChr15Meth');
-      $eqtlMap = $request -> input('eqtlMap');
-      $eqtlMaptss = $request -> input('eqtlMaptss');
-      $eqtlMapSigeqtl = $request -> input('eqtlMapSigeqtl');
-      $eqtlMapeqtlP = $request -> input('eqtlMapeqtlP');
-      $eqtlMapCADDth = $request -> input('eqtlMapCADDth');
-      $eqtlMapRDBth = $request -> input('eqtlMapRDBth');
-      $eqtlMapChr15 = $request -> input('eqtlMapChr15');
-      $eqtlMapChr15Max = $request -> input('eqtlMapChr15Max');
-      $eqtlMapChr15Meth = $request -> input('eqtlMapChr15Meth');
+      $exMHC = preg_split("/[\t]/", chop($params[8]))[1];
+      $extMHC = preg_split("/[\t]/", chop($params[9]))[1];
+      $genetype = preg_split("/[\t]/", chop($params[10]))[1];
+      $posMap = preg_split("/[\t]/", chop($params[18]))[1];
+      $posMapWindow = preg_split("/[\t]/", chop($params[19]))[1];
+      $posMapWindowSize = preg_split("/[\t]/", chop($params[20]))[1];
+      $posMapAnnot = preg_split("/[\t]/", chop($params[21]))[1];
+      $posMapCADDth = preg_split("/[\t]/", chop($params[22]))[1];
+      $posMapRDBth = preg_split("/[\t]/", chop($params[23]))[1];
+      $posMapChr15 = preg_split("/[\t]/", chop($params[24]))[1];
+      $posMapChr15Max = preg_split("/[\t]/", chop($params[25]))[1];
+      $posMapChr15Meth = preg_split("/[\t]/", chop($params[26]))[1];
+      $eqtlMap = preg_split("/[\t]/", chop($params[27]))[1];
+      $eqtlMaptss = preg_split("/[\t]/", chop($params[28]))[1];
+      $eqtlMapSigeqtl = preg_split("/[\t]/", chop($params[29]))[1];
+      $eqtlMapeqtlP = preg_split("/[\t]/", chop($params[30]))[1];
+      $eqtlMapCADDth = preg_split("/[\t]/", chop($params[31]))[1];
+      $eqtlMapRDBth = preg_split("/[\t]/", chop($params[32]))[1];
+      $eqtlMapChr15 = preg_split("/[\t]/", chop($params[33]))[1];
+      $eqtlMapChr15Max = preg_split("/[\t]/", chop($params[34]))[1];
+      $eqtlMapChr15Meth = preg_split("/[\t]/", chop($params[35]))[1];
 
       // send job started mail
       // $subject = "IPGAP job submitted";
@@ -438,6 +452,9 @@ class JobController extends Controller
       //
       // mail($email, $subject, $message, $headers, "-r $email");
 
+      DB::table('jobs') -> where('jobID', $jobID)
+                        -> update(['status'=>'RUNNING']);
+
 
       $script = storage_path().'/scripts/gwas_file.pl';
       exec("perl $script $filedir $gwasformat");
@@ -452,7 +469,7 @@ class JobController extends Controller
       // $process = new Proces("/usr/bin/perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC");
       // $process -> start();
       // echo "perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC";
-      exec("perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC $Xchr");
+      exec("perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC");
       $script = storage_path().'/scripts/SNPannot.R';
       exec("Rscript $script $filedir");
       $script = storage_path().'/scripts/getGWAScatalog.pl';
@@ -479,7 +496,7 @@ class JobController extends Controller
       <body>
       Your job has been completed.<br/>
       Pleas follow the link to go to the results page.<br/>
-      <a href=".'"http://ctg.labs.vu.nl/IPGAP/SNP2GENE/"'.">SNP2GENE job query</a><br/>
+      <a href=".'"http://ctg.labs.vu.nl/IPGAP/snp2gene/'.$jobID.'"'.">SNP2GENE job query</a><br/>
       <br/>
       <h4>Job summary</h4>
       your email: ".$email."<br/>
@@ -741,8 +758,8 @@ class JobController extends Controller
 
       $params = file($filedir."params.txt");
       // $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
-      $MHC = preg_split("/[\t]/", chop($params[7]))[1];
-      $bkgval = preg_split("/[\t]/", chop($params[9]))[1];
+      $MHC = preg_split("/[\t]/", chop($params[8]))[1];
+      $bkgval = preg_split("/[\t]/", chop($params[10]))[1];
       $adjPmeth = "fdr_bh";
       $adjPcut = 0.05;
       $minOverlap = 2;

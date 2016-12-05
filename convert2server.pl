@@ -38,7 +38,7 @@ system "mv temp.txt $in";
 
 ##### Controllers
 my $dir = "app/Http/Controllers/";
-my @files = qw(JobController.php D3jsController.php);
+my @files = qw(JobController.php D3jsController.php JsController.php);
 
 foreach my $f (@files){
 	open(IN, $dir.$f);

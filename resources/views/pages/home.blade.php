@@ -17,13 +17,18 @@
 @section('content')
 <div class="container" style="padding-top:50px;">
   <div style="text-align: center;">
-    <h2>Welcome to IPGAP web application!!</h2>
+    <h2>Welcome to GWAS ATLAS!!</h2>
   </div>
-  <p>IPGAP is a web application which systematically process GWAS summary statistics and extract relevant biological information from multiple databases.
-    All you need to prepare is to get GWAS summary statistics of phenotype of interest.
-    If you are here at first time, please follow the tutorial carefully since IPGAP provides a variety of parameters.</p>
-  <p>Databases used in this pilot can be accessed from <a href="/IPGAP/links">links</a> tab.</p>
-  <br/>
+  <p>GWAS ATLAS is a web application which annotatates, prioritizes and visualizes GWAS results.
+    Publicly available data resources and tools used in this applications are accessible from <a href="/IPGAP/links">links</a> tab.</p>
+    All you need to prepare is to get GWAS summary statistics of phenotype of interest and submit at <a href="/IPGAP/snp2gene">SNP2GENE</a>.
+    You can also query a list of genes directory from <a href="/IPGAP/gene2func">GENE2FUNC</a>.
+  </p>
+  <p>
+    Since, GWAS ATLAS provides a variety of parameters, please follow the <a href="/IPGAP/tutorial">Tutorial</a>.
+    For detail methods, please refer the publication.
+    If you have any question or problem using this application, please let us know!!
+  </p>
 
   <h3>News and Updates</h3>
   <div id="NewsFeed" class="container" style="overflow:auto; max-height:500px;">

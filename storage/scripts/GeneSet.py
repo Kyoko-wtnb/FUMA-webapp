@@ -8,6 +8,10 @@ import scipy.stats as stats
 import timeit
 import statsmodels.sandbox.stats.multicomp as multicomp
 import re
+from joblib import Parallel, delayed
+import multiprocessing
+
+n_cores = multiprocessing.cpu_count()
 
 start = timeit.default_timer()
 
@@ -68,8 +72,8 @@ else:
 #Ninbkg = len(bkgenes)
 #print "Input bkg: "+str(Ninbkg)
 
-if Xchr == 1:
-	ENSG = ENSG[ENSG[:,3]!=23,]
+# if Xchr == 1:
+# 	ENSG = ENSG[ENSG[:,3]!=23,]
 if MHC == 1:
 	MHC = False
 else:
@@ -130,6 +134,21 @@ m = len(genes)
 #print "genes: "+" ".join(genes)
 out = open(filedir+"GS.txt", 'w')
 out.write("\t".join(["Category", "GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes", "logP", "logFDR"])+"\n")
+
+def hypTest(l):
+	g = l[2].split(":")
+	g = np.array(g).astype(int)
+	g = g[ArrayIn(g, bkgenes)]
+	n = len(g)
+	gin = genes[ArrayIn(genes, g)]
+	x = len(gin)
+	if x>0:
+		p = stats.hypergeom.sf(x, N ,n, m)
+		return([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), 0.0, 0.0])
+	else:
+		p=1
+		return([c.group(1), l[0], n, x, p, 1.0, "", 0.0, 0.0])
+
 for f in files:
 	if "Human_Adult_Brain" in f:
 		continue
@@ -139,25 +158,26 @@ for f in files:
 	gs = np.array(gs)
 	#print gs[0:3]
 
-	tmp = []
-	for l in gs:
-		g = l[2].split(":")
-		g = np.array(g).astype(int)
+	tmp = Parallel(n_jobs=n_cores)(delayed(hypTest)(l) for l in gs)
+#	tmp = []
+#	for l in gs:
+#		g = l[2].split(":")
+#		g = np.array(g).astype(int)
 		#print len(g)
-		g = g[ArrayIn(g, bkgenes)]
+#		g = g[ArrayIn(g, bkgenes)]
 		#g = g[[0,2,4,6]]
 		#print len(g)
-		n = len(g)
+#		n = len(g)
 		#print ArrayIn(g, bkgenes)
-		gin = genes[ArrayIn(genes, g)]
-		x = len(gin)
+#		gin = genes[ArrayIn(genes, g)]
+#		x = len(gin)
 		#print l[0]+": "+str(n)+": "+str(x)
-		if x>0:
-			p = stats.hypergeom.sf(x, N ,n, m)
-			tmp.append([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), 0.0, 0.0])
-		else:
-			p=1
-			tmp.append([c.group(1), l[0], n, x, p, 1.0, "", 0.0, 0.0])
+#		if x>0:
+#			p = stats.hypergeom.sf(x, N ,n, m)
+#			tmp.append([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), 0.0, 0.0])
+#		else:
+#			p=1
+#			tmp.append([c.group(1), l[0], n, x, p, 1.0, "", 0.0, 0.0])
 		#if(x>0):
 		#	tmp.append([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str))])
 		#else:

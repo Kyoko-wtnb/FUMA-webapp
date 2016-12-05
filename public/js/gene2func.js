@@ -1,3 +1,4 @@
+var geneTable;
 $(document).ready(function(){
   // $('#test').html("Status: "+status+"<br/>");
   $('#newquery').show();
@@ -81,6 +82,7 @@ $(document).ready(function(){
         tsEnrich(id);
         tsGeneralEnrich(id);
         GeneSet(id);
+        GeneTable(id);
       }
     });
 
@@ -750,3 +752,32 @@ function GeneSet(id){
 //     }
 //   });
 // }
+
+function GeneTable(id){
+  geneTable = $('#GeneTable').DataTable({
+    "processing": true,
+    serverSide: false,
+    select: true,
+    "ajax" : {
+      url: "geneTable",
+      type: "POST",
+      data: {
+        id: id,
+      }
+    },
+    error: function(){
+      alert("geneTable error");
+    },
+    "columns":[
+      {"data": "ensg", name: "ENSG"},
+      {"data": "entrezID", name: "entrezID"},
+      {"data": "symbol", name: "symbol"},
+      {"data": "OMIM", name: "OMIM"},
+      {"data": "uniprotID", name: "UniProtID"},
+      {"data": "DrugBank", name: "DrugBank"},
+      {"data": "GeneCard", name: "GeneCard"}
+    ],
+    "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    "iDisplayLength": 10
+  });
+}
