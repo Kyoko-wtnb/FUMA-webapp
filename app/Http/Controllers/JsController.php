@@ -35,7 +35,7 @@ class JsController extends Controller
       $jobID = $request -> input('jobID');
       $row = DB::select('SELECT * FROM jobs WHERE jobID=?', [$jobID]);
       $row = $row[0];
-      $table = '<table class="table table-bordered"><tr><td>email</td><td>'.$row->email
+      $table = '<table class="table table-bordered" style="width:auto;"><tr><td>email</td><td>'.$row->email
         .'</td></tr><tr><td>job title</td><td>'.$row->title.'</td></tr><tr><td>job submitted</td><td>'
         .$row->created_date."</td></tr>";
       $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
@@ -60,7 +60,7 @@ class JsController extends Controller
 
     public function sumTable(Request $request){
         $filedir = $request -> input('filedir');
-        $table = '<table class="table table-striped" style="width:auto;margin-right:auto; margin-left:auto; text-align: right;"><tbody>';
+        $table = '<table class="table table-bordered" style="width:auto;margin-right:auto; margin-left:auto; text-align: right;"><tbody>';
         $lines = file($filedir."summary.txt");
         foreach($lines as $l){
           $line = preg_split("/[\t]/", chop($l));

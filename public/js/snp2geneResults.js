@@ -887,7 +887,7 @@ function QQplot(jobID){
   var canvasSNP = d3.select('#QQplot')
                   .append("div")
                   .attr("class", "canvasarea")
-                	.style("left", margin.left)
+                	.style("left", margin.left+15)
                 	.style("top", margin.top)
                 	.append("canvas")
                 	.attr("class", "canvasarea")
@@ -901,7 +901,7 @@ function QQplot(jobID){
                 .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
   var canvasGene = d3.select('#geneQQplot').append("div")
                     .attr("class", "canvasarea")
-                  	.style("left", margin.left)
+                  	.style("left", margin.left+15)
                   	.style("top", margin.top)
                   	.append("canvas")
                   	.attr("class", "canvasarea")

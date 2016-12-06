@@ -904,18 +904,19 @@
 
       <!-- genome wide plots -->
       <div class="sidePanel container" style="padding-top:50px;" id="genomePlots">
-        <h3>Genome Wide Plot</h3>
+        <!-- <h3>Genome Wide Plot</h3> -->
         <div id="gPlotPanel" class="collapse in">
           <div id="manhattanPane" style="position: relative;">
-            <h3>Manhattan Plot (GWAS summary statistics)</h3>
+            <h4>Manhattan Plot (GWAS summary statistics)</h4>
             <div id="manhattan" class="canvasarea"></div>
           </div>
           <div id="geneManhattanPane" style="position: relative;">
-            <h3>Mahattan Plot (gene-based test)</h3>
+            <h4>Mahattan Plot (gene-based test)</h4>
             <div id="genesManhattan" class="canvasarea"></div>
           </div>
           <div id="QQplotPane" style="position: relative;">
-            <h3>QQ plots</h3>
+            <h4>QQ plots</h4>
+            <br/>
             <div class="col-md-6" id="QQplot" class="canvasarea">
             </div>
             <div class="col-md-6" id="geneQQplot" class="canvasarea">

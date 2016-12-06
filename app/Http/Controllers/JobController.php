@@ -11,7 +11,7 @@ use View;
 use Storage;
 use File;
 use JavaScript;
-use Zipper;
+// use Zipper;
 
 class JobController extends Controller
 {
@@ -755,9 +755,20 @@ class JobController extends Controller
       if($request -> has('eqtlfile')){$files[] = $filedir."eqtl.txt";}
       // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
       if($request -> has('gwascatfile')){$files[] = $filedir."gwascatalog.txt";}
-      $zip_name = $filedir."IPGAP.zip";
-      Zipper::make($zip_name)->add($files);
-      return response() -> download($zip_name);
+      $zip = new \ZipArchive();
+      $zipfile = $filedir."IPGAP.zip";
+
+      if(File::exists($zipfile)){
+        File::delete($zipfile);
+      }
+      // Zipper::make($zipfile)->add($files);
+      // sleep(5);
+      $zip -> open($zipfile, \ZipArchive::CREATE);
+      foreach($files as $f){
+        $zip->addFile($f);
+      }
+      $zip -> close();
+      return response() -> download($zipfile);
     }
 
     public function gene2funcSubmit(Request $request){
@@ -1154,7 +1165,7 @@ class JobController extends Controller
       $id = $request -> input('id');
 
       $filedir = storage_path().'/jobs/'.$id.'/'.$file; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$id.'/';
+      #webserver $filedir = '/data/IPGAP/jobs/'.$id.'/'.$file;
       return response() -> download($filedir);
     }
 
