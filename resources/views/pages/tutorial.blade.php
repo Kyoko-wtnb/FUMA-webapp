@@ -92,7 +92,7 @@
   <div class="page-content inset">
     <div id="test"></div>
     <div id="overview" class="sidePanel container" style="padding-top:50;">
-      <h3>Overview of the IPGAP</h3>
+      <h3>Overview of the GWAS ATLAS</h3>
       <div style="margin-left: 40px;">
         <p>The platform mainly consists of two separate process, SNP2GENE and GENE2FUNC.</p>
         <p>To annotate and obtain candidates from your GWAS summary statistics, go to <a href="/IPGAP/snp2gene"><strong>SNP2GENE</strong></a> which compute LD structure,
@@ -105,10 +105,10 @@
 
     <div id="quick-start" class="sidePanel container" style="padding-top:50;">
       <h2>Quick Start</h2>
-      <p>In this page, we quickly go through what you can do and what you can get from GWAS ATLAS.
+      <!-- <p>In this page, we quickly go through what you can do and what you can get from GWAS ATLAS.
         You will get a minimum knowledge of the GWAS ATLAS and will be able to start using.
         Whenever you get questions, please go back to tutorial for detail explanations.
-      </p>
+      </p> -->
       <div style="margin-left: 40px;">
         <h3 id="getCandidate">Get candidates from your own GWAS summary statistics</h3>
         <p>You can obtain functional annotation of SNPs and map them to genes.
@@ -143,7 +143,7 @@
         </div>
         <br/>
         <h3 id="geneQuery">Identify tissue specificity and shared biological functions of a list of genes</h3>
-        <p>In the GENE2FUNC, you can check expression in different tissue types and tissue specificity, enrichment of publicly available gene sets of a list of genes.
+        <p>In the <a href="/IPGAP/gene2func"><strong>GENE2FUNC</strong></a>, you can check expression in different tissue types, tissue specificity and enrichment of publicly available gene sets of a list of genes.
           You can use mapped genes from SNP2GENE by clicking the button in the result page (Tables tab).<br/>
           You have to provide a list of genes of interest and background genes (for hypergeometric tests).<br/>
         </p>
@@ -165,14 +165,14 @@
       <div style="margin-left: 40px;">
         <h3 id="prepare-input-files">Prepare Input Files</h3>
         <h4>1. GWAS summary statistics</h4>
-        <p>GWAS summary statistics is a mandatory input of <code>SNP2GENE</code> process. IPGAP accept various types of format. As default, <code>PLINK</code> for mat is selected, but please choose the format of your input file since this will cause error during process. Each option requires the following format.</p>
+        <p>GWAS summary statistics is a mandatory input of <code>SNP2GENE</code> process. GWAS ATLAS accept various types of format. As default, <code>PLINK</code> for mat is selected, but please choose the format of your input file since this will cause error during process. Each option requires the following format.</p>
         <p>The input file must include P-value and either rsID or chromosome index and genetic position on hg19 reference genome. Alleles are not mandatory but if only one allele is provided, that is considered as affected allele. When two alleles are provided, it will depends on header. If alleles are not provided, they will be extracted from dbSNP build 146 as minor allele as affected alleles.</p>
         <p>If you are not sure which format to use, either edit your header or select <code>Plain Text</code> which will cover most of common column names.</p>
         <p>Delimiter can be any of white space including single space, multiple space and tab. Because of this, column name must not include any space.</p>
         <p>The column of chromosome can be string like &quot;chr1&quot; or just integer &quot;1&quot;. When &quot;chr&quot; is attached, this will be removed in outputs. When the input file contains chromosome X, this will be encoded as chromosome 23, however, input file can be leave as &quot;X&quot;.</p>
         <div style="margin-left: 40px;">
           <h4 id="1-plink-format">1.1 <code>PLINK</code> format</h4>
-          <p>&ensp;As the most common file format, <code>PLINK</code> is the default option. Some options in PLINK do not return both A1 and A2 but as long as the file contains either SNP or CHR and BP, IPGAP will cover missing values.</p>
+          <p>&ensp;As the most common file format, <code>PLINK</code> is the default option. Some options in PLINK do not return both A1 and A2 but as long as the file contains either SNP or CHR and BP, GWAS ATLAS will cover missing values.</p>
           <ul>
             <li><strong>SNP</strong>: rsID</li>
             <li><strong>CHR</strong>: chromosome</li>
@@ -220,7 +220,7 @@
           </ul>
           <hr>
           <h4 id="note-and-tips">Note and Tips</h4>
-          <p>The pipeline only support human genome hg19. If your input file is not in hg19, please update the genomic position using liftOver from UCSC. However, there is an option for you!! When you provide only rsID without chromosome index and genomic position, IPGAP will extract them from dbSNP as hg19 genome. To do this, remove columns of chromosome index and genomic position.</p>
+          <p>The pipeline only support human genome hg19. If your input file is not in hg19, please update the genomic position using liftOver from UCSC. However, there is an option for you!! When you provide only rsID without chromosome index and genomic position, GWAS ATLAS will extract them from dbSNP as hg19 genome. To do this, remove columns of chromosome index and genomic position.</p>
           <hr>
         </div>
         <h4>2. Predefined lead SNPs</h4>
@@ -247,7 +247,7 @@
         </div>
 
         <h3 id="parameters">Parameters</h3>
-        <p>IPGAP provide a variety of parameters. Default setting will perform naive positional mapping which gives you all genes within LD blocks of lead SNPs. In this section, every parameter will be described details.</p>
+        <p>GWAS ATLAS provide a variety of parameters. Default setting will perform naive positional mapping which gives you all genes within LD blocks of lead SNPs. In this section, every parameter will be described details.</p>
         <p>Each of user inputs and parameters have status as described below.
           Please make sure all input has non-red status, otherwise the submit button won't be activated.<br/><br/>
           <span class="alert alert-info" style="padding: 5px;">
@@ -301,7 +301,7 @@
               <tr>
                 <td>Predefined genetic region</td>
                 <td>Optional</td>
-                <td>Optionally, user can provide specific genomic region to perform IPGAP. IPGAP only look provided regions to identify lead SNPs and candidate SNPs. If you are only interested in specific regions, this will increase a speed of job.</td>
+                <td>Optionally, user can provide specific genomic regions. GWAS ATLAS only look provided regions to identify lead SNPs and candidate SNPs. If you are only interested in specific regions, this will increase a speed of job.</td>
                 <td>File upload</td>
                 <td>none</td>
               </tr>
@@ -334,7 +334,7 @@
               <tr>
                 <td>Maximum lead SNP P-value (&lt;=)</td>
                 <td>Mandatory</td>
-                <td>IPGAP identifies lead SNPs wiht P-value less than or equal to this threshold. This should not me changed unless GWAS is under-powered and only a few peaks are significant.</td>
+                <td>GWAS ATLAS identifies lead SNPs wiht P-value less than or equal to this threshold. This should not me changed unless GWAS is under-powered and only a few peaks are significant.</td>
                 <td>numeric</td>
                 <td>5e-8</td>
                 <td>lower: decrease #lead SNPs. higher: increase #lead SNPs which most likely increate noises</td>
@@ -366,7 +366,7 @@
               <tr>
                 <td>Include 1000 genome variants</td>
                 <td>Mandatory</td>
-                <td>If checked, IPGAP include all SNPs in strong LD with any of lead SNPs even for non-GWAS-tagged SNPs.</td>
+                <td>If checked, all SNPs in strong LD with any of lead SNPs including non-GWAS-tagged SNPs are selected as cnadidate SNPs.</td>
                 <td>Yes/No</td>
                 <td>Yes</td>
                 <td>-</td>
@@ -695,7 +695,9 @@
         <p>Go to SNP2GENE and in the &quot;Query existing job&quot; panel, enter your email address and job title. If both are correct, &quot;Go to Job&quot; button is enabled.</p>
         <p>There are 5 panels in the result page.</p>
         <h4>1. Information of your job</h4>
-        <p>This panel contains your email address, job title and the date of job submission.</p>
+        <p>This panel contains your email address, job title and the date of job submission.
+          When an error occurs during any process, error and detils will be shown in this page.
+        </p>
         <h4>2. Genome-wide plots</h4>
         <p>This panel displays manhattan plots and Q-Q plots for both SNP and gene-based association test.</p>
         <ul>
@@ -703,8 +705,12 @@
             To minimize overlapped data points in the plot, they are filtered based on the following criteria.
             Please be aware that, since majority od overlapped data points are not displayed in the plot, those plots are approximated plots.
             <ul>
-              <li>Manhattan plot: </li>
-              <li>Q-Q plot: </li>
+              <li>Manhattan plot: Overlapped data points (SNPs) were filtered to make the plot one data point per pixel only when average data points per pixel (x-axis) across y-axis is above 1.
+                For each pixel, data point was randomly selected.
+                This filtering was only performed SNPs with P-value &ge; 1e-5 to avoid over filtering.</li>
+              <li>Q-Q plot: Overlapped data points (SNPs) were filtered such that one data point per pixel.
+                For each pixel, data point was randomly selected.
+                This filtering was only performed SNPs with P-value &ge; 1e-5 to avoid over filtering.</li>
             </ul>
           </li>
           <li>Plots for gene-based test<br/>
@@ -741,7 +747,7 @@
         <div style="margin-left: 40px;">
           <ul>
             <li><p>lead SNPs / leadSNPs.txt</p>
-            <p>All independent lead SNPs identified by IPGAP.</p>
+            <p>All independent lead SNPs identified by GWAS ATLAS.</p>
             <ul>
               <li><strong>No</strong> : Index of lead SNPs</li>
               <li><strong>Interval</strong> : Index of assigned genomic interval. This matches with the index of interval table.</li>
@@ -806,9 +812,9 @@
               This file contains all 127 tissue/cell types of chromatin states</p>
             <ul>
               <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-              <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al(ref).</li>
+              <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by <a href="https://www.ncbi.nlm.nih.gov/pubmed/24487276" target="_blank">Kicher et al.</a></li>
               <li><strong>RDB</strong> : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.</li>
-              <li><strong>E001~E129</strong> : Chromatin state predicted by ChrHMM. ID of tissue cell types and description of 15 states are available under external data sources secton.</li>
+              <li><strong>E001~E129</strong> : Chromatin state predicted by ChrHMM. ID of tissue cell types and description of 15 states are available from <a href="/IPGAP/link">Link</a>.</li>
             </ul>
           </ul>
           <ul>
@@ -998,6 +1004,8 @@
           Genes can be provided in the text are (one gene per line) or uploading file in the left panel. When you upload a file, genes have to be in the first column with header. Header can be anything (even just a new line is fine) but start your genes from second row.</p>
           <p>To analyse your genes, you need to specify background genes. You can choose from the gene types which is the easiest way. However, in the case that you need to use specific background genes, please provide them either in the text area of by uploading a file of the right panel.
           File format should be same as described for genes on interest.</p>
+
+          <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="max-width:80%"/>
         </div>
 
         <h3 id="gene2funcOutputs">Results and Outputs</h3>
@@ -1008,6 +1016,9 @@
             The heatmap is the expression of input genes for 53 tissue types from GTEx.
             The values represent the average RPKM per tissue after winsorization at 50.
           </p>
+          <img src="{!! URL::asset('/image/gene2funcHeatmap.png') !!}" style="max-width:80%"/>
+          <br/>
+
           <h4>2. Tissue specificity</h4>
           <p>
              Differentially expressed gene (DEG) sets for 53 tissue types from GTEx RPKM were contracted.
@@ -1019,12 +1030,18 @@
              The same process was performed for 30 general tissue types.<br/>
              Input genes were tested against each of DEG sets.
           </p>
+          <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="max-width:80%"/>
+          <br/>
+
           <h4>3. Gene Sets</h4>
           <p>
             Hypergeometric tests are performed for each gene set.
             Multiple test correction is performed per data set, (i.e. canonical pathways, GO biological processes and so on, separately).
             Gene sets were obtained from MsigDB, WikiPathways and reported genes from GWAS-catalog.
           </p>
+          <img src="{!! URL::asset('/image/gene2funcGS.png') !!}" style="max-width:80%"/>
+          <br/>
+
           <h4>4. Gene Table</h4>
           <p>
             Input genes are mapped to OMIM ID, UniProt ID, Drug ID of DrugBank and links to GeneCards.
@@ -1032,6 +1049,8 @@
             OMIM IDs and Drug IDs are linked to the original sources which opens the new tab.
             Links of GeneCards will be displayed in the frame below.
           </p>
+          <img src="{!! URL::asset('/image/gene2funcGT.png') !!}" style="max-width:80%"/>
+
         </div>
       </div>
     </div>

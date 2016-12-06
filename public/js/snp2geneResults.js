@@ -51,22 +51,26 @@ $(document).ready(function(){
             }else if(jobStatus=="NEW"){
               newJob();
             }else{
-              // errorHandling(jobStatus);
+              errorHandling(jobStatus);
+              $('#jobinfoSide').show();
               jobInfo(jobid);
             }
             return;
           }else{
-            // $('#overlay').html('<div id="overlay"><div id="loading">'
-            //       +'<p>Your job is runnning. Please wait for a moment.'
-            //       +'<br/>We will send you an email after the job is done.'
-            //       +'<br/>You can come back to this page later!! No need to bookmark.</p>'
-            //       +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>');
+            $('#overlay').html('<div id="overlay"><div id="loading">'
+                  +'<p>Your job is runnning. Please wait for a moment.'
+                  +'<br/>We will send you an email after the job is done '
+                  +'(if you have provided your email address).'
+                  +'<br/>If you didn\'t submit your email address, please bookmark this page.</p>'
+                  +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
+                  +'</div></div>');
           }
         }
       });
     }, 5000);
 
     function newJob(){
+      var filedir;
       var posMap;
       var eqtlMap;
       $.ajax({
@@ -91,48 +95,70 @@ $(document).ready(function(){
         complete: function(){
           $('#overlay').remove();
           $('#logs').hide();
-          $('#results').show();
-          $('#jobinfoSide').show();
-          $('#resultsSide').show();
-          $('.sidePanel').each(function(){
-            if(this.id=="jobInfo"){
-              $('#'+this.id).show();
-            }else{
-              $('#'+this.id).hide();
-            }
-          });
-          $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-          $('#sidebar.sidebar-nav li a').each(function(){
-            if($(this).attr("href")=="#jobInfo"){
-              $(this).parent().addClass("active");
-            }
-          });
+
           $.ajax({
-              url: 'getParams',
-              type: 'POST',
-              data:{
-                jobID: jobid
-              },
-              error: function(){
-                alert("JobQuery getParams error");
-              },
-              success: function(data){
-                // $('#test').html(data)
-                var tmp = data.split(":");
-                filedir = tmp[0];
-                posMap = parseInt(tmp[1]);
-                eqtlMap = parseInt(tmp[2]);
-              },
-              complete: function(){
+            url: 'checkJobStatus',
+            type: "POST",
+            data: {
+              jobID: jobid,
+            },
+            error: function(){
+              alert("ERROR: checkJobStatus")
+            },
+            success: function(data){
+              $('#test').html(data);
+              jobStatus = data;
+            },
+            complete: function(){
+              if(jobStatus=="OK"){
+                $.ajax({
+                    url: 'getParams',
+                    type: 'POST',
+                    data:{
+                      jobID: jobid
+                    },
+                    error: function(){
+                      alert("JobQuery getParams error");
+                    },
+                    success: function(data){
+                      // $('#test').html(data)
+                      var tmp = data.split(":");
+                      filedir = tmp[0];
+                      posMap = parseInt(tmp[1]);
+                      eqtlMap = parseInt(tmp[2]);
+                    },
+                    complete: function(){
+                      jobInfo(jobid);
+                      GWplot(jobid);
+                      QQplot(jobid);
+                      showResultTables(filedir, jobid, posMap, eqtlMap);
+                      $('#results').show();
+                      $('#jobinfoSide').show();
+                      $('#resultsSide').show();
+                      $('.sidePanel').each(function(){
+                        if(this.id=="jobInfo"){
+                          $('#'+this.id).show();
+                        }else{
+                          $('#'+this.id).hide();
+                        }
+                      });
+                      $("#sidebar.sidebar-nav").find(".active").removeClass("active");
+                      $('#sidebar.sidebar-nav li a').each(function(){
+                        if($(this).attr("href")=="#jobInfo"){
+                          $(this).parent().addClass("active");
+                        }
+                      });
+                    }
+                });
+              }else{
+                errorHandling(jobStatus);
+                $('#jobinfoSide').show();
                 jobInfo(jobid);
-                GWplot(jobid);
-                QQplot(jobid);
-                showResultTables(filedir, jobid, posMap, eqtlMap);
-                $('#results').show();
-                $('#resultsSide').show();
+                $('a[href="#jobInfo"]').trigger('click');
               }
+            }
           });
-          // jobInfo(jobid);
+                    // jobInfo(jobid);
           // GWplot(jobid);
           // QQplot(jobid);
           // showResultTables(filedir, jobid, posMap, eqtlMap);
@@ -595,8 +621,9 @@ $(document).ready(function(){
 function JobRunLoad(){
   var over = '<div id="overlay"><div id="loading">'
         +'<p>Your job is runnning. Please wait for a moment.'
-        +'<br/>We will send you an email after the job is done.'
-        +'<br/>You can come back to this page later!! No need to bookmark.</p>'
+        +'<br/>We will send you an email after the job is done '
+        +'(if you have provided your email address).'
+        +'<br/>If you didn\'t submit your email address, please bookmark this page.</p>'
         +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
         +'</div></div>';
   $(over).appendTo('body');
@@ -608,6 +635,66 @@ function AjaxLoad(){
         +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
         +'</div></div>';
   $(over).appendTo('body');
+}
+
+function errorHandling(status){
+  if(status == "ERROR:001"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +'ERROR:001 (Not enough columns are provided in GWAS summary statistics file)<br/>'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status == "ERRUR:002"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +'ERROR:002 (Error from MAGMA)<br/>'
+        +'This error might be because of the rsID and/or p-value columns are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status == "ERRUR:003" || status=="ERROR:004"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error during SNPs filtering for manhattan plot)<br/>'
+        +'This error might be because of the p-value column is wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERROR:005"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error from lead SNPs and candidate SNPs identification)<br/>'
+        +'This error occures when no candidate SNPs were identified.'
+        +'It might be becaseu there is no significant hit at your defined P-value cutoff for lead SNPs and GWAS tagged SNPs.'
+        +'In that case, you can relax threshold or provide predefined lead SNPs.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#snp2gene">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERROR:006"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error from lead SNPs and candidate SNPs identification)<br/>'
+        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERRUR:007"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error during SNPs annotation extraction)<br/>'
+        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERROR:008" || status=="ERRUR:009"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error during extracting ecternal data sources)<br/>'
+        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERRUR:010"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error during gene mapping)<br/>'
+        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }
 }
 
 function jobInfo(jobID){

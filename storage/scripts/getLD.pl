@@ -679,6 +679,13 @@ foreach my $chr (1..23){
 #system "sort -k 3n -k 4n $out2 > $filedir/temp.txt";
 #system "mv $filedir/temp.txt $out2";
 
+### Check output
+my $Nsnps = `wc -l $out2`;
+($Nsnps) = split(/\s/, $Nsnps);
+if($Nsnps<2){
+	die "No candidate SNP was identified\n";
+}
+
 #interval compute
 system "Rscript $dir/leadSNP.R $filedir $r2 $gwasP $leadP $maf $mergeDist $leadSNPs";
 

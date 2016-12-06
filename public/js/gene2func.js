@@ -217,8 +217,8 @@ function checkInput(){
 function AjaxLoad(){
   var over = '<div id="overlay"><div id="loading">'
           +'<h4>Running gene test</h4>'
-          +'<p>Please wait a moment</br>'
-          +'<p>Currentry this job takes 2-4 min</p>'
+          +'<p>Please wait for a moment</br>'
+          +'<p>Currentry this job takes 1-2 min</p>'
           +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
           +'</div></div>';
   $(over).appendTo('body');

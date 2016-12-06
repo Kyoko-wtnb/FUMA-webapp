@@ -1,6 +1,7 @@
 body
 { /*background: #F6F4F0;*/
-  color: #635B53;}
+  color: #635B53;
+}
 
 #foot
 { /*width: 950px;*/
@@ -75,6 +76,12 @@ table.display{
   border: none;
 }*/
 
+.table.inputTable td{
+  padding: 2px;
+}
+.table.inputTable{
+  border-collapse: collapse;
+}
 .table.inputTable tr td{
   vertical-align: middle;
 }

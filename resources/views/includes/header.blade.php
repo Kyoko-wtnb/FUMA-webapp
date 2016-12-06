@@ -28,7 +28,7 @@
         <li class="{{ Request::is('snp2gene*') ? 'active' : ''}}"><a href="/IPGAP/snp2gene">SNP2GENE</a></li>
         <li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="/IPGAP/gene2func">GENE2FUNC</a></li>
         <li class="{{ Request::is('links') ? 'active' : ''}}"><a href="/IPGAP/links">Links</a></li>
-        <li class="{{ Request::is('contact') ? 'active' : ''}}"><a href="/IPGAP/contact">Contact</a></li>
+        <!-- <li class="{{ Request::is('contact') ? 'active' : ''}}"><a href="/IPGAP/contact">Contact</a></li> -->
         <!-- local_end -->
       </ul>
     </div>

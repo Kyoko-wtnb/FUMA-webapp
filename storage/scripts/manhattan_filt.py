@@ -29,6 +29,8 @@ for chrom in range(1,23):
 		plotSNPs.append(['chr', 'bp', 'p'])
 	temp = GWAS[GWAS[:,chrcol]==chrom]
 	temp = temp[:,[0,1,5]]
+	if temp.shape[0]==0:
+		continue
 	#print temp.shape
 	xMax = max(temp[:,1])
 	cur_h = 0

@@ -37,7 +37,11 @@ class JsController extends Controller
       $row = $row[0];
       $table = '<table class="table table-bordered"><tr><td>email</td><td>'.$row->email
         .'</td></tr><tr><td>job title</td><td>'.$row->title.'</td></tr><tr><td>job submitted</td><td>'
-        .$row->created_date."</td></tr><table>";
+        .$row->created_date."</td></tr>";
+      $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
+      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $params = file($filedir."params.txt");
+      $table .= "<table>";
       echo $table;
     }
 

@@ -378,10 +378,14 @@ class JobController extends Controller
       // $jobtitle = $request -> input('jobtitle');
       // $filedir = $request -> input('filedir');
 
+      $results = DB::select('SELECT * FROM jobs WHERE jobID=?', [$jobID]);
+      $email = $results[0]->email;
+      if(strcmp($email, "Not Given")==0){$email==null;}
+      $jobtitle = $results[0]->title;
+
       $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
       #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");
-
       $gwasformat = preg_split("/[\t]/", chop($params[3]))[1];
       $leadfile = preg_split("/[\t]/", chop($params[4]))[1];
       if(strcmp($leadfile, "Not given")==0){$leadfile=0;}
@@ -452,71 +456,167 @@ class JobController extends Controller
       //
       // mail($email, $subject, $message, $headers, "-r $email");
 
+      $logfile = $filedir."job.log";
       DB::table('jobs') -> where('jobID', $jobID)
                         -> update(['status'=>'RUNNING']);
 
 
       $script = storage_path().'/scripts/gwas_file.pl';
-      exec("perl $script $filedir $gwasformat");
+      exec("perl $script $filedir $gwasformat >>$logfile", $output, $error);
+      if($error != 0){
+        DB::table('jobs') -> where('jobID', $jobID)
+                          -> update(['status'=>'ERROR:001']);
+        if($email!=null){
+          $this->sendJobCommpMail($email, $jobtitle, $jobID, 1);
+          return;
+        }
+      }
       $script = storage_path().'/scripts/magma.pl';
-      exec("perl $script $filedir $N $pop");
+      exec("perl $script $filedir $N $pop >>$logfile", $output, $error);
+      if($error != 0){
+        DB::table('jobs') -> where('jobID', $jobID)
+                          -> update(['status'=>'ERROR:002']);
+        if($email!=null){
+          $this->sendJobCommpMail($email, $jobtitle, $jobID, 2);
+          return;
+        }
+      }
+
       $script = storage_path().'/scripts/manhattan_filt.py';
-      exec("python $script $filedir");
+      exec("python $script $filedir >>$logfile", $output, $error);
+      if($error != 0){
+        DB::table('jobs') -> where('jobID', $jobID)
+                          -> update(['status'=>'ERROR:003']);
+        if($email!=null){
+          $this->sendJobCommpMail($email, $jobtitle, $jobID, 3);
+          return;
+        }
+      }
+
       $script = storage_path().'/scripts/QQSNPs_filt.py';
-      exec("perl $script $filedir");
+      exec("python $script $filedir >>$logfile", $output, $error);
+      if($error != 0){
+        DB::table('jobs') -> where('jobID', $jobID)
+                          -> update(['status'=>'ERROR:004']);
+        if($email!=null){
+          $this->sendJobCommpMail($email, $jobtitle, $jobID, 4);
+          return;
+        }
+      }
 
       $script = storage_path().'/scripts/getLD.pl';
       // $process = new Proces("/usr/bin/perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC");
       // $process -> start();
       // echo "perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC";
-      exec("perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC");
+      exec("perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC >>$logfile", $output, $error);
+      if($error != 0){
+        $NoCandidates = false;
+        foreach($outputs as $l){
+          if(preg_match("No candidate SNP was identified", $l)==1){
+            $NoCandidates = true;
+            break;
+          }
+        }
+        if($NoCandidates){
+          DB::table('jobs') -> where('jobID', $jobID)
+                            -> update(['status'=>'ERROR:005']);
+          if($email!=null){
+            $this->sendJobCommpMail($email, $jobtitle, $jobID, 5);
+            return;
+          }
+        }else{
+          DB::table('jobs') -> where('jobID', $jobID)
+                            -> update(['status'=>'ERROR:006']);
+          if($email!=null){
+            $this->sendJobCommpMail($email, $jobtitle, $jobID, 6);
+            return;
+          }
+        }
+
+      }
       $script = storage_path().'/scripts/SNPannot.R';
-      exec("Rscript $script $filedir");
+      exec("Rscript $script $filedir >>$logfile", $output, $error);
+      if($error != 0){
+        DB::table('jobs') -> where('jobID', $jobID)
+                          -> update(['status'=>'ERROR:007']);
+        if($email!=null){
+          $this->sendJobCommpMail($email, $jobtitle, $jobID, 7);
+          return;
+        }
+      }
       $script = storage_path().'/scripts/getGWAScatalog.pl';
-      exec("perl $script $filedir");
+      exec("perl $script $filedir >>$logfile", $output, $error);
+      if($error != 0){
+        DB::table('jobs') -> where('jobID', $jobID)
+                          -> update(['status'=>'ERROR:008']);
+        if($email!=null){
+          $this->sendJobCommpMail($email, $jobtitle, $jobID, 8);
+          return;
+        }
+      }
+
       $script = storage_path().'/scripts/getExAC.pl';
       #exec("perl $script $filedir");
       if($eqtlMap==1){
         $script = storage_path().'/scripts/geteQTL.pl';
-        exec("perl $script $filedir $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP");
+        exec("perl $script $filedir $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP >>$logfile", $output, $error);
+        if($error != 0){
+          DB::table('jobs') -> where('jobID', $jobID)
+                            -> update(['status'=>'ERROR:009']);
+          if($email!=null){
+            $this->sendJobCommpMail($email, $jobtitle, $jobID, 9);
+            return;
+          }
+        }
       }
 
       $script = storage_path().'/scripts/geneMap.R';
-      exec("Rscript $script $filedir $genetype $exMHC $extMHC $posMap $posMapWindow $posMapWindowSize $posMapAnnot $posMapCADDth $posMapRDBth $posMapChr15 $posMapChr15Max $posMapChr15Meth $eqtlMap $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP $eqtlMapCADDth $eqtlMapRDBth $eqtlMapChr15 $eqtlMapChr15Max $eqtlMapChr15Meth");
+      exec("Rscript $script $filedir $genetype $exMHC $extMHC $posMap $posMapWindow $posMapWindowSize $posMapAnnot $posMapCADDth $posMapRDBth $posMapChr15 $posMapChr15Max $posMapChr15Meth $eqtlMap $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP $eqtlMapCADDth $eqtlMapRDBth $eqtlMapChr15 $eqtlMapChr15Max $eqtlMapChr15Meth >>$logfile", $output, $error);
+      if($error != 0){
+        DB::table('jobs') -> where('jobID', $jobID)
+                          -> update(['status'=>'ERROR:010']);
+        if($email!=null){
+          $this->sendJobCommpMail($email, $jobtitle, $jobID, 10);
+          return;
+        }
+      }
 
       DB::table('jobs') -> where('jobID', $jobID)
                         -> update(['status'=>'OK']);
 
-
+      if($email != null){
+        $this->sendJobCommpMail($email, $jobtitle, $jobID, 0);
+      }
+      return;
       // send job completed mail
-      $subject = "IPGAP job has been completed";
-      $message = "
-      <html>
-      <head><h3>IPGAP job has been completed!!</h3></head>
-      <body>
-      Your job has been completed.<br/>
-      Pleas follow the link to go to the results page.<br/>
-      <a href=".'"http://ctg.labs.vu.nl/IPGAP/snp2gene/'.$jobID.'"'.">SNP2GENE job query</a><br/>
-      <br/>
-      <h4>Job summary</h4>
-      your email: ".$email."<br/>
-      your job title: ".$jobtitle."<br/>
-      You can also use those information to qury your results.<br/>
-      <br/>
-      Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
-      Kyoko Watanabe<br/>
-      VU University Amsterdam<br/>
-      Dept. Complex Trait Genetics<br/>
-      De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
-      k.watanabe@vu.nl<br/>
-      </body>
-      </html>
-      ";
-      $headers = "MIME-Version: 1.0". "\r\n";
-      $headers .= "Content-type:text/html;charset=UTF-8"."\r\n";
-      $headers .= "From: <k.watanabe@vu.nl>"."\r\n";
-
-      mail($email, $subject, $message, $headers, "-r $email");
+      // $subject = "IPGAP job has been completed";
+      // $message = "
+      // <html>
+      // <head><h3>IPGAP job has been completed!!</h3></head>
+      // <body>
+      // Your job has been completed.<br/>
+      // Pleas follow the link to go to the results page.<br/>
+      // <a href=".'"http://ctg.labs.vu.nl/IPGAP/snp2gene/'.$jobID.'"'.">SNP2GENE job query</a><br/>
+      // <br/>
+      // <h4>Job summary</h4>
+      // your email: ".$email."<br/>
+      // your job title: ".$jobtitle."<br/>
+      // You can also use those information to qury your results.<br/>
+      // <br/>
+      // Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
+      // Kyoko Watanabe<br/>
+      // VU University Amsterdam<br/>
+      // Dept. Complex Trait Genetics<br/>
+      // De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
+      // k.watanabe@vu.nl<br/>
+      // </body>
+      // </html>
+      // ";
+      // $headers = "MIME-Version: 1.0". "\r\n";
+      // $headers .= "Content-type:text/html;charset=UTF-8"."\r\n";
+      // $headers .= "From: <k.watanabe@vu.nl>"."\r\n";
+      //
+      // mail($email, $subject, $message, $headers, "-r $email");
     }
 
     public function annotPlot(Request $request){
@@ -1058,14 +1158,98 @@ class JobController extends Controller
       return response() -> download($filedir);
     }
 
-    public function sendMail(Request $request){
-      $email = "ainoktmr@gmail.com";
-      $subject = "test";
-      $message = "Test meail from IPGAP\n";
+    public function sendJobCommpMail($email, $jobtitle, $jobID, $status){
+      if($status==0){
+        $subject = "GWAS ATLAS job has been completed";
+        $message = "
+        <html>
+        <head><h3>GWAS ATLAS job has been completed!!</h3></head>
+        <body>
+        Your job has been completed.<br/>
+        Pleas follow the link to go to the results page.<br/>
+        <a href=".'"http://ctg.labs.vu.nl/IPGAP/snp2gene/'.$jobID.'"'.">SNP2GENE job query</a><br/>
+        <br/>
+        <h4>Job summary</h4>
+        your email: ".$email."<br/>
+        your job title: ".$jobtitle."<br/>
+        You can also use those information to qury your results.<br/>
+        <br/>
+        Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
+        Kyoko Watanabe<br/>
+        VU University Amsterdam<br/>
+        Dept. Complex Trait Genetics<br/>
+        De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
+        k.watanabe@vu.nl<br/>
+        </body>
+        </html>
+        ";
+      }else{
+        $subject = "GWAS ATLAS job, ERROR";
+        $message = "
+        <html>
+        <head><h3>An error occured fruing GWAS ATLAS job</h3></head>
+        <body>
+        There was a error occured during the process.<br/>
+        ERROR: ".$status;
+        if($status==1){
+          $message .= ' (Not enough columns are provided in GWAS summary statistics file)<br/>
+            Please make sure your input file have sufficient column names. You might just have chosen wrond file format.
+            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
+        }else if($status==2){
+          $message .= ' (Error from MAGMA)<br/>
+            This error might be because of the rsID and/or p-value columns are wrongly labeled.
+            Please make sure your input file have sufficient column names. You might just have chosen wrond file format.
+            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
+        }else if($status==3 | $status==4){
+          $message .= ' (Error during SNPs filtering for manhattan plot)<br/>
+            This error might be because of the p-value column is wrongly labeled.
+            Please make sure your input file have sufficient column names. You might just have chosen wrond file format.
+            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
+        }else if($status==5){
+          $message .= ' (Error from lead SNPs and candidate SNPs identification)<br/>
+            This error occures when no candidate SNPs were identified.
+            It might be becaseu there is no significant hit at your defined P-value cutoff for lead SNPs and GWAS tagged SNPs.
+            In that case, you can relax threshold or provide predefined lead SNPs.
+            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#snp2gene">Tutorial<a/> for detilas.<br/>';
+        }else if($status==6){
+          $message .= ' (Error from lead SNPs and candidate SNPs identification)<br/>
+            This error might be because of either invalid input parameters or columns which are wrongly labeled.
+            Please make sure your input file have sufficient column names. You might just have chosen wrond file format.
+            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
+        }else if($status==7){
+          $message .= ' (Error during SNPs annotation extraction)<br/>
+            This error might be because of either invalid input parameters or columns which are wrongly labeled.
+            Please make sure your input file have sufficient column names. You might just have chosen wrond file format.
+            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
+        }else if($status==8 || $status==9){
+          $message .= ' (Error during extracting external data sources)<br/>
+            This error might be because of either invalid input parameters or columns which are wrongly labeled.
+            Please make sure your input file have sufficient column names. You might just have chosen wrond file format.
+            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
+        }else if($status==10){
+          $message .= ' (Error during gene mapping)<br/>
+            This error might be because of either invalid input parameters or columns which are wrongly labeled.
+            Please make sure your input file have sufficient column names. You might just have chosen wrond file format.
+            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
+        }
+
+      }
+
+      $message .= "
+      Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
+      Kyoko Watanabe<br/>
+      VU University Amsterdam<br/>
+      Dept. Complex Trait Genetics<br/>
+      De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
+      k.watanabe@vu.nl<br/>
+      </body>
+      </html>
+      ";
+
       $headers = "MIME-Version: 1.0". "\r\n";
       $headers .= "Content-type:text/html;charset=UTF-8"."\r\n";
       $headers .= "From: <k.watanabe@vu.nl>"."\r\n";
 
-      mail($email, $subject, $message, $headers);
+      mail($email, $subject, $message, $headers, "-r $email");
     }
 }

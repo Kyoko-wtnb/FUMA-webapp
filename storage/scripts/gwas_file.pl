@@ -36,7 +36,7 @@ my $head = <GWAS>;
 my $rsIDcol=undef;
 my $chrcol=undef;
 my $poscol=undef;
-my $pcol;
+my $pcol=undef;
 my $refcol=undef;
 my $altcol=undef;
 
@@ -100,6 +100,9 @@ if($gwasfile_format eq "Plain"){
 		## extract chr and pos from db146 (match rsID + ref/alt)
 	}
 }
+
+if(!(defined $pcol)){die "101";}
+elsif(!(defined $chrcol && defined $poscol && defined $rsIDcol)){die "102";}
 
 my %GWAS;
 print "chr: $chrcol, pos: $poscol, rsID: $rsIDcol, ref: $refcol, alt: $altcol, p: $pcol\n";

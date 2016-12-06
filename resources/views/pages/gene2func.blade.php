@@ -54,7 +54,7 @@
   <div id="test"></div>
   <div id="newquery" class="sidePanel" style="padding-top:50;">
     {!! Form::open(array('url' => 'gene2func/submit', 'files'=>true)) !!}
-    <h3>Input list of genes</h3>
+    <!-- <h3>Input list of genes</h3> -->
     <div class="row">
       <div class="col-md-6">
         <div class="panel panel-default">
@@ -62,14 +62,14 @@
           <div class="panel-body" style="padding-bottom: 0;">
             <p style="color: #004d99">Please either paste or upload a file of genes to test.
               When both are provided, only genes pasted in the text box will be used.
-              So please make sure the text box is clear when you upload a file.
             </p>
             1. Paste genes<br/>
             <textarea id="genes" name="genes" rows="12" cols="50" placeholder="Please enter each gene per line here." onkeyup="checkInput()" oninput="checkInput()"></textarea><br/>
             <br/>
             2. Upload file
             <tab><input type="file" name="genesfile" id="genesfile" onchange="checkInput()"/>
-            <br/>
+            <tab>*The first column shoud be the genes without header. Extra columns will be ignored.
+            <br/><br/>
             <div id="GeneCheck" style="padding-bottom: 0;"></div>
           </div>
         </div>
@@ -81,7 +81,6 @@
           <div class="panel-body" style="padding-bottom: 0;">
             <p style="color: #004d99">
               Please specify background genes for hypergeometric test.
-              If more than one options are provided, options are prioritized by the following order; selected genes in the pipeline, pasted genes and uploaded file.
             </p>
             1. Select from genes in the pipeline<br/>
             <tab><select multiple size="5" name="genetype[]" id="genetype" onchange="checkInput();">
@@ -100,7 +99,8 @@
             <br/>
             3. Upload file
             <tab><input type="file" name="bkgenesfile" id="bkgenesfile" onchange="checkInput()"/>
-            <br/>
+            <tab>*The first column shoud be the genes without header. Extra columns will be ignored.
+            <br/><br/>
             <div id="bkGeneCheck" style="padding-bottom: 0;"></div>
           </div>
         </div>
@@ -124,8 +124,8 @@
             <option value="fdr_tsbky">two-step Benjamini-Krieger-Yekuteieli (FDR)</option>
           </select><br/>
         <tab>&nbsp;<span style="color: #004d99">*Options are available from python module <code>statsmodels.sandbox.stats.multicomp.multipletests</code>.</span><br/>
-        <tab>Adjusted P-value cutoff (exclusive): <input type="number" id="adjPcut" name="adjPcut" value="0.05"/><br/>
-        <tab>Minimum overlapped genes (inclusive): <input type="number" id="minOverlap" name="minOverlap" value="2"/></br>
+        <tab>Adjusted P-value cutoff (&lt;): <input type="number" id="adjPcut" name="adjPcut" value="0.05"/><br/>
+        <tab>Minimum overlapped genes (&ge;): <input type="number" id="minOverlap" name="minOverlap" value="2"/></br>
       </div>
     </div>
 
@@ -141,6 +141,7 @@
         <a href='#expPanel' data-toggle="collapse" style="color: #00004d"><h3>Expression HeatMap</h3></a> -->
       <div id="expPanel" class="sidePanel container" style="padding-top:50;">
         <!-- <div id="expHeat" style='overflow:auto; width:1010px; height:450px;'></div> -->
+        <h4>Gene expression heatmap in 53 tissues (GTEx)</h4>
         <div id="expHeat"></div>
         <div id="expBox"></div>
         <br/>
@@ -149,7 +150,7 @@
     <!-- <div class="panel panel-default"><div class="panel-body">
       <a href='#tsEnrichBarPanel' data-toggle="collapse" style="color: #00004d;"><h3>Tissue specificity</h3></a> -->
       <div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50;">
-        <h4>Differentially expressed genes among 53 tissues (GTEx)</h4>
+        <h4>Differentially expressed genes across 53 tissues (GTEx)</h4>
         <!-- <button class="btn" id="DEGdown" name="DEGdown">Download text file</button><br/> -->
         <form action="fileDown" method="post" target="_blank">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -158,7 +159,7 @@
           <input type="submit" class="btn" id="DEGdown" name="DEGdown" value="Download text file"><br/>
         </form>
         <div id="tsEnrichBar"></div>
-        <h4>Differrentially expressed genes among 30 general tissue types (GTEx)</h4>
+        <h4>Differrentially expressed genes across 30 general tissue types (GTEx)</h4>
         <!-- <button class="btn" id="DEGgdown" name="DEGgdown">Download text file</button><br/> -->
         <form action="fileDown" method="post" target="_blank">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -187,7 +188,7 @@
 
     <div id="GeneTablePanel" class="sidePanel container" style="padding-top:50;">
       <h4>Input genes</h4>
-      <table id="GeneTable" class="display dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+      <table id="GeneTable" class="display dt-body-center compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
         <thead>
           <tr>
             <th>ENSG</th><th>entrezID</th><th>symbol</th><th>OMIM</th><th>UniProtID</th><th>DrugBank</th><th>GeneCard</th>

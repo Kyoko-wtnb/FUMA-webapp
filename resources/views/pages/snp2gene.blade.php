@@ -898,6 +898,7 @@
       <div class="sidePanel container" style="padding-top:50px;" id="jobInfo">
         <h3 style="color: #00004d">Information of your job</h3>
         <div id="jobInfoTable"></div>
+        <div id="ErrorMess"></div>
         <div id="test"></div>
       </div>
 
@@ -967,7 +968,7 @@
             <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="leadSNPtablePane">
               <br/>
-              <table id="leadSNPtable" class="display dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+              <table id="leadSNPtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
                     <th>No</th><th>Interval</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nSNPs</th><th>nGWASSNPs</th>
@@ -978,7 +979,7 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="intervalTablePane">
               <br/>
-              <table id="intervalTable" class="display dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+              <table id="intervalTable" class="display compact dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
                     <th>Interval</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nLeadSNPs</th><th>start</th><th>end</th><th>nSNPs</th><th>nGWASSNPs</th>
@@ -989,7 +990,7 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="SNPtablePane">
               <br/>
-              <table id="SNPtable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+              <table id="SNPtable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
                     <th>uniqID</th><th>rsID</th><th>chr</th><th>bp</th><th>MAF</th><th>P-value</th><th>Interval</th><th>r2</th><th>leadSNP</th><th>Nearest gene</th>
@@ -999,7 +1000,7 @@
               </table>
             </div>
             <div role="tabpanel" class="tab-pane" id="annovTablePane">
-              <table id="annovTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+              <table id="annovTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
                     <th>uniqID</th><th>chr</th><th>bp</th><th>Gene</th><th>Symbol</th><th>Distance</th><th>Function</th><th>Exonic function</th><th>Exon</th>
@@ -1009,12 +1010,12 @@
             </div>
             <div role="tabpanel" class="tab-pane" id="geneTablePane">
               <br/>
-              <table id="geneTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+              <table id="geneTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
               </table>
             </div>
             <div role="tabpanel" class="tab-pane" id="eqtlTablePane">
               <br/>
-              <table id="eqtlTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+              <table id="eqtlTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
                     <th>uniqID</th><th>chr</th><th>bp</th><th>DB</th><th>tissue</th><th>Gene</th><th>Symbol</th><th>P-value</th><th>FDR</th><th>t/z</th>
@@ -1025,7 +1026,7 @@
             <div role="tabpanel" class="tab-pane" id="gwascatTablePane">
               <br/>
               <p>Please download a output file (gwascatalog.txt) from "Download" tab to get full information</p>
-              <table id="gwascatTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+              <table id="gwascatTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
                     <th>Interval</th><th>lead SNP</th><th>chr</th><th>bp</th><th>rsID</th><th>PMID</th><th>Trait</th><th>FirstAuth</th><th>Date</th><th>P-value</th>
