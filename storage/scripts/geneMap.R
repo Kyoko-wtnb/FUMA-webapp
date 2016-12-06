@@ -26,7 +26,7 @@ eqtlMapChr15Meth <- args[22]
 #write.table(c(filedir, genetype, exMHC, extMHC, posMap, posMapWindow, posMapWindowSize, posMapAnnot, posMapCADDth, posMapRDBth, posMapChr15, posMapChr15Max, posMapChr15Meth,
 #  eqtlMap, eqtlMaptss, eqtlMapSigeqtl, eqtlP, eqtlMapCADDth, eqtlMapRDBth, eqtlMapChr15, eqtlMapChr15Max, eqtlMapChr15Meth), "../files/1/test.txt")
 
-load("../data/ENSG.all.genes.RData") #local
+load(paste(filedir, "../../data/ENSG.all.genes.RData", sep="")) #local
 #webserver load("/data/ENSG/ENSG.all.genes.RData")
 if(genetype!="all"){
   genetype <- unique(unlist(strsplit(genetype, ":")))

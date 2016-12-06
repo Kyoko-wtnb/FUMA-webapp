@@ -1,3 +1,4 @@
+var geneTable;
 $(document).ready(function(){
   // $('#test').html("Status: "+status+"<br/>");
   $('#newquery').show();
@@ -13,7 +14,7 @@ $(document).ready(function(){
     var gval = IPGAPvar.gval;
     var bkgtype = IPGAPvar.bkgtype;
     var bkgval = IPGAPvar.bkgval;
-    var Xchr = IPGAPvar.Xchr;
+    // var Xchr = IPGAPvar.Xchr;
     var MHC = IPGAPvar.MHC;
     var adjPmeth = IPGAPvar.adjPmeth;
     var adjPcut = IPGAPvar.adjPcut;
@@ -36,9 +37,9 @@ $(document).ready(function(){
       $('#bkgenes').val() = bkgval.replace(/:/g, '\n');
     }
 
-    if(Xchr==1){
-      $('#Xchr').attr('checked', true);
-    }
+    // if(Xchr==1){
+    //   $('#Xchr').attr('checked', true);
+    // }
 
     if(MHC==1){
       $('#MHC').attr('checked', true);
@@ -55,7 +56,7 @@ $(document).ready(function(){
         gval: gval,
         bkgtype: bkgtype,
         bkgval: bkgval,
-        Xchr: Xchr,
+        // Xchr: Xchr,
         MHC: MHC,
         adjPmeth: adjPmeth,
         adjPcut: adjPcut,
@@ -81,6 +82,7 @@ $(document).ready(function(){
         tsEnrich(id);
         tsGeneralEnrich(id);
         GeneSet(id);
+        GeneTable(id);
       }
     });
 
@@ -215,8 +217,8 @@ function checkInput(){
 function AjaxLoad(){
   var over = '<div id="overlay"><div id="loading">'
           +'<h4>Running gene test</h4>'
-          +'<p>Please wait a moment</br>'
-          +'<p>Currentry this job takes 2-4 min</p>'
+          +'<p>Please wait for a moment</br>'
+          +'<p>Currentry this job takes 1-2 min</p>'
           +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
           +'</div></div>';
   $(over).appendTo('body');
@@ -750,3 +752,32 @@ function GeneSet(id){
 //     }
 //   });
 // }
+
+function GeneTable(id){
+  geneTable = $('#GeneTable').DataTable({
+    "processing": true,
+    serverSide: false,
+    select: true,
+    "ajax" : {
+      url: "geneTable",
+      type: "POST",
+      data: {
+        id: id,
+      }
+    },
+    error: function(){
+      alert("geneTable error");
+    },
+    "columns":[
+      {"data": "ensg", name: "ENSG"},
+      {"data": "entrezID", name: "entrezID"},
+      {"data": "symbol", name: "symbol"},
+      {"data": "OMIM", name: "OMIM"},
+      {"data": "uniprotID", name: "UniProtID"},
+      {"data": "DrugBank", name: "DrugBank"},
+      {"data": "GeneCard", name: "GeneCard"}
+    ],
+    "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    "iDisplayLength": 10
+  });
+}

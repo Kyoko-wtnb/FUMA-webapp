@@ -3,14 +3,15 @@ var intervalTable_selected=null;
 var SNPtable_selected=null;
 var posAnnotPlot;
 $(document).ready(function(){
+  // var jobID = "{{$jobID}}";
   // console.log(status);
-  // console.log(jobID);
+  console.log(jobid);
   // console.log(status.length);
   // $('#resultsSide').hide();
   if(status.length==0){
     // console.log("status:NULL");
   }else{
-    var job = IPGAPvar.jobtype;
+    // var job = IPGAPvar.jobtype;
     // var email = IPGAPvar.email;
     // var filedir = IPGAPvar.filedir;
     // var jobID = IPGAPvar.jobID;
@@ -22,52 +23,187 @@ $(document).ready(function(){
       $('#annotPlotChr15Opt').hide();
     }
 
-    if(job==="newjob"){
-      $("#results").hide();
-      // get parameters
-      // var job = IPGAPvar.jobtype;
-      var email = IPGAPvar.email;
-      var filedir = IPGAPvar.filedir;
-      var jobID = IPGAPvar.jobID;
-      var jobtitle = IPGAPvar.jobtitle;
-      var leadfile = IPGAPvar.leadSNPsfileup;
-      var regionfile = IPGAPvar.regionsfileup;
-      var gwasformat = IPGAPvar.gwasformat;
-      var addleadSNPs = IPGAPvar.addleadSNPs;
-      var N = IPGAPvar.N;
-      var leadP = IPGAPvar.leadP;
-      var r2 = IPGAPvar.r2;
-      var gwasP = IPGAPvar.gwasP;
-      var pop = IPGAPvar.pop;
-      var KGSNPs = IPGAPvar.KGSNPs;
-      var maf = IPGAPvar.maf;
-      var mergeDist = IPGAPvar.mergeDist;
-      var Xchr = IPGAPvar.Xchr;
+    AjaxLoad();
+    var jobStatus;
+    var jobcheck = setInterval(function(){
+      $.ajax({
+        url: 'checkJobStatus',
+        type: "POST",
+        data: {
+          jobID: jobid,
+        },
+        error: function(){
+          alert("ERROR: checkJobStatus")
+        },
+        success: function(data){
+          $('#test').html(data);
+          jobStatus = data;
+          // $('#results').show();
+          // $('#resultsSide').show();
+        },
+        complete: function(){
+          if(jobStatus!="RUNNING"){
+            $('#overlay').remove();
+            // $('#test').append(" timer is done");
+            clearInterval(jobcheck);
+            if(jobStatus=="OK"){
+              loadResults();
+            }else if(jobStatus=="NEW"){
+              newJob();
+            }else{
+              errorHandling(jobStatus);
+              $('#jobinfoSide').show();
+              jobInfo(jobid);
+            }
+            return;
+          }else{
+            $('#overlay').html('<div id="overlay"><div id="loading">'
+                  +'<p>Your job is runnning. Please wait for a moment.'
+                  +'<br/>We will send you an email after the job is done '
+                  +'(if you have provided your email address).'
+                  +'<br/>If you didn\'t submit your email address, please bookmark this page.</p>'
+                  +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
+                  +'</div></div>');
+          }
+        }
+      });
+    }, 5000);
 
-      var exMHC = IPGAPvar.exMHC;
-      var extMHC = IPGAPvar.extMHC;
+    function newJob(){
+      var filedir;
+      var posMap;
+      var eqtlMap;
+      $.ajax({
+        url: 'CandidateSelection',
+        type: 'POST',
+        data: {
+            jobID: jobid
+        },
+        processing: true,
+        beforeSend: function(){
+          // $('#logSNPfiltering').append('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
+          JobRunLoad();
+        },
+        success: function(data){
+          // $('#logSNPfiltering').html('<div class="alert alert-success"><h4> Step 1. Candidate SNPs filtering is done</h4></div>');
+          // $('#test').html(data);
+          // $('#overlay').remove();
+        },
+        error: function(){
+          // alert("Error occored (SNPfilt)");
+        },
+        complete: function(){
+          $('#overlay').remove();
+          $('#logs').hide();
 
-      var genetype = IPGAPvar.genetype;
-
-      var posMap = IPGAPvar.posMap;
-      var posMapWindow = IPGAPvar.posMapWindow;
-      var posMapWindowSize = IPGAPvar.posMapWindowSize;
-      var posMapAnnot = IPGAPvar.posMapAnnot;
-      var posMapCADDth = IPGAPvar.posMapCADDth;
-      var posMapRDBth = IPGAPvar.posMapRDBth;
-      var posMapChr15 = IPGAPvar.posMapChr15;
-      var posMapChr15Max = IPGAPvar.posMapChr15Max;
-      var posMapChr15Meth = IPGAPvar.posMapChr15Meth;
-
-      var eqtlMap = IPGAPvar.eqtlMap;
-      var eqtlMaptss = IPGAPvar.eqtlMaptss;
-      var eqtlMapSigeqtl = IPGAPvar.eqtlMapSigeqtl;
-      var eqtlMapeqtlP = IPGAPvar.eqtlMapeqtlP;
-      var eqtlMapCADDth = IPGAPvar.eqtlMapCADDth;
-      var eqtlMapRDBth = IPGAPvar.eqtlMapRDBth;
-      var eqtlMapChr15 = IPGAPvar.eqtlMapChr15;
-      var eqtlMapChr15Max = IPGAPvar.eqtlMapChr15Max;
-      var eqtlMapChr15Meth = IPGAPvar.eqtlMapChr15Meth;
+          $.ajax({
+            url: 'checkJobStatus',
+            type: "POST",
+            data: {
+              jobID: jobid,
+            },
+            error: function(){
+              alert("ERROR: checkJobStatus")
+            },
+            success: function(data){
+              $('#test').html(data);
+              jobStatus = data;
+            },
+            complete: function(){
+              if(jobStatus=="OK"){
+                $.ajax({
+                    url: 'getParams',
+                    type: 'POST',
+                    data:{
+                      jobID: jobid
+                    },
+                    error: function(){
+                      alert("JobQuery getParams error");
+                    },
+                    success: function(data){
+                      // $('#test').html(data)
+                      var tmp = data.split(":");
+                      filedir = tmp[0];
+                      posMap = parseInt(tmp[1]);
+                      eqtlMap = parseInt(tmp[2]);
+                    },
+                    complete: function(){
+                      jobInfo(jobid);
+                      GWplot(jobid);
+                      QQplot(jobid);
+                      showResultTables(filedir, jobid, posMap, eqtlMap);
+                      $('#results').show();
+                      $('#jobinfoSide').show();
+                      $('#resultsSide').show();
+                      $('.sidePanel').each(function(){
+                        if(this.id=="jobInfo"){
+                          $('#'+this.id).show();
+                        }else{
+                          $('#'+this.id).hide();
+                        }
+                      });
+                      $("#sidebar.sidebar-nav").find(".active").removeClass("active");
+                      $('#sidebar.sidebar-nav li a').each(function(){
+                        if($(this).attr("href")=="#jobInfo"){
+                          $(this).parent().addClass("active");
+                        }
+                      });
+                    }
+                });
+              }else{
+                errorHandling(jobStatus);
+                $('#jobinfoSide').show();
+                jobInfo(jobid);
+                $('a[href="#jobInfo"]').trigger('click');
+              }
+            }
+          });
+                    // jobInfo(jobid);
+          // GWplot(jobid);
+          // QQplot(jobid);
+          // showResultTables(filedir, jobid, posMap, eqtlMap);
+          // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
+        }
+      });
+      // var filedir = IPGAPvar.filedir;
+      // var leadfile = IPGAPvar.leadSNPsfileup;
+      // var regionfile = IPGAPvar.regionsfileup;
+      // var gwasformat = IPGAPvar.gwasformat;
+      // var addleadSNPs = IPGAPvar.addleadSNPs;
+      // var N = IPGAPvar.N;
+      // var leadP = IPGAPvar.leadP;
+      // var r2 = IPGAPvar.r2;
+      // var gwasP = IPGAPvar.gwasP;
+      // var pop = IPGAPvar.pop;
+      // var KGSNPs = IPGAPvar.KGSNPs;
+      // var maf = IPGAPvar.maf;
+      // var mergeDist = IPGAPvar.mergeDist;
+      // // var Xchr = IPGAPvar.Xchr;
+      //
+      // var exMHC = IPGAPvar.exMHC;
+      // var extMHC = IPGAPvar.extMHC;
+      //
+      // var genetype = IPGAPvar.genetype;
+      //
+      // var posMap = IPGAPvar.posMap;
+      // var posMapWindow = IPGAPvar.posMapWindow;
+      // var posMapWindowSize = IPGAPvar.posMapWindowSize;
+      // var posMapAnnot = IPGAPvar.posMapAnnot;
+      // var posMapCADDth = IPGAPvar.posMapCADDth;
+      // var posMapRDBth = IPGAPvar.posMapRDBth;
+      // var posMapChr15 = IPGAPvar.posMapChr15;
+      // var posMapChr15Max = IPGAPvar.posMapChr15Max;
+      // var posMapChr15Meth = IPGAPvar.posMapChr15Meth;
+      //
+      // var eqtlMap = IPGAPvar.eqtlMap;
+      // var eqtlMaptss = IPGAPvar.eqtlMaptss;
+      // var eqtlMapSigeqtl = IPGAPvar.eqtlMapSigeqtl;
+      // var eqtlMapeqtlP = IPGAPvar.eqtlMapeqtlP;
+      // var eqtlMapCADDth = IPGAPvar.eqtlMapCADDth;
+      // var eqtlMapRDBth = IPGAPvar.eqtlMapRDBth;
+      // var eqtlMapChr15 = IPGAPvar.eqtlMapChr15;
+      // var eqtlMapChr15Max = IPGAPvar.eqtlMapChr15Max;
+      // var eqtlMapChr15Meth = IPGAPvar.eqtlMapChr15Meth;
 
       // $('#test').html("<h3>New Job</h3><p>test</p><p>email: "+email+"<br/>genetype: "+genetype+"</p>");
       // $('#results').show();
@@ -75,96 +211,97 @@ $(document).ready(function(){
 
       // $('#results').show();
       // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-      $.ajax({
-        url: 'CandidateSelection',
-        type: 'POST',
-        data: {
-            email: email,
-            jobtitle: jobtitle,
-            filedir: filedir,
-            gwasformat: gwasformat,
-            leadfile: leadfile,
-            addleadSNPs: addleadSNPs,
-            regionfile: regionfile,
-            N: N,
-            leadP: leadP,
-            r2: r2,
-            gwasP: gwasP,
-            pop: pop,
-            KGSNPs: KGSNPs,
-            maf: maf,
-            mergeDist: mergeDist,
-            Xchr: Xchr,
-            exMHC: exMHC,
-            extMHC: extMHC,
-            genetype: genetype,
-            posMap: posMap,
-            posMapWindow: posMapWindow,
-            posMapWindowSize: posMapWindowSize,
-            posMapAnnot: posMapAnnot,
-            posMapCADDth: posMapCADDth,
-            posMapRDBth: posMapRDBth,
-            posMapChr15: posMapChr15,
-            posMapChr15Max: posMapChr15Max,
-            posMapChr15Meth: posMapChr15Meth,
-            eqtlMap: eqtlMap,
-            eqtlMaptss: eqtlMaptss,
-            eqtlMapSigeqtl: eqtlMapSigeqtl,
-            eqtlMapeqtlP: eqtlMapeqtlP,
-            eqtlMapCADDth: eqtlMapCADDth,
-            eqtlMapRDBth: eqtlMapRDBth,
-            eqtlMapChr15: eqtlMapChr15,
-            eqtlMapChr15Max: eqtlMapChr15Max,
-            eqtlMapChr15Meth: eqtlMapChr15Meth
-        },
-        processing: true,
-        beforeSend: function(){
-          // $('#logSNPfiltering').append('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-          AjaxLoad();
-        },
-        success: function(data){
-          // $('#logSNPfiltering').html('<div class="alert alert-success"><h4> Step 1. Candidate SNPs filtering is done</h4></div>');
-          // $('#test').html(data);
-          $('#overlay').remove();
-        },
-        error: function(){
-          // alert("Error occored (SNPfilt)");
-        },
-        complete: function(){
-          $('#logs').hide();
-          $('#results').show();
-          $('#resultsSide').show();
-          $('.sidePanel').each(function(){
-            if(this.id=="jobInfo"){
-              $('#'+this.id).show();
-            }else{
-              $('#'+this.id).hide();
-            }
-          });
-          $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-          $('#sidebar.sidebar-nav li a').each(function(){
-            if($(this).attr("href")=="#jobInfo"){
-              $(this).parent().addClass("active");
-            }
-          });
-          GWplot(jobID);
-          QQplot(jobID);
-          showResultTables(filedir, jobID, posMap, eqtlMap);
-          // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-        }
-      });
-    }else{
-      $('#logs').hide();
-      $('#results').show();
-      $('#resultsSide').show();
-      // get parameters
-      var email = IPGAPvar.email;
-      var filedir = IPGAPvar.filedir;
-      var jobID = IPGAPvar.jobID;
-      var jobtitle = IPGAPvar.jobtitle;
-      var posMap = IPGAPvar.posMap;
-      var eqtlMap = IPGAPvar.eqtlMap;
-      // $('#test').html("<p>posMap: "+posMap+" eqtlMap: "+eqtlMap+"</p>");
+
+      // $.ajax({
+      //   url: 'CandidateSelection',
+      //   type: 'POST',
+      //   data: {
+      //       jobID: jobID,
+      //       email: email,
+      //       jobtitle: jobtitle,
+      //       filedir: filedir,
+      //       gwasformat: gwasformat,
+      //       leadfile: leadfile,
+      //       addleadSNPs: addleadSNPs,
+      //       regionfile: regionfile,
+      //       N: N,
+      //       leadP: leadP,
+      //       r2: r2,
+      //       gwasP: gwasP,
+      //       pop: pop,
+      //       KGSNPs: KGSNPs,
+      //       maf: maf,
+      //       mergeDist: mergeDist,
+      //       // Xchr: Xchr,
+      //       exMHC: exMHC,
+      //       extMHC: extMHC,
+      //       genetype: genetype,
+      //       posMap: posMap,
+      //       posMapWindow: posMapWindow,
+      //       posMapWindowSize: posMapWindowSize,
+      //       posMapAnnot: posMapAnnot,
+      //       posMapCADDth: posMapCADDth,
+      //       posMapRDBth: posMapRDBth,
+      //       posMapChr15: posMapChr15,
+      //       posMapChr15Max: posMapChr15Max,
+      //       posMapChr15Meth: posMapChr15Meth,
+      //       eqtlMap: eqtlMap,
+      //       eqtlMaptss: eqtlMaptss,
+      //       eqtlMapSigeqtl: eqtlMapSigeqtl,
+      //       eqtlMapeqtlP: eqtlMapeqtlP,
+      //       eqtlMapCADDth: eqtlMapCADDth,
+      //       eqtlMapRDBth: eqtlMapRDBth,
+      //       eqtlMapChr15: eqtlMapChr15,
+      //       eqtlMapChr15Max: eqtlMapChr15Max,
+      //       eqtlMapChr15Meth: eqtlMapChr15Meth
+      //   },
+      //   processing: true,
+      //   // beforeSend: function(){
+      //   //   // $('#logSNPfiltering').append('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
+      //   //   JobRunLoad();
+      //   // },
+      //   success: function(data){
+      //     // $('#logSNPfiltering').html('<div class="alert alert-success"><h4> Step 1. Candidate SNPs filtering is done</h4></div>');
+      //     // $('#test').html(data);
+      //     // $('#overlay').remove();
+      //   },
+      //   error: function(){
+      //     // alert("Error occored (SNPfilt)");
+      //   },
+      //   complete: function(){
+      //     $('#overlay').remove();
+      //     $('#logs').hide();
+      //     $('#results').show();
+      //     $('#jobinfoSide').show();
+      //     $('#resultsSide').show();
+      //     $('.sidePanel').each(function(){
+      //       if(this.id=="jobInfo"){
+      //         $('#'+this.id).show();
+      //       }else{
+      //         $('#'+this.id).hide();
+      //       }
+      //     });
+      //     $("#sidebar.sidebar-nav").find(".active").removeClass("active");
+      //     $('#sidebar.sidebar-nav li a').each(function(){
+      //       if($(this).attr("href")=="#jobInfo"){
+      //         $(this).parent().addClass("active");
+      //       }
+      //     });
+      //     jobInfo(jobID);
+      //     GWplot(jobID);
+      //     QQplot(jobID);
+      //     showResultTables(filedir, jobID, posMap, eqtlMap);
+      //     // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
+      //   }
+      // });
+    }
+
+    function loadResults(){
+      var filedir;
+      var posMap;
+      var eqtlMap;
+      // AjaxLoad();
+      $('#jobinfoSide').show();
       $('.sidePanel').each(function(){
         if(this.id=="jobInfo"){
           $('#'+this.id).show();
@@ -178,10 +315,263 @@ $(document).ready(function(){
           $(this).parent().addClass("active");
         }
       });
-      GWplot(jobID);
-      QQplot(jobID);
-      showResultTables(filedir, jobID, posMap, eqtlMap);
+      $.ajax({
+          url: 'getParams',
+          type: 'POST',
+          data:{
+            jobID: jobid
+          },
+          error: function(){
+            alert("JobQuery getParams error");
+          },
+          success: function(data){
+            // $('#test').html(data)
+            var tmp = data.split(":");
+            filedir = tmp[0];
+            posMap = parseInt(tmp[1]);
+            eqtlMap = parseInt(tmp[2]);
+          },
+          complete: function(){
+            jobInfo(jobid);
+            GWplot(jobid);
+            QQplot(jobid);
+            showResultTables(filedir, jobid, posMap, eqtlMap);
+            $('#results').show();
+            $('#resultsSide').show();
+          }
+      });
     }
+
+    // if(status==="newjob"){
+    //   $("#results").hide();
+    //   // get parameters
+    //   // var job = IPGAPvar.jobtype;
+    //   var email = IPGAPvar.email;
+    //   var filedir = IPGAPvar.filedir;
+    //   var jobID = IPGAPvar.jobID;
+    //   var jobtitle = IPGAPvar.jobtitle;
+    //   var leadfile = IPGAPvar.leadSNPsfileup;
+    //   var regionfile = IPGAPvar.regionsfileup;
+    //   var gwasformat = IPGAPvar.gwasformat;
+    //   var addleadSNPs = IPGAPvar.addleadSNPs;
+    //   var N = IPGAPvar.N;
+    //   var leadP = IPGAPvar.leadP;
+    //   var r2 = IPGAPvar.r2;
+    //   var gwasP = IPGAPvar.gwasP;
+    //   var pop = IPGAPvar.pop;
+    //   var KGSNPs = IPGAPvar.KGSNPs;
+    //   var maf = IPGAPvar.maf;
+    //   var mergeDist = IPGAPvar.mergeDist;
+    //   // var Xchr = IPGAPvar.Xchr;
+    //
+    //   var exMHC = IPGAPvar.exMHC;
+    //   var extMHC = IPGAPvar.extMHC;
+    //
+    //   var genetype = IPGAPvar.genetype;
+    //
+    //   var posMap = IPGAPvar.posMap;
+    //   var posMapWindow = IPGAPvar.posMapWindow;
+    //   var posMapWindowSize = IPGAPvar.posMapWindowSize;
+    //   var posMapAnnot = IPGAPvar.posMapAnnot;
+    //   var posMapCADDth = IPGAPvar.posMapCADDth;
+    //   var posMapRDBth = IPGAPvar.posMapRDBth;
+    //   var posMapChr15 = IPGAPvar.posMapChr15;
+    //   var posMapChr15Max = IPGAPvar.posMapChr15Max;
+    //   var posMapChr15Meth = IPGAPvar.posMapChr15Meth;
+    //
+    //   var eqtlMap = IPGAPvar.eqtlMap;
+    //   var eqtlMaptss = IPGAPvar.eqtlMaptss;
+    //   var eqtlMapSigeqtl = IPGAPvar.eqtlMapSigeqtl;
+    //   var eqtlMapeqtlP = IPGAPvar.eqtlMapeqtlP;
+    //   var eqtlMapCADDth = IPGAPvar.eqtlMapCADDth;
+    //   var eqtlMapRDBth = IPGAPvar.eqtlMapRDBth;
+    //   var eqtlMapChr15 = IPGAPvar.eqtlMapChr15;
+    //   var eqtlMapChr15Max = IPGAPvar.eqtlMapChr15Max;
+    //   var eqtlMapChr15Meth = IPGAPvar.eqtlMapChr15Meth;
+    //
+    //   // $('#test').html("<h3>New Job</h3><p>test</p><p>email: "+email+"<br/>genetype: "+genetype+"</p>");
+    //   // $('#results').show();
+    //   // document.getElementById('test').innerHTML="<p>posMapChr15: "+posMapChr15+"</p>";
+    //
+    //   // $('#results').show();
+    //   // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
+    //   $.ajax({
+    //     url: 'CandidateSelection',
+    //     type: 'POST',
+    //     data: {
+    //         jobID: jobID,
+    //         email: email,
+    //         jobtitle: jobtitle,
+    //         filedir: filedir,
+    //         gwasformat: gwasformat,
+    //         leadfile: leadfile,
+    //         addleadSNPs: addleadSNPs,
+    //         regionfile: regionfile,
+    //         N: N,
+    //         leadP: leadP,
+    //         r2: r2,
+    //         gwasP: gwasP,
+    //         pop: pop,
+    //         KGSNPs: KGSNPs,
+    //         maf: maf,
+    //         mergeDist: mergeDist,
+    //         // Xchr: Xchr,
+    //         exMHC: exMHC,
+    //         extMHC: extMHC,
+    //         genetype: genetype,
+    //         posMap: posMap,
+    //         posMapWindow: posMapWindow,
+    //         posMapWindowSize: posMapWindowSize,
+    //         posMapAnnot: posMapAnnot,
+    //         posMapCADDth: posMapCADDth,
+    //         posMapRDBth: posMapRDBth,
+    //         posMapChr15: posMapChr15,
+    //         posMapChr15Max: posMapChr15Max,
+    //         posMapChr15Meth: posMapChr15Meth,
+    //         eqtlMap: eqtlMap,
+    //         eqtlMaptss: eqtlMaptss,
+    //         eqtlMapSigeqtl: eqtlMapSigeqtl,
+    //         eqtlMapeqtlP: eqtlMapeqtlP,
+    //         eqtlMapCADDth: eqtlMapCADDth,
+    //         eqtlMapRDBth: eqtlMapRDBth,
+    //         eqtlMapChr15: eqtlMapChr15,
+    //         eqtlMapChr15Max: eqtlMapChr15Max,
+    //         eqtlMapChr15Meth: eqtlMapChr15Meth
+    //     },
+    //     processing: true,
+    //     beforeSend: function(){
+    //       // $('#logSNPfiltering').append('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
+    //       JobRunLoad();
+    //     },
+    //     success: function(data){
+    //       // $('#logSNPfiltering').html('<div class="alert alert-success"><h4> Step 1. Candidate SNPs filtering is done</h4></div>');
+    //       // $('#test').html(data);
+    //       // $('#overlay').remove();
+    //     },
+    //     error: function(){
+    //       // alert("Error occored (SNPfilt)");
+    //     },
+    //     complete: function(){
+    //       $('#overlay').remove();
+    //       $('#logs').hide();
+    //       $('#results').show();
+    //       $('#jobinfoSide').show();
+    //       $('#resultsSide').show();
+    //       $('.sidePanel').each(function(){
+    //         if(this.id=="jobInfo"){
+    //           $('#'+this.id).show();
+    //         }else{
+    //           $('#'+this.id).hide();
+    //         }
+    //       });
+    //       $("#sidebar.sidebar-nav").find(".active").removeClass("active");
+    //       $('#sidebar.sidebar-nav li a').each(function(){
+    //         if($(this).attr("href")=="#jobInfo"){
+    //           $(this).parent().addClass("active");
+    //         }
+    //       });
+    //       jobInfo(jobID);
+    //       GWplot(jobID);
+    //       QQplot(jobID);
+    //       showResultTables(filedir, jobID, posMap, eqtlMap);
+    //       // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
+    //     }
+    //   });
+    // }else{
+    //   $('#logs').hide();
+    //   // $('#results').show();
+    //   // $('#resultsSide').show();
+    //   // console.log(jobid);
+    //   // console.log(status);
+    //   // get parameters
+    //   // var email = IPGAPvar.email;
+    //   // var filedir = IPGAPvar.filedir;
+    //   // var jobID = IPGAPvar.jobID;
+    //   // var jobtitle = IPGAPvar.jobtitle;
+    //   // var posMap = IPGAPvar.posMap;
+    //   // var eqtlMap = IPGAPvar.eqtlMap;
+    //   // $('#test').html("<p>posMap: "+posMap+" eqtlMap: "+eqtlMap+"</p>");
+    //   var filedir;
+    //   var posMap;
+    //   var eqtlMap;
+    //   var jobStatus;
+    //   AjaxLoad();
+    //   $('#jobinfoSide').show();
+    //   $('.sidePanel').each(function(){
+    //     if(this.id=="jobInfo"){
+    //       $('#'+this.id).show();
+    //     }else{
+    //       $('#'+this.id).hide();
+    //     }
+    //   });
+    //   $("#sidebar.sidebar-nav").find(".active").removeClass("active");
+    //   $('#sidebar.sidebar-nav li a').each(function(){
+    //     if($(this).attr("href")=="#jobInfo"){
+    //       $(this).parent().addClass("active");
+    //     }
+    //   });
+    //   var jobcheck = setInterval(function(){
+    //     $.ajax({
+    //       url: 'checkJobStatus',
+    //       type: "POST",
+    //       data: {
+    //         jobID: jobid,
+    //       },
+    //       error: function(){
+    //         alert("ERROR: checkJobStatus")
+    //       },
+    //       success: function(data){
+    //         $('#test').html(data);
+    //         jobStatus = data;
+    //         // $('#results').show();
+    //         // $('#resultsSide').show();
+    //       },
+    //       complete: function(){
+    //         if(jobStatus!="RUNNING"){
+    //           $('#overlay').remove();
+    //           // $('#test').append(" timer is done");
+    //           clearInterval(jobcheck);
+    //           if(jobStatus=="OK"){
+    //             loadResults();
+    //           }else{
+    //             // errorHandling(jobStatus);
+    //             jobInfo(jobid);
+    //           }
+    //           return;
+    //         }
+    //       }
+    //     });
+    //   }, 5000);
+    //
+    //   function loadResults(){
+    //     $.ajax({
+    //         url: 'getParams',
+    //         type: 'POST',
+    //         data:{
+    //           jobID: jobid
+    //         },
+    //         error: function(){
+    //           alert("JobQuery getParams error");
+    //         },
+    //         success: function(data){
+    //           // $('#test').html(data)
+    //           var tmp = data.split(":");
+    //           filedir = tmp[0];
+    //           posMap = parseInt(tmp[1]);
+    //           eqtlMap = parseInt(tmp[2]);
+    //         },
+    //         complete: function(){
+    //           jobInfo(jobid);
+    //           GWplot(jobid);
+    //           QQplot(jobid);
+    //           showResultTables(filedir, jobid, posMap, eqtlMap);
+    //           $('#results').show();
+    //           $('#resultsSide').show();
+    //         }
+    //     });
+    //   }
+    // }
+    //
   }
 
   // download file selection
@@ -194,7 +584,8 @@ $(document).ready(function(){
     $('#annotfile').prop('checked', true);
     $('#genefile').prop('checked', true);
     $('#eqtlfile').prop('checked', true);
-    $('#exacfile').prop('checked', true);
+    $('#gwascatfile').prop('checked', true);
+    // $('#exacfile').prop('checked', true);
     $('#download').attr('disabled',false);
   });
   $('#clearfiles').on('click', function(){
@@ -206,7 +597,8 @@ $(document).ready(function(){
     $('#annotfile').prop('checked', false);
     $('#genefile').prop('checked', false);
     $('#eqtlfile').prop('checked', false);
-    $('#exacfile').prop('checked', false);
+    // $('#exacfile').prop('checked', false);
+    $('#gwascatfile').prop('checked', false);
     $('#download').attr('disabled',true);
   });
 
@@ -226,14 +618,99 @@ $(document).ready(function(){
 
 });
 
-function AjaxLoad(){
+function JobRunLoad(){
   var over = '<div id="overlay"><div id="loading">'
         +'<p>Your job is runnning. Please wait for a moment.'
-        +'<br/>We will send you an email after the job is done.'
-        +'<br/>You can come back to this page later!! No need to bookmark.</p>'
+        +'<br/>We will send you an email after the job is done '
+        +'(if you have provided your email address).'
+        +'<br/>If you didn\'t submit your email address, please bookmark this page.</p>'
         +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
         +'</div></div>';
   $(over).appendTo('body');
+}
+
+function AjaxLoad(){
+  var over = '<div id="overlay"><div id="loading">'
+        +'<p>Loading data ...</p>'
+        +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
+        +'</div></div>';
+  $(over).appendTo('body');
+}
+
+function errorHandling(status){
+  if(status == "ERROR:001"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +'ERROR:001 (Not enough columns are provided in GWAS summary statistics file)<br/>'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status == "ERRUR:002"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +'ERROR:002 (Error from MAGMA)<br/>'
+        +'This error might be because of the rsID and/or p-value columns are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status == "ERRUR:003" || status=="ERROR:004"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error during SNPs filtering for manhattan plot)<br/>'
+        +'This error might be because of the p-value column is wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERROR:005"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error from lead SNPs and candidate SNPs identification)<br/>'
+        +'This error occures when no candidate SNPs were identified.'
+        +'It might be becaseu there is no significant hit at your defined P-value cutoff for lead SNPs and GWAS tagged SNPs.'
+        +'In that case, you can relax threshold or provide predefined lead SNPs.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#snp2gene">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERROR:006"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error from lead SNPs and candidate SNPs identification)<br/>'
+        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERRUR:007"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error during SNPs annotation extraction)<br/>'
+        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERROR:008" || status=="ERRUR:009"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error during extracting ecternal data sources)<br/>'
+        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }else if(status=="ERRUR:010"){
+    $('#ErrorMess').html('<div class="alert alert-denger">'
+        +status+' (Error during gene mapping)<br/>'
+        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
+        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
+        +'</div>');
+  }
+}
+
+function jobInfo(jobID){
+  $.ajax({
+    url: "jobInfo",
+    type: "POST",
+    data: {
+      jobID: jobID,
+    },
+    error: function(){
+      alert("jobInfo error");
+    },
+    success: function(data){
+      $('#jobInfoTable').html(data);
+    }
+  });
 }
 
 function GWplot(jobID){
@@ -278,6 +755,8 @@ function GWplot(jobID){
             	.attr("height", height)
             	.node().getContext('2d');
   d3.json("manhattan/jobs/"+jobID+"/manhattan.txt", function(data){
+  // d3.tsv("/../IPGAP/sotrage/jobs/"+jobID+"/manhattan.txt", function(error, data){
+
     data.forEach(function(d){
   		// d.chr = +d.chr;
   		// d.bp = +d.bp;
@@ -408,7 +887,7 @@ function QQplot(jobID){
   var canvasSNP = d3.select('#QQplot')
                   .append("div")
                   .attr("class", "canvasarea")
-                	.style("left", margin.left)
+                	.style("left", margin.left+15)
                 	.style("top", margin.top)
                 	.append("canvas")
                 	.attr("class", "canvasarea")
@@ -422,7 +901,7 @@ function QQplot(jobID){
                 .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
   var canvasGene = d3.select('#geneQQplot').append("div")
                     .attr("class", "canvasarea")
-                  	.style("left", margin.left)
+                  	.style("left", margin.left+15)
                   	.style("top", margin.top)
                   	.append("canvas")
                   	.attr("class", "canvasarea")
@@ -535,20 +1014,6 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
     $('#eqtlfiledown').hide();
     $('#eqtlfile').prop('checked',false);
   }
-
-  $.ajax({
-    url: "jobInfo",
-    type: "POST",
-    data: {
-      jobID: jobID,
-    },
-    error: function(){
-      alert("jobInfo error");
-    },
-    success: function(data){
-      $('#jobInfoTable').html(data);
-    }
-  });
 
   $.ajax({
     url: "paramTable",

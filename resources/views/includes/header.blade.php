@@ -14,24 +14,21 @@
 <!-- Tab bar -->
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" href="/"><span style="color: #1E90FF; font-size: 130%;">IPGAP</span></a>
-      <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNuvbar">
-        <sapn class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button> -->
+    <div class="navbar-header" style="padding-left: 30px;">
+      <!-- <a class="navbar-brand" href="/IPGAP/"><span style="color: #1E90FF; font-size: 130%;">IPGAP</span></a> -->
+      <a class="navbar-brand" href="/IPGAP/" style="padding-top: 5px;"><img src="{!! URL::asset('image/logo.png') !!}" height="45px;" width="200px"></a>
     </div>
-    <div class="collapse navbar-collapse" id="headNav">
+
+    <div class="collapse navbar-collapse" id="headNav" style="padding-right: 50px;">
       <ul class="nav navbar-nav navbar-right">
         <!-- local_start -->
-        <li class="{{ Request::is('/') ? 'active' : ''}}"><a href="/">Home</a></li>
-        <li class="{{ Request::is('tutorial') ? 'active' : ''}}"><a href="/tutorial">Tutorial</a></li>
-        <!-- <li class="{{ Request::is('GWASresult*') ? 'active' : ''}}"><a href="/GWASresult">GWASresult</a></li> -->
-        <li class="{{ Request::is('snp2gene*') ? 'active' : ''}}"><a href="/snp2gene">SNP2GENE</a></li>
-        <li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="/gene2func">GENE2FUNC</a></li>
-        <li class="{{ Request::is('links') ? 'active' : ''}}"><a href="/links">Links</a></li>
-        <li class="{{ Request::is('contact') ? 'active' : ''}}"><a href="/contact">Contact</a></li>
+        <li class="{{ Request::is('/') ? 'active' : ''}}"><a href="/IPGAP/">Home</a></li>
+        <li class="{{ Request::is('tutorial') ? 'active' : ''}}"><a href="/IPGAP/tutorial">Tutorial</a></li>
+        <!-- <li class="{{ Request::is('GWASresult*') ? 'active' : ''}}"><a href="/IPGAP/GWASresult">GWASresult</a></li> -->
+        <li class="{{ Request::is('snp2gene*') ? 'active' : ''}}"><a href="/IPGAP/snp2gene">SNP2GENE</a></li>
+        <li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="/IPGAP/gene2func">GENE2FUNC</a></li>
+        <li class="{{ Request::is('links') ? 'active' : ''}}"><a href="/IPGAP/links">Links</a></li>
+        <!-- <li class="{{ Request::is('contact') ? 'active' : ''}}"><a href="/IPGAP/contact">Contact</a></li> -->
         <!-- local_end -->
       </ul>
     </div>

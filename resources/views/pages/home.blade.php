@@ -4,51 +4,31 @@
 
 <script type="text/javascript">
   <!--hide
-  var password;
-  var pass1 = "CTGLab01";
-  password = prompt("Please enter password to go IPGAP website");
-  if(password==pass1){
-    alert("Correct password, click 'OK' to enter!!");
-  }else{
-    window.location="http://www.google.com";
-  }
+  // var password;
+  // var pass1 = "CTGLab01";
+  // password = prompt("Please enter password to go IPGAP website");
+  // if(password==pass1){
+  //   alert("Correct password, click 'OK' to enter!!");
+  // }else{
+  //   window.location="http://www.google.com";
+  // }
   //-->
-  // $(document).ready(function(){
-  //   $('.newsfeedPanel').each(function(){
-  //     if($(this).parent().hasClass('active')){
-  //       $(this).show();
-  //     }else{
-  //       $(this).hide()
-  //     }
-  //   });
-  //
-  //   $('.newsfeed a').on('click', function(){
-  //     if($(this).parent().hasClass('active')){
-  //       $(this).parent().removeClass('active');
-  //     }else{
-  //       $("#NewsFeed.newsfeed").find(".active").removeClass("active");
-  //       $(this).parent().addClass('active');
-  //     }
-  //     $('.newsfeedPanel').each(function(){
-  //       if($(this).parent().hasClass('active')){
-  //         $(this).show();
-  //       }else{
-  //         $(this).hide()
-  //       }
-  //     });
-  //   });
-  // });
 </script>
 @section('content')
 <div class="container" style="padding-top:50px;">
   <div style="text-align: center;">
-    <h2>Welcome to IPGAP web application!!</h2>
+    <h2>Welcome to GWAS ATLAS!!</h2>
   </div>
-  <p>IPGAP is a web application which systematically process GWAS summary statistics and extract relevant biological information from multiple databases.
-    All you need to prepare is to get GWAS summary statistics of phenotype of interest.
-    If you are here at first time, please follow the tutorial carefully since IPGAP provides a variety of parameters.</p>
-  <p>Databases used in this pilot can be accessed from <a href="/links">links</a> tab.</p>
-  <br/>
+  <p>GWAS ATLAS is a web application which annotatates, prioritizes and visualizes GWAS results.
+    Publicly available data resources and tools used in this applications are accessible from <a href="/IPGAP/links">links</a> tab.</p>
+    All you need to prepare is to get GWAS summary statistics of phenotype of interest and submit at <a href="/IPGAP/snp2gene">SNP2GENE</a>.
+    You can also query a list of genes directory from <a href="/IPGAP/gene2func">GENE2FUNC</a>.
+  </p>
+  <p>
+    Since, GWAS ATLAS provides a variety of parameters, please follow the <a href="/IPGAP/tutorial">Tutorial</a>.
+    For detail methods, please refer the publication.
+    If you have any question or problem using this application, please let us know!!
+  </p>
 
   <h3>News and Updates</h3>
   <div id="NewsFeed" class="container" style="overflow:auto; max-height:500px;">
