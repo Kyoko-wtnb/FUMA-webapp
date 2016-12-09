@@ -85,25 +85,29 @@ rm(gtex.avg.ts, gtex.avg.log2RPKM.ts)
 rownames(gtex.exp.log2) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp.log2), ENSG.all.genes$ensembl_gene_id)]
 rownames(gtex.exp.norm) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp.norm), ENSG.all.genes$ensembl_gene_id)]
 
-g.alph <- 1:nrow(gtex.exp.log2)
-names(g.alph) <- sort(rownames(gtex.exp.log2))
-row.order <- data.frame(gene=rownames(gtex.exp.log2), alph=g.alph[rownames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
+g.sort <- 1:nrow(gtex.exp.log2)
+names(g.sort) <- sort(rownames(gtex.exp.log2))
+row.order <- data.frame(gene=rownames(gtex.exp.log2), alph=g.sort[rownames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
 
-hc <- hclust(dist(gtex.exp.log2), method="average")
+hc <- hclust(dist(gtex.exp.log2))
 #gtex.exp <- gtex.exp[rownames(gtex.exp)[hc$order],]
-row.order$clstLog2 <- hc$order
-hc <- hclust(dist(gtex.exp.norm), method="average")
-row.order$clstNorm <- hc$order
+names(g.sort) <- hc$labels[hc$order]
+row.order$clstLog2 <- g.sort[rownames(gtex.exp.log2)]
+hc <- hclust(dist(gtex.exp.norm))
+names(g.sort) <- hc$labels[hc$order]
+row.order$clstNorm <- g.sort[rownames(gtex.exp.log2)]
 write.table(row.order, paste(filedir, "exp.row.txt", sep=""), quote=F, row.names=F, sep="\t")
 
-ts.alph <- 1:ncol(gtex.exp.log2)
-names(ts.alph) <- sort(colnames(gtex.exp.log2))
-col.order <- data.frame(ts=colnames(gtex.exp.log2), alph=ts.alph[colnames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
+ts.sort <- 1:ncol(gtex.exp.log2)
+names(ts.sort) <- sort(colnames(gtex.exp.log2))
+col.order <- data.frame(ts=colnames(gtex.exp.log2), alph=ts.sort[colnames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
 
-hc <- hclust(dist(t(gtex.exp.log2)), method="average")
-col.order$clstLog2 <- hc$order
-hc <- hclust(dist(t(gtex.exp.norm)), method="average")
-col.order$clstNorm <- hc$order
+hc <- hclust(dist(t(gtex.exp.log2)))
+names(ts.sort) <- hc$labels[hc$order]
+col.order$clstLog2 <- ts.sort[colnames(gtex.exp.log2)]
+hc <- hclust(dist(t(gtex.exp.norm)))
+names(ts.sort) <- hc$labels[hc$order]
+col.order$clstNorm <- ts.sort[colnames(gtex.exp.log2)]
 write.table(col.order, paste(filedir, "exp.col.txt", sep=""), quote=F, row.names=F, sep="\t")
 
 gtex.exp <- melt(gtex.exp.log2)

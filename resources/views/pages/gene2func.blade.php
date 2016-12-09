@@ -144,23 +144,25 @@
       <div id="expPanel" class="sidePanel container" style="padding-top:50;">
         <!-- <div id="expHeat" style='overflow:auto; width:1010px; height:450px;'></div> -->
         <h4>Gene expression heatmap in 53 tissues (GTEx)</h4>
-        Expression Value:
-      	<select id="expval" class="from-control">
-      		<option value="log2RPKM" selected>log2(RPKM+1)</option>
-      		<option value="norm">Normalized across samples</option>
-      	</select>
-      	<tab>
-      	Order genes by:
-      	<select id="geneSort" class="form-control">
-      		<option value="clst">Clusster</option>
-      		<option value="alph" selected>Alphabetical order</option>
-      	</select>
-      	<tab>
-      	Order tissues by:
-      	<select id="tsSort" class="form-control">
-      		<option value="clst">Clusster</option>
-      		<option value="alph" selected>Alphabetical order</option>
-      	</select>
+        <sapn class="form-inline">
+          Expression Value:
+        	<select id="expval" class="form-control" style="width: auto;">
+        		<option value="log2RPKM" selected>log2(RPKM+1)</option>
+        		<option value="norm">Normalized across samples</option>
+        	</select>
+        	<tab>
+        	Order genes by:
+        	<select id="geneSort" class="form-control" style="width: auto;">
+        		<option value="clst">Clusster</option>
+        		<option value="alph" selected>Alphabetical order</option>
+        	</select>
+        	<tab>
+        	Order tissues by:
+        	<select id="tsSort" class="form-control" style="width: auto;">
+        		<option value="clst">Clusster</option>
+        		<option value="alph" selected>Alphabetical order</option>
+        	</select>
+        </span>
       	<div id="expHeat"></div>
         <div id="expBox"></div>
         <br/>

@@ -252,9 +252,9 @@ function expHeatMap(id){
   //   });
   d3.select('#expHeat').select("svg").remove();
   var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
-  queue().defer(d3.tsv, "exp.txt")
-        .defer(d3.tsv, "exp.row.txt")
-        .defer(d3.tsv, "exp.col.txt")
+  queue().defer(d3.json, "d3text/"+id+"/exp.txt")
+        .defer(d3.json, "d3text/"+id+"/exp.row.txt")
+        .defer(d3.json, "d3text/"+id+"/exp.col.txt")
         .awaitAll(function(error, data){
           var exp = data[0];
           var rows = data[1];

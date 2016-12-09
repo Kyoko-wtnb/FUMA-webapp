@@ -103,7 +103,9 @@ class JobController extends Controller
         $jobID = uniqid();
         DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
                                       'created_date'=>$date, 'last_access'=>$date, 'status'=>"NEW"]);
-        $filedir = storage_path().'/jobs/'.$jobID;
+        $filedir = storage_path().'/jobs/'.$jobID; #local
+        #webserver $filedir = "/data/IPGAP/jobs/".$jobID."/";
+
         File::makeDirectory($filedir);
       }else{
         $results = DB::select('SELECT * FROM jobs WHERE email=?', [$email]);
