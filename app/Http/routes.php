@@ -12,32 +12,32 @@
 */
 
 Route::get('/', function () {
-  return view('pages.home', ['subdir' => '/IPGAP']);
+  return view('pages.home');
 });
 
 Route::get('tutorial', function(){
-  return view('pages.tutorial', ['subdir' => '/IPGAP']);
+  return view('pages.tutorial');
 });
 
 Route::get('snp2gene', function(){
   $jobID = null;
-  return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>null]);
+  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]);
 });
 
 Route::get('GWASresult', function(){
-  return view('pages.GWASresult', ['subdir' => '/IPGAP']);
+  return view('pages.GWASresult', ['/IPGAP']);
 });
 
 Route::get('gene2func', function(){
-  return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'new', 'id'=>'none']);
+  return view('pages.gene2func', ['status'=>'new', 'id'=>'none']);
 });
 
 Route::get('links', function(){
-  return view('pages.links', ['subdir' => '/IPGAP']);
+  return view('pages.links');
 });
 
 Route::get('contact', function(){
-  return view('pages.contact', ['subdir' => '/IPGAP']);
+  return view('pages.contact');
 });
 
 Route::post('snp2gene/jobcheck', 'JobCheck@index');
@@ -47,10 +47,10 @@ Route::post('snp2gene/newJob', 'JobController@newJob');
 Route::post('snp2gene/queryJob', 'JobController@getJobID');
 // Route::get('snp2gene/queryJob/{jobID}', 'JobController@queryJob');
 // Route::get('snp2gene/queryJob/{jobID}', function(){
-//   return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>query]);
+//   return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>query]);
 // });
 Route::get('snp2gene/{jobID}', function($jobID){
-  return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>'jobquery']);
+  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
 });
 
 Route::post('snp2gene/checkJobStatus', 'JobController@checkJobStatus');
