@@ -69,8 +69,8 @@ write.table(snps, paste(filedir, "annotPlot.txt", sep=""), quote=F, row.names=F,
 load(paste(filedir, "../../data/ENSG.all.genes.RData", sep="")) #local
 #webserver load("/data/ENSG/ENSG.all.genes.RData")
 
-xmin <- min(snps$pos)
-xmax <- max(snps$pos)
+xmin <- min(snps$pos)-500000
+xmax <- max(snps$pos)+500000
 ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name==snps$chr[1],]
 g <- ENSG.all.genes$ensembl_gene_id[(ENSG.all.genes$start_position <= xmin & ENSG.all.genes$end_position>=xmax)
   | (ENSG.all.genes$start_position>=xmin & ENSG.all.genes$start_position<=xmax)

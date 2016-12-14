@@ -161,9 +161,6 @@ $(document).ready(function(){
 
 });
 
-function inputCheck(change){
-
-}
 
 function CheckAll(){
   var submit = true;
@@ -173,39 +170,41 @@ function CheckAll(){
   if($('#GWASsummary').val().length==0){
     $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
                     +'<i class="fa fa-ban"></i> Mandatory input</div></td>');
-    $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-                    +'<i class="fa fa-ban"></i> Please chose GWAS summary stats file first.</div></td>');
+    // $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    //                 +'<i class="fa fa-ban"></i> Please chose GWAS summary stats file first.</div></td>');
     submit=false;
   }else{
+    // var file = document.getElementById('GWASsummary');
+    // console.log("File type:", file.type);
     $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK. Please check your input file format.</div></td>');
-    $(table.rows[1].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-exclamation-triangle"></i> OK. Please make sure correct format is selected.</div></td>');
+    // $(table.rows[1].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    //   +'<i class="fa fa-exclamation-triangle"></i> OK. Please make sure correct format is selected.</div></td>');
     submit=true;
   }
 
   if($('#leadSNPs').val().length==0){
-    $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
-    $(table.rows[3].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-exclamation-circle"></i> Optional. <br/>This is only valid when predefined lead SNPs are provided.</div></td>');
   }else{
-    $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
     if($('#addleadSNPs').is(":checked")==true){
-      $(table.rows[3].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
     }else{
-      $(table.rows[3].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
     }
   }
 
   if($('#regions').val().length==0){
-    $(table.rows[4].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    $(table.rows[3].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
   }else{
-    $(table.rows[4].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    $(table.rows[3].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
   }
 

@@ -217,8 +217,7 @@ function checkInput(){
 function AjaxLoad(){
   var over = '<div id="overlay"><div id="loading">'
           +'<h4>Running gene test</h4>'
-          +'<p>Please wait for a moment</br>'
-          +'<p>Currentry this job takes 1-2 min</p>'
+          +'<p>Please wait for a moment (20-30 sec)</br>'
           +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
           +'</div></div>';
   $(over).appendTo('body');
@@ -286,7 +285,7 @@ function expHeatMap(id){
 
           var genes = d3.set(rows.map(function(d){return d.gene})).values();
           var tss = d3.set(cols.map(function(d){return d.ts})).values();
-          var margin = {top: 10, right: 10, bottom: 200, left: 100},
+          var margin = {top: 10, right: 60, bottom: 200, left: 100},
             width = 800,
             height = (itemSizeCol*genes.length);
 
@@ -296,7 +295,28 @@ function expHeatMap(id){
                     .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
           var log2Max = d3.max(exp,function(d){return d.log2});
           var log2Min = d3.min(exp, function(d){return d.log2;});
-          var colorScale = d3.scale.linear().domain([log2Min, (log2Max+log2Min)/2, log2Max]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+          var colorScale = d3.scale.linear().domain([0, log2Max/2, log2Max]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+
+          // legened
+          var t = [];
+          for(var i =0; i<23; i++){t.push(i);}
+          var legendRect = svg.selectAll(".legend").data(t).enter().append("g")
+            .append("rect")
+            .attr("class", 'legendRect')
+            .attr("x", width+10)
+            .attr("y", function(d){return (t.length-1-d)*10+50})
+            .attr("width", 20)
+            .attr("height", 10)
+            .attr("fill", function(d){return colorScale(d*log2Max/(t.length-1))});
+          var legendText = svg.selectAll("text.legend").data([0,11,22]).enter().append("g")
+            .append("text")
+            .attr("text-anchor", "start")
+            .attr("class", "legenedText")
+            .attr("x", width+32)
+            .attr("y", function(d){return (t.length-1-d)*10+11+50})
+            .text(function(d){return Math.round(100*d*log2Max/(t.length-1))/100})
+            .style("font-size", "12px");
+
 
           // y axis label
           var rowLabels = svg.append("g").selectAll(".rowLabel")
@@ -335,7 +355,9 @@ function expHeatMap(id){
               if(val=="log2RPKM"){
                 var log2Max = d3.max(exp,function(d){return d.log2});
                 var log2Min = d3.min(exp, function(d){return d.log2;});
-                var col = d3.scale.linear().domain([log2Min, (log2Max+log2Min)/2, log2Max]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+                var col = d3.scale.linear().domain([0, (log2Max+log2Min)/2, log2Max]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+                legendRect.attr("fill", function(d){return col(d*log2Max/(t.length-1))});
+                legendText.text(function(d){return Math.round(100*d*log2Max/(t.length-1))/100})
                 if(gsort=="clst" && tssort=="clst"){
                   heatMap.transition().duration(2000)
                     .attr("fill", function(d){return col(d.log2)})
@@ -388,7 +410,10 @@ function expHeatMap(id){
               }else{
                 var normMax = d3.max(exp,function(d){return d.norm});
                 var normMin = d3.min(exp, function(d){return d.norm;});
-                var col = d3.scale.linear().domain([normMin, (normMax+normMin)/2, normMax]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+                var m = Math.max(normMax, Math.abs(normMin));
+                var col = d3.scale.linear().domain([-m, 0, m]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+                legendRect.attr("fill", function(d){return col(Math.round(d*2*m/(t.length-1)-m))});
+                legendText.text(function(d){return Math.round(d*2*m/(t.length-1)-m)});
                 if(gsort=="clst" && tssort=="clst"){
                   heatMap.transition().duration(2000)
                     .attr("fill", function(d){return col(d.norm)})

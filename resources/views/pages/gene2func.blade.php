@@ -153,13 +153,13 @@
         	<tab>
         	Order genes by:
         	<select id="geneSort" class="form-control" style="width: auto;">
-        		<option value="clst">Clusster</option>
+        		<option value="clst">Cluster</option>
         		<option value="alph" selected>Alphabetical order</option>
         	</select>
         	<tab>
         	Order tissues by:
         	<select id="tsSort" class="form-control" style="width: auto;">
-        		<option value="clst">Clusster</option>
+        		<option value="clst">Cluster</option>
         		<option value="alph" selected>Alphabetical order</option>
         	</select>
         </span>

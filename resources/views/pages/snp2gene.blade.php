@@ -83,13 +83,14 @@
         <h3>New job submission</h3>
         <!-- Input files upload -->
         <h4>1. Upload input files</h4>
+        <div id="fileFormatError"></div>
         <table class="table table-bordered inputTable" id="NewJobFiles" style="width: auto;">
           <tr>
             <td>GWAS summary statistics</td>
             <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary" onchange="CheckAll()"/></td>
             <td></td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>GWAS file format</td>
             <td>
               <select class="form-control" name="gwasformat" id="gwasformat" onchange="CheckAll()">
@@ -101,7 +102,7 @@
               </select>
             </td>
             <td></td>
-          </tr>
+          </tr> -->
           <tr>
             <td>Predefined lead SNPs</td>
             <td><input type="file" class="form-control-file" name="leadSNPs" id="leadSNPs" onchange="CheckAll()"/></td>
@@ -908,6 +909,10 @@
         <div id="gPlotPanel" class="collapse in">
           <div id="manhattanPane" style="position: relative;">
             <h4>Manhattan Plot (GWAS summary statistics)</h4>
+            <span class="info"><i class="fa fa-info"></i>
+              This is manhattan plot of input GWAS summary statistics with filtering of overlapped data points.
+            </span><br/>
+            <button class="btn ImgDown" id="manhattanImg">Download img</button>
             <div id="manhattan" class="canvasarea"></div>
           </div>
           <div id="geneManhattanPane" style="position: relative;">

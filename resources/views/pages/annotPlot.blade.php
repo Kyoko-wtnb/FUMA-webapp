@@ -1502,8 +1502,8 @@ function geneOver(genes, x, width){
         // || (d2.start_position>=d.start_position && d2.start_position<=d.end_position)
         || (d2.start_position<=tg[i].start_position && d2.end_position>=tg[i].end_position)
       ){return d2;}
-      else if(x((d2.end_position+d2.start_position+d2.external_gene_name.length*5)/2)>=x((tg[i].end_position+tg[i].start_position)/2)-((tg[i].external_gene_name.length*5)/2)
-          && x((d2.end_position+d2.start_position+d2.external_gene_name.length*5)/2)<=x((tg[i].end_position+tg[i].start_position)/2)+((tg[i].external_gene_name.length*5)/2)
+      else if(x((d2.end_position+d2.start_position+d2.external_gene_name.length*9)/2)>=x((tg[i].end_position+tg[i].start_position)/2)-((tg[i].external_gene_name.length*9)/2)
+          && x((d2.end_position+d2.start_position+d2.external_gene_name.length*9)/2)<=x((tg[i].end_position+tg[i].start_position)/2)+((tg[i].external_gene_name.length*9)/2)
         ){return d2}
     })
     if(temp.length>1){
@@ -1523,6 +1523,7 @@ function geneOver(genes, x, width){
 <div id="test"></div>
 <!-- <h3>Annotplot head</h3> -->
 <br/><br/>
+<div class="container">
 <div class="row">
   <div class="col-md-8">
     <div id='title' style="text-align: center;"><h3>Regional plot</h3></div>
@@ -1535,6 +1536,7 @@ function geneOver(genes, x, width){
       click any SNP on the plot</br>
     </div>
   </div>
+</div>
 </div>
 
 <br/><br/>

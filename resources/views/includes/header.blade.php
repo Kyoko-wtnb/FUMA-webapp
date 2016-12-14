@@ -16,7 +16,7 @@
   <div class="container-fluid">
     <div class="navbar-header" style="padding-left: 30px;">
       <!-- <a class="navbar-brand" href="/IPGAP/"><span style="color: #1E90FF; font-size: 130%;">IPGAP</span></a> -->
-      <a class="navbar-brand" href="/IPGAP/" style="padding-top: 5px;"><img src="{!! URL::asset('image/logo.png') !!}" height="45px;" width="200px"></a>
+      <a class="navbar-brand" href="/IPGAP/" style="padding-top: 5px;"><img src="{!! URL::asset('image/fuma.png') !!}" height="45px;"></a>
     </div>
 
     <div class="collapse navbar-collapse" id="headNav" style="padding-right: 50px;">

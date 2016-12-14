@@ -10,6 +10,18 @@ $(document).ready(function(){
   // $('#resultsSide').hide();
   if(status.length==0){
     // console.log("status:NULL");
+  }else if(status=="fileFormatGWAS"){
+    $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
+      +'<b>Provided file (GWAS summary statistics) format is not valid. Only text files are acceptable (extention does not matter).</b>'
+      +'</div>');
+  }else if(status=="fileFormatLead"){
+    $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
+      +'<b>Provided file (pre-defined lead SNPs) format is not valid. Only text files are acceptable (extention does not matter).</b>'
+      +'</div>');
+  }else if(status=="fileFormatRegions"){
+    $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
+      +'<b>Provided file (pre-defined genomic regions) format is not valid. Only text files are acceptable (extention does not matter).</b>'
+      +'</div>');
   }else{
     // var job = IPGAPvar.jobtype;
     // var email = IPGAPvar.email;
