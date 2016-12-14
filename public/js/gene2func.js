@@ -241,14 +241,6 @@ function expHeatMap(id){
   d3.select('#expHeat').select("svg").remove();
   var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
 
-  // d3.json("d3text/"+id+"/exp.txt", function(response){
-  //   var data = response.map(function(item){
-  //     var newItem = {};
-  //     newItem.tissue = item.tissue;
-  //     newItem.gene = item.gene;
-  //     newItem.exp = item.exp;
-  //     return newItem;
-  //   });
   d3.select('#expHeat').select("svg").remove();
   var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
   queue().defer(d3.json, "d3text/"+id+"/exp.txt")
@@ -992,20 +984,6 @@ function GeneSet(id){
     }
   });
 }
-
-// function fileDown(file, id){
-//   $.ajax({
-//     url: 'fileDown',
-//     type: 'POST',
-//     data: {
-//       file: file,
-//       id: id
-//     },
-//     success: function(){
-//       window.location = "fileDown";
-//     }
-//   });
-// }
 
 function GeneTable(id){
   geneTable = $('#GeneTable').DataTable({

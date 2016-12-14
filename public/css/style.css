@@ -65,18 +65,6 @@ table.display{
   font-size: 16px;
 }
 
-/*.inputTable{
-  background-color: #f4f4f4;
-  border: none;
-  border-color: #004f99;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-}
-.table.inputTable td{
-  border-color: #004f99;
-  border: none;
-}*/
 
 .table.inputTable td{
   padding: 2px;
@@ -138,53 +126,6 @@ button.accordion.active, button.accordion:hover {
 #NewsFeed a{
   color: #222222;
 }
-/*.newsfeed {
-  padding: 10px;
-}*/
-/*.newsfeed.active{
-  background-color: #ccdfff;
-}*/
-
-/*div.panel {
-  padding: 0 18px;
-  display: none;
-}
-
-div.panel.show {
-  display: block !important;
-}*/
-/*.sidebar-nav{
-  position:fixed;
-  width:100%;
-}*/
-/*.affix-sidebar{
-  position:fixed;
-  top: 30px;
-  padding-right:0;
-  font-size:small;
-  padding-left: 0;
-}*/
-
-/*#sidebar.affix{
-  position; fixed;
-  top: 50px;
-  width: 250;
-}*/
-
-/*#sidebar.affix-top{
-  position: static;
-  margin-top: 30px;
-}*/
-
-/*#sidebar li.active {
-  border:0 #00004d solid;
-  border-left-width:5px;
-}*/
-
-/*#sidebar a{
-  color: black;
-  font-size: 15px;
-}*/
 
 blockquote p{
   font-size: 14px;

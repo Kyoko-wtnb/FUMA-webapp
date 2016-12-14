@@ -56,6 +56,8 @@
     </ul>
   </div>
 
+  <canvas id="canvas" style="display:none;"></canvas>
+
   <div id="page-content-wrapper">
     <div class="page-content inset">
       <div id="queryJob" class="sidePanel container" style="padding-top:50px;">

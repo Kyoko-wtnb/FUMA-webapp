@@ -221,23 +221,8 @@
       <p>*Links of OMIM nad DrugBank will open new tab due to the security reason.
       <br/>*Links of GeneCards will be displayed in the frame below.</p>
 
-      <!-- <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#GeneCardsPane" aria-controls="GeneCardsPane" rolw="tab" data-toggle="tab">GeneCards</a></li>
-        <li role="presentation"><a href="#OMIMPane" aria-controls="OMIMPane" rolw="tab" data-toggle="tab">OMIM</a></li>
-        <li role="presentation"><a href="#DrugBankPane" aria-controls="DrugBankPane" rolw="tab" data-toggle="tab">DrugBank</a></li>
-      </ul> -->
-      <!-- <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="GeneCardsPane"> -->
-          <h4>GeneCards</h4><br/>
-          <iframe src="http://www.genecards.org/" name="GeneCards_iframe" width="100%" height="500p"></iframe>
-        <!-- </div>
-        <div role="tabpanel" class="tab-pane" id="OMIMPane">
-          <iframe src="http://www.omim.org/" name="OMIM_iframe" width="100%" height="500p"></iframe>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="DrugBankPane">
-          <iframe src="http://www.drugbank.ca/" name="DrugBank_iframe" width="100%" height="500p"></iframe>
-        </div>
-      </div> -->
+      <h4>GeneCards</h4><br/>
+      <iframe src="http://www.genecards.org/" name="GeneCards_iframe" width="100%" height="500p"></iframe>
       <br/><br/>
     </div>
 
