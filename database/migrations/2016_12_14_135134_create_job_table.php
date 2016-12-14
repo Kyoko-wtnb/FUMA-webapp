@@ -13,7 +13,7 @@ class CreateJobTable extends Migration
     public function up()
     {
         Schema::create('jobs', function (Blueprint $table) {
-            $table->increments('jobID');
+            $table->string('jobID')->unique();
             $table->string('email');
             $table->string('title');
             $table->string('created_date');
