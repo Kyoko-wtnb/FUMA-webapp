@@ -1,5 +1,14 @@
 var geneTable;
 $(document).ready(function(){
+  $(".ImgDown").on('click', function(){
+    var id = $(this).attr("id");
+    id = id.replace("Img", "");
+    console.log(id);
+    var svg = $('#'+id).html();
+    canvg('canvas', svg);
+    var canvas = document.getElementById('canvas');
+    Canvas2Image.saveAsPNG(canvas);
+  });
   // $('#test').html("Status: "+status+"<br/>");
   $('#newquery').show();
   if(status=="new"){
@@ -97,76 +106,6 @@ $(document).ready(function(){
     });
   }
 
-  // $('#geneSubmit').on('click', function(){
-  //   var g = document.getElementById('genes').value;
-  //   var gfile = $('#genesfile').val();
-  //   var bkg_select = 0;
-  //   var tmp = document.getElementById('genetype');
-  //   for(var i=0; i<tmp.options.length; i++){
-  //     if(tmp.options[i].selected===true){
-  //       bkg_select = 1;
-  //       break;
-  //     }
-  //   }
-  //   var bkg = document.getElementById('bkgenes').value;
-  //   var bkgfile = $('#bkgenesfile').val();
-  //
-  //   var gtype;
-  //   var bkgtype;
-  //   if(g.length>0){
-  //     gtype=1; //textbox
-  //   }else{
-  //     gtype=2; //file
-  //   }
-  //
-  //   if(bkg_select==1){
-  //     bkgtype = 0; //select
-  //   }else if(bkg.length>0){
-  //     bkgtype = 1; //text box
-  //   }else{
-  //     bkgtype = 2; //file
-  //   }
-  //
-  //   var genes = g.replace(/\n/g, ":");
-  //   g = g.split("\n");
-  //
-  //   var bkgenes=[];
-  //   var tmp = document.getElementById('genetype');
-  //   for(var i=0; i<tmp.options.length; i++){
-  //     if(tmp.options[i].selected===true){
-  //       bkgenes.push(tmp.options[i].value);
-  //     }
-  //   }
-  //   bkgenes = bkgenes.join(":");
-  //
-  //   d3.select('#expHeat').select('svg').remove();
-  //   d3.select('#tsEnrichBar').select('svg').remove();
-  //   $.ajax({
-  //     url: "gene2func/geneQuery",
-  //     type: "POST",
-  //     data: {
-  //       genes : genes,
-  //       bkgenes : bkgenes
-  //     },
-  //     beforeSend: function(){
-  //       $('#results').hide();
-  //       $('#loadingGeneQuery').show();
-  //       $('#loadingGeneQuery').html('<h4>Running gene query</h4><img src="'+public_path+'" width="50" height="50"/><br/><br/>');
-  //     },
-  //     success: function(){
-  //       $('#loadingGeneQuery').html("");
-  //       $('#loadingGeneQuery').hide();
-  //       $('#results').show();
-  //     },
-  //     complete: function(){
-  //       expHeatMap();
-  //       tsEnrich();
-  //       tsGeneralEnrich();
-  //       GeneSet();
-  //     }
-  //   });
-  //
-  // });
 });
 
 function checkInput(){
@@ -238,9 +177,6 @@ Array.prototype.unique = function(a){
 }(function(a,b,c){ return c.indexOf(a,b+1) < 0 });
 
 function expHeatMap(id){
-  d3.select('#expHeat').select("svg").remove();
-  var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
-
   d3.select('#expHeat').select("svg").remove();
   var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
   queue().defer(d3.json, "d3text/"+id+"/exp.txt")
@@ -340,7 +276,7 @@ function expHeatMap(id){
                         .attr('y', function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
                         .attr('x', function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow})
                         .attr('fill', function(d){return colorScale(d.log2)});
-
+          svg.selectAll('text').style('font-family', 'sans-serif');
           // Change ordeing of cells
           function sortOptions(type, val, gsort, tssort){
             if(type=="color"){
@@ -602,10 +538,12 @@ function tsEnrich(id){
         else{return "url(#gradient1)";}
       });
     svg.append('g').attr("class", "y axis")
-      .call(yAxisup);
+      .call(yAxisup)
+      .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
     svg.append('g').attr("class", "x axis")
       .attr("transform", "translate(0,"+(currentHeight+span)+")")
-      .call(xAxis).selectAll('text').remove();
+      .call(xAxis)
+      .selectAll('text').remove();
     svg.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
       .text("Up-regulated DEG");
@@ -627,10 +565,12 @@ function tsEnrich(id){
         else{return "url(#gradient1)";}
       });
     svg.append('g').attr("class", "y axis")
-      .call(yAxisdown);
+      .call(yAxisdown)
+      .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
     svg.append('g').attr("class", "x axis")
       .attr("transform", "translate(0, "+(currentHeight+span)+")")
-      .call(xAxis).selectAll('text').remove();
+      .call(xAxis)
+      .selectAll('text').remove();
     svg.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
       .text("Down-regulated DEG");
@@ -656,17 +596,22 @@ function tsEnrich(id){
 
     svg.append('g').attr("class", "x axis")
       .attr("transform", "translate(0,"+(currentHeight+span)+")")
-      .call(xAxis).selectAll('text')
-      .attr("transform", function (d) {return "rotate(-65)";})
+      .call(xAxis)
+      .selectAll('text')
+      .attr("transform", function (d) {return "rotate(-70)";})
       .attr("dy", "-.45em")
       .attr("dx", "-.65em")
-      .style("text-anchor", "end");
+      .style("text-anchor", "end")
+      .style('font-size', '11px');
 
     svg.append('g').attr("class", "y axis")
-      .call(yAxis);
+      .call(yAxis)
+      .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
     svg.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
       .text("-log 10 P-value");
+    svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    svg.selectAll('text').style('font-family', 'sans-serif');
   });
 }
 
@@ -736,7 +681,8 @@ function tsGeneralEnrich(id){
         else{return "url(#gradient1)";}
       });
     svg.append('g').attr("class", "y axis")
-      .call(yAxisup);
+      .call(yAxisup)
+      .selectAll('test').style('font-size', '11px');
     svg.append('g').attr("class", "x axis")
       .attr("transform", "translate(0,"+(currentHeight+span)+")")
       .call(xAxis).selectAll('text').remove();
@@ -761,7 +707,8 @@ function tsGeneralEnrich(id){
         else{return "url(#gradient1)";}
       });
     svg.append('g').attr("class", "y axis")
-      .call(yAxisdown);
+      .call(yAxisdown)
+      .selectAll('test').style('font-size', '11px');
     svg.append('g').attr("class", "x axis")
       .attr("transform", "translate(0, "+(currentHeight+span)+")")
       .call(xAxis).selectAll('text').remove();
@@ -794,13 +741,17 @@ function tsGeneralEnrich(id){
       .attr("transform", function (d) {return "rotate(-65)";})
       .attr("dy", "-.45em")
       .attr("dx", "-.65em")
-      .style("text-anchor", "end");
+      .style("text-anchor", "end")
+      .style('font-size', '11px');
 
     svg.append('g').attr("class", "y axis")
-      .call(yAxis);
+      .call(yAxis)
+      .selectAll('test').style('font-size', '11px');
     svg.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
       .text("-log 10 P-value");
+    svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    svg.selectAll('text').style('font-family', 'sans-serif');
   });
 }
 
@@ -877,7 +828,8 @@ function GeneSet(id){
           +category[i]+'Panel" data-toggle="collapse" style="color: black;"><h4>'
           +category_title[category[i]]+'<tab>('+tdata.length+')</h4></div><div class="panel-body collapse" id="'
           +category[i]+'Panel"><p><a onclick="GeneSetPlot('+"'"+category[i]+"'"+');">Plot</a> / <a onclick="GeneSetTable('+
-          "'"+category[i]+"'"+');">Table</a></p><div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div><div id="'
+          "'"+category[i]+"'"+');">Table</a></p>'
+          +'<button class="btn ImgDown" id="'+category[i]+'Img">Download img</button><div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div><div id="'
           +category[i]+'Table"></div></div></div>');
         $('#GeneSet').append(panel);
         $('#'+category[i]+'Table').hide();
@@ -887,7 +839,7 @@ function GeneSet(id){
         var ngs = gs.length;
         var barplotwidth = 150;
 
-        var margin = {top: 10, right: 10, bottom: 80, left: gs_max*5.5},
+        var margin = {top: 10, right: 10, bottom: 80, left: gs_max*6},
             width = barplotwidth+10+(genes.length*15),
             height = 15*ngs;
         // $('#test').append("<p>"+category[i]+" width: "+width+"</p>")
@@ -938,11 +890,12 @@ function GeneSet(id){
           .attr("height", 15)
           .style("fill", "url(#gradient1)");
         svg.append('g').attr("class", "y axis")
-          .call(yAxis);
+          .call(yAxis).selectAll('text').style('font-size', '11px');
         svg.append('g').attr("class", "x axis")
           .attr("transform", "translate(0,"+height+")")
           .call(xbarAxis).selectAll('text').attr('font-weight', 'normal')
           .style("text-anchor", "end").attr("transform", function (d) {return "rotate(-65)";})
+          .style('font-size', '11px')
           .attr("dx","-.75em").attr("dy", "-.15em");
 
         // gene plot
@@ -963,17 +916,20 @@ function GeneSet(id){
           .attr("transform", "translate(0,"+height+")")
           .call(xgenesAxis).selectAll('text').attr('font-weight', 'normal')
           .style("text-anchor", "end").attr("transform", function (d) {return "rotate(-65)";})
+          .style('font-size', '11px')
           .attr("dx","-.75em").attr("dy", "-.15em");
 
         svg.append("text").attr("text-anchor", "middle")
           .attr("transform", "translate("+(barplotwidth/2)+","+(height+40)+")")
-          .text("-log10 FDR").attr("font-size", "12px");
+          .text("-log10 adjusted P-value").attr("font-size", "12px");
         svg.append("text").attr("text-anchor", "middle")
           .attr("transform", "translate("+(barplotwidth+10+width)/2+","+(height+70)+")")
           .text("genes").attr("font-size", "12px");
 
+        svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+        svg.selectAll('text').style('font-family', 'sans-serif');
         // Table
-        var table = '<table class="table table-bordered"><thead><td>GeneSet</td><td>N</td><td>n</td><td>P-value</td><td>FDR</td><td>genes</td></thead>';
+        var table = '<table class="table table-bordered"><thead><td>GeneSet</td><td>N</td><td>n</td><td>P-value</td><td>adjusted P</td><td>genes</td></thead>';
         tdata.forEach(function(d){
           table += '<tr><td>'+d.GeneSet+'</td><td>'+d.N_genes+'</td><td>'+d.N_overlap
                   +'</td><td>'+Number(Number(d.p).toPrecision(3)).toExponential(2)+'</td><td>'+Number(Number(d.FDR).toPrecision(3)).toExponential(2)+'</td><td>'+d.genes.split(":").join(", ")+'</td></tr>';

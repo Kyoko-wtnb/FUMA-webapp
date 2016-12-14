@@ -12,8 +12,24 @@
 <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
 <script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
 <script type="text/javascript" src="http://rawgit.com/krunkosaurus/simg/v1.1.0/src/simg.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/StackBlur.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/canvg.js"></script>
+<script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script>
+
 <script type="text/javascript">
 $(document).ready(function(){
+  // plot download
+  $(".ImgDown").on('click', function(){
+    var id = $(this).attr("id");
+    id = id.replace("Img", "");
+    console.log(id);
+    var svg = $('#'+id).html();
+    canvg('canvas', svg);
+    var canvas = document.getElementById('canvas');
+    Canvas2Image.saveAsPNG(canvas);
+  });
+
   var filedir = IPGAPvar.filedir;
   var jobID = IPGAPvar.jobID;
   var type = IPGAPvar.type;
@@ -266,7 +282,8 @@ $(document).ready(function(){
             xAxisLabel = "genes";
             svg.append("g").attr("class", "x axis genes")
               .attr("transform", "translate(0,"+(genesTop+genesHeight)+")")
-              .call(xAxis);
+              .call(xAxis)
+              .selectAll('text').style('font-size', '11px');
             svg.append("text").attr("text-anchor", "middle")
               .attr("transform", "translate("+width/2+","+(height+30)+")")
               .text("Chromosome "+chr);
@@ -448,7 +465,8 @@ $(document).ready(function(){
             svg.append("g").attr("class", "x axis GWAS")
               .attr("transform", "translate(0,"+(gwasTop+gwasHeight)+")")
               .call(xAxis).selectAll("text").remove();
-            svg.append("g").attr("class", "y axis").call(yAxis);
+            svg.append("g").attr("class", "y axis").call(yAxis)
+              .selectAll('text').style('font-size', '11px');
             svg.append("text").attr("text-anchor", "middle")
               .attr("transform", "translate("+(-10-margin.left/2)+","+(gwasTop+gwasHeight/2)+")rotate(-90)")
               .text("-log10 P-value");
@@ -505,12 +523,14 @@ $(document).ready(function(){
               xAxisLabel = "CADD";
               svg.append("g").attr("class", "x axis CADD")
                 .attr("transform", "translate(0,"+(caddTop+caddHeight)+")")
-                .call(xAxis);
+                .call(xAxis)
+                  .selectAll('text').style('font-size', '11px');
               svg.append("text").attr("text-anchor", "middle")
                 .attr("transform", "translate("+width/2+","+(height+30)+")")
                 .text("Chromosome "+chr);
             }
-            svg.append("g").attr("class", "y axis").call(yAxis);
+            svg.append("g").attr("class", "y axis").call(yAxis)
+              .selectAll('text').style('font-size', '11px');
             // currentHeight = currentHeight+160;
           }
           if(RDBplot==1){
@@ -558,12 +578,14 @@ $(document).ready(function(){
               xAxisLabel = "RDB";
               svg.append("g").attr("class", "x axis RDB")
                 .attr("transform", "translate(0,"+(rdbTop+rdbHeight)+")")
-                .call(xAxis);
+                .call(xAxis)
+                  .selectAll('text').style('font-size', '11px');
               svg.append("text").attr("text-anchor", "middle")
                 .attr("transform", "translate("+width/2+","+(height+30)+")")
                 .text("Chromosome "+chr);
             }
-            svg.append("g").attr("class", "y axis").call(yAxis);
+            svg.append("g").attr("class", "y axis").call(yAxis)
+              .selectAll('text').style('font-size', '11px');
             // currentHeight = currentHeight+160;
           }
 
@@ -667,7 +689,8 @@ $(document).ready(function(){
               if(y_element.length>30){
                 svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").remove();
               }else{
-                svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").attr("dx", "-.5em").style("font-size", "10px");
+                svg.append("g").attr("class", "y axis").call(yAxisChr15)
+                .selectAll("text").attr("dx", "-.5em").style("font-size", "10px");
               }
               for(var i=0; i<y_element.length; i++){
                 svg.append("rect").attr("x", -10).attr("y", yChr15(y_element[i]))
@@ -725,7 +748,8 @@ $(document).ready(function(){
                 if(i==genes.length-1){
                   svg.append("g").attr("class", "x axis eqtlend")
                     .attr("transform", "translate(0,"+(eqtlTop+55*i+50)+")")
-                    .call(xAxis);
+                    .call(xAxis)
+                    .selectAll('text').style('font-size', '11px');
                   svg.append("text").attr("text-anchor", "middle")
                     .attr("transform", "translate("+width/2+","+(height+30)+")")
                     .text("Chromosome "+chr);
@@ -740,7 +764,8 @@ $(document).ready(function(){
                   //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
                   //   .call(xAxis).selectAll("text").remove();
                 }
-                svg.append("g").attr("class", "y axis").call(yAxis);
+                svg.append("g").attr("class", "y axis").call(yAxis)
+                  .selectAll('text').style('font-size', '11px');
                 // currentHeight2 = currentHeight2+55;
               }
 
@@ -748,6 +773,7 @@ $(document).ready(function(){
                 .attr("transform", "translate("+(-margin.left/2-15)+","+(eqtlTop+eqtlHeight/2)+")rotate(-90)")
                 .text("eQTL -log10 P-value")
                 .style("font-size", "10px");
+              svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
             });
 
           }else if(Chr15==1 && eqtlplot==0){
@@ -843,12 +869,15 @@ $(document).ready(function(){
 
               svg.append("g").attr("class", "x axis Chr15")
                 .attr("transform", "translate(0,"+(chrTop+y_element.length*tileHeight)+")")
-                .call(xAxis);
+                .call(xAxis)
+                .selectAll('text').style('font-size', '11px');
               // svg.append("g").attr("class", "y axis").call(yAxisChr15);
               if(y_element.length>30){
-                svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").remove();
+                svg.append("g").attr("class", "y axis").call(yAxisChr15)
+                  .selectAll("text").remove();
               }else{
-                svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").attr("dx", "-.5em").style("font-size", "10px");
+                svg.append("g").attr("class", "y axis").call(yAxisChr15)
+                  .selectAll("text").attr("dx", "-.5em").style("font-size", "10px");
               }
               for(var i=0; i<y_element.length; i++){
                 svg.append("rect").attr("x", -10).attr("y", yChr15(y_element[i]))
@@ -864,6 +893,7 @@ $(document).ready(function(){
                     .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-30)+")")
                     .text("No eQTL of selected tissues exists in this region.");
               }
+              svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
             });
           }else if(eqtl==1 && eqtlplot==1){
             xAxisLabel="eqtl";
@@ -917,7 +947,8 @@ $(document).ready(function(){
                   if(i==genes.length-1){
                     svg.append("g").attr("class", "x axis eqtlend")
                       .attr("transform", "translate(0,"+(eqtlTop+55*i+50)+")")
-                      .call(xAxis);
+                      .call(xAxis)
+                      .selectAll('text').style('font-size', '11px');
                     svg.append("text").attr("text-anchor", "middle")
                       .attr("transform", "translate("+width/2+","+(height+30)+")")
                       .text("Chromosome "+chr);
@@ -933,18 +964,21 @@ $(document).ready(function(){
                     //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
                     //   .call(xAxis).selectAll("text").remove();
                   }
-                  svg.append("g").attr("class", "y axis").call(yAxis);
+                  svg.append("g").attr("class", "y axis").call(yAxis)
+                    .selectAll('text').style('font-size', '11px');
                   // currentHeight2 = currentHeight2+55;
                 }
                 svg.append("text").attr("text-anchor", "middle")
                   .attr("transform", "translate("+(-margin.left/2-15)+","+(eqtlTop+eqtlHeight/2)+")rotate(-90)")
                   .text("eQTL -log10 P-value")
                   .style("font-size", "10px");
+                svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+
               });
           }
+          svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
 
       });
-
 
 
   function zoomed(){
@@ -1090,6 +1124,7 @@ function geneOver(genes, x, width){
 </script>
 
 @section('content')
+<canvas id="canvas" style="display:none;"></canvas>
 
 <div id="test"></div>
 <!-- <h3>Annotplot head</h3> -->
@@ -1098,7 +1133,8 @@ function geneOver(genes, x, width){
 <div class="row">
   <div class="col-md-8">
     <div id='title' style="text-align: center;"><h3>Regional plot</h3></div>
-    <a id="plotclear" style="position: absolute;right: 30px;">Clear</a>
+    <a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
+    <button class="btn ImgDown" id="annotPlotImg">Download img</button>
     <div id="annotPlot"></div>
   </div>
   <div class="col-md-4" style="text-align: center;">

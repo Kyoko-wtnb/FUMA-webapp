@@ -18,6 +18,10 @@
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/StackBlur.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/canvg.js"></script>
+<script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 <script type="text/javascript">
@@ -909,12 +913,12 @@
       <div class="sidePanel container" style="padding-top:50px;" id="genomePlots">
         <!-- <h3>Genome Wide Plot</h3> -->
         <div id="gPlotPanel" class="collapse in">
+          <h4>Manhattan Plot (GWAS summary statistics)</h4>
+          <span class="info"><i class="fa fa-info"></i>
+            This is manhattan plot of input GWAS summary statistics with filtering of overlapped data points.
+          </span><br/>
+          <button class="btn ImgDown" id="manhattanImg">Download img</button>
           <div id="manhattanPane" style="position: relative;">
-            <h4>Manhattan Plot (GWAS summary statistics)</h4>
-            <span class="info"><i class="fa fa-info"></i>
-              This is manhattan plot of input GWAS summary statistics with filtering of overlapped data points.
-            </span><br/>
-            <button class="btn ImgDown" id="manhattanImg">Download img</button>
             <div id="manhattan" class="canvasarea"></div>
           </div>
           <div id="geneManhattanPane" style="position: relative;">
@@ -938,14 +942,23 @@
           <div class="col-md-5" id="sumTable" style="text-align:center;">
             <h4>Summary of SNPs and mapped genes</h4>
           </div>
-          <div class="col-md-7" id="snpAnnotPlot" style="text-align:center;">
+
+          <div class="col-md-7" style="text-align:center;">
+            <button class="btn ImgDown" id="intervalsnpAnnotPlot">Download img</button>
             <h4>Positional annotations of candidate SNPs</h4>
+            <div id="snpAnnotPlot"></div>
             <!-- <svg id="SnpAnnotPlotSVG"></svg><br/> -->
             <!-- <button class="btn" id="posAnnotPlotDown" value="Download img">Download img</button><br/> -->
           </div>
         </div>
         <br/>
-        <div id="intervalPlot" style="text-align:center;"><h4>Summary per interval</h4></div>
+        <button class="btn ImgDown" id="intervalPlotImg">Download img</button>
+        <div style="text-align:center;">
+          <h4>Summary per interval</h4>
+          <div id="intervalPlot">
+
+          </div>
+      </div>
       </div>
 
       <!-- result tables -->

@@ -20,6 +20,10 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/StackBlur.js"></script>
+<script type="text/javascript" src="//canvg.github.io/canvg/canvg.js"></script>
+<script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script>
 
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -50,6 +54,8 @@
     </div>
   </ul>
 </div>
+
+<canvas id="canvas" style="display:none;"></canvas>
 
 <div id="page-content-wrapper" class="container">
   <div class="page-content inset">
@@ -162,7 +168,8 @@
         		<option value="clst">Cluster</option>
         		<option value="alph" selected>Alphabetical order</option>
         	</select>
-        </span>
+        </span><br/>
+        <button class="btn ImgDown" id="expHeatImg">Download img</button>
       	<div id="expHeat"></div>
         <div id="expBox"></div>
         <br/>
@@ -179,6 +186,7 @@
           <input type="hidden" name="file" value="DEG.txt"/>
           <input type="submit" class="btn" id="DEGdown" name="DEGdown" value="Download text file"><br/>
         </form>
+        <button class="btn ImgDown" id="tsEnrichBarImg">Download img</button>
         <div id="tsEnrichBar"></div>
         <h4>Differrentially expressed genes across 30 general tissue types (GTEx)</h4>
         <!-- <button class="btn" id="DEGgdown" name="DEGgdown">Download text file</button><br/> -->
@@ -188,6 +196,7 @@
           <input type="hidden" name="file" value="DEGgeneral.txt"/>
           <input type="submit" class="btn" id="DEGgdown" name="DEGgdown" value="Download text file"><br/>
         </form>
+        <button class="btn ImgDown" id="tsGeneralEnrichBarImg">Download img</button>
         <div id="tsGeneralEnrichBar"></div>
       </div>
     <!-- </div></div> -->

@@ -3,6 +3,18 @@ var intervalTable_selected=null;
 var SNPtable_selected=null;
 var posAnnotPlot;
 $(document).ready(function(){
+
+  // plot download
+  $(".ImgDown").on('click', function(){
+    var id = $(this).attr("id");
+    id = id.replace("Img", "");
+    console.log(id);
+    var svg = $('#'+id).html();
+    canvg('canvas', svg);
+    var canvas = document.getElementById('canvas');
+    Canvas2Image.saveAsPNG(canvas);
+  });
+
   if(status.length==0){
   }else if(status=="fileFormatGWAS"){
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
@@ -1365,7 +1377,7 @@ function PlotSNPAnnot(jobID){
       .html(function(d) {
         return d.count;
       })
-  svg.call(tip);
+  // svg.call(tip);
   d3.json("d3text/"+jobID+"/"+file, function(data){
     data.forEach(function(d){
       d.count =+ d.count;
@@ -1376,9 +1388,9 @@ function PlotSNPAnnot(jobID){
       .attr("width", x.rangeBand())
       .attr("y", function(d){return y(d.count);})
       .attr("height", function(d){return height-y(d.count);})
-      .attr("fill", "steelblue")
-      .on("mouseover", tip.show)
-      .on("mouseout", tip.hide);
+      .attr("fill", "steelblue");
+      // .on("mouseover", tip.show)
+      // .on("mouseout", tip.hide);
     svg.append('g').attr("class", "x axis")
       .attr("transform", "translate(0,"+height+")")
       .call(xAxis).selectAll('text')
@@ -1412,6 +1424,7 @@ function PlotIntervalSum(jobID){
     var y = d3.scale.ordinal().domain(y_element).rangeBands([0, height], 0.1);
     var yAxis = d3.svg.axis().scale(y).orient("left");
     var svg = d3.select('#intervalPlot').append('svg')
+              .attr("class", 'plotSVG')
               .attr("width", width+margin.left+margin.right)
               .attr("height", height+margin.top+margin.bottom)
               .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
