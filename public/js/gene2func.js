@@ -217,8 +217,7 @@ function checkInput(){
 function AjaxLoad(){
   var over = '<div id="overlay"><div id="loading">'
           +'<h4>Running gene test</h4>'
-          +'<p>Please wait for a moment</br>'
-          +'<p>Currentry this job takes 1-2 min</p>'
+          +'<p>Please wait for a moment (20-30 sec)</br>'
           +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
           +'</div></div>';
   $(over).appendTo('body');
@@ -242,51 +241,298 @@ function expHeatMap(id){
   d3.select('#expHeat').select("svg").remove();
   var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
 
-  d3.json("d3text/"+id+"/exp.txt", function(response){
-    var data = response.map(function(item){
-      var newItem = {};
-      newItem.tissue = item.tissue;
-      newItem.gene = item.gene;
-      newItem.exp = item.exp;
-      return newItem;
-    });
+  d3.select('#expHeat').select("svg").remove();
+  var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
+  queue().defer(d3.json, "d3text/"+id+"/exp.txt")
+        .defer(d3.json, "d3text/"+id+"/exp.row.txt")
+        .defer(d3.json, "d3text/"+id+"/exp.col.txt")
+        .awaitAll(function(error, data){
+          var exp = data[0];
+          var rows = data[1];
+          var cols = data[2];
 
-    var x_elements = d3.set(data.map(function(item){return item.tissue})).values(),
-        y_elements = d3.set(data.map(function(item){return item.gene})).values();
+          var galph = [];
+          var gclstlog2 = [];
+          var gclstnorm = [];
+          rows.forEach(function(d){
+            galph.push(d.alph);
+            gclstlog2.push(d.clstLog2);
+            gclstnorm.push(d.clstNorm);
+          });
 
-    var margin = {top: 10, right: 10, bottom: 200, left: 200},
-      width = 800,
-      height = (itemSizeCol*y_elements.length);
+          var tsalph = [];
+          var tsclstlog2 = [];
+          var tsclstnorm = [];
+          cols.forEach(function(d){
+            tsalph.push(d.alph);
+            tsclstlog2.push(d.clstLog2);
+            tsclstnorm.push(d.clstNorm);
+          });
 
-    var xScale = d3.scale.ordinal().domain(x_elements).rangeBands([0,x_elements.length*itemSizeRow]);
-    var xAxis = d3.svg.axis().scale(xScale).tickFormat(function(d){return d;}).orient("bottom");
-    var yScale = d3.scale.ordinal().domain(y_elements).rangeBands([0,y_elements.length*itemSizeCol]);
-    var yAxis = d3.svg.axis().scale(yScale).tickFormat(function(d){return d;}).orient("left");
-    //var colorScale = d3.scale.linear().domain([d3.min(data,function(d){return d.exp;}), d3.max(data, function(d){return d.exp;})]).range(["blue", "red"])
-    var colorScale = d3.scale.linear().domain([0, (5.7/2), 5.7]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-    var svg = d3.select('#expHeat').append('svg')
-              .attr("width", width+margin.left+margin.right)
-              .attr("height", height+margin.top+margin.bottom)
-              .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
-    var cells = svg.selectAll('rect').data(data).enter().append("g")
-                .append("rect").attr('class', 'cell')
-                .attr("class", 'tile')
-                .attr("width", cellSize).attr("height", itemSizeCol-0.5)
-                .attr('x', function(d){return xScale(d.tissue)})
-                .attr('y', function(d){return yScale(d.gene)})
-                .attr('fill', function(d){return colorScale(d.exp)})
-                .on("click", function(d){
-                  d3.select('#expBox').select('svg').remove;
-                  document.getElementById('expBox').innerHTML="<h3>Expression of "+d.gene+"</h3>";
-                  var g = d.gene.split(":");
-                  // geneBoxPlot(g[0]);
-                });
-    svg.append("g").attr("class", "y axis").call(yAxis).selectAll('text').attr('font-weight', 'normal').attr('class', "smalltext");
-    svg.append("g").attr("class", "x axis").attr("transform", "translate(0,"+(y_elements.length*itemSizeCol)+")")
-      .call(xAxis).selectAll('text').attr('font-weight', 'normal')
-      .style("text-anchor", "end").attr("transform", function (d) {return "rotate(-65)";})
-      .attr("dx","-.65em").attr("dy", "-.45em");
-  });
+          exp.forEach(function(d){
+            d.log2 = +d.log2;
+            d.norm = +d.norm;
+          });
+
+
+          var genes = d3.set(rows.map(function(d){return d.gene})).values();
+          var tss = d3.set(cols.map(function(d){return d.ts})).values();
+          var margin = {top: 10, right: 60, bottom: 200, left: 100},
+            width = 800,
+            height = (itemSizeCol*genes.length);
+
+          var svg = d3.select('#expHeat').append('svg')
+                    .attr("width", width+margin.left+margin.right)
+                    .attr("height", height+margin.top+margin.bottom)
+                    .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
+          var log2Max = d3.max(exp,function(d){return d.log2});
+          var log2Min = d3.min(exp, function(d){return d.log2;});
+          var colorScale = d3.scale.linear().domain([0, log2Max/2, log2Max]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+
+          // legened
+          var t = [];
+          for(var i =0; i<23; i++){t.push(i);}
+          var legendRect = svg.selectAll(".legend").data(t).enter().append("g")
+            .append("rect")
+            .attr("class", 'legendRect')
+            .attr("x", width+10)
+            .attr("y", function(d){return (t.length-1-d)*10+50})
+            .attr("width", 20)
+            .attr("height", 10)
+            .attr("fill", function(d){return colorScale(d*log2Max/(t.length-1))});
+          var legendText = svg.selectAll("text.legend").data([0,11,22]).enter().append("g")
+            .append("text")
+            .attr("text-anchor", "start")
+            .attr("class", "legenedText")
+            .attr("x", width+32)
+            .attr("y", function(d){return (t.length-1-d)*10+11+50})
+            .text(function(d){return Math.round(100*d*log2Max/(t.length-1))/100})
+            .style("font-size", "12px");
+
+
+          // y axis label
+          var rowLabels = svg.append("g").selectAll(".rowLabel")
+                          .data(rows).enter().append("text")
+                          .text(function(d){return d.gene;})
+                          .attr("x", 0)
+                          .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;})
+                          .style("font-size", "10px")
+                          .style("text-anchor", "end")
+                          .attr("dx", "-.3em");
+          // x axis labelz
+          var colLabels = svg.append("g").selectAll(".colLabel")
+                          .data(cols).enter().append("text")
+                          .text(function(d){return d.ts;})
+                          .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
+                          .attr("x", height)
+                          .style("font-size", "10px")
+                          .style("text-anchor", "end")
+                          .attr("dx", "-.3em")
+                          .attr("transform", function(d){
+                            return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                          });
+          // colLabels.selectAll(".colLabel").attr("transform", function(d){return "rotate(-65)"});
+
+          var heatMap = svg.append("g").attr("class", "cell heatmapcell")
+                        .selectAll("rect.cell").data(exp).enter()
+                        .append("rect")
+                        .attr("width", cellSize).attr("height", itemSizeCol-0.5)
+                        .attr('y', function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                        .attr('x', function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow})
+                        .attr('fill', function(d){return colorScale(d.log2)});
+
+          // Change ordeing of cells
+          function sortOptions(type, val, gsort, tssort){
+            if(type=="color"){
+              if(val=="log2RPKM"){
+                var log2Max = d3.max(exp,function(d){return d.log2});
+                var log2Min = d3.min(exp, function(d){return d.log2;});
+                var col = d3.scale.linear().domain([0, (log2Max+log2Min)/2, log2Max]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+                legendRect.attr("fill", function(d){return col(d*log2Max/(t.length-1))});
+                legendText.text(function(d){return Math.round(100*d*log2Max/(t.length-1))/100})
+                if(gsort=="clst" && tssort=="clst"){
+                  heatMap.transition().duration(2000)
+                    .attr("fill", function(d){return col(d.log2)})
+                    .attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                    .attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol;});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+                }else if(gsort=="clst" && tssort=="alph"){
+                  heatMap.transition().duration(2000)
+                    .attr("fill", function(d){return col(d.log2)})
+                    .attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                    .attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol;});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+                }else if(gsort=="alph" && tssort=="clst"){
+                  heatMap.transition().duration(2000)
+                    .attr("fill", function(d){return col(d.log2)})
+                    .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                    .attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+                }else if(gsort=="alph" && tssort=="alph"){
+                  heatMap.transition().duration(2000)
+                    .attr("fill", function(d){return col(d.log2)})
+                    .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                    .attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+                }
+              }else{
+                var normMax = d3.max(exp,function(d){return d.norm});
+                var normMin = d3.min(exp, function(d){return d.norm;});
+                var m = Math.max(normMax, Math.abs(normMin));
+                var col = d3.scale.linear().domain([-m, 0, m]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+                legendRect.attr("fill", function(d){return col(Math.round(d*2*m/(t.length-1)-m))});
+                legendText.text(function(d){return Math.round(d*2*m/(t.length-1)-m)});
+                if(gsort=="clst" && tssort=="clst"){
+                  heatMap.transition().duration(2000)
+                    .attr("fill", function(d){return col(d.norm)})
+                    .attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                    .attr("x", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol;});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+                }else if(gsort=="clst" && tssort=="alph"){
+                  heatMap.transition().duration(2000)
+                    .attr("fill", function(d){return col(d.norm)})
+                    .attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                    .attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol;});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+                }else if(gsort=="alph" && tssort=="clst"){
+                  heatMap.transition().duration(2000)
+                    .attr("fill", function(d){return col(d.norm)})
+                    .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                    .attr("x", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+                }else if(gsort=="alph" && tssort=="alph"){
+                  heatMap.transition().duration(2000)
+                    .attr("fill", function(d){return col(d.norm)})
+                    .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
+                    .attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+                }
+              }
+            }else if(type=="geneSort"){
+              if(gsort=="clst"){
+                if(val=="log2RPKM"){
+                  heatMap.transition().duration(2000)
+                   .attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol;});
+
+                }else{
+                  heatMap.transition().duration(2000)
+                   .attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol});
+                  rowLabels.transition().duration(2000)
+                    .attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol;});
+
+                }
+              }else{
+                heatMap.transition().duration(2000)
+                  .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol});
+                rowLabels.transition().duration(2000)
+                  .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
+              }
+            }else if(type="tsSort"){
+              if(tssort=="clst"){
+                if(val=="log2RPKM"){
+                  heatMap.transition().duration(2000)
+                   .attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+
+                }else{
+                  heatMap.transition().duration(2000)
+                   .attr("x", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                  colLabels.transition().duration(2000)
+                    .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
+                    .attr("transform", function(d){
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    });
+
+                }
+              }else{
+                heatMap.transition().duration(2000)
+                  .attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
+                colLabels.transition().duration(2000)
+                  .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
+                  .attr("transform", function(d){
+                    return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                  });
+              }
+            }
+          };
+
+          d3.select('#expval').on("change", function(){
+            var val = this.value;
+            var gsort = $('#geneSort').val();
+            var tssort = $('#tsSort').val();
+            sortOptions("color", val, gsort, tssort);
+          });
+
+          d3.select('#geneSort').on("change", function(){
+            var val = $('#expval').val();
+            var gsort = this.value;
+            var tssort = $('#tsSort').val();
+            sortOptions('geneSort', val, gsort, tssort);
+          });
+
+          d3.select('#tsSort').on("change", function(){
+            var val = $('#expval').val();
+            var gsort = $('#geneSort').val();
+            var tssort = this.value;
+            sortOptions('tsSort', val, gsort, tssort);
+          });
+
+        });
+
 }
 
 function tsEnrich(id){
@@ -631,7 +877,7 @@ function GeneSet(id){
           +category[i]+'Panel" data-toggle="collapse" style="color: black;"><h4>'
           +category_title[category[i]]+'<tab>('+tdata.length+')</h4></div><div class="panel-body collapse" id="'
           +category[i]+'Panel"><p><a onclick="GeneSetPlot('+"'"+category[i]+"'"+');">Plot</a> / <a onclick="GeneSetTable('+
-          "'"+category[i]+"'"+');">Table</a></p><div id="'+category[i]+'"></div><div id="'
+          "'"+category[i]+"'"+');">Table</a></p><div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div><div id="'
           +category[i]+'Table"></div></div></div>');
         $('#GeneSet').append(panel);
         $('#'+category[i]+'Table').hide();
@@ -738,20 +984,6 @@ function GeneSet(id){
     }
   });
 }
-
-// function fileDown(file, id){
-//   $.ajax({
-//     url: 'fileDown',
-//     type: 'POST',
-//     data: {
-//       file: file,
-//       id: id
-//     },
-//     success: function(){
-//       window.location = "fileDown";
-//     }
-//   });
-// }
 
 function GeneTable(id){
   geneTable = $('#GeneTable').DataTable({

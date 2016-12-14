@@ -56,6 +56,8 @@
     </ul>
   </div>
 
+  <canvas id="canvas" style="display:none;"></canvas>
+
   <div id="page-content-wrapper">
     <div class="page-content inset">
       <div id="queryJob" class="sidePanel container" style="padding-top:50px;">
@@ -83,13 +85,14 @@
         <h3>New job submission</h3>
         <!-- Input files upload -->
         <h4>1. Upload input files</h4>
+        <div id="fileFormatError"></div>
         <table class="table table-bordered inputTable" id="NewJobFiles" style="width: auto;">
           <tr>
             <td>GWAS summary statistics</td>
             <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary" onchange="CheckAll()"/></td>
             <td></td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>GWAS file format</td>
             <td>
               <select class="form-control" name="gwasformat" id="gwasformat" onchange="CheckAll()">
@@ -101,7 +104,7 @@
               </select>
             </td>
             <td></td>
-          </tr>
+          </tr> -->
           <tr>
             <td>Predefined lead SNPs</td>
             <td><input type="file" class="form-control-file" name="leadSNPs" id="leadSNPs" onchange="CheckAll()"/></td>
@@ -908,6 +911,10 @@
         <div id="gPlotPanel" class="collapse in">
           <div id="manhattanPane" style="position: relative;">
             <h4>Manhattan Plot (GWAS summary statistics)</h4>
+            <span class="info"><i class="fa fa-info"></i>
+              This is manhattan plot of input GWAS summary statistics with filtering of overlapped data points.
+            </span><br/>
+            <button class="btn ImgDown" id="manhattanImg">Download img</button>
             <div id="manhattan" class="canvasarea"></div>
           </div>
           <div id="geneManhattanPane" style="position: relative;">
@@ -944,8 +951,9 @@
       <!-- result tables -->
       <div class="sidePanel container" style="padding-top:50px;" id="tables">
         <div class="panel panel-default"><div class="panel-body">
-          <a href="#tablesPanel" data-toggle="collapse" style="color: #00004d"><h3>Result tables</h3></a>
-            <div id="tablesPanel" class="collapse in">
+          <!-- <a href="#tablesPanel" data-toggle="collapse" style="color: #00004d"><h3>Result tables</h3></a> -->
+          <h3 style="color: #00004d">Result tables</h3>
+            <!-- <div id="tablesPanel" class="collapse in"> -->
             <form action="geneSubmit" method="post" target="_blank">
               <input type="hidden" name="_token" value="{{ csrf_token() }}">
               <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
@@ -1052,14 +1060,15 @@
             </div>
 
           </div>
-          </div>
+          <!-- </div> -->
         </div></div>
 
         <!-- region plot -->
         <div id="regionalPlot">
           <div class="panel panel-default"><div class="panel-body">
-            <a href="#regionalPlotPanel" data-toggle="collapse" style="color: #00004d"><h3>Regional Plot (GWAS association)</h3></a>
-            <div class="row collapse in" id="regionalPlotPanel">
+            <!-- <a href="#regionalPlotPanel" data-toggle="collapse" style="color: #00004d"><h3>Regional Plot (GWAS association)</h3></a> -->
+            <h3 style="color: #00004d">Regional Plot (GWAS association)</h3>
+            <!-- <div class="row collapse in" id="regionalPlotPanel"> -->
               <div class="col-md-9">
                 <div id="locusPlot" style="text-align: center;">
                   <a id="plotClear" style="position: absolute;right: 30px;">Clear</a>
@@ -1068,11 +1077,10 @@
               <div class="col-md-3">
                 <div id="selectedLeadSNP"></div>
               </div>
-            </div>
+            <!-- </div> -->
           </div></div>
         </div>
       </div>
-
 
       <!-- Downloads -->
       <div class="sidePanel container" style="padding-top:50px;" id="downloads">

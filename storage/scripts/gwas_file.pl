@@ -11,10 +11,11 @@ use strict;
 use warnings;
 use IO::Zlib;
 
-die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir> <gwas file format>\n" if(@ARGV<2);
+# die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir> <gwas file format>\n" if(@ARGV<2);
+die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir>\n" if(@ARGV<1);
 
 my $filedir = $ARGV[0];
-my $gwasfile_format = $ARGV[1];
+# my $gwasfile_format = $ARGV[1]; # removed this option 14-12-2106
 #my $N = $ARGV[2];
 my $gwas = $filedir."input.gwas";
 
@@ -40,8 +41,7 @@ my $pcol=undef;
 my $refcol=undef;
 my $altcol=undef;
 
-if($gwasfile_format eq "Plain"){
-	while($head =~ /^#/){
+while($head =~ /^#/){
 		$head = <GWAS>;
 	}
 	my @head = split(/\s+/, $head);
@@ -53,59 +53,12 @@ if($gwasfile_format eq "Plain"){
 		elsif($head[$i] =~ /^A2$|^Non_Effect_allele$|^ref$|^allele2$/i){$refcol=$i}
 		elsif($head[$i] =~ /^P$|^pvalue$|^p-value$|^p_value$/i){$pcol=$i}
 	}
-}elsif($gwasfile_format eq "PLINK"){
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "SNP"){$rsIDcol=$i}
-		elsif($head[$i] eq "CHR"){$chrcol=$i}
-		elsif($head[$i] eq "BP"){$poscol=$i}
-		elsif($head[$i] eq "A1"){$altcol=$i}
-		elsif($head[$i] eq "A2"){$refcol=$i}
-		elsif($head[$i] eq "P"){$pcol=$i}
-	}
-}elsif($gwasfile_format eq "GCTA"){
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "SNP"){$rsIDcol=$i}
-		elsif($head[$i] eq "Chr"){$chrcol=$i}
-		elsif($head[$i] eq "bp"){$poscol=$i}
-		elsif($head[$i] eq "ReferenceAllele"){$refcol=$i}
-		elsif($head[$i] eq "OtherAllele"){$altcol=$i}
-		elsif($head[$i] eq "p"){$pcol=$i}
-	}
-}elsif($gwasfile_format eq "SNPTEST"){
-	while($head =~ /^#/){
-		$head = <GWAS>;
-	}
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "rsid"){$rsIDcol=$i}
-		elsif($head[$i] eq "chromosome"){$chrcol=$i}
-		elsif($head[$i] eq "position"){$poscol=$i}
-		elsif($head[$i] eq "alleleB"){$altcol=$i}
-		elsif($head[$i] eq "alleleA"){$refcol=$i}
-		elsif($head[$i] eq "frequentist_add_pvalue"){$pcol=$i}
-	}
-}elsif($gwasfile_format eq "METAL"){
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "MarkerName"){$rsIDcol=$i}
-		#elsif($head[$i] eq "Chr"){$chrcol=$i}
-		#elsif($head[$i] eq "bp"){$poscol=$i}
-		elsif($head[$i] eq "Allele1"){$altcol=$i}
-		elsif($head[$i] eq "Allele2"){$refcol=$i}
-		elsif($head[$i] eq "P-value"){$pcol=$i}
-		## need to get chr pos befor start analyses
-		## update rsID
-		## extract chr and pos from db146 (match rsID + ref/alt)
-	}
-}
 
-if(!(defined $pcol)){die "101";}
-elsif(!(defined $chrcol && defined $poscol && defined $rsIDcol)){die "102";}
+if(!(defined $pcol)){die "P-value column was not found\n";}
+elsif(!(defined $chrcol && defined $poscol && defined $rsIDcol)){die "Chromosome, position or rsID column was not found\n";}
 
 my %GWAS;
-print "chr: $chrcol, pos: $poscol, rsID: $rsIDcol, ref: $refcol, alt: $altcol, p: $pcol\n";
+#print "chr: $chrcol, pos: $poscol, rsID: $rsIDcol, ref: $refcol, alt: $altcol, p: $pcol\n";
 
 if(defined $chrcol && defined $poscol){
 	while(<GWAS>){
@@ -113,7 +66,7 @@ if(defined $chrcol && defined $poscol){
 		my @line = split(/\s/, $_);
 		$line[$chrcol] =~ s/chr//;
 		$line[$chrcol]=23 if($line[$chrcol]=~/X|x/);
-		$line[$pcol] = 1e-308 if($line[$pcol]<1e-308);
+		$line[$pcol] = 1e-308 if($line[$pcol]<1e-308); #avoid NA or inf in R
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"p"}=$line[$pcol];
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"ref"}=uc($line[$refcol]) if(defined $refcol);
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);

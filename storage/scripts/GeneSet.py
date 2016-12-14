@@ -17,16 +17,8 @@ start = timeit.default_timer()
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
-#	if type(a1) is np.ndarray:
-#		a1 = a1.tolist()
-#	if type(a2) is np.ndarray:
-#		a2 = a2.tolist()
-	#if len(a1)<=len(a2):
-	results = [i for i, x in enumerate(a1) if x in a2]
-	#else:
-	#	results = []
-	#	for i in a2:
-	#		results = results+list(np.where(a1==i)[0])
+	# results = [i for i, x in enumerate(a1) if x in a2]
+	results = np.where(np.in1d(a1, a2))[0]
 	return results
 
 
@@ -51,8 +43,6 @@ else:
 	lines = pd.read_table(filedir+gval, header=None, sep="\s+")
 	lines = np.array(lines)
 	genes = list(lines[:,0])
-#Ning = len(genes)
-#print "Input genes: "+str(Ning)
 
 #ENSG = pd.read_table("ENSG.all.genes.txt", header=None, sep="\t")
 ENSG = pd.read_table("/media/sf_Documents/VU/Data/ENSG.all.genes.txt", header=None, sep="\t") #local
@@ -69,8 +59,6 @@ else:
 	lines = pd.read_table(filedir+bkgval, sep="\s+")
 	lines = np.array(lines)
 	bkgenes = lsit(lines[:,0])
-#Ninbkg = len(bkgenes)
-#print "Input bkg: "+str(Ninbkg)
 
 # if Xchr == 1:
 # 	ENSG = ENSG[ENSG[:,3]!=23,]
@@ -92,8 +80,6 @@ elif len(ArrayIn(genes, ENSG[:,9]))>0:
 	genes = list(ENSG[ArrayIn(ENSG[:,9], genes),9])
 genes = np.array(genes)
 genes = np.unique(genes)
-#print "type: "+str(Type)
-#Ng = len(genes)
 
 ## bkgenes ID
 if bkgtype != "select":
@@ -105,18 +91,18 @@ if bkgtype != "select":
 		bkgenes = list(ENSG[ArrayIn(ENSG[:,9], bkgenes),9])
 bkgenes = np.array(bkgenes)
 bkgenes = np.unique(bkgenes)
-#Nbkg = len(bkgenes)
-#print "Total gene: "+str(Ng)
-#print "Total bkgene: "+str(Nbkg)
 
 genes = genes[ArrayIn(genes, bkgenes)]
 #entrez2symbol = ENSG[ArrayIn(ENSG[:,9], genes)][:,[2,9]]
+ENSG = ENSG[ArrayIn(ENSG[:,9], genes)]
 
-#def GeneSetTest(genes, bkgenes, adjPmethod, adjPcutoff, MHC, minOverlap):
 
-files = glob.glob('/media/sf_Documents/VU/Data/GeneSet/*.txt') #local
-#webserver files = glob.glob('/data/GeneSet/*.txt')
-
+fglob = glob.glob('/media/sf_Documents/VU/Data/GeneSet/*.txt') #local
+#webserver fglob = glob.glob('/data/GeneSet/*.txt')
+files=[]
+for f in fglob:
+	if "Human_Adult_Brain" not in f:
+		files.append(f)
 #if(testCategory!="all"):
 #	testCategory = testCategory.split(":")
 #	testCategory = np.array(testCategory)
@@ -124,18 +110,12 @@ files = glob.glob('/media/sf_Documents/VU/Data/GeneSet/*.txt') #local
 
 #genes = np.array(genes)
 #bkgenes = np.array(bkgenes)
-results = []
-results.append(["Category", "GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes", "logP", "logFDR"])
+#results = []
+#results.append(["Category", "GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes", "logP", "logFDR"])
 N = len(bkgenes)
 m = len(genes)
-#print "N: "+str(N)
-#print "m: "+str(m)
-#print bkgenes[0]
-#print "genes: "+" ".join(genes)
-out = open(filedir+"GS.txt", 'w')
-out.write("\t".join(["Category", "GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes", "logP", "logFDR"])+"\n")
 
-def hypTest(l):
+def hypTest(l, c):
 	g = l[2].split(":")
 	g = np.array(g).astype(int)
 	g = g[ArrayIn(g, bkgenes)]
@@ -144,47 +124,20 @@ def hypTest(l):
 	x = len(gin)
 	if x>0:
 		p = stats.hypergeom.sf(x, N ,n, m)
+		gin = ENSG[ArrayIn(ENSG[:,9], gin),2]
 		return([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), 0.0, 0.0])
 	else:
 		p=1
 		return([c.group(1), l[0], n, x, p, 1.0, "", 0.0, 0.0])
-
-for f in files:
-	if "Human_Adult_Brain" in f:
-		continue
+		
+def GeneSetTest(f):
 	print f
 	c = re.match(".*GeneSet/(\w+)\.txt", f)
 	gs = pd.read_table(f)
 	gs = np.array(gs)
-	#print gs[0:3]
-
-	tmp = Parallel(n_jobs=n_cores)(delayed(hypTest)(l) for l in gs)
-#	tmp = []
-#	for l in gs:
-#		g = l[2].split(":")
-#		g = np.array(g).astype(int)
-		#print len(g)
-#		g = g[ArrayIn(g, bkgenes)]
-		#g = g[[0,2,4,6]]
-		#print len(g)
-#		n = len(g)
-		#print ArrayIn(g, bkgenes)
-#		gin = genes[ArrayIn(genes, g)]
-#		x = len(gin)
-		#print l[0]+": "+str(n)+": "+str(x)
-#		if x>0:
-#			p = stats.hypergeom.sf(x, N ,n, m)
-#			tmp.append([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), 0.0, 0.0])
-#		else:
-#			p=1
-#			tmp.append([c.group(1), l[0], n, x, p, 1.0, "", 0.0, 0.0])
-		#if(x>0):
-		#	tmp.append([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str))])
-		#else:
-		#	tmp.append([c.group(1), l[0], n, x, p, 1.0, ""])
-			#if(p<1e-5):
-			#	print l[0]+" x:"+str(x)+" n:"+str(n)+" p:"+str(p)
-
+	tmp = []
+	for l in gs:
+		tmp.append(hypTest(l, c))
 	tmp = np.array(tmp)
 	padj = multicomp.multipletests(list(tmp[:,4].astype(float)), alpha=0.05, method=adjPmeth, is_sorted=False, returnsorted=False)
 	tmp[:, 5] = padj[1]
@@ -193,13 +146,44 @@ for f in files:
 	tmp = tmp[tmp[:,4].astype(float).argsort()]
 	tmp[:,7] = -np.log10(tmp[:,4].astype(float))
 	tmp[:,8] = -np.log10(tmp[:,5].astype(float))
-	for i in tmp:
-		g = i[6].split(":")
-		g = [int(x) for x in g]
-		g = ":".join(list(ENSG[ArrayIn(ENSG[:,9], g),2]))
-		#g = ":".join(list(entrez2symbol[ArrayIn(entrez2symbol[:,1], g),0]))
-		i[6]=g
-		out.write("\t".join(i)+"\n")
+	return tmp;
+
+tmp = Parallel(n_jobs=n_cores)(delayed(GeneSetTest)(f) for f in files)
+out = open(filedir+"GS.txt", 'w')
+out.write("\t".join(["Category", "GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes", "logP", "logFDR"])+"\n")
+
+for i in tmp:
+	for j in i:
+		out.write("\t".join(j)+"\n")
+
+#for f in files:
+#	if "Human_Adult_Brain" in f:
+#		continue
+#	print f
+#	c = re.match(".*GeneSet/(\w+)\.txt", f)
+#	gs = pd.read_table(f)
+#	gs = np.array(gs)
+#
+#	tmp = Parallel(n_jobs=n_cores)(delayed(hypTest)(l) for l in gs)
+	#tmp = []
+	#for l in gs:
+	#	tmp.append(hypTest(l))
+
+#	tmp = np.array(tmp)
+#	padj = multicomp.multipletests(list(tmp[:,4].astype(float)), alpha=0.05, method=adjPmeth, is_sorted=False, returnsorted=False)
+#	tmp[:, 5] = padj[1]
+#	tmp = tmp[tmp[:,5].astype(float)<adjPcut]
+#	tmp = tmp[tmp[:,3].astype(int)>=minOverlap]
+#	tmp = tmp[tmp[:,4].astype(float).argsort()]
+#	tmp[:,7] = -np.log10(tmp[:,4].astype(float))
+#	tmp[:,8] = -np.log10(tmp[:,5].astype(float))
+#	for i in tmp:
+		# g = i[6].split(":")
+		# g = [int(x) for x in g]
+		# g = ":".join(list(ENSG[ArrayIn(ENSG[:,9], g),2]))
+		# #g = ":".join(list(entrez2symbol[ArrayIn(entrez2symbol[:,1], g),0]))
+		# i[6]=g
+#		out.write("\t".join(i)+"\n")
 		#results.append(list(i))
 
 #GeneSetTest(genes, bkgenes, "BH", 0.05, True, 2)

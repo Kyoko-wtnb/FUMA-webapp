@@ -3,20 +3,20 @@ var intervalTable_selected=null;
 var SNPtable_selected=null;
 var posAnnotPlot;
 $(document).ready(function(){
-  // var jobID = "{{$jobID}}";
-  // console.log(status);
-  console.log(jobid);
-  // console.log(status.length);
-  // $('#resultsSide').hide();
   if(status.length==0){
-    // console.log("status:NULL");
+  }else if(status=="fileFormatGWAS"){
+    $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
+      +'<b>Provided file (GWAS summary statistics) format is not valid. Only text files are acceptable (extention does not matter).</b>'
+      +'</div>');
+  }else if(status=="fileFormatLead"){
+    $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
+      +'<b>Provided file (pre-defined lead SNPs) format is not valid. Only text files are acceptable (extention does not matter).</b>'
+      +'</div>');
+  }else if(status=="fileFormatRegions"){
+    $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
+      +'<b>Provided file (pre-defined genomic regions) format is not valid. Only text files are acceptable (extention does not matter).</b>'
+      +'</div>');
   }else{
-    // var job = IPGAPvar.jobtype;
-    // var email = IPGAPvar.email;
-    // var filedir = IPGAPvar.filedir;
-    // var jobID = IPGAPvar.jobID;
-    // var jobtitle = IPGAPvar.jobtitle;
-
     $('#annotPlotSubmit').attr("disabled", true);
     $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
     if($('#annotPlot_Chrom15').is(":checked")==false){
@@ -38,13 +38,10 @@ $(document).ready(function(){
         success: function(data){
           $('#test').html(data);
           jobStatus = data;
-          // $('#results').show();
-          // $('#resultsSide').show();
         },
         complete: function(){
           if(jobStatus!="RUNNING"){
             $('#overlay').remove();
-            // $('#test').append(" timer is done");
             clearInterval(jobcheck);
             if(jobStatus=="OK"){
               loadResults();
@@ -158,142 +155,8 @@ $(document).ready(function(){
               }
             }
           });
-                    // jobInfo(jobid);
-          // GWplot(jobid);
-          // QQplot(jobid);
-          // showResultTables(filedir, jobid, posMap, eqtlMap);
-          // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
         }
       });
-      // var filedir = IPGAPvar.filedir;
-      // var leadfile = IPGAPvar.leadSNPsfileup;
-      // var regionfile = IPGAPvar.regionsfileup;
-      // var gwasformat = IPGAPvar.gwasformat;
-      // var addleadSNPs = IPGAPvar.addleadSNPs;
-      // var N = IPGAPvar.N;
-      // var leadP = IPGAPvar.leadP;
-      // var r2 = IPGAPvar.r2;
-      // var gwasP = IPGAPvar.gwasP;
-      // var pop = IPGAPvar.pop;
-      // var KGSNPs = IPGAPvar.KGSNPs;
-      // var maf = IPGAPvar.maf;
-      // var mergeDist = IPGAPvar.mergeDist;
-      // // var Xchr = IPGAPvar.Xchr;
-      //
-      // var exMHC = IPGAPvar.exMHC;
-      // var extMHC = IPGAPvar.extMHC;
-      //
-      // var genetype = IPGAPvar.genetype;
-      //
-      // var posMap = IPGAPvar.posMap;
-      // var posMapWindow = IPGAPvar.posMapWindow;
-      // var posMapWindowSize = IPGAPvar.posMapWindowSize;
-      // var posMapAnnot = IPGAPvar.posMapAnnot;
-      // var posMapCADDth = IPGAPvar.posMapCADDth;
-      // var posMapRDBth = IPGAPvar.posMapRDBth;
-      // var posMapChr15 = IPGAPvar.posMapChr15;
-      // var posMapChr15Max = IPGAPvar.posMapChr15Max;
-      // var posMapChr15Meth = IPGAPvar.posMapChr15Meth;
-      //
-      // var eqtlMap = IPGAPvar.eqtlMap;
-      // var eqtlMaptss = IPGAPvar.eqtlMaptss;
-      // var eqtlMapSigeqtl = IPGAPvar.eqtlMapSigeqtl;
-      // var eqtlMapeqtlP = IPGAPvar.eqtlMapeqtlP;
-      // var eqtlMapCADDth = IPGAPvar.eqtlMapCADDth;
-      // var eqtlMapRDBth = IPGAPvar.eqtlMapRDBth;
-      // var eqtlMapChr15 = IPGAPvar.eqtlMapChr15;
-      // var eqtlMapChr15Max = IPGAPvar.eqtlMapChr15Max;
-      // var eqtlMapChr15Meth = IPGAPvar.eqtlMapChr15Meth;
-
-      // $('#test').html("<h3>New Job</h3><p>test</p><p>email: "+email+"<br/>genetype: "+genetype+"</p>");
-      // $('#results').show();
-      // document.getElementById('test').innerHTML="<p>posMapChr15: "+posMapChr15+"</p>";
-
-      // $('#results').show();
-      // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-
-      // $.ajax({
-      //   url: 'CandidateSelection',
-      //   type: 'POST',
-      //   data: {
-      //       jobID: jobID,
-      //       email: email,
-      //       jobtitle: jobtitle,
-      //       filedir: filedir,
-      //       gwasformat: gwasformat,
-      //       leadfile: leadfile,
-      //       addleadSNPs: addleadSNPs,
-      //       regionfile: regionfile,
-      //       N: N,
-      //       leadP: leadP,
-      //       r2: r2,
-      //       gwasP: gwasP,
-      //       pop: pop,
-      //       KGSNPs: KGSNPs,
-      //       maf: maf,
-      //       mergeDist: mergeDist,
-      //       // Xchr: Xchr,
-      //       exMHC: exMHC,
-      //       extMHC: extMHC,
-      //       genetype: genetype,
-      //       posMap: posMap,
-      //       posMapWindow: posMapWindow,
-      //       posMapWindowSize: posMapWindowSize,
-      //       posMapAnnot: posMapAnnot,
-      //       posMapCADDth: posMapCADDth,
-      //       posMapRDBth: posMapRDBth,
-      //       posMapChr15: posMapChr15,
-      //       posMapChr15Max: posMapChr15Max,
-      //       posMapChr15Meth: posMapChr15Meth,
-      //       eqtlMap: eqtlMap,
-      //       eqtlMaptss: eqtlMaptss,
-      //       eqtlMapSigeqtl: eqtlMapSigeqtl,
-      //       eqtlMapeqtlP: eqtlMapeqtlP,
-      //       eqtlMapCADDth: eqtlMapCADDth,
-      //       eqtlMapRDBth: eqtlMapRDBth,
-      //       eqtlMapChr15: eqtlMapChr15,
-      //       eqtlMapChr15Max: eqtlMapChr15Max,
-      //       eqtlMapChr15Meth: eqtlMapChr15Meth
-      //   },
-      //   processing: true,
-      //   // beforeSend: function(){
-      //   //   // $('#logSNPfiltering').append('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-      //   //   JobRunLoad();
-      //   // },
-      //   success: function(data){
-      //     // $('#logSNPfiltering').html('<div class="alert alert-success"><h4> Step 1. Candidate SNPs filtering is done</h4></div>');
-      //     // $('#test').html(data);
-      //     // $('#overlay').remove();
-      //   },
-      //   error: function(){
-      //     // alert("Error occored (SNPfilt)");
-      //   },
-      //   complete: function(){
-      //     $('#overlay').remove();
-      //     $('#logs').hide();
-      //     $('#results').show();
-      //     $('#jobinfoSide').show();
-      //     $('#resultsSide').show();
-      //     $('.sidePanel').each(function(){
-      //       if(this.id=="jobInfo"){
-      //         $('#'+this.id).show();
-      //       }else{
-      //         $('#'+this.id).hide();
-      //       }
-      //     });
-      //     $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-      //     $('#sidebar.sidebar-nav li a').each(function(){
-      //       if($(this).attr("href")=="#jobInfo"){
-      //         $(this).parent().addClass("active");
-      //       }
-      //     });
-      //     jobInfo(jobID);
-      //     GWplot(jobID);
-      //     QQplot(jobID);
-      //     showResultTables(filedir, jobID, posMap, eqtlMap);
-      //     // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-      //   }
-      // });
     }
 
     function loadResults(){
@@ -342,236 +205,6 @@ $(document).ready(function(){
       });
     }
 
-    // if(status==="newjob"){
-    //   $("#results").hide();
-    //   // get parameters
-    //   // var job = IPGAPvar.jobtype;
-    //   var email = IPGAPvar.email;
-    //   var filedir = IPGAPvar.filedir;
-    //   var jobID = IPGAPvar.jobID;
-    //   var jobtitle = IPGAPvar.jobtitle;
-    //   var leadfile = IPGAPvar.leadSNPsfileup;
-    //   var regionfile = IPGAPvar.regionsfileup;
-    //   var gwasformat = IPGAPvar.gwasformat;
-    //   var addleadSNPs = IPGAPvar.addleadSNPs;
-    //   var N = IPGAPvar.N;
-    //   var leadP = IPGAPvar.leadP;
-    //   var r2 = IPGAPvar.r2;
-    //   var gwasP = IPGAPvar.gwasP;
-    //   var pop = IPGAPvar.pop;
-    //   var KGSNPs = IPGAPvar.KGSNPs;
-    //   var maf = IPGAPvar.maf;
-    //   var mergeDist = IPGAPvar.mergeDist;
-    //   // var Xchr = IPGAPvar.Xchr;
-    //
-    //   var exMHC = IPGAPvar.exMHC;
-    //   var extMHC = IPGAPvar.extMHC;
-    //
-    //   var genetype = IPGAPvar.genetype;
-    //
-    //   var posMap = IPGAPvar.posMap;
-    //   var posMapWindow = IPGAPvar.posMapWindow;
-    //   var posMapWindowSize = IPGAPvar.posMapWindowSize;
-    //   var posMapAnnot = IPGAPvar.posMapAnnot;
-    //   var posMapCADDth = IPGAPvar.posMapCADDth;
-    //   var posMapRDBth = IPGAPvar.posMapRDBth;
-    //   var posMapChr15 = IPGAPvar.posMapChr15;
-    //   var posMapChr15Max = IPGAPvar.posMapChr15Max;
-    //   var posMapChr15Meth = IPGAPvar.posMapChr15Meth;
-    //
-    //   var eqtlMap = IPGAPvar.eqtlMap;
-    //   var eqtlMaptss = IPGAPvar.eqtlMaptss;
-    //   var eqtlMapSigeqtl = IPGAPvar.eqtlMapSigeqtl;
-    //   var eqtlMapeqtlP = IPGAPvar.eqtlMapeqtlP;
-    //   var eqtlMapCADDth = IPGAPvar.eqtlMapCADDth;
-    //   var eqtlMapRDBth = IPGAPvar.eqtlMapRDBth;
-    //   var eqtlMapChr15 = IPGAPvar.eqtlMapChr15;
-    //   var eqtlMapChr15Max = IPGAPvar.eqtlMapChr15Max;
-    //   var eqtlMapChr15Meth = IPGAPvar.eqtlMapChr15Meth;
-    //
-    //   // $('#test').html("<h3>New Job</h3><p>test</p><p>email: "+email+"<br/>genetype: "+genetype+"</p>");
-    //   // $('#results').show();
-    //   // document.getElementById('test').innerHTML="<p>posMapChr15: "+posMapChr15+"</p>";
-    //
-    //   // $('#results').show();
-    //   // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-    //   $.ajax({
-    //     url: 'CandidateSelection',
-    //     type: 'POST',
-    //     data: {
-    //         jobID: jobID,
-    //         email: email,
-    //         jobtitle: jobtitle,
-    //         filedir: filedir,
-    //         gwasformat: gwasformat,
-    //         leadfile: leadfile,
-    //         addleadSNPs: addleadSNPs,
-    //         regionfile: regionfile,
-    //         N: N,
-    //         leadP: leadP,
-    //         r2: r2,
-    //         gwasP: gwasP,
-    //         pop: pop,
-    //         KGSNPs: KGSNPs,
-    //         maf: maf,
-    //         mergeDist: mergeDist,
-    //         // Xchr: Xchr,
-    //         exMHC: exMHC,
-    //         extMHC: extMHC,
-    //         genetype: genetype,
-    //         posMap: posMap,
-    //         posMapWindow: posMapWindow,
-    //         posMapWindowSize: posMapWindowSize,
-    //         posMapAnnot: posMapAnnot,
-    //         posMapCADDth: posMapCADDth,
-    //         posMapRDBth: posMapRDBth,
-    //         posMapChr15: posMapChr15,
-    //         posMapChr15Max: posMapChr15Max,
-    //         posMapChr15Meth: posMapChr15Meth,
-    //         eqtlMap: eqtlMap,
-    //         eqtlMaptss: eqtlMaptss,
-    //         eqtlMapSigeqtl: eqtlMapSigeqtl,
-    //         eqtlMapeqtlP: eqtlMapeqtlP,
-    //         eqtlMapCADDth: eqtlMapCADDth,
-    //         eqtlMapRDBth: eqtlMapRDBth,
-    //         eqtlMapChr15: eqtlMapChr15,
-    //         eqtlMapChr15Max: eqtlMapChr15Max,
-    //         eqtlMapChr15Meth: eqtlMapChr15Meth
-    //     },
-    //     processing: true,
-    //     beforeSend: function(){
-    //       // $('#logSNPfiltering').append('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-    //       JobRunLoad();
-    //     },
-    //     success: function(data){
-    //       // $('#logSNPfiltering').html('<div class="alert alert-success"><h4> Step 1. Candidate SNPs filtering is done</h4></div>');
-    //       // $('#test').html(data);
-    //       // $('#overlay').remove();
-    //     },
-    //     error: function(){
-    //       // alert("Error occored (SNPfilt)");
-    //     },
-    //     complete: function(){
-    //       $('#overlay').remove();
-    //       $('#logs').hide();
-    //       $('#results').show();
-    //       $('#jobinfoSide').show();
-    //       $('#resultsSide').show();
-    //       $('.sidePanel').each(function(){
-    //         if(this.id=="jobInfo"){
-    //           $('#'+this.id).show();
-    //         }else{
-    //           $('#'+this.id).hide();
-    //         }
-    //       });
-    //       $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-    //       $('#sidebar.sidebar-nav li a').each(function(){
-    //         if($(this).attr("href")=="#jobInfo"){
-    //           $(this).parent().addClass("active");
-    //         }
-    //       });
-    //       jobInfo(jobID);
-    //       GWplot(jobID);
-    //       QQplot(jobID);
-    //       showResultTables(filedir, jobID, posMap, eqtlMap);
-    //       // $('#test').html('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-    //     }
-    //   });
-    // }else{
-    //   $('#logs').hide();
-    //   // $('#results').show();
-    //   // $('#resultsSide').show();
-    //   // console.log(jobid);
-    //   // console.log(status);
-    //   // get parameters
-    //   // var email = IPGAPvar.email;
-    //   // var filedir = IPGAPvar.filedir;
-    //   // var jobID = IPGAPvar.jobID;
-    //   // var jobtitle = IPGAPvar.jobtitle;
-    //   // var posMap = IPGAPvar.posMap;
-    //   // var eqtlMap = IPGAPvar.eqtlMap;
-    //   // $('#test').html("<p>posMap: "+posMap+" eqtlMap: "+eqtlMap+"</p>");
-    //   var filedir;
-    //   var posMap;
-    //   var eqtlMap;
-    //   var jobStatus;
-    //   AjaxLoad();
-    //   $('#jobinfoSide').show();
-    //   $('.sidePanel').each(function(){
-    //     if(this.id=="jobInfo"){
-    //       $('#'+this.id).show();
-    //     }else{
-    //       $('#'+this.id).hide();
-    //     }
-    //   });
-    //   $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-    //   $('#sidebar.sidebar-nav li a').each(function(){
-    //     if($(this).attr("href")=="#jobInfo"){
-    //       $(this).parent().addClass("active");
-    //     }
-    //   });
-    //   var jobcheck = setInterval(function(){
-    //     $.ajax({
-    //       url: 'checkJobStatus',
-    //       type: "POST",
-    //       data: {
-    //         jobID: jobid,
-    //       },
-    //       error: function(){
-    //         alert("ERROR: checkJobStatus")
-    //       },
-    //       success: function(data){
-    //         $('#test').html(data);
-    //         jobStatus = data;
-    //         // $('#results').show();
-    //         // $('#resultsSide').show();
-    //       },
-    //       complete: function(){
-    //         if(jobStatus!="RUNNING"){
-    //           $('#overlay').remove();
-    //           // $('#test').append(" timer is done");
-    //           clearInterval(jobcheck);
-    //           if(jobStatus=="OK"){
-    //             loadResults();
-    //           }else{
-    //             // errorHandling(jobStatus);
-    //             jobInfo(jobid);
-    //           }
-    //           return;
-    //         }
-    //       }
-    //     });
-    //   }, 5000);
-    //
-    //   function loadResults(){
-    //     $.ajax({
-    //         url: 'getParams',
-    //         type: 'POST',
-    //         data:{
-    //           jobID: jobid
-    //         },
-    //         error: function(){
-    //           alert("JobQuery getParams error");
-    //         },
-    //         success: function(data){
-    //           // $('#test').html(data)
-    //           var tmp = data.split(":");
-    //           filedir = tmp[0];
-    //           posMap = parseInt(tmp[1]);
-    //           eqtlMap = parseInt(tmp[2]);
-    //         },
-    //         complete: function(){
-    //           jobInfo(jobid);
-    //           GWplot(jobid);
-    //           QQplot(jobid);
-    //           showResultTables(filedir, jobid, posMap, eqtlMap);
-    //           $('#results').show();
-    //           $('#resultsSide').show();
-    //         }
-    //     });
-    //   }
-    // }
-    //
   }
 
   // download file selection

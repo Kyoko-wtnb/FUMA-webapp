@@ -19,6 +19,8 @@
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+<script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
+
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 <script type="text/javascript">
@@ -142,7 +144,26 @@
       <div id="expPanel" class="sidePanel container" style="padding-top:50;">
         <!-- <div id="expHeat" style='overflow:auto; width:1010px; height:450px;'></div> -->
         <h4>Gene expression heatmap in 53 tissues (GTEx)</h4>
-        <div id="expHeat"></div>
+        <sapn class="form-inline">
+          Expression Value:
+        	<select id="expval" class="form-control" style="width: auto;">
+        		<option value="log2RPKM" selected>log2(RPKM+1)</option>
+        		<option value="norm">Normalized across samples</option>
+        	</select>
+        	<tab>
+        	Order genes by:
+        	<select id="geneSort" class="form-control" style="width: auto;">
+        		<option value="clst">Cluster</option>
+        		<option value="alph" selected>Alphabetical order</option>
+        	</select>
+        	<tab>
+        	Order tissues by:
+        	<select id="tsSort" class="form-control" style="width: auto;">
+        		<option value="clst">Cluster</option>
+        		<option value="alph" selected>Alphabetical order</option>
+        	</select>
+        </span>
+      	<div id="expHeat"></div>
         <div id="expBox"></div>
         <br/>
       </div>
@@ -200,23 +221,8 @@
       <p>*Links of OMIM nad DrugBank will open new tab due to the security reason.
       <br/>*Links of GeneCards will be displayed in the frame below.</p>
 
-      <!-- <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#GeneCardsPane" aria-controls="GeneCardsPane" rolw="tab" data-toggle="tab">GeneCards</a></li>
-        <li role="presentation"><a href="#OMIMPane" aria-controls="OMIMPane" rolw="tab" data-toggle="tab">OMIM</a></li>
-        <li role="presentation"><a href="#DrugBankPane" aria-controls="DrugBankPane" rolw="tab" data-toggle="tab">DrugBank</a></li>
-      </ul> -->
-      <!-- <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="GeneCardsPane"> -->
-          <h4>GeneCards</h4><br/>
-          <iframe src="http://www.genecards.org/" name="GeneCards_iframe" width="100%" height="500p"></iframe>
-        <!-- </div>
-        <div role="tabpanel" class="tab-pane" id="OMIMPane">
-          <iframe src="http://www.omim.org/" name="OMIM_iframe" width="100%" height="500p"></iframe>
-        </div>
-        <div role="tabpanel" class="tab-pane" id="DrugBankPane">
-          <iframe src="http://www.drugbank.ca/" name="DrugBank_iframe" width="100%" height="500p"></iframe>
-        </div>
-      </div> -->
+      <h4>GeneCards</h4><br/>
+      <iframe src="http://www.genecards.org/" name="GeneCards_iframe" width="100%" height="500p"></iframe>
       <br/><br/>
     </div>
 

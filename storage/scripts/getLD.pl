@@ -85,84 +85,7 @@ foreach(@chr15){
 print ANNOT "\n";
 close ANNOT;
 
-=begin
-#commented out 7 Nov 2016
-open(GWAS, "$gwas") or die "Cannot open $gwas\n";
-my $head = <GWAS>;
-my $rsIDcol=undef;
-my $chrcol;
-my $poscol;
-my $pcol;
-my $refcol=undef;
-my $altcol=undef;
-if($gwasfile_format eq "Plain"){
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "SNP"){$rsIDcol=$i}
-		elsif($head[$i] eq "CHR"){$chrcol=$i}
-		elsif($head[$i] eq "BP"){$poscol=$i}
-		elsif($head[$i] eq "A1"){$altcol=$i}
-		elsif($head[$i] eq "A2"){$refcol=$i}
-		elsif($head[$i] eq "P"){$pcol=$i}
-	}
-}elsif($gwasfile_format eq "PLINK"){
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "SNP"){$rsIDcol=$i}
-		elsif($head[$i] eq "CHR"){$chrcol=$i}
-		elsif($head[$i] eq "BP"){$poscol=$i}
-		elsif($head[$i] eq "A1"){$altcol=$i}
-		elsif($head[$i] eq "A2"){$refcol=$i}
-		elsif($head[$i] eq "P"){$pcol=$i}
-	}
-}elsif($gwasfile_format eq "GCTA"){
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "SNP"){$rsIDcol=$i}
-		elsif($head[$i] eq "Chr"){$chrcol=$i}
-		elsif($head[$i] eq "bp"){$poscol=$i}
-		elsif($head[$i] eq "ReferenceAllele"){$altcol=$i}
-		elsif($head[$i] eq "OtherAllele"){$refcol=$i}
-		elsif($head[$i] eq "p"){$pcol=$i}
-	}
-}elsif($gwasfile_format eq "SNPTEST"){
-	while($head =~ /^#/){
-		$head = <GWAS>;
-	}
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "rsid"){$rsIDcol=$i}
-		elsif($head[$i] eq "chromosome"){$chrcol=$i}
-		elsif($head[$i] eq "position"){$poscol=$i}
-		elsif($head[$i] eq "alleleB"){$altcol=$i}
-		elsif($head[$i] eq "alleleA"){$refcol=$i}
-		elsif($head[$i] eq "frequentist_add_pvalue"){$pcol=$i}
-	}
-}elsif($gwasfile_format eq "METAL"){
-	my @head = split(/\s+/, $head);
-	foreach my $i (0..$#head){
-		if($head[$i] eq "MarkerName"){$rsIDcol=$i}
-		#elsif($head[$i] eq "Chr"){$chrcol=$i}
-		#elsif($head[$i] eq "bp"){$poscol=$i}
-		elsif($head[$i] eq "Allele1"){$altcol=$i}
-		elsif($head[$i] eq "Allele2"){$refcol=$i}
-		elsif($head[$i] eq "P-value"){$pcol=$i}
-		## need to get chr pos befor start analyses
-		## update rsID
-		## extract chr and pos from db146 (match rsID + ref/alt)
-	}
-}
-
-my $getRef = 0;
-my $getAlt = 0;
-my $getRs = 0;
-$getRef = 1 unless(defined $refcol);
-$getAlt = 1 unless(defined $altcol);
-$getRs = 1 unless(defined $getRs);
-close GWAS;
-#print "SNP: $rsIDcol\nCHR: $chrcol\nBP: $poscol\nALT: $altcol\ngetRef: $getRef\n";
-=cut
-
+# column matched with the output file from gwas_file.pl
 my $rsIDcol=4;
 my $chrcol=0;
 my $poscol=1;
@@ -188,6 +111,7 @@ if($regions){
 		$regions{$line[0]}{$rid}{"end"}=$line[2];
 		$rid++;
 	}
+	close REG;
 }
 
 #print "regions : ", scalar(keys %regions), "\n";

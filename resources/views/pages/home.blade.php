@@ -17,15 +17,15 @@
 @section('content')
 <div class="container" style="padding-top:50px;">
   <div style="text-align: center;">
-    <h2>Welcome to GWAS ATLAS!!</h2>
+    <h2>Welcome to FUMA (Functional Mapping and Annocation of GWAS)</h2>
   </div>
-  <p>GWAS ATLAS is a web application which annotatates, prioritizes and visualizes GWAS results.
+  <p>FUMA is a web application which annotatates, prioritizes and visualizes GWAS results.
     Publicly available data resources and tools used in this applications are accessible from <a href="/IPGAP/links">links</a> tab.</p>
     All you need to prepare is to get GWAS summary statistics of phenotype of interest and submit at <a href="/IPGAP/snp2gene">SNP2GENE</a>.
     You can also query a list of genes directory from <a href="/IPGAP/gene2func">GENE2FUNC</a>.
   </p>
   <p>
-    Since, GWAS ATLAS provides a variety of parameters, please follow the <a href="/IPGAP/tutorial">Tutorial</a>.
+    Since, FUMA provides a variety of parameters, please follow the <a href="/IPGAP/tutorial">Tutorial</a>.
     For detail methods, please refer the publication.
     If you have any question or problem using this application, please let us know!!
   </p>
