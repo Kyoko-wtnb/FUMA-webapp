@@ -77,7 +77,7 @@ class JobController extends Controller
       //   'eqtlMap'=>$eqtlMap
       // ]);
       #return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']); #local
-      // return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'jobquery', 'subdir'=>'/IPGAP']);
+      // return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'jobquery']);
       // return redirect("/snp2gene/$jobID");
       echo "$filedir:$posMap:$eqtlMap";
     }
@@ -86,19 +86,19 @@ class JobController extends Controller
       // check file type
       if(mime_content_type($_FILES["GWASsummary"]["tmp_name"])!="text/plain"){
         $jobID = null;
-        return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>'fileFormatGWAS']);
+        return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatGWAS']);
         // return back()->withInput(['status'=> 'fileFormat']); // parameter is not working
       }
       if($request -> hasFile('leadSNPs')){
         if(mime_content_type($_FILES["leadSNPs"]["tmp_name"])!="text/plain"){
           $jobID = null;
-          return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>'fileFormatLead']);
+          return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatLead']);
         }
       }
       if($request -> hasFile('regions')){
         if(mime_content_type($_FILES["regions"]["tmp_name"])!="text/plain"){
           $jobID = null;
-          return view('pages.snp2gene', ['subdir' => '/IPGAP', 'jobID' => $jobID, 'status'=>'fileFormatRegions']);
+          return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatRegions']);
         }
       }
       session_start();
@@ -386,7 +386,7 @@ class JobController extends Controller
       // ]);
 
       // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local
-      # return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob','subdir'=>'/IPGAP']);
+      # return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob']);
       return redirect("/snp2gene/$jobID");
     }
 
@@ -699,7 +699,7 @@ class JobController extends Controller
         'xMax_init'=>$xmax_init
       ]);
       return view('pages.annotPlot', ['jobID'=>$jobID]); #local
-      #webserver return view('pages.annotPlot', ['jobID'=>$jobID, 'subdir'=>'/IPGAP']);
+      #webserver return view('pages.annotPlot', ['jobID'=>$jobID]);
     }
 
     public function filedown(Request $request){
@@ -802,7 +802,7 @@ class JobController extends Controller
       ]);
 
       return view('pages.gene2func', ['status'=>'query', 'id'=>'gene2func']); #local
-      #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'query', 'id'=>'gene2func']);
+      #webserver return view('pages.gene2func', ['status'=>'query', 'id'=>'gene2func']);
     }
 
     public function geneQuery(Request $request){
@@ -864,7 +864,7 @@ class JobController extends Controller
       ]);
 
       return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]); #local
-      #webserver return view('pages.gene2func', ['subdir' => '/IPGAP', 'status'=>'query', 'id'=>$jobID]);
+      #webserver return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]);
     }
 
     public function SelectOption(Request $request){
