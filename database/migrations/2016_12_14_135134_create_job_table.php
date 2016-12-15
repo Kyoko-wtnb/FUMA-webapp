@@ -12,14 +12,14 @@ class CreateJobTable extends Migration
      */
     public function up()
     {
-        Schema::create('jobs', function (Blueprint $table) {
+        Schema::create('SubmitJobs', function (Blueprint $table) {
             $table->string('jobID')->unique();
             $table->string('email');
             $table->string('title');
             $table->string('created_date');
             $table->string('last_access');
             $table->string('status');
-            
+
             // Add indexes
             $table->index('email');
         });
@@ -32,6 +32,6 @@ class CreateJobTable extends Migration
      */
     public function down()
     {
-        Schema::drop('jobs');
+        Schema::drop('SubmitJobs');
     }
 }
