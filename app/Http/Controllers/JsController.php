@@ -33,13 +33,12 @@ class JsController extends Controller
 
     public function jobInfo(Request $request){
       $jobID = $request -> input('jobID');
-      $row = DB::select('SELECT * FROM jobs WHERE jobID=?', [$jobID]);
+      $row = DB::select('SELECT * FROM SubmitJobs WHERE jobID=?', [$jobID]);
       $row = $row[0];
       $table = '<table class="table table-bordered" style="width:auto;"><tr><td>email</td><td>'.$row->email
         .'</td></tr><tr><td>job title</td><td>'.$row->title.'</td></tr><tr><td>job submitted</td><td>'
         .$row->created_date."</td></tr>";
-      $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");
       $table .= "<table>";
       echo $table;
@@ -73,8 +72,7 @@ class JsController extends Controller
 
     public function geneTable(Request $request){
       $jobID = $request->input('id');
-      $filedir = storage_path()."/jobs/".$jobID."/"; #local
-      #webserver $filedir = "/data/IPGAP/jobs/".$jobID."/";
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $f = fopen($filedir."geneTable.txt", 'r');
       $head = fgetcsv($f, 0, "\t");
       $head[] = "GeneCard";

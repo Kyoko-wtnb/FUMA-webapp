@@ -61,8 +61,7 @@ class JobController extends Controller
       DB::table('SubmitJobs') -> where('jobID', $jobID)
                         -> update(['last_access'=>$date]);
 
-      $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");
       $posMap = preg_split("/[\t]/", chop($params[18]))[1];
       $eqtlMap = preg_split("/[\t]/", chop($params[27]))[1];
@@ -123,8 +122,7 @@ class JobController extends Controller
         $jobID++;
         DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
                                       'created_date'=>$date, 'last_access'=>$date, 'status'=>"NEW"]);
-        $filedir = storage_path().'/jobs/'.$jobID; #local
-        #webserver $filedir = "/data/IPGAP/jobs/".$jobID."/";
+        $filedir = config('app.jobdir').'/jobs/'.$jobID;
 
         File::makeDirectory($filedir);
       }else{
@@ -139,8 +137,7 @@ class JobController extends Controller
         }
 
         if($exists){
-          $filedir = storage_path().'/jobs/'.$jobID; #local
-          #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
+          $filedir = config('app.jobdir').'/jobs/'.$jobID;
           File::cleanDirectory($filedir);
           DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
@@ -148,8 +145,7 @@ class JobController extends Controller
           $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
           $jobID = $jobID->njob;
           $jobID++;
-          $filedir = storage_path().'/jobs/'.$jobID; #local
-          #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
+          $filedir = config('app.jobdir').'/jobs/'.$jobID;
           File::makeDirectory($filedir);
           DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
                                         'created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
@@ -407,8 +403,7 @@ class JobController extends Controller
       if(strcmp($email, "Not Given")==0){$email==null;}
       $jobtitle = $results[0]->title;
 
-      $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");
       // $gwasformat = preg_split("/[\t]/", chop($params[3]))[1];
       $leadfile = preg_split("/[\t]/", chop($params[4]))[1];
@@ -549,7 +544,7 @@ class JobController extends Controller
         }
       }
 
-      $script = storage_path().'/scripts/getExAC.pl';
+      #$script = storage_path().'/scripts/getExAC.pl';
       #exec("perl $script $filedir");
       if($eqtlMap==1){
         $script = storage_path().'/scripts/geteQTL.pl';
@@ -579,7 +574,7 @@ class JobController extends Controller
                         -> update(['status'=>'OK']);
 
       if($email != null){
-        $this->sendJobCommpMail($email, $jobtitle, $jobID, 0);
+        $this->sendJobCompMail($email, $jobtitle, $jobID, 0);
       }
       return;
     }
@@ -587,8 +582,7 @@ class JobController extends Controller
     public function annotPlot(Request $request){
       $jobID = "test";
       $jobID = $request -> input('jobID');
-      $filedir = storage_path()."/jobs/".$jobID."/"; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $type=null;
       $rowI=null;
       if($request -> has('annotPlotSelect_leadSNP')){
@@ -700,14 +694,12 @@ class JobController extends Controller
         'xMin_init'=>$xmin_init,
         'xMax_init'=>$xmax_init
       ]);
-      return view('pages.annotPlot', ['jobID'=>$jobID]); #local
-      #webserver return view('pages.annotPlot', ['jobID'=>$jobID]);
+      return view('pages.annotPlot', ['jobID'=>$jobID]);
     }
 
     public function filedown(Request $request){
       $jobID = $request -> input('jobID');
-      $filedir = storage_path()."/jobs/".$jobID."/"; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       // $zip = new ZipArchive();
       $files = array();
       if($request -> has('paramfile')){ $files[] = $filedir."params.txt";}
@@ -738,8 +730,7 @@ class JobController extends Controller
 
     public function gene2funcSubmit(Request $request){
       $id = uniqid();
-      $filedir = storage_path().'/jobs/'.$id; #local
-      #webserver $filedir = "/data/IPGAP/jobs/".$id;
+      $filedir = config('app.jobdir').'/jobs/'.$id.'/';
       File::makeDirectory($filedir);
       $filedir = $filedir.'/';
       #$id = "gene2func";
@@ -827,8 +818,7 @@ class JobController extends Controller
 
     public function snp2geneGeneQuery(Request $request){
       $jobID = $request -> input('jobID');
-      $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $gtype="text";
       $bkgtype="select";
 
@@ -1128,13 +1118,11 @@ class JobController extends Controller
     public function gene2funcFileDown(Request $request){
       $file = $request -> input('file');
       $id = $request -> input('id');
-
-      $filedir = storage_path().'/jobs/'.$id.'/'.$file; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$id.'/'.$file;
+      $filedir = config('app.jobdir').'/jobs/'.$if.'/'.$file;
       return response() -> download($filedir);
     }
 
-    public function sendJobCommpMail($email, $jobtitle, $jobID, $status){
+    public function sendJobCompMail($email, $jobtitle, $jobID, $status){
       if($status==0){
         $subject = "GWAS ATLAS job has been completed";
         $message = "

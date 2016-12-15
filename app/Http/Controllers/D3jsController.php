@@ -16,8 +16,7 @@ class D3jsController extends Controller
 {
     public function locusPlot($ldI, $type, $jobID){
       $script = storage_path()."/scripts/locusPlot.R";
-      $filedir = storage_path()."/jobs/".$jobID."/"; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       exec("Rscript $script $filedir $ldI $type");
 
       $f = $filedir."locusPlot.txt";
@@ -35,8 +34,7 @@ class D3jsController extends Controller
     public function d3js_textfile($jobID, $file){
       // $filedir = $request -> input('filedir');
       // $file = $request -> input('file');
-      $filedir = storage_path()."/jobs/".$jobID."/"; #local
-      #webserver $filedir = '/data/IPGAP/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $f = $filedir.$file;
       if(file_exists($f)){
         $file = fopen($f, 'r');

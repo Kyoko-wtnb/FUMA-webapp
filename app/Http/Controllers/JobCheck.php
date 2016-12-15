@@ -14,7 +14,7 @@ class JobCheck extends Controller
       $jobtitle = $request -> input('jobtitle');
 
       if(!filter_var($email, FILTER_VALIDATE_EMAIL)===false){
-        $results = DB::select('SELECT * FROM jobs WHERE email=?', [$email]);
+        $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
         $exists = false;
         foreach($results as $row){
           if($row->title==$jobtitle){
