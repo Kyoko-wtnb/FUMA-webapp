@@ -40,7 +40,7 @@ Route::get('contact', function(){
   return view('pages.contact');
 });
 
-Route::post('snp2gene/jobcheck', 'JobCheck@index');
+Route::post('snp2gene/jobcheck', 'JobController@JobCheck');
 
 Route::post('snp2gene/newJob', 'JobController@newJob');
 
