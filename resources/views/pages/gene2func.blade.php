@@ -1,4 +1,5 @@
 @extends('layouts.master')
+@section('head')
 <?php
   header('X-Frame-Options: GOFORIT');
 ?>
@@ -37,7 +38,7 @@
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}"></script>
-
+@stop
 @section('content')
 <div id="wrapper" class="active">
 <div id="sidebar-wrapper">
