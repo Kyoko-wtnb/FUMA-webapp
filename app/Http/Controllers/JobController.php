@@ -144,7 +144,7 @@ class JobController extends Controller
                                       'created_date'=>$date, 'last_access'=>$date, 'status'=>"NEW"]);
         $filedir = config('app.jobdir').'/jobs/'.$jobID;
 
-        File::makeDirectory($filedir);
+        File::makeDirectory($filedir, 0775, true);
       }else{
         $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
         $exists = false;
