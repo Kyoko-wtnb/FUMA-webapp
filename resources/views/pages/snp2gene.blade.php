@@ -917,7 +917,7 @@
           <span class="info"><i class="fa fa-info"></i>
             This is manhattan plot of input GWAS summary statistics with filtering of overlapped data points.
           </span><br/>
-          <button class="btn ImgDown" id="manhattanImg">Download img</button>
+          <!-- <button class="btn ImgDown" id="manhattanImg">Download img</button> -->
           <div id="manhattanPane" style="position: relative;">
             <div id="manhattan" class="canvasarea"></div>
           </div>
@@ -946,7 +946,7 @@
           <div class="col-md-7" style="text-align:center;">
             <h4>Positional annotations of candidate SNPs</h4>
             <div id="snpAnnotPlot"></div>
-            <button class="btn ImgDown" id="intervalsnpAnnotPlot">Download img</button>
+            <!-- <button class="btn ImgDown" id="intervalsnpAnnotPlot">Download img</button> -->
 
             <!-- <svg id="SnpAnnotPlotSVG"></svg><br/> -->
             <!-- <button class="btn" id="posAnnotPlotDown" value="Download img">Download img</button><br/> -->
@@ -956,7 +956,7 @@
         <div style="text-align:center;">
           <h4>Summary per interval</h4>
           <div id="intervalPlot">
-            <button class="btn ImgDown" id="intervalPlotImg">Download img</button>
+            <!-- <button class="btn ImgDown" id="intervalPlotImg">Download img</button> -->
           </div>
       </div>
       </div>

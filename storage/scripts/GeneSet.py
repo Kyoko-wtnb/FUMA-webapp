@@ -45,8 +45,8 @@ else:
 	genes = list(lines[:,0])
 
 #ENSG = pd.read_table("ENSG.all.genes.txt", header=None, sep="\t")
-ENSG = pd.read_table("/media/sf_Documents/VU/Data/ENSG.all.genes.txt", header=None, sep="\t") #local
-#webserver ENSG = pd.read_table("/data/ENSG/ENSG.all.genes.txt", header=None, sep="\t")
+#local ENSG = pd.read_table("/media/sf_Documents/VU/Data/ENSG.all.genes.txt", header=None, sep="\t")
+ENSG = pd.read_table("/data/ENSG/ENSG.all.genes.txt", header=None, sep="\t") #webserver
 ENSG = np.array(ENSG)
 
 if bkgtype == "select":
@@ -97,8 +97,9 @@ genes = genes[ArrayIn(genes, bkgenes)]
 ENSG = ENSG[ArrayIn(ENSG[:,9], genes)]
 
 
-fglob = glob.glob('/media/sf_Documents/VU/Data/GeneSet/*.txt') #local
-#webserver fglob = glob.glob('/data/GeneSet/*.txt')
+#local fglob = glob.glob('/media/sf_Documents/VU/Data/GeneSet/*.txt')
+fglob = glob.glob('/data/GeneSet/*.txt') #webserver
+
 files=[]
 for f in fglob:
 	if "Human_Adult_Brain" not in f:
@@ -129,7 +130,7 @@ def hypTest(l, c):
 	else:
 		p=1
 		return([c.group(1), l[0], n, x, p, 1.0, "", 0.0, 0.0])
-		
+
 def GeneSetTest(f):
 	print f
 	c = re.match(".*GeneSet/(\w+)\.txt", f)

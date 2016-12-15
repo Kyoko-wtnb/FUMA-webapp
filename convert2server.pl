@@ -3,6 +3,10 @@
 use strict;
 use warnings;
 
+die "ERROR: not enought arguments\nUSAGE: ./convert2server.pl <server/local>\n" if(@ARGV<1);
+
+my $to = $ARGV[0];
+
 ##### resources/views/includes/header.blade.php
 =begin
 my $in = "resources/views/includes/header.blade.php";
@@ -36,57 +40,85 @@ close OUT;
 system "mv temp.txt $in";
 =cut
 
-##### Controllers
-my $dir = "app/Http/Controllers/";
-my @files = qw(JobController.php D3jsController.php JsController.php);
+if($to eq 'server'){
+	##### Controllers
+	my $dir = "app/Http/Controllers/";
+	my @files = qw(JobController.php D3jsController.php JsController.php);
 
-foreach my $f (@files){
-	open(IN, $dir.$f);
-	open(OUT, ">temp.txt");
-	while(<IN>){
-		next if(/#local$/);
-		if(/#webserver/){$_ =~ s/#webserver //;}
+	foreach my $f (@files){
+		open(IN, $dir.$f);
+		open(OUT, ">temp.txt");
+		while(<IN>){
+			chomp;
+			if(/#local$/){$_ =~ s/ #local//; $_ = "#local ".$_;}
+			if(/#webserver/){$_ =~ s/#webserver //; $_ = $_." #webserver"}
 	
-		print OUT $_;
+			print OUT $_, "\n";
+		}
+		close IN;
+		close OUT;
+		system "mv temp.txt $dir".$f;
 	}
-	close IN;
-	close OUT;
-	system "mv temp.txt $dir".$f;
+
+	##### Scripts
+	$dir = "storage/scripts/";
+	@files = qw(gwas_file.pl getLD.pl SNPannot.R getExAC.pl geteQTL.pl geneMap.R annotPlot.R gene2func.R GeneSet.R getChr15.pl getGWAScatalog.pl magma.pl GeneSet.py);
+
+	foreach my $f (@files){
+		open(IN, $dir.$f);
+		open(OUT, ">temp.txt");
+		while(<IN>){
+			chomp;
+			if(/#local$/){$_ =~ s/ #local//; $_ = "#local ".$_;}
+			if(/#webserver/){$_ =~ s/#webserver //; $_ = $_." #webserver"}
+	
+			print OUT $_,"\n";
+		}
+		close IN;
+		close OUT;
+		system "mv temp.txt $dir".$f;
+	}
+}elsif($to eq 'local'){
+	##### Controllers
+	my $dir = "app/Http/Controllers/";
+	my @files = qw(JobController.php D3jsController.php JsController.php);
+
+	foreach my $f (@files){
+		open(IN, $dir.$f);
+		open(OUT, ">temp.txt");
+		while(<IN>){
+			chomp;
+			if(/#webserver$/){$_ =~ s/ #webserver$//; $_ = "#webserver ".$_;}
+			if(/#local/){$_ =~ s/#local //; $_ = $_." #local";}
+	
+			print OUT $_, "\n";
+		}
+		close IN;
+		close OUT;
+		system "mv temp.txt $dir".$f;
+	}
+
+	##### Scripts
+	$dir = "storage/scripts/";
+	@files = qw(gwas_file.pl getLD.pl SNPannot.R getExAC.pl geteQTL.pl geneMap.R annotPlot.R gene2func.R GeneSet.R getChr15.pl getGWAScatalog.pl magma.pl GeneSet.py);
+
+	foreach my $f (@files){
+		open(IN, $dir.$f);
+		open(OUT, ">temp.txt");
+		while(<IN>){
+			chomp;
+			if(/#webserver$/){$_ =~ s/ #webserver$//; $_ = "#webserver ".$_;}
+			if(/#local/){$_ =~ s/#local //; $_ = $_." #local";}
+	
+			print OUT $_, "\n";
+		}
+		close IN;
+		close OUT;
+		system "mv temp.txt $dir".$f;
+	}
+}else{
+	print "Argument is not valid.\n server: convert to server version\n local: convert to local version\n";
 }
 
-##### JS
-$dir = "public/js/";
-@files = qw(InputParameters.js);
-foreach my $f (@files){
-	open(IN, $dir.$f);
-	open(OUT, ">temp.txt");
-	while(<IN>){
-		next if(/\/\/local$/);
-		if(/\/\/webserver/){$_ =~ s/\/\/webserver //;}
-	
-		print OUT $_;
-	}
-	close IN;
-	close OUT;
-	system "mv temp.txt $dir".$f;
-}
 
-##### Scripts
-$dir = "storage/scripts/";
-@files = qw(gwas_file.pl getLD.pl SNPannot.R getExAC.pl geteQTL.pl geneMap.R annotPlot.R gene2func.R GeneSet.R getChr15.pl getGWAScatalog.pl magma.pl GeneSet.py);
-
-foreach my $f (@files){
-	open(IN, $dir.$f);
-	open(OUT, ">temp.txt");
-	while(<IN>){
-		next if(/#local$/);
-		if(/#webserver/){$_ =~ s/#webserver //;}
-	
-		print OUT $_;
-	}
-	close IN;
-	close OUT;
-	system "mv temp.txt $dir".$f;
-}
-
-system "chmod 755 storage/scripts/*";
+#system "chmod 755 storage/scripts/*";

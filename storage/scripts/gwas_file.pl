@@ -22,8 +22,8 @@ my $gwas = $filedir."input.gwas";
 my $outSNPs = $filedir."input.snps";
 my $outMAGMA = $filedir."magma.in";
 
-my $dbSNP = "/media/sf_SAMSUNG/dbSNP/RsMerge146.txt"; #local
-#webserver my $dbSNP = "/data/dbSNP/RsMerge146.txt";
+#local my $dbSNP = "/media/sf_SAMSUNG/dbSNP/RsMerge146.txt";
+my $dbSNP = "/data/dbSNP/RsMerge146.txt"; #webserver
 my %rsID;
 open(RS, "$dbSNP");
 while(<RS>){
@@ -80,9 +80,9 @@ if(defined $chrcol && defined $poscol){
 		print "Either ref, alt or rsID is not defined\n";
 		foreach my $chr(1..23){
 		next unless(exists $GWAS{$chr});
-			my $file = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz"; #local
-			#webserver my $file = "/data/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
-			my $fin = IO::Zlib->new($file, 'rb');
+#local 			my $file = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
+			my $file = "/data/1KG/Phase3/EUR/EUR.chr$chr.frq.gz"; #webserver
+ 			my $fin = IO::Zlib->new($file, 'rb');
 			while(<$fin>){
 				my @line = split(/\s/, $_);
 				if(exists $GWAS{$line[0]}{$line[1]}{"p"}){
@@ -120,9 +120,9 @@ if(defined $chrcol && defined $poscol){
 		$GWAS{$line[$rsIDcol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);
 	}
 
-	my $dbSNP = "/media/sf_SAMSUNG/dbSNP/snp146_pos_allele.txt"; #local
-	#webserver my $dbSNP = "/data/dbSNP/snp146_pos_allele.txt";
-	open(DB, "$dbSNP") or die "Cannot opne $dbSNP\n";
+#local 	my $dbSNP = "/media/sf_SAMSUNG/dbSNP/snp146_pos_allele.txt";
+	my $dbSNP = "/data/dbSNP/snp146_pos_allele.txt"; #webserver
+ 	open(DB, "$dbSNP") or die "Cannot opne $dbSNP\n";
 	open(SNP, ">$outSNPs");
 	print SNP "chr\tbp\tref\talt\trsID\tp\n";
 	while(<DB>){
@@ -147,12 +147,3 @@ if(defined $chrcol && defined $poscol){
 close GWAS;
 delete @rsID{keys %rsID};
 delete @GWAS{keys %GWAS};
-
-=begin
-system "awk 'NR>=2' $outSNPs | cut -f 5,6 | sort -u -k 1,1 > $outMAGMA";
-system "magma --bfile /media/sf_SAMSUNG/1KG/Phase3/EUR/1KG.EUR.phase3.SNPs.common --pval $outMAGMA N=$N --gene-annot /media/sf_Documents/VU/Data/MAGMA/ENSG.w0.genes.annot --out $filedir"."magma"; #local
-#webserver system "magma --bfile /data/1KG/Phase3/EUR/1KG.EUR.phase3.SNPs.common --pval $outMAGMA N=$N --gene-annot /data/MAGMA/ENSG.w0.genes.annot --out $filedir"."magma"; #local
-
-system "rm $filedir*.raw $filedir*.log";
-system "sed 's/ \\+/\\t/g' ".$filedir."magma.genes.out >$filedir"."temp.txt";
-system "mv ".$filedir."temp.txt ".$filedir."magma.genes.out";
