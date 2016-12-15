@@ -848,7 +848,7 @@ function GeneSet(id){
           +category[i]+'Panel"><p><a onclick="GeneSetPlot('+"'"+category[i]+"'"+');">Plot</a> / <a onclick="GeneSetTable('+
           "'"+category[i]+"'"+');">Table</a></p></div></div>';
         $('#GeneSet').append(panel);
-        $('#'+category[i]+"Panel").append('<button class="btn ImgDown" id="'+category[i]+'Img">Download img</button>');
+        $('#'+category[i]+"Panel").append('<button class="btn btn-xs ImgDown" id="'+category[i]+'Img">Download img</button>');
         $('#'+category[i]+"Panel").append('<div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div><div id="'
           +category[i]+'Table"></div>');
 

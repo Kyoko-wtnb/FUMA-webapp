@@ -32,6 +32,7 @@
   var id = "{{$jobID}}";
   console.log(id);
   var jobid = id;
+  var subdir = "{{ Config::get('app.subdir') }}"
   // console.log(jobID);
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
@@ -910,29 +911,55 @@
       </div>
 
       <!-- genome wide plots -->
-      <div class="sidePanel container" style="padding-top:50px;" id="genomePlots">
+      <div class="sidePanel" style="padding-top:50px;" id="genomePlots">
         <!-- <h3>Genome Wide Plot</h3> -->
-        <div id="gPlotPanel" class="collapse in">
+        <!-- <div id="gPlotPanel" class="collapse in"> -->
+        <div class="container">
           <h4>Manhattan Plot (GWAS summary statistics)</h4>
           <span class="info"><i class="fa fa-info"></i>
             This is manhattan plot of input GWAS summary statistics with filtering of overlapped data points.
           </span><br/>
-          <!-- <button class="btn ImgDown" id="manhattanImg">Download img</button> -->
-          <div id="manhattanPane" style="position: relative;">
-            <div id="manhattan" class="canvasarea"></div>
+          <button class="btn btn-xs CanvDown" id="manhattanCanvasDown" style="float:right; margin-right:200px;">Download PNG</button>
+          <div id="manhattanPane">
+            <canvas id="manhattanCanvas"></canvas>
+            <canvas id="manhattanTmp" style="display: none;"></canvas>
+            <div id="manhattan" style="display: none;"></div>
           </div>
-          <div id="geneManhattanPane" style="position: relative;">
-            <h4>Mahattan Plot (gene-based test)</h4>
-            <div id="genesManhattan" class="canvasarea"></div>
+          <br/><br/>
+          <h4>Mahattan Plot (gene-based test)</h4>
+          <span class="info"><i class="fa fa-info"></i>
+            This is manhattan plot of gene-based test computed by MAGMA.
+          </span><br/>
+          <button class="btn btn-xs CanvDown" id="geneManhattanCanvasDown" style="float:right; margin-right:200px;">Download PNG</button>
+          <div id="geneManhattanPane">
+            <canvas id="geneManhattanCanvas"></canvas>
+            <canvas id="geneManhattanTmp" style="display: none;"></canvas>
+            <div id="geneManhattan" style="display:none;"></div>
           </div>
-          <div id="QQplotPane" style="position: relative;">
-            <h4>QQ plots</h4>
-            <br/>
-            <div class="col-md-6" id="QQplot" class="canvasarea">
-            </div>
-            <div class="col-md-6" id="geneQQplot" class="canvasarea">
-            </div>
+          <br/><br/>
+          <div id="QQplotPane">
+            <!-- <div class="row"> -->
+              <div class="col-md-6">
+                <h4>QQ plots (GWAS summary statisics)</h4>
+                <button class="btn btn-xs CanvDown" id="QQplotCanvasDown" style="float:right; margin-right:100px;">Download PNG</button><br/>
+                <div>
+                  <canvas id="QQplotCanvas"></canvas>
+                  <canvas id="QQplotTmp" style="display: none;"></canvas>
+                  <div id="QQplot" style="display:none;"></div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <h4>QQ plots (gene-based test)</h4>
+                <button class="btn btn-xs CanvDown" id="geneQQplotCanvasDown" style="float:right; margin-right:100px;">Download PNG</button><br/>
+                <div>
+                  <canvas id="geneQQplotCanvas"></canvas>
+                  <canvas id="geneQQplotTmp" style="display: none;"></canvas>
+                  <div id="geneQQplot" style="display:none;"></div>
+                </div>
+              </div>
+            <!-- </div> -->
           </div>
+          <br/><br/>
         </div>
       </div>
 
@@ -945,20 +972,19 @@
 
           <div class="col-md-7" style="text-align:center;">
             <h4>Positional annotations of candidate SNPs</h4>
+            <button class="btn btn-xs ImgDown" id="snpAnnotPlotImg" style="float:right; margin-right:100px;">Download PNG</button>
             <div id="snpAnnotPlot"></div>
-            <!-- <button class="btn ImgDown" id="intervalsnpAnnotPlot">Download img</button> -->
-
-            <!-- <svg id="SnpAnnotPlotSVG"></svg><br/> -->
-            <!-- <button class="btn" id="posAnnotPlotDown" value="Download img">Download img</button><br/> -->
+            <canvas id="snpAnnotPlotCanvas" style="display: none;"></canvas>
           </div>
         </div>
         <br/>
         <div style="text-align:center;">
           <h4>Summary per interval</h4>
-          <div id="intervalPlot">
-            <!-- <button class="btn ImgDown" id="intervalPlotImg">Download img</button> -->
-          </div>
-      </div>
+          <button class="btn btn-xs ImgDown" id="intervalPlotImg" style="margin-right:250px; amrgin-left:auto;">Download PNG</button>
+          <div id="intervalPlot"></div>
+          <canvas id="intervalPlotCanvas" style="display: none;"></canvas>
+        </div>
+        <br/><br/>
       </div>
 
       <!-- result tables -->

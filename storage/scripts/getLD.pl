@@ -74,8 +74,8 @@ print OUT "uniqID\trsID\tchr\tpos\tref\talt\tMAF\tgwasP\n";
 close OUT;
 open(ANNOT, ">$out3");
 print ANNOT "uniqID\tCADD\tRDB";
-#local my @chr15 = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`;
-my @chr15 = `ls /data/Chr15States/*.bed.gz`;
+my @chr15 = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`; #local
+#webserver my @chr15 = `ls /data/Chr15States/*.bed.gz`;
 chomp @chr15;
 foreach(@chr15){
 	/(E\d+)_/;
@@ -323,12 +323,12 @@ foreach my $chr (1..23){
 	#	}
 	#}else{
 	print "Start chr $chr: \n";
-#local 	my $ldfile = "/media/sf_SAMSUNG/1KG/Phase3/".$pop."/".$pop.".chr$chr.ld.gz";
-	my $ldfile = "/data/1KG/Phase3/".$pop."/".$pop.".chr$chr.ld.gz"; #webserver
+	my $ldfile = "/media/sf_SAMSUNG/1KG/Phase3/".$pop."/".$pop.".chr$chr.ld.gz"; #local
+#webserver 	my $ldfile = "/data/1KG/Phase3/".$pop."/".$pop.".chr$chr.ld.gz";
 
 	# my $maffile = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
-#local 	my $maffile = "/media/sf_SAMSUNG/1KG/Phase3/".$pop."_annot/chr$chr.data.txt.gz";
-	my $maffile = "/data/1KG/Phase3/".$pop."/chr$chr.data.txt.gz"; #webserver
+	my $maffile = "/media/sf_SAMSUNG/1KG/Phase3/".$pop."_annot/chr$chr.data.txt.gz"; #local
+#webserver 	my $maffile = "/data/1KG/Phase3/".$pop."/chr$chr.data.txt.gz";
 
  	if(exists $leadSNPs{$chr}){
 		#print "Checking input lead SNPs\n";
@@ -617,8 +617,8 @@ system "Rscript $dir/leadSNP.R $filedir $r2 $gwasP $leadP $maf $mergeDist $leadS
 
 #annov
 my $annovout = $filedir."annov";
-#local system "/home/kyoko/annovar/annotate_variation.pl -out $annovout -build hg19 $annovin ~/annovar/humandb/ -dbtype ensGene";
-system "/home/kyoko/bin/annovar/annotate_variation.pl -out $annovout -build hg19 $annovin /data/annovar/humandb/ -dbtype ensGene"; #webserver
+system "/home/kyoko/annovar/annotate_variation.pl -out $annovout -build hg19 $annovin ~/annovar/humandb/ -dbtype ensGene"; #local
+#webserver system "/home/kyoko/bin/annovar/annotate_variation.pl -out $annovout -build hg19 $annovin /data/annovar/humandb/ -dbtype ensGene";
 
 my $annov1 = $filedir."annov.variant_function";
 my $annov2 = $filedir."annov.txt";

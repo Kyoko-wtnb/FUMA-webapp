@@ -1134,7 +1134,7 @@ function geneOver(genes, x, width){
   <div class="col-md-8">
     <div id='title' style="text-align: center;"><h3>Regional plot</h3></div>
     <a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
-    <button class="btn ImgDown" id="annotPlotImg">Download img</button>
+    <button class="btn btn-xs ImgDown" id="annotPlotImg" style="float:right; margin-right:50px;">Download img</button>
     <div id="annotPlot"></div>
   </div>
   <div class="col-md-4" style="text-align: center;">

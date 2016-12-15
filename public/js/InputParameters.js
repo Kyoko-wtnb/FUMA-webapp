@@ -516,7 +516,7 @@ function JobQueryCheck(){
   var jobtitle = $('#JobQueryTitle').val();
   if(Email.length>0 && jobtitle.length>0){
     $.ajax({
-      url: "snp2gene/jobcheck",
+      url: subdir+"/snp2gene/jobcheck",
       type: 'POST',
       data: {
         'Email': Email,

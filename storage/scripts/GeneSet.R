@@ -9,8 +9,8 @@ GeneSetTest <- function(genes, allgenes, adjP.method="BH", adjP.cutoff=0.05, MHC
   require(data.table)
   #require(ggplot2)
   if(MHC==FALSE){
-#local     load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData")
-    load("/data/ENSG/ENSG.all.genes.RData") #webserver
+    load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData") #local
+#webserver     load("/data/ENSG/ENSG.all.genes.RData")
 
     if(is.null(MHCextend)){
       start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
@@ -25,15 +25,15 @@ GeneSetTest <- function(genes, allgenes, adjP.method="BH", adjP.cutoff=0.05, MHC
     cat("Excluding genes in MHC region\n")
   }
   genes <- genes[genes%in%allgenes]
-#local   if(testCategory[1]=="all"){files = list.files("/media/sf_Documents/VU/Data/GeneSet/", ".+\\.txt")}
-  if(testCategory[1]=="all"){files = list.files("/data/GeneSet/", ".+\\.txt")} #webserver
+  if(testCategory[1]=="all"){files = list.files("/media/sf_Documents/VU/Data/GeneSet/", ".+\\.txt")} #local
+#webserver   if(testCategory[1]=="all"){files = list.files("/data/GeneSet/", ".+\\.txt")}
   else{files = testCategory}
   files <- files[!grepl("Human_Adult_Brain", files)]
   results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "FDR", "genes"))))
   N <- length(allgenes)
   for(i in 1:length(files)){
-#local     data <- fread(paste("/media/sf_Documents/VU/Data/GeneSet/", files[i], sep=""), head=F)
-    data <- fread(paste("/data/GeneSet/", files[i], sep=""), head=F) #webserver
+    data <- fread(paste("/media/sf_Documents/VU/Data/GeneSet/", files[i], sep=""), head=F) #local
+#webserver     data <- fread(paste("/data/GeneSet/", files[i], sep=""), head=F)
 
     colnames(data) <- c("GeneSet", "n", "genes")
 
@@ -77,11 +77,11 @@ GeneSetTest <- function(genes, allgenes, adjP.method="BH", adjP.cutoff=0.05, MHC
 
 DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE){
   require(data.table)
-#local   load("/media/sf_Documents/VU/DAta/GTEx/gtex.avg.RPKM.genes.RData")
-  load("/data/GeneExp/GTEx/gtex.avg.RPKM.genes.RData") #webserver
+  load("/media/sf_Documents/VU/DAta/GTEx/gtex.avg.RPKM.genes.RData") #local
+#webserver   load("/data/GeneExp/GTEx/gtex.avg.RPKM.genes.RData")
   if(MHC==FALSE){
-#local     load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData")
-    load("/data/ENSG/ENSG.all.genes.RData") #webserver
+    load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData") #local
+#webserver     load("/data/ENSG/ENSG.all.genes.RData")
     start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
     end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
     MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
@@ -90,8 +90,8 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE){
   }
   allgenes <- allgenes[allgenes %in% gtex.avg.RPKM.genes]
   genes <- genes[genes %in% allgenes]
-#local   file = "/media/sf_Documents/VU/Data/GTEx/gtex.v6.DEG.gmt"
-  file = "/data/GeneExp/GTEx/gtex.v6.DEG.gmt" #webserver
+  file = "/media/sf_Documents/VU/Data/GTEx/gtex.v6.DEG.gmt" #local
+#webserver   file = "/data/GeneExp/GTEx/gtex.v6.DEG.gmt"
   data <- fread(file, head=F)
   colnames(data) <- c("GeneSet", "n", "genes")
   results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "FDR", "genes"))))
@@ -136,12 +136,12 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE){
 
 DEGgeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE){
   require(data.table)
-#local   load("/media/sf_Documents/VU/Data/GTEx/gtex.avg.RPKM.genes.RData")
-  load("/data/GeneExp/GTEx/gtex.avg.RPKM.genes.RData") #webserver
+  load("/media/sf_Documents/VU/Data/GTEx/gtex.avg.RPKM.genes.RData") #local
+#webserver   load("/data/GeneExp/GTEx/gtex.avg.RPKM.genes.RData")
  #require(ggplot2)
   if(MHC==FALSE){
-#local     load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData")
-    load("/data/ENSG/ENSG.all.genes.RData") #webserver
+    load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData") #local
+#webserver     load("/data/ENSG/ENSG.all.genes.RData")
     start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
     end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
     MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
@@ -150,8 +150,8 @@ DEGgeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE){
   }
   allgenes <- allgenes[allgenes %in% gtex.avg.RPKM.genes]
   genes <- genes[genes %in% allgenes]
-#local   file = "/media/sf_Documents/VU/Data/GTEx/gtex.v6.DEG.general.gmt"
-  file = "/data/GeneExp/GTEx/gtex.v6.DEG.general.gmt" #webserver
+  file = "/media/sf_Documents/VU/Data/GTEx/gtex.v6.DEG.general.gmt" #local
+#webserver   file = "/data/GeneExp/GTEx/gtex.v6.DEG.general.gmt"
   data <- fread(file, head=F)
   colnames(data) <- c("GeneSet", "n", "genes")
   results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "FDR", "genes"))))
@@ -250,8 +250,8 @@ BSDEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, name){
 }
 
 entrez2symbol <- function(data){
-#local   load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData")
-  load("/data/ENSG/ENSG.all.genes.RData") #webserver
+  load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData") #local
+#webserver   load("/data/ENSG/ENSG.all.genes.RData")
   for(i in 1:nrow(data)){
     data$genes[i] <- paste(ENSG.all.genes$external_gene_name[ENSG.all.genes$entrezID %in% unlist(strsplit(data$genes[i], ":"))], collapse = ":")
   }

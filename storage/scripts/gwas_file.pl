@@ -22,8 +22,8 @@ my $gwas = $filedir."input.gwas";
 my $outSNPs = $filedir."input.snps";
 my $outMAGMA = $filedir."magma.in";
 
-#local my $dbSNP = "/media/sf_SAMSUNG/dbSNP/RsMerge146.txt";
-my $dbSNP = "/data/dbSNP/RsMerge146.txt"; #webserver
+my $dbSNP = "/media/sf_SAMSUNG/dbSNP/RsMerge146.txt"; #local
+#webserver my $dbSNP = "/data/dbSNP/RsMerge146.txt";
 my %rsID;
 open(RS, "$dbSNP");
 while(<RS>){
@@ -80,8 +80,8 @@ if(defined $chrcol && defined $poscol){
 		print "Either ref, alt or rsID is not defined\n";
 		foreach my $chr(1..23){
 		next unless(exists $GWAS{$chr});
-#local 			my $file = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
-			my $file = "/data/1KG/Phase3/EUR/EUR.chr$chr.frq.gz"; #webserver
+			my $file = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz"; #local
+#webserver 			my $file = "/data/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
  			my $fin = IO::Zlib->new($file, 'rb');
 			while(<$fin>){
 				my @line = split(/\s/, $_);
@@ -120,8 +120,8 @@ if(defined $chrcol && defined $poscol){
 		$GWAS{$line[$rsIDcol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);
 	}
 
-#local 	my $dbSNP = "/media/sf_SAMSUNG/dbSNP/snp146_pos_allele.txt";
-	my $dbSNP = "/data/dbSNP/snp146_pos_allele.txt"; #webserver
+	my $dbSNP = "/media/sf_SAMSUNG/dbSNP/snp146_pos_allele.txt"; #local
+#webserver 	my $dbSNP = "/data/dbSNP/snp146_pos_allele.txt";
  	open(DB, "$dbSNP") or die "Cannot opne $dbSNP\n";
 	open(SNP, ">$outSNPs");
 	print SNP "chr\tbp\tref\talt\trsID\tp\n";
