@@ -516,7 +516,7 @@ function JobQueryCheck(){
   var jobtitle = $('#JobQueryTitle').val();
   if(Email.length>0 && jobtitle.length>0){
     $.ajax({
-      url: "/IPGAP/snp2gene/jobcheck",
+      url: "snp2gene/jobcheck",
       type: 'POST',
       data: {
         'Email': Email,

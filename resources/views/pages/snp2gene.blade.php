@@ -944,19 +944,19 @@
           </div>
 
           <div class="col-md-7" style="text-align:center;">
-            <button class="btn ImgDown" id="intervalsnpAnnotPlot">Download img</button>
             <h4>Positional annotations of candidate SNPs</h4>
             <div id="snpAnnotPlot"></div>
+            <button class="btn ImgDown" id="intervalsnpAnnotPlot">Download img</button>
+
             <!-- <svg id="SnpAnnotPlotSVG"></svg><br/> -->
             <!-- <button class="btn" id="posAnnotPlotDown" value="Download img">Download img</button><br/> -->
           </div>
         </div>
         <br/>
-        <button class="btn ImgDown" id="intervalPlotImg">Download img</button>
         <div style="text-align:center;">
           <h4>Summary per interval</h4>
           <div id="intervalPlot">
-
+            <button class="btn ImgDown" id="intervalPlotImg">Download img</button>
           </div>
       </div>
       </div>

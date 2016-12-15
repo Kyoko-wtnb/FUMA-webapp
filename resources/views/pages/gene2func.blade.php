@@ -2,7 +2,7 @@
 <?php
   header('X-Frame-Options: GOFORIT');
 ?>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
 <script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
@@ -19,7 +19,7 @@
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-<script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
+<script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
 <script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
 <script type="text/javascript" src="//canvg.github.io/canvg/StackBlur.js"></script>
 <script type="text/javascript" src="//canvg.github.io/canvg/canvg.js"></script>

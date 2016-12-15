@@ -9,6 +9,16 @@ $(document).ready(function(){
     var canvas = document.getElementById('canvas');
     Canvas2Image.saveAsPNG(canvas);
   });
+
+  $('#GeneSet').on('click', '.ImgDown', function(){
+    var id = $(this).attr("id");
+    id = id.replace("Img", "");
+    console.log(id);
+    var svg = $('#'+id).html();
+    canvg('canvas', svg);
+    var canvas = document.getElementById('canvas');
+    Canvas2Image.saveAsPNG(canvas);
+  });
   // $('#test').html("Status: "+status+"<br/>");
   $('#newquery').show();
   if(status=="new"){
@@ -107,6 +117,14 @@ $(document).ready(function(){
   }
 
 });
+
+function ImgDown(id){
+  console.log(id);
+  // var svg = $('#'+id).html();
+  // canvg('canvas', svg);
+  // var canvas = document.getElementById('canvas');
+  // Canvas2Image.saveAsPNG(canvas);
+}
 
 function checkInput(){
   var g = document.getElementById('genes').value;
@@ -824,14 +842,16 @@ function GeneSet(id){
       }else{
         // $('#test').append("<p>"+category[i]+"<br/>gs_max: "+gs_max+'<br/>genes: '+genes.length+'</p>');
         // add div
-        var panel = $('<div class="panel panel-default" style="padding-top:0;"><div class="panel-heading" style="height: 35px; padding-top:0.1;"><a href="#'
+        var panel = '<div class="panel panel-default" style="padding-top:0;"><div class="panel-heading" style="height: 35px; padding-top:0.1;"><a href="#'
           +category[i]+'Panel" data-toggle="collapse" style="color: black;"><h4>'
           +category_title[category[i]]+'<tab>('+tdata.length+')</h4></div><div class="panel-body collapse" id="'
           +category[i]+'Panel"><p><a onclick="GeneSetPlot('+"'"+category[i]+"'"+');">Plot</a> / <a onclick="GeneSetTable('+
-          "'"+category[i]+"'"+');">Table</a></p>'
-          +'<button class="btn ImgDown" id="'+category[i]+'Img">Download img</button><div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div><div id="'
-          +category[i]+'Table"></div></div></div>');
+          "'"+category[i]+"'"+');">Table</a></p></div></div>';
         $('#GeneSet').append(panel);
+        $('#'+category[i]+"Panel").append('<button class="btn ImgDown" id="'+category[i]+'Img">Download img</button>');
+        $('#'+category[i]+"Panel").append('<div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div><div id="'
+          +category[i]+'Table"></div>');
+
         $('#'+category[i]+'Table').hide();
 
         // Plots
@@ -839,7 +859,7 @@ function GeneSet(id){
         var ngs = gs.length;
         var barplotwidth = 150;
 
-        var margin = {top: 10, right: 10, bottom: 80, left: gs_max*6},
+        var margin = {top: 10, right: 10, bottom: 80, left: Math.max(gs_max*6, 60)},
             width = barplotwidth+10+(genes.length*15),
             height = 15*ngs;
         // $('#test').append("<p>"+category[i]+" width: "+width+"</p>")

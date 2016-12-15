@@ -28,7 +28,7 @@ class JobController extends Controller
         $jobtitle = " None";
       }
 
-      $results = DB::select('SELECT * FROM jobs WHERE email=? AND title=?', [$email, $jobtitle]);
+      $results = DB::select('SELECT * FROM SubmitJobs WHERE email=? AND title=?', [$email, $jobtitle]);
       // $exists = false;
       $jobID = 0;
       foreach($results as $row){
@@ -44,7 +44,7 @@ class JobController extends Controller
 
     public function checkJobStatus(Request $request){
       $jobID = $request->input('jobID');
-      $results = DB::select('SELECT * FROM jobs WHERE jobID=?', [$jobID]);
+      $results = DB::select('SELECT * FROM SubmitJobs WHERE jobID=?', [$jobID]);
       if(count($results)==0){
         return "Notfound";
       }else{
@@ -58,7 +58,7 @@ class JobController extends Controller
     public function getParams(Request $request){
       $jobID = $request->input('jobID');
       $date = date('Y-m-d H:i:s');
-      DB::table('jobs') -> where('jobID', $jobID)
+      DB::table('SubmitJobs') -> where('jobID', $jobID)
                         -> update(['last_access'=>$date]);
 
       $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
@@ -118,15 +118,17 @@ class JobController extends Controller
       }
 
       if($email==null){
-        $jobID = uniqid();
-        DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
+        $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
+        $jobID = $jobID->njob;
+        $jobID++;
+        DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
                                       'created_date'=>$date, 'last_access'=>$date, 'status'=>"NEW"]);
         $filedir = storage_path().'/jobs/'.$jobID; #local
         #webserver $filedir = "/data/IPGAP/jobs/".$jobID."/";
 
         File::makeDirectory($filedir);
       }else{
-        $results = DB::select('SELECT * FROM jobs WHERE email=?', [$email]);
+        $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
         $exists = false;
         foreach($results as $row){
           if($row->title==$jobtitle){
@@ -140,16 +142,16 @@ class JobController extends Controller
           $filedir = storage_path().'/jobs/'.$jobID; #local
           #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
           File::cleanDirectory($filedir);
-          DB::table('jobs') -> where('jobID', $jobID)
+          DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
         }else{
-          $jobID = DB::select('SELECT COUNT(jobID) as njob FROM jobs')[0];
+          $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
           $jobID = $jobID->njob;
           $jobID++;
           $filedir = storage_path().'/jobs/'.$jobID; #local
           #webserver $filedir = '/data/IPGAP/jobs/'.$jobID;
           File::makeDirectory($filedir);
-          DB::table('jobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
+          DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
                                         'created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
         }
       }
@@ -400,7 +402,7 @@ class JobController extends Controller
       // $jobtitle = $request -> input('jobtitle');
       // $filedir = $request -> input('filedir');
 
-      $results = DB::select('SELECT * FROM jobs WHERE jobID=?', [$jobID]);
+      $results = DB::select('SELECT * FROM SubmitJobs WHERE jobID=?', [$jobID]);
       $email = $results[0]->email;
       if(strcmp($email, "Not Given")==0){$email==null;}
       $jobtitle = $results[0]->title;
@@ -449,14 +451,14 @@ class JobController extends Controller
 
 
       $logfile = $filedir."job.log";
-      DB::table('jobs') -> where('jobID', $jobID)
+      DB::table('SubmitJobs') -> where('jobID', $jobID)
                         -> update(['status'=>'RUNNING']);
 
 
       $script = storage_path().'/scripts/gwas_file.pl';
       exec("perl $script $filedir >>$logfile", $output, $error);
       if($error != 0){
-        DB::table('jobs') -> where('jobID', $jobID)
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:001']);
         if($email!=null){
           $this->sendJobCommpMail($email, $jobtitle, $jobID, 1);
@@ -466,7 +468,7 @@ class JobController extends Controller
       $script = storage_path().'/scripts/magma.pl';
       exec("perl $script $filedir $N $pop >>$logfile", $output, $error);
       if($error != 0){
-        DB::table('jobs') -> where('jobID', $jobID)
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:002']);
         if($email!=null){
           $this->sendJobCommpMail($email, $jobtitle, $jobID, 2);
@@ -477,7 +479,7 @@ class JobController extends Controller
       $script = storage_path().'/scripts/manhattan_filt.py';
       exec("python $script $filedir >>$logfile", $output, $error);
       if($error != 0){
-        DB::table('jobs') -> where('jobID', $jobID)
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:003']);
         if($email!=null){
           $this->sendJobCommpMail($email, $jobtitle, $jobID, 3);
@@ -488,7 +490,7 @@ class JobController extends Controller
       $script = storage_path().'/scripts/QQSNPs_filt.py';
       exec("python $script $filedir >>$logfile", $output, $error);
       if($error != 0){
-        DB::table('jobs') -> where('jobID', $jobID)
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:004']);
         if($email!=null){
           $this->sendJobCommpMail($email, $jobtitle, $jobID, 4);
@@ -510,14 +512,14 @@ class JobController extends Controller
           }
         }
         if($NoCandidates){
-          DB::table('jobs') -> where('jobID', $jobID)
+          DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:005']);
           if($email!=null){
             $this->sendJobCommpMail($email, $jobtitle, $jobID, 5);
             return;
           }
         }else{
-          DB::table('jobs') -> where('jobID', $jobID)
+          DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:006']);
           if($email!=null){
             $this->sendJobCommpMail($email, $jobtitle, $jobID, 6);
@@ -529,7 +531,7 @@ class JobController extends Controller
       $script = storage_path().'/scripts/SNPannot.R';
       exec("Rscript $script $filedir >>$logfile", $output, $error);
       if($error != 0){
-        DB::table('jobs') -> where('jobID', $jobID)
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:007']);
         if($email!=null){
           $this->sendJobCommpMail($email, $jobtitle, $jobID, 7);
@@ -539,7 +541,7 @@ class JobController extends Controller
       $script = storage_path().'/scripts/getGWAScatalog.pl';
       exec("perl $script $filedir >>$logfile", $output, $error);
       if($error != 0){
-        DB::table('jobs') -> where('jobID', $jobID)
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:008']);
         if($email!=null){
           $this->sendJobCommpMail($email, $jobtitle, $jobID, 8);
@@ -553,7 +555,7 @@ class JobController extends Controller
         $script = storage_path().'/scripts/geteQTL.pl';
         exec("perl $script $filedir $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP >>$logfile", $output, $error);
         if($error != 0){
-          DB::table('jobs') -> where('jobID', $jobID)
+          DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:009']);
           if($email!=null){
             $this->sendJobCommpMail($email, $jobtitle, $jobID, 9);
@@ -565,7 +567,7 @@ class JobController extends Controller
       $script = storage_path().'/scripts/geneMap.R';
       exec("Rscript $script $filedir $genetype $exMHC $extMHC $posMap $posMapWindow $posMapWindowSize $posMapAnnot $posMapCADDth $posMapRDBth $posMapChr15 $posMapChr15Max $posMapChr15Meth $eqtlMap $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP $eqtlMapCADDth $eqtlMapRDBth $eqtlMapChr15 $eqtlMapChr15Max $eqtlMapChr15Meth >>$logfile", $output, $error);
       if($error != 0){
-        DB::table('jobs') -> where('jobID', $jobID)
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:010']);
         if($email!=null){
           $this->sendJobCommpMail($email, $jobtitle, $jobID, 10);
@@ -573,7 +575,7 @@ class JobController extends Controller
         }
       }
 
-      DB::table('jobs') -> where('jobID', $jobID)
+      DB::table('SubmitJobs') -> where('jobID', $jobID)
                         -> update(['status'=>'OK']);
 
       if($email != null){
