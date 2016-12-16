@@ -70,6 +70,7 @@ $(document).ready(function(){
               errorHandling(jobStatus);
               $('#jobinfoSide').show();
               jobInfo(jobid);
+              $('a[href="#jobInfo"]').trigger('click');
             }
             return;
           }else{
@@ -293,21 +294,21 @@ function errorHandling(status){
   if(status == "ERROR:001"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +'ERROR:001 (Not enough columns are provided in GWAS summary statistics file)<br/>'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status == "ERRUR:002"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +'ERROR:002 (Error from MAGMA)<br/>'
         +'This error might be because of the rsID and/or p-value columns are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status == "ERRUR:003" || status=="ERROR:004"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error during SNPs filtering for manhattan plot)<br/>'
         +'This error might be because of the p-value column is wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status=="ERROR:005"){
@@ -322,28 +323,28 @@ function errorHandling(status){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error from lead SNPs and candidate SNPs identification)<br/>'
         +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status=="ERRUR:007"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error during SNPs annotation extraction)<br/>'
         +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status=="ERROR:008" || status=="ERRUR:009"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error during extracting ecternal data sources)<br/>'
         +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status=="ERRUR:010"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error during gene mapping)<br/>'
         +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }
