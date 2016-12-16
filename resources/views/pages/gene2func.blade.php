@@ -153,8 +153,8 @@
         <sapn class="form-inline">
           Expression Value:
         	<select id="expval" class="form-control" style="width: auto;">
-        		<option value="log2RPKM" selected>log2(RPKM+1)</option>
-        		<option value="norm">Normalized across samples</option>
+        		<option value="log2RPKM" selected>Average RPKM per tissue (log2 transformed)</option>
+        		<option value="norm">Average of normalized RPKM per tissue (zero mean across tissues)</option>
         	</select>
         	<tab>
         	Order genes by:

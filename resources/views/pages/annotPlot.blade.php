@@ -680,7 +680,7 @@ $(document).ready(function(){
                   vertical.style("stroke", "transparent")
                 });
               svg.append("text").attr("text-anchor", "middle")
-                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
+                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight)/2)+")rotate(-90)")
                 .text("Chromatin state");
 
               svg.append("g").attr("class", "x axis Chr15")
@@ -864,7 +864,7 @@ $(document).ready(function(){
                   vertical.style("stroke", "transparent")
                 });
               svg.append("text").attr("text-anchor", "middle")
-                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
+                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight)/2)+")rotate(-90)")
                 .text("Chromatin state");
 
               svg.append("g").attr("class", "x axis Chr15")

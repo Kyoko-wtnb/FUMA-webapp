@@ -23,13 +23,13 @@ my $out = $filedir."eqtl.txt";
 #tissues
 my @ts;
 if($tsall eq "all"){
-	my @temp = `ls /media/sf_SAMSUNG/GTEx/Tabix/*.txt.gz`; #local
+#local 	my @temp = `ls /media/sf_SAMSUNG/GTEx/Tabix/*.txt.gz`;
 	my @temp = `ls /data/QTL/GTEx/*.sig.txt.gz`;
-#webserver  #webserver	chomp @temp;
+ #webserver	chomp @temp; #webserver
 	foreach my $f (@temp){
-		$f =~ /Tabix\/(.+)\.txt\.gz/; #local
+#local 		$f =~ /Tabix\/(.+)\.txt\.gz/;
 		$f =~ /GTEx\/(.+)\.sig\.txt\.gz/;
-#webserver  #webserver		push @ts, "GTEx_".$1;
+ #webserver		push @ts, "GTEx_".$1; #webserver
 	}
 	push @ts, "BloodeQTL_BloodeQTL";
 	push @ts, "BIOSQTL_BIOS_eQTL_geneLevel";
@@ -82,14 +82,14 @@ foreach my $s (keys %db){
 	my @files = split(/:/, $db{$s});
 	if($s eq "GTEx"){
 		foreach my $f (@files){
-			my $file = "/media/sf_SAMSUNG/GTEx/Tabix/".$f; #local
+#local 			my $file = "/media/sf_SAMSUNG/GTEx/Tabix/".$f;
 			my $file = "/data/QTL/GTEx/".$f;
-#webserver  #webserver			$f =~ /(.+)\.txt.gz/;
+ #webserver			$f =~ /(.+)\.txt.gz/; #webserver
 			my $ts = $1;
 			my $f2 = $ts.".sig.txt.gz";
-			my $file2 = "/media/sf_SAMSUNG/GTEx/TabixSig/".$f2; #local
+#local 			my $file2 = "/media/sf_SAMSUNG/GTEx/TabixSig/".$f2;
 			my $file2 = "/data/QTL/GTEx/".$f2;
-#webserver  #webserver			foreach my $lid (sort {$a<=>$b} keys %Loci){
+ #webserver			foreach my $lid (sort {$a<=>$b} keys %Loci){ #webserver
 				my $chr = $Loci{$lid}{"chr"};
 				my $start = $Loci{$lid}{"start"};
 				my $end = $Loci{$lid}{"end"};
@@ -128,9 +128,9 @@ foreach my $s (keys %db){
 		foreach my $f (@files){
 			$f =~ /(.+)\.txt.gz/;
 			my $ts = $1;
-			my $file = "/media/sf_SAMSUNG/".$s."/".$f; #local
+#local 			my $file = "/media/sf_SAMSUNG/".$s."/".$f;
 			my $file = "/data/QTL/".$s."/".$f;
-#webserver  #webserver			foreach my $lid (sort {$a<=>$b} keys %Loci){
+ #webserver			foreach my $lid (sort {$a<=>$b} keys %Loci){ #webserver
 				my $chr = $Loci{$lid}{"chr"};
 				my $start = $Loci{$lid}{"start"};
 				my $end = $Loci{$lid}{"end"};

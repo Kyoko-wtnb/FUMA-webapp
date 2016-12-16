@@ -55,7 +55,7 @@ $(document).ready(function(){
           alert("ERROR: checkJobStatus")
         },
         success: function(data){
-          $('#test').html(data);
+          // $('#test').html(data);
           jobStatus = data;
         },
         complete: function(){
@@ -122,7 +122,7 @@ $(document).ready(function(){
               alert("ERROR: checkJobStatus")
             },
             success: function(data){
-              $('#test').html(data);
+              // $('#test').html(data);
               jobStatus = data;
             },
             complete: function(){
