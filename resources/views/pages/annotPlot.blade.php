@@ -680,7 +680,7 @@ $(document).ready(function(){
                   vertical.style("stroke", "transparent")
                 });
               svg.append("text").attr("text-anchor", "middle")
-                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
+                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight)/2)+")rotate(-90)")
                 .text("Chromatin state");
 
               svg.append("g").attr("class", "x axis Chr15")
@@ -864,7 +864,7 @@ $(document).ready(function(){
                   vertical.style("stroke", "transparent")
                 });
               svg.append("text").attr("text-anchor", "middle")
-                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight+10)/2)+")rotate(-90)")
+                .attr("transform", "translate("+(-margin.left/2-15)+","+(chrTop+(y_element.length*tileHeight)/2)+")rotate(-90)")
                 .text("Chromatin state");
 
               svg.append("g").attr("class", "x axis Chr15")
@@ -1134,7 +1134,7 @@ function geneOver(genes, x, width){
   <div class="col-md-8">
     <div id='title' style="text-align: center;"><h3>Regional plot</h3></div>
     <a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
-    <button class="btn ImgDown" id="annotPlotImg">Download img</button>
+    <button class="btn btn-xs ImgDown" id="annotPlotImg" style="float:right; margin-right:50px;">Download img</button>
     <div id="annotPlot"></div>
   </div>
   <div class="col-md-4" style="text-align: center;">

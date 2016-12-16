@@ -38,8 +38,8 @@ class JsController extends Controller
       $table = '<table class="table table-bordered" style="width:auto;"><tr><td>email</td><td>'.$row->email
         .'</td></tr><tr><td>job title</td><td>'.$row->title.'</td></tr><tr><td>job submitted</td><td>'
         .$row->created_date."</td></tr>";
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      $params = file($filedir."params.txt");
+      // $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      // $params = file($filedir."params.txt");
       $table .= "<table>";
       echo $table;
     }
@@ -48,9 +48,9 @@ class JsController extends Controller
       $filedir = $request -> input('filedir');
       //  style="display:block; overflow-y:scroll; height: 500px;"
       $table = '<table class="table table-striped" style="width: 100%; margin-left: 10px; margin-right: 10px;ext-align: right;"><tbody>';
-      $lines = file($filedir."params.txt");
-      foreach($lines as $l){
-        $line = preg_split("/[\t]/", chop($l));
+      $f = fopen($filedir."params.txt", 'r');
+      while($line = fgetcsv($f, 0, "\t")){
+        // $line = preg_split("/[\t]/", chop($l));
         $table .= "<tr><td>".$line[0].'</td><td style="word-break: break-all;">'.$line[1]."</td></tr>";
       }
       $table .= "</tbody></table>";

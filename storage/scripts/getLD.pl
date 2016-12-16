@@ -75,7 +75,7 @@ close OUT;
 open(ANNOT, ">$out3");
 print ANNOT "uniqID\tCADD\tRDB";
 #local my @chr15 = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`;
-my @chr15 = `ls /data/Chr15States/*.bed.gz`;
+my @chr15 = `ls /data/Chr15States/*.bed.gz`; #webserver
 chomp @chr15;
 foreach(@chr15){
 	/(E\d+)_/;

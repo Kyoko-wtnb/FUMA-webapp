@@ -359,7 +359,7 @@ function expHeatMap(id){
                 var m = Math.max(normMax, Math.abs(normMin));
                 var col = d3.scale.linear().domain([-m, 0, m]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
                 legendRect.attr("fill", function(d){return col(Math.round(d*2*m/(t.length-1)-m))});
-                legendText.text(function(d){return Math.round(d*2*m/(t.length-1)-m)});
+                legendText.text(function(d){return d*2*m/(t.length-1)-m});
                 if(gsort=="clst" && tssort=="clst"){
                   heatMap.transition().duration(2000)
                     .attr("fill", function(d){return col(d.norm)})
@@ -848,7 +848,7 @@ function GeneSet(id){
           +category[i]+'Panel"><p><a onclick="GeneSetPlot('+"'"+category[i]+"'"+');">Plot</a> / <a onclick="GeneSetTable('+
           "'"+category[i]+"'"+');">Table</a></p></div></div>';
         $('#GeneSet').append(panel);
-        $('#'+category[i]+"Panel").append('<button class="btn ImgDown" id="'+category[i]+'Img">Download img</button>');
+        $('#'+category[i]+"Panel").append('<button class="btn btn-xs ImgDown" id="'+category[i]+'Img">Download img</button>');
         $('#'+category[i]+"Panel").append('<div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div><div id="'
           +category[i]+'Table"></div>');
 

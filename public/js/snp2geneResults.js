@@ -10,8 +10,15 @@ $(document).ready(function(){
     id = id.replace("Img", "");
     console.log(id);
     var svg = $('#'+id).html();
-    canvg('canvas', svg);
-    var canvas = document.getElementById('canvas');
+    canvg(id+'Canvas', svg);
+    var canvas = document.getElementById(id+'Canvas');
+    Canvas2Image.saveAsPNG(canvas);
+  });
+  $(".CanvDown").on('click', function(){
+    var id = $(this).attr("id");
+    id = id.replace("Down", "");
+    console.log(id);
+    var canvas = document.getElementById(id);
     Canvas2Image.saveAsPNG(canvas);
   });
 
@@ -48,7 +55,7 @@ $(document).ready(function(){
           alert("ERROR: checkJobStatus")
         },
         success: function(data){
-          $('#test').html(data);
+          // $('#test').html(data);
           jobStatus = data;
         },
         complete: function(){
@@ -63,6 +70,7 @@ $(document).ready(function(){
               errorHandling(jobStatus);
               $('#jobinfoSide').show();
               jobInfo(jobid);
+              $('a[href="#jobInfo"]').trigger('click');
             }
             return;
           }else{
@@ -115,7 +123,7 @@ $(document).ready(function(){
               alert("ERROR: checkJobStatus")
             },
             success: function(data){
-              $('#test').html(data);
+              // $('#test').html(data);
               jobStatus = data;
             },
             complete: function(){
@@ -286,21 +294,21 @@ function errorHandling(status){
   if(status == "ERROR:001"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +'ERROR:001 (Not enough columns are provided in GWAS summary statistics file)<br/>'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status == "ERRUR:002"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +'ERROR:002 (Error from MAGMA)<br/>'
         +'This error might be because of the rsID and/or p-value columns are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status == "ERRUR:003" || status=="ERROR:004"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error during SNPs filtering for manhattan plot)<br/>'
         +'This error might be because of the p-value column is wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status=="ERROR:005"){
@@ -315,28 +323,28 @@ function errorHandling(status){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error from lead SNPs and candidate SNPs identification)<br/>'
         +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status=="ERRUR:007"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error during SNPs annotation extraction)<br/>'
         +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status=="ERROR:008" || status=="ERRUR:009"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error during extracting ecternal data sources)<br/>'
         +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }else if(status=="ERRUR:010"){
     $('#ErrorMess').html('<div class="alert alert-denger">'
         +status+' (Error during gene mapping)<br/>'
         +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. You might just have chosen wrond file format.'
+        +'Please make sure your input file have sufficient column names. '
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }
@@ -378,24 +386,20 @@ function GWplot(jobID){
             .attr("height", height+margin.top+margin.bottom)
             .append("g")
             .attr("transform", "translate("+margin.left+","+margin.top+")");
-  var canvas1 = d3.select('#manhattan').append("div").attr("class", "canvasarea")
-  	           .style("left", margin.left)
-            	.style("top", margin.top)
+  var canvas1 = d3.select('#manhattan')
             	.append("canvas")
-            	.attr("class", "canvasarea")
+              .attr('id', 'manhattanMain')
             	.attr("width", width)
             	.attr("height", height)
             	.node().getContext('2d');
-  var svg2 = d3.select("#genesManhattan").append("svg")
+  var svg2 = d3.select("#geneManhattan").append("svg")
             .attr("width", width+margin.left+margin.right)
             .attr("height", height+margin.top+margin.bottom)
             .append("g")
             .attr("transform", "translate("+margin.left+","+margin.top+")");
-  var canvas2 = d3.select('#genesManhattan').append("div").attr("class", "canvasarea")
-  	           .style("left", margin.left)
-            	.style("top", margin.top)
+  var canvas2 = d3.select('#geneManhattan')
             	.append("canvas")
-            	.attr("class", "canvasarea")
+              .attr('id', 'geneManhattanMain')
             	.attr("width", width)
             	.attr("height", height)
             	.node().getContext('2d');
@@ -443,7 +447,8 @@ function GWplot(jobID){
     	.style("stroke-dasharray", ("3,3"));
   	svg.append("g").attr("class", "x axis")
       .attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
-    svg.append("g").attr("class", "y axis").call(yAxis);
+    svg.append("g").attr("class", "y axis").call(yAxis)
+      .selectAll('text').style('font-size', '11px');
 
     //Chr label
   	for(var i=0; i<chr.length; i++){
@@ -458,6 +463,17 @@ function GWplot(jobID){
     svg.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(-35)+","+(height/2)+")rotate(-90)")
       .text("-log10 P-value");
+    svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+    var plot = $('#manhattan').html();
+    canvg('manhattanTmp', plot);
+    var c = d3.select('#manhattanCanvas')
+      .attr("width", width+margin.left+margin.right)
+      .attr("height", height+margin.top+margin.bottom)
+      .node().getContext('2d');
+
+    c.drawImage(document.getElementById('manhattanMain'), margin.left, margin.top)
+    c.drawImage(document.getElementById('manhattanTmp'), 0, 0);
   });
 
   d3.json("manhattan/jobs/"+jobID+"/magma.genes.out", function(data){
@@ -500,7 +516,8 @@ function GWplot(jobID){
     	.style("stroke-dasharray", ("3,3"));
   	svg2.append("g").attr("class", "x axis")
       .attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
-    svg2.append("g").attr("class", "y axis").transition().duration(3000).call(yAxis);
+    svg2.append("g").attr("class", "y axis").call(yAxis)
+      .selectAll('text').style('font-size', '11px');
 
   	//Chr label
   	for(var i=0; i<chr.length; i++){
@@ -515,6 +532,17 @@ function GWplot(jobID){
     svg2.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(-35)+","+(height/2)+")rotate(-90)")
       .text("-log10 P-value");
+    svg2.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    svg2.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+    var plot = $('#geneManhattan').html();
+    canvg('geneManhattanTmp', plot);
+    var c = d3.select('#geneManhattanCanvas')
+      .attr("width", width+margin.left+margin.right)
+      .attr("height", height+margin.top+margin.bottom)
+      .node().getContext('2d');
+
+    c.drawImage(document.getElementById('geneManhattanMain'), margin.left, margin.top)
+    c.drawImage(document.getElementById('geneManhattanTmp'), 0, 0);
   });
 }
 
@@ -522,7 +550,7 @@ function QQplot(jobID){
   var margin = {top:30, right: 30, bottom:50, left:50},
       width = 300,
       height = 300;
-  d3.select("#QQplotPane").style("height", height+margin.top+margin.bottom);
+  // d3.select("#QQplotPane").style("height", height+margin.top+margin.bottom);
   // create svg and canvas objects
   var qqSNP = d3.select("#QQplot").append("svg")
               .attr("width", width+margin.left+margin.right)
@@ -530,12 +558,8 @@ function QQplot(jobID){
               .append("g")
               .attr("transform", "translate("+margin.left+","+margin.top+")");
   var canvasSNP = d3.select('#QQplot')
-                  .append("div")
-                  .attr("class", "canvasarea")
-                	.style("left", margin.left+15)
-                	.style("top", margin.top)
                 	.append("canvas")
-                	.attr("class", "canvasarea")
+                	.attr("id", "QQplotMain")
                 	.attr("width", width+margin.right)
                 	.attr("height", height+margin.bottom)
                 	.node().getContext('2d');
@@ -544,12 +568,9 @@ function QQplot(jobID){
                 .attr("width", width+margin.left+margin.right)
                 .attr("height", height+margin.top+margin.bottom)
                 .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
-  var canvasGene = d3.select('#geneQQplot').append("div")
-                    .attr("class", "canvasarea")
-                  	.style("left", margin.left+15)
-                  	.style("top", margin.top)
+  var canvasGene = d3.select('#geneQQplot')
                   	.append("canvas")
-                  	.attr("class", "canvasarea")
+                  	.attr("id", "geneQQplotMain")
                   	.attr("width", width+margin.right)
                   	.attr("height", height+margin.bottom)
                   	.node().getContext('2d');
@@ -582,23 +603,36 @@ function QQplot(jobID){
   	});
 
   	qqSNP.append("g").attr("class", "x axis")
-          .attr("transform", "translate(0,"+height+")").call(xAxis);
-    qqSNP.append("g").attr("class", "y axis").call(yAxis);
+      .attr("transform", "translate(0,"+height+")").call(xAxis)
+      .selectAll('text').style('font-size', '11px');
+    qqSNP.append("g").attr("class", "y axis").call(yAxis)
+      .selectAll('text').style('font-size', '11px');
     qqSNP.append("line")
-  	    .attr("x1", 0).attr("x2", x(maxP))
-        .attr("y1", y(0)).attr("y2", y(maxP))
-        .style("stroke", "red")
-        .style("stroke-dasharray", ("3,3"));
-    qqSNP.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+width/2+","+(-15)+")")
-      .text("GWAS summary statistics")
-      .style("font-size", "20px");
+      .attr("x1", 0).attr("x2", x(maxP))
+      .attr("y1", y(0)).attr("y2", y(maxP))
+      .style("stroke", "red")
+      .style("stroke-dasharray", ("3,3"));
+    // qqSNP.append("text").attr("text-anchor", "middle")
+    //   .attr("transform", "translate("+width/2+","+(-15)+")")
+    //   .text("GWAS summary statistics")
+    //   .style("font-size", "20px");
     qqSNP.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(-35)+","+height/2+")rotate(-90)")
       .text("Observed -log10 P-value");
     qqSNP.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(width/2)+","+(height+35)+")")
       .text("Expected -log10 P-value");
+    qqSNP.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    qqSNP.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+    var plot = $('#QQplot').html();
+    canvg('QQplotTmp', plot);
+    var c = d3.select('#QQplotCanvas')
+      .attr("width", width+margin.left+margin.right)
+      .attr("height", height+margin.top+margin.bottom)
+      .node().getContext('2d');
+
+    c.drawImage(document.getElementById('QQplotMain'), margin.left, margin.top)
+    c.drawImage(document.getElementById('QQplotTmp'), 0, 0);
 
   });
 
@@ -629,23 +663,37 @@ function QQplot(jobID){
   	});
 
   	qqGene.append("g").attr("class", "x axis")
-          .attr("transform", "translate(0,"+height+")").call(xAxis);
-        	qqGene.append("g").attr("class", "y axis").call(yAxis);
+      .attr("transform", "translate(0,"+height+")").call(xAxis)
+      .selectAll('text').style('font-size', '11px');
+    	qqGene.append("g").attr("class", "y axis").call(yAxis)
+      .selectAll('text').style('font-size', '11px');
   	qqGene.append("line")
     	.attr("x1", 0).attr("x2", x(maxP))
     	.attr("y1", y(0)).attr("y2", y(maxP))
     	.style("stroke", "red")
     	.style("stroke-dasharray", ("3,3"));
-    qqGene.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+width/2+","+(-15)+")")
-      .text("Gene-based statistics")
-      .style("font-size", "20");
+    // qqGene.append("text").attr("text-anchor", "middle")
+    //   .attr("transform", "translate("+width/2+","+(-15)+")")
+    //   .text("Gene-based statistics")
+    //   .style("font-size", "20");
     qqGene.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(-35)+","+height/2+")rotate(-90)")
       .text("Observed -log10 P-value");
     qqGene.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(width/2)+","+(height+35)+")")
       .text("Expected -log10 P-value");
+    qqGene.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    qqGene.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+    var plot = $('#geneQQplot').html();
+    canvg('geneQQplotTmp', plot);
+    var c = d3.select('#geneQQplotCanvas')
+      .attr("width", width+margin.left+margin.right)
+      .attr("height", height+margin.top+margin.bottom)
+      .node().getContext('2d');
+
+    c.drawImage(document.getElementById('geneQQplotMain'), margin.left, margin.top)
+    c.drawImage(document.getElementById('geneQQplotTmp'), 0, 0);
+
   });
 }
 
@@ -1377,7 +1425,7 @@ function PlotSNPAnnot(jobID){
       .html(function(d) {
         return d.count;
       })
-  // svg.call(tip);
+  svg.call(tip);
   d3.json("d3text/"+jobID+"/"+file, function(data){
     data.forEach(function(d){
       d.count =+ d.count;
@@ -1388,9 +1436,9 @@ function PlotSNPAnnot(jobID){
       .attr("width", x.rangeBand())
       .attr("y", function(d){return y(d.count);})
       .attr("height", function(d){return height-y(d.count);})
-      .attr("fill", "steelblue");
-      // .on("mouseover", tip.show)
-      // .on("mouseout", tip.hide);
+      .attr("fill", "steelblue")
+      .on("mouseover", tip.show)
+      .on("mouseout", tip.hide);
     svg.append('g').attr("class", "x axis")
       .attr("transform", "translate(0,"+height+")")
       .call(xAxis).selectAll('text')
@@ -1400,9 +1448,13 @@ function PlotSNPAnnot(jobID){
       .style("text-anchor", "end");
     svg.append('g').attr("class", "y axis")
       .call(yAxis)
-      .append("text").attr("transform", "rotate(-90)")
+      .append("text")
+      .attr("transform", "rotate(-90)")
       .attr("dy", ".71em")
       .style("text-anchor", "end");
+    svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    svg.selectAll('text').style('font-family', 'sans-serif');
+    svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
   });
 
 }
@@ -1576,6 +1628,9 @@ function PlotIntervalSum(jobID){
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-5)+")")
         .style("text-anchor", "middle")
         .text("#in genes");
+    svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    svg.selectAll('text').style('font-family', 'sans-serif');
+    svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
   });
 }
 

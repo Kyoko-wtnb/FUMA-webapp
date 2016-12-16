@@ -154,8 +154,8 @@
         <sapn class="form-inline">
           Expression Value:
         	<select id="expval" class="form-control" style="width: auto;">
-        		<option value="log2RPKM" selected>log2(RPKM+1)</option>
-        		<option value="norm">Normalized across samples</option>
+        		<option value="log2RPKM" selected>Average RPKM per tissue (log2 transformed)</option>
+        		<option value="norm">Average of normalized RPKM per tissue (zero mean across tissues)</option>
         	</select>
         	<tab>
         	Order genes by:
@@ -170,7 +170,7 @@
         		<option value="alph" selected>Alphabetical order</option>
         	</select>
         </span><br/>
-        <button class="btn ImgDown" id="expHeatImg">Download img</button>
+        <button class="btn btn-xs ImgDown" id="expHeatImg" style="float:right; margin-right:150px">Download PNG</button>
       	<div id="expHeat"></div>
         <div id="expBox"></div>
         <br/>
@@ -181,23 +181,23 @@
       <div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50;">
         <h4>Differentially expressed genes across 53 tissues (GTEx)</h4>
         <!-- <button class="btn" id="DEGdown" name="DEGdown">Download text file</button><br/> -->
-        <form action="fileDown" method="post" target="_blank">
+        <form class="form-inline" action="fileDown" method="post" target="_blank">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <input type="hidden" name="id" value="{{$id}}"/>
           <input type="hidden" name="file" value="DEG.txt"/>
-          <input type="submit" class="btn" id="DEGdown" name="DEGdown" value="Download text file"><br/>
+          <input type="submit" class="btn btn-xs" id="DEGdown" name="DEGdown" value="Download text file">
         </form>
-        <button class="btn ImgDown" id="tsEnrichBarImg">Download img</button>
+        <button class="btn btn-xs ImgDown" id="tsEnrichBarImg">Download PNG</button>
         <div id="tsEnrichBar"></div>
         <h4>Differrentially expressed genes across 30 general tissue types (GTEx)</h4>
         <!-- <button class="btn" id="DEGgdown" name="DEGgdown">Download text file</button><br/> -->
-        <form action="fileDown" method="post" target="_blank">
+        <form class="form-inline" action="fileDown" method="post" target="_blank">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <input type="hidden" name="id" value="{{$id}}"/>
           <input type="hidden" name="file" value="DEGgeneral.txt"/>
-          <input type="submit" class="btn" id="DEGgdown" name="DEGgdown" value="Download text file"><br/>
+          <input type="submit" class="btn btn-xs" id="DEGgdown" name="DEGgdown" value="Download text file">
         </form>
-        <button class="btn ImgDown" id="tsGeneralEnrichBarImg">Download img</button>
+        <button class="btn btn-xs ImgDown" id="tsGeneralEnrichBarImg">Download img</button>
         <div id="tsGeneralEnrichBar"></div>
       </div>
     <!-- </div></div> -->
@@ -210,7 +210,7 @@
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <input type="hidden" name="id" value="{{$id}}"/>
           <input type="hidden" name="file" value="GS.txt"/>
-          <input type="submit" class="btn" id="GSdown" name="GSdown" value="Download text file"><br/>
+          <input type="submit" class="btn btn-xs" id="GSdown" name="GSdown" value="Download text file"><br/>
         </form>
         <div id="GeneSet">
         </div>
