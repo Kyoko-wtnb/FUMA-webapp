@@ -10,7 +10,7 @@
                     <tr>
                         <th>Job ID</th>
                         <th>Job name</th>
-                        <th>Submitdate</th>
+                        <th>Submit date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
