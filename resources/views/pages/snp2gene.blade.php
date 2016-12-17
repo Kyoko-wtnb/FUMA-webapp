@@ -48,7 +48,6 @@
     </ul>
     <ul class="sidebar-nav" id="sidebar">
       <li class="active"><a href="#newJob">New Job<i class="sub_icon fa fa-upload"></i></a></li>
-      <li><a href="#queryJob">Query Existing Job<i class="sub_icon fa fa-search"></i></a></li>
       <li><a href="#joblist-panel">My Jobs<i class="sub_icon fa fa-search"></i></a></li>
       <div id="jobinfoSide">
         <li><a href="#jobInfo">Job Info<i class="sub_icon fa fa-info-circle"></i></a></li>
@@ -68,7 +67,6 @@
   <div id="page-content-wrapper">
     <div class="page-content inset">
         @include('snp2gene.joblist')
-        @include('snp2gene.queryjob')
         @include('snp2gene.newjob')
 
       <!-- results panel -->
