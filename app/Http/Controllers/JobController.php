@@ -18,6 +18,12 @@ use JavaScript;
 class JobController extends Controller
 {
     
+    public function __construct()
+    {
+        // Protect this Controller
+        $this->middleware('auth');
+    }
+    
     public function getJobList($email = '', $limit = 10)
     {
         if( $email){
