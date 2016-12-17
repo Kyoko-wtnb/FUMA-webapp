@@ -94,14 +94,14 @@ class JobController extends Controller
       $jobID = $request->input('jobID');
       $date = date('Y-m-d H:i:s');
       DB::table('SubmitJobs') -> where('jobID', $jobID)
-                        -> update(['last_access'=>$date]);
+                        -> update(['updated_at'=>$date]);
 
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");
       $posMap = preg_split("/[\t]/", chop($params[18]))[1];
       $eqtlMap = preg_split("/[\t]/", chop($params[27]))[1];
       // get jobID
-      // update last_access date
+      // update updated_at date
       // JavaScript::put([
       //   'jobtype'=>'jobquery',
       //   // 'email'=>$email,
@@ -156,7 +156,7 @@ class JobController extends Controller
         $jobID = $jobID->njob;
         $jobID++;
         DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
-                                      'created_date'=>$date, 'last_access'=>$date, 'status'=>"NEW"]);
+                                      'created_at'=>$date, 'updated_at'=>$date, 'status'=>"NEW"]);
         $filedir = config('app.jobdir').'/jobs/'.$jobID;
 
         File::makeDirectory($filedir, 0775, true);
@@ -175,7 +175,7 @@ class JobController extends Controller
           $filedir = config('app.jobdir').'/jobs/'.$jobID;
           File::cleanDirectory($filedir);
           DB::table('SubmitJobs') -> where('jobID', $jobID)
-                            -> update(['created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
+                            -> update(['created_at'=>$date, 'updated_at'=>$date, 'status'=>'NEW']);
         }else{
           $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
           $jobID = $jobID->njob;
@@ -183,7 +183,7 @@ class JobController extends Controller
           $filedir = config('app.jobdir').'/jobs/'.$jobID;
           File::makeDirectory($filedir);
           DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
-                                        'created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
+                                        'created_at'=>$date, 'updated_at'=>$date, 'status'=>'NEW']);
         }
       }
       $_SESSION['snp2gene'] = $jobID;
