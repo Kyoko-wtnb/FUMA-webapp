@@ -14,6 +14,14 @@ use JavaScript;
 
 class JsController extends Controller
 {
+    
+    public function __construct()
+    {
+        // Protect this Controller
+        $this->middleware('auth');
+    }
+
+    
     public function DTfile(Request $request){
       $filedir = $request -> input('filedir');
       $fin = $request -> input('infile');

@@ -14,6 +14,12 @@ use JavaScript;
 
 class D3jsController extends Controller
 {
+    public function __construct()
+    {
+        // Protect this Controller
+        $this->middleware('auth');
+    }
+    
     public function locusPlot($ldI, $type, $jobID){
       $script = storage_path()."/scripts/locusPlot.R";
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';

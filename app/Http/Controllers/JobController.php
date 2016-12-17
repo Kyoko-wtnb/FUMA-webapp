@@ -10,6 +10,7 @@ use IPGAP\Http\Requests;
 use IPGAP\Http\Controllers\Controller;
 use Symfony\Component\Process\Process;
 use View;
+use Auth;
 use Storage;
 use File;
 use JavaScript;
@@ -17,19 +18,28 @@ use JavaScript;
 
 class JobController extends Controller
 {
+    protected $user;
     
-    public function getJobList($email = '', $limit = 10)
+    public function __construct()
     {
+        // Protect this Controller
+        $this->middleware('auth');
+        
+        // Store user
+        $this->user = Auth::user();
+    }
+    
+    public function getJobList()
+    {
+        $email = $this->user->email;
+        
         if( $email){
             $results = SubmitJob::where('email', $email)
                 ->orderBy('created_at', 'desc')
-                ->take($limit)
                 ->get();
         }
         else{
-            $results = SubmitJob::orderBy('created_at', 'desc')
-                ->take($limit)
-                ->get();
+            $results = array();
         }
         
         return response()->json($results);
@@ -141,61 +151,31 @@ class JobController extends Controller
           return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatRegions']);
         }
       }
-      session_start();
 
       $date = date('Y-m-d H:i:s');
       $jobID;
       $filedir;
-      if($request->has("NewJobEmail")){
-        $email = $request -> input('NewJobEmail');
-      }else{
-        $email=null;
-      }
+      $email = $this->user->email;
+      
       if($request->has("NewJobTitle")){
         $jobtitle = $request -> input('NewJobTitle');
       }else{
         $jobtitle="None";
       }
-
-      if($email==null){
-        $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
-        $jobID = $jobID->njob;
-        $jobID++;
-        DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
-                                      'created_at'=>$date, 'updated_at'=>$date, 'status'=>"NEW"]);
-        $filedir = config('app.jobdir').'/jobs/'.$jobID;
-
-        File::makeDirectory($filedir, 0775, true);
-      }else{
-        $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
-        $exists = false;
-        foreach($results as $row){
-          if($row->title==$jobtitle){
-            $exists = true;
-            $jobID = $row->jobID;
-            break;
-          }
-        }
-
-        if($exists){
-          $filedir = config('app.jobdir').'/jobs/'.$jobID;
-          File::cleanDirectory($filedir);
-          DB::table('SubmitJobs') -> where('jobID', $jobID)
-                            -> update(['created_at'=>$date, 'updated_at'=>$date, 'status'=>'NEW']);
-        }else{
-          $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
-          $jobID = $jobID->njob;
-          $jobID++;
-          $filedir = config('app.jobdir').'/jobs/'.$jobID;
-          File::makeDirectory($filedir);
-          DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
-                                        'created_at'=>$date, 'updated_at'=>$date, 'status'=>'NEW']);
-        }
-      }
-      $_SESSION['snp2gene'] = $jobID;
-      $_SESSION['gene2func'] = $jobID;
-      print_r ($_SESSION);
-      // $sessionID = $request->session()->get('key');
+      
+      // Create new job in database
+      $submitJob = new SubmitJob;
+      $submitJob->email = $email;
+      $submitJob->title = $jobtitle;
+      $submitJob->status = 'NEW';
+      $submitJob->save();
+      
+      // Get jobID (automatically generated)
+      $jobID = $submitJob->jobID;
+      
+      // create job directory
+      $filedir = config('app.jobdir').'/jobs/'.$jobID;
+      File::makeDirectory($filedir, $mode = 0755, $recursive = true);
 
       // upload input Filesystem
       $leadSNPs = "input.lead";
@@ -426,7 +406,7 @@ class JobController extends Controller
 
       // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local #local
       # return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob']);
-      return redirect("/snp2gene/$jobID");
+      return redirect("/snp2gene#joblist-panel");
     }
 
     public function CandidateSelection(Request $request){
