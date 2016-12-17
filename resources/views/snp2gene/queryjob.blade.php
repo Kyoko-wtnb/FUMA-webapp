@@ -1,4 +1,4 @@
-<div id="queryJob" class="sidePanel container" style="padding-top:50px; height:100%;">
+<div id="queryJob" class="sidePanel container" style="padding-top:50px; height:100vh;">
   {!! Form::open(array('url' => 'snp2gene/queryJob')) !!}
   <!-- Query existing job -->
   <h3>Query existing job</h3>
