@@ -795,14 +795,9 @@
   </table>
   <br/>
 
-  <!-- email and job title -->
-  <h4>6. email and job title</h4>
+  <!-- job title -->
+  <h4>6. job title</h4>
   <table class="table table-bordered inputTable" id="NewJobSubmit" style="width: auto;">
-    <tr>
-      <td>E-mail address</td>
-      <td><input type="text" class="form-control" name="NewJobEmail" id="NewJobEmail" onkeyup="CheckAll();" onpaste="CheckAll();"  oninput="CheckAll();"/></td>
-      <td></td>
-    </tr>
     <tr>
       <td>Job title</td>
       <td><input type="text" class="form-control" name="NewJobTitle" id="NewJobTitle" onkeyup="CheckAll();" onpaste="CheckAll();"  oninput="CheckAll();"/></td>

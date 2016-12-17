@@ -492,18 +492,11 @@ function CheckAll(){
   }
 
   table = $('#NewJobSubmit')[0];
-  if($('#NewJobEmail').val().length==0){
-    $(table.rows[0].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-exclamation-triangle"></i> We recommend to submit your email address. <br/>Otherwise you have to bookmark link and job won\'t be saved.</div></td>');
-  }else{
-    $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-check"></i> OK. We will send you an email once job is done and results will be saved.</div></td>')
-  }
   if($('#NewJobTitle').val().length==0){
-    $(table.rows[1].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    $(table.rows[0].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-exclamation-triangle"></i> This is not mandatory but if you want to save a job, job title will be useful. <br/></div></td>');
   }else{
-    $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+    $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
   }
   if(submit){$('#SubmitNewJob').attr("disabled", false)}

@@ -10,7 +10,7 @@
                     <tr>
                         <th>Job ID</th>
                         <th>Job name</th>
-                        <th>Submitdate</th>
+                        <th>Submit date</th>
                         <th>Status</th>
                     </tr>
                 </thead>
@@ -30,7 +30,7 @@
         // Get Joblist
         $.getJSON( subdir + "/snp2gene/getJobList", function( data ) {
             var items = '<tr><td colspan="4">No Jobs Found</td></tr>';
-            if(data){
+            if(data.length){
                 items = '';
                 $.each( data, function( key, val ) {
                     if(val.status == 'OK'){

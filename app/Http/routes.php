@@ -19,19 +19,6 @@ Route::get('tutorial', function(){
   return view('pages.tutorial');
 });
 
-Route::get('snp2gene', function(){
-  $jobID = null;
-  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]);
-});
-
-Route::get('GWASresult', function(){
-  return view('pages.GWASresult', ['/IPGAP']);
-});
-
-Route::get('gene2func', function(){
-  return view('pages.gene2func', ['status'=>'new', 'id'=>'none']);
-});
-
 Route::get('links', function(){
   return view('pages.links');
 });
@@ -39,6 +26,16 @@ Route::get('links', function(){
 Route::get('contact', function(){
   return view('pages.contact');
 });
+
+// Set up the auth routes
+Route::auth();
+
+// ********************** SNP2GENE ************************
+
+Route::get('snp2gene', function(){
+  $jobID = null;
+  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]);
+})->middleware('auth');
 
 Route::get('snp2gene/getJobList/{email?}/{limit?}', 'JobController@getJobList');
 
@@ -51,11 +48,9 @@ Route::post('snp2gene/queryJob', 'JobController@getJobID');
 // Route::get('snp2gene/queryJob/{jobID}', function(){
 //   return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>query]);
 // });
-Route::get('snp2gene/{jobID}', function($jobID){
-  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
-});
 
 Route::post('snp2gene/checkJobStatus', 'JobController@checkJobStatus');
+
 Route::post('snp2gene/getParams', 'JobController@getParams');
 
 Route::post('snp2gene/CandidateSelection', 'JobController@CandidateSelection');
@@ -82,6 +77,19 @@ Route::post('snp2gene/filedown', 'JobController@filedown');
 
 Route::post('snp2gene/geneSubmit', 'JobController@snp2geneGeneQuery');
 
+Route::post('snp2gene/geneTable', 'JsController@geneTable');
+
+Route::get('snp2gene/{jobID}', function($jobID){
+  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
+})->middleware('auth');
+
+
+// ********************** GENE2FUNC ************************
+
+Route::get('gene2func', function(){
+  return view('pages.gene2func', ['status'=>'new', 'id'=>'none']);
+});
+
 Route::post('gene2func/submit', 'JobController@gene2funcSubmit');
 
 Route::post('gene2func/geneQuery', 'JobController@geneQuery');
@@ -92,9 +100,14 @@ Route::post('gene2func/fileDown', 'JobController@gene2funcFileDown');
 Route::post('snp2gene/fileDown', 'JobController@gene2funcFileDown');
 
 Route::post('gene2func/geneTable', 'JsController@geneTable');
-Route::post('snp2gene/geneTable', 'JsController@geneTable');
 
 Route::get('gene2func/d3text/{jobID}/{file}', 'D3jsController@d3js_textfile');
+
+// ********************** GWASRESULT ************************
+
+Route::get('GWASresult', function(){
+  return view('pages.GWASresult', ['/IPGAP']);
+});
 
 Route::get('GWASresult/d3text/{dbName}/{file}', 'D3jsController@d3js_GWAS_textfile');
 
