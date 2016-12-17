@@ -1,4 +1,4 @@
-<div id="foot" style="width:100%;">
+<footer id="foot" style="width:100%;">
   <br/>
   <div class="row" style="color: #818588;">
     <div class="col-md-6" style="padding-left: 50px;">
@@ -10,4 +10,4 @@
       <img src="{{URL::asset('/image/ctg.svg')}}" height="70" width="180">
     </div>
   </div>
-</div>
+</footer>

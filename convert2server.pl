@@ -50,7 +50,7 @@ if($to eq 'server'){
 		open(OUT, ">temp.txt");
 		while(<IN>){
 			chomp;
-			if(/#local$/){$_ =~ s/ #local//; $_ = "#local ".$_;}
+			if(/#local/){$_ =~ s/ #local//; $_ = "#local ".$_;}
 			if(/#webserver/){$_ =~ s/#webserver //; $_ = $_." #webserver"}
 	
 			print OUT $_, "\n";
@@ -69,7 +69,7 @@ if($to eq 'server'){
 		open(OUT, ">temp.txt");
 		while(<IN>){
 			chomp;
-			if(/#local$/){$_ =~ s/ #local//; $_ = "#local ".$_;}
+			if(/#local/){$_ =~ s/ #local//; $_ = "#local ".$_;}
 			if(/#webserver/){$_ =~ s/#webserver //; $_ = $_." #webserver"}
 	
 			print OUT $_,"\n";
@@ -88,7 +88,7 @@ if($to eq 'server'){
 		open(OUT, ">temp.txt");
 		while(<IN>){
 			chomp;
-			if(/#webserver$/){$_ =~ s/ #webserver$//; $_ = "#webserver ".$_;}
+			if(/#webserver/){$_ =~ s/ #webserver//; $_ = "#webserver ".$_;}
 			if(/#local/){$_ =~ s/#local //; $_ = $_." #local";}
 	
 			print OUT $_, "\n";
@@ -107,7 +107,7 @@ if($to eq 'server'){
 		open(OUT, ">temp.txt");
 		while(<IN>){
 			chomp;
-			if(/#webserver$/){$_ =~ s/ #webserver$//; $_ = "#webserver ".$_;}
+			if(/#webserver/){$_ =~ s/ #webserver//; $_ = "#webserver ".$_;}
 			if(/#local/){$_ =~ s/#local //; $_ = $_." #local";}
 	
 			print OUT $_, "\n";

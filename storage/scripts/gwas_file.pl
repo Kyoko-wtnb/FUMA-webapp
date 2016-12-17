@@ -22,7 +22,7 @@ my $gwas = $filedir."input.gwas";
 my $outSNPs = $filedir."input.snps";
 my $outMAGMA = $filedir."magma.in";
 
-#local my $dbSNP = "/media/sf_SAMSUNG/dbSNP/RsMerge146.txt";
+#local my $dbSNP = "/media/sf_SAMSUNG/dbSNP/RsMerge146.txt"; #local
 my $dbSNP = "/data/dbSNP/RsMerge146.txt"; #webserver
 my %rsID;
 open(RS, "$dbSNP");
@@ -80,7 +80,7 @@ if(defined $chrcol && defined $poscol){
 		print "Either ref, alt or rsID is not defined\n";
 		foreach my $chr(1..23){
 		next unless(exists $GWAS{$chr});
-#local 			my $file = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
+#local 			my $file = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz"; #local
 			my $file = "/data/1KG/Phase3/EUR/EUR.chr$chr.frq.gz"; #webserver
  			my $fin = IO::Zlib->new($file, 'rb');
 			while(<$fin>){
@@ -120,7 +120,7 @@ if(defined $chrcol && defined $poscol){
 		$GWAS{$line[$rsIDcol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);
 	}
 
-#local 	my $dbSNP = "/media/sf_SAMSUNG/dbSNP/snp146_pos_allele.txt";
+#local 	my $dbSNP = "/media/sf_SAMSUNG/dbSNP/snp146_pos_allele.txt"; #local
 	my $dbSNP = "/data/dbSNP/snp146_pos_allele.txt"; #webserver
  	open(DB, "$dbSNP") or die "Cannot opne $dbSNP\n";
 	open(SNP, ">$outSNPs");

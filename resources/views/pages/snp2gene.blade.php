@@ -41,7 +41,7 @@
 
 @section('content')
 <div id="wrapper" class="active">
-  <div id="sidebar-wrapper">
+  <div id="sidebar-wrapper" style="height: 100%">
     <ul class="sidebar-nav" id="sidebar-menu">
       <li class="sidebar-brand"><a id="menu-toggle"><tab><i id="main_icon" class="fa fa-chevron-left"></i></a></li>
     </ul>
@@ -65,7 +65,7 @@
 
   <div id="page-content-wrapper">
     <div class="page-content inset">
-      <div id="queryJob" class="sidePanel container" style="padding-top:50px;">
+      <div id="queryJob" class="sidePanel container" style="padding-top:50px; height:100%;">
         {!! Form::open(array('url' => 'snp2gene/queryJob')) !!}
         <!-- Query existing job -->
         <h3>Query existing job</h3>
@@ -903,7 +903,7 @@
 
       <!-- results panel -->
       <!-- job info table -->
-      <div class="sidePanel container" style="padding-top:50px;" id="jobInfo">
+      <div class="sidePanel container" style="padding-top:50px; height:100%" id="jobInfo">
         <h3 style="color: #00004d">Information of your job</h3>
         <div id="jobInfoTable"></div>
         <div id="ErrorMess"></div>

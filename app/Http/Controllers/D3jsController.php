@@ -48,11 +48,11 @@ class D3jsController extends Controller
     }
 
     public function manhattan($type, $jobID, $file){
-#local       if($type=="jobs"){
-#local         $filedir = storage_path().'/jobs/'.$jobID.'/';
-#local       }else{
-#local         $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$jobID."/";
-#local       }
+#local       if($type=="jobs"){ #local
+#local         $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
+#local       }else{ #local
+#local         $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$jobID."/"; #local
+#local       } #local
 
       $filedir = "/data/IPGAP/".$type."/".$jobID."/"; #webserver
 
@@ -91,11 +91,11 @@ class D3jsController extends Controller
     }
 
     public function QQplot($type, $jobID, $plot){
-#local       if($type=="jobs"){
-#local         $filedir = storage_path().'/jobs/'.$jobID.'/';
-#local       }else{
-#local         $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$jobID."/";
-#local       }
+#local       if($type=="jobs"){ #local
+#local         $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
+#local       }else{ #local
+#local         $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$jobID."/"; #local
+#local       } #local
 
       $filedir = "/data/IPGAP/".$type."/".$jobID."/"; #webserver
 
@@ -132,7 +132,7 @@ class D3jsController extends Controller
     }
 
     public function d3js_GWAS_textfile($dbName, $file){
-#local       $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$dbName."/";
+#local       $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$dbName."/"; #local
       $filedir = '/data/IPGAP/gwasDB/'.$dbName.'/'; #webserver
       $f = $filedir.$file;
       if(file_exists($f)){
@@ -147,7 +147,7 @@ class D3jsController extends Controller
     }
 
     public function d3js_GWAS_QQ($dbName, $type){
-#local       $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$dbName."/";
+#local       $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$dbName."/"; #local
       $filedir = '/data/IPGAP/gwasDB/'.$dbName.'/'; #webserver
       if(strcmp($type,"SNP")==0){
       	$file=$filedir."QQSNPs.txt";

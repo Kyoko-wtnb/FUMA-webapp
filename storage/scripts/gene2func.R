@@ -117,7 +117,7 @@ gtex.exp$norm <- temp$value
 write.table(gtex.exp, paste(filedir, "exp.txt", sep=""), quote=F, row.names=F, sep="\t")
 rm(hc, gtex.exp, gtex.exp.log2, gtex.exp.norm, temp)
 
-#local source(paste(filedir, "../../scripts/GeneSet.R", sep=""))
+#local source(paste(filedir, "../../scripts/GeneSet.R", sep="")) #local
 source("/var/www/IPGAP/storage/scripts/GeneSet.R") #webserver
 
 DEG <- DEGtest(genes, allgenes=bkgenes, MHC=MHC)
@@ -134,15 +134,15 @@ rm(DEGgeneral)
 geneTable <- ENSG.all.genes[ENSG.all.genes$ensembl_gene_id %in% genes,]
 geneTable <- subset(geneTable, select=c("ensembl_gene_id", "entrezID", "external_gene_name"))
 colnames(geneTable) <- c("ensg", "entrezID", "symbol")
-#local load(paste(filedir, "../../data/entrez2mim.RData", sep=""))
+#local load(paste(filedir, "../../data/entrez2mim.RData", sep="")) #local
 load("/data/genes/entrez2mim.RData") #webserver
 
-#local load(paste(filedir, "../../data/entrez2uniprot.RData", sep=""))
+#local load(paste(filedir, "../../data/entrez2uniprot.RData", sep="")) #local
 load("/data/genes/entrez2uniprot.RData") #webserver
 geneTable$OMIM <- entrez2mim$mim[match(geneTable$entrezID, entrez2mim$entrezID)]
 geneTable$uniprotID <- entrez2uniprot$uniprotID[match(geneTable$entrezID, entrez2uniprot$entrezID)]
 geneTable$DrugBank <- NA
-#local load(paste(filedir, "../../data/DrugBank.RData", sep=""))
+#local load(paste(filedir, "../../data/DrugBank.RData", sep="")) #local
 load("/data/genes/DrugBank.RData") #webserver
 
 geneTable$DrugBank <- DrugBank$DrugBank[match(geneTable$uniprotID, DrugBank$uniprotID)]

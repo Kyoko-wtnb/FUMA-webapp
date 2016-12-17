@@ -95,7 +95,7 @@ class JobController extends Controller
       //   'posMap'=>$posMap,
       //   'eqtlMap'=>$eqtlMap
       // ]);
-#local       #return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']);
+#local       #return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']); #local
       // return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'jobquery']);
       // return redirect("/snp2gene/$jobID");
       echo "$filedir:$posMap:$eqtlMap";
@@ -403,7 +403,7 @@ class JobController extends Controller
       //   'eqtlMapChr15Meth'=>$eqtlMapChr15Meth
       // ]);
 
-#local       // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']);
+#local       // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local
       # return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob']);
       return redirect("/snp2gene/$jobID");
     }
@@ -612,7 +612,7 @@ class JobController extends Controller
         $type = "interval";
         $rowI = $request -> input('annotPlotSelect_interval');
       }
-#local       file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", "$type $rowI");
+#local       file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", "$type $rowI"); #local
 
       $GWAS=0;
       $CADD=0;
