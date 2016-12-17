@@ -3,18 +3,6 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-<script type="text/javascript">
-  <!--hide
-  // var password;
-  // var pass1 = "CTGLab01";
-  // password = prompt("Please enter password to go IPGAP website");
-  // if(password==pass1){
-  //   alert("Correct password, click 'OK' to enter!!");
-  // }else{
-  //   window.location="http://www.google.com";
-  // }
-  //-->
-</script>
 @stop
 @section('content')
 <div class="container" style="padding-top:50px;">
@@ -25,6 +13,11 @@
     Publicly available data resources and tools used in this applications are accessible from <a href="/IPGAP/links">links</a> tab.</p>
     All you need to prepare is to get GWAS summary statistics of phenotype of interest and submit at <a href="/IPGAP/snp2gene">SNP2GENE</a>.
     You can also query a list of genes directory from <a href="/IPGAP/gene2func">GENE2FUNC</a>.
+  </p>
+
+  <p>Please log in to seubmit GWAS summary statistics at <a href="/IPGAP/snp2gene">SNP2GENE</a>.
+    If you have't registered yet, you can do from <a href="/register">here</a>.<br/>
+    <a href="/IPGAP/gene2func">GENE2FUNC</a> can be performed solely without registration.
   </p>
   <p>
     Since, FUMA provides a variety of parameters, please follow the <a href="/IPGAP/tutorial">Tutorial</a>.
@@ -42,14 +35,7 @@
         Tutorial has been updated.
       </div>
     </div>
-    <div class="panel panel-info">
-      <div class="panel-heading" data-toggle="collapse" data-target="#news1">
-        <h4><a>2016-11-26 (Sat): Update of the style.</a></h4>
-      </div>
-      <div class="panel-body collapse" id="news1">
-        Test news feed. Design has been updated.
-      </div>
-    </div>
+
   </div>
 </div>
 </br>
