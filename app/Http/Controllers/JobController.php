@@ -3,6 +3,7 @@
 namespace IPGAP\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use IPGAP\Http\Requests;
 use IPGAP\Http\Controllers\Controller;
@@ -15,6 +16,20 @@ use JavaScript;
 
 class JobController extends Controller
 {
+    
+    public function getJobList($email = '')
+    {
+        if( $email){
+            $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
+        }
+        else{
+            $results = DB::select('SELECT * FROM SubmitJobs');
+        }
+        
+        return response()->json($results);
+
+    }
+    
     public function JobCheck(Request $request){
       $email = $request -> input('Email');
       $jobtitle = $request -> input('jobtitle');
