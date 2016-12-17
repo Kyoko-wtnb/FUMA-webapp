@@ -66,7 +66,7 @@ if(eqtlplot==1){
 }
 write.table(snps, paste(filedir, "annotPlot.txt", sep=""), quote=F, row.names=F, sep="\t")
 
-#local load(paste(filedir, "../../data/ENSG.all.genes.RData", sep=""))
+#local load(paste(filedir, "../../data/ENSG.all.genes.RData", sep="")) #local
 load("/data/ENSG/ENSG.all.genes.RData") #webserver
 
 xmin <- min(snps$pos)-500000

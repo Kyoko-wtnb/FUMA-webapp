@@ -10,7 +10,7 @@ my $in = $filedir."annotPlot.txt";
 my $out = $filedir."Chr15.txt";
 
 if($cells[0] eq 'all'){
-#local   @cells = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`;
+#local   @cells = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`; #local
   @cells = `ls /data/Chr15States/*.bed.gz`;
   chomp @cells; #webserver
   foreach my $i (0..$#cells){
@@ -43,7 +43,7 @@ if($end-$start == 0){
 open(OUT, ">$out") or die "$out";
 print OUT "cell\tstart\tend\tstate\n";
 foreach my $cell (sort @cells){
-#local   my $file="/media/sf_Documents/VU/Data/Chr15States/States/$cell\_core15.bed.gz";
+#local   my $file="/media/sf_Documents/VU/Data/Chr15States/States/$cell\_core15.bed.gz"; #local
   my $file="/data/Chr15States/$cell\_core15.bed.gz";
   my @line = split(/\n/, `tabix $file $chr:$start-$end`); #webserver
   foreach my $l (@line){

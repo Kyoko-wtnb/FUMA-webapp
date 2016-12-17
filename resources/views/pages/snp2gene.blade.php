@@ -42,7 +42,7 @@
 @stop
 @section('content')
 <div id="wrapper" class="active">
-  <div id="sidebar-wrapper">
+  <div id="sidebar-wrapper" style="height: 100%">
     <ul class="sidebar-nav" id="sidebar-menu">
       <li class="sidebar-brand"><a id="menu-toggle"><tab><i id="main_icon" class="fa fa-chevron-left"></i></a></li>
     </ul>
@@ -73,7 +73,7 @@
 
       <!-- results panel -->
       <!-- job info table -->
-      <div class="sidePanel container" style="padding-top:50px;" id="jobInfo">
+      <div class="sidePanel container" style="padding-top:50px; height:100%" id="jobInfo">
         <h3 style="color: #00004d">Information of your job</h3>
         <div id="jobInfoTable"></div>
         <div id="ErrorMess"></div>

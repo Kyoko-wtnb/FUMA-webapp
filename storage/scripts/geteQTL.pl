@@ -24,11 +24,11 @@ my $out = $filedir."eqtl.txt";
 my @ts;
 if($tsall eq "all"){
 #local 	my @temp = `ls /media/sf_SAMSUNG/GTEx/Tabix/*.txt.gz`;
-#webserver	my @temp = `ls /data/QTL/GTEx/*.sig.txt.gz`; #webserver
+	my @temp = `ls /data/QTL/GTEx/*.sig.txt.gz`; #webserver
 	chomp @temp;
 	foreach my $f (@temp){
 #local 		$f =~ /Tabix\/(.+)\.txt\.gz/;
-		$f =~ /GTEx\/(.+)\.sig\.txt\.gz/; #webserver #webserver
+		$f =~ /GTEx\/(.+)\.sig\.txt\.gz/; #webserver
 		push @ts, "GTEx_".$1;
 	}
 	push @ts, "BloodeQTL_BloodeQTL";
