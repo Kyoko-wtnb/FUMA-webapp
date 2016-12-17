@@ -151,7 +151,6 @@ class JobController extends Controller
           return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatRegions']);
         }
       }
-      session_start();
 
       $date = date('Y-m-d H:i:s');
       $jobID;
@@ -163,46 +162,20 @@ class JobController extends Controller
       }else{
         $jobtitle="None";
       }
-
-      if($email==null){
-        $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
-        $jobID = $jobID->njob;
-        $jobID++;
-        DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
-                                      'created_at'=>$date, 'updated_at'=>$date, 'status'=>"NEW"]);
-        $filedir = config('app.jobdir').'/jobs/'.$jobID;
-
-        File::makeDirectory($filedir, 0775, true);
-      }else{
-        $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
-        $exists = false;
-        foreach($results as $row){
-          if($row->title==$jobtitle){
-            $exists = true;
-            $jobID = $row->jobID;
-            break;
-          }
-        }
-
-        if($exists){
-          $filedir = config('app.jobdir').'/jobs/'.$jobID;
-          File::cleanDirectory($filedir);
-          DB::table('SubmitJobs') -> where('jobID', $jobID)
-                            -> update(['created_at'=>$date, 'updated_at'=>$date, 'status'=>'NEW']);
-        }else{
-          $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
-          $jobID = $jobID->njob;
-          $jobID++;
-          $filedir = config('app.jobdir').'/jobs/'.$jobID;
-          File::makeDirectory($filedir);
-          DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
-                                        'created_at'=>$date, 'updated_at'=>$date, 'status'=>'NEW']);
-        }
-      }
-      $_SESSION['snp2gene'] = $jobID;
-      $_SESSION['gene2func'] = $jobID;
-      print_r ($_SESSION);
-      // $sessionID = $request->session()->get('key');
+      
+      // Create new job in database
+      $submitJob = new SubmitJob;
+      $submitJob->email = $email;
+      $submitJob->title = $jobtitle;
+      $submitJob->status = 'NEW';
+      $submitJob->save();
+      
+      // Get jobID (automatically generated)
+      $jobID = $submitJob->jobID;
+      
+      // create job directory
+      $filedir = config('app.jobdir').'/jobs/'.$jobID;
+      File::makeDirectory($filedir, $mode = 0755, $recursive = true);
 
       // upload input Filesystem
       $leadSNPs = "input.lead";
@@ -433,7 +406,7 @@ class JobController extends Controller
 
 #local       // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local
       # return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob']);
-      return redirect("/snp2gene/$jobID");
+      return redirect("/snp2gene#joblist-panel");
     }
 
     public function CandidateSelection(Request $request){
