@@ -6,8 +6,8 @@ ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
 annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 annot <- annot[annot$uniqID %in% snps$uniqID,]
-load(paste(filedir,"../../data/ENSG.all.genes.RData", sep="")) #local #local
-#webserver load(paste("/data/ENSG/ENSG.all.genes.RData", sep=""))
+#local load(paste(filedir,"../../data/ENSG.all.genes.RData", sep="")) #local
+load(paste("/data/ENSG/ENSG.all.genes.RData", sep="")) #webserver
 annov$symbol <- ENSG.all.genes$external_gene_name[match(annov$gene, ENSG.all.genes$ensembl_gene_id)]
 annov$symbol[is.na(annov$symbol)] <- annov$gene[is.na(annov$symbol)]
 annov$chr <- snps$chr[match(annov$uniqID, snps$uniqID)]

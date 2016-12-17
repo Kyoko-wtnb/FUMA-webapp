@@ -66,8 +66,8 @@ if(eqtlplot==1){
 }
 write.table(snps, paste(filedir, "annotPlot.txt", sep=""), quote=F, row.names=F, sep="\t")
 
-load(paste(filedir, "../../data/ENSG.all.genes.RData", sep="")) #local #local
-#webserver load("/data/ENSG/ENSG.all.genes.RData")
+#local load(paste(filedir, "../../data/ENSG.all.genes.RData", sep="")) #local
+load("/data/ENSG/ENSG.all.genes.RData") #webserver
 
 xmin <- min(snps$pos)-500000
 xmax <- max(snps$pos)+500000
