@@ -55,7 +55,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'noreply@ctglab.nl', 'name' => 'CTG Mailer'],
+    'from' => ['address' => 'noreply@ctglab.nl', 'name' => 'FUMA web application'],
 
     /*
     |--------------------------------------------------------------------------
