@@ -10,6 +10,7 @@ use IPGAP\Http\Requests;
 use IPGAP\Http\Controllers\Controller;
 use Symfony\Component\Process\Process;
 use View;
+use Auth;
 use Storage;
 use File;
 use JavaScript;
@@ -17,25 +18,28 @@ use JavaScript;
 
 class JobController extends Controller
 {
+    protected $user;
     
     public function __construct()
     {
         // Protect this Controller
         $this->middleware('auth');
+        
+        // Store user
+        $this->user = Auth::user();
     }
     
-    public function getJobList($email = '', $limit = 10)
+    public function getJobList()
     {
+        $email = $this->user->email;
+        
         if( $email){
             $results = SubmitJob::where('email', $email)
                 ->orderBy('created_at', 'desc')
-                ->take($limit)
                 ->get();
         }
         else{
-            $results = SubmitJob::orderBy('created_at', 'desc')
-                ->take($limit)
-                ->get();
+            $results = array();
         }
         
         return response()->json($results);
@@ -152,11 +156,8 @@ class JobController extends Controller
       $date = date('Y-m-d H:i:s');
       $jobID;
       $filedir;
-      if($request->has("NewJobEmail")){
-        $email = $request -> input('NewJobEmail');
-      }else{
-        $email=null;
-      }
+      $email = $this->user->email;
+      
       if($request->has("NewJobTitle")){
         $jobtitle = $request -> input('NewJobTitle');
       }else{
