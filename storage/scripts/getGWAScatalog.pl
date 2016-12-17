@@ -4,9 +4,15 @@ use warnings;
 
 die "Error: not enought arguments\nUSAGE: ./getGWAScatalog.pl <filedir>" if(@ARGV<1);
 my $filedir = $ARGV[0];
+<<<<<<< HEAD
 #local my $gwascat = "/media/sf_Documents/VU/Data/GWAScatalog/gwas_catalog_e85_2016-09-27.txt.gz"; #local
 my $gwascat = "/data/GWAScatalog/gwas_catalog_e85_2016-09-27.txt.gz"; #webserver
 my $in = $filedir."snps.txt";
+=======
+#local my $gwascat = "/media/sf_Documents/VU/Data/GWAScatalog/gwas_catalog_e85_2016-09-27.txt.gz";
+my $gwascat = "/data/GWAScatalog/gwas_catalog_e85_2016-09-27.txt.gz";
+ #webservermy $in = $filedir."snps.txt"; #webserver
+>>>>>>> parent of bd609f4... minor bug fixed
 my $out = $filedir."gwascatalog.txt";
 
 #my $head = `gzip -cd $gwascat | head -1`;

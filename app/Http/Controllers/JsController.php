@@ -38,8 +38,6 @@ class JsController extends Controller
       $table = '<table class="table table-bordered" style="width:auto;"><tr><td>email</td><td>'.$row->email
         .'</td></tr><tr><td>job title</td><td>'.$row->title.'</td></tr><tr><td>job submitted</td><td>'
         .$row->created_date."</td></tr>";
-      // $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      // $params = file($filedir."params.txt");
       $table .= "<table>";
       echo $table;
     }
