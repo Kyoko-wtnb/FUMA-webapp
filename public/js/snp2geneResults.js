@@ -23,6 +23,11 @@ $(document).ready(function(){
   });
 
   if(status.length==0){
+    if(typeof(Storage) !== "undefined"){
+        if(localStorage.getItem('snp2gene')!=null){
+          window.location = preurl+'/'+localStorage.getItem('snp2gene');
+        }
+    }
   }else if(status=="fileFormatGWAS"){
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
       +'<b>Provided file (GWAS summary statistics) format is not valid. Only text files are acceptable (extention does not matter).</b>'
@@ -42,6 +47,7 @@ $(document).ready(function(){
       $('#annotPlotChr15Opt').hide();
     }
 
+    localStorage.setItem('snp2gene', jobid);
     AjaxLoad();
     var jobStatus;
     var jobcheck = setInterval(function(){
