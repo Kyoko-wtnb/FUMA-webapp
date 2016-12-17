@@ -66,6 +66,13 @@
   <div id="page-content-wrapper">
     <div class="page-content inset">
 
+      <<<<<<< destination:884741244b9bd6954ba9ee74944519cab2a7a4f4
+
+=======
+        @include('snp2gene.joblist')
+        @include('snp2gene.queryjob')
+        @include('snp2gene.newjob')
+>>>>>>> source:ca5dcffd988e27d4866fd608742619f8c057d62e
 
       <!-- results panel -->
       <!-- job info table -->
