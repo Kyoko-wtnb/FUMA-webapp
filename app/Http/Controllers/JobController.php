@@ -5,6 +5,7 @@ namespace IPGAP\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use IPGAP\SubmitJob;
 use IPGAP\Http\Requests;
 use IPGAP\Http\Controllers\Controller;
 use Symfony\Component\Process\Process;
@@ -17,13 +18,18 @@ use JavaScript;
 class JobController extends Controller
 {
     
-    public function getJobList($email = '')
+    public function getJobList($email = '', $limit = 10)
     {
         if( $email){
-            $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
+            $results = SubmitJob::where('email', $email)
+                ->orderBy('created_at', 'desc')
+                ->take($limit)
+                ->get();
         }
         else{
-            $results = DB::select('SELECT * FROM SubmitJobs');
+            $results = SubmitJob::orderBy('created_at', 'desc')
+                ->take($limit)
+                ->get();
         }
         
         return response()->json($results);

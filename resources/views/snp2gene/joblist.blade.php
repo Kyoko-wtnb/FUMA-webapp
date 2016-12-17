@@ -16,7 +16,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="3">Retrieving data</td>
+                        <td colspan="4">Retrieving data</td>
                     </tr>
                 </tbody>
             </table>
@@ -28,11 +28,14 @@
     $(document).ready(function() {
         
         // Get Joblist
-        $.getJSON( subdir + "snp2gene/getJobList", function( data ) {
-            var items = 'No Jobs Found';
+        $.getJSON( subdir + "/snp2gene/getJobList", function( data ) {
+            var items = '<tr><td colspan="4">No Jobs Found</td></tr>';
             if(data){
                 items = '';
                 $.each( data, function( key, val ) {
+                    if(val.status == 'OK'){
+                        val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">Go to results</a>';
+                    }
                     items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"+val.created_at+"</td><td>"+val.status+"</td></tr>";
                 });
             }
@@ -42,6 +45,5 @@
                 .empty()
                 .append(items);
         });
-        
     });
 </script>
