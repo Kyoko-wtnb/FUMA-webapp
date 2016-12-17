@@ -66,6 +66,10 @@
   <div id="page-content-wrapper">
     <div class="page-content inset">
 
+      @include('snp2gene.joblist')
+      @include('snp2gene.queryjob')
+      @include('snp2gene.newjob')
+
       <!-- results panel -->
       <!-- job info table -->
       <div class="sidePanel container" style="padding-top:50px; height:100%" id="jobInfo">
