@@ -37,7 +37,8 @@ class JsController extends Controller
       $row = $row[0];
       $table = '<table class="table table-bordered" style="width:auto;"><tr><td>email</td><td>'.$row->email
         .'</td></tr><tr><td>job title</td><td>'.$row->title.'</td></tr><tr><td>job submitted</td><td>'
-        .$row->created_date."</td></tr>";
+
+      .$row->created_at."</td></tr>";
       $table .= "<table>";
       echo $table;
     }

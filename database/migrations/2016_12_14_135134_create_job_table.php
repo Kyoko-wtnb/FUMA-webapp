@@ -13,12 +13,12 @@ class CreateJobTable extends Migration
     public function up()
     {
         Schema::create('SubmitJobs', function (Blueprint $table) {
-            $table->string('jobID')->unique();
-            $table->string('email');
-            $table->string('title');
-            $table->string('created_date');
-            $table->string('last_access');
-            $table->string('status');
+            $table->bigIncrements('jobID');
+            $table->string('email')->default('Not set');
+            $table->string('title')->default('Not set');
+            $table->date('created_at');
+            $table->date('updated_at');
+            $table->string('status')->default('NEW');
 
             // Add indexes
             $table->index('email');

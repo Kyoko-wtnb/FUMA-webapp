@@ -3,7 +3,9 @@
 namespace IPGAP\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use IPGAP\SubmitJob;
 use IPGAP\Http\Requests;
 use IPGAP\Http\Controllers\Controller;
 use Symfony\Component\Process\Process;
@@ -15,6 +17,25 @@ use JavaScript;
 
 class JobController extends Controller
 {
+    
+    public function getJobList($email = '', $limit = 10)
+    {
+        if( $email){
+            $results = SubmitJob::where('email', $email)
+                ->orderBy('created_at', 'desc')
+                ->take($limit)
+                ->get();
+        }
+        else{
+            $results = SubmitJob::orderBy('created_at', 'desc')
+                ->take($limit)
+                ->get();
+        }
+        
+        return response()->json($results);
+
+    }
+    
     public function JobCheck(Request $request){
       $email = $request -> input('Email');
       $jobtitle = $request -> input('jobtitle');
@@ -79,14 +100,14 @@ class JobController extends Controller
       $jobID = $request->input('jobID');
       $date = date('Y-m-d H:i:s');
       DB::table('SubmitJobs') -> where('jobID', $jobID)
-                        -> update(['last_access'=>$date]);
+                        -> update(['updated_at'=>$date]);
 
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $params = file($filedir."params.txt");
       $posMap = preg_split("/[\t]/", chop($params[18]))[1];
       $eqtlMap = preg_split("/[\t]/", chop($params[27]))[1];
       // get jobID
-      // update last_access date
+      // update updated_at date
       // JavaScript::put([
       //   'jobtype'=>'jobquery',
       //   // 'email'=>$email,
@@ -95,7 +116,7 @@ class JobController extends Controller
       //   'posMap'=>$posMap,
       //   'eqtlMap'=>$eqtlMap
       // ]);
-#local       #return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']); #local
+      #return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']); #local #local
       // return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'jobquery']);
       // return redirect("/snp2gene/$jobID");
       echo "$filedir:$posMap:$eqtlMap";
@@ -141,10 +162,10 @@ class JobController extends Controller
         $jobID = $jobID->njob;
         $jobID++;
         DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>'Not Given', 'title'=>$jobtitle,
-                                      'created_date'=>$date, 'last_access'=>$date, 'status'=>"NEW"]);
+                                      'created_at'=>$date, 'updated_at'=>$date, 'status'=>"NEW"]);
         $filedir = config('app.jobdir').'/jobs/'.$jobID;
 
-        File::makeDirectory($filedir);
+        File::makeDirectory($filedir, 0775, true);
       }else{
         $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
         $exists = false;
@@ -160,7 +181,7 @@ class JobController extends Controller
           $filedir = config('app.jobdir').'/jobs/'.$jobID;
           File::cleanDirectory($filedir);
           DB::table('SubmitJobs') -> where('jobID', $jobID)
-                            -> update(['created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
+                            -> update(['created_at'=>$date, 'updated_at'=>$date, 'status'=>'NEW']);
         }else{
           $jobID = DB::select('SELECT COUNT(jobID) as njob FROM SubmitJobs')[0];
           $jobID = $jobID->njob;
@@ -168,7 +189,7 @@ class JobController extends Controller
           $filedir = config('app.jobdir').'/jobs/'.$jobID;
           File::makeDirectory($filedir);
           DB::table('SubmitJobs') -> insert(['jobID'=>$jobID, 'email'=>$email, 'title'=>$jobtitle,
-                                        'created_date'=>$date, 'last_access'=>$date, 'status'=>'NEW']);
+                                        'created_at'=>$date, 'updated_at'=>$date, 'status'=>'NEW']);
         }
       }
       $_SESSION['snp2gene'] = $jobID;
@@ -403,7 +424,7 @@ class JobController extends Controller
       //   'eqtlMapChr15Meth'=>$eqtlMapChr15Meth
       // ]);
 
-#local       // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local
+      // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local #local
       # return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob']);
       return redirect("/snp2gene/$jobID");
     }
@@ -612,7 +633,7 @@ class JobController extends Controller
         $type = "interval";
         $rowI = $request -> input('annotPlotSelect_interval');
       }
-#local       file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", "$type $rowI"); #local
+      file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", "$type $rowI"); #local #local
 
       $GWAS=0;
       $CADD=0;
@@ -1112,7 +1133,7 @@ class JobController extends Controller
       $all_row = array();
       $all_row[] = array_combine($head, $rows[0]);
       $json = array('data'=>$all_row);
-#local       // file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", json_encode($all_row));#local
+      // file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", json_encode($all_row));#local #local
       // foreach($results as $row){
       //   if($row->title==$jobtitle){
       //     $exists = true;

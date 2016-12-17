@@ -6,9 +6,9 @@ use Vcf;
 die "ERROR: not enough arguments\nUSAGE: ./exacext.pl <filedir>\n" if(@ARGV < 1);
 
 my $filedir = $ARGV[0];
-#local my $file = "/media/sf_Documents/VU/Data/ExAC0.3/ExAC.r0.3.sites.vep.vcf.gz"; #local
+my $file = "/media/sf_Documents/VU/Data/ExAC0.3/ExAC.r0.3.sites.vep.vcf.gz"; #local #local
 my $file = "/data/ExAC/ExAC.r0.3.sites.vep.vcf.gz";
-my $in = $filedir."intervals.txt"; #webserver #webserver
+#webserver my $in = $filedir."intervals.txt"; #webserver
 my $out = $filedir."ExAC.txt";
 
 open(IN, "$in") or die "Cannot open $in\n";

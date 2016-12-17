@@ -1,6 +1,6 @@
 <!-- <html> -->
 @extends('layouts.simple')
-
+@section('head')
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -1122,7 +1122,7 @@ function geneOver(genes, x, width){
 }
 
 </script>
-
+@stop
 @section('content')
 <canvas id="canvas" style="display:none;"></canvas>
 

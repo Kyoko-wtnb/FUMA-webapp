@@ -23,21 +23,21 @@ my $out = $filedir."eqtl.txt";
 #tissues
 my @ts;
 if($tsall eq "all"){
-#local 	my @temp = `ls /media/sf_SAMSUNG/GTEx/Tabix/*.txt.gz`;
+	my @temp = `ls /media/sf_SAMSUNG/GTEx/Tabix/*.txt.gz`; #local
 <<<<<<< HEAD
-	my @temp = `ls /data/QTL/GTEx/*.sig.txt.gz`; #webserver
+#webserver 	my @temp = `ls /data/QTL/GTEx/*.sig.txt.gz`;
 	chomp @temp;
 	foreach my $f (@temp){
-#local 		$f =~ /Tabix\/(.+)\.txt\.gz/;
-		$f =~ /GTEx\/(.+)\.sig\.txt\.gz/; #webserver
+		$f =~ /Tabix\/(.+)\.txt\.gz/; #local
+#webserver 		$f =~ /GTEx\/(.+)\.sig\.txt\.gz/;
 		push @ts, "GTEx_".$1;
 =======
 	my @temp = `ls /data/QTL/GTEx/*.sig.txt.gz`;
- #webserver	chomp @temp; #webserver
+#webserver 	chomp @temp; #webserver
 	foreach my $f (@temp){
-#local 		$f =~ /Tabix\/(.+)\.txt\.gz/;
+		$f =~ /Tabix\/(.+)\.txt\.gz/; #local
 		$f =~ /GTEx\/(.+)\.sig\.txt\.gz/;
- #webserver		push @ts, "GTEx_".$1; #webserver
+#webserver 		push @ts, "GTEx_".$1; #webserver
 >>>>>>> parent of bd609f4... minor bug fixed
 	}
 	push @ts, "BloodeQTL_BloodeQTL";
@@ -91,14 +91,14 @@ foreach my $s (keys %db){
 	my @files = split(/:/, $db{$s});
 	if($s eq "GTEx"){
 		foreach my $f (@files){
-#local 			my $file = "/media/sf_SAMSUNG/GTEx/Tabix/".$f;
+			my $file = "/media/sf_SAMSUNG/GTEx/Tabix/".$f; #local
 			my $file = "/data/QTL/GTEx/".$f;
- #webserver			$f =~ /(.+)\.txt.gz/; #webserver
+#webserver 			$f =~ /(.+)\.txt.gz/; #webserver
 			my $ts = $1;
 			my $f2 = $ts.".sig.txt.gz";
-#local 			my $file2 = "/media/sf_SAMSUNG/GTEx/TabixSig/".$f2;
+			my $file2 = "/media/sf_SAMSUNG/GTEx/TabixSig/".$f2; #local
 			my $file2 = "/data/QTL/GTEx/".$f2;
- #webserver			foreach my $lid (sort {$a<=>$b} keys %Loci){ #webserver
+#webserver 			foreach my $lid (sort {$a<=>$b} keys %Loci){ #webserver
 				my $chr = $Loci{$lid}{"chr"};
 				my $start = $Loci{$lid}{"start"};
 				my $end = $Loci{$lid}{"end"};
@@ -137,9 +137,9 @@ foreach my $s (keys %db){
 		foreach my $f (@files){
 			$f =~ /(.+)\.txt.gz/;
 			my $ts = $1;
-#local 			my $file = "/media/sf_SAMSUNG/".$s."/".$f;
+			my $file = "/media/sf_SAMSUNG/".$s."/".$f; #local
 			my $file = "/data/QTL/".$s."/".$f;
- #webserver			foreach my $lid (sort {$a<=>$b} keys %Loci){ #webserver
+#webserver 			foreach my $lid (sort {$a<=>$b} keys %Loci){ #webserver
 				my $chr = $Loci{$lid}{"chr"};
 				my $start = $Loci{$lid}{"start"};
 				my $end = $Loci{$lid}{"end"};
