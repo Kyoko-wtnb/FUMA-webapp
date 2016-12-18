@@ -1,23 +1,37 @@
 $(document).ready(function(){
-
-  $('.sidePanel').each(function(){
-    $('#'+this.id).hide();
-    $('#'+this.id+'sub').hide();
-  });
-
-  $('#sidebar.sidebar-nav li a').click(function(){
-    $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-    $(this).parent().addClass("active");
-    $('.sidePanel').each(function(){
-      $('#'+this.id).hide();
-      $('#'+this.id+'sub').hide();
-    });
-    var id = $(this).attr("href");
-    if($(id+'sub').length>0){
-      $(id+'sub').show();
+    
+    function showPanel(hash) {
+        
+        // Hide all panels
+        $('.sidePanel').each(function(){
+            $('#'+this.id).hide();
+            $('#'+this.id+'sub').hide();
+        });
+        
+        // Remove active class from menu
+        $("#sidebar.sidebar-nav").find(".active").removeClass("active");
+        
+        // Show the current tab
+        $(hash).show();
+        $(hash+'sub').show();
+        
+        // Add active class to parent
+        $("#sidebar.sidebar-nav a[href='"+hash+"']").parent().addClass("active");
     }
-    $(id).show();
-  });
+    
+    // Default panel
+    showPanel('#joblist-panel');
+
+    // Activate tab on click
+    $('#sidebar.sidebar-nav li a').click(function(){
+      showPanel($(this).attr("href"));
+    });
+
+    // Activate correct tab depending on hash
+    var hash = window.location.hash;
+    if(hash){
+      showPanel(hash);
+    }
 
   $("#menu-toggle").click(function(e) {
       e.preventDefault();
@@ -28,4 +42,7 @@ $(document).ready(function(){
         $('#main_icon').attr("class", "fa fa-chevron-right");
       }
   });
+  
+
+  
 });
