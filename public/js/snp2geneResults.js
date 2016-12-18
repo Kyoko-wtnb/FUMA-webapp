@@ -99,84 +99,8 @@ $(document).ready(function(){
     }, 5000);
 
     function newJob(){
-      var filedir;
-      var posMap;
-      var eqtlMap;
-      $.ajax({
-        url: 'CandidateSelection',
-        type: 'POST',
-        data: {
-            jobID: jobid
-        },
-        processing: true,
-        beforeSend: function(){
-          // $('#logSNPfiltering').append('<h4>Your job is running<img src="'+public_path+'" align="middle"/></h4>');
-          JobRunLoad();
-        },
-        success: function(data){
-          // $('#logSNPfiltering').html('<div class="alert alert-success"><h4> Step 1. Candidate SNPs filtering is done</h4></div>');
-          // $('#test').html(data);
-          // $('#overlay').remove();
-        },
-        error: function(){
-          // alert("Error occored (SNPfilt)");
-        },
-        complete: function(){
-          $('#overlay').remove();
-          $('#logs').hide();
-
-          $.ajax({
-            url: 'checkJobStatus',
-            type: "POST",
-            data: {
-              jobID: jobid,
-            },
-            error: function(){
-              alert("ERROR: checkJobStatus")
-            },
-            success: function(data){
-              // $('#test').html(data);
-              jobStatus = data;
-            },
-            complete: function(){
-              if(jobStatus=="OK"){
-                $.ajax({
-                    url: 'getParams',
-                    type: 'POST',
-                    data:{
-                      jobID: jobid
-                    },
-                    error: function(){
-                      alert("JobQuery getParams error");
-                    },
-                    success: function(data){
-                      // $('#test').html(data)
-                      var tmp = data.split(":");
-                      filedir = tmp[0];
-                      posMap = parseInt(tmp[1]);
-                      eqtlMap = parseInt(tmp[2]);
-                    },
-                    complete: function(){
-                      jobInfo(jobid);
-                      GWplot(jobid);
-                      QQplot(jobid);
-                      showResultTables(filedir, jobid, posMap, eqtlMap);
-                      $('#results').show();
-                      $('#jobinfoSide').show();
-                      $('#resultsSide').show();
-
-                    }
-                });
-              }else{
-                errorHandling(jobStatus);
-                $('#jobinfoSide').show();
-                jobInfo(jobid);
-                $('a[href="#jobInfo"]').trigger('click');
-              }
-            }
-          });
-        }
-      });
+      $('#jobinfoSide').show();
+      jobInfo(jobid);
     }
 
     function loadResults(){
@@ -185,19 +109,6 @@ $(document).ready(function(){
       var eqtlMap;
       // AjaxLoad();
       $('#jobinfoSide').show();
-      // $('.sidePanel').each(function(){
-      //   if(this.id=="jobInfo"){
-      //     $('#'+this.id).show();
-      //   }else{
-      //     $('#'+this.id).hide();
-      //   }
-      // });
-      // $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-      // $('#sidebar.sidebar-nav li a').each(function(){
-      //   if($(this).attr("href")=="#jobInfo"){
-      //     $(this).parent().addClass("active");
-      //   }
-      // });
       $.ajax({
           url: 'getParams',
           type: 'POST',

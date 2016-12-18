@@ -49,53 +49,6 @@ class JobController extends Controller
 
     }
 
-    public function JobCheck(Request $request){
-      $email = $request -> input('Email');
-      $jobtitle = $request -> input('jobtitle');
-
-      if(!filter_var($email, FILTER_VALIDATE_EMAIL)===false){
-        $results = DB::select('SELECT * FROM SubmitJobs WHERE email=?', [$email]);
-        $exists = false;
-        foreach($results as $row){
-          if($row->title==$jobtitle){
-            $exists = true;
-            break;
-          }
-        }
-        if($exists){return "2";}
-        else{return "1";}
-      }else{
-        return "3";
-      }
-    }
-
-    public function getJobID(Request $request){
-      if($request -> has('JobQueryEmail')){
-        $email = $request -> input('JobQueryEmail');
-      }else{
-        $email = null;
-      }
-
-      if($request -> has('JobQueryTitle')){
-        $jobtitle = $request -> input('JobQueryTitle');
-      }else{
-        $jobtitle = " None";
-      }
-
-      $results = DB::select('SELECT * FROM SubmitJobs WHERE email=? AND title=?', [$email, $jobtitle]);
-      // $exists = false;
-      $jobID = 0;
-      foreach($results as $row){
-        // if($row->title==$jobtitle){
-          // $exists = true;
-          $jobID = $row->jobID;
-          // break;
-        // }
-      }
-
-      return redirect("/snp2gene/$jobID");
-    }
-
     public function checkJobStatus(Request $request){
       $jobID = $request->input('jobID');
       $results = DB::select('SELECT * FROM SubmitJobs WHERE jobID=?', [$jobID]);
