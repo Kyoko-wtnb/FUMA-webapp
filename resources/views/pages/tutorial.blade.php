@@ -11,7 +11,7 @@
       side.push($(this).attr("href"));
     })
     if(hashid==""){
-      $('#overview').show();
+      $('a[href*="#overview"]').trigger('click');
     }else{
       if(side.indexOf(hashid)>=0){
         // $(hashid).show();

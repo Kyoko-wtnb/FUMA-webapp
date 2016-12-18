@@ -1,37 +1,37 @@
 $(document).ready(function(){
-    
+
     function showPanel(hash) {
-        
+
         // Hide all panels
         $('.sidePanel').each(function(){
             $('#'+this.id).hide();
             $('#'+this.id+'sub').hide();
         });
-        
+
         // Remove active class from menu
         $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-        
+
         // Show the current tab
         $(hash).show();
         $(hash+'sub').show();
-        
+
         // Add active class to parent
         $("#sidebar.sidebar-nav a[href='"+hash+"']").parent().addClass("active");
     }
-    
+
     // Default panel
-    showPanel('#joblist-panel');
+    // showPanel('#joblist-panel'); //snp2gene page specific
 
     // Activate tab on click
     $('#sidebar.sidebar-nav li a').click(function(){
       showPanel($(this).attr("href"));
     });
 
-    // Activate correct tab depending on hash
-    var hash = window.location.hash;
-    if(hash){
-      showPanel(hash);
-    }
+    // Activate correct tab depending on hash //define in each page
+    // var hash = window.location.hash;
+    // if(hash){
+    //   showPanel(hash);
+    // }
 
   $("#menu-toggle").click(function(e) {
       e.preventDefault();
@@ -42,7 +42,7 @@ $(document).ready(function(){
         $('#main_icon').attr("class", "fa fa-chevron-right");
       }
   });
-  
 
-  
+
+
 });

@@ -1,5 +1,14 @@
 var geneTable;
 $(document).ready(function(){
+
+  var hashid = window.location.hash;
+  if(hashid==""){
+    $('a[href="#newquery"]').trigger('click');
+  }else{
+    console.log(hashid);
+    $('a[href="'+hashid+'"]').trigger('click');
+  }
+
   $(".ImgDown").on('click', function(){
     var id = $(this).attr("id");
     id = id.replace("Img", "");

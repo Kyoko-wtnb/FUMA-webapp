@@ -5,7 +5,12 @@ var posAnnotPlot;
 $(document).ready(function(){
 
   var hashid = window.location.hash;
-  $('a[href="#'+hashid+'"]').trigger('click');
+  if(hashid==""){
+    $('a[href="#joblist-panel"]').trigger('click');
+  }else{
+    console.log(hashid);
+    $('a[href="'+hashid+'"]').trigger('click');
+  }
 
   // plot download
   $(".ImgDown").on('click', function(){
@@ -80,7 +85,7 @@ $(document).ready(function(){
               errorHandling(jobStatus);
               $('#jobinfoSide').show();
               jobInfo(jobid);
-              $('a[href="#jobInfo"]').trigger('click');
+              // $('a[href="#jobInfo"]').trigger('click');
             }
             return;
           }else{
@@ -162,19 +167,7 @@ $(document).ready(function(){
                       $('#results').show();
                       $('#jobinfoSide').show();
                       $('#resultsSide').show();
-                      $('.sidePanel').each(function(){
-                        if(this.id=="jobInfo"){
-                          $('#'+this.id).show();
-                        }else{
-                          $('#'+this.id).hide();
-                        }
-                      });
-                      $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-                      $('#sidebar.sidebar-nav li a').each(function(){
-                        if($(this).attr("href")=="#jobInfo"){
-                          $(this).parent().addClass("active");
-                        }
-                      });
+
                     }
                 });
               }else{
@@ -195,19 +188,19 @@ $(document).ready(function(){
       var eqtlMap;
       // AjaxLoad();
       $('#jobinfoSide').show();
-      $('.sidePanel').each(function(){
-        if(this.id=="jobInfo"){
-          $('#'+this.id).show();
-        }else{
-          $('#'+this.id).hide();
-        }
-      });
-      $("#sidebar.sidebar-nav").find(".active").removeClass("active");
-      $('#sidebar.sidebar-nav li a').each(function(){
-        if($(this).attr("href")=="#jobInfo"){
-          $(this).parent().addClass("active");
-        }
-      });
+      // $('.sidePanel').each(function(){
+      //   if(this.id=="jobInfo"){
+      //     $('#'+this.id).show();
+      //   }else{
+      //     $('#'+this.id).hide();
+      //   }
+      // });
+      // $("#sidebar.sidebar-nav").find(".active").removeClass("active");
+      // $('#sidebar.sidebar-nav li a').each(function(){
+      //   if($(this).attr("href")=="#jobInfo"){
+      //     $(this).parent().addClass("active");
+      //   }
+      // });
       $.ajax({
           url: 'getParams',
           type: 'POST',
