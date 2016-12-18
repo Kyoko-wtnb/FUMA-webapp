@@ -44,10 +44,6 @@ Route::post('snp2gene/jobcheck', 'JobController@JobCheck');
 Route::post('snp2gene/newJob', 'JobController@newJob');
 
 Route::post('snp2gene/queryJob', 'JobController@getJobID');
-// Route::get('snp2gene/queryJob/{jobID}', 'JobController@queryJob');
-// Route::get('snp2gene/queryJob/{jobID}', function(){
-//   return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>query]);
-// });
 
 Route::post('snp2gene/checkJobStatus', 'JobController@checkJobStatus');
 

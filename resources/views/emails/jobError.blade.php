@@ -4,7 +4,7 @@
 
 <p>
   There was an error occured during the process of your job (job title: {{ $jobtitle }}).<br/>
-  ERROR: {{ $status }} ?>
+  ERROR: {{ $status }}
 
   <?php
   if($status==1){

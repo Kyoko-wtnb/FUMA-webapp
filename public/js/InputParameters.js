@@ -502,32 +502,3 @@ function CheckAll(){
   if(submit){$('#SubmitNewJob').attr("disabled", false)}
   else{$('#SubmitNewJob').attr("disabled", true)}
 }
-
-
-function JobQueryCheck(){
-  var Email = $('#JobQueryEmail').val();
-  var jobtitle = $('#JobQueryTitle').val();
-  if(Email.length>0 && jobtitle.length>0){
-    $.ajax({
-      url: subdir+"/snp2gene/jobcheck",
-      type: 'POST',
-      data: {
-        'Email': Email,
-        'jobtitle': jobtitle
-      },
-      success: function(data){
-        if(data==="2"){
-          $("#go2job").attr('disabled', false);
-          $("#JobQueryChecked").html("<br/><div class='alert alert-success'>OK. Press 'Go to Job' to query the job.</div>");
-        }else{
-          $("#go2job").attr('disabled', false);
-          $("#JobQueryChecked").html("<br/><div class='alert alert-danger'>Sorry, the job does not exists. Please check email and job title again.</div>");
-        }
-      }
-    });
-  }else{
-    $("#JobQueryChecked").html("<br/><div class='alert alert-info'>Please enter both E-mail and job title.</div>");
-    $("#go2job").attr('disabled', true);
-  }
-
-}

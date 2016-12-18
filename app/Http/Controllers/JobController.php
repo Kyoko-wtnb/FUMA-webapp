@@ -17,6 +17,7 @@ use JavaScript;
 // use Zipper;
 use Mail;
 use IPGAP\User;
+use IPGAP\Jobs\snp2geneProcess;
 
 class JobController extends Controller
 {
@@ -118,19 +119,7 @@ class JobController extends Controller
       $params = file($filedir."params.txt");
       $posMap = preg_split("/[\t]/", chop($params[18]))[1];
       $eqtlMap = preg_split("/[\t]/", chop($params[27]))[1];
-      // get jobID
-      // update updated_at date
-      // JavaScript::put([
-      //   'jobtype'=>'jobquery',
-      //   // 'email'=>$email,
-      //   'jobID'=>$jobID,
-      //   'filedir'=>$filedir,
-      //   'posMap'=>$posMap,
-      //   'eqtlMap'=>$eqtlMap
-      // ]);
-#local       #return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'jobquery']); #local
-      // return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'jobquery']);
-      // return redirect("/snp2gene/$jobID");
+
       echo "$filedir:$posMap:$eqtlMap";
     }
 
@@ -362,244 +351,10 @@ class JobController extends Controller
       File::append($paramfile, "eqtlMap min RegulomeDB\t$eqtlMapRDBth\n");
       File::append($paramfile, "eqtlMap chromatin state filterinf tissues\t$eqtlMapChr15\n");
       File::append($paramfile, "eqtlMap max chromatin state\t$eqtlMapChr15Max\n");
-      File::append($paramfile, "eqtlMap chromatin state filtering method\t$eqtlMapChr15Meth\n");
 
-      // JavaScript::put([
-      //   'jobtype'=>'newjob',
-      //   'email'=>$email,
-      //   'jobtitle'=>$jobtitle,
-      //   'jobID'=>$jobID,
-      //   'filedir'=>$filedir.'/',
-      //   'leadSNPsfileup'=>$leadSNPsfileup,
-      //   'regionsfileup'=>$regionsfileup,
-      //   'gwasformat'=>$gwasformat,
-      //   'addleadSNPs'=>$addleadSNPs,
-      //   'N' => $N,
-      //   'leadP'=>$leadP,
-      //   'r2'=>$r2,
-      //   'gwasP'=>$gwasP,
-      //   'pop'=>$pop,
-      //   'KGSNPs'=>$KGSNPs,
-      //   'maf'=>$maf,
-      //   'mergeDist'=>$mergeDist,
-      //   // 'Xchr' => $Xchr,
-      //   'exMHC'=>$exMHC,
-      //   'extMHC'=>$extMHC,
-      //   'genetype'=>$genetype,
-      //   'posMap'=>$posMap,
-      //   'posMapWindow'=>$posMapWindow,
-      //   'posMapWindowSize'=>$posMapWindowSize,
-      //   'posMapAnnot'=>$posMapAnnot,
-      //   'posMapCADDth'=>$posMapCADDth,
-      //   'posMapRDBth'=>$posMapRDBth,
-      //   'posMapChr15'=>$posMapChr15,
-      //   'posMapChr15Max'=>$posMapChr15Max,
-      //   'posMapChr15Meth'=>$posMapChr15Meth,
-      //   'eqtlMap'=>$eqtlMap,
-      //   'eqtlMaptss'=>$eqtlMaptss,
-      //   'eqtlMapSigeqtl'=>$sigeqtl,
-      //   'eqtlMapeqtlP'=>$eqtlP,
-      //   'eqtlMapCADDth'=>$eqtlMapCADDth,
-      //   'eqtlMapRDBth'=>$eqtlMapRDBth,
-      //   'eqtlMapChr15'=>$eqtlMapChr15,
-      //   'eqtlMapChr15Max'=>$eqtlMapChr15Max,
-      //   'eqtlMapChr15Meth'=>$eqtlMapChr15Meth
-      // ]);
-
-#local       // return view('pages.snp2gene', ['jobID'=>$jobID, 'status'=>'newjob']); #local
-      # return view('pages.snp2gene', ['jobID'=>$jobID,'status'=>'newjob']);
+      $user = DB::table('users')->where('email', $email)->first();
+      $this->dispatch(new snp2geneProcess($user, $jobID));
       return redirect("/snp2gene#joblist-panel");
-    }
-
-    public function CandidateSelection(Request $request){
-      // $args = $request->all();
-      // $args = json_encode($args);
-      // $script = storage_path().'/scripts/snp2gene.py';
-      // exec("python $script $args");
-      $jobID = $request->input('jobID');
-      // $email = $request -> input('email');
-      // $jobtitle = $request -> input('jobtitle');
-      // $filedir = $request -> input('filedir');
-
-      $results = DB::select('SELECT * FROM SubmitJobs WHERE jobID=?', [$jobID]);
-      $email = $results[0]->email;
-      if(strcmp($email, "Not Given")==0){$email==null;}
-      $jobtitle = $results[0]->title;
-
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      $params = file($filedir."params.txt");
-      // $gwasformat = preg_split("/[\t]/", chop($params[3]))[1];
-      $leadfile = preg_split("/[\t]/", chop($params[4]))[1];
-      if(strcmp($leadfile, "Not given")==0){$leadfile=0;}
-      else{$leadfile=1;}
-      $addleadSNPs = preg_split("/[\t]/", chop($params[5]))[1];
-      $regionfile = preg_split("/[\t]/", chop($params[6]))[1];
-      if(strcmp($regionfile, "Not given")==0){$regionfile=0;}
-      else{$regionfile=1;}
-      $N = preg_split("/[\t]/", chop($params[7]))[1];
-      $leadP = preg_split("/[\t]/", chop($params[11]))[1];
-      $r2 = preg_split("/[\t]/", chop($params[12]))[1];
-      $gwasP = preg_split("/[\t]/", chop($params[13]))[1];
-      $pop = preg_split("/[\t]/", chop($params[14]))[1];
-      $maf = preg_split("/[\t]/", chop($params[15]))[1];
-      $KGSNPs = preg_split("/[\t]/", chop($params[16]))[1];
-      $mergeDist = preg_split("/[\t]/", chop($params[17]))[1];
-      // $Xchr = $request -> input('Xchr');
-      $exMHC = preg_split("/[\t]/", chop($params[8]))[1];
-      $extMHC = preg_split("/[\t]/", chop($params[9]))[1];
-      $genetype = preg_split("/[\t]/", chop($params[10]))[1];
-      $posMap = preg_split("/[\t]/", chop($params[18]))[1];
-      $posMapWindow = preg_split("/[\t]/", chop($params[19]))[1];
-      $posMapWindowSize = preg_split("/[\t]/", chop($params[20]))[1];
-      $posMapAnnot = preg_split("/[\t]/", chop($params[21]))[1];
-      $posMapCADDth = preg_split("/[\t]/", chop($params[22]))[1];
-      $posMapRDBth = preg_split("/[\t]/", chop($params[23]))[1];
-      $posMapChr15 = preg_split("/[\t]/", chop($params[24]))[1];
-      $posMapChr15Max = preg_split("/[\t]/", chop($params[25]))[1];
-      $posMapChr15Meth = preg_split("/[\t]/", chop($params[26]))[1];
-      $eqtlMap = preg_split("/[\t]/", chop($params[27]))[1];
-      $eqtlMaptss = preg_split("/[\t]/", chop($params[28]))[1];
-      $eqtlMapSigeqtl = preg_split("/[\t]/", chop($params[29]))[1];
-      $eqtlMapeqtlP = preg_split("/[\t]/", chop($params[30]))[1];
-      $eqtlMapCADDth = preg_split("/[\t]/", chop($params[31]))[1];
-      $eqtlMapRDBth = preg_split("/[\t]/", chop($params[32]))[1];
-      $eqtlMapChr15 = preg_split("/[\t]/", chop($params[33]))[1];
-      $eqtlMapChr15Max = preg_split("/[\t]/", chop($params[34]))[1];
-      $eqtlMapChr15Meth = preg_split("/[\t]/", chop($params[35]))[1];
-
-
-      $logfile = $filedir."job.log";
-      DB::table('SubmitJobs') -> where('jobID', $jobID)
-                        -> update(['status'=>'RUNNING']);
-
-
-      $script = storage_path().'/scripts/gwas_file.pl';
-      exec("perl $script $filedir >>$logfile", $output, $error);
-      if($error != 0){
-        DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:001']);
-        if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 1);
-          return;
-        }
-      }
-      $script = storage_path().'/scripts/magma.pl';
-      exec("perl $script $filedir $N $pop >>$logfile", $output, $error);
-      if($error != 0){
-        DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:002']);
-        if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 2);
-          return;
-        }
-      }
-
-      $script = storage_path().'/scripts/manhattan_filt.py';
-      exec("python $script $filedir >>$logfile", $output, $error);
-      if($error != 0){
-        DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:003']);
-        if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 3);
-          return;
-        }
-      }
-
-      $script = storage_path().'/scripts/QQSNPs_filt.py';
-      exec("python $script $filedir >>$logfile", $output, $error);
-      if($error != 0){
-        DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:004']);
-        if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 4);
-          return;
-        }
-      }
-
-      $script = storage_path().'/scripts/getLD.pl';
-      // $process = new Proces("/usr/bin/perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC");
-      // $process -> start();
-      // echo "perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC";
-      exec("perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC >>$logfile", $output, $error);
-      if($error != 0){
-        $NoCandidates = false;
-        foreach($outputs as $l){
-          if(preg_match("No candidate SNP was identified", $l)==1){
-            $NoCandidates = true;
-            break;
-          }
-        }
-        if($NoCandidates){
-          DB::table('SubmitJobs') -> where('jobID', $jobID)
-                            -> update(['status'=>'ERROR:005']);
-          if($email!=null){
-            $this->sendJobCompMail($email, $jobtitle, $jobID, 5);
-            return;
-          }
-        }else{
-          DB::table('SubmitJobs') -> where('jobID', $jobID)
-                            -> update(['status'=>'ERROR:006']);
-          if($email!=null){
-            $this->sendJobCompMail($email, $jobtitle, $jobID, 6);
-            return;
-          }
-        }
-
-      }
-      $script = storage_path().'/scripts/SNPannot.R';
-      exec("Rscript $script $filedir >>$logfile", $output, $error);
-      if($error != 0){
-        DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:007']);
-        if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 7);
-          return;
-        }
-      }
-      $script = storage_path().'/scripts/getGWAScatalog.pl';
-      exec("perl $script $filedir >>$logfile", $output, $error);
-      if($error != 0){
-        DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:008']);
-        if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 8);
-          return;
-        }
-      }
-
-      #$script = storage_path().'/scripts/getExAC.pl';
-      #exec("perl $script $filedir");
-      if($eqtlMap==1){
-        $script = storage_path().'/scripts/geteQTL.pl';
-        exec("perl $script $filedir $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP >>$logfile", $output, $error);
-        if($error != 0){
-          DB::table('SubmitJobs') -> where('jobID', $jobID)
-                            -> update(['status'=>'ERROR:009']);
-          if($email!=null){
-            $this->sendJobCompMail($email, $jobtitle, $jobID, 9);
-            return;
-          }
-        }
-      }
-
-      $script = storage_path().'/scripts/geneMap.R';
-      exec("Rscript $script $filedir $genetype $exMHC $extMHC $posMap $posMapWindow $posMapWindowSize $posMapAnnot $posMapCADDth $posMapRDBth $posMapChr15 $posMapChr15Max $posMapChr15Meth $eqtlMap $eqtlMaptss $eqtlMapSigeqtl $eqtlMapeqtlP $eqtlMapCADDth $eqtlMapRDBth $eqtlMapChr15 $eqtlMapChr15Max $eqtlMapChr15Meth >>$logfile", $output, $error);
-      if($error != 0){
-        DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:010']);
-        if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 10);
-          return;
-        }
-      }
-
-      DB::table('SubmitJobs') -> where('jobID', $jobID)
-                        -> update(['status'=>'OK']);
-
-      if($email != null){
-        $this->sendJobCompMail($email, $jobtitle, $jobID, 0);
-      }
-      return;
     }
 
     public function annotPlot(Request $request){
@@ -1142,39 +897,4 @@ class JobController extends Controller
       return response() -> download($filedir);
     }
 
-    public function sendJobCompMail($email, $jobtitle, $jobID, $status){
-      if($status==0){
-        $user = DB::table('users')->where('email', $email)->first();
-        $data = [
-          'jobID'=>$jobID,
-          'jobtitle'=>$jobtitle
-        ];
-        Mail::send('emails.jobComplete', $data, function($m) use($user){
-          $m->from('noreply@ctglab.nl', "FUMA web application");
-          $m->to($user->email, $user->name)->subject("FUMA your job has been completed");
-        });
-      }else{
-        $user = DB::table('users')->where('email', $email)->first();
-        $data = [
-          'status'=>$status,
-          'jobtitle'=>$jobtitle
-        ];
-        Mail::send('emails.jobError', $data, function($m) use($user){
-          $m->from('noreply@ctglab.nl', "FUMA web application");
-          $m->to($user->email, $user->name)->subject("FUMA an error occured");
-        });
-
-
-      // $headers = "MIME-Version: 1.0". "\r\n";
-      // $headers .= "Content-type:text/html;charset=UTF-8"."\r\n";
-      // $headers .= "From: <k.watanabe@vu.nl>"."\r\n";
-
-        $user = User::where('email', '=', $email);
-        Mail::send(['text'=>$message], ['user'=>$user], function($m) use($user){
-          $m->from('noreply@ctglab.nl', "FUMA web application");
-          $m->to($user->email, $user->name)->subject($subject);
-        });
-      // mail($email, $subject, $message, $headers, "-r $email");
-    }
-  }
 }
