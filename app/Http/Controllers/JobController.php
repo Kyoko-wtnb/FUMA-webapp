@@ -304,6 +304,7 @@ class JobController extends Controller
       File::append($paramfile, "eqtlMap min RegulomeDB\t$eqtlMapRDBth\n");
       File::append($paramfile, "eqtlMap chromatin state filterinf tissues\t$eqtlMapChr15\n");
       File::append($paramfile, "eqtlMap max chromatin state\t$eqtlMapChr15Max\n");
+      File::append($paramfile, "eqtlMap chromatin state filtering method\t$eqtlsMapChr15Meth\n");
 
       $user = DB::table('users')->where('email', $email)->first();
       $this->dispatch(new snp2geneProcess($user, $jobID));
