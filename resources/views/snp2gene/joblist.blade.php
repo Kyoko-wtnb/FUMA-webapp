@@ -1,4 +1,4 @@
-<div id="joblist-panel" class="sidePanel container" style="padding-top:50px; height:100vh;">
+<div id="joblist-panel" class="sidePanel container" style="padding-top:50px; min-height:100%;">
     <h3>My Jobs</h3>
     <div class="panel panel-default">
         <div class="panel-heading">

@@ -15,24 +15,26 @@ use Storage;
 use File;
 use JavaScript;
 // use Zipper;
+use Mail;
+use IPGAP\User;
 
 class JobController extends Controller
 {
     protected $user;
-    
+
     public function __construct()
     {
         // Protect this Controller
         $this->middleware('auth');
-        
+
         // Store user
         $this->user = Auth::user();
     }
-    
+
     public function getJobList()
     {
         $email = $this->user->email;
-        
+
         if( $email){
             $results = SubmitJob::where('email', $email)
                 ->orderBy('created_at', 'desc')
@@ -41,11 +43,11 @@ class JobController extends Controller
         else{
             $results = array();
         }
-        
+
         return response()->json($results);
 
     }
-    
+
     public function JobCheck(Request $request){
       $email = $request -> input('Email');
       $jobtitle = $request -> input('jobtitle');
@@ -156,23 +158,23 @@ class JobController extends Controller
       $jobID;
       $filedir;
       $email = $this->user->email;
-      
+
       if($request->has("NewJobTitle")){
         $jobtitle = $request -> input('NewJobTitle');
       }else{
         $jobtitle="None";
       }
-      
+
       // Create new job in database
       $submitJob = new SubmitJob;
       $submitJob->email = $email;
       $submitJob->title = $jobtitle;
       $submitJob->status = 'NEW';
       $submitJob->save();
-      
+
       // Get jobID (automatically generated)
       $jobID = $submitJob->jobID;
-      
+
       // create job directory
       $filedir = config('app.jobdir').'/jobs/'.$jobID;
       File::makeDirectory($filedir, $mode = 0755, $recursive = true);
@@ -477,7 +479,7 @@ class JobController extends Controller
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:001']);
         if($email!=null){
-          $this->sendJobCommpMail($email, $jobtitle, $jobID, 1);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 1);
           return;
         }
       }
@@ -487,7 +489,7 @@ class JobController extends Controller
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:002']);
         if($email!=null){
-          $this->sendJobCommpMail($email, $jobtitle, $jobID, 2);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 2);
           return;
         }
       }
@@ -498,7 +500,7 @@ class JobController extends Controller
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:003']);
         if($email!=null){
-          $this->sendJobCommpMail($email, $jobtitle, $jobID, 3);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 3);
           return;
         }
       }
@@ -509,7 +511,7 @@ class JobController extends Controller
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:004']);
         if($email!=null){
-          $this->sendJobCommpMail($email, $jobtitle, $jobID, 4);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 4);
           return;
         }
       }
@@ -531,14 +533,14 @@ class JobController extends Controller
           DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:005']);
           if($email!=null){
-            $this->sendJobCommpMail($email, $jobtitle, $jobID, 5);
+            $this->sendJobCompMail($email, $jobtitle, $jobID, 5);
             return;
           }
         }else{
           DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:006']);
           if($email!=null){
-            $this->sendJobCommpMail($email, $jobtitle, $jobID, 6);
+            $this->sendJobCompMail($email, $jobtitle, $jobID, 6);
             return;
           }
         }
@@ -550,7 +552,7 @@ class JobController extends Controller
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:007']);
         if($email!=null){
-          $this->sendJobCommpMail($email, $jobtitle, $jobID, 7);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 7);
           return;
         }
       }
@@ -560,7 +562,7 @@ class JobController extends Controller
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:008']);
         if($email!=null){
-          $this->sendJobCommpMail($email, $jobtitle, $jobID, 8);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 8);
           return;
         }
       }
@@ -574,7 +576,7 @@ class JobController extends Controller
           DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:009']);
           if($email!=null){
-            $this->sendJobCommpMail($email, $jobtitle, $jobID, 9);
+            $this->sendJobCompMail($email, $jobtitle, $jobID, 9);
             return;
           }
         }
@@ -586,7 +588,7 @@ class JobController extends Controller
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:010']);
         if($email!=null){
-          $this->sendJobCommpMail($email, $jobtitle, $jobID, 10);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 10);
           return;
         }
       }
@@ -1142,96 +1144,37 @@ class JobController extends Controller
 
     public function sendJobCompMail($email, $jobtitle, $jobID, $status){
       if($status==0){
-        $subject = "GWAS ATLAS job has been completed";
-        $message = "
-        <html>
-        <head><h3>GWAS ATLAS job has been completed!!</h3></head>
-        <body>
-        Your job has been completed.<br/>
-        Pleas follow the link to go to the results page.<br/>
-        <a href=".'"http://ctg.labs.vu.nl/IPGAP/snp2gene/'.$jobID.'"'.">SNP2GENE job query</a><br/>
-        <br/>
-        <h4>Job summary</h4>
-        your email: ".$email."<br/>
-        your job title: ".$jobtitle."<br/>
-        You can also use those information to qury your results.<br/>
-        <br/>
-        Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
-        Kyoko Watanabe<br/>
-        VU University Amsterdam<br/>
-        Dept. Complex Trait Genetics<br/>
-        De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
-        k.watanabe@vu.nl<br/>
-        </body>
-        </html>
-        ";
+        $user = DB::table('users')->where('email', $email)->first();
+        $data = [
+          'jobID'=>$jobID,
+          'jobtitle'=>$jobtitle
+        ];
+        Mail::send('emails.jobComplete', $data, function($m) use($user){
+          $m->from('noreply@ctglab.nl', "FUMA web application");
+          $m->to($user->email, $user->name)->subject("FUMA your job has been completed");
+        });
       }else{
-        $subject = "GWAS ATLAS job, ERROR";
-        $message = "
-        <html>
-        <head><h3>An error occured fruing GWAS ATLAS job</h3></head>
-        <body>
-        There was a error occured during the process.<br/>
-        ERROR: ".$status;
-        if($status==1){
-          $message .= ' (Not enough columns are provided in GWAS summary statistics file)<br/>
-            Please make sure your input file have sufficient column names.
-            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
-        }else if($status==2){
-          $message .= ' (Error from MAGMA)<br/>
-            This error might be because of the rsID and/or p-value columns are wrongly labeled.
-            Please make sure your input file have sufficient column names.
-            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
-        }else if($status==3 | $status==4){
-          $message .= ' (Error during SNPs filtering for manhattan plot)<br/>
-            This error might be because of the p-value column is wrongly labeled.
-            Please make sure your input file have sufficient column names.
-            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
-        }else if($status==5){
-          $message .= ' (Error from lead SNPs and candidate SNPs identification)<br/>
-            This error occures when no candidate SNPs were identified.
-            It might be becaseu there is no significant hit at your defined P-value cutoff for lead SNPs and GWAS tagged SNPs.
-            In that case, you can relax threshold or provide predefined lead SNPs.
-            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#snp2gene">Tutorial<a/> for detilas.<br/>';
-        }else if($status==6){
-          $message .= ' (Error from lead SNPs and candidate SNPs identification)<br/>
-            This error might be because of either invalid input parameters or columns which are wrongly labeled.
-            Please make sure your input file have sufficient column names.
-            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
-        }else if($status==7){
-          $message .= ' (Error during SNPs annotation extraction)<br/>
-            This error might be because of either invalid input parameters or columns which are wrongly labeled.
-            Please make sure your input file have sufficient column names.
-            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
-        }else if($status==8 || $status==9){
-          $message .= ' (Error during extracting external data sources)<br/>
-            This error might be because of either invalid input parameters or columns which are wrongly labeled.
-            Please make sure your input file have sufficient column names.
-            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
-        }else if($status==10){
-          $message .= ' (Error during gene mapping)<br/>
-            This error might be because of either invalid input parameters or columns which are wrongly labeled.
-            Please make sure your input file have sufficient column names.
-            Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
-        }
+        $user = DB::table('users')->where('email', $email)->first();
+        $data = [
+          'status'=>$status,
+          'jobtitle'=>$jobtitle
+        ];
+        Mail::send('emails.jobError', $data, function($m) use($user){
+          $m->from('noreply@ctglab.nl', "FUMA web application");
+          $m->to($user->email, $user->name)->subject("FUMA an error occured");
+        });
 
-      }
 
-      $message .= "
-      Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
-      Kyoko Watanabe<br/>
-      VU University Amsterdam<br/>
-      Dept. Complex Trait Genetics<br/>
-      De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
-      k.watanabe@vu.nl<br/>
-      </body>
-      </html>
-      ";
+      // $headers = "MIME-Version: 1.0". "\r\n";
+      // $headers .= "Content-type:text/html;charset=UTF-8"."\r\n";
+      // $headers .= "From: <k.watanabe@vu.nl>"."\r\n";
 
-      $headers = "MIME-Version: 1.0". "\r\n";
-      $headers .= "Content-type:text/html;charset=UTF-8"."\r\n";
-      $headers .= "From: <k.watanabe@vu.nl>"."\r\n";
-
-      mail($email, $subject, $message, $headers, "-r $email");
+        $user = User::where('email', '=', $email);
+        Mail::send(['text'=>$message], ['user'=>$user], function($m) use($user){
+          $m->from('noreply@ctglab.nl', "FUMA web application");
+          $m->to($user->email, $user->name)->subject($subject);
+        });
+      // mail($email, $subject, $message, $headers, "-r $email");
     }
+  }
 }

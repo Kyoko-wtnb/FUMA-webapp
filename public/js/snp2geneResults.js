@@ -4,6 +4,9 @@ var SNPtable_selected=null;
 var posAnnotPlot;
 $(document).ready(function(){
 
+  var hashid = window.location.hash;
+  $('a[href="#'+hashid+'"]').trigger('click');
+
   // plot download
   $(".ImgDown").on('click', function(){
     var id = $(this).attr("id");
@@ -23,11 +26,12 @@ $(document).ready(function(){
   });
 
   if(status.length==0){
-    if(typeof(Storage) !== "undefined"){
-        if(localStorage.getItem('snp2gene')!=null){
-          window.location = preurl+'/'+localStorage.getItem('snp2gene');
-        }
-    }
+    // don't really need this??
+    // if(typeof(Storage) !== "undefined"){
+    //     if(localStorage.getItem('snp2gene')!=null){
+    //       window.location = preurl+'/'+localStorage.getItem('snp2gene');
+    //     }
+    // }
   }else if(status=="fileFormatGWAS"){
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
       +'<b>Provided file (GWAS summary statistics) format is not valid. Only text files are acceptable (extention does not matter).</b>'
