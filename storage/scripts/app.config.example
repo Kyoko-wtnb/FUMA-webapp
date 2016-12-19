@@ -1,0 +1,15 @@
+# Example config file. Create app.config with the correct settings.
+
+[inputfiles]
+gwas=input.gwas
+leadSNP=input.lead
+regions=input.reagions
+params=params.txt
+
+[magma]
+magmadir=/home/kyoko/bin/magma
+#magmadir=~/Software/MAGMA
+
+[annovar]
+annovdir=/home/kyoko/bin/annovar
+#annovdir=~/annovar
