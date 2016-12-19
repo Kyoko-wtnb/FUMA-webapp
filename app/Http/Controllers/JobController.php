@@ -47,17 +47,16 @@ class JobController extends Controller
 
     }
 
-    public function checkJobStatus(Request $request){
-      $jobID = $request->input('jobID');
-      $results = DB::select('SELECT * FROM SubmitJobs WHERE jobID=?', [$jobID]);
-      if(count($results)==0){
-        return "Notfound";
-      }else{
-        foreach($results as $row){
-          $status = $row->status;
-          return $status;
+    public function checkJobStatus($jobID){
+
+        $job = SubmitJob::where('jobID', $jobID)
+            ->where('email', $this->user->email)->first();
+            
+        if( ! $job ){
+            return "Notfound";
         }
-      }
+
+        return $job->status;
     }
 
     public function getParams(Request $request){
