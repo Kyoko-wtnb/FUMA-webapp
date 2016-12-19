@@ -11,6 +11,9 @@ $(document).ready(function(){
     $('a[href="'+hashid+'"]').trigger('click');
   }
 
+  // Popover
+  $('.infoPop').popover();
+
   // plot download
   $(".ImgDown").on('click', function(){
     var id = $(this).attr("id");

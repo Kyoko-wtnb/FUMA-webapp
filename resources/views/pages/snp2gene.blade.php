@@ -72,7 +72,7 @@
       <!-- results panel -->
       <!-- job info table -->
       <div class="sidePanel container" style="padding-top:50px; height:100vh;" id="jobInfo">
-        <h3 style="color: #00004d">Information of your job</h3>
+        <h4 style="color: #00004d">Information of your job</h4>
         <div id="jobInfoTable"></div>
         <div id="ErrorMess"></div>
       </div>

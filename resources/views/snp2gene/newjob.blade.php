@@ -1,41 +1,44 @@
 <div id="newJob" class="sidePanel container" style="padding-top:50px;">
   {!! Form::open(array('url' => 'snp2gene/newJob', 'files' => true, 'novalidate'=>'novalidate')) !!}
   <!-- New -->
-  <h3>New job submission</h3>
+  <h4 style="color: #00004d">New job submission</h4>
   <!-- Input files upload -->
   <h4>1. Upload input files</h4>
   <div id="fileFormatError"></div>
   <table class="table table-bordered inputTable" id="NewJobFiles" style="width: auto;">
     <tr>
-      <td>GWAS summary statistics</td>
+      <td>GWAS summary statistics
+        <a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file" data-content="The minimum required columns are either chromosome, position on hg19 and P-value or rsID and P-value. Please lift over (or down) to hg19 before you submit. The input file should be plain text format (archived file is not accepptable).">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary" onchange="CheckAll()"/></td>
       <td></td>
     </tr>
-    <!-- <tr>
-      <td>GWAS file format</td>
-      <td>
-        <select class="form-control" name="gwasformat" id="gwasformat" onchange="CheckAll()">
-          <option value="PLINK" selected>PLINK</option>
-          <option value="SNPTEST">SNPTEST</option>
-          <option value="GCTA">GCTA</option>
-          <option value="METAL">METAL</option>
-          <option value="Plain">Plain text</option>
-        </select>
-      </td>
-      <td></td>
-    </tr> -->
     <tr>
-      <td>Predefined lead SNPs</td>
+      <td>Predefined lead SNPs
+        <a class="infoPop" data-toggle="popover" title="Pre-define lead SNPs" data-content="This option would be useful when you already known lead SNPs and prefer to use only those SNPs as lead SNPs. This option can be also used when you want to include specific SNPs as lead SNPs which do no reach significant P-value threshold. The input file should have 3 columns, rsID, chromosome and position with header (header could be anything but the order of columns have to match).">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><input type="file" class="form-control-file" name="leadSNPs" id="leadSNPs" onchange="CheckAll()"/></td>
       <td></td>
     </tr>
     <tr>
-      <td>Identify additional independent lead SNPs</td>
+      <td>Identify additional independent lead SNPs
+        <a class="infoPop" data-toggle="popover" title="Additional identification of lead SNPs" data-content="This option is only vallid when pre-defined lead SNPs are provided. Please unckeck this to NOT IDENTIFY additional lead SNPs than provided ones.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><input type="checkbox" class="form-check-input" name="addleadSNPs" id="addleadSNPs" value="1" checked onchange="CheckAll()"></td>
       <td></td>
     </tr>
     <tr>
-      <td>Predefined genetic region</td>
+      <td>Predefined genomic region
+        <a class="infoPop" data-toggle="popover" title="Pre-defined genomic regions" data-content="This option would be useful when you have specific genomic region to look up. Lead SNPs and SNPs in LD will be limited to within procided regions. The input file should have 3 columns, chromosome, start and end position with header (header could be anything but the order of columns have to match).">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><input type="file" class="form-control-file" name="regions" id="regions" onchange="CheckAll()"/></td>
       <td></td>
     </tr>
@@ -46,12 +49,16 @@
   <h4>2. Parameters for lead SNPs and candidate SNPs identification</h4>
   <table class="table table-bordered inputTable" id="NewJobParams" style="width: auto;">
     <tr>
-      <td>Sample size (N)</td>
+      <td>Sample size (N)
+        <a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of sample used in GWAS. This is only used for MAGMA. It does not affect anything of annotations and prioritizations. If you don't know thie number, the randome number should be fine.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><input type="number" class="form-control" id="N" name="N" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
       <td></td>
     </tr>
     <tr>
-      <td>P-value for lead SNPs (&le;)</td>
+      <td>Minimum P-value of lead SNPs (&le;)</td>
       <td><input type="number" class="form-control" id="leadP" name="leadP" value="5e-8" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
       <td></td>
     </tr>
@@ -61,7 +68,11 @@
       <td></td>
     </tr>
     <tr>
-      <td>GWAS P-value cutoff (&le;)</td>
+      <td>GWAS P-value cutoff (&le;)
+        <a class="infoPop" data-toggle="popover" title="GWAS P-value cutoff" data-content="This threshold is only applied to GWAS tagged SNPs in addition to other threshold such as r2 and MAF.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><input type="number" class="form-control" id="gwasP" name="gwasP" value="0.05" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
       <td></td>
     </tr>
@@ -83,7 +94,11 @@
       </td>
     </tr>
     <tr>
-      <td>Include 1000 genome variant (non-GWAS tagged SNPs in LD)</td>
+      <td>Include 1000 genome variant (non-GWAS tagged SNPs in LD)
+        <a class="infoPop" data-toggle="popover" title="1000G SNPs" data-content="This option is to include kwnon SNPs in 1000G reference panel which are in LD of lead SNPs. Please UNCHECK to NOT INCLUDE these SNPs but only GWAS tagged SNPs.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td>
         <select class="form-control" id="KGSNPs" name="KGSNPs">
           <option selected>Yes</option>
@@ -97,12 +112,20 @@
       </td>
     </tr>
     <tr>
-      <td>MAF cutoff (&ge;)</td>
+      <td>Minimum MAF(&ge;)
+        <a class="infoPop" data-toggle="popover" title="Minimu Minor Allele Frequency" data-content="This is MAF of selected population based on 1000G reference panel. When this is set at 0, all SNPs which have MAF > 0 in the selected population will be included.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><input type="number" class="form-control" id="maf" name="maf" value="0.01" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
       <td></td>
     </tr>
     <tr>
-      <td>Maximum distance between LD blocks to merge into intervals (&le; kb)</td>
+      <td>Maximum distance between LD blocks to merge into a locus (&le; kb)
+        <a class="infoPop" data-toggle="popover" title="Maximum distance between LD blocks to merge" data-content="LD blocks clorser than thie distance will be merged into a genomic locus. If this is set at 0, only phesically overlapped LD blocks will be merged. This is only for representation of GWAS risk loci which does not affect any annotation and prioritization results.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><span class="form-inline"><input type="number" class="form-control" id="mergeDist" name="mergeDist" value="250" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/> kb</span></td>
       <td></td>
     </tr>
@@ -115,23 +138,43 @@
     <h4>Positional mapping</h4>
     <table class="table table-bordered inputTable" id="NewJobPosMap" style="width: auto;">
       <tr>
-        <td>Perform positional mapping</td>
+        <td>Perform positional mapping
+          <a class="infoPop" data-toggle="popover" title="Positional maping" data-content="Positional mapping is based on distances between SNPs to genes. Functional consequences of SNPs on gene functions (such as exonic, intronic and splicing) can also be used in positional mapping.">
+            <i class="fa fa-question-circle-o fa-lg"></i>
+          </a>
+        </td>
         <td><input type="checkbox" class="form-check-input" name="posMap" id="posMap" checked onchange="CheckAll();"></td>
         <td></td>
       </tr>
       <div id="posMapOptions">
         <tr class="posMapOptions">
-          <td>Distance based mapping</td>
+          <td>Distance based mapping
+            <a class="infoPop" data-toggle="popover" title="Distance to genes" data-content="This maps SNPs to genes purely based on distances regardless of functional consequence. Please specify maximum distance in the box below.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="checkbox" class="form-check-input" name="windowCheck" id="windowCheck" checked onchange="CheckAll();"></td>
           <td></td>
         </tr>
         <tr class="posMapOptions">
-          <td>Maximum distance to genes (&le; kb)</td>
+          <td>Maximum distance to genes (&le; kb)
+            <a class="infoPop" data-toggle="popover" title="Maximum distance to genes" data-content="This option is only valid when distance based mapping is performed. Note that 0 includes 1 kb up and down stream regions as 3' UTR and 5' UTR.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><span class="form-inline"><input type="number" class="form-control" id="posMapWindow" name="posMapWindow" value="10" min="0" max="1000" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"> kb</span></td>
           <td></td>
         </tr>
         <tr class="posMapOptions">
-          <td>Annotation based mapping</td>
+          <td>Annotation based mapping
+            <a class="infoPop" data-toggle="popover" title="Annotation based mapping" data-content="This is alternative positional mapping. Instead of mapping all SNPs to genes based on distance, anntation based mapping filters on SNPs that have selected functional consequences on genes. Unless intergenic SNPs are selected, all SNPs have distance 0 to the genes.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+            <br/>
+            <span class="info"><i class="fa fa-info"></i> Multiple annotations can be selected. <br/>
+              (usually ctrl+click (windows) or command+click (OS X))
+            </span>
+          </td>
           <td>
             <span class="multiSelect">
               <a>clear</a><br/>
@@ -152,27 +195,46 @@
     </table>
 
     <div id="posMapOptFilt">
-      Optional SNP filtering by functional annotation
+      Optional SNP filtering by functional annotations for positional mapping<br/>
+      <span class="info"><i class="fa fa-info"></i> This filtering only applies to SNPs mapped by positional mapping criterion. When eQTL mapping is also performed, this filtering can be specified separately.<br/>
+        All these annotations will be available for all SNPs within LD of identified lead SNPs in the result tables, but this filtering affect gene prioritization.
+      </span>
       <table class="table table-bordered inputTable" id="posMapOptFiltTable" style="width: auto;">
         <tr>
           <td rowspan="2">CADD</td>
-          <td>Perform SNPs filtering based on CADD score.</td>
+          <td>Perform SNPs filtering based on CADD score.
+            <a class="infoPop" data-toggle="popover" title="CADD score filtering" data-content="Please check this option to filter SNPs based on CADD score and spacify minimum score in the box below.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="checkbox" class="form-check-input" name="posMapCADDcheck" id="posMapCADDcheck" onchange="CheckAll();"></td>
           <td></td>
         </tr>
         <tr>
-          <td>Minimum CADD score (&ge;)</td>
+          <td>Minimum CADD score (&ge;)
+            <a class="infoPop" data-toggle="popover" title="CADD score" data-content="CADD score is the score of deleteriousness of SNPs. The heigher, the more deleterious. 12.37 is the suggestive threshold to be deleterious. Coding SNPs tend to have high score than non-coding SNPs.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="number" class="form-control" id="posMapCADDth" name="posMapCADDth" value="12.37" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
           <td></td>
         </tr>
         <tr>
           <td rowspan="2">RegulomeDB</td>
-          <td>Perform SNPs filtering baed on ReguomeDB score</td>
+          <td>Perform SNPs filtering baed on ReguomeDB score
+            <a class="infoPop" data-toggle="popover" title="RegulomeDB Score filtering" data-content="Please check this option to filter SNPs based on RegulomeDB score and specify the maximum score in the box below.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="checkbox" class="form-check-input" name="posMapRDBcheck" id="posMapRDBcheck" onchange="CheckAll();"></td>
           <td></td>
         </tr>
         <tr>
-          <td>Maximum RegulomeDB score (categorical)</td>
+          <td>Maximum RegulomeDB score (categorical)
+            <a class="infoPop" data-toggle="popover" title="RegulomeDB score" data-content="RegulomeDB score is a categorical score to represent regulatory function of SNPs based on eQTLs and epigenome information. '1a' is the most likely functional and 7 is the least liekly. Some SNPs have 'NA' which are not assigned any score.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td>
             <!-- <input type="text" class="form-control" id="posMapRDBth" name="posMapRDBth" value="7" style="width: 80px;"> -->
             <select class="form-control" id="posMapRDBth" name="posMapRDBth" onchange="CheckAll();">
@@ -197,16 +259,22 @@
         </tr>
         <tr>
           <td rowspan="4">15-core chromatin state</td>
-          <td>Perform SNPs filtering based on chromatin state</td>
+          <td>Perform SNPs filtering based on chromatin state
+            <a class="infoPop" data-toggle="popover" title="15-core chromatin state filtering" data-content="Please check this option to filter SNPs based on chromatin state and specify the following options.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="checkbox" class="form-check-input" name="posMapChr15check" id="posMapChr15check" onchange="CheckAll();"></td>
           <td></td>
         </tr>
         <tr>
-          <td>Tissue/cell types for 15-core chromatin state</td>
+          <td>Tissue/cell types for 15-core chromatin state<br/>
+              <span class="info"><i class="fa fa-info"></i> Multiple tissue/cell types can be selected.</span>
+          </td>
           <td>
             <span class="multiSelect">
               Individual tissue/cell types:<tab><a>clear</a><br/>
-              <select multiple class="form-control" style="width: 250px; overflow:auto;" id="posMapChr15Ts" name="posMapChr15Ts[]" onchange="CheckAll();">
+              <select multiple class="form-control" id="posMapChr15Ts" name="posMapChr15Ts[]" onchange="CheckAll();">
                 <option value="all">All</option>
                 <option value='E001'>E001 (ESC) ES-I3 Cells</option>
                 <option value='E002'>E002 (ESC) ES-WA7 Cells</option>
@@ -340,6 +408,7 @@
             <br/>
             <span class="multiSelect">
               General tissue/cell types:<tab><a>clear</a><br/>
+              <span class="info"><i class="fa fa-info"></i> Numbers in parentheses represent the numbr of epigenoms belongs to the correspond tissue types (anatomy).</span>
               <select multiple class="form-control" id="posMapChr15Gts" name="posMapChr15Gts[]" onchange="CheckAll();">
                 <option value="all">All</option>
                 <option value='E080'>Adrenal (1)</option>
@@ -377,12 +446,20 @@
           <td></td>
         </tr>
         <tr>
-          <td>15-core chromatin state maximum state</td>
+          <td>15-core chromatin state maximum state
+            <a class="infoPop" data-toggle="popover" title="The maximum chromatin state" data-content="The chromatin state represents accessibility of genomic regions (every 200bp) with 15 categorical states. Generally, states &le; 7 are open in given tissue/cell types.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="number" class="form-control" id="posMapChr15Max" name="posMapChr15Max" value="7" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
           <td></td>
         </tr>
         <tr>
-          <td>15-core chromatin state filtering method</td>
+          <td>15-core chromatin state filtering method
+            <a class="infoPop" data-toggle="popover" title="Filtering method for chromatin state" data-content="When multiple tissye/cell types are selected, SNPs will be kept if they have chromatin state lower than the threshold in any of, majority of or all of selected tissue/cell types.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td>
             <select  class="form-control" id="posMapChr15Meth" name="posMapChr15Meth" onchange="CheckAll();">
               <option selected value="any">any</option>
@@ -400,13 +477,21 @@
     <h4>eQTL mapping</h4>
     <table class="table table-bordered inputTable" id="NewJobEqtlMap" style="width: auto;">
       <tr>
-        <td>Perform eQTL mapping</td>
+        <td>Perform eQTL mapping
+          <a class="infoPop" data-toggle="popover" title="eQTL mapping" data-content="eQTL mapping maps SNPs to genes based on eQTL information. This maps SNPs to genes up to 1 Mb part (cis-eQTL). Please check this option to perform eQTL mapping.">
+            <i class="fa fa-question-circle-o fa-lg"></i>
+          </a>
+        </td>
         <td><input type="checkbox" calss="form-control" name="eqtlMap", id="eqtlMap" onchange="CheckAll();"></td>
         <td></td>
       </tr>
       <!-- <div id="eqtlMapOptions"> -->
         <tr class="eqtlMapOptions">
-          <td>Tissue types</td>
+          <td>Tissue types
+            <a class="infoPop" data-toggle="popover" title="Tissue types of eQTLs" data-content="This is mandatory parameter for eQTL mapping. Currentlly 44 tissue types from GTEx and two large scale eQTL study of blood cell are available.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td>
             <span class="multiSelect">
               Tissue types: <tab><a>clear</a><br/>
@@ -496,7 +581,11 @@
           <td></td>
         </tr>
         <tr class="eqtlMapOptions">
-          <td>eQTL P-value threshold</td>
+          <td>eQTL P-value threshold
+            <a class="infoPop" data-toggle="popover" title="eQTL P-value threshold" data-content="By default, only significant eQTLs are used (FDR &le; 0.05). Please UNCHECK 'Use only significant snp-gene pair' to filter eQTLs based on raw P-value.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td>
             <span class="form-inline">Use only significant snp-gene pairs: <input type="checkbox" class="form-control" name="sigeqtlCheck" id="sigeqtlCheck" checked onchange="CheckAll();"> (FDR&le;0.05)</span><br/>
             OR<br/>
@@ -508,27 +597,46 @@
     </table>
 
     <div id="eqtlMapOptFilt">
-      Optional SNP filtering by functional annotation
+      Optional SNP filtering by functional annotation for eQTL mapping<br/>
+      <span class="info"><i class="fa fa-info"></i> This filtering only applies to SNPs mapped by eQTL mapping criterion.<br/>
+        All these annotations will be available for all SNPs within LD of identified lead SNPs in the result tables, but this filtering affect gene prioritization.
+      </span>
       <table class="table table-bordered inputTable" id="eqtlMapOptFiltTable">
         <tr>
           <td rowspan="2">CADD</td>
-          <td>Perform SNPs filtering based on CADD score.</td>
+          <td>Perform SNPs filtering based on CADD score.
+            <a class="infoPop" data-toggle="popover" title="CADD score filtering" data-content="Please check this option to filter SNPs based on CADD score and spacify minimum score in the box below.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="checkbox" class="form-check-input" name="eqtlMapCADDcheck" id="eqtlMapCADDcheck" onchange="CheckAll();"></td>
           <td></td>
         </tr>
         <tr>
-          <td>Minimum CADD score (&ge;)</td>
+          <td>Minimum CADD score (&ge;)
+            <a class="infoPop" data-toggle="popover" title="CADD score" data-content="CADD score is the score of deleteriousness of SNPs. The heigher, the more deleterious. 12.37 is the suggestive threshold to be deleterious. Coding SNPs tend to have high score than non-coding SNPs.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="number" class="form-control" id="eqtlMapCADDth" name="eqtlMapCADDth" value="12.37" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
           <td></td>
         </tr>
         <tr>
           <td rowspan="2">RegulomeDB</td>
-          <td>Perform SNPs filtering baed on ReguomeDB score</td>
+          <td>Perform SNPs filtering baed on ReguomeDB score
+            <a class="infoPop" data-toggle="popover" title="RegulomeDB Score filtering" data-content="Please check this option to filter SNPs based on RegulomeDB score and specify the maximum score in the box below.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="checkbox" class="form-check-input" name="eqtlMapRDBcheck" id="eqtlMapRDBcheck" onchange="CheckAll();"></td>
           <td></td>
         </tr>
         <tr>
-          <td>Maximum RegulomeDB score (categorical)</td>
+          <td>Maximum RegulomeDB score (categorical)
+            <a class="infoPop" data-toggle="popover" title="RegulomeDB score" data-content="RegulomeDB score is a categorical score to represent regulatory function of SNPs based on eQTLs and epigenome information. '1a' is the most likely functional and 7 is the least liekly. Some SNPs have 'NA' which are not assigned any score.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td>
             <!-- <input type="text" class="form-control" id="eqtlMapRDBth" name="eqtlMapRDBth" value="7"> -->
             <select class="form-control" id="eqtlMapRDBth" name="eqtlMapRDBth" onchange="CheckAll();">
@@ -554,16 +662,22 @@
         </tr>
         <tr>
           <td rowspan="4">15-core chromatin state</td>
-          <td>Perform SNPs filtering based on chromatin state</td>
+          <td>Perform SNPs filtering based on chromatin state
+            <a class="infoPop" data-toggle="popover" title="15-core chromatin state filtering" data-content="Please check this option to filter SNPs based on chromatin state and specify the following options.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="checkbox" class="form-check-input" name="eqtlMapChr15check" id="eqtlMapChr15check" onchange="CheckAll();"></td>
           <td></td>
         </tr>
         <tr>
-          <td>Tissue/cell types for 15-core chromatin state</td>
+          <td>Tissue/cell types for 15-core chromatin state<br/>
+            <span class="info"><i class="fa fa-info"></i> Multiple tissue/cell types can be selected.</span>
+          </td>
           <td>
             <span class="multiSelect">
               Individual tissue/cell types: <tab><a>clear</a><br/>
-              <select multiple class="form-control" style="width: 250px; overflow:auto;" id="eqtlMapChr15Ts" name="eqtlMapChr15Ts[]" onchange="CheckAll();">
+              <select multiple class="form-control" id="eqtlMapChr15Ts" name="eqtlMapChr15Ts[]" onchange="CheckAll();">
                 <option value="all">All</option>
                 <option value='E001'>E001 (ESC) ES-I3 Cells</option>
                 <option value='E002'>E002 (ESC) ES-WA7 Cells</option>
@@ -696,6 +810,7 @@
             </span>
             <span class="multiSelect">
               General tissue/cell types: <tab><a>clear</a><br/>
+              <span class="info"><i class="fa fa-info"></i> Numbers in parentheses represent the numbr of epigenoms belongs to the correspond tissue types (anatomy).</span>
               <select multiple class="form-control" id="eqtlMapChr15Gts" name="eqtlMapChr15Gts[]" onchange="CheckAll();">
                 <option value="all">All</option>
                 <option value='E080'>Adrenal (1)</option>
@@ -733,12 +848,20 @@
           <td></td>
         </tr>
         <tr>
-          <td>15-core chromatin state maximum state</td>
+          <td>15-core chromatin state maximum state
+            <a class="infoPop" data-toggle="popover" title="The maximum chromatin state" data-content="The chromatin state represents accessibility of genomic regions (every 200bp) with 15 categorical states. Generally, states &le; 7 are open in given tissue/cell types.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td><input type="number" class="form-control" id="eqtlMapChr15Max" name="eqtlMapChr15Max" value="7" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
           <td></td>
         </tr>
         <tr>
-          <td>15-core chromatin state filtering method</td>
+          <td>15-core chromatin state filtering method
+            <a class="infoPop" data-toggle="popover" title="Filtering method for chromatin state" data-content="When multiple tissye/cell types are selected, SNPs will be kept if they have chromatin state lower than the threshold in any of, majority of or all of selected tissue/cell types.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
           <td>
             <select  class="form-control" id="eqtlMapChr15Meth" name="eqtlMapChr15Meth" onchange="CheckAll();">
               <option selected value="any">any</option>
@@ -757,7 +880,12 @@
   <h4>4. Gene types</h4>
   <table class="table table-bordered inputTable" id="NewJobGene" style="width: auto;">
     <tr>
-      <td>Gene type</td>
+      <td>Gene type
+        <a class="infoPop" data-toggle="popover" title="Gene Type" data-content="Gene type is based on gene biotype obtained from BioMart (Ensembl 85). By default, only protein-coding genes will be used for mapping.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a><br/>
+        <span class="info"><i class="fa fa-info"></i> Multiple gene type can be selected.</span>
+      </td>
       <td>
         <select multiple class="form-control" name="genetype[]" id="genetype">
           <option value="all">All</option>
@@ -782,13 +910,21 @@
   <h4>5. MHC region</h4>
   <table class="table table-bordered inputTable" id="NewJobMHC" style="width: auto;">
     <tr>
-      <td>Exclude MHC region</td>
+      <td>Exclude MHC region
+        <a class="infoPop" data-toggle="popover" title="Exclude MHC region" data-content="Please cehck to EXCLUDE MHC region. When this option is checked, all SNPs and genes withint MHC region will not be reported in results.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a>
+      </td>
       <td><input type="checkbox" class="form-check-input" name="MHCregion" id="MHCregion" value="exMHC" checked onchange="CheckAll();"></td>
       <td></td>
     </tr>
     <tr>
-      <td>Extended MHC region<br/><tab>*e.g. 25000000-33000000<br/>
-      <tab>*If this is not filled, usual MHC region will be used.<br/></td>
+      <td>Extended MHC region
+        <a class="infoPop" data-toggle="popover" title="Extended MHC region" data-content="In case you would like to exclude extended MHC region, please specify here. By default, normal MHC region (between MOG and COL11A2 genes) will be used.">
+          <i class="fa fa-question-circle-o fa-lg"></i>
+        </a><br/>
+        <span class="info"><i class="fa fa-info"></i>e.g. 25000000-33000000<br/>
+      </td>
       <td><input type="text" class="form-control" name="extMHCregion" id="extMHCregion" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
       <td></td>
     </tr>
@@ -796,10 +932,10 @@
   <br/>
 
   <!-- job title -->
-  <h4>6. job title</h4>
+  <h4>6. Title of job submittion</h4>
   <table class="table table-bordered inputTable" id="NewJobSubmit" style="width: auto;">
     <tr>
-      <td>Job title</td>
+      <td>Title</td>
       <td><input type="text" class="form-control" name="NewJobTitle" id="NewJobTitle" onkeyup="CheckAll();" onpaste="CheckAll();"  oninput="CheckAll();"/></td>
       <td></td>
     </tr>
