@@ -182,7 +182,7 @@ if(nrow(geneTable)>0){
 write.table(geneTable, paste(filedir, "genes.txt", sep=""), quote=F, row.names=F, sep="\t")
 
 summary <- data.frame(matrix(nrow=5, ncol=2))
-summary[,1] <- c("#lead SNPs", "#Intervals", "#candidate SNPs", "#candidate GWAS tagged SNPs", "#mapped genes")
+summary[,1] <- c("#lead SNPs", "#Genomic risk loci", "#candidate SNPs", "#candidate GWAS tagged SNPs", "#mapped genes")
 loci.table <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
 intervals <- fread(paste(filedir, "intervals.txt", sep=""), data.table=F)
 summary[1,2] <- nrow(loci.table)

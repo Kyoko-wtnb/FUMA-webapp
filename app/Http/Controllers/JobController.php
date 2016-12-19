@@ -312,20 +312,11 @@ class JobController extends Controller
     }
 
     public function annotPlot(Request $request){
-      $jobID = "test";
       $jobID = $request -> input('jobID');
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      $type=null;
-      $rowI=null;
-      if($request -> has('annotPlotSelect_leadSNP')){
-        $type = "leadSNP";
-        $rowI = $request -> input('annotPlotSelect_leadSNP');
-      }else if($request -> has('annotPlotSelect_interval')){
-        $type = "interval";
-        $rowI = $request -> input('annotPlotSelect_interval');
-      }
-#local       file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", "$type $rowI"); #local
-
+      $type = $request->input('annotPlotSelect');
+      $rowI = $request->input('annotPlotRow');
+      
       $GWAS=0;
       $CADD=0;
       $RDB=0;
@@ -442,6 +433,7 @@ class JobController extends Controller
       if($request -> has('eqtlfile')){$files[] = $filedir."eqtl.txt";}
       // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
       if($request -> has('gwascatfile')){$files[] = $filedir."gwascatalog.txt";}
+      if($request -> has('magmafile')){$files[] = $filedir."magma.genes.out";}
       $zip = new \ZipArchive();
       $zipfile = $filedir."IPGAP.zip";
 

@@ -1,7 +1,7 @@
 var leadSNPtable_selected=null;
 var intervalTable_selected=null;
-var SNPtable_selected=null;
-var posAnnotPlot;
+// var SNPtable_selected=null;
+var annotPlotSelected;
 $(document).ready(function(){
 
   var hashid = window.location.hash;
@@ -31,6 +31,8 @@ $(document).ready(function(){
     var canvas = document.getElementById(id);
     Canvas2Image.saveAsPNG(canvas);
   });
+
+  $('#annotPlotPanel').hide();
 
   if(status.length==0){
 
@@ -83,8 +85,8 @@ $(document).ready(function(){
               newJob();
             }else{
               errorHandling(jobStatus);
-              $('#jobinfoSide').show();
-              jobInfo(jobid);
+              // $('#jobinfoSide').show();
+              // jobInfo(jobid);
               // $('a[href="#jobInfo"]').trigger('click');
             }
             return;
@@ -102,8 +104,8 @@ $(document).ready(function(){
     }, 5000);
 
     function newJob(){
-      $('#jobinfoSide').show();
-      jobInfo(jobid);
+      // $('#jobinfoSide').show();
+      // jobInfo(jobid);
     }
 
     function loadResults(){
@@ -111,7 +113,7 @@ $(document).ready(function(){
       var posMap;
       var eqtlMap;
       // AjaxLoad();
-      $('#jobinfoSide').show();
+      // $('#jobinfoSide').show();
       $.ajax({
           url: 'getParams',
           type: 'POST',
@@ -129,7 +131,7 @@ $(document).ready(function(){
             eqtlMap = parseInt(tmp[2]);
           },
           complete: function(){
-            jobInfo(jobid);
+            // jobInfo(jobid);
             GWplot(jobid);
             QQplot(jobid);
             showResultTables(filedir, jobid, posMap, eqtlMap);
@@ -262,22 +264,6 @@ function errorHandling(status){
         +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
         +'</div>');
   }
-}
-
-function jobInfo(jobID){
-  $.ajax({
-    url: "jobInfo",
-    type: "POST",
-    data: {
-      jobID: jobID,
-    },
-    error: function(){
-      alert("jobInfo error");
-    },
-    success: function(data){
-      $('#jobInfoTable').html(data);
-    }
-  });
 }
 
 function GWplot(jobID){
@@ -1026,18 +1012,13 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
 
   $('#leadSNPtable tbody').on('click', 'tr', function(){
     $('#plotClear').show();
+    $('#annotPlotPanel').show();
+    $('#annotPlotSelect').val('leadSNP');
     var rowI = leadTable.row(this).index();
     leadSNPtable_selected=rowI;
-    document.getElementById('annotPlotSelect_leadSNP').value=leadSNPtable_selected;
+    $('#annotPlotRow').val(rowI);
+    Chr15Select();
 
-    if(document.getElementById('annotPlotSelect_leadSNP').checked===true){
-      document.getElementById('annotPlotSubmit').disabled=false;
-      annotSelect('leadSNP');
-    }
-    // if($('#annotPlotSelect_leadSNP').is(':checked')===true){
-    //   $('#annotPlotSubmit').attr('disabled',false);
-    //   document.getElementById('annotPlotSelect_leadSNP').value=leadSNPtable_selected;
-    // }
     var rowData = leadTable.row(rowI).data();
     var chr = rowData['chr'];
     // create plot space
@@ -1178,14 +1159,13 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
 
   $('#intervalTable tbody').on('click', 'tr', function(){
     $('#plotClear').show();
+    $('#annotPlotPanel').show();
+    $('#annotPlotSelect').val('interval');
     var rowI = intervalTable.row(this).index();
     intervalTable_selected=rowI;
-    document.getElementById('annotPlotSelect_interval').value=intervalTable_selected;
+    $('#annotPlotRow').val(rowI);
+    Chr15Select();
 
-    if(document.getElementById('annotPlotSelect_interval').checked===true){
-      document.getElementById('annotPlotSubmit').disabled=false;
-      annotSelect('interval');
-    }
     var rowData = intervalTable.row(rowI).data();
     var chr = rowData['chr'];
     // create plot space
@@ -1302,7 +1282,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
       }
     });
     var rowData = intervalTable.row(rowI).data();
-    var out = "<h5>Selected Interval</h5><table class='table table-striped'><tr><td>top lead SNP</td><td>"+rowData["toprsID"]
+    var out = "<h5>Selected Loci</h5><table class='table table-striped'><tr><td>top lead SNP</td><td>"+rowData["rsID"]
               +"</td></tr><tr><td>Chrom</td><td>"+rowData["chr"]+"</td></tr><tr><td>BP</td><td>"
               +rowData["pos"]+"</td></tr><tr><td>P-value</td><td>"+rowData["p"]+"</td></tr><tr><td>lead SNPs</td><td>"+rowData["nLeadSNPs"]
               +"</td></tr><tr><td>SNPs within LD</td><td>"
@@ -1441,7 +1421,7 @@ function PlotIntervalSum(jobID){
         .style("text-anchor", "end");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(-margin.left/2)+","+0+")")
-        .text("Intervals");
+        .text("Genomic loci");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+0+")")
         .style("text-anchor", "middle")
@@ -1537,54 +1517,15 @@ function PlotIntervalSum(jobID){
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+0+")")
         .style("text-anchor", "middle")
-        .text("#in genes");
+        .text("#genes within loci");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-5)+")")
         .style("text-anchor", "middle")
-        .text("#in genes");
+        .text("#genes within loci");
     svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
     svg.selectAll('text').style('font-family', 'sans-serif');
     svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
   });
-}
-
-function annotSelect(i){
-  if(i=="leadSNP"){
-    if($('#annotPlotSelect_leadSNP').is(":checked")==true){
-      $('#annotPlotSelect_interval').attr("checked", false);
-      if(leadSNPtable_selected===null){
-        $('#annotPlotSubmit').attr("disabled", true);
-        $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">You haven\'t selected any lead SNP. Please click one of the row of lead SNP table.</div>');
-        alert("Lead SNP is not selected.\nPlease select one from the table.")
-      }else{
-        Chr15Select();
-      }
-    }else{
-      $('#annotPlotSubmit').attr("disabled", true);
-      $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
-    }
-  }else if(i=="interval"){
-    if($('#annotPlotSelect_interval').is(":checked")==true){
-      $('#annotPlotSelect_leadSNP').attr("checked", false);
-      if(intervalTable_selected===null){
-        $('#annotPlotSubmit').attr("disabled", true);
-        $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">You haven\'t selected any lead SNP. Please click one of the row of lead SNP table.</div>');
-        alert("Lead SNP is not selected.\nPlease select one from the table.")
-      }else{
-        Chr15Select();
-      }
-    }else{
-      $('#annotPlotSubmit').attr("disabled", true);
-      $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
-    }
-  }else{
-    if($('#annotPlotSelect_leadSNP').is(":checked")==false && $('#annotPlotSelect_interval').is(":checked")==false){
-      $('#annotPlotSubmit').attr("disabled", true);
-      $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
-    }else{
-      Chr15Select();
-    }
-  }
 }
 
 function Chr15Select(){
@@ -1605,22 +1546,22 @@ function Chr15Select(){
       }
     }
     if(ts.length===0 && gts.length===0){
-      $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">You have selected to plot 15-core chromatin state. Please select at least one tissue/cell type.</div>');
+      $('#CheckAnnotPlotOpt').html('<span class="alert alert-danger">You have selected to plot 15-core chromatin state. Please select at least one tissue/cell type.</span>');
       $('#annotPlotSubmit').attr("disabled", true);
     }else if(ts.length>0 && gts.length>0){
-      $('#CheckAnnotPlotOpt').html("<br/><div class='alert alert-warning'>OK. Both individual and general tisue/cell types are selected.<br/>All selected tissue/cell types will be used for filtering.</div>");
+      $('#CheckAnnotPlotOpt').html("<span class='alert alert-warning'>OK. Both inspanidual and general tisue/cell types are selected.<br/>All selected tissue/cell types will be used for filtering.</span>");
       $('#annotPlotSubmit').attr("disabled", false);
     }else if(ts.length>0){
-      $('#CheckAnnotPlotOpt').html("<br/><div class='alert alert-success'>OK. Selected individual tissue/cell types will be used for chromatine state filtering.</div>");
+      $('#CheckAnnotPlotOpt').html("<span class='alert alert-success'>OK. Selected inspanidual tissue/cell types will be used for chromatine state filtering.</span>");
       $('#annotPlotSubmit').attr("disabled", false);
     }else if(gts.length>0){
-      $('#CheckAnnotPlotOpt').html("<br/><div class='alert alert-success'>OK. Selected general tissue/cell types will be used for chromatine state filtering.</div>");
+      $('#CheckAnnotPlotOpt').html("<span class='alert alert-success'>OK. Selected general tissue/cell types will be used for chromatine state filtering.</span>");
       $('#annotPlotSubmit').attr("disabled", false);
     }
   }else{
     $('#annotPlotChr15Opt').hide();
     $('#annotPlotSubmit').attr("disabled", false);
-    $('#CheckAnnotPlotOpt').html('<div class="alert alert-success">OK. Good to go. Click "Plot" to create regional plot with selected annotations.</div>');
+    $('#CheckAnnotPlotOpt').html('<span class="alert alert-success">OK. Good to go. Click "Plot" to create regional plot with selected annotations.</span>');
   }
 }
 

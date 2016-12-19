@@ -14,14 +14,14 @@ use JavaScript;
 
 class JsController extends Controller
 {
-    
+
     public function __construct()
     {
         // Protect this Controller
         $this->middleware('auth');
     }
 
-    
+
     public function DTfile(Request $request){
       $filedir = $request -> input('filedir');
       $fin = $request -> input('infile');
@@ -37,18 +37,6 @@ class JsController extends Controller
 
         echo json_encode($json);
       }
-    }
-
-    public function jobInfo(Request $request){
-      $jobID = $request -> input('jobID');
-      $row = DB::select('SELECT * FROM SubmitJobs WHERE jobID=?', [$jobID]);
-      $row = $row[0];
-      $table = '<table class="table table-bordered" style="width:auto;"><tr><td>email</td><td>'.$row->email
-        .'</td></tr><tr><td>job title</td><td>'.$row->title.'</td></tr><tr><td>job submitted</td><td>'
-
-      .$row->created_at."</td></tr>";
-      $table .= "<table>";
-      echo $table;
     }
 
     public function paramTable(Request $request){

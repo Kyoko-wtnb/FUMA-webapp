@@ -10,9 +10,9 @@ my $in = $filedir."annotPlot.txt";
 my $out = $filedir."Chr15.txt";
 
 if($cells[0] eq 'all'){
-#local   @cells = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`; #local
-  @cells = `ls /data/Chr15States/*.bed.gz`;
-  chomp @cells; #webserver
+#local   @cells = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`;
+ @cells = `ls /data/Chr15States/*.bed.gz`; #webserver
+  chomp @cells;
   foreach my $i (0..$#cells){
     $cells[$i] =~ s/.*\/(E\d+)_core.*/$1/;
   }
@@ -43,9 +43,9 @@ if($end-$start == 0){
 open(OUT, ">$out") or die "$out";
 print OUT "cell\tstart\tend\tstate\n";
 foreach my $cell (sort @cells){
-#local   my $file="/media/sf_Documents/VU/Data/Chr15States/States/$cell\_core15.bed.gz"; #local
-  my $file="/data/Chr15States/$cell\_core15.bed.gz";
-  my @line = split(/\n/, `tabix $file $chr:$start-$end`); #webserver
+#local   my $file="/media/sf_Documents/VU/Data/Chr15States/States/$cell\_core15.bed.gz";
+ my $file="/data/Chr15States/$cell\_core15.bed.gz"; #webserver
+  my @line = split(/\n/, `tabix $file $chr:$start-$end`);
   foreach my $l (@line){
     my @epi = split(/\s/, $l);
     $epi[1]=$start if($epi[1]<$start);
