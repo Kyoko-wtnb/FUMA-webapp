@@ -1,5 +1,5 @@
 <meta charset="utf-8"/>
-<title>Integrative post-GWAS Pipeline (IPGAP)</title>
+<title>Functional Mapping and Annotation of Genome-wide association studies</title>
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 <link rel="stylesheet" href="{!! URL::asset('css/sidebar.css') !!}">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
