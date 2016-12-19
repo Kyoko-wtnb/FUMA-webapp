@@ -10,14 +10,19 @@
 use strict;
 use warnings;
 use IO::Zlib;
+use Config::Simple;
+
+my $cfg = new Config::Simple('app.config');
 
 # die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir> <gwas file format>\n" if(@ARGV<2);
 die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir>\n" if(@ARGV<1);
 
 my $filedir = $ARGV[0];
+$filedir .='/' unless($filedir =~ /\/$/);
 # my $gwasfile_format = $ARGV[1]; # removed this option 14-12-2106
 #my $N = $ARGV[2];
-my $gwas = $filedir."input.gwas";
+
+my $gwas = $filedir.$cfg->param('inputfiles.gwas');
 
 my $outSNPs = $filedir."input.snps";
 my $outMAGMA = $filedir."magma.in";
@@ -31,7 +36,7 @@ while(<RS>){
 	$rsID{$line[0]}=$line[1];
 }
 close RS;
-
+print $gwas,"\n";
 open(GWAS, "$gwas") or die "Cannot open $gwas\n";
 my $head = <GWAS>;
 my $rsIDcol=undef;

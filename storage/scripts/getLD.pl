@@ -8,12 +8,16 @@
 use strict;
 use warnings;
 use File::Basename;
+use Config::Simple;
+
+my $cfg = new Config::Simple('app.config');
 my $dir = dirname(__FILE__);
 
 #die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <gwas file format> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC>\n" if (@ARGV < 13);
 die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC>\n" if (@ARGV < 13);
 
 my $filedir = $ARGV[0];
+$filedir .= '/' unless($filedir =~ /\/$/);
 my $pop = $ARGV[1];
 my $leadP = $ARGV[2];
 my $KGSNPs = $ARGV[3]; #1 to add, 0 to not add
@@ -45,9 +49,9 @@ unless($extMHC eq "NA"){
 ## Input files
 ## $leadSNPs and $regions are file name only when file is provided
 my $gwas = $filedir."input.snps";
-if($leadSNPs){$leadSNPs = $filedir."input.lead"}
+if($leadSNPs){$leadSNPs = $filedir.$cfg->param('inputfiles.leadSNP')}
 else{$leadSNPs = 0}
-if($regions){$regions = $filedir."input.regions"}
+if($regions){$regions = $filedir.$cfg->param('inputfiles.reagions')}
 else{$regions = 0}
 
 =begin
@@ -231,64 +235,6 @@ foreach my $chr (1..23){
 	print "GWAS: ", scalar(keys %{$GWAS{$chr}}), "\n";
 	print "plead: ", scalar(keys %{$plead{$chr}}), "\n";
 	#delete @rsID{keys %rsID};
-
-=begin
-## Commented out 07-11-2016
-	## identify potential lead SNPs and split genomic regions for tabix
-	## it has to be out side ot he loop of GWAS file if input file is not sorted
-	if($regions){
-		my @temp = keys %{$regions{$chr}};
-		my $rid_cur = $temp[0];
-		#print $regions{$chr}{$rid_cur}{"start"},"\t",$regions{$chr}{$rid_cur}{"end"},"\n";
-		foreach my $pos (sort {$a<=>$b} keys %{$GWAS{$chr}}){
-			$rid_cur++ if($pos>$regions{$chr}{$rid_cur}{"end"});
-			last unless(exists $regions{$chr}{$rid_cur}{"start"});
-			next unless($pos>=$regions{$chr}{$rid_cur}{"start"} && $pos<=$regions{$chr}{$rid_cur}{"end"});
-			if($GWAS{$chr}{$pos}{"p"} <= $leadP){
-				if($chr==$chr_pre && $pos-$pos_pre <= $dist){
-					if($chr==6 && $pos>31000000 && $pos<=33764158 && $plead{$chr}{$ld}{"end"}-$plead{$chr}{$ld}{"start"}>=100000){
-						$ld++;
-						$plead{$chr}{$ld}{"start"}=$pos;
-						$plead{$chr}{$ld}{"end"}=$pos;
-					}elsif($plead{$chr}{$ld}{"end"}-$plead{$chr}{$ld}{"start"}>=100000){
-						$ld++;
-						$plead{$chr}{$ld}{"start"}=$pos;
-						$plead{$chr}{$ld}{"end"}=$pos;
-					}else{$plead{$chr}{$ld}{"end"}=$pos;}
-				}else{
-					$ld++;
-					$plead{$chr}{$ld}{"start"}=$pos;
-					$plead{$chr}{$ld}{"end"}=$pos;
-				}
-				$chr_pre = $chr;
-				$pos_pre = $pos;
-			}
-		}
-	}else{
-		foreach my $pos (sort {$a<=>$b} keys %{$GWAS{$chr}}){
-			if($GWAS{$chr}{$pos}{"p"} <= $leadP){
-				if($chr==$chr_pre && $pos-$pos_pre <= $dist){
-					if($chr==6 && $pos>31000000 && $pos<=33764158 && $plead{$chr}{$ld}{"end"}-$plead{$chr}{$ld}{"start"}>=100000){
-						$ld++;
-						$plead{$chr}{$ld}{"start"}=$pos;
-						$plead{$chr}{$ld}{"end"}=$pos;
-					}elsif($plead{$chr}{$ld}{"end"}-$plead{$chr}{$ld}{"start"}>=100000){
-						$ld++;
-						$plead{$chr}{$ld}{"start"}=$pos;
-						$plead{$chr}{$ld}{"end"}=$pos;
-					}else{$plead{$chr}{$ld}{"end"}=$pos;}
-				}else{
-					$ld++;
-					$plead{$chr}{$ld}{"start"}=$pos;
-					$plead{$chr}{$ld}{"end"}=$pos;
-				}
-				$chr_pre = $chr;
-				$pos_pre = $pos;
-			}
-		}
-	}
-=cut
-
 
 	######
 	# leadSNPs file
@@ -617,8 +563,9 @@ system "Rscript $dir/leadSNP.R $filedir $r2 $gwasP $leadP $maf $mergeDist $leadS
 
 #annov
 my $annovout = $filedir."annov";
-#local system "/home/kyoko/annovar/annotate_variation.pl -out $annovout -build hg19 $annovin ~/annovar/humandb/ -dbtype ensGene"; #local
-system "/home/kyoko/bin/annovar/annotate_variation.pl -out $annovout -build hg19 $annovin /data/annovar/humandb/ -dbtype ensGene"; #webserver
+my $annov = $cfg->param('annovar.annovdir');
+#local system "$annov/annotate_variation.pl -out $annovout -build hg19 $annovin $annov/humandb/ -dbtype ensGene"; #local
+system "$annov/annotate_variation.pl -out $annovout -build hg19 $annovin $annov/humandb/ -dbtype ensGene"; #webserver
 
 my $annov1 = $filedir."annov.variant_function";
 my $annov2 = $filedir."annov.txt";

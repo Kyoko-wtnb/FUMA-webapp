@@ -1,10 +1,14 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Config::Simple;
 
 die "ERROR: not enought arguments\nUSAGE./magma.pl <filedir> <sample N> <population>\n" if(@ARGV<3);
 
+my $cfg = new Config::Simple('app.config');
+
 my $filedir = $ARGV[0];
+$filedir .= '/' unless($filedir =~ /\/$/);
 my $N = $ARGV[1];
 my $pop = $ARGV[2];
 if($pop =~ /\+/){
@@ -20,8 +24,9 @@ my $magmain = $filedir."magma.input";
 #local my $ref = "/media/sf_SAMSUNG/MAGMA/g1000_".$pop."_146"; #local
 my $ref = "/data/MAGMA/g1000_".lc($pop)."_146"; #webserver
 system "awk 'NR>=2' $outSNPs | cut -f 5,6 | sort -u -k 1,1 > $magmain";
-#local system "magma --bfile $ref --pval $magmain N=$N --gene-annot /media/sf_Documents/VU/Data/MAGMA/ENSG.w0.$pop.genes.annot --out $filedir"."magma"; #local
-system "/home/kyoko/bin/MAGMA/magma --bfile $ref --pval $magmain N=$N --gene-annot /data/MAGMA/ENSG.w0.$pop.genes.annot --out $filedir"."magma"; #webserver
+my $magma = $cfg->param('magma.magmadir');
+#local system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot /media/sf_Documents/VU/Data/MAGMA/ENSG.w0.$pop.genes.annot --out $filedir"."magma"; #local
+system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot /data/MAGMA/ENSG.w0.$pop.genes.annot --out $filedir"."magma"; #webserver
 unless(-e $filedir."magma.genes.out"){
 	die "201";
 }
