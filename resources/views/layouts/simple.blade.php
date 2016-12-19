@@ -10,6 +10,8 @@
     <div id="main" class="row">
       @yield('content')
     </div>
+  </div>
+  <div id="foot" class="row">
     @include('includes.footer')
   </div>
 </body>

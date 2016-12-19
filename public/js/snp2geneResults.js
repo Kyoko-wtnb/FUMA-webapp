@@ -711,7 +711,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
   var SNPtable = $('#SNPtable').DataTable({
     processing: true,
     serverSide: false,
-    select: true,
+    select: false,
     ajax:{
       url: 'DTfile',
       type: "POST",
@@ -754,7 +754,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
   var annovTable = $('#annovTable').DataTable({
     processing: true,
     serverSide: false,
-    select: true,
+    select: false,
     ajax:{
       url: 'DTfile',
       type: "POST",
@@ -797,7 +797,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
     geneTable = $('#geneTable').DataTable({
       processing: true,
       serverSide: false,
-      select: true,
+      select: false,
       ajax:{
         url: 'DTfile',
         type: "POST",
@@ -837,7 +837,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
     geneTable = $('#geneTable').DataTable({
       processing: true,
       serverSide: false,
-      select: true,
+      select: false,
       ajax:{
         url: 'DTfile',
         type: "POST",
@@ -872,7 +872,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
     geneTable = $('#geneTable').DataTable({
       processing: true,
       serverSide: false,
-      select: true,
+      select: false,
       ajax:{
         url: 'DTfile',
         type: "POST",
@@ -913,7 +913,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
     var eqtlTable = $('#eqtlTable').DataTable({
       processing: true,
       serverSide: false,
-      select: true,
+      select: false,
       ajax:{
         url: 'DTfile',
         type: "POST",
@@ -947,7 +947,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
   var gwascatTable = $('#gwascatTable').DataTable({
     processing: true,
     serverSide: false,
-    select: true,
+    select: false,
     ajax:{
         url: 'DTfile',
         type: "POST",
@@ -977,7 +977,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
   // var eqtlTable = $('#exacTable').DataTable({
   //   processing: true,
   //   serverSide: false,
-  //   select: true,
+  //   select: false,
   //   ajax:{
   //     url: 'DTfile',
   //     type: "POST",

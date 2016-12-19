@@ -986,7 +986,7 @@ function GeneTable(id){
   geneTable = $('#GeneTable').DataTable({
     "processing": true,
     serverSide: false,
-    select: true,
+    select: false,
     "ajax" : {
       url: "geneTable",
       type: "POST",
