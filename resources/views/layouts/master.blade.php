@@ -10,12 +10,12 @@
     <div id="header" class="row">
       @include('includes.header')
     </div>
-    <div id="main" class="row" style="padding-top:50px; min-height:100%;">
+    <div id="main" class="row" style="padding-top:50px; padding-bottom: 50px;">
       @yield('content')
     </div>
-    <div id="footer" class="row">
-      @include('includes.footer')
-    </div>
+  </div>
+  <div id="foot" class="row">
+    @include('includes.footer')
   </div>
 </body>
 </html>

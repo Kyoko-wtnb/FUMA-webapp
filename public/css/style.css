@@ -1,24 +1,24 @@
 body
 { /*background: #F6F4F0;*/
   color: #635B53;
+  height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 #foot
-{ /*width: 950px;*/
-  /*height: 150px;*/
-  position: relative;
-  /*background-color: #00004d;*/
-  background-color: #222222;
-  padding-top: 5px;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 5px;
-}
-
-/*#logo h1
 {
-  color: #b3b3cc;
-}*/
+  margin: 0;
+  padding: 0;
+  position: relative;
+  clear: both;
+  background-color: #222222;
+  width: 100%;
+  height: 100px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 
 #overlay {
   position: absolute;

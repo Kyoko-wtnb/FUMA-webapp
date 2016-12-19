@@ -1,6 +1,7 @@
 #wrapper {
     padding-left: 50px;
     transition: all .4s ease 0s;
+    min-height:100%;
     /*height: 100%*/
 }
 
@@ -114,6 +115,10 @@ h3:target{
   color: #fff;
   background: #1E90FF;
   text-decoration: none;
+}
+
+.sidePanel{
+    padding-bottom: 0;
 }
 
 /*.sidebar-nav > .sidebar-brand {

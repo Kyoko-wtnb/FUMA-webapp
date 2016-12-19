@@ -77,7 +77,7 @@
       </div> -->
 
       <!-- genome wide plots -->
-      <div class="sidePanel" style="padding-top:50px;" id="genomePlots">
+      <div class="sidePanel container" style="padding-top:50px;" id="genomePlots">
         <!-- <h3>Genome Wide Plot</h3> -->
         <!-- <div id="gPlotPanel" class="collapse in"> -->
         <div class="container">
