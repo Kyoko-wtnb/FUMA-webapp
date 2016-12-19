@@ -7,9 +7,7 @@ regions=input.reagions
 params=params.txt
 
 [magma]
-magmadir=/home/kyoko/bin/magma
-#magmadir=~/Software/MAGMA
+magmadir=/path/to/magma
 
 [annovar]
-annovdir=/home/kyoko/bin/annovar
-#annovdir=~/annovar
+annovdir=/path/to/annovar
