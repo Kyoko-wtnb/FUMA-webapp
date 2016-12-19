@@ -23,8 +23,7 @@ class JobController extends Controller
 {
     protected $user;
 
-    public function __construct()
-    {
+    public function __construct(){
         // Protect this Controller
         $this->middleware('auth');
 
@@ -32,8 +31,7 @@ class JobController extends Controller
         $this->user = Auth::user();
     }
 
-    public function getJobList()
-    {
+    public function getJobList(){
         $email = $this->user->email;
 
         if( $email){
@@ -844,7 +842,7 @@ class JobController extends Controller
     public function gene2funcFileDown(Request $request){
       $file = $request -> input('file');
       $id = $request -> input('id');
-      $filedir = config('app.jobdir').'/jobs/'.$if.'/'.$file;
+      $filedir = config('app.jobdir').'/jobs/'.$id.'/'.$file;
       return response() -> download($filedir);
     }
 

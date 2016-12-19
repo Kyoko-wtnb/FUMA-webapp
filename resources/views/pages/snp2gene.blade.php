@@ -248,7 +248,7 @@
                 This table contains prioritized genes based on user defined mapping criteria. Note that these genes do no necessary contain all genes which are locating within genomic loci (depending on mapping paramters).
               </span>
               <!-- Jump to GENE2FUNC -->
-              <form action="geneSubmit" method="post" target="_blank">
+              <form action="{{ Config::get('app.subdir') }}/gene2func/geneSubmit" method="post" target="_blank">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
                 <span class="form-inline">

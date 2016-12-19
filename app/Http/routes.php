@@ -67,8 +67,6 @@ Route::post('snp2gene/annotPlot', 'JobController@annotPlot');
 
 Route::post('snp2gene/filedown', 'JobController@filedown');
 
-Route::post('snp2gene/geneSubmit', 'JobController@snp2geneGeneQuery');
-
 Route::post('snp2gene/geneTable', 'JsController@geneTable');
 
 Route::get('snp2gene/{jobID}', function($jobID){
@@ -86,10 +84,9 @@ Route::post('gene2func/submit', 'JobController@gene2funcSubmit');
 
 Route::post('gene2func/geneQuery', 'JobController@geneQuery');
 
-Route::post('snp2gene/geneQuery', 'JobController@geneQuery');
+Route::post('gene2func/geneSubmit', 'JobController@snp2geneGeneQuery');
 
 Route::post('gene2func/fileDown', 'JobController@gene2funcFileDown');
-Route::post('snp2gene/fileDown', 'JobController@gene2funcFileDown');
 
 Route::post('gene2func/geneTable', 'JsController@geneTable');
 
