@@ -1,18 +1,18 @@
 var geneTable;
 $(document).ready(function(){
 
+  // hash activate
   var hashid = window.location.hash;
   if(hashid==""){
     $('a[href="#newquery"]').trigger('click');
   }else{
-    console.log(hashid);
     $('a[href="'+hashid+'"]').trigger('click');
   }
 
+  // Plot donwload
   $(".ImgDown").on('click', function(){
     var id = $(this).attr("id");
     id = id.replace("Img", "");
-    console.log(id);
     var svg = $('#'+id).html();
     canvg('canvas', svg);
     var canvas = document.getElementById('canvas');
@@ -22,14 +22,24 @@ $(document).ready(function(){
   $('#GeneSet').on('click', '.ImgDown', function(){
     var id = $(this).attr("id");
     id = id.replace("Img", "");
-    console.log(id);
     var svg = $('#'+id).html();
     canvg('canvas', svg);
     var canvas = document.getElementById('canvas');
     Canvas2Image.saveAsPNG(canvas);
   });
-  // $('#test').html("Status: "+status+"<br/>");
-  $('#newquery').show();
+
+  // gene type clear
+  $('#bkgeneSelectClear').on('click', function(){
+    console.log("OK");
+    $("#genetype option").each(function(){
+      $(this).prop('selected', false);
+    });
+    checkInput();
+  });
+
+  // popover
+  $('.infoPop').popover();
+
   if(status=="new"){
     checkInput();
     $('#resultSide').hide()
@@ -180,6 +190,7 @@ function checkInput(){
   }
 
 };
+
 function AjaxLoad(){
   var over = '<div id="overlay"><div id="loading">'
           +'<h4>Running gene test</h4>'
@@ -205,7 +216,7 @@ Array.prototype.unique = function(a){
 
 function expHeatMap(id){
   d3.select('#expHeat').select("svg").remove();
-  var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=8;
+  var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=10;
   queue().defer(d3.json, "d3text/"+id+"/exp.txt")
         .defer(d3.json, "d3text/"+id+"/exp.row.txt")
         .defer(d3.json, "d3text/"+id+"/exp.col.txt")
@@ -292,7 +303,7 @@ function expHeatMap(id){
                           .style("text-anchor", "end")
                           .attr("dx", "-.3em")
                           .attr("transform", function(d){
-                            return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                            return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                           });
           // colLabels.selectAll(".colLabel").attr("transform", function(d){return "rotate(-65)"});
 
@@ -323,7 +334,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
                 }else if(gsort=="clst" && tssort=="alph"){
                   heatMap.transition().duration(2000)
@@ -335,7 +346,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
                 }else if(gsort=="alph" && tssort=="clst"){
                   heatMap.transition().duration(2000)
@@ -347,7 +358,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
                 }else if(gsort=="alph" && tssort=="alph"){
                   heatMap.transition().duration(2000)
@@ -359,7 +370,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
                 }
               }else{
@@ -367,8 +378,8 @@ function expHeatMap(id){
                 var normMin = d3.min(exp, function(d){return d.norm;});
                 var m = Math.max(normMax, Math.abs(normMin));
                 var col = d3.scale.linear().domain([-m, 0, m]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-                legendRect.attr("fill", function(d){return col(Math.round(d*2*m/(t.length-1)-m))});
-                legendText.text(function(d){return d*2*m/(t.length-1)-m});
+                legendRect.attr("fill", function(d){return col(d*2*m/(t.length-1)-m)});
+                legendText.text(function(d){return Math.round(d*2*m/(t.length-1)-m)});
                 if(gsort=="clst" && tssort=="clst"){
                   heatMap.transition().duration(2000)
                     .attr("fill", function(d){return col(d.norm)})
@@ -379,7 +390,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
                 }else if(gsort=="clst" && tssort=="alph"){
                   heatMap.transition().duration(2000)
@@ -391,7 +402,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
                 }else if(gsort=="alph" && tssort=="clst"){
                   heatMap.transition().duration(2000)
@@ -403,7 +414,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
                 }else if(gsort=="alph" && tssort=="alph"){
                   heatMap.transition().duration(2000)
@@ -415,7 +426,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
                 }
               }
@@ -448,7 +459,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
 
                 }else{
@@ -457,7 +468,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                     });
 
                 }
@@ -467,7 +478,7 @@ function expHeatMap(id){
                 colLabels.transition().duration(2000)
                   .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                   .attr("transform", function(d){
-                    return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol-1)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
                   });
               }
             }
@@ -502,7 +513,7 @@ function tsEnrich(id){
   d3.select('#tsEnrichBar').select('svg').remove();
   var span = 150;
   var currentHeight = 0;
-  var margin = {top: 20, right: 20, bottom: 200, left: 50},
+  var margin = {top: 20, right: 20, bottom: 230, left: 50},
       width = 900,
       height = span*3+20;
 
@@ -809,7 +820,7 @@ function GeneSet(id){
                   'GO_mf' : 'GO molecular functions (MsigDB v5.2 c5)',
                   'Oncogenetic_signatures' : 'Oncogenetic signatures (MsigDB v5.2 c6)',
                   'Immunologic_signatures' : 'Immunologic signatures (MsigDB v5.2 c7)',
-                  'Wikipathways' : 'Wikipathways (Curated version 20161010)',
+                  'Wikipathways' : 'WikiPathways (Curated version 20161010)',
                   'GWAScatalog' : 'GWAS catalog (reported genes, ver. e85 20160927)'
                 };
   d3.json("d3text/"+id+"/GS.txt", function(data){
@@ -842,23 +853,24 @@ function GeneSet(id){
       genes = d3.set(genesplot.map(function(d){return d.gene;})).values();
 
       if(tdata.length==0){
-        var panel = $('<div class="panel panel-default" style="padding-top:0;"><div class="panel-heading" style="height: 35px; padding-top:0.1;"><a href="#'
-          +category[i]+'Panel" data-toggle="collapse" style="color: black;"><h4>'
-          +category_title[category[i]]+'<tab>(0)</h4></div><div class="panel-body collapse" id="'
+        var panel = $('<div class="panel panel-default" style="padding-top:0;"><div class="panel-heading" style="height: 35px;"><a href="#'
+          +category[i]+'Panel" data-toggle="collapse" style="color: black;">'
+          +category_title[category[i]]+'<tab>(0)</div><div class="panel-body collapse" id="'
           +category[i]+'Panel"><div id="'+category[i]+'" style="text-align: center;">No significant results</div><div id="'
           +category[i]+'Table"></div></div></div>');
           $('#GeneSet').append(panel);
       }else{
         // $('#test').append("<p>"+category[i]+"<br/>gs_max: "+gs_max+'<br/>genes: '+genes.length+'</p>');
         // add div
-        var panel = '<div class="panel panel-default" style="padding-top:0;"><div class="panel-heading" style="height: 35px; padding-top:0.1;"><a href="#'
-          +category[i]+'Panel" data-toggle="collapse" style="color: black;"><h4>'
-          +category_title[category[i]]+'<tab>('+tdata.length+')</h4></div><div class="panel-body collapse" id="'
+        var panel = '<div class="panel panel-default" style="padding-top:0;"><div class="panel-heading" style="height: 35px;"><a href="#'
+          +category[i]+'Panel" data-toggle="collapse" style="color: black;">'
+          +category_title[category[i]]+'<tab>('+tdata.length+')</div><div class="panel-body collapse" id="'
           +category[i]+'Panel"><p><a onclick="GeneSetPlot('+"'"+category[i]+"'"+');">Plot</a> / <a onclick="GeneSetTable('+
           "'"+category[i]+"'"+');">Table</a></p></div></div>';
         $('#GeneSet').append(panel);
-        $('#'+category[i]+"Panel").append('<button class="btn btn-xs ImgDown" id="'+category[i]+'Img">Download img</button>');
-        $('#'+category[i]+"Panel").append('<div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div><div id="'
+        // $('#'+category[i]+"Panel").append('<button class="btn btn-xs ImgDown" id="'+category[i]+'Img" style="float:right; margin-right:100px;">Download PNG</button>');
+        $('#'+category[i]+"Panel").append('<div id="'+category[i]+'" style="overflow: auto; width: 100%;">'
+        +'<button class="btn btn-xs ImgDown" id="'+category[i]+'Img" style="float:right; margin-right:50px;">Download PNG</button><br/>'+'</div><div id="'
           +category[i]+'Table"></div>');
 
         $('#'+category[i]+'Table').hide();

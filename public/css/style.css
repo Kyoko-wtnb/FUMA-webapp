@@ -111,9 +111,9 @@ button.accordion.active, button.accordion:hover {
   background-color: #ddd;
 }
 
-.panel-default > .panel-heading{
+/*.panel-default > .panel-heading{
   background-color: #c6d9ec;
-}
+}*/
 
 .alert{
   padding: 10px 10px 10px 10px;

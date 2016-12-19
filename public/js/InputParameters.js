@@ -13,7 +13,6 @@ $(document).ready(function(){
 
   $('.multiSelect a').on('click',function(){
     var selection = $(this).siblings("select").attr("id");
-    console.log(selection);
     $("#"+selection+" option").each(function(){
       $(this).prop('selected', false);
     });
