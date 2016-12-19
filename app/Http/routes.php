@@ -41,7 +41,7 @@ Route::get('snp2gene/getJobList/{email?}/{limit?}', 'JobController@getJobList');
 
 Route::post('snp2gene/newJob', 'JobController@newJob');
 
-Route::post('snp2gene/checkJobStatus', 'JobController@checkJobStatus');
+Route::get('snp2gene/checkJobStatus/{jobid}', 'JobController@checkJobStatus');
 
 Route::post('snp2gene/getParams', 'JobController@getParams');
 
