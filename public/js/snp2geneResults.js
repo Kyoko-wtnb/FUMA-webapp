@@ -62,12 +62,8 @@ $(document).ready(function(){
     AjaxLoad();
     var jobStatus;
     var jobcheck = setInterval(function(){
-      $.ajax({
-        url: 'checkJobStatus',
-        type: "POST",
-        data: {
-          jobID: jobid,
-        },
+      $.get({
+        url: subdir + '/snp2gene/checkJobStatus/'+jobid,
         error: function(){
           alert("ERROR: checkJobStatus")
         },
