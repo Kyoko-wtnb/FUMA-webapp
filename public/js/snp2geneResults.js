@@ -155,6 +155,7 @@ $(document).ready(function(){
     $('#eqtlfile').prop('checked', true);
     $('#gwascatfile').prop('checked', true);
     // $('#exacfile').prop('checked', true);
+    $('#magmafile').prop('checked', true);
     $('#download').attr('disabled',false);
   });
   $('#clearfiles').on('click', function(){
@@ -168,6 +169,7 @@ $(document).ready(function(){
     $('#eqtlfile').prop('checked', false);
     // $('#exacfile').prop('checked', false);
     $('#gwascatfile').prop('checked', false);
+    $('#magmafile').prop('checked', false);
     $('#download').attr('disabled',true);
   });
 
@@ -1575,8 +1577,9 @@ function DownloadFiles(){
   var annotfile = document.getElementById('annotfile').checked;
   var genefile = document.getElementById('genefile').checked;
   var eqtlfile = document.getElementById('eqtlfile').checked;
-  var exacfile = document.getElementById('exacfile').checked;
-  if(paramfile || leadfile || intervalfile || snpsfile || annovfile || annotfile || genefile || eqtlfile || exacfile){
+  // var exacfile = document.getElementById('exacfile').checked;
+  var magmafile = document.getElementById('magmafile').checked;
+  if(paramfile || leadfile || intervalfile || snpsfile || annovfile || annotfile || genefile || eqtlfile || magmafile){
     document.getElementById('download').disabled=false;
   }
 }

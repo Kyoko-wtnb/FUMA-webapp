@@ -530,6 +530,7 @@
           </div>
         </div></div>
       </div>
+    </div>
 
       <!-- Downloads -->
       <div class="sidePanel container" style="padding-top:50px; height: 100vh;" id="downloads">

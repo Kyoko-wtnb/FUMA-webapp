@@ -316,7 +316,7 @@ class JobController extends Controller
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $type = $request->input('annotPlotSelect');
       $rowI = $request->input('annotPlotRow');
-      
+
       $GWAS=0;
       $CADD=0;
       $RDB=0;
@@ -423,31 +423,36 @@ class JobController extends Controller
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       // $zip = new ZipArchive();
       $files = array();
-      if($request -> has('paramfile')){ $files[] = $filedir."params.txt";}
-      if($request -> has('leadfile')){$files[] = $filedir."leadSNPs.txt";}
-      if($request -> has('intervalfile')){$files[] = $filedir."intervals.txt";}
-      if($request -> has('snpsfile')){$files[] = $filedir."snps.txt"; $files[] = $filedir."ld.txt";}
-      if($request -> has('annovfile')){$files[] = $filedir."annov.txt";}
-      if($request -> has('annotfile')){$files[] = $filedir."annot.txt";}
-      if($request -> has('genefile')){$files[] = $filedir."genes.txt";}
-      if($request -> has('eqtlfile')){$files[] = $filedir."eqtl.txt";}
+      if($request -> has('paramfile')){ $files[] = "params.txt";}
+      if($request -> has('leadfile')){$files[] = "leadSNPs.txt";}
+      if($request -> has('intervalfile')){$files[] = "intervals.txt";}
+      if($request -> has('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
+      if($request -> has('annovfile')){$files[] = "annov.txt";}
+      if($request -> has('annotfile')){$files[] = "annot.txt";}
+      if($request -> has('genefile')){$files[] = "genes.txt";}
+      if($request -> has('eqtlfile')){$files[] = "eqtl.txt";}
       // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
-      if($request -> has('gwascatfile')){$files[] = $filedir."gwascatalog.txt";}
-      if($request -> has('magmafile')){$files[] = $filedir."magma.genes.out";}
-      $zip = new \ZipArchive();
-      $zipfile = $filedir."IPGAP.zip";
+      if($request -> has('gwascatfile')){$files[] = "gwascatalog.txt";}
+      if($request -> has('magmafile')){$files[] = "magma.genes.out";}
 
-      if(File::exists($zipfile)){
-        File::delete($zipfile);
+      if(count($files)==1){
+        return response() -> download($filedir.$files[0]);
+      }else{
+        $zip = new \ZipArchive();
+        $zipfile = $filedir."IPGAP.zip";
+
+        if(File::exists($zipfile)){
+          File::delete($zipfile);
+        }
+        // Zipper::make($zipfile)->add($files);
+        // sleep(5);
+        $zip -> open($zipfile, \ZipArchive::CREATE);
+        foreach($files as $f){
+          $zip->addFile($filedir.$f, $f);
+        }
+        $zip -> close();
+        return response() -> download($zipfile);
       }
-      // Zipper::make($zipfile)->add($files);
-      // sleep(5);
-      $zip -> open($zipfile, \ZipArchive::CREATE);
-      foreach($files as $f){
-        $zip->addFile($f);
-      }
-      $zip -> close();
-      return response() -> download($zipfile);
     }
 
     public function gene2funcSubmit(Request $request){
