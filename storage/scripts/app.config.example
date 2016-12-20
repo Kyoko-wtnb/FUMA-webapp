@@ -23,6 +23,6 @@ geneIDs=/data/genes
 magmadir=/home/kyoko/bin/MAGMA
 magmafiles=/data/MAGMA
 
-
 [annovar]
 annovdir=/home/kyoko/bin/annovar
+humandb=/data/annovar/humandb
