@@ -563,7 +563,7 @@ system "Rscript $dir/leadSNP.R $filedir $r2 $gwasP $leadP $maf $mergeDist $leadS
 #annov
 my $annovout = $filedir."annov";
 my $annov = $cfg->param('annovar.annovdir');
-my $humandb = $cfg->params('annovar.humandb');
+my $humandb = $cfg->param('annovar.humandb');
 system "$annov/annotate_variation.pl -out $annovout -build hg19 $annovin $humandb/ -dbtype ensGene";
 
 my $annov1 = $filedir."annov.variant_function";
