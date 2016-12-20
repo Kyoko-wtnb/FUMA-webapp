@@ -10,33 +10,33 @@ use warnings;
 use File::Basename;
 use Config::Simple;
 
-my $dir = dirname(__FILE__);
-my $cfg = new Config::Simple($dir.'/app.config');
-
 #die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <gwas file format> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC>\n" if (@ARGV < 13);
-die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC>\n" if (@ARGV < 13);
+die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir>\n" if (@ARGV < 1);
 
 my $filedir = $ARGV[0];
 $filedir .= '/' unless($filedir =~ /\/$/);
-my $pop = $ARGV[1];
-my $leadP = $ARGV[2];
-my $KGSNPs = $ARGV[3]; #1 to add, 0 to not add
-my $gwasP = $ARGV[4];
-my $maf = $ARGV[5];
-my $r2 = $ARGV[6];
-#my $gwasfile_format=$ARGV[7];
-#my $leadSNPs = $ARGV[8];
-#my $addleadSNPs = $ARGV[9]; #1 to add, 0 to not add
-#my $regions = $ARGV[10];
-#my $mergeDist = $ARGV[11];
-#my $MHC = $ARGV[12];
-#my $extMHC = $ARGV[13];
-my $leadSNPs = $ARGV[7];
-my $addleadSNPs = $ARGV[8]; #1 to add, 0 to not add
-my $regions = $ARGV[9];
-my $mergeDist = $ARGV[10];
-my $MHC = $ARGV[11];
-my $extMHC = $ARGV[12];
+my $params = new Config::Simple($filedir.'/params.config');
+
+my $dir = dirname(__FILE__);
+my $cfg = new Config::Simple($dir.'/app.config');
+
+my $pop = $params->param('params.pop');
+my $leadP = $params->param('params.leadP');
+my $KGSNPs = $params->param('params.Incl1KGSNPs'); #1 to add, 0 to not add
+my $gwasP = $params->param('params.gwasP');
+my $maf = $params->param('params.MAF');
+my $r2 = $params->param('params.r2');
+
+my $leadSNPs = $params->param('inputfiles.leadSNPsfile');
+if($leadSNPs eq "NA"){$leadSNPs=0}
+else{$leadSNPs=1}
+my $addleadSNPs = $params->param('inputfiles.addleadSNPs'); #1 to add, 0 to not add
+my $regions = $params->param('inputfiles.regionsfile');
+if($regions eq "NA"){$regions=0}
+else{$regions=1}
+my $mergeDist = $params->param('params.mergeDist');
+my $MHC = $params->param('params.exMHC'); # 1 to exclude, 0 to not
+my $extMHC = $params->param('params.extMHC');
 my $MHCstart = 29624758;
 my $MHCend = 33160276;
 unless($extMHC eq "NA"){

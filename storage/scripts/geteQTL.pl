@@ -10,11 +10,10 @@ use warnings;
 use Config::Simple;
 use File::Basename;
 
-die "ERROR: not enough arguments\nUSAGE: ./geteQTL.pl <filedir> <tissues> <sigonly> <eqtlP>\n" if(@ARGV <4);
-
-my $dir = dirname(__FILE__);
+die "ERROR: not enough arguments\nUSAGE: ./geteQTL.pl <filedir>\n" if(@ARGV <1);
 
 #config
+my $dir = dirname(__FILE__);
 my $cfg = new Config::Simple($dir.'/app.config');
 my $gtexdir = $cfg->param('data.GTEx');
 my $qtldir = $cfg->param('data.QTL');
@@ -22,9 +21,10 @@ my $qtldir = $cfg->param('data.QTL');
 #get input arguments
 my $filedir = $ARGV[0];
 $filedir .= '/' unless($filedir=~/\/$/);
-my $tsall = $ARGV[1];
-my $sigonly = $ARGV[2];
-my $eqtlP = $ARGV[3];
+my $params = new Config::Simple($filedir.'params.config');
+my $tsall = $params->param('eqtlMap.eqtlMaptss');
+my $sigonly = $params->param('eqtlMap.eqtlMapSig');
+my $eqtlP = $params->param('eqtlMap.eqtlMapP');
 
 #files
 my $snpfile = $filedir."snps.txt";

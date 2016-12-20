@@ -66,10 +66,9 @@ class JobController extends Controller
                         -> update(['updated_at'=>$date]);
 
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      $params = file($filedir."params.txt");
-      $posMap = preg_split("/[\t]/", chop($params[18]))[1];
-      $eqtlMap = preg_split("/[\t]/", chop($params[27]))[1];
-
+      $params = parse_ini_file($filedir."params.config");
+      $posMap = $params['posMap'];
+      $eqtlMap = $params['eqtlMap'];
       echo "$filedir:$posMap:$eqtlMap";
     }
 
@@ -261,47 +260,54 @@ class JobController extends Controller
         $eqtlMapChr15Meth = "NA";
       }
       // write parameter into a file
-      $paramfile = $filedir.'/params.txt';
-      File::put($paramfile, "Job created\t$date\n");
-      File::append($paramfile, "Job title\t$jobtitle\n");
-      if($GWASfileup==1){File::append($paramfile, "input GWAS summary statistics file\t".$_FILES["GWASsummary"]["name"]."\n");}
-      else{File::append($paramfile, "input GWAS summary statistics file\tNot given\n");}
-      File::append($paramfile, "GWAS summary statistics file format\t$gwasformat\n");
-      if($leadSNPsfileup==1){File::append($paramfile, "input lead SNPs file\t".$_FILES["leadSNPs"]["name"]."\n");}
-      else{File::append($paramfile, "input lead SNPs file\tNot given\n");}
-      File::append($paramfile, "Identify additional lead SNPs\t$addleadSNPs\n");
-      if($regionsfileup==1){File::append($paramfile, "input genetic regions file\t".$_FILES["regions"]["name"]."\n");}
-      else{File::append($paramfile, "input genetic regions file\tNot given\n");}
-      File::append($paramfile, "sample size\t$N\n");
-      File::append($paramfile, "exclude MHC\t$exMHC\n");
-      File::append($paramfile, "extended MHC region\t$extMHC\n");
+      $paramfile = $filedir.'/params.config';
+      File::put($paramfile, "[jobinfo]\n");
+      File::append($paramfile, "created_at=$date\n");
+      File::append($paramfile, "title=$jobtitle\n");
+
+      File::append($paramfile, "\n[inputfiles]\n");
+      File::append($paramfile, "gwasfile=".$_FILES["GWASsummary"]["name"]."\n");
+      if($leadSNPsfileup==1){File::append($paramfile, "leadSNPsfile=".$_FILES["leadSNPs"]["name"]."\n");}
+      else{File::append($paramfile, "leadSNPsfile=NA\n");}
+      File::append($paramfile, "addleadSNPs=$addleadSNPs\n");
+      if($regionsfileup==1){File::append($paramfile, "regionsfile=".$_FILES["regions"]["name"]."\n");}
+      else{File::append($paramfile, "regionsfile=NA\n");}
+
+      File::append($paramfile, "\n[params]\n");
+      File::append($paramfile, "N=$N\n");
+      File::append($paramfile, "exMHC=$exMHC\n");
+      File::append($paramfile, "extMHC=$extMHC\n");
       // File::append($paramfile, "include chromosome X\t$Xchr\n");
-      File::append($paramfile, "gene type\t$genetype\n");
-      File::append($paramfile, "lead SNP P-value\t$leadP\n");
-      File::append($paramfile, "r2\t$r2\n");
-      File::append($paramfile, "GWAS tagged SNPs P-value\t$gwasP\n");
-      File::append($paramfile, "Population\t$pop\n");
-      File::append($paramfile, "MAF\t$maf\n");
-      File::append($paramfile, "Include 1000G SNPs\t$KGSNPs\n");
-      File::append($paramfile, "Interval merge max distance\t$mergeDist\n");
-      File::append($paramfile, "Positional mapping\t$posMap\n");
-      File::append($paramfile, "posMap Window based\t$posMapWindow\n");
-      File::append($paramfile, "posMap Window size\t$posMapWindowSize\n");
-      File::append($paramfile, "posMap Annotation based\t$posMapAnnot\n");
-      File::append($paramfile, "posMap min CADD\t$posMapCADDth\n");
-      File::append($paramfile, "posMap min RegulomeDB\t$posMapRDBth\n");
-      File::append($paramfile, "posMap chromatin state filterinf tissues\t$posMapChr15\n");
-      File::append($paramfile, "posMap max chromatin state\t$posMapChr15Max\n");
-      File::append($paramfile, "posMap chromatin state filtering method\t$posMapChr15Meth\n");
-      File::append($paramfile, "eQTL mapping\t$eqtlMap\n");
-      File::append($paramfile, "eqtlMap tissues\t$eqtlMaptss\n");
-      File::append($paramfile, "eqtlMap significant only\t$sigeqtl\n");
-      File::append($paramfile, "eqtlMap P-value\t$eqtlP\n");
-      File::append($paramfile, "eqtlMap min CADD\t$eqtlMapCADDth\n");
-      File::append($paramfile, "eqtlMap min RegulomeDB\t$eqtlMapRDBth\n");
-      File::append($paramfile, "eqtlMap chromatin state filterinf tissues\t$eqtlMapChr15\n");
-      File::append($paramfile, "eqtlMap max chromatin state\t$eqtlMapChr15Max\n");
-      File::append($paramfile, "eqtlMap chromatin state filtering method\t$eqtlMapChr15Meth\n");
+      File::append($paramfile, "genetype=$genetype\n");
+      File::append($paramfile, "leadP=$leadP\n");
+      File::append($paramfile, "r2=$r2\n");
+      File::append($paramfile, "gwasP=$gwasP\n");
+      File::append($paramfile, "pop=$pop\n");
+      File::append($paramfile, "MAF=$maf\n");
+      File::append($paramfile, "Incl1KGSNPs=$KGSNPs\n");
+      File::append($paramfile, "mergeDist=$mergeDist\n");
+
+      File::append($paramfile, "\n[posMap]\n");
+      File::append($paramfile, "posMap=$posMap\n");
+      File::append($paramfile, "posMapWindow=$posMapWindow\n");
+      File::append($paramfile, "posMapWindowSize=$posMapWindowSize\n");
+      File::append($paramfile, "posMapAnnot=$posMapAnnot\n");
+      File::append($paramfile, "posMapCADDth=$posMapCADDth\n");
+      File::append($paramfile, "posMapRDBth=$posMapRDBth\n");
+      File::append($paramfile, "posMapChr15=$posMapChr15\n");
+      File::append($paramfile, "posMapChr15Max=$posMapChr15Max\n");
+      File::append($paramfile, "posMapChr15Meth=$posMapChr15Meth\n");
+
+      File::append($paramfile, "\n[eqtlMap]\n");
+      File::append($paramfile, "eqtlMap=$eqtlMap\n");
+      File::append($paramfile, "eqtlMaptss=$eqtlMaptss\n");
+      File::append($paramfile, "eqtlMapSig=$sigeqtl\n");
+      File::append($paramfile, "eqtlMapP=$eqtlP\n");
+      File::append($paramfile, "eqtlMapCADDth=$eqtlMapCADDth\n");
+      File::append($paramfile, "eqtlMapRDBth=$eqtlMapRDBth\n");
+      File::append($paramfile, "eqtlMapChr15=$eqtlMapChr15\n");
+      File::append($paramfile, "eqtlMapChr15Max=$eqtlMapChr15Max\n");
+      File::append($paramfile, "eqtlMapChr15Meth=$eqtlMapChr15Meth\n");
 
       $user = DB::table('users')->where('email', $email)->first();
       $this->dispatch(new snp2geneProcess($user, $jobID));
@@ -420,7 +426,7 @@ class JobController extends Controller
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       // $zip = new ZipArchive();
       $files = array();
-      if($request -> has('paramfile')){ $files[] = "params.txt";}
+      if($request -> has('paramfile')){ $files[] = "params.config";}
       if($request -> has('leadfile')){$files[] = "leadSNPs.txt";}
       if($request -> has('intervalfile')){$files[] = "intervals.txt";}
       if($request -> has('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
@@ -545,10 +551,10 @@ class JobController extends Controller
       $gtype="text";
       $bkgtype="select";
 
-      $params = file($filedir."params.txt");
+      $params = parse_ini_file($filedir.'params.config');
       // $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
-      $MHC = preg_split("/[\t]/", chop($params[8]))[1];
-      $bkgval = preg_split("/[\t]/", chop($params[10]))[1];
+      $MHC = $params['exMHC'];
+      $bkgval = $params['genetype'];
       $adjPmeth = "fdr_bh";
       $adjPcut = 0.05;
       $minOverlap = 2;

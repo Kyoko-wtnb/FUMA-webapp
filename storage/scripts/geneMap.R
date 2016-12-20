@@ -2,31 +2,38 @@ library(data.table)
 library(kimisc)
 args <- commandArgs(TRUE)
 filedir <- args[1]
-genetype <- args[2]
-exMHC <- as.numeric(args[3])
-extMHC <- args[4]
-posMap <- as.numeric(args[5])
-posMapWindow <- as.numeric(args[6])
-posMapWindowSize <- as.numeric(args[7])*1000
-posMapAnnot <- args[8]
-posMapCADDth <- as.numeric(args[9])
-posMapRDBth <- args[10]
-posMapChr15 <- args[11]
-posMapChr15Max <- as.numeric(args[12])
-posMapChr15Meth <- args[13]
-eqtlMap <- as.numeric(args[14])
-eqtlMaptss <- args[15]
-eqtlMapSigeqtl <- as.numeric(args[16])
-eqtlP <- as.numeric(args[17])
-eqtlMapCADDth <- as.numeric(args[18])
-eqtlMapRDBth <- args[19]
-eqtlMapChr15 <- args[20]
-eqtlMapChr15Max <- as.numeric(args[21])
-eqtlMapChr15Meth <- args[22]
+if(grepl("\\/$", filedir)==F){
+  filedir <- paste(filedir, '/', sep="")
+}
 
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
+
+params <- ConfigParser(file=paste(filedir, 'params.config', sep=""))
+
+genetype <- params$params$genetype
+exMHC <- as.numeric(params$params$exMHC)
+extMHC <- params$params$extMHC
+posMap <- as.numeric(params$posMap$posMap)
+posMapWindow <- as.numeric(params$posMap$posMapWindow)
+posMapWindowSize <- as.numeric(params$posMap$posMapWindowSize)*1000
+posMapAnnot <- params$posMap$posMapAnnot
+posMapCADDth <- as.numeric(params$posMap$posMapCADDth)
+posMapRDBth <- params$posMap$posMapRDBth
+posMapChr15 <- params$posMap$posMapChr15
+posMapChr15Max <- as.numeric(params$posMap$posMapChr15Max)
+posMapChr15Meth <- params$posMap$posMapChr15Meth
+eqtlMap <- as.numeric(params$eqtlMap$eqtlMap)
+eqtlMaptss <- params$eqtlMap$eqtlMaptss
+eqtlMapSigeqtl <- as.numeric(params$eqtlMap$eqtlMapSig)
+eqtlP <- as.numeric(params$eqtlMap$eqtlMapP)
+eqtlMapCADDth <- as.numeric(params$eqtlMap$eqtlMapCADDth)
+eqtlMapRDBth <- params$eqtlMap$eqtlMapRDBth
+eqtlMapChr15 <- params$eqtlMap$eqtlMapChr15
+eqtlMapChr15Max <- as.numeric(params$eqtlMap$eqtlMapChr15Max)
+eqtlMapChr15Meth <- params$eqtlMap$eqtlMapChr15Meth
+
 
 load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 
@@ -130,7 +137,7 @@ if(eqtlMap==1){
         }
       }
       epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
-      epi <- epi[epi$epi<=posMapChr15Max,]
+      epi <- epi[epi$epi<=eqtlMapChr15Max,]
       eqtl <- eqtl[eqtl$uniqID %in% epi$uniqID,]
       rm(epi, temp)
     }

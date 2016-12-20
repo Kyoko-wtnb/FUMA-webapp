@@ -51,22 +51,22 @@ type <- 0
 # 1-> ensg
 # 2-> entrezID
 
-if(length(which(genes %in% ENSG.all.genes$external_gene_name))>0){
-  genes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$external_gene_name%in%genes]
+if(length(which(toupper(genes) %in% toupper(ENSG.all.genes$external_gene_name)))>0){
+  genes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$external_gene_name) %in% toupper(genes)]
   type <- 0
-}else if(length(which(genes %in% ENSG.all.genes$ensembl_gene_id))>0){
-  genes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$ensembl_gene_id%in%genes]
+}else if(length(which(toupper(genes) %in% toupper(ENSG.all.genes$ensembl_gene_id)))>0){
+  genes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$ensembl_gene_id) %in% toupper(genes)]
   type <- 1
-}else if(length(which(g %in% ENSG.all.genes$entrezID))>0){
+}else if(length(which(genes %in% ENSG.all.genes$entrezID))>0){
   genes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$entrezID%in%genes]
   type <- 2
 }
 
-if(length(which(bkgenes %in% ENSG.all.genes$external_gene_name))>0){
-  bkgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$external_gene_name%in%bkgenes]
-}else if(length(which(genes %in% ENSG.all.genes$ensembl_gene_id))>0){
-  bkgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$ensembl_gene_id%in%bkgenes]
-}else if(length(which(g %in% ENSG.all.genes$entrezID))>0){
+if(length(which(toupper(bkgenes) %in% toupper(ENSG.all.genes$external_gene_name)))>0){
+  bkgenes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$external_gene_name)%in%toupper(bkgenes)]
+}else if(length(which(toupper(bkgenes) %in% toupper(ENSG.all.genes$ensembl_gene_id)))>0){
+  bkgenes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$ensembl_gene_id) %in% toupper(bkgenes)]
+}else if(length(which(bkgenes %in% ENSG.all.genes$entrezID))>0){
   bkgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$entrezID%in%bkgenes]
 }
 
@@ -132,7 +132,7 @@ DEGgeneral$logFDR <- -log10(DEGgeneral$FDR)
 write.table(DEGgeneral, paste(filedir, "DEGgeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
 rm(DEGgeneral)
 
-geneTable <- ENSG.all.genes[ENSG.all.genes$ensembl_gene_id %in% genes,]
+geneTable <- ENSG.all.genes[toupper(ENSG.all.genes$ensembl_gene_id) %in% toupper(genes),]
 geneTable <- subset(geneTable, select=c("ensembl_gene_id", "entrezID", "external_gene_name"))
 colnames(geneTable) <- c("ensg", "entrezID", "symbol")
 load(paste(config$data$geneIDs, "/entrez2mim.RData", sep=""))

@@ -5,8 +5,12 @@ import os
 import pandas as pd
 import numpy as np
 import math
+import re
 
 filedir = sys.argv[1]
+if re.match("\/$", filedir) is None:
+	filedir += '/'
+	
 width = 300 #px
 height = 300 #px
 
@@ -75,4 +79,3 @@ outfile.write("\t".join(plot[0])+"\n")
 plot = plot[1:]
 for i in plot:
 	outfile.write(str(i[0])+"\t"+str(i[1])+"\n")
-

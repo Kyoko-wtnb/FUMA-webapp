@@ -4,15 +4,19 @@ use warnings;
 use Config::Simple;
 use File::Basename;
 
-die "ERROR: not enought arguments\nUSAGE./magma.pl <filedir> <sample N> <population>\n" if(@ARGV<3);
-
-my $dir = dirname(__FILE__);
-my $cfg = new Config::Simple($dir.'/app.config');
+die "ERROR: not enought arguments\nUSAGE./magma.pl <filedir>\n" if(@ARGV<1);
 
 my $filedir = $ARGV[0];
 $filedir .= '/' unless($filedir =~ /\/$/);
-my $N = $ARGV[1];
-my $pop = $ARGV[2];
+
+my $dir = dirname(__FILE__);
+my $cfg = new Config::Simple($dir.'/app.config');
+my $params = new Config::Simple($filedir.'params.config');
+
+# my $N = $ARGV[1];
+my $N = $params->param('params.N');
+# my $pop = $ARGV[2];
+my $pop = $params->param('params.pop');
 if($pop =~ /\+/){
 	#$pop =~ s/\(|\)//g;
 	($pop) = split(/\+/, $pop);

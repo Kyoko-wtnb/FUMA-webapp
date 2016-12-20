@@ -43,11 +43,18 @@ class JsController extends Controller
       $filedir = $request -> input('filedir');
       //  style="display:block; overflow-y:scroll; height: 500px;"
       $table = '<table class="table table-striped" style="width: 100%; margin-left: 10px; margin-right: 10px;ext-align: right;"><tbody>';
-      $f = fopen($filedir."params.txt", 'r');
-      while($line = fgetcsv($f, 0, "\t")){
-        // $line = preg_split("/[\t]/", chop($l));
-        $table .= "<tr><td>".$line[0].'</td><td style="word-break: break-all;">'.$line[1]."</td></tr>";
+      $params = parse_ini_file($filedir."params.config");
+      // $f = fopen($filedir."params.txt", 'r');
+
+      // while($line = fgetcsv($f, 0, "\t")){
+      //   // $line = preg_split("/[\t]/", chop($l));
+      //   $table .= "<tr><td>".$line[0].'</td><td style="word-break: break-all;">'.$line[1]."</td></tr>";
+      // }
+
+      foreach($params as $key=>$value){
+        $table .= "<tr><td>".$key.'</td><td style="word-break: break-all;">'.$value."</td></tr>";
       }
+
       $table .= "</tbody></table>";
       echo $table;
     }
