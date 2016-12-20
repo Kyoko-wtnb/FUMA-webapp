@@ -7,11 +7,18 @@
 
 use strict;
 use warnings;
+use Config::Simple;
 
 die "ERROR: not enough arguments\nUSAGE: ./geteQTL.pl <filedir> <tissues> <sigonly> <eqtlP>\n" if(@ARGV <4);
 
+#config
+$cfg = new Config::Simple('app.config');
+my $gtexdir = $cfg->param('data.GTEx');
+my $qtldir = $cfg->param('data.QTL');
+
 #get input arguments
 my $filedir = $ARGV[0];
+$filedir .= '/' unless($filedir=~/\/$/);
 my $tsall = $ARGV[1];
 my $sigonly = $ARGV[2];
 my $eqtlP = $ARGV[3];
@@ -23,12 +30,10 @@ my $out = $filedir."eqtl.txt";
 #tissues
 my @ts;
 if($tsall eq "all"){
-#local 	my @temp = `ls /media/sf_SAMSUNG/GTEx/Tabix/*.txt.gz`;
-	my @temp = `ls /data/QTL/GTEx/*.sig.txt.gz`; #webserver
+	my @temp = `ls $gtexdir/*.sig.txt.gz`;
 	chomp @temp;
 	foreach my $f (@temp){
-#local 		$f =~ /Tabix\/(.+)\.txt\.gz/;
-		$f =~ /GTEx\/(.+)\.sig\.txt\.gz/; #webserver
+		$f =~ /$gtexdir\/(.+)\.sig\.txt\.gz/;
 		push @ts, "GTEx_".$1;
 
 	}
@@ -83,13 +88,11 @@ foreach my $s (keys %db){
 	my @files = split(/:/, $db{$s});
 	if($s eq "GTEx"){
 		foreach my $f (@files){
-#local 			my $file = "/media/sf_SAMSUNG/GTEx/Tabix/".$f;
-			my $file = "/data/QTL/GTEx/".$f; #webserver
+			my $file = "$gtexdir/".$f;
 			$f =~ /(.+)\.txt.gz/;
 			my $ts = $1;
 			my $f2 = $ts.".sig.txt.gz";
-#local 			my $file2 = "/media/sf_SAMSUNG/GTEx/TabixSig/".$f2;
-			my $file2 = "/data/QTL/GTEx/".$f2; #webserver
+			my $file2 = "$gtexdir/".$f2;
 			foreach my $lid (sort {$a<=>$b} keys %Loci){
 				my $chr = $Loci{$lid}{"chr"};
 				my $start = $Loci{$lid}{"start"};
@@ -129,8 +132,7 @@ foreach my $s (keys %db){
 		foreach my $f (@files){
 			$f =~ /(.+)\.txt.gz/;
 			my $ts = $1;
-#local 			my $file = "/media/sf_SAMSUNG/".$s."/".$f;
-			my $file = "/data/QTL/".$s."/".$f; #webserver
+			my $file = "$qtldir/".$s."/".$f;
 			foreach my $lid (sort {$a<=>$b} keys %Loci){
 				my $chr = $Loci{$lid}{"chr"};
 				my $start = $Loci{$lid}{"start"};

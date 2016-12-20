@@ -1,12 +1,16 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Config::Simple;
 
 die "Error: not enought arguments\nUSAGE: ./getGWAScatalog.pl <filedir>" if(@ARGV<1);
 my $filedir = $ARGV[0];
+$filedir .= '/' unless($filedir =~ /\/$/);
 
-#local my $gwascat = "/media/sf_Documents/VU/Data/GWAScatalog/gwas_catalog_e85_2016-09-27.txt.gz";
-my $gwascat = "/data/GWAScatalog/gwas_catalog_e85_2016-09-27.txt.gz"; #webserver
+my $cfg = new Config::Simple('app.config');
+my $gwascatdir = $cfg->param('data.GWAScat');
+
+my $gwascat = "$gwascatdir/gwas_catalog_e85_2016-09-27.txt.gz";
 
 my $in = $filedir."snps.txt";
 my $out = $filedir."gwascatalog.txt";

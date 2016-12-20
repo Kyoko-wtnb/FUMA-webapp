@@ -7,6 +7,10 @@ bkgtype <- args[4]
 bkgval <- args[5]
 MHC <- as.numeric(args[6])
 
+source(paste(filedir, '../../scripts/ConfigParser.R', sep=""))
+
+config <- ConfigParser(file=paste(filedir,'../../scripts/app.config', sep=""))
+
 if(gtype == "text"){
   genes <- unlist(strsplit(gval, ":"))
 }else{
@@ -14,8 +18,7 @@ if(gtype == "text"){
   genes <- genes[,1]
 }
 
-#local load(paste(filedir, "../../data/ENSG.all.genes.RData", sep=""))
-load("/data/ENSG/ENSG.all.genes.RData") #webserver
+load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 
 if(bkgtype == "select"){
   bkg = unlist(strsplit(bkgval, ":"))
@@ -69,10 +72,8 @@ if(length(which(bkgenes %in% ENSG.all.genes$external_gene_name))>0){
 #bkg <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$gene_biotype %in% bkg]
 
 
-#local load(paste(filedir, "../../data/gtex.avg.log2RPKM.ts.RData", sep=""))
-load("/data/GeneExp/GTEx/gtex.avg.log2RPKM.ts.RData") #webserver
-#local load(paste(filedir, "../../data/gtex.avg.ts.RData", sep=""))
-load("/data/GeneExp/GTEx/gtex.avg.ts.RData") #webserver
+load(paste(config$data$GTExExp, "/gtex.avg.log2RPKM.ts.RData", sep=""))
+load(paste(config$data$GTExExp, "/gtex.avg.ts.RData", sep=""))
 
 gtex.exp.log2 <- gtex.avg.log2RPKM.ts[rownames(gtex.avg.log2RPKM.ts) %in% genes, ]
 gtex.exp.norm <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
@@ -117,15 +118,14 @@ gtex.exp$norm <- temp$value
 write.table(gtex.exp, paste(filedir, "exp.txt", sep=""), quote=F, row.names=F, sep="\t")
 rm(hc, gtex.exp, gtex.exp.log2, gtex.exp.norm, temp)
 
-#local source(paste(filedir, "../../scripts/GeneSet.R", sep="")) #local
-source("/var/www/IPGAP/storage/scripts/GeneSet.R") #webserver
+source(paste(config$data$scripts, "/GeneSet.R", sep=""))
 
-DEG <- DEGtest(genes, allgenes=bkgenes, MHC=MHC)
+DEG <- DEGtest(genes, allgenes=bkgenes, MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
 DEG$logP <- -log10(DEG$p)
 DEG$logFDR <- -log10(DEG$FDR)
 write.table(DEG, paste(filedir, "DEG.txt", sep=""), quote=F, row.names=F, sep="\t")
 rm(DEG)
-DEGgeneral <- DEGgeneraltest(genes, allgenes=bkgenes, MHC=MHC)
+DEGgeneral <- DEGgeneraltest(genes, allgenes=bkgenes, MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
 DEGgeneral$logP <- -log10(DEGgeneral$p)
 DEGgeneral$logFDR <- -log10(DEGgeneral$FDR)
 write.table(DEGgeneral, paste(filedir, "DEGgeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
@@ -134,16 +134,13 @@ rm(DEGgeneral)
 geneTable <- ENSG.all.genes[ENSG.all.genes$ensembl_gene_id %in% genes,]
 geneTable <- subset(geneTable, select=c("ensembl_gene_id", "entrezID", "external_gene_name"))
 colnames(geneTable) <- c("ensg", "entrezID", "symbol")
-#local load(paste(filedir, "../../data/entrez2mim.RData", sep="")) #local
-load("/data/genes/entrez2mim.RData") #webserver
+load(paste(config$data$geneIDs, "/entrez2mim.RData", sep=""))
 
-#local load(paste(filedir, "../../data/entrez2uniprot.RData", sep="")) #local
-load("/data/genes/entrez2uniprot.RData") #webserver
+load(paste(config$data$geneIDs, "/entrez2uniprot.RData", sep=""))
 geneTable$OMIM <- entrez2mim$mim[match(geneTable$entrezID, entrez2mim$entrezID)]
 geneTable$uniprotID <- entrez2uniprot$uniprotID[match(geneTable$entrezID, entrez2uniprot$entrezID)]
 geneTable$DrugBank <- NA
-#local load(paste(filedir, "../../data/DrugBank.RData", sep="")) #local
-load("/data/genes/DrugBank.RData") #webserver
+load(paste(config$data$geneIDs, "/DrugBank.RData", sep=""))
 
 geneTable$DrugBank <- DrugBank$DrugBank[match(geneTable$uniprotID, DrugBank$uniprotID)]
 write.table(geneTable, paste(filedir, "geneTable.txt", sep=""), quote=F, row.names=F, sep="\t")

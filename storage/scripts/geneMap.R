@@ -23,11 +23,11 @@ eqtlMapChr15 <- args[20]
 eqtlMapChr15Max <- as.numeric(args[21])
 eqtlMapChr15Meth <- args[22]
 
-#write.table(c(filedir, genetype, exMHC, extMHC, posMap, posMapWindow, posMapWindowSize, posMapAnnot, posMapCADDth, posMapRDBth, posMapChr15, posMapChr15Max, posMapChr15Meth,
-#  eqtlMap, eqtlMaptss, eqtlMapSigeqtl, eqtlP, eqtlMapCADDth, eqtlMapRDBth, eqtlMapChr15, eqtlMapChr15Max, eqtlMapChr15Meth), "../files/1/test.txt")
+source(paste(filedir, '../../scripts/ConfigParser.R', sep=""))
+config <- ConfigParser(file=paste(filedir,'../../scripts/app.config', sep=""))
 
-#local load(paste(filedir, "../../data/ENSG.all.genes.RData", sep=""))
-load("/data/ENSG/ENSG.all.genes.RData") #webserver
+
+load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 
 if(genetype!="all"){
   genetype <- unique(unlist(strsplit(genetype, ":")))

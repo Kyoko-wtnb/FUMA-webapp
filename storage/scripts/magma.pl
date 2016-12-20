@@ -21,12 +21,12 @@ print "Population: $pop\n";
 
 my $outSNPs = $filedir."input.snps";
 my $magmain = $filedir."magma.input";
-#local my $ref = "/media/sf_SAMSUNG/MAGMA/g1000_".$pop."_146"; #local
-my $ref = "/data/MAGMA/g1000_".lc($pop)."_146"; #webserver
+my $magmafiles = $cfg->param('magma.magmafiles');
+my $ref = "$magmafiles/g1000_".lc($pop)."_146";
 system "awk 'NR>=2' $outSNPs | cut -f 5,6 | sort -u -k 1,1 > $magmain";
 my $magma = $cfg->param('magma.magmadir');
-#local system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot /media/sf_Documents/VU/Data/MAGMA/ENSG.w0.$pop.genes.annot --out $filedir"."magma"; #local
-system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot /data/MAGMA/ENSG.w0.$pop.genes.annot --out $filedir"."magma"; #webserver
+
+system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
 unless(-e $filedir."magma.genes.out"){
 	die "201";
 }

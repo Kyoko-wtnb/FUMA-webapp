@@ -5,15 +5,16 @@ import glob
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
-import timeit
+# import timeit
 import statsmodels.sandbox.stats.multicomp as multicomp
 import re
 from joblib import Parallel, delayed
 import multiprocessing
+import ConfigParser
 
 n_cores = multiprocessing.cpu_count()
 
-start = timeit.default_timer()
+# start = timeit.default_timer()
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -21,6 +22,11 @@ def ArrayIn(a1, a2):
 	results = np.where(np.in1d(a1, a2))[0]
 	return results
 
+##### config variables #####
+cfg = ConfigParser.ConfigParser()
+cfg.read('app.config')
+ensgdir = cfg.get('data', 'ENSG')
+gsdir = cfg.get('data', 'GeneSet')
 
 if len(sys.argv)<9:
 	raise Exception('ERROR: not enough arguments\nUSAGE ./gene2func.py <filedir> <gtype> <gval> <bkgtype> <bkgval> <X chrom> <MHC> <adjPmeth> <adjPcutoff> <minOverlap> <testCategory>\n')
@@ -44,9 +50,7 @@ else:
 	lines = np.array(lines)
 	genes = list(lines[:,0])
 
-#ENSG = pd.read_table("ENSG.all.genes.txt", header=None, sep="\t")
-#local ENSG = pd.read_table("/media/sf_Documents/VU/Data/ENSG.all.genes.txt", header=None, sep="\t")
-ENSG = pd.read_table("/data/ENSG/ENSG.all.genes.txt", header=None, sep="\t") #webserver
+ENSG = pd.read_table(ensgdir+"/ENSG.all.genes.txt", header=None, sep="\t")
 ENSG = np.array(ENSG)
 
 if bkgtype == "select":
@@ -96,9 +100,7 @@ genes = genes[ArrayIn(genes, bkgenes)]
 #entrez2symbol = ENSG[ArrayIn(ENSG[:,9], genes)][:,[2,9]]
 ENSG = ENSG[ArrayIn(ENSG[:,9], genes)]
 
-
-#local fglob = glob.glob('/media/sf_Documents/VU/Data/GeneSet/*.txt')
-fglob = glob.glob('/data/GeneSet/*.txt') #webserver
+fglob = glob.glob(gsdir+'/*.txt')
 
 files=[]
 for f in fglob:
@@ -193,6 +195,6 @@ for i in tmp:
 #for l in results:
 #	out.write("\t".join(list(l))+"\n")
 
-stop = timeit.default_timer()
+# stop = timeit.default_timer()
 
-print stop - start
+# print stop - start

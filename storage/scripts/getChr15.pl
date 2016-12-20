@@ -1,17 +1,21 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Config::Simple;
 
 die "ERROR: Not enough argument.\nUSAGE: ./getChr15.pl <filedir> <ts>\n" if(@ARGV<2);
 
+my $cfg = new Config::Simple('app.config');
+my $chr15dir = $cfg->param('data.chr15');
+
 my $filedir = $ARGV[0];
+$filedir .= '/' unless($filedir=~/\/$/);
 my @cells = split(/:/,$ARGV[1]);
 my $in = $filedir."annotPlot.txt";
 my $out = $filedir."Chr15.txt";
 
 if($cells[0] eq 'all'){
-#local   @cells = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`;
- @cells = `ls /data/Chr15States/*.bed.gz`; #webserver
+ @cells = `ls $chr15dir/*.bed.gz`;
   chomp @cells;
   foreach my $i (0..$#cells){
     $cells[$i] =~ s/.*\/(E\d+)_core.*/$1/;
@@ -43,8 +47,7 @@ if($end-$start == 0){
 open(OUT, ">$out") or die "$out";
 print OUT "cell\tstart\tend\tstate\n";
 foreach my $cell (sort @cells){
-#local   my $file="/media/sf_Documents/VU/Data/Chr15States/States/$cell\_core15.bed.gz";
- my $file="/data/Chr15States/$cell\_core15.bed.gz"; #webserver
+  my $file="$chr15dir/$cell\_core15.bed.gz";
   my @line = split(/\n/, `tabix $file $chr:$start-$end`);
   foreach my $l (@line){
     my @epi = split(/\s/, $l);

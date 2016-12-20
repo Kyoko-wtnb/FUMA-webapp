@@ -78,8 +78,9 @@ print OUT "uniqID\trsID\tchr\tpos\tref\talt\tMAF\tgwasP\n";
 close OUT;
 open(ANNOT, ">$out3");
 print ANNOT "uniqID\tCADD\tRDB";
-#local my @chr15 = `ls /media/sf_Documents/VU/Data/Chr15States/States/*.bed.gz`; #local
-my @chr15 = `ls /data/Chr15States/*.bed.gz`; #webserver
+
+my $chr15file = $cfg->param('data.chr15');
+my @chr15 = `ls $chr15file/*.bed.gz`;
 chomp @chr15;
 foreach(@chr15){
 	/(E\d+)_/;
@@ -119,6 +120,8 @@ if($regions){
 }
 
 #print "regions : ", scalar(keys %regions), "\n";
+
+my $refgenome = $cfg->param('data.refgenome');
 
 ### Process per chr because of memory exeed for big GWAS data
 foreach my $chr (1..23){
@@ -269,12 +272,8 @@ foreach my $chr (1..23){
 	#	}
 	#}else{
 	print "Start chr $chr: \n";
-#local 	my $ldfile = "/media/sf_SAMSUNG/1KG/Phase3/".$pop."/".$pop.".chr$chr.ld.gz"; #local
-	my $ldfile = "/data/1KG/Phase3/".$pop."/".$pop.".chr$chr.ld.gz"; #webserver
-
-	# my $maffile = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
-#local 	my $maffile = "/media/sf_SAMSUNG/1KG/Phase3/".$pop."_annot/chr$chr.data.txt.gz"; #local
-	my $maffile = "/data/1KG/Phase3/".$pop."/chr$chr.data.txt.gz"; #webserver
+	my $ldfile = "$refgenome/".$pop."/".$pop.".chr$chr.ld.gz";
+	my $maffile = "$refgenome/".$pop."/chr$chr.data.txt.gz";
 
  	if(exists $leadSNPs{$chr}){
 		#print "Checking input lead SNPs\n";
@@ -564,8 +563,7 @@ system "Rscript $dir/leadSNP.R $filedir $r2 $gwasP $leadP $maf $mergeDist $leadS
 #annov
 my $annovout = $filedir."annov";
 my $annov = $cfg->param('annovar.annovdir');
-#local system "$annov/annotate_variation.pl -out $annovout -build hg19 $annovin $annov/humandb/ -dbtype ensGene"; #local
-system "$annov/annotate_variation.pl -out $annovout -build hg19 $annovin $annov/humandb/ -dbtype ensGene"; #webserver
+system "$annov/annotate_variation.pl -out $annovout -build hg19 $annovin $annov/humandb/ -dbtype ensGene";
 
 my $annov1 = $filedir."annov.variant_function";
 my $annov2 = $filedir."annov.txt";

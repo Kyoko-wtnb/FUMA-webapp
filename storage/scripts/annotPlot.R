@@ -105,21 +105,5 @@ exons <- getBM(attributes = c("ensembl_gene_id", "external_gene_name", "start_po
 genes <- unique(exons[,1:6])
 genes <- genes[order(genes$start_position),]
 
-#genes$start_cut <- 0
-#genes$end_cut <- 0
-#n <- which(genes$start_position <= xmin-(xmax-xmin)*0.05)
-#if(length(n)>0){
-#  genes$start_position[n] <- xmin-(xmax-xmin)*0.05
-#  genes$start_cut[n] <- 1
-#}
-#n <- which(genes$end_position >= xmax+(xmax-xmin)*0.05)
-#if(length(n)>0){
-#  genes$end_position[n] <- xmax+(xmax-xmin)*0.05
-#  genes$end_cut[n] <- 1
-#}
-
-#exons <- exons[exons$exon_chrom_start >= xmin-(xmax-xmin)*0.05,]
-#exons <- exons[exons$exon_chrom_end <= xmax+(xmax-xmin)*0.05,]
-
 write.table(exons, paste(filedir, "exons.txt", sep=""), quote=F, row.names=F, sep="\t")
 write.table(genes, paste(filedir, "genesplot.txt", sep=""), quote=F, row.names=F, sep="\t")

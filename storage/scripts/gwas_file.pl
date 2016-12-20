@@ -27,16 +27,15 @@ my $gwas = $filedir.$cfg->param('inputfiles.gwas');
 my $outSNPs = $filedir."input.snps";
 my $outMAGMA = $filedir."magma.in";
 
-#local my $dbSNP = "/media/sf_SAMSUNG/dbSNP/RsMerge146.txt";
-my $dbSNP = "/data/dbSNP/RsMerge146.txt"; #webserver
+my $dbSNPfile = $cfg->param('data.dbSNP');
 my %rsID;
-open(RS, "$dbSNP");
+open(RS, "$dbSNPfile/RsMerge146.txt");
 while(<RS>){
 	my @line = split(/\s/, $_);
 	$rsID{$line[0]}=$line[1];
 }
 close RS;
-print $gwas,"\n";
+
 open(GWAS, "$gwas") or die "Cannot open $gwas\n";
 my $head = <GWAS>;
 my $rsIDcol=undef;
@@ -84,9 +83,9 @@ if(defined $chrcol && defined $poscol){
 	unless(defined $refcol && defined $altcol && defined $rsIDcol){
 		print "Either ref, alt or rsID is not defined\n";
 		foreach my $chr(1..23){
-		next unless(exists $GWAS{$chr});
-#local 			my $file = "/media/sf_SAMSUNG/1KG/Phase3/EUR/EUR.chr$chr.frq.gz";
-			my $file = "/data/1KG/Phase3/EUR/EUR.chr$chr.frq.gz"; #webserver
+			next unless(exists $GWAS{$chr});
+			my $refgenome = $cfg->param('data.refgenome');
+			my $file = "$refgenome/ALL/ALL.chr$chr.frq.gz";
  			my $fin = IO::Zlib->new($file, 'rb');
 			while(<$fin>){
 				my @line = split(/\s/, $_);
@@ -125,8 +124,7 @@ if(defined $chrcol && defined $poscol){
 		$GWAS{$line[$rsIDcol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);
 	}
 
-#local 	my $dbSNP = "/media/sf_SAMSUNG/dbSNP/snp146_pos_allele.txt";
-	my $dbSNP = "/data/dbSNP/snp146_pos_allele.txt"; #webserver
+	my $dbSNP = "$dbSNPfile/snp146_pos_allele.txt";
  	open(DB, "$dbSNP") or die "Cannot opne $dbSNP\n";
 	open(SNP, ">$outSNPs");
 	print SNP "chr\tbp\tref\talt\trsID\tp\n";
@@ -146,7 +144,6 @@ if(defined $chrcol && defined $poscol){
 	}
 	close DB;
 	close SNP;
-
 }
 
 close GWAS;
