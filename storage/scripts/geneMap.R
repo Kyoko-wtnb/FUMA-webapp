@@ -1,4 +1,5 @@
 library(data.table)
+library(kimisc)
 args <- commandArgs(TRUE)
 filedir <- args[1]
 genetype <- args[2]
@@ -23,9 +24,9 @@ eqtlMapChr15 <- args[20]
 eqtlMapChr15Max <- as.numeric(args[21])
 eqtlMapChr15Meth <- args[22]
 
-source(paste(filedir, '../../scripts/ConfigParser.R', sep=""))
-config <- ConfigParser(file=paste(filedir,'../../scripts/app.config', sep=""))
-
+curfile <- thisfile()
+source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
+config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
 load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 

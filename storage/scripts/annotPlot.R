@@ -1,4 +1,5 @@
 library(data.table)
+library(kimisc)
 args <- commandArgs(TRUE)
 filedir <- args[1]
 type <- args[2]
@@ -16,7 +17,10 @@ if(Chr15==1){
   Chr15ts <- sort(Chr15ts)
 }
 
-#write.table(c(filedir, CADD, RDB, eqtl), paste(filedir, "test.txt", sep=""))
+curfile <- thisfile()
+source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
+config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
+
 snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
 loci.table <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
 ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
@@ -66,8 +70,7 @@ if(eqtlplot==1){
 }
 write.table(snps, paste(filedir, "annotPlot.txt", sep=""), quote=F, row.names=F, sep="\t")
 
-#local load(paste(filedir, "../../data/ENSG.all.genes.RData", sep="")) #local
-load("/data/ENSG/ENSG.all.genes.RData") #webserver
+load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 
 xmin <- min(snps$pos)-500000
 xmax <- max(snps$pos)+500000

@@ -1,4 +1,5 @@
 library(data.table)
+library(kimisc)
 args <- commandArgs(TRUE)
 filedir <- args[1]
 gtype <- args[2]
@@ -7,9 +8,9 @@ bkgtype <- args[4]
 bkgval <- args[5]
 MHC <- as.numeric(args[6])
 
-source(paste(filedir, '../../scripts/ConfigParser.R', sep=""))
-
-config <- ConfigParser(file=paste(filedir,'../../scripts/app.config', sep=""))
+curfile <- thisfile()
+source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
+config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
 if(gtype == "text"){
   genes <- unlist(strsplit(gval, ":"))
