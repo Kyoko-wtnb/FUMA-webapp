@@ -1,11 +1,12 @@
 #!/usr/bin/python
 
 import sys
+import os;
 import glob
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
-# import timeit
+import timeit
 import statsmodels.sandbox.stats.multicomp as multicomp
 import re
 from joblib import Parallel, delayed
@@ -14,7 +15,7 @@ import ConfigParser
 
 n_cores = multiprocessing.cpu_count()
 
-# start = timeit.default_timer()
+start = timeit.default_timer()
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -24,7 +25,7 @@ def ArrayIn(a1, a2):
 
 ##### config variables #####
 cfg = ConfigParser.ConfigParser()
-cfg.read('app.config')
+cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
 ensgdir = cfg.get('data', 'ENSG')
 gsdir = cfg.get('data', 'GeneSet')
 
@@ -195,6 +196,6 @@ for i in tmp:
 #for l in results:
 #	out.write("\t".join(list(l))+"\n")
 
-# stop = timeit.default_timer()
+stop = timeit.default_timer()
 
-# print stop - start
+print stop - start

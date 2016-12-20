@@ -10,8 +10,8 @@ use warnings;
 use File::Basename;
 use Config::Simple;
 
-my $cfg = new Config::Simple('app.config');
 my $dir = dirname(__FILE__);
+my $cfg = new Config::Simple($dir.'/app.config');
 
 #die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <gwas file format> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC>\n" if (@ARGV < 13);
 die "ERROR: not enough arguments\nUSAGE: ./getSNPs.pl <file dir> <pop> <leadPth> <KGSNPs> <gwasP> <MAF> <r2> <leadSNPs> <add leadSNP> <regions> <mergeDist> <exMHC> <extMHC>\n" if (@ARGV < 13);

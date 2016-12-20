@@ -11,8 +11,10 @@ use strict;
 use warnings;
 use IO::Zlib;
 use Config::Simple;
+use File::Basename;
 
-my $cfg = new Config::Simple('app.config');
+my $dir = dirname(__FILE__);
+my $cfg = new Config::Simple($dir.'/app.config');
 
 # die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir> <gwas file format>\n" if(@ARGV<2);
 die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir>\n" if(@ARGV<1);

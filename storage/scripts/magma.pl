@@ -2,10 +2,12 @@
 use strict;
 use warnings;
 use Config::Simple;
+use File::Basename;
 
 die "ERROR: not enought arguments\nUSAGE./magma.pl <filedir> <sample N> <population>\n" if(@ARGV<3);
 
-my $cfg = new Config::Simple('app.config');
+my $dir = dirname(__FILE__);
+my $cfg = new Config::Simple($dir.'/app.config');
 
 my $filedir = $ARGV[0];
 $filedir .= '/' unless($filedir =~ /\/$/);

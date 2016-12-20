@@ -1,11 +1,13 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use File::Basename;
 use Config::Simple;
 
 die "ERROR: Not enough argument.\nUSAGE: ./getChr15.pl <filedir> <ts>\n" if(@ARGV<2);
 
-my $cfg = new Config::Simple('app.config');
+my $dir = dirname(__FILE__);
+my $cfg = new Config::Simple($dir.'/app.config');
 my $chr15dir = $cfg->param('data.chr15');
 
 my $filedir = $ARGV[0];

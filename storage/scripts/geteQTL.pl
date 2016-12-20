@@ -8,11 +8,14 @@
 use strict;
 use warnings;
 use Config::Simple;
+use File::Basename;
 
 die "ERROR: not enough arguments\nUSAGE: ./geteQTL.pl <filedir> <tissues> <sigonly> <eqtlP>\n" if(@ARGV <4);
 
+my $dir = dirname(__FILE__);
+
 #config
-$cfg = new Config::Simple('app.config');
+my $cfg = new Config::Simple($dir.'/app.config');
 my $gtexdir = $cfg->param('data.GTEx');
 my $qtldir = $cfg->param('data.QTL');
 
