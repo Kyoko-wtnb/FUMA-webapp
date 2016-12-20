@@ -19,7 +19,7 @@ class D3jsController extends Controller
         // Protect this Controller
         $this->middleware('auth');
     }
-    
+
     public function locusPlot($ldI, $type, $jobID){
       $script = storage_path()."/scripts/locusPlot.R";
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
@@ -54,13 +54,11 @@ class D3jsController extends Controller
     }
 
     public function manhattan($type, $jobID, $file){
-#local       if($type=="jobs"){ #local
-#local         $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
-#local       }else{ #local
-#local         $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$jobID."/"; #local
-#local       } #local
-
-      $filedir = "/data/IPGAP/".$type."/".$jobID."/"; #webserver
+      if($type=="jobs"){
+        $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      }else{
+        $filedir = config('app.gwasDBdir')."/gwasDB/".$jobID."/";
+      }
 
       $f = $filedir.$file;
       if($file == "manhattan.txt"){
@@ -97,13 +95,11 @@ class D3jsController extends Controller
     }
 
     public function QQplot($type, $jobID, $plot){
-#local       if($type=="jobs"){ #local
-#local         $filedir = storage_path().'/jobs/'.$jobID.'/'; #local
-#local       }else{ #local
-#local         $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$jobID."/"; #local
-#local       } #local
-
-      $filedir = "/data/IPGAP/".$type."/".$jobID."/"; #webserver
+       if($type=="jobs"){
+         $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+       }else{
+         $filedir = config('app.gwasDBdir')."/gwasDB/".$jobID."/";
+       }
 
       if(strcmp($plot,"SNP")==0){
       	$file=$filedir."QQSNPs.txt";
@@ -138,8 +134,7 @@ class D3jsController extends Controller
     }
 
     public function d3js_GWAS_textfile($dbName, $file){
-#local       $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$dbName."/"; #local
-      $filedir = '/data/IPGAP/gwasDB/'.$dbName.'/'; #webserver
+      $filedir = config('app.gwasDBdir').'/gwasDB/'.$dbName.'/';
       $f = $filedir.$file;
       if(file_exists($f)){
         $file = fopen($f, 'r');
@@ -153,8 +148,7 @@ class D3jsController extends Controller
     }
 
     public function d3js_GWAS_QQ($dbName, $type){
-#local       $filedir = "/media/sf_Documents/VU/Data/gwasDB/".$dbName."/"; #local
-      $filedir = '/data/IPGAP/gwasDB/'.$dbName.'/'; #webserver
+      $filedir = config('app.gwasDBdir').'/gwasDB/'.$dbName.'/';
       if(strcmp($type,"SNP")==0){
       	$file=$filedir."QQSNPs.txt";
       	$f = fopen($file, 'r');

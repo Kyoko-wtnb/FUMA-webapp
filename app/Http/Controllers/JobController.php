@@ -51,7 +51,7 @@ class JobController extends Controller
 
         $job = SubmitJob::where('jobID', $jobID)
             ->where('email', $this->user->email)->first();
-            
+
         if( ! $job ){
             return "Notfound";
         }
@@ -812,29 +812,9 @@ class JobController extends Controller
       $head[15] = "SNPh2";
       $results = DB::select('SELECT * FROM gwasDB WHERE dbName=?', [$dbName]);
       $rows = json_decode(json_encode($results), true);
-      #$results = $results->toArray();
-      // $f = fopen()
-      // file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", implode(":",$rows[0]));
       $all_row = array();
       $all_row[] = array_combine($head, $rows[0]);
       $json = array('data'=>$all_row);
-#local       // file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", json_encode($all_row));#local
-      // foreach($results as $row){
-      //   if($row->title==$jobtitle){
-      //     $exists = true;
-      //     $jobID = $row->jobID;
-      //     break;
-      //   }
-      // }
-      // file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", json_encode($all_row));
-
-      // $file = fopen("/media/sf_Documents/VU/Data/gwasDB/old.txt", 'r');
-      // $head = fgetcsv($file, 0, "\t");
-      // $all_row = array();
-      // while($row = fgetcsv($file, 0, "\t")){
-      //   $all_row[] = array_combine($head, $row);
-      // }
-      // $json = array('data'=>$all_row);
       echo json_encode($json);
     }
 
