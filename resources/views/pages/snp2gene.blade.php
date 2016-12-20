@@ -89,6 +89,7 @@
           <div id="manhattanPane">
             <canvas id="manhattanCanvas"></canvas>
             <canvas id="manhattanTmp" style="display: none;"></canvas>
+            <canvas id="manhattanMain" style="display: none;"></canvas>
             <div id="manhattan" style="display: none;"></div>
           </div>
           <br/><br/>
@@ -100,6 +101,7 @@
           <div id="geneManhattanPane">
             <canvas id="geneManhattanCanvas"></canvas>
             <canvas id="geneManhattanTmp" style="display: none;"></canvas>
+            <canvas id="geneManhattanMain" style="display: none;"></canvas>
             <div id="geneManhattan" style="display:none;"></div>
           </div>
           <br/><br/>
@@ -114,6 +116,7 @@
                 <div>
                   <canvas id="QQplotCanvas"></canvas>
                   <canvas id="QQplotTmp" style="display: none;"></canvas>
+                  <canvas id="QQplotMain" style="display: none;"></canvas>
                   <div id="QQplot" style="display:none;"></div>
                 </div>
               </div>
@@ -126,6 +129,7 @@
                 <div>
                   <canvas id="geneQQplotCanvas"></canvas>
                   <canvas id="geneQQplotTmp" style="display: none;"></canvas>
+                  <canvas id="geneQQplotMain" style="display: none;"></canvas>
                   <div id="geneQQplot" style="display:none;"></div>
                 </div>
               </div>

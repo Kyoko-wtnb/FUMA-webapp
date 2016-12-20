@@ -18,7 +18,6 @@ $(document).ready(function(){
   $(".ImgDown").on('click', function(){
     var id = $(this).attr("id");
     id = id.replace("Img", "");
-    console.log(id);
     var svg = $('#'+id).html();
     canvg(id+'Canvas', svg);
     var canvas = document.getElementById(id+'Canvas');
@@ -27,7 +26,6 @@ $(document).ready(function(){
   $(".CanvDown").on('click', function(){
     var id = $(this).attr("id");
     id = id.replace("Down", "");
-    console.log(id);
     var canvas = document.getElementById(id);
     Canvas2Image.saveAsPNG(canvas);
   });
@@ -284,9 +282,7 @@ function GWplot(jobID){
             .attr("height", height+margin.top+margin.bottom)
             .append("g")
             .attr("transform", "translate("+margin.left+","+margin.top+")");
-  var canvas1 = d3.select('#manhattan')
-            	.append("canvas")
-              .attr('id', 'manhattanMain')
+  var canvas1 = d3.select('#manhattanMain')
             	.attr("width", width)
             	.attr("height", height)
             	.node().getContext('2d');
@@ -295,9 +291,7 @@ function GWplot(jobID){
             .attr("height", height+margin.top+margin.bottom)
             .append("g")
             .attr("transform", "translate("+margin.left+","+margin.top+")");
-  var canvas2 = d3.select('#geneManhattan')
-            	.append("canvas")
-              .attr('id', 'geneManhattanMain')
+  var canvas2 = d3.select('#geneManhattanMain')
             	.attr("width", width)
             	.attr("height", height)
             	.node().getContext('2d');
@@ -455,9 +449,7 @@ function QQplot(jobID){
               .attr("height", height+margin.top+margin.bottom)
               .append("g")
               .attr("transform", "translate("+margin.left+","+margin.top+")");
-  var canvasSNP = d3.select('#QQplot')
-                	.append("canvas")
-                	.attr("id", "QQplotMain")
+  var canvasSNP = d3.select('#QQplotMain')
                 	.attr("width", width+margin.right)
                 	.attr("height", height+margin.bottom)
                 	.node().getContext('2d');
@@ -466,9 +458,7 @@ function QQplot(jobID){
                 .attr("width", width+margin.left+margin.right)
                 .attr("height", height+margin.top+margin.bottom)
                 .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
-  var canvasGene = d3.select('#geneQQplot')
-                  	.append("canvas")
-                  	.attr("id", "geneQQplotMain")
+  var canvasGene = d3.select('#geneQQplotMain')
                   	.attr("width", width+margin.right)
                   	.attr("height", height+margin.bottom)
                   	.node().getContext('2d');
