@@ -34,17 +34,32 @@ class JobController extends Controller
     public function getJobList(){
         $email = $this->user->email;
 
-        if( $email){
+        if($email){
             $results = SubmitJob::where('email', $email)
                 ->orderBy('created_at', 'desc')
                 ->get();
-        }
-        else{
+        }else{
             $results = array();
         }
 
+        $this->queueNewJobs($email);
+
         return response()->json($results);
 
+    }
+
+    public function queueNewJobs($email){
+      $newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW')->get();
+      if(count($newJobs)>0){
+        foreach($newJobs as $job){
+          // if($job->status != "NEW"){continue;}
+          $user = $this->user;
+          $jobID = $job->jobID;
+          DB::table('SubmitJobs') -> where('jobID', $jobID)
+            -> update(['status'=>'QUEUED']);
+          $this->dispatch(new snp2geneProcess($user, $jobID));
+        }
+      }
     }
 
     public function checkJobStatus($jobID){
@@ -309,8 +324,8 @@ class JobController extends Controller
       File::append($paramfile, "eqtlMapChr15Max=$eqtlMapChr15Max\n");
       File::append($paramfile, "eqtlMapChr15Meth=$eqtlMapChr15Meth\n");
 
-      $user = DB::table('users')->where('email', $email)->first();
-      $this->dispatch(new snp2geneProcess($user, $jobID));
+      // $user = DB::table('users')->where('email', $email)->first();
+      // $this->dispatch(new snp2geneProcess($user, $jobID));
       return redirect("/snp2gene#joblist-panel");
     }
 
