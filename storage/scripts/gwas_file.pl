@@ -55,9 +55,9 @@ while($head =~ /^#/){
 		if($head[$i] =~ /^SNP$|^MarkerName$|^rsID$/i){$rsIDcol=$i}
 		elsif($head[$i] =~ /^CHR$|^chromosome$|^chrom$/i){$chrcol=$i}
 		elsif($head[$i] =~ /^BP$|^pos$|^position$/i){$poscol=$i}
-		elsif($head[$i] =~ /^A1$|^Effect_allele$|^alt$|^allele1$/i){$altcol=$i}
-		elsif($head[$i] =~ /^A2$|^Non_Effect_allele$|^ref$|^allele2$/i){$refcol=$i}
-		elsif($head[$i] =~ /^P$|^pvalue$|^p-value$|^p_value$/i){$pcol=$i}
+		elsif($head[$i] =~ /^A1$|^Effect_allele$|^alt$|^allele1$|^alleleB$/i){$altcol=$i}
+		elsif($head[$i] =~ /^A2$|^Non_Effect_allele$|^ref$|^allele2$|^alleleA$/i){$refcol=$i}
+		elsif($head[$i] =~ /^P$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$/i){$pcol=$i}
 	}
 
 if(!(defined $pcol)){die "P-value column was not found\n";}

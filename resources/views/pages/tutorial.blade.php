@@ -172,67 +172,57 @@
       <div style="margin-left: 40px;">
         <h3 id="prepare-input-files">Prepare Input Files</h3>
         <h4>1. GWAS summary statistics</h4>
-        <p>GWAS summary statistics is a mandatory input of <code>SNP2GENE</code> process. GWAS ATLAS accept various types of format. As default, <code>PLINK</code> for mat is selected, but please choose the format of your input file since this will cause error during process. Each option requires the following format.</p>
-        <p>The input file must include P-value and either rsID or chromosome index and genetic position on hg19 reference genome. Alleles are not mandatory but if only one allele is provided, that is considered as affected allele. When two alleles are provided, it will depends on header. If alleles are not provided, they will be extracted from dbSNP build 146 as minor allele as affected alleles.</p>
-        <p>If you are not sure which format to use, either edit your header or select <code>Plain Text</code> which will cover most of common column names.</p>
-        <p>Delimiter can be any of white space including single space, multiple space and tab. Because of this, column name must not include any space.</p>
-        <p>The column of chromosome can be string like &quot;chr1&quot; or just integer &quot;1&quot;. When &quot;chr&quot; is attached, this will be removed in outputs. When the input file contains chromosome X, this will be encoded as chromosome 23, however, input file can be leave as &quot;X&quot;.</p>
+        <p>GWAS summary statistics is a mandatory input of <strong>SNP2GENE</strong> process.
+          FUMA accept various types of format. For example, PLINK, SNPTEST and METAL output formats can be used as it is.
+        </p>
+
         <div style="margin-left: 40px;">
-          <h4 id="1-plink-format">1.1 <code>PLINK</code> format</h4>
-          <p>&ensp;As the most common file format, <code>PLINK</code> is the default option. Some options in PLINK do not return both A1 and A2 but as long as the file contains either SNP or CHR and BP, GWAS ATLAS will cover missing values.</p>
+          <h4>Accepptable file format</h4>
+          <p>The input file must include P-value and either rsID or chromosome + genetic position on hg19 reference genome.
+            Alleles are not mandatory but if only one allele is provided, that is considered as affected allele.
+            When two alleles are provided, affected allele will be defined depending on header.
+            If alleles are not provided, they will be extracted from 1000 genomes referece panel as minor allele as affected alleles.
+          </p>
+          <p>Column names will be matched with the following headers (case insensitive).</p>
           <ul>
-            <li><strong>SNP</strong>: rsID</li>
-            <li><strong>CHR</strong>: chromosome</li>
-            <li><strong>BP</strong>: genomic position (hg19)</li>
-            <li><strong>A1</strong>: affected allele</li>
-            <li><strong>A2</strong>: another allele</li>
-            <li><strong>P</strong>: P-value (Mandatory)</li>
+            <li><strong>SNP | markername | rsID</strong>: rsID</li>
+            <li><strong>CHR | chromosome | chrom</strong>: chromosome</li>
+            <li><strong>BP | pos | position</strong>: genomic position (hg19)</li>
+            <li><strong>A1 | alt | effect_allele | allele1 | alleleB</strong>: affected allele</li>
+            <li><strong>A2 | ref | non_effect_allele | allele2 | alleleA</strong>: another allele</li>
+            <li><strong>P | pvalue | p-value | p_value | frequentist_add_pvalue | pval</strong>: P-value (Mandatory)</li>
           </ul>
-          <h4 id="2-snptest-format">1.2 <code>SNPTEST</code> format</h4>
-          <p>&ensp;Since in the output file of SNPTEST contains lines start with &#39;#&#39;, those lines will be skipped. Herder line should not start with &#39;#&#39; and should be the first line without &#39;#&#39; in the file.</p>
-          <ul>
-            <li><strong>rsid</strong>: rsID</li>
-            <li><strong>chromosome</strong>: chromosome</li>
-            <li><strong>position</strong>: genomic position (hg19)</li>
-            <li><strong>alleleB</strong>: affected allele</li>
-            <li><strong>alleleA</strong>: another alleleA</li>
-            <li><strong>frequentist_add_pvalue</strong>: P-value</li>
-          </ul>
-          <h4 id="3-ctga-format">1.3 <code>CTGA</code> format</h4>
-          <ul>
-            <li><strong>SNP</strong>: rsID</li>
-            <li><strong>Chr</strong>: chromosome</li>
-            <li><strong>bp</strong>: genomic position (hg19)</li>
-            <li><strong>OtherAllele</strong>: affected allele</li>
-            <li><strong>ReferenceAllele</strong>: another alleleA</li>
-            <li><strong>p</strong>: P-value</li>
-          </ul>
-          <h4 id="4-metal-format">1.4 <code>METAL</code> format</h4>
-          <p>&ensp;The output of METAL (for meta analyses) only contains rsID without chromosome and genomic position. Therefore, those information will be extracted from dbSNP build 146 using rsID. For this, rsID will be first updated to build 146.</p>
-          <ul>
-            <li><strong>MakerName</strong>: rsID</li>
-            <li><strong>Allele1</strong>: affected allele</li>
-            <li><strong>Allele2</strong>: another alleleA</li>
-            <li><strong>P-value</strong>: P-value</li>
-          </ul>
-          <h4 id="5-plain-text-format">1.5 <code>Plain Text</code> format</h4>
-          <p>&ensp;If your file does not fit in any of above option, please use <code>Plain Text</code> option. The following headers are <em>case insensitive</em>.</p>
-          <ul>
-            <li><strong>SNP|markername|rsID</strong>: rsID</li>
-            <li><strong>CHR|chromosome|chrom</strong>: chromosome</li>
-            <li><strong>BP|pos|position</strong>: genomic position (hg19)</li>
-            <li><strong>A1|alt|effect_allele|allele1</strong>: affected allele</li>
-            <li><strong>A2|ref|non_effect_allele|allele2</strong>: another allele</li>
-            <li><strong>P|pvalue|p-value|p_value</strong>: P-value (Mandatory)</li>
-          </ul>
-          <hr>
-          <h4 id="note-and-tips">Note and Tips</h4>
-          <p>The pipeline only support human genome hg19. If your input file is not in hg19, please update the genomic position using liftOver from UCSC. However, there is an option for you!! When you provide only rsID without chromosome index and genomic position, GWAS ATLAS will extract them from dbSNP as hg19 genome. To do this, remove columns of chromosome index and genomic position.</p>
-          <hr>
+          <p style="color: #000099;"><i class="fa fa-info"></i> Please be carefull for alleles header in whcih A1 and Allele1 are effect allele while alleleA is non-effect allele.<br/>
+            Even if wrong labels are proveded for alleles, it does not affect any annotation and prioritization results, but please be aware of that when you interpret results.
+          </p>
+          <p>Delimiter can be any of white space including single space, multiple space and tab.
+            Because of this, each element including column names must not include any space.
+          </p>
+          <p>The column of chromosome can be string like "chr1" or just integer like 1.
+            When "chr" is attached, this will be removed in output files.
+            When the input file contains chromosome X, this will be encoded as chromosome 23, however, input file can be leave as "X".
+          </p>
+          <p>rsID in input file could be in any dbSNP build but will be updated to build 146 in the outout files.
+          </p>
+          <p>Extra columns will be ignored and will not be included in any output.
+          </p>
+          <p>Any rows start with "#" wiil be ignored.
+          </p>
         </div>
-        <h4>2. Predefined lead SNPs</h4>
-        <p>This is an option input file. If you wnat to specify lead SNPs, input file should have 3 columns.<br/>
-          *The order of the column has to be the same as the follwing but extra columns can be leave as it is. They will be ignored.<br/>
+        <hr>
+        <!-- <div style="padding-left:40px;"> -->
+          <h4>Note and Tips</h4>
+          <p>The pipeline only support human genome hg19.
+            If your input file is not based on hg19, please update the genomic position using liftOver from UCSC.
+            However, there is an option for you!! When you provide only rsID without chromosome and genomic position, FUMA will extract them from 1000 genomes reference panel based on hg19.
+            To do this, remove columns of chromosome and genomic position of rename headers to ignore those columns.
+            Note that extracting chromosme and genomic position will take extra time.
+          </p>
+        <!-- </div> -->
+        <hr>
+
+        <h4>2. Pre-defined lead SNPs</h4>
+        <p>This is an optional input file. If you wnat to specify lead SNPs, input file should have the following 3 columns.<br/>
         </p>
         <div style="padding-left: 40px:">
           <ul>
@@ -240,10 +230,22 @@
             <li><strong>chr</strong> : chromosome</li>
             <li><strong>pos</strong> : genomic position (hg19)</li>
           </ul>
+          <p style="color: #000099;"><i class="fa fa-info"></i>
+            The order of column has to be the same as shown above but header could be anything.
+            Extra columns will be ignored.
+          </p>
         </div>
-        <h4>3. Predefined genomic region</h4>
+        <hr>
+          <h4>Note and Tips</h4>
+          <p>This option would be useful when<br/>
+            1. You have lead SNPs of interest but they do not reach significant P-value threshold.<br/>
+            2. You are only interested in specific lead SNPs and do not want to identify additional lead SNPs which are independent.
+            In this case, you also have to UNCHECK option of <code>Identify additional independent lead SNPs</code>.
+          </p>
+        <hr>
+
+        <h4>3. Pre-defined genomic region</h4>
         <p>This is an option input file. If you want to analyse only specific genomic region of GWAS, input file shoud have 3 columns.<br/>
-          *The order of the column has to be the same as the follwing but extra columns can be leave as it is. They will be ignored.<br/>
         </p>
         <div style="padding-left: 40px:">
           <ul>
@@ -251,12 +253,26 @@
             <li><strong>start</strong> : start position of the genomic region of interest (hg19)</li>
             <li><strong>end</strong> : end position of the genomic region of interest (hg19)</li>
           </ul>
+          <p style="color: #000099;"><i class="fa fa-info"></i>
+            The order of column has to be the same as shown above but header could be anything.
+            Extra columns will be ignored.
+          </p>
         </div>
+        <hr>
+          <h4>Note and Tips</h4>
+          <p>This option would be useful when you have already done some followup analyses of your GWAS and are interested in specific genomic regions.<br/>
+            When pre-defined genomic region is provided, regardless of parameters, only lead SNPs and SNPs in LD with them within provided regions will be reported in outputs.
+          </p>
+        <hr>
+        <br/>
 
         <h3 id="parameters">Parameters</h3>
-        <p>GWAS ATLAS provide a variety of parameters. Default setting will perform naive positional mapping which gives you all genes within LD blocks of lead SNPs. In this section, every parameter will be described details.</p>
+        <p>FUMA provides a variety of parameters.
+          Default setting will perform naive positional mapping which maps all independent lead SNPs and SNPs in LD to genes up to 10kb apart.
+          In this section, every parameter will be described details.
+        </p>
         <p>Each of user inputs and parameters have status as described below.
-          Please make sure all input has non-red status, otherwise the submit button won't be activated.<br/><br/>
+          Please make sure all input has non-red status, otherwise the submit button will not be activated.<br/><br/>
           <span class="alert alert-info" style="padding: 5px;">
             This is for optional inputs/parameters.
           </span><br/><br/>
@@ -269,6 +285,7 @@
           <span class="alert alert-warning" style="padding: 5px;">
             This is the warning message for the input/parameter. It can be ignored but need to be paid an attention.
           </span><br/><br/>
+
         </p>
         <br/>
         <h4 id="input-files">1. Input files</h4>
@@ -287,28 +304,38 @@
               <tr>
                 <td>GWAS summary statistics</td>
                 <td>Mandatory</td>
-                <td>Input file of GWAS summary statistics</td>
+                <td>Input file of GWAS summary statistics.
+                  Only plain test is acceptable. Please uncompress archive files.
+                  As well as full results of GWAS summary statistics, subset of results can also be used.
+                  e.g. If you would like to look up specific SNPs, you can filter out other SNPs.
+                  Please follow <a href="{{ Config::get('app. subdir') }}/tutorial#prepare-input-files">Input files</a> section for file format.
+                </td>
                 <td>File upload</td>
                 <td>none</td>
               </tr>
               <tr>
-                <td>Predefined lead SNPs</td>
+                <td>Pre-defined lead SNPs</td>
                 <td>Optional</td>
-                <td>Optionally, user can provide predefined lead SNPs. Please follow the format below.</td>
+                <td>Optional pre-defined lead SNPs. The file should have 3 coulmns, rsID, chromsome and position.</td>
                 <td>File upload</td>
                 <td>none</td>
               </tr>
               <tr>
                 <td>Identify additional lead SNPs</td>
                 <td>Optional only when predefined lead SNPs are provided</td>
-                <td>If this option is given, PRROT will identify independent lead SNPs after defined LD block of predefined lead SNPs. Otherwise, only given lead SNPs will be analyzed.</td>
+                <td>If this option is CHECKED, FUMA will identify additional independent lead SNPs after defined LD block of pre-defined lead SNPs.
+                  Otherwise, only given lead SNPs and SNPs in LD of them will be used for further annotation.
+                </td>
                 <td>Check</td>
                 <td>Checked</td>
               </tr>
               <tr>
-                <td>Predefined genetic region</td>
+                <td>Pre-defined genetic region</td>
                 <td>Optional</td>
-                <td>Optionally, user can provide specific genomic regions. GWAS ATLAS only look provided regions to identify lead SNPs and candidate SNPs. If you are only interested in specific regions, this will increase a speed of job.</td>
+                <td>Optional pre-defined genomic regions.
+                  FUMA only looks provided regions to identify lead SNPs and SNPs in LD of them.
+                  If you are only interested in specific regions, this will increase a speed of job.
+                </td>
                 <td>File upload</td>
                 <td>none</td>
               </tr>
@@ -316,212 +343,260 @@
           </table>
         </div>
 
-        <h4 id="parameters-for-lead-snp-identification">2. Parameters for lead SNP identification</h4>
+        <h4>2. Parameters for lead SNPs and candidate SNPs identification</h4>
         <div style="margin-left: 40px;">
           <table class="table table-bordered">
             <thead>
               <tr>
                 <th>Parameter</th>
                 <th>Mandatory</th>
-                <th>Description</th>
+                <th style="width: 40%;">Description</th>
                 <th>Type</th>
                 <th>Default</th>
-                <th>Direction</th>
+                <th style="width: 20%;">Direction</th>
               </tr>
             </thead>
             <tbody>
                 <tr>
                 <td>Sample size (N)</td>
                 <td>Mandatory</td>
-                <td>The total number of sample in the GWAS. This is only used for MAGMA and LD score regression.</td>
+                <td>The total number of sample in the GWAS.
+                  This is only used for MAGMA to compute gene-based test.</td>
                 <td>Integer</td>
                 <td>none</td>
-                <td>Doesn&#39;t affect any candidates</td>
+                <td>Does not affect any candidates</td>
               </tr>
               <tr>
-                <td>Maximum lead SNP P-value (&lt;=)</td>
+                <td>Maximum lead SNP P-value (&le;)</td>
                 <td>Mandatory</td>
-                <td>GWAS ATLAS identifies lead SNPs wiht P-value less than or equal to this threshold. This should not me changed unless GWAS is under-powered and only a few peaks are significant.</td>
+                <td>FUMA identifies lead SNPs wiht P-value less than or equal to this threshold and independent from each other.
+                  This should not be changed unless GWAS is under-powered and only a few peaks are significant.
+                </td>
                 <td>numeric</td>
                 <td>5e-8</td>
-                <td>lower: decrease #lead SNPs. higher: increase #lead SNPs which most likely increate noises</td>
+                <td><span style="color: blue;">lower</span>: decrease #lead SNPs. <br/>
+                  <span style="color:red;">higher</span>: increase #lead SNPs.
+                </td>
               </tr>
               <tr>
-                <td>Minimum r2 (&gt;=)</td>
+                <td>Minimum r<sup>2</sup> (&ge;)</td>
                 <td>Mandatory</td>
-                <td>The minimum correlation to be in LD of a lead SNP.</td>
+                <td>The minimum correlation to be in LD of a lead SNP.
+                  Independent lead SNPs have r<sup>2</sup> less than this threshold from each other.
+                </td>
                 <td>numeric</td>
                 <td>0.6</td>
-                <td>higher: decrease #candidate SNPs and increase #lead SNPs. lower: increase #candidate SNPs and decrease #lead SNPs</td>
+                <td><span style="color:red;">higher</span>: decrease #candidate SNPs and increase #lead SNPs.<br/>
+                  <span style="color: blue;">lower</span>: increase #candidate SNPs and decrease #lead SNPs.
+                </td>
               </tr>
               <tr>
-                <td>Maximum GWAS P-value (&lt;=)</td>
+                <td>Maximum GWAS P-value (&le;)</td>
                 <td>Mandatory</td>
-                <td>This is the threshold for candidate SNPs within the LD block of a lead SNP. This will be applied only for GWAS-tagged SNPs.</td>
+                <td>This is the threshold for candidate SNPs in LD of lead SNPs.
+                  This will be applied only for GWAS-tagged SNPs while SNPs which do not exist in GWAS input but extracted from 1000 genoms reference will not be applied this filtering.
+                </td>
                 <td>numeric</td>
                 <td>0.05</td>
-                <td>higher: decrease #candidate SNPs. lower: increase #candidate SNPs.</td>
+                <td><span style="color:red;">higher</span>: decrease #candidate SNPs.<br/>
+                  <span style="color: blue;">lower</span>: increase #candidate SNPs.
+                </td>
               </tr>
               <tr>
                 <td>Population</td>
                 <td>Mandatory</td>
-                <td>The population of reference panel to compute r2 and MAF. Five populations are available from 1000G Phase 3.</td>
+                <td>The population of reference panel to compute r<sup>2</sup> and MAF.
+                  Currently five populations are available from 1000 genomes Phase 3.
+                </td>
                 <td>Select</td>
                 <td>EUR</td>
                 <td>-</td>
               </tr>
               <tr>
-                <td>Include 1000 genome variants</td>
+                <td>Include 1000 genomes reference variants</td>
                 <td>Mandatory</td>
-                <td>If checked, all SNPs in strong LD with any of lead SNPs including non-GWAS-tagged SNPs are selected as cnadidate SNPs.</td>
+                <td>If Yes, all SNPs in strong LD with any of lead SNPs including non-GWAS-tagged SNPs are selected as cnadidate SNPs.</td>
                 <td>Yes/No</td>
                 <td>Yes</td>
                 <td>-</td>
               </tr>
               <tr>
-                <td>Minimum MAF (&gt;=)</td>
+                <td>Minimum MAF (&ge;)</td>
                 <td>Mandatory</td>
-                <td>The minimum Minor Allele Frequency of candidate SNPs. This filter also apply to lead SNPs. If there is any pre-defined lead SNPs with MAF less than this threshold, that will be skipped.</td>
+                <td>The minimum Minor Allele Frequency of candidate SNPs.
+                  This filter also applies to lead SNPs.
+                  If there is any pre-defined lead SNPs with MAF less than this threshold, those SNPs will be skipped.
+                </td>
                 <td>numeric</td>
                 <td>0.01</td>
-                <td>higher: decrease #candidate SNPs. lower: increase #candidate SNPs</td>
+                <td><span style="color:red;">higher</span>: decrease #candidate SNPs.<br/>
+                   <span style="color: blue;">lower</span>: increase #candidate SNPs.
+                 </td>
               </tr>
               <tr>
-                <td>Maximum merge distance of LD (&lt;=)</td>
+                <td>Maximum distance of LD blocks to merge (&le;)</td>
                 <td>Mandatory</td>
-                <td>This is the maximum distance between LD blocks from independent lead SNPs to merge into genomic interval. When it is set at 0, only physically overlapped LD blocks are merged into genomic interval. Definition of interval is independent from definition of candidate SNPs.</td>
+                <td>This is the maximum distance between LD blocks from independent lead SNPs to merge into a genomic locus.
+                  When this is set at 0, only physically overlapped LD blocks are merged.
+                  Defining of genomic loci is independent from identification of candidate SNPs.
+                  Therefore, this does no change any results of candidates, however those genomic loci will be used to summarize results.
+                </td>
                 <td>numeric</td>
                 <td>250kb</td>
-              <td>-</td>
+                <td><span style="color:red;">higher</span>: decrease #genomic loci.<br/>
+                   <span style="color: blue;">lower</span>: increase #genomic loci.
+                 </td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h4 id="parameters-for-gene-mapping">3. Parameters for gene mapping</h4>
+        <h4>3. Parameters for gene mapping</h4>
         <div style="margin-left: 40px;">
-          <p>There are two options for gene mapping; positional and eQTL mappings. By default, positional mapping with maximum distance 10kb is defined. Since this parameter setting largely reflect to the result of mapped genes, please set carefully.</p>
+          <p>There are two options for gene mapping; positional and eQTL mappings. By default, positional mapping with maximum distance 10kb is performed.
+            Since parameters in this section largely affect the result of mapped genes, please set carefully.
+          </p>
           <br/>
-          <h4 id="positional-mapping">3.1 Positional mapping</h4>
+          <h4>3.1 Positional mapping</h4>
           <table class="table table-bordered">
             <thead>
               <tr>
                 <th>Parameter</th>
                 <th>Mandatory</th>
-                <th>Description</th>
+                <th style="width:40%;">Description</th>
                 <th>Type</th>
                 <th>Default</th>
-                <th>Direction</th>
+                <th style="width:20%;">Direction</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>Position mapping</td>
                 <td>Optional</td>
-                <td>Whether perform positional mapping or not.</td>
+                <td>Whether perform positional mapping or not.
+                  Positional mapping is based on distance from SNPs to genes.
+                  Users can choose from distance based and annotation based maping in the following parameters.
+                </td>
                 <td>Check</td>
                 <td>Checked</td>
                 <td>-</td>
               </tr>
               <tr>
-                <td>Gene window</td>
+                <td>Distance based mapping</td>
                 <td>Optional</td>
-                <td>Map SNPs to gene based on physical distance</td>
+                <td>Map SNPs to genes based on physical distance.
+                  When this option is selected, the following option (maximum distance to genes) is mandatory.
+                </td>
                 <td>Check</td>
                 <td>Checked</td>
                 <td>-</td>
               </tr>
               <tr>
-                <td>Gene window size (&lt;=)</td>
+                <td>Maximum distance to genes (&le;)</td>
                 <td>Optional</td>
-                <td>The maximum distance to map SNPs to genes</td>
+                <td>The maximum distance to map SNPs to genes.
+                  This option is used only when <code>Distance based mapping</code> is CHECKED.
+                  When this is set at 0, 1 kb up- and down-stream (3UTR and 5UTR) will be included as 0.
+                </td>
                 <td>numeric</td>
                 <td>10kb</td>
-                <td>-</td>
+                <td><span style="color:red;">higher</span>: increase #mapped genes.<br/>
+                   <span style="color: blue;">lower</span>: decrease #mapped genes.
+                </td>
               </tr>
               <tr>
-                <td>Annotations based mapping</td>
+                <td>Annotation based mapping</td>
                 <td>Optional</td>
-                <td>Map SNPs to genes baed on positional mapping such as exonic, intronic splicing, etc...</td>
-                <td>Check</td>
-                <td>Unchecked</td>
-                <td>-</td>
-              </tr>
-              <tr>
-                <td>Annotations</td>
-                <td>Mandatory only when Annotation based mapping is activated</td>
-                <td>Positional annotation to map SNPs to genes</td>
+                <td>Instead of distance based mapping which is purely based on phisical distance, annotation based mapping maps only SNPs have selected functional consequence on genes.
+                  Annotations are based on ANNVAR outputs.
+                  For example, when exonic is slected, only genes with exonic SNPs which are in LD of lead SNPs will be prioritized.
+                </td>
                 <td>Multiple selection</td>
                 <td>none</td>
                 <td>-</td>
               </tr>
             </tbody>
           </table>
-          <h4 id="eqtl-mapping">3.2 eQTL mapping</h4>
+
+          <h4>3.2 eQTL mapping</h4>
           <table class="table table-bordered">
             <thead>
               <tr>
                 <th>Parameter</th>
                 <th>Mandatory</th>
-                <th>Description</th>
+                <th style="width:40%;">Description</th>
                 <th>Type</th>
                 <th>Default</th>
-                <th>Direction</th>
+                <th style="width:20%;">Direction</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>eQTL mapping</td>
                 <td>Optional</td>
-                <td>Whether perform eQTL mapping or not</td>
+                <td>Whether perform eQTL mapping or not.
+                  eQTL mapping maps SNPs to genes which likely affect expression of thoses genes up to 1 Mb (cis-eQTL).
+                  eQTLs are highly tissue specific and tissue types can be selected in the following option.
+                </td>
                 <td>Check</td>
                 <td>Unchecked</td>
                 <td>-</td>
               </tr>
               <tr>
                 <td>Tissue types</td>
-                <td>Mandatory if eQTL mapping is activated</td>
-                <td>All available tissue types with Data sources are shown in the select box. <code>Tissue type</code> selection contain individual tissue types and <code>General tissue types</code> contain broad area of organ and each general tissue contains multiple individual tissue types.</td>
+                <td>Mandatory if <code>eQTL mapping</code> is activated</td>
+                <td>All available tissue types with data sources are shown in the select box.
+                  <code>Tissue type</code> selection contain individual tissue types and
+                  <code>General tissue types</code> contain broad area of organ and each general tissue contains multiple individual tissue types.
+                </td>
                 <td>Multiple selection</td>
                 <td>none</td>
                 <td>-</td>
               </tr>
               <tr>
-                <td>Significant eQTL only (FDR&lt;=0.05)</td>
+                <td>Significant eQTL only (FDR&le;0.05)</td>
                 <td>Optional</td>
-                <td>To map only significant eQTL at FDR 0.05</td>
+                <td>Map only significant SNP-gene pair at FDR 0.05.
+                  The method to compute FDR is different between data sources.
+                  Please refer original data source from <a href="{{ Config::get('app.subdir') }}/links">links</a> for details.
+                </td>
                 <td>Check</td>
                 <td>Checked</td>
                 <td>-</td>
               </tr>
               <tr>
-                <td>eQTL maximum P-value (&lt;=)</td>
-                <td>Mandatory if Significant eQTL only is unchecked</td>
-                <td>This option will show up on the screen only when <code>Significant eQTL only</code> is unchecked. This can be used as threshold of eQTL uncorrected P-value.</td>
+                <td>eQTL maximum P-value (&le;)</td>
+                <td>Mandatory if <code>Significant eQTL only</code> is UNCHECKED</td>
+                <td>This can be used as threshold of eQTL uncorrected P-value.</td>
                 <td>numeric</td>
                 <td>1e-3</td>
-                <td>-</td>
+                <td><span style="color:red;">higher</span>: increase #eQTLs and #mapped genes.<br/>
+                   <span style="color: blue;">lower</span>: decrease #eQTLs and #mapped genes.</td>
               </tr>
             </tbody>
           </table>
-          <h4 id="functional-annotation-filtering">3.3 Functional annotation filtering</h4>
-          <p>Both positional and eQTL mappings have same options for the filtering of SNPs based on functional annotation, but parameters have to be set for each mapping separately.</p>
+          <h4>3.3 Functional annotation filtering</h4>
+          <p>Both positional and eQTL mappings have the following options separately for the filtering of SNPs based on functional annotation.</p>
           <table class="table table-bordered">
             <thead>
               <tr>
                 <th>Parameter</th>
                 <th>Mandatory</th>
-                <th>Description</th>
+                <th style="width:40%;">Description</th>
                 <th>Type</th>
                 <th>Default</th>
-                <th>Direction</th>
+                <th style="width:20%;">Direction</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td>CADD score</td>
                 <td>Optional</td>
-                <td>Whether perform filtering of SNPs by CADD score or not.</td>
+                <td>Whether perform filtering of SNPs by CADD score or not.<br/>
+                    CADD score is the score of deleteriousness of SNPs predicted by 63 fucntional annotations.
+                    12.37 is the threshold to be deleterious suggested by Kicher et al (2014).
+                    Plesase refer original publication for details from <a href="{{ Config::get('app.subdir') }}/links">links</a>.
+                </td>
                 <td>Check</td>
                 <td>Unchecked</td>
                 <td>-</td>
@@ -532,12 +607,17 @@
                 <td>The higher CADD score, the more deleterious.</td>
                 <td>numeric</td>
                 <td>12.37</td>
-                <td>-</td>
+                <td><span style="color:red;">higher</span>: less SNPs will be mapped to genes.<br/>
+                   <span style="color: blue;">lower</span>: more SNPs will be mapped to genes.</td>
+                </td>
               </tr>
               <tr>
                 <td>RegulomeDB score</td>
                 <td>Optional</td>
-                <td>Whether perform filtering of SNPs by RegulomeDB score or not.</td>
+                <td>Whether perform filtering of SNPs by RegulomeDB score or not.<br/>
+                  RegulomeDB score is a categorical score representing regulatory functionality of SNPs based on eQTLs and chromatin marks.
+                  Plesase refer original publication for details from <a href="{{ Config::get('app.subdir') }}/links">links</a>.
+                </td>
                 <td>Check</td>
                 <td>Unchecked</td>
                 <td>-</td>
@@ -545,15 +625,22 @@
               <tr>
                 <td>Minimum RegulomeDB score (&gt;=)</td>
                 <td>Mandatory if <code>RegulomeDB score</code> is checked</td>
-                <td>RegulomeDB score is a categorical (from 1a to 7). Please refer link for details. 1a is the most likely affect regulation. Note that not all SNPs in 1000G Phase3 has this score. Those SNPs are recorded as NA. Those SNPs will be filtered out when RegulomeDB score filtering is performed.</td>
+                <td>RegulomeDB score is a categorical (from 1a to 7).
+                  Score 1a means that those SNPs are most likely affect regulatory elements and 7 means that those SNPs do not have any annotations.
+                  SNPs are recorded as NA if they are not present in the database.
+                  These SNPs will be filtered out when RegulomeDB score filtering is performed.</td>
                 <td>string</td>
                 <td>7</td>
-                <td>-</td>
+                <td><span style="color:red;">higher</span>: more SNPs will be mapped to genes.<br/>
+                   <span style="color: blue;">lower</span>: less SNPs will be mapped to genes.</td>
+                </td>
               </tr>
               <tr>
                 <td>15-core chromatin state</td>
                 <td>Optional</td>
-                <td>Whether perform filtering of SNPs by chromatin state or not.</td>
+                <td>Whether perform filtering of SNPs by chromatin state or not.<br/>
+                  The chromatin state represents accessibility of genomic regions (every 200bp) with 15 categorical states predicted by ChromHMM based on 5 chromatin marks for 127 epigenomes.
+                </td>
                 <td>Check</td>
                 <td>Unchecked</td>
                 <td>-</td>
@@ -569,15 +656,23 @@
               <tr>
                 <td>Maximum state of chromatin(&lt;=)</td>
                 <td>Mandatory if <code>15-core chromatin state</code> is checked</td>
-                <td>The maximum state to filter SNPs. Between 1 and 15. Generally, above 7 is open state. Please refer link for further details.</td>
+                <td>The maximum state to filter SNPs. Between 1 and 15.
+                  Generally, bewteen 1 and 7 is open state.
+                </td>
                 <td>numeric</td>
                 <td>7</td>
-                <td>-</td>
+                <td><span style="color:red;">higher</span>: more SNPs will be mapped to genes.<br/>
+                   <span style="color: blue;">lower</span>: less SNPs will be mapped to genes.</td>
+                </td>
               </tr>
               <tr>
                 <td>Method for 15-core chromatin state filtering</td>
                 <td>Mandatory if <code>15-core chromatin state</code> is checked</td>
-                <td>When multiple tissue/cell types are selected, either <code>any</code> (a SNP has state above than threshold in any of selected tissue/cell types), <code>majority</code> (a SNP has state above than threshold in majority (&gt;=50%) of selected tissue/cell type), or <code>all</code> (a SNP has state above than threshold in all of selected tissue/cell type).</td>
+                <td>When multiple tissue/cell types are selected, either
+                  <code>any</code> (a SNP has state above than threshold in any of selected tissue/cell types),
+                  <code>majority</code> (a SNP has state above than threshold in majority (&ge;50%) of selected tissue/cell type), or
+                  <code>all</code> (a SNP has state above than threshold in all of selected tissue/cell type).
+                </td>
                 <td>Selection</td>
                 <td>any</td>
                 <td>-</td>
@@ -604,7 +699,10 @@
               <tr>
                 <td>Gene type</td>
                 <td>Mandatory</td>
-                <td>Gene biotype to map.</td>
+                <td>Gene type to map.
+                  This is based on gene_biotype obtained from BioMart of Ensembl build 85.
+                  Please refer <a href="http://vega.sanger.ac.uk/info/about/gene_and_transcript_types.html">here</a> for details
+                </td>
                 <td>Multiple selection.</td>
                 <td>Protein coding genes.</td>
               </tr>
@@ -630,7 +728,7 @@
               <tr>
                 <td>Exclude MHC region</td>
                 <td>Optional</td>
-                <td>Whether exclude MHC region or not. Default region is defined as between &quot;MOG&quot; and &quot;COL11A2&quot; genes.</td>
+                <td>Whether exclude MHC region or not. Default region is defined as between "MOG" and "COL11A2" genes.</td>
                 <td>Check</td>
                 <td>Checked</td>
               </tr>
@@ -638,7 +736,8 @@
                 <td>Extended MHC region</td>
                 <td>Optional</td>
                 <td>Use specified MHC region to exclude (oftenly used to exclude extended region, but shorter region can also be provided.)
-                The input format should be like &quot;25000000-34000000&quot;.</td>
+                  The input format should be like "25000000-34000000".
+                </td>
                 <td>Text</td>
                 <td>Null</td>
               </tr>
@@ -646,7 +745,7 @@
           </table>
           <br/>
         </div>
-        <h4>6. E-mail and job title</h4>
+        <h4>6. Title of job submission</h4>
         <div style="margin-left: 40px;">
           <table class="table table-bordered">
             <thead>
@@ -660,55 +759,31 @@
             </thead>
             <tbody>
               <tr>
-                <td>e-mail address</td>
+                <td>Title</td>
                 <td>Optional</td>
-                <td>This is not mandatory but we recomend you to submit if you want to save your results.
-                And it'd be useful to get a e-mail when job is done.</td>
-                <td>Text</td>
-                <td>Null</td>
-              </tr>
-              <tr>
-                <td>Job title</td>
-                <td>Optional</td>
-                <td>This is not mandatory but you can query your results by e-mail and job title if you provide both.</td>
+                <td>This is not mandatory but this would be usefull to keep track your jobs.</td>
                 <td>Text</td>
                 <td>Null</td>
               </tr>
             </tbody>
           </table>
-
         </div>
-        <!-- <h3 id="submit-job">Submit your job</h3>
-        <p>You can submit a job from <strong>New Job</strong> at <a href="/IPGAP/snp2gene"><strong>SNP2GENE</strong></a>.
-          Each of user inputs and parameters have status as described below.
-        </p>
-        <div style="margin-left: 40px;">
-          <h4 id="1-enter-email-address-and-job-title">1. Enter email address and job title</h4>
-          <p>Email address and job title are mandatory to submit a new job. The combination of these two will create unique ID to store results. Email address will be only used to inform the completion of your job. If warning message is shown, the job with the same title already exists but you can overwrite.</p>
-          <h4 id="2-select-input-files">2. Select input files</h4>
-          <p>GWAS summary statistics file is mandatory. Please don't forget to select correct file format. Pre-defined lead SNPs and/or genetic regions can be provided here, too.</p>
-          <h4 id="3-set-parameters">3. Set parameters</h4>
-          <p>Please refer &quot;Parameters&quot; section for details.</p>
-          <h4 id="4-submit-">4. Submit!!!</h4>
-          <p>Unless there is any error or wrong input, the submit button is enabled. If the submit button is still disabled, please check if there is any error message.
-          You will receive two emails, one is to inform that job has been submitted and second one is to inform you job has been done.
-          Don't worry about bookmarking the link, you will be able to query your results with email address and job title.
-          Usually, the job takes 20 min to 1 hour depending on parameters.
-          If you provide pre-defined genomic region or significant signals in the input GWAS is a few, it more likely to finish job quickly.
-          In that case, you can stay in the submitted page, and as soon as job is done, page will be updated to your results.</p>
-        </div> -->
+        <br/>
 
         <h3 id="outputs">Outputs</h3>
-        <p>Go to SNP2GENE and in the &quot;Query existing job&quot; panel, enter your email address and job title. If both are correct, &quot;Go to Job&quot; button is enabled.</p>
-        <p>There are 5 panels in the result page.</p>
-        <h4>1. Information of your job</h4>
-        <p>This panel contains your email address, job title and the date of job submission.
-          When an error occurs during any process, error and detils will be shown in this page.
-        </p>
+        <p>One process is done, you will receive an email.
+          Unless an error occured during the process, the email includes the link to results page (this again requires login).
+          You can also access to the results page from My Job list.
+          The result page display 4 additional side bars.
+        </p><br/>
+        <img src="{!! URL::asset('/image/result.png') !!}" style="max-width:80%"/><br/><br/>
+
         <h4>2. Genome-wide plots</h4>
-        <p>This panel displays manhattan plots and Q-Q plots for both SNP and gene-based association test.</p>
+        <p>This panel displays manhattan plots and Q-Q plots for both GWAS summary statistics (input file) and gene-based association test.<br/>
+          Images are downloadable as PNG files.
+        </p>
         <ul>
-          <li>Plots for SNPs<br/>
+          <li>Plots for GWAS summary statistics<br/>
             To minimize overlapped data points in the plot, they are filtered based on the following criteria.
             Please be aware that, since majority od overlapped data points are not displayed in the plot, those plots are approximated plots.
             <ul>
@@ -726,35 +801,61 @@
             MAGMA results are available from the download button.
           </li>
         </ul>
+        <br/>
+        <img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="max-width:80%"/><br/><br/>
+        <br/>
 
         <h4>3. Summary of results</h4>
-        <p>This panel shows summary of your GWAS input.</p>
+        <p>This panel shows summary of your GWAS input. Images are downloadable as PNG files.</p>
         <ul>
           <li>Summary of SNPs and mapped genes<ul>
             <li><strong>#lead SNPs</strong>: The number of independent lead SNPs identified.</li>
-            <li><strong>#Intervals</strong>: The number of genomic intervals defined from the independent lead SNPs.</li>
-            <li><strong>#candidate SNPs</strong>: The number of candidate SNPs which are in LD (given r2) of one of the independet lead SNPs.
-              This includes non-GWAS tagged SNPs which is extracted from 1000G reference panel.
-              When SNPs were filtered based on functional annotation for gene mapping, this number if before the functional filtering.</li>
+            <li><strong>#Intervals</strong>: The number of genomic loci defined from the independent lead SNPs.</li>
+            <li><strong>#candidate SNPs</strong>: The number of candidate SNPs which are in LD (given r<sup>2</sup>) of one of the independet lead SNPs.
+              This includes non-GWAS tagged SNPs which is extracted from 1000 genomes reference panel.
+              When SNPs were filtered based on functional annotation for gene mapping, this number is before the functional filtering.</li>
             <li><strong>#candidate GWAS tagged SNPs</strong>: The number of candidate SNPs (described above) which are tagged in GWAS (exists in your input file).</li>
             <li><strong>#mapped genes</strong>: The number of genes mapped by user-defined parameters.</li>
           </ul></li>
-          <li>Positional annotation of candidate SNPs</li>
+          <li>Positional annotation of candidate SNPs<br/>
+            This is a histogram of the number of SNPs per functional consequences on genes.
+            When SNPs have more than one (different) annotations, those are counted for each annotation.
+            SNPs assigned NA might be because alleles do not matche with fasta file in ANNOVAR Ensembl genes.
+          </li>
 
-          <li>Summary per interval</li>
+          <li>Summary per genomic locus<br/>
+            This histogram display, the size of loci,  the number of candidate SNPs, the number of mapped genes and number of genes phisically locating within define locus per genomic locus.
+          </li>
         </ul>
+        <br/>
+        <img src="{!! URL::asset('/image/snp2geneSummary.png') !!}" style="max-width:80%"/><br/><br/>
+        <br/>
+
         <h4>4. Result tables</h4>
         <p>This panel contain multiple tables of your results.
-          Here are descriptions for columns in each tables.<br/>
+          Here are descriptions for columns in each tables. Each columns will be described in the following section.
           Downloadable text files have the same column as shown in the interface unless methioned.
         </p>
-        <p>By clicking one of the rows of tables of independent lead SNPs or genomic intervals, it will create regional plots of candidate SNPs (GWAS P-value).
-          To create plots with genes and other functional annotations, please go to Regional plot panel.
+        <p>By clicking one of the rows of tables of lead SNPs or genomic risk loci, it will create regional plots of candidate SNPs (GWAS P-value).
+          Optionally, regional plot with genes and functional annotations can be created from the panel at the bottom of the page.
         </p>
+        Options for regional plot with annotations.<br/>
+        <ul>
+          <li>GWAS association statistics: input P-value</li>
+          <li>CADD score</li>
+          <li>RegulomeDB score</li>
+          <li>15-core chromatin state: tissue/cell types have to be selected.</li>
+          <li>eQTLs: This is only available when eQTL mapping is performed. eQTLs are plotted per gene and colored per tissue types.</li>
+        </ul>
+        <br/>
+        <img src="{!! URL::asset('/image/snp2geneResults.png') !!}" style="max-width:80%"/><br/>
+        <img src="{!! URL::asset('/image/snp2geneAnnotPlot.png') !!}" style="max-width:70%"/><br/><br/>
+        <br/>
+        <h4>Description of tables</h4>
         <div style="margin-left: 40px;">
           <ul>
             <li><p>lead SNPs / leadSNPs.txt</p>
-            <p>All independent lead SNPs identified by GWAS ATLAS.</p>
+            <p>All independent lead SNPs identified by FUMA.</p>
             <ul>
               <li><strong>No</strong> : Index of lead SNPs</li>
               <li><strong>Interval</strong> : Index of assigned genomic interval. This matches with the index of interval table.</li>
@@ -905,8 +1006,8 @@
             </li>
           </ul>
           <ul>
-            <li><p>Parameters / params.txt</p>
-            <p>The table of input parameters.</p>
+            <li><p>Parameters / params.config</p>
+            <p>The table of input parameters. The downloadable file is config file with INI format.</p>
             <ul>
               <li><strong>Job created</strong> : Date of job created</li>
               <li><strong>Job title</strong> : Job title</li>
@@ -951,7 +1052,8 @@
         <br/>
 
         <h4>5. Downloads</h4>
-        <p>All results are downloadable as text file. Columns are same as descrived above.<br/>
+        <p>All results are downloadable as text file.
+          Columns are same as descrived above.<br/>
         </p>
 
         <div style="padding-left: 40px;">
@@ -963,33 +1065,6 @@
             <li><strong>r2</strong> : r2 computed using 1000G reference panel of user defined population</li>
           </ul>
         </div>
-
-        <!-- <h4>4. Query results</h4>
-        <p>This is still under construction. Will be available soon.</p> -->
-        <br/>
-
-        <h4>6. Regional plot (with annotation)</h4>
-        <p>This panel contains options to create regional plot with annotations.
-          The plot will be created in a new tab.<br/>
-          Note that only candidate SNPs (SNPs in the LD of lead SNPs) will be included in the plot.
-        </p>
-        <div style="padding-left:40px;">
-          <h4>6.1 Region to plot</h4>
-          <p>Either independent lead SNP or genomic interval can be chosen by clicking the row of the table.<br/>
-            Please select which, lead SNP or interval, to plot.
-          </p>
-          <h4>6.2 Plot options</h4>
-          <p>
-          </p>
-          <ul>
-            <li>GWAS association statistics: input P-value</li>
-            <li>CADD score</li>
-            <li>RegulomeDB score</li>
-            <li>15-core chromatin state: tissue/cell types have to be selected.</li>
-            <li>eQTLs: This is only available when eQTL mapping is performed. eQTLs are plotted per gene and colored per tissue types.</li>
-          </ul>
-        </div>
-        <p></p>
         <br/>
       </div>
     </div>
