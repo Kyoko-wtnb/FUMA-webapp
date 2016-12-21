@@ -78,9 +78,9 @@ function CheckAll(){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
-    }else if($('#N').val()<0){
+    }else if($('#N').val()<50){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-ban"></i> Invalid input</div></td>');
+        +'<i class="fa fa-ban"></i> Invalid input. Smple size must be greater than 50.</div></td>');
       submit=false;
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'

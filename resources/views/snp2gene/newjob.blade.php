@@ -50,7 +50,7 @@
   <table class="table table-bordered inputTable" id="NewJobParams" style="width: auto;">
     <tr>
       <td>Sample size (N)
-        <a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of sample used in GWAS. This is only used for MAGMA. It does not affect anything of annotations and prioritizations. If you don't know thie number, the randome number should be fine.">
+        <a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of sample used in GWAS. This is only used for MAGMA. It does not affect anything of annotations and prioritizations. If you don't know thie number, the randome number should be fine (> 50).">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
