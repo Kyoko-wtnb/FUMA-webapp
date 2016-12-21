@@ -99,7 +99,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       exec("perl $script $filedir >>$logfile", $output, $error);
       if($error != 0){
         $NoCandidates = false;
-        foreach($outputs as $l){
+        foreach($output as $l){
           if(preg_match("No candidate SNP was identified", $l)==1){
             $NoCandidates = true;
             break;
