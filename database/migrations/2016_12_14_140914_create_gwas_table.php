@@ -13,7 +13,8 @@ class CreateGwasTable extends Migration
     public function up()
     {
         Schema::create('gwasDB', function (Blueprint $table) {
-            $table->increments('PMID');
+            $table->increments('ID');
+            $table->string('PMID');
             $table->integer('Year');
             $table->string('File');
             $table->string('website');
