@@ -4,6 +4,9 @@ namespace IPGAP\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use IPGAP\Http\Controllers\Controller;
+use DB;
+use IPGAP\Jobs\snp2geneProcess;
 
 class Kernel extends ConsoleKernel
 {
@@ -26,5 +29,17 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        // $schedule->call(function(){
+        //   $newjobs = DB::table('SubmitJobs')->where('status', 'NEW')->get();
+        //   foreach($newjobs as $job){
+        //     $email = $job->email;
+        //     $user = DB::table('users')->where('email', $email)->first();
+        //     $jobID = $job->jobID;
+        //     DB::table('SubmitJobs') -> where('jobID', $jobID)
+        //       -> update(['status'=>'QUEUED']);
+        //     \IPGAP\Http\Controllers\Controller::dispatch(new snp2geneProcess($user, $jobID));
+        //   }
+        // })->everyMinute();
     }
 }
