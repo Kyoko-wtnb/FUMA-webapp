@@ -16,9 +16,9 @@
   <div class="container-fluid">
     <div class="navbar-header" style="padding-left: 30px;">
       <!-- <a class="navbar-brand" href="{{ Config::get('app.subdir') }}/"><span style="color: #1E90FF; font-size: 130%;">IPGAP</span></a> -->
-      <a class="navbar-brand" href="{{ Config::get('app.subdir') }}/" style="padding-top: 15px;">
-        <!-- <img src="{!! URL::asset('image/fuma.png') !!}" height="45px;"> -->
-        <span style="color:#fff; font-size:30px;">FUMA</span>
+      <a class="navbar-brand" href="{{ Config::get('app.subdir') }}/" style="padding-top: 5px;">
+        <img src="{!! URL::asset('image/fuma.png') !!}" height="50px;">
+        <!-- <span style="color:#fff; font-size:30px;">FUMA</span> -->
       </a>
     </div>
 

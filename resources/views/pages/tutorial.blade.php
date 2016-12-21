@@ -17,7 +17,6 @@
         // $(hashid).show();
         $('a[href*="'+hashid+'"]').trigger('click');
       }else{
-
         $('.subside a').each(function(){
           if($(this).attr("href")==hashid){
             var parent = '#'+$(this).parent().attr("id").replace("sub", "");
@@ -28,21 +27,13 @@
         });
       }
     }
+
+    $('.infoPop').popover();
   });
 
-  // function onScroll(event){
-  //   var scrollPos = $(document).scrollTop();
-  //   $('#sidebar.nav li a').each(function(){
-  //     var curLink = $(this);
-  //     var refElement = $(curLink.attr("href"));
-  //     if (refElement.position().top <= scrollPos && refElement.position().top + refElement.height() > scrollPos){
-  //       $('#sidebar.nav').find(".active").removeClass("active");
-  //       $(this).parent().addClass("active");
-  //     }
-  //   });
-  // }
 </script>
 @stop
+
 @section('content')
 <div id="wrapper" class="active">
 <div id="sidebar-wrapper">
@@ -54,7 +45,7 @@
     <li><a href="#quick-start">Quick Start<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
       <div class="subside" id="quick-startsub">
         <a href="#getCandidate">Get candiates</a>
-        <a href="#geneQuery">Qury gene functions</a>
+        <a href="#geneQuery">Gene functions</a>
       </div>
     <li><a href="#snp2gene">SNP2GENE<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
       <div class="subside" id="snp2genesub">
@@ -72,90 +63,104 @@
   </ul>
 </div>
 
-
-<!-- <div class="row"> -->
-  <!-- <div class="col-md-2" id="leftCol">
-    <ul class="nav nav-stacked" id="sidebar">
-      <li class="active"><a href="#overview">Overview</a></li>
-      <li><a href="#quick-start">Quick Start</a></li>
-      <li><a href="#snp2gene">SNP2GENE</a></li>
-      <ul class="nav nav-stacked" id="snp2geneSub">
-        <li><a href="#prepare-input-files">Prepare Input Files</a></li>
-        <li><a href="#parameters">Parameters</a></li>
-        <li><a href="#submit-job">Submit a New Job</a></li>
-        <li><a href="#outputs">Outputs</a></li>
-      </ul>
-      <li><a href="#gene2func">GENE2FUNC</a></li>
-    </ul>
-  </div> -->
-
   <!-- <div class="col-md-10"> -->
 <div id="page-content-wrapper">
   <div class="page-content inset">
     <div id="test"></div>
-    <div id="overview" class="sidePanel container" style="padding-top:50;">
-      <h3>Overview of the GWAS ATLAS</h3>
+    <div id="overview" class="sidePanel container" style="padding-top:50px;">
+      <h3>Overview of the FUMA GWAS</h3>
       <div style="margin-left: 40px;">
         <p>The platform mainly consists of two separate process, SNP2GENE and GENE2FUNC.</p>
-        <p>To annotate and obtain candidates from your GWAS summary statistics, go to <a href="/IPGAP/snp2gene"><strong>SNP2GENE</strong></a> which compute LD structure,
-          annotate SNPs, and prioritize candidate genes.</p>
-        <p>If you already have a list of genes, go to <a href="/IPGAP/gene2func"><strong>GENE2FUNC</strong></a> to check expressiion pattern and shared molecular functions.<p/>
+        <p>To annotate and prioritize SNPs and genes from your GWAS summary statistics, go to <a href="/IPGAP/snp2gene"><strong>SNP2GENE</strong></a> which compute LD structure,
+          annotate functions to SNPs, and prioritize candidate genes.</p>
+        <p>If you already have a list of genes, go to <a href="/IPGAP/gene2func"><strong>GENE2FUNC</strong></a> to check expression pattern and shared molecular functions.<p/>
         <br/>
-        <img src="{{ URL::asset('/image/pipeline.png') }}" width="500" height="730" align="middle">
+        <img src="{{ URL::asset('/image/pipeline.png') }}" width="600" align="middle">
       </div>
     </div>
 
-    <div id="quick-start" class="sidePanel container" style="padding-top:50;">
+    <div id="quick-start" class="sidePanel container" style="padding-top:50px;">
       <h2>Quick Start</h2>
-      <!-- <p>In this page, we quickly go through what you can do and what you can get from GWAS ATLAS.
-        You will get a minimum knowledge of the GWAS ATLAS and will be able to start using.
-        Whenever you get questions, please go back to tutorial for detail explanations.
-      </p> -->
       <div style="margin-left: 40px;">
+        <h3>General Information</h3>
+          <p>
+            Each page will contain information and description of inputs and results to help you understand without go through entire tutorial.<br/>
+            <div style="padding-left: 40px">
+              <span class="info"><i class="fa fa-info"></i> This is information of inputs or results.</span><br/><br/>
+              <a class="infoPop" data-toggle="popover" data-content="This popuover will show brief description."><i class="fa fa-question-circle-o fa-lg"></i></a> :click this question mark to display brief description.<br/><br/>
+              <span class="alert alert-info" style="padding: 5px;">
+                This is for optional inputs/parameters.
+              </span><br/><br/>
+              <span class="alert alert-success" style="padding: 5px;">
+                This is the message if everything is fine.
+              </span><br/><br/>
+              <span class="alert alert-danger" style="padding: 5px;">
+                This is the message if the input/parameter is mandatory and not given or invalid input is given.
+              </span><br/><br/>
+              <span class="alert alert-warning" style="padding: 5px;">
+                This is the warning message for the input/parameter. It can be ignored but need to be paid an attention.
+              </span><br/><br/>
+            </p>
+          </div>
+
         <h3 id="getCandidate">Get candidates from your own GWAS summary statistics</h3>
         <p>You can obtain functional annotation of SNPs and map them to genes.
-          By setting parameter, you are also able to prioritize genes by your criterion.</p>
+          By setting parameters, you are also able to prioritize genes by your criterion.</p>
         <div style="margin-left: 40px">
-          <p><strong>1. Go to <a href="/IPGAP/snp2gene"><strong>SNP2GENE</strong></a> and upload GWAS summary statistics file.</strong><br/>
-            A variety of input formats are supported. Please refer the section of input files of this tutorial <a href="/IPGAP/tutorial#prepare-input-files">here</a> for details.
-            If you are not sure, chose <code>Plain text</code> which fits most of the headers.<br/>
-            Optionally, if you already know lead SNPs and you want to use them as lead SNPs, you can upload a file with 3 column; rsID, chromosome and position.<br/>
-            In addition, if you are interested in specific genomic regions, you can also provide them by uploading a file with 3 columns; chromosome, start and end position.<br/>
+          <p><h4><strong>1. Registration/Login</strong></h4>
+            If you haven't registered yet, please do so from <a href='/register'>Register</a>.<br/>
+            Before you submit your GWAS summary statistics, please log in to your account.<br/><br/>
+            <img src="{!! URL::asset('/image/homereg.png') !!}" style="max-width:80%"/><br/>
           </p>
 
-          <p><strong>2. Set parameters.</strong><br/>
+          <p><h4><strong>2. Submit new job at <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a></strong></h4>
+            GWAS summary statistics is a mandatory input and a variety of file formats are supported.
+            Please refer the section of input files of this tutorial <a href="{{ Config::get('app.subdir') }}/tutorial#prepare-input-files">here</a> for details.
+            If your file is an ouput of PLINK, SNPTEST or METAL, you can directory submit the file (no need to chagne columns).<br/>
+            Optionally, if you already know lead SNPs and you want to use them as lead SNPs, you can upload a file with 3 columns; rsID, chromosome and position.<br/>
+            In addition, if you are interested in specific genomic regions, you can also provide them by uploading a file with 3 columns; chromosome, start and end position.<br/><br/>
+            <img src="{!! URL::asset('/image/newjobfile.png') !!}" style="max-width:80%"/><br/>
+          </p>
+
+          <p><h4><strong>3. Set parameters</strong></h4>
             Please check your parameters carefully. Default setting perform identification of lead SNPs at r2=0.6 and maps SNPs to genes up to 10kb apart.<br/>
-            To filter SNPs by functional annotations and use eQTL mapping, please refer the parmeters section from <a href="/IPGAP/tutorial#parameters">here</a>.<br/>
-            At the end of the parameters, users can submit e-mail address with job title. This is not mandatory, but when e-mail address is provided, we will send a email when the job is done.
-            This would be useful since a job can take up to 1 hour, depending on inputs and parameters.
-            The advantage to provide both e-mail address and job title is that you will be able to query your results by them later on without bookmarking the link.
-            When e-mail address is not provided, you have to bookmark the link.
+            To filter SNPs by functional annotations and use eQTL mapping, please refer the parmeters section from <a href="{{ Config::get('app.subdir') }}/tutorial#parameters">here</a>.<br/>
+            If all inputs are valid, 'Submit Job' button will be activated. Once you submit a job, this will be listed in My Jobs.<br/><br/>
+            <img src="{!! URL::asset('/image/submitjob.png') !!}" style="max-width:70%"/><br/>
           </p>
 
-          <p><strong>3. Check your results.</strong><br/>
-            When e-mail is provided, the e-mail will be sent with the link to the results page. you can also query your results from <strong>Qeury Existing Job</strong> at <a href="/IPGAP/snp2gene"><strong>SNP2GENE</strong></a>.<br/>
-            The result page display 6 additional side bars.<br/>
-            <strong>Job info</strong>: The table of job information. If error occures during the job, that will be shown in this page.<br/>
-            <strong>Genome-wide plots</strong>: Manhattan plot and Q-Q plot for GWAS sumary statistics and gene-based test by MAGMA.<br/>
-            <strong>Summary of results</strong>: Summarised results such as the number of candidate SNPs and mapped genes for overall and per genomic interval.<br/>
-            <strong>Tables</strong>: Tables of lead SNPs, genomic intervals, candidate SNPs with annotations, eQTLs (only when eQTL mapping is performed), mapped genes and GWAS-catalog reported SNPs matched with candidate SNPs.<br/>
-            <strong>Downloads</strong>: Download tables as text files.<br/>
-            <strong>Regional plot</strong>: Create regional plot with annotation (optionally) for a selected lead SNP or genomic interval.<br/>
+          <p><h4><strong>4. Check your results</strong></h4>
+            One process is done, you will receive an email.
+            Unless an error occured during the process, the email includes the link to results page (this again requires login).
+            You can also access to the results page from My Job list.
+
+            The result page display 4 additional side bars.<br/>
+            <strong>Genome-wide plots</strong>: Manhattan plots and Q-Q plots for GWAS sumary statistics and gene-based test by MAGMA.<br/>
+            <strong>Summary of results</strong>: Summarised results such as the number of candidate SNPs and mapped genes for overall and per genomic loci.<br/>
+            <strong>Results</strong>: Tables of lead SNPs, genomic risk loci, candidate SNPs with annotations, eQTLs (only when eQTL mapping is performed), mapped genes and GWAS-catalog reported SNPs matched with candidate SNPs.
+            You can also create interactive regional plot with functional annotations from this tab.<br/>
+            <strong>Downloads</strong>: Download Results as text files.<br/>
+            Details for each panel are described in this tutorial <a href="{{ Config::get('app.subdir') }}/tutorial#outputs">here</a>.<br/><br/>
+            <img src="{!! URL::asset('/image/result.png') !!}" style="max-width:70%"/><br/><br/>
+            <img src="{!! URL::asset('/image/resultpanels.png') !!}" style="max-width:90%"/><br/>
           </p>
         </div>
         <br/>
-        <h3 id="geneQuery">Identify tissue specificity and shared biological functions of a list of genes</h3>
-        <p>In the <a href="/IPGAP/gene2func"><strong>GENE2FUNC</strong></a>, you can check expression in different tissue types, tissue specificity and enrichment of publicly available gene sets of a list of genes.
-          You can use mapped genes from SNP2GENE by clicking the button in the result page (Tables tab).<br/>
-          You have to provide a list of genes of interest and background genes (for hypergeometric tests).<br/>
+        <h3 id="geneQuery">Tissue specific gene expression and shared biological functions of a list of genes</h3>
+        <p>In the <a href="{{ Config::get('app.subdir') }}/gene2func"><strong>GENE2FUNC</strong></a>, you can check expression in different tissue types, tissue specificity and enrichment of publicly available gene sets of genes of interest.<br/>
+          You can use mapped genes from SNP2GENE by clicking the button in the result page (Results tab).<br/>
+          You have to provide a list of genes of interest and background genes (for hypergeometric test).<br/><br/>
+          <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="max-width:70%"/><br/>
         </p>
         <div style="margin-left: 40px">
           <p>
             Once genes are submitted, four extra side bars wil be shown.<br/>
             <strong>Gene Expression</strong>: The heatmap of gene expression of 53 tissue types from GTEx.<br/>
             <strong>Tissue Specificity</strong>: The bar plots of enrichment of differentially expressed genes across tissue types.<br/>
-            <strong>Gene Sets</strong>: Plots and tables of enrichment of gene sets.<br/>
+            <strong>Gene Sets</strong>: Plots and tables of enriched gene sets.<br/>
             <strong>Gene Table</strong>: Table of input genes with lnks to OMIM, Drugbank and GeneCards.<br/>
+            Details for each panel are described in this tutorial <a href="{{ Config::get('app.subdir') }}/tutorial#gene2funcOutputs">here</a>.<br/><br/>
+            <img src="{!! URL::asset('/image/gene2funcResults.png') !!}" style="max-width:70%"/><br/>
           </p>
         </div>
         <br/>
