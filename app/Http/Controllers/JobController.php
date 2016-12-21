@@ -42,7 +42,7 @@ class JobController extends Controller
             $results = array();
         }
 
-        // $this->queueNewJobs();
+        $this->queueNewJobs();
 
         return response()->json($results);
 
@@ -50,7 +50,7 @@ class JobController extends Controller
 
     public function queueNewJobs(){
       $user = $this->user;
-      $email = $user->$email;
+      $email = $user->email;
       $newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW')->get();
       if(count($newJobs)>0){
         foreach($newJobs as $job){
