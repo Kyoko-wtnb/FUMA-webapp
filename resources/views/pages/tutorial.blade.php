@@ -57,7 +57,7 @@
       </div>
     <li><a href="#gene2func">GENE2FUNC<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
       <div class="subside" id="gene2funcsub">
-        <a href="#submit-genes">Submit your genes</a>
+        <a href="#submit-genes">Submit genes</a>
         <a href="#gene2funcOutputs">Outputs</a>
       </div>
   </ul>
@@ -1072,57 +1072,70 @@
     <div id="gene2func" class="sidePanel container" style="padding-top:50;">
       <h2>GENE2FUNC</h2>
       <div style="padding-left: 40px;">
-        <h3 id="submit-genes">Submit genes</h3>
+        <h3>Submit genes</h3>
         <div style="padding-left: 40px;">
-          <h4>Use mapped genes from SNP2GENE</h4>
-          <p>If you want to use mapped genes from SNP2GENE, just click a button in the Tables panel of result page.
-            It will open a new tab and automatically start analyses.
-            This will take all mapped genes and use background genes with gene types you selected (such as &quot;protein-coding&quot; or &quot;ncRNA&quot;).
-            Method of multiple test correction (FDR BH), adjusted P-value cutoff (0.05) and minimum number of overlapped genes (2) are set at default.
-            These options can be fixed by resubmitting genes.
+          <h4>Option 1. Use mapped genes from SNP2GENE</h4>
+          <p>If you want to use mapped genes from SNP2GENE, just click a button in Mapped genes panel of the result page.
+            It will open a new tab and automatically starts analyses.
+            This will take all mapped genes and use background genes with selected gene types for gene mapping (such as "protein-coding" or "ncRNA").
+            Method of multiple test correction (FDR BH), adjusted P-value cutoff (0.05) and minimum number of overlapped genes (2) are set at default values.
+            These options can be fixed by resubmitting query (click "Submit" button in New Query tab).
           </p>
-          <h4>Use a list of genes of interest</h4>
+          <img src="{!! URL::asset('/image/snp2genejump.png') !!}" style="max-width:80%"/><br/>
+
+          <h4>Option 2. Use a list of genes of interest</h4>
           <p>To analyse your genes, you have to prepare list of genes as either ENSG ID, entrez ID or gene symbol.
           Genes can be provided in the text are (one gene per line) or uploading file in the left panel. When you upload a file, genes have to be in the first column with header. Header can be anything (even just a new line is fine) but start your genes from second row.</p>
           <p>To analyse your genes, you need to specify background genes. You can choose from the gene types which is the easiest way. However, in the case that you need to use specific background genes, please provide them either in the text area of by uploading a file of the right panel.
           File format should be same as described for genes on interest.</p>
-
           <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="max-width:80%"/>
         </div>
 
         <h3 id="gene2funcOutputs">Results and Outputs</h3>
         <div style="padding-left: 40px;">
-          <p>Once analysis is done, the three panel will be appear in the same page.</p>
-          <h4>1. Gene Expression</h4>
+          <h4>1. Gene Expression Heatmap</h4>
           <p>
-            The heatmap is the expression of input genes for 53 tissue types from GTEx.
-            The values represent the average RPKM per tissue after winsorization at 50.
+            The heatmap displays two expression values.<br/>
+            1) <b>Average RPKM per tissue</b> : This is averaged RPKM per tissue per gene following to winsorization at 50 and log 2 transformation with pseudocount 1.
+            This allows to compare across tissues and genes. Hence, cells filled in red represent higher expression compared to cells filled in blue.<br/>
+            2) <b>Average of normarized RPKM per tissue</b> : This is average of normalized expression (zero mean across samples) following to log 2 transformation of RPKM with pseudocount 1.
+            This allows to compare scross tissues (horizontal comparison), however expression values of genes within a tissue (vertial comparison) are not comparable.
+            Hence, cells filled in red represents higher expression of the genes in a corresponding tissue compared to other tissue, but it DOES NOT represent higher expression compared to other genes.
+          </p>
+          <p>Tissues (column) and genes (row) can be ordered by alphabetically or cluster (hiarachial clustering). <br/>
+            The heatmap is downloadable as PNG file. Note that currentlly displaying image will be downloaded.
           </p>
           <img src="{!! URL::asset('/image/gene2funcHeatmap.png') !!}" style="max-width:80%"/>
-          <br/>
+          <br/><br/>
 
           <h4>2. Tissue specificity</h4>
           <p>
-             Differentially expressed gene (DEG) sets for 53 tissue types from GTEx RPKM were contracted.
-             On top of DEG, up-regrated DEG and down-regulated DEG were also contracted.
-             Differentially expressed gene (DEG) sets for each of 53 tissue types were constracted from normalized RPKM (z-score) following to a log2 transformation with pseudocount 1.
-             Two-sided t-tests were performed per gene per tissue against all other tissues which that are not from the same organ as the testing tissue. Log fold change (FC) was computed based on the averaged RPKM which was winsorized at 50.
-             After the Bonferroni correction, genes with corrected p-value  0.05 and absolute log FC  0.58 (which is same as absolute FC  1) were defined as DEG in a given tissue.
-             On top of that, up- and down-regulated DEG were also defined separately by taking sign of log FC. <br/>
+             Differentially expressed gene (DEG) sets for 53 tissue types from GTEx were contracted by performing two-sided t-test for any one of tissues agains all others.
+             For this, expresstion values were normalized (zero-mean) following to log 2 transformation of RPKM.
+             Genes which with P-value &le; 0.05 after bonferroni correction and absolute log Fold Change &ge; 0.58 were defined as differentially expressed genes in a given tissue compared to others.
+             On top of DEG, up-regrated DEG and down-regulated DEG were also contracted by taking sign of t-statistics into account.
              The same process was performed for 30 general tissue types.<br/>
-             Input genes were tested against each of DEG sets.
+          </p>
+          <p>Input genes were tested against each of DEG sets.
+            Significant enrichment at FDR &le; 0.05 are coloured in red.<br/>
+            Results and images are downloadable as text files and PNG files.
           </p>
           <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="max-width:80%"/>
-          <br/>
+          <br/><br/>
 
           <h4>3. Gene Sets</h4>
           <p>
-            Hypergeometric tests are performed for each gene set.
-            Multiple test correction is performed per data set, (i.e. canonical pathways, GO biological processes and so on, separately).
+            Hypergeometric tests are performed to test if genes of interest are overrepresented in any of gene sets.
+            Multiple test correction is performed per category, (i.e. canonical pathways, GO biological processes and so on, separately).
             Gene sets were obtained from MsigDB, WikiPathways and reported genes from GWAS-catalog.
           </p>
+          <p>
+            Entire results are downloadable as a text file at the top of the page. <br/>
+            In each category, plot view and table view are selectable.
+            In the plot view, images are downloadable as PNG file.
+          </p>
           <img src="{!! URL::asset('/image/gene2funcGS.png') !!}" style="max-width:80%"/>
-          <br/>
+          <br/><br/>
 
           <h4>4. Gene Table</h4>
           <p>
