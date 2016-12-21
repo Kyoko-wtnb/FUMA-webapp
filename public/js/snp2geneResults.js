@@ -33,7 +33,6 @@ $(document).ready(function(){
   $('#annotPlotPanel').hide();
 
   if(status.length==0){
-
   }else if(status=="fileFormatGWAS"){
     $('a[href="#newJob"]').trigger('click');
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
