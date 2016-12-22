@@ -177,7 +177,7 @@
         </p>
 
         <div style="margin-left: 40px;">
-          <h4>Accepptable file format</h4>
+          <h4>acceptable file format</h4>
           <p>The input file must include P-value and either rsID or chromosome + genetic position on hg19 reference genome.
             Alleles are not mandatory but if only one allele is provided, that is considered as affected allele.
             When two alleles are provided, affected allele will be defined depending on header.

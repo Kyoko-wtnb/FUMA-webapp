@@ -50,7 +50,7 @@
   <table class="table table-bordered inputTable" id="NewJobParams" style="width: auto;">
     <tr>
       <td>Sample size (N)
-        <a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of sample used in GWAS. This is only used for MAGMA. It does not affect anything of annotations and prioritizations. If you don't know thie number, the randome number should be fine (> 50).">
+        <a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of sample used in GWAS. This is only used for MAGMA. It does not affect anything of annotations and prioritizations. If you don't know the number, the random number should be fine (> 50).">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -122,7 +122,7 @@
     </tr>
     <tr>
       <td>Maximum distance between LD blocks to merge into a locus (&le; kb)
-        <a class="infoPop" data-toggle="popover" title="Maximum distance between LD blocks to merge" data-content="LD blocks clorser than thie distance will be merged into a genomic locus. If this is set at 0, only phesically overlapped LD blocks will be merged. This is only for representation of GWAS risk loci which does not affect any annotation and prioritization results.">
+        <a class="infoPop" data-toggle="popover" title="Maximum distance between LD blocks to merge" data-content="LD blocks clorser than the distance will be merged into a genomic locus. If this is set at 0, only phesically overlapped LD blocks will be merged. This is only for representation of GWAS risk loci which does not affect any annotation and prioritization results.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>

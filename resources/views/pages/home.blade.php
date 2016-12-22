@@ -7,7 +7,7 @@
 @section('content')
 <div class="container" style="padding-top:50px;">
   <div style="text-align: center;">
-    <h2>Welcome to FUMA (Functional Mapping and Annocation of GWAS)</h2>
+    <h2>Welcome to FUMA (Functional Mapping and Annotation of GWAS)</h2>
   </div>
   <p>FUMA is a web application which annotates, prioritizes and visualizes GWAS results.
     Publicly available data resources and tools used in this applications are accessible from <a href="{{ Config::get('app.subdir') }}/links">links</a> tab.</p>
@@ -15,7 +15,7 @@
     You can also query a list of genes directory from <a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a>.
   </p>
 
-  <p>Please log in to seubmit GWAS summary statistics at <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a>.
+  <p>Please log in to submit GWAS summary statistics at <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a>.
     If you have't registered yet, you can do from <a href="{{ url('/register') }}">here</a>.<br/>
     <a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a> can be performed solely without registration.
   </p>
