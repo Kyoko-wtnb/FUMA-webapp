@@ -4,7 +4,7 @@
 <p>
   Your job (jobtitle: {{ $jobtitle }}) has been completed.<br/>
   Pleas follow the link to go to the results page.<br/>
-  <a href="http://ctg.labs.vu.nl/IPGAP/snp2gene/{{ $jobID }}">SNP2GENE job query</a><br/>
+  <a href="http://ctg.labs.vu.nl/fuma/snp2gene/{{ $jobID }}">SNP2GENE job query</a><br/>
   <br/>
 </p>
 
