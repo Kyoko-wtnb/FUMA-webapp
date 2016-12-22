@@ -40,6 +40,11 @@ $(document).ready(function(){
   // popover
   $('.infoPop').popover();
 
+  //GeneCard onload scroll download
+  $('#GeneCards_iframe').load(function(){
+    $(window).scrollTop($('#GeneCards_iframe').offset().top);
+  })
+
   if(status=="new"){
     checkInput();
     $('#resultSide').hide()
@@ -121,12 +126,13 @@ $(document).ready(function(){
         tsGeneralEnrich(id);
         GeneSet(id);
         GeneTable(id);
+        $('a[href="#expPanel"]').trigger('click');
       }
     });
 
-    // $('#DEGdown').on('click', function(){
-    //   fileDown('DEG.txt', id);
-    // });
+    $('#DEGdown').on('click', function(){
+      fileDown('DEG.txt', id);
+    });
     $('#DEGgdown').on('click', function(){
       fileDown('DEGgeneral.txt', id);
     });

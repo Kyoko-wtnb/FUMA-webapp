@@ -272,7 +272,7 @@
 
           <br/>
           <h4>GeneCards</h4><br/>
-          <iframe src="http://www.genecards.org/" name="GeneCards_iframe" width="100%" height="500p"></iframe>
+          <iframe src="http://www.genecards.org/" name="GeneCards_iframe" id="GeneCards_iframe" width="100%" height="500p"></iframe>
           <br/><br/>
         </div>
       </div>
