@@ -858,7 +858,7 @@
             <p>All independent lead SNPs identified by FUMA.</p>
             <ul>
               <li><strong>No</strong> : Index of lead SNPs</li>
-              <li><strong>Interval</strong> : Index of assigned genomic interval. This matches with the index of interval table.</li>
+              <li><strong>Interval</strong> : Index of assigned genomic interval (risk locus). This matches with the index of interval table.</li>
               <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
               <li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
               <li><strong>chr</strong> : chromosome</li>
@@ -870,8 +870,8 @@
             </li>
           </ul>
           <ul>
-            <li><p>Intervals / intervals.txt</p>
-            <p>Genomic intervals defined from independent lead SNPs.
+            <li><p>Genomic risk loci / intervals.txt</p>
+            <p>Genomic risk loci (intervals) defined from independent lead SNPs.
             Each interval is represented by the top lead SNP which has the minimum P-value in the interval.</p>
             <ul>
               <li><strong>Interval</strong> : Index of genomic interval.</li>
@@ -942,7 +942,7 @@
             </li>
           </ul>
           <ul>
-            <li><p>Genes / genes.txt</p>
+            <li><p>Mapped genes / genes.txt</p>
             <p>The summary of mapped genes based on your defined mapping criterion.
              Columns change for positional and eQTL mappings.
              When both mappings are performed, all columns exit in the table.</p>
@@ -1009,42 +1009,41 @@
             <li><p>Parameters / params.config</p>
             <p>The table of input parameters. The downloadable file is config file with INI format.</p>
             <ul>
-              <li><strong>Job created</strong> : Date of job created</li>
-              <li><strong>Job title</strong> : Job title</li>
-              <li><strong>input GWAS summary statistics file</strong> : File name of GWAS summary statistics</li>
-              <li><strong>GWAS summary statistics file format</strong> : The file format of GWAS summary statistics</li>
-              <li><strong>input lead SNPs file</strong> : File name of pre-defined lead SNPs if provided.</li>
-              <li><strong>Identify additional lead SNPs</strong> : 1 if option is checked, 0 otherwise. If pre-defined lead SNPs are not provided, it is always 1.</li>
-              <li><strong>input genetic regions file</strong> : File name of pre-defined genetic regions if provided.</li>
-              <li><strong>sample size</strong> : Sample size of GWAS</li>
-              <li><strong>exclude MHC</strong> : 1 to exclude MHC region, 0 otherwise</li>
-              <li><strong>extended MHC region</strong> : user defined MHC region if provided, NA otherwise</li>
-              <li><strong>gene type</strong> : All selected gene type.</li>
-              <li><strong>lead SNP P-value</strong> : the maximum threshold of P-value to be lead SNP</li>
+              <li><strong>created_at</strong> : Date of job created</li>
+              <li><strong>title</strong> : Job title</li>
+              <li><strong>gwasfile</strong> : File name of GWAS summary statistics</li>
+              <li><strong>leadSNPsfile</strong> : File name of pre-defined lead SNPs if provided.</li>
+              <li><strong>addleadSNPs</strong> : 1 if option is checked, 0 otherwise. If pre-defined lead SNPs are not provided, it is always 1.</li>
+              <li><strong>regionsfile</strong> : File name of pre-defined genetic regions if provided.</li>
+              <li><strong>N</strong> : Sample size of GWAS</li>
+              <li><strong>exMHC</strong> : 1 to exclude MHC region, 0 otherwise</li>
+              <li><strong>extMHC</strong> : user defined MHC region if provided, NA otherwise</li>
+              <li><strong>genetype</strong> : All selected gene type.</li>
+              <li><strong>leadP</strong> : the maximum threshold of P-value to be lead SNP</li>
               <li><strong>r2</strong> : the minimum threshold for SNPs to ne in LD of the lead SNPs</li>
-              <li><strong>GWAS tagged SNPs P-value</strong> : the maximum threshold of P-value to be candidate SNP</li>
-              <li><strong>Population</strong> : The population of reference panel</li>
+              <li><strong>gwasP</strong> : the maximum threshold of P-value to be candidate SNP</li>
+              <li><strong>pop</strong> : The population of reference panel</li>
               <li><strong>MAF</strong> : the minimum minor allele frequency based on 1000 genome reference of given population</li>
-              <li><strong>Include 1000G SNPs</strong> : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise</li>
-              <li><strong>Interval merge max distance</strong> : The maximum distance between LD blocks to merge into interval</li>
-              <li><strong>Positional mapping</strong> : 1 to perform positional mapping, 0 otherwise</li>
-              <li><strong>posMap Window based</strong> : 1 to perform positional mapping based on distance to the genes, 0 otherwise</li>
-              <li><strong>posMap Window size</strong> : If window based positional mapping is performed, which distance (kb) as the maximum. If window based mapping is 0, this parameter set at 10 as default but will be ignored.</li>
-              <li><strong>posMap Annotation based</strong> : Positional annotations selected if window based mapping is 0.</li>
-              <li><strong>posMap min CADD</strong> : The minimum CADD score for SNP filtering</li>
-              <li><strong>posMap min RegulomeDB</strong> : The minimum RegulomeDB score for SNP filtering</li>
-              <li><strong>posMap chromatin state filterinf tissues</strong> : Select tissue/cell types, NA otherwise</li>
-              <li><strong>posMap max chromatin state</strong> : The maximum 15-core chromatin state</li>
-              <li><strong>posMap chromatin state filtering method</strong> : The method of chromatin state filtering</li>
-              <li><strong>eQTL mapping</strong> : 1 to perform eQTL mapping, 0 otherwise</li>
-              <li><strong>eqtlMap significant only</strong> : 1 to use only significant snp-gene pairs, 0 otherwise</li>
-              <li><strong>eqtlMap P-value</strong> : The P-value threshold for eQTLs if <code> eqtlMap significant only</code> is not selected.</li>
-              <li><strong>eqtlMap tissues</strong> : Selected tissue typed for eQTL mapping</li>
-              <li><strong>eqtlMap min CADD</strong> : The minimum CADD score for SNP filtering</li>
-              <li><strong>eqtlMap min RegulomeDB</strong> : The minimum RegulomeDB score for SNP filtering</li>
-              <li><strong>eqtlMap chromatin state filterinf tissues</strong> : Select tissue/cell types, NA otherwise</li>
-              <li><strong>eqtlMap max  chromatin state</strong> : The maximum 15-core chromatin state</li>
-              <li><strong>eqtlMap chromatin state filtering method</strong> : The method of chromatin state filtering</li>
+              <li><strong>Incl1KGSNPs</strong> : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise</li>
+              <li><strong>mergeDist</strong> : The maximum distance between LD blocks to merge into interval</li>
+              <li><strong>posMap</strong> : 1 to perform positional mapping, 0 otherwise</li>
+              <li><strong>posMapWindow</strong> : 1 to perform positional mapping based on distance to the genes, 0 otherwise</li>
+              <li><strong>posMapWindowSize</strong> : If window based positional mapping is performed, which distance (kb) as the maximum. If window based mapping is 0, this parameter set at 10 as default but will be ignored.</li>
+              <li><strong>posMapAnnot</strong> : Positional annotations selected if window based mapping is 0.</li>
+              <li><strong>posMapCADDth</strong> : The minimum CADD score for SNP filtering</li>
+              <li><strong>posMapRDBth</strong> : The minimum RegulomeDB score for SNP filtering</li>
+              <li><strong>posMapChr15</strong> : Select tissue/cell types, NA otherwise</li>
+              <li><strong>posMapChr15Max</strong> : The maximum 15-core chromatin state</li>
+              <li><strong>posMapChr15Meth</strong> : The method of chromatin state filtering</li>
+              <li><strong>eqtlMap</strong> : 1 to perform eQTL mapping, 0 otherwise</li>
+              <li><strong>eqtlMaptss</strong> : Selected tissue typed for eQTL mapping</li>
+              <li><strong>eqtlMapSig</strong> : 1 to use only significant snp-gene pairs, 0 otherwise</li>
+              <li><strong>eqtlMapP</strong> : The P-value threshold for eQTLs if <code> eqtlMap significant only</code> is not selected.</li>
+              <li><strong>eqtlMapCADDth</strong> : The minimum CADD score for SNP filtering</li>
+              <li><strong>eqtlMapRDBth</strong> : The minimum RegulomeDB score for SNP filtering</li>
+              <li><strong>eqtlMapChr15</strong> : Select tissue/cell types, NA otherwise</li>
+              <li><strong>eqtlMapChr15Max</strong> : The maximum 15-core chromatin state</li>
+              <li><strong>eqtlMapChr15Meth</strong> : The method of chromatin state filtering</li>
             </ul>
             </li>
           </ul>
