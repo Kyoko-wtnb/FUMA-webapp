@@ -360,7 +360,7 @@
                 <tr>
                 <td>Sample size (N)</td>
                 <td>Mandatory</td>
-                <td>The total number of sample in the GWAS.
+                <td>the total number of samples in the GWAS.
                   This is only used for MAGMA to compute gene-based test.</td>
                 <td>Integer</td>
                 <td>none</td>
