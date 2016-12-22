@@ -108,7 +108,7 @@
           By setting parameters, you are also able to prioritize genes by your criterion.</p>
         <div style="margin-left: 40px">
           <p><h4><strong>1. Registration/Login</strong></h4>
-            If you haven't registered yet, please do so from <a href='/register'>Register</a>.<br/>
+            If you haven't registered yet, please do so from <a href="{{ url('/register') }}">Register</a>.<br/>
             Before you submit your GWAS summary statistics, please log in to your account.<br/><br/>
             <img src="{!! URL::asset('/image/homereg.png') !!}" style="max-width:80%"/><br/>
           </p>
