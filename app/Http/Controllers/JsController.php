@@ -25,15 +25,25 @@ class JsController extends Controller
     public function DTfile(Request $request){
       $filedir = $request -> input('filedir');
       $fin = $request -> input('infile');
+      $cols = $request -> input('header');
+      $cols = explode(":", $cols);
       $f = $filedir.$fin;
       if(file_exists($f)){
         $file = fopen($f, 'r');
-        $all_row = array();
-        $header = fgetcsv($file, 0, "\t");
-        while($row = fgetcsv($file, 0, "\t")){
-          $all_row[] = array_combine($header, $row);
+        $all_rows = array();
+        $head = fgetcsv($file, 0, "\t");
+        $index = array();
+        foreach($cols as $c){
+        	$index[] = array_search($c, $head);
         }
-        $json = (array('data'=> $all_row));
+        while($row = fgetcsv($file, 0, "\t")){
+          $temp = [];
+        	foreach($index as $i){
+        		$temp[] = $row[$i];
+        	}
+          $all_rows[] = $temp;
+        }
+        $json = (array('data'=> $all_rows));
 
         echo json_encode($json);
       }

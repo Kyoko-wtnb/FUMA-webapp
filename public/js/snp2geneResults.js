@@ -585,22 +585,12 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         data: {
           filedir: filedir,
           infile: file,
+          header: "No:interval:uniqID:rsID:chr:pos:p:nSNPs:nGWASSNPs"
         }
       },
       error: function(){
         alert("leadSNPs table error");
       },
-      "columns":[
-        {"data": "No", name: "No"},
-        {"data": "interval", name:"Interval"},
-        {"data": "uniqID", name: "uniqID"},
-        {"data": "rsID", name: "rsID"},
-        {"data": "chr", name: "chr"},
-        {"data": "pos", name: "pos"},
-        {"data": "p", name: "P-value"},
-        {"data": "nSNPs", name: "nSNPs"},
-        {"data": "nGWASSNPs", name: "nGWASSNPs"}
-      ],
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10,
       dom: 'lBfrtip',
@@ -618,24 +608,12 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         data: {
           filedir: filedir,
           infile: file,
+          header: "Interval:uniqID:rsID:chr:pos:p:nLeadSNPs:start:end:nSNPs:nGWASSNPs"
         }
       },
       error: function(){
         alert("interval table error");
       },
-      "columns":[
-        {"data": "Interval", name: "Interval"},
-        {"data": "uniqID", name: "uniqID"},
-        {"data": "rsID", name: "rsID"},
-        {"data": "chr", name: "chr"},
-        {"data": "pos", name: "pos"},
-        {"data": "p", name: "P-value"},
-        {"data": "nLeadSNPs", name:"nLeadSNPs"},
-        {"data": "start", name:"start"},
-        {"data": "end", name:"end"},
-        {"data": "nSNPs", name: "nSNPs"},
-        {"data": "nGWASSNPs", name: "nGWASSNPs"}
-      ],
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10,
       dom: 'lBfrtip',
@@ -653,31 +631,12 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
       data: {
         filedir: filedir,
         infile: file,
+        header: "uniqID:rsID:chr:pos:MAF:gwasP:Interval:r2:leadSNP:nearestGene:dist:func:CADD:RDB:minChrState:commonChrState"
       }
     },
     error: function(){
       alert("SNP table error");
     },
-    columns:[
-      {"data": "uniqID", name:"uniqID"},
-      {"data": "rsID", name:"rsID"},
-      {"data": "chr", name:"chr"},
-      {"data": "pos", name:"bp"},
-      {"data": null, name:"MAF",
-        "render": function(data, type, row){return (Math.round(row.MAF*100)/100)}},
-      {"data": "gwasP", name:"P-value"},
-      {"data": "Interval", name:"Interval"},
-      {"data": null, name:"r2",
-        "render":function(data, type, row){return (Math.round(row.r2*100)/100)}},
-      {"data": "leadSNP", name:"leadSNP"},
-      {"data": "nearestGene", name:"Nearest gene"},
-      {"data": "dist", name:"dist"},
-      {"data": "func", name:"position"},
-      {"data": "CADD", name:"CADD"},
-      {"data": "RDB", name:"RDB"},
-      {"data": "minChrState", name:"minChrState(127)"},
-      {"data": "commonChrState", name:"commonChrState(127)"},
-    ],
     "order": [[2, 'asc'], [3, 'asc']],
     "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
     "iDisplayLength": 10,
@@ -696,19 +655,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
       data: {
         filedir: filedir,
         infile: file,
+        header: "uniqID:chr:pos:gene:symbol:dist:annot:exonic_func:exon"
       }
     },
-    columns:[
-      {"data": "uniqID", name:"uniqID"},
-      {"data": "chr", name:"chr"},
-      {"data": "pos", name:"bp"},
-      {"data": "gene", name:"Gene"},
-      {"data": "symbol", name:"Symbol"},
-      {"data": "dist", name:"Distance"},
-      {"data": "annot", name:"Function"},
-      {"data": "exonic_func", name:"Exonic function"},
-      {"data": "exon", name:"Exon"}
-    ],
     "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
     "iDisplayLength": 10,
     dom: 'lBfrtip',
@@ -739,30 +688,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         data: {
           filedir: filedir,
           infile: file,
+          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:posMapCHPs:posMapMaxCADD:eqtlMapSNPs:eqtlMapminP:eqltMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
         }
       },
-      columns:[
-        {"data": "ensg", name:"Gene"},
-        {"data": "symbol", name:"Symbol"},
-        {"data": "entrezID", name:"entrezID"},
-        {"data": "interval", name:"Interval"},
-        {"data": "chr", name:"chr"},
-        {"data": "start", name:"start"},
-        {"data": "end", name:"end"},
-        {"data": "strand", name:"strand"},
-        {"data": "status", name:"status"},
-        {"data": "type", name:"type"},
-        {"data": "HUGO", name:"HUGO"},
-        {"data": "posMapSNPs", name:"posMapSNPs"},
-        {"data": "posMapMaxCADD", name:"posMapMaxCADD"},
-        {"data": "eqtlMapSNPs", name:"eqtlMapSNPs"},
-        {"data": "eqtlMapminP", name:"eqtlMapminP"},
-        {"data": "eqtlMapminQ", name:"eqtlMapminQ"},
-        {"data": "eqtlMapts", name:"eqtlMapts"},
-        {"data": "eqtlDirection", name:"eqtlDirection"},
-        {"data": "minGwasP", name:"minGwasP"},
-        {"data": "leadSNPs", name:"leadSNPs"}
-      ],
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10,
       dom: 'lBfrtip',
@@ -779,25 +707,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         data: {
           filedir: filedir,
           infile: file,
+          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:posMapCHPs:posMapMaxCADD:minGwasP:leadSNPs"
         }
       },
-      columns:[
-        {"data": "ensg", name:"Gene"},
-        {"data": "symbol", name:"Symbol"},
-        {"data": "entrezID", name:"entrezID"},
-        {"data": "interval", name:"Interval"},
-        {"data": "chr", name:"chr"},
-        {"data": "start", name:"start"},
-        {"data": "end", name:"end"},
-        {"data": "strand", name:"strand"},
-        {"data": "status", name:"status"},
-        {"data": "type", name:"type"},
-        {"data": "HUGO", name:"HUGO"},
-        {"data": "posMapSNPs", name:"posMapSNPs"},
-        {"data": "posMapMaxCADD", name:"posMapMaxCADD"},
-        {"data": "minGwasP", name:"minGwasP"},
-        {"data": "leadSNPs", name:"leadSNPs"}
-      ],
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10,
       dom: 'lBfrtip',
@@ -814,28 +726,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         data: {
           filedir: filedir,
           infile: file,
+          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:eqtlMapSNPs:eqtlMapminP:eqltMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
         }
       },
-      columns:[
-        {"data": "ensg", name:"Gene"},
-        {"data": "symbol", name:"Symbol"},
-        {"data": "entrezID", name:"entrezID"},
-        {"data": "interval", name:"Interval"},
-        {"data": "chr", name:"chr"},
-        {"data": "start", name:"start"},
-        {"data": "end", name:"end"},
-        {"data": "strand", name:"strand"},
-        {"data": "status", name:"status"},
-        {"data": "type", name:"type"},
-        {"data": "HUGO", name:"HUGO"},
-        {"data": "eqtlMapSNPs", name:"eqtlMapSNPs"},
-        {"data": "eqtlMapminP", name:"eqtlMapminP"},
-        {"data": "eqtlMapminQ", name:"eqtlMapminQ"},
-        {"data": "eqtlMapts", name:"eqtlMapts"},
-        {"data": "eqtlDirection", name:"eqtlDirection"},
-        {"data": "minGwasP", name:"minGwasP"},
-        {"data": "leadSNPs", name:"leadSNPs"}
-      ],
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10,
       dom: 'lBfrtip',
@@ -855,20 +748,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         data: {
           filedir: filedir,
           infile: file,
+          header: "uniqID:chr:pos:db:tissue:gene:symbol:p:FDR:tz"
         }
       },
-      columns:[
-        {"data": "uniqID", name:"uniqID"},
-        {"data": "chr", name:"chr"},
-        {"data": "pos", name:"bp"},
-        {"data": "db", name:"DB"},
-        {"data": "tissue", name:"tissue"},
-        {"data": "gene", name:"Gene"},
-        {"data": "symbol", name:"Symbol"},
-        {"data": "p", name:"P-value"},
-        {"data": "FDR", name:"FDR"},
-        {"data": "tz", name:"t/z"}
-      ],
       "order": [[1, 'asc'], [2, 'asc']],
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10,
@@ -889,20 +771,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
         data: {
           filedir: filedir,
           infile: file,
+          header: "Interval:leadSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
         }
       },
-      columns:[
-          {"data": "Interval", name:"Interval"},
-          {"data": "leadSNP", name:"lead SNP"},
-          {"data": "chr", name:"chr"},
-          {"data": "bp", name:"bp"},
-          {"data": "snp", name:"snp"},
-          {"data": "PMID", name:"PMID"},
-          {"data": "Trait", name:"Trait"},
-          {"data": "FirstAuth", name:"FirstAuth"},
-          {"data": "Date", name:"Date"},
-          {"data": "P", name:"P-value"}
-        ],
         "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "iDisplayLength": 10,
         dom: 'lBfrtip',
