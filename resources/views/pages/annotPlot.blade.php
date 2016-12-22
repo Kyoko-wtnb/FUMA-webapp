@@ -1136,13 +1136,13 @@ function geneOver(genes, x, width){
 <div class="container">
 <div class="row">
   <div class="col-md-8">
-    <div id='title' style="text-align: center;"><h3>Regional plot</h3></div>
+    <div id='title' style="text-align: center;"><h4>Regional plot</h4></div>
     <a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
     <button class="btn btn-xs ImgDown" id="annotPlotImg" style="float:right; margin-right:50px;">Download img</button>
     <div id="annotPlot"></div>
   </div>
   <div class="col-md-4" style="text-align: center;">
-    <h3>SNP annotations</h3>
+    <h4>SNP annotations</h4>
     <div id="annotTable">
       click any SNP on the plot</br>
     </div>
