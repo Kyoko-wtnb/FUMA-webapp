@@ -55,58 +55,27 @@ $(document).ready(function(){
       $('#annotPlotChr15Opt').hide();
     }
 
-    localStorage.setItem('snp2gene', jobid);
-    AjaxLoad();
     var jobStatus;
-    var jobcheck = setInterval(function(){
-      $.get({
-        url: subdir + '/snp2gene/checkJobStatus/'+jobid,
-        error: function(){
-          alert("ERROR: checkJobStatus")
-        },
-        success: function(data){
-          // $('#test').html(data);
-          jobStatus = data;
-        },
-        complete: function(){
-          if(jobStatus!="RUNNING"){
-            $('#overlay').remove();
-            clearInterval(jobcheck);
-            if(jobStatus=="OK"){
-              loadResults();
-            }else if(jobStatus=="NEW"){
-              newJob();
-            }else{
-              errorHandling(jobStatus);
-              // $('#jobinfoSide').show();
-              // jobInfo(jobid);
-              // $('a[href="#jobInfo"]').trigger('click');
-            }
-            return;
-          }else{
-            $('#overlay').html('<div id="overlay"><div id="loading">'
-                  +'<p>Your job is runnning. Please wait for a moment.'
-                  +'<br/>We will send you an email after the job is done '
-                  +'(if you have provided your email address).'
-                  +'<br/>If you didn\'t submit your email address, please bookmark this page.</p>'
-                  +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
-                  +'</div></div>');
-          }
+    $.get({
+      url: subdir + '/snp2gene/checkJobStatus/'+jobid,
+      error: function(){
+        alert("ERROR: checkJobStatus")
+      },
+      success: function(data){
+        jobStatus = data;
+      },
+      complete: function(){
+        if(jobStatus=="OK"){
+          loadResults();
         }
-      });
-    }, 5000);
+      }
+    });
 
-    function newJob(){
-      // $('#jobinfoSide').show();
-      // jobInfo(jobid);
-    }
 
     function loadResults(){
       var filedir;
       var posMap;
       var eqtlMap;
-      // AjaxLoad();
-      // $('#jobinfoSide').show();
       $.ajax({
           url: 'getParams',
           type: 'POST',
@@ -181,25 +150,6 @@ $(document).ready(function(){
   });
 
 });
-
-function JobRunLoad(){
-  var over = '<div id="overlay"><div id="loading">'
-        +'<p>Your job is runnning. Please wait for a moment.'
-        +'<br/>We will send you an email after the job is done '
-        +'(if you have provided your email address).'
-        +'<br/>If you didn\'t submit your email address, please bookmark this page.</p>'
-        +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
-        +'</div></div>';
-  $(over).appendTo('body');
-}
-
-function AjaxLoad(){
-  var over = '<div id="overlay"><div id="loading">'
-        +'<p>Loading data ...</p>'
-        +'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
-        +'</div></div>';
-  $(over).appendTo('body');
-}
 
 function errorHandling(status){
   if(status == "ERROR:001"){
