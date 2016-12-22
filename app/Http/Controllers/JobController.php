@@ -61,6 +61,7 @@ class JobController extends Controller
           $this->dispatch(new snp2geneProcess($user, $jobID));
         }
       }
+      return;
     }
 
     public function checkJobStatus($jobID){
