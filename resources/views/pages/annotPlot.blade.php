@@ -181,7 +181,6 @@ $(document).ready(function(){
           });
           // console.log(data2[0]);
           data2 = geneOver(data2, x, width);
-          console.log(data2[0]);
 
           // height define
           genesHeight = 20*(d3.max(data2, function(d){return d.y;})+1);
@@ -373,7 +372,7 @@ $(document).ready(function(){
               .attr("cy", function(d){return y(d.logP);})
               .style("fill", function(d){if(d.ld==0){return "grey";}else{return colorScale(d.r2);}})
               .on("click", function(d){
-                table = '<table class="table" style="font-size: 10;">'
+                table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
                         +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
@@ -385,6 +384,7 @@ $(document).ready(function(){
                         +'</td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
+                  if(cells[0]=="all"){cells=Chr15eid;}
                   for(var i=0; i<cells.length; i++){
                     table += '<tr><td>'+cells[i]+'</td><td>'+d[cells[i]]+'</td></tr>';
                   }
@@ -404,7 +404,7 @@ $(document).ready(function(){
               .attr("height", "10")
               .style("fill", function(d){if(d.ld==0){return "grey"}else{return colorScale(d.r2)}})
               .on("click", function(d){
-                table = '<table class="table" style="font-size: 10;">'
+                table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
                         +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
@@ -416,6 +416,7 @@ $(document).ready(function(){
                         +'</td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
+                  if(cells[0]=="all"){cells=Chr15eid;}
                   for(var i=0; i<cells.length; i++){
                     table += '<tr><td>'+cells[i]+'</td><td>'+d[cells[i]]+'</td></tr>';
                   }
@@ -435,7 +436,7 @@ $(document).ready(function(){
               .attr("r", 4.5)
               .style("fill", "purple").style("stroke", "black")
               .on("click", function(d){
-                table = '<table class="table" style="font-size: 10;">'
+                table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
                         +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
@@ -447,6 +448,7 @@ $(document).ready(function(){
                         +'</td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
+                  if(cells[0]=="all"){cells=Chr15eid;}
                   for(var i=0; i<cells.length; i++){
                     table += '<tr><td>'+cells[i]+'</td><td>'+d[cells[i]]+'</td></tr>';
                   }
@@ -490,7 +492,7 @@ $(document).ready(function(){
               .attr("cy", function(d){return y(d.CADD);})
               .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
               .on("click", function(d){
-                table = '<table class="table" style="font-size: 10;">'
+                table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
                         +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
@@ -502,6 +504,7 @@ $(document).ready(function(){
                         +'</td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
+                  if(cells[0]=="all"){cells=Chr15eid;}
                   for(var i=0; i<cells.length; i++){
                     table += '<tr><td>'+cells[i]+'</td><td>'+d[cells[i]]+'</td></tr>';
                   }
@@ -546,7 +549,7 @@ $(document).ready(function(){
               .attr("cy", function(d){return y(d.RDB);})
               .style("fill", function(d){if(d.ld==0){return "grey"}else{return "MediumAquaMarine"}})
               .on("click", function(d){
-                table = '<table class="table" style="font-size: 10;">'
+                table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
                         +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
@@ -558,6 +561,7 @@ $(document).ready(function(){
                         +'</td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
+                  if(cells[0]=="all"){cells=Chr15eid;}
                   for(var i=0; i<cells.length; i++){
                     table += '<tr><td>'+cells[i]+'</td><td>'+d[cells[i]]+'</td></tr>';
                   }
@@ -1082,7 +1086,7 @@ $(document).ready(function(){
   }
 
   // Plot Clear button
-  d3.select('#plotClear').on('click', reset);
+  d3.select('#plotclear').on('click', reset);
   function reset(){
     d3.transition().duration(750).tween("zoom", function(){
       // var ix = d3.interpolate(x.domain(), [d3.min(data1, function(d){return d.pos})-side, d3.max(data1, function(d){return d.pos})+side]);

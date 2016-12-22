@@ -46,6 +46,7 @@ snps <- subset(snps, select=c("uniqID", "chr", "pos", "rsID", "leadSNP", "gwasP"
 if(Chr15==1){
   annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
   annot <- annot[annot$uniqID %in% snps$uniqID, ]
+  if(Chr15ts[1]=="all"){Chr15ts<-colnames(annot)[4:ncol(annot)]}
   for(i in 1:length(Chr15ts)){
     n <- which(colnames(annot)==Chr15ts[i])
     cat(Chr15ts[i], "\t", n, "\n")
