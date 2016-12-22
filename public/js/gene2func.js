@@ -251,7 +251,7 @@ function expHeatMap(id){
 
           var genes = d3.set(rows.map(function(d){return d.gene})).values();
           var tss = d3.set(cols.map(function(d){return d.ts})).values();
-          var margin = {top: 10, right: 60, bottom: 200, left: 100},
+          var margin = {top: 10, right: 60, bottom: 220, left: 100},
             width = 800,
             height = (itemSizeCol*genes.length);
 
@@ -314,6 +314,14 @@ function expHeatMap(id){
                         .attr('y', function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
                         .attr('x', function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow})
                         .attr('fill', function(d){return colorScale(d.log2)});
+
+          svg.append('text').attr("text-anchor", "middle")
+            .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+            .text("genes");
+          svg.append('text').attr("text-anchor", "middle")
+            .attr("transform", "translate("+width/2+","+(height+margin.bottom-10)+")")
+            .text("Tissue types");
+
           svg.selectAll('text').style('font-family', 'sans-serif');
           // Change ordeing of cells
           function sortOptions(type, val, gsort, tssort){
@@ -844,6 +852,8 @@ function GeneSet(id){
       tdata.forEach(function(d){
         d.logP = +d.logP;
         d.logFDR = +d.logFDR;
+        d.N_overlap = +d.N_overlap;
+        d.N_genes = +d.N_genes;
         var g = d.genes.split(":");
         for(var j=0; j<g.length; j++){
           genesplot.push({"GeneSet":d.GeneSet, "gene":g[j]})
@@ -880,8 +890,8 @@ function GeneSet(id){
         var ngs = gs.length;
         var barplotwidth = 150;
 
-        var margin = {top: 10, right: 10, bottom: 80, left: Math.max(gs_max*6, 60)},
-            width = barplotwidth+10+(genes.length*15),
+        var margin = {top: 30, right: 10, bottom: 80, left: Math.max(gs_max*6, 60)},
+            width = barplotwidth*2+10+(Math.max(genes.length,6)*15),
             height = 15*ngs;
         // $('#test').append("<p>"+category[i]+" width: "+width+"</p>")
         var svg = d3.select('#'+category[i]).append('svg')
@@ -897,10 +907,23 @@ function GeneSet(id){
                           .attr("y2", "100%")
                           .attr("spreadMethod", "pad");
         gradient1.append("stop").attr("offset", "0%")
-                .attr("stop-color", "#6ef986")
+                .attr("stop-color", "#4d4dff")
                 .attr("stop-ocupacity", 1);
         gradient1.append("stop").attr("offset", "100%")
-                .attr("stop-color", "#004d01")
+                .attr("stop-color", "#00003d")
+                .attr("stop-ocupacity", 1);
+        var gradient3 = svg.append("defs").append("linearGradient")
+                          .attr("id", 'gradient3')
+                          .attr("x1", "0%")
+                          .attr("y1", "0%")
+                          .attr("x2", "100%")
+                          .attr("y2", "100%")
+                          .attr("spreadMethod", "pad");
+        gradient3.append("stop").attr("offset", "0%")
+                .attr("stop-color", "#ff6666")
+                .attr("stop-ocupacity", 1);
+        gradient3.append("stop").attr("offset", "100%")
+                .attr("stop-color", "#4d0000")
                 .attr("stop-ocupacity", 1);
         var gradient = svg.append("defs").append("linearGradient")
                           .attr("id", 'gradient2')
@@ -910,23 +933,50 @@ function GeneSet(id){
                           .attr("y2", "100%")
                           .attr("spreadMethod", "pad");
         gradient.append("stop").attr("offset", "0%")
-                .attr("stop-color", "#fbad4c")
+                .attr("stop-color", "#ffa64d")
                 .attr("stop-ocupacity", 1);
         gradient.append("stop").attr("offset", "100%")
                 .attr("stop-color", "#653800")
                 .attr("stop-ocupacity", 1);
 
-        // bar plot
-        var xbar = d3.scale.linear().range([0, barplotwidth]);
-        var xbarAxis = d3.svg.axis().scale(xbar).orient("bottom");
-        xbar.domain([0, d3.max(tdata, function(d){return d.logFDR})]);
+        // bar plot (overlap proportion)
+        var xprop = d3.scale.linear().range([0, barplotwidth]);
+        var xpropAxis = d3.svg.axis().scale(xprop).orient("bottom");
+        xprop.domain([d3.max(tdata,function(d){return d.N_overlap/d.N_genes})+0.1,0]);
         var y = d3.scale.ordinal().rangeBands([0,height]);
         var yAxis = d3.svg.axis().scale(y).orient("left");
         y.domain(tdata.map(function(d){return d.GeneSet;}));
-        svg.selectAll('rect').data(tdata).enter()
+        svg.selectAll('rect.prop').data(tdata).enter()
+          .append("rect").attr("class", "bar")
+          .attr("x", function(d){return xprop(d.N_overlap/d.N_genes)})
+          .attr("width", function(d){return barplotwidth-xprop(d.N_overlap/d.N_genes)})
+          .attr("y", function(d){return y(d.GeneSet)})
+          .attr("height", 15)
+          .style("fill", "url(#gradient3)");
+        svg.append('g').attr("class", "x axis")
+          .attr("transform", "translate(0,"+height+")")
+          .call(xpropAxis)
+          .selectAll(".tick")
+          .each(function (d) {
+              if ( d == 0 ) {
+                  this.remove();
+              }
+          }).selectAll('text').attr('font-weight', 'normal')
+          .style("text-anchor", "end").attr("transform", function (d) {return "rotate(-65)";})
+          .style('font-size', '11px')
+          .attr("dx","-.75em").attr("dy", "-.15em");
+
+        // bar plot (enrichment P-value)
+        var xbar = d3.scale.linear().range([barplotwidth, barplotwidth*2]);
+        var xbarAxis = d3.svg.axis().scale(xbar).orient("bottom");
+        xbar.domain([0, d3.max(tdata, function(d){return d.logFDR})]);
+        // var y = d3.scale.ordinal().rangeBands([0,height]);
+        // var yAxis = d3.svg.axis().scale(y).orient("left");
+        // y.domain(tdata.map(function(d){return d.GeneSet;}));
+        svg.selectAll('rect.p').data(tdata).enter()
           .append("rect").attr("class", "bar")
           .attr("x", xbar(0))
-          .attr("width", function(d){return xbar(d.logFDR)})
+          .attr("width", function(d){return xbar(d.logFDR)-barplotwidth})
           .attr("y", function(d){return y(d.GeneSet)})
           .attr("height", 15)
           .style("fill", "url(#gradient1)");
@@ -940,7 +990,7 @@ function GeneSet(id){
           .attr("dx","-.75em").attr("dy", "-.15em");
 
         // gene plot
-        var xgenes = d3.scale.ordinal().rangeBands([barplotwidth+10,width]);
+        var xgenes = d3.scale.ordinal().rangeBands([barplotwidth*2+10,barplotwidth*2+10+15*genes.length]);
         xgenes.domain(genesplot.map(function(d){return d.gene}));
         var xgenesAxis = d3.svg.axis().scale(xgenes).orient("bottom");
         svg.selectAll('rect.genes').data(genesplot).enter()
@@ -951,7 +1001,7 @@ function GeneSet(id){
           .attr("height", 15)
           .style("fill", "url(#gradient2)");
         svg.append('g').attr("class", "y axis")
-          .attr("transform", "translate("+(barplotwidth+10)+",0)")
+          .attr("transform", "translate("+(barplotwidth*2+10)+",0)")
           .call(yAxis).selectAll("text").remove();
         svg.append('g').attr("class", "x axis")
           .attr("transform", "translate(0,"+height+")")
@@ -962,10 +1012,26 @@ function GeneSet(id){
 
         svg.append("text").attr("text-anchor", "middle")
           .attr("transform", "translate("+(barplotwidth/2)+","+(height+40)+")")
-          .text("-log10 adjusted P-value").attr("font-size", "12px");
+        .text("Proportion").attr("font-size", "12px");
         svg.append("text").attr("text-anchor", "middle")
-          .attr("transform", "translate("+(barplotwidth+10+width)/2+","+(height+70)+")")
+          .attr("transform", "translate("+(barplotwidth/2)+","+(-margin.top/2-6)+")")
+          .text("Proportion of overlapped genes").attr("font-size", "12px");
+        svg.append("text").attr("text-anchor", "middle")
+          .attr("transform", "translate("+(barplotwidth/2)+","+(-margin.top/2+6)+")")
+          .text("in gene sets").attr("font-size", "12px");
+
+        svg.append("text").attr("text-anchor", "middle")
+          .attr("transform", "translate("+(barplotwidth*1.5)+","+(height+40)+")")
+        .text("-log10 adjusted P-value").attr("font-size", "12px");
+        svg.append("text").attr("text-anchor", "middle")
+          .attr("transform", "translate("+(barplotwidth*1.5)+","+(-margin.top/2)+")")
+          .text("Enrichment P-value").attr("font-size", "12px");
+        svg.append("text").attr("text-anchor", "middle")
+          .attr("transform", "translate("+(barplotwidth*2+10+width)/2+","+(height+70)+")")
           .text("genes").attr("font-size", "12px");
+        svg.append("text").attr("text-anchor", "middle")
+          .attr("transform", "translate("+(barplotwidth*2+10+width)/2+","+(-margin.top/2)+")")
+          .text("Overlapped genes").attr("font-size", "12px");
 
         svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
         svg.selectAll('text').style('font-family', 'sans-serif');

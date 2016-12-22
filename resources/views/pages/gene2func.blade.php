@@ -205,7 +205,7 @@
         <!-- Tissue specificity bar chart -->
         <div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50px;">
           <h4>Differentially expressed genes across 53 tissues (GTEx)
-            <a class="infoPop" data-toggle="popover" title="DEG of 53 tissue types" data-content="Differentially expressed genes for each of tissue types were tested agains all other tieeus types. DEG set consists of genes which are more or less expressed compared to other tissues.
+            <a class="infoPop" data-toggle="popover" title="DEG of 53 tissue types" data-content="Differentially expressed genes for each of tissue types were tested against all other tissues types. DEG set consists of genes which are more or less expressed compared to other tissues.
             Up- and Down-regulated DEG were defined by taking sign of T-statistics account which are subset of DEG set.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
@@ -224,7 +224,7 @@
           </span>
           <br/><br/>
           <h4>Differrentially expressed genes across 30 general tissue types (GTEx)
-            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Differentially expressed genes for each of tissue types were tested agains all other tieeus types. DEG set consists of genes which are more or less expressed compared to other tissues.
+            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Differentially expressed genes for each of tissue types were tested againstß all other tissues types. DEG set consists of genes which are more or less expressed compared to other tissues.
             Up- and Down-regulated DEG were defined by taking sign of T-statistics account which are subset of DEG set.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
