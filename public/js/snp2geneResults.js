@@ -6,7 +6,7 @@ $(document).ready(function(){
 
   var hashid = window.location.hash;
   if(hashid==""){
-    $('a[href="#joblist-panel"]').trigger('click');
+    $('a[href="#newJob"]').trigger('click');
   }else{
     $('a[href="'+hashid+'"]').trigger('click');
   }
@@ -67,6 +67,7 @@ $(document).ready(function(){
       complete: function(){
         if(jobStatus=="OK"){
           loadResults();
+          $('a[href="#genomePlots"]').trigger('click');
         }
       }
     });

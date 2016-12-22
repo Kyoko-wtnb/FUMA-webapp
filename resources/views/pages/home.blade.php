@@ -7,22 +7,22 @@
 @section('content')
 <div class="container" style="padding-top:50px;">
   <div style="text-align: center;">
-    <h2>Welcome to FUMA (Functional Mapping and Annotation of GWAS)</h2>
+    <h2>FUMA GWAS</h2>
+    <h2>Functional Mapping and Annotation of genome-wide association results</h2>
   </div>
-  <p>FUMA is a web application which annotates, prioritizes and visualizes GWAS results.
-    Publicly available data resources and tools used in this applications are accessible from <a href="{{ Config::get('app.subdir') }}/links">links</a> tab.</p>
-    All you need to prepare is to get GWAS summary statistics of phenotype of interest and submit at <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a>.
-    You can also query a list of genes directory from <a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a>.
-  </p>
-
-  <p>Please log in to submit GWAS summary statistics at <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a>.
-    If you have't registered yet, you can do from <a href="{{ url('/register') }}">here</a>.<br/>
-    <a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a> can be performed solely without registration.
-  </p>
-  <p>
-    Since, FUMA provides a variety of parameters, please follow the <a href="{{ Config::get('app.subdir') }}/tutorial">Tutorial</a>.
-    For detail methods, please refer the publication.
-    If you have any question or problem using this application, please let us know!! (Kyoko Watanabe: k.watanabe@vu.nl)
+  <br/>
+  <p>FUMA is a platform that can be used to annotate, prioritize and visualize and interpret GWAS results.
+  <br/>
+    The <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a> function takes GWAS summary statistics or a list of rsid’s as input,
+    and provides extensive functional annotation for all SNPs in genomic areas identified by lead SNPs.
+    <br/>
+    The <a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a> function takes a list of geneids (as identified by SNP2GENE or as provided manually)
+    and annotates genes in biological context
+    <br/>
+    Please log in to use FUMA.
+    If you have't registered yet, you can do from <a href="{{ url('/register') }}">here</a>.
+    <br/>
+    When using FUMA, please acknowledge Watanabe et al. xxx
   </p>
 
 </div>

@@ -1,14 +1,14 @@
 <div id="newJob" class="sidePanel container" style="padding-top:50px;">
   {!! Form::open(array('url' => 'snp2gene/newJob', 'files' => true, 'novalidate'=>'novalidate')) !!}
   <!-- New -->
-  <h4 style="color: #00004d">New job submission</h4>
+  <h4 style="color: #00004d">Upload your GWAS summary statistics and set parameters to obtain functional annotations of the genomic loci associated with your trait</h4>
   <!-- Input files upload -->
   <h4>1. Upload input files</h4>
   <div id="fileFormatError"></div>
   <table class="table table-bordered inputTable" id="NewJobFiles" style="width: auto;">
     <tr>
       <td>GWAS summary statistics
-        <a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file" data-content="The minimum required columns are either chromosome, position on hg19 and P-value or rsID and P-value. Please lift over (or down) to hg19 before you submit. The input file should be plain text format (archived file is not accepptable).">
+        <a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file" data-content="Every row should have information on one SNP. The minimum required columns are ‘chromosome, position and P-value’ or ‘rsID and P-value’. If you provide position, please make sure the position is in hg19. The input file should be plain text format and not compressed.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -16,8 +16,8 @@
       <td></td>
     </tr>
     <tr>
-      <td>Predefined lead SNPs
-        <a class="infoPop" data-toggle="popover" title="Pre-define lead SNPs" data-content="This option would be useful when you already known lead SNPs and prefer to use only those SNPs as lead SNPs. This option can be also used when you want to include specific SNPs as lead SNPs which do no reach significant P-value threshold. The input file should have 3 columns, rsID, chromosome and position with header (header could be anything but the order of columns have to match).">
+      <td>Pre-defined lead SNPs
+        <a class="infoPop" data-toggle="popover" title="Pre-defined lead SNPs" data-content="This option can be used when you already have determined lead SNPs and do not want FUMA to do this for you. This option can be also used when you want to include specific SNPs as lead SNPs which do no reach significant P-value threshold. The input file should have 3 columns, rsID, chromosome and position with header (header could be anything but the order of columns have to match).">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -26,7 +26,7 @@
     </tr>
     <tr>
       <td>Identify additional independent lead SNPs
-        <a class="infoPop" data-toggle="popover" title="Additional identification of lead SNPs" data-content="This option is only vallid when pre-defined lead SNPs are provided. Please unckeck this to NOT IDENTIFY additional lead SNPs than provided ones.">
+        <a class="infoPop" data-toggle="popover" title="Additional identification of lead SNPs" data-content="This option is only vallid when pre-defined lead SNPs are provided. Please uncheck this to NOT IDENTIFY additional lead SNPs than the provided ones. When this option is checked, FUMA will identify all independent lead SNPs after taking all SNPs in LD of pre-defined lead SNPs if there is any.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -35,7 +35,7 @@
     </tr>
     <tr>
       <td>Predefined genomic region
-        <a class="infoPop" data-toggle="popover" title="Pre-defined genomic regions" data-content="This option would be useful when you have specific genomic region to look up. Lead SNPs and SNPs in LD will be limited to within procided regions. The input file should have 3 columns, chromosome, start and end position with header (header could be anything but the order of columns have to match).">
+        <a class="infoPop" data-toggle="popover" title="Pre-defined genomic regions" data-content="This option can be used when you already have defined specific genomic regions of interest and only require annotations of significant SNPs and their proxi SNPs in these regions. The input file should have 3 columns, chromosome, start and end position (on hg19) with header (header could be anything but the order of columns have to match).">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -50,7 +50,9 @@
   <table class="table table-bordered inputTable" id="NewJobParams" style="width: auto;">
     <tr>
       <td>Sample size (N)
-        <a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of sample used in GWAS. This is only used for MAGMA. It does not affect anything of annotations and prioritizations. If you don't know the number, the random number should be fine (> 50).">
+        <a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of individuals (cases + controls, or total N) used in GWAS.
+        This is only used for MAGMA. It does not affect functional annotations and prioritizations.
+        If you don't know the sample size, the random number should be fine (> 50), yet that does not render the gene-based tests from MAGMA invalid.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -63,13 +65,13 @@
       <td></td>
     </tr>
     <tr>
-      <td>Minimum r2 to be in LD (&ge;)</td>
+      <td>r<sup>2</sup> threshold to define LD structure of lead SNPs (&ge;)</td>
       <td><input type="number" class="form-control" id="r2" name="r2" value="0.6" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
       <td></td>
     </tr>
     <tr>
-      <td>GWAS P-value cutoff (&le;)
-        <a class="infoPop" data-toggle="popover" title="GWAS P-value cutoff" data-content="This threshold is only applied to GWAS tagged SNPs in addition to other threshold such as r2 and MAF.">
+      <td>Maximum P-value cutoff (&le;)
+        <a class="infoPop" data-toggle="popover" title="GWAS P-value cutoff" data-content="This threshold defines the maximum P-values of SNPs to be included in the annotation. Setting it at 1 means that all SNPs that are in LD with the lead SNP will be included in the annotation and prioritization even though they may not show a significant association with the phenotype. We advise to set this threshold at least at 0.05.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -95,7 +97,7 @@
     </tr>
     <tr>
       <td>Include 1000 genome variant (non-GWAS tagged SNPs in LD)
-        <a class="infoPop" data-toggle="popover" title="1000G SNPs" data-content="This option is to include kwnon SNPs in 1000G reference panel which are in LD of lead SNPs. Please UNCHECK to NOT INCLUDE these SNPs but only GWAS tagged SNPs.">
+        <a class="infoPop" data-toggle="popover" title="1000G SNPs" data-content="Select ‘yes’ if you want to include SNPs that are not available in the GWAS output but are available in 1000G. Including these SNPs may provide information on functional variants in LD with the lead SNP.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -112,8 +114,8 @@
       </td>
     </tr>
     <tr>
-      <td>Minimum MAF(&ge;)
-        <a class="infoPop" data-toggle="popover" title="Minimu Minor Allele Frequency" data-content="This is MAF of selected population based on 1000G reference panel. When this is set at 0, all SNPs which have MAF > 0 in the selected population will be included.">
+      <td>Minimum Minor Allele Frequency (&ge;)
+        <a class="infoPop" data-toggle="popover" title="Minimu Minor Allele Frequency" data-content="This threshold defines the minimum MAF of the SNPs to be included in the annotation. MAFs are based on the selected reference population (1000G).">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -139,7 +141,7 @@
     <table class="table table-bordered inputTable" id="NewJobPosMap" style="width: auto;">
       <tr>
         <td>Perform positional mapping
-          <a class="infoPop" data-toggle="popover" title="Positional maping" data-content="Positional mapping is based on distances between SNPs to genes. Functional consequences of SNPs on gene functions (such as exonic, intronic and splicing) can also be used in positional mapping.">
+          <a class="infoPop" data-toggle="popover" title="Positional maping" data-content="When checked, positional mapping will be carried out and includes functional consequences of SNPs on gene functions (such as exonic, intronic and splicing).">
             <i class="fa fa-question-circle-o fa-lg"></i>
           </a>
         </td>
@@ -881,7 +883,7 @@
   <table class="table table-bordered inputTable" id="NewJobGene" style="width: auto;">
     <tr>
       <td>Gene type
-        <a class="infoPop" data-toggle="popover" title="Gene Type" data-content="Gene type is based on gene biotype obtained from BioMart (Ensembl 85). By default, only protein-coding genes will be used for mapping.">
+        <a class="infoPop" data-toggle="popover" title="Gene Type" data-content="Setting gene type defines what kind of genes should be included in the gene prioritization. Gene type is based on gene biotype obtained from BioMart (Ensembl 85). By default, only protein-coding genes are used for mapping.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a><br/>
         <span class="info"><i class="fa fa-info"></i> Multiple gene type can be selected.</span>
@@ -911,7 +913,7 @@
   <table class="table table-bordered inputTable" id="NewJobMHC" style="width: auto;">
     <tr>
       <td>Exclude MHC region
-        <a class="infoPop" data-toggle="popover" title="Exclude MHC region" data-content="Please cehck to EXCLUDE MHC region. When this option is checked, all SNPs and genes withint MHC region will not be reported in results.">
+        <a class="infoPop" data-toggle="popover" title="Exclude MHC region" data-content="Please cehck to EXCLUDE MHC region.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
@@ -920,7 +922,7 @@
     </tr>
     <tr>
       <td>Extended MHC region
-        <a class="infoPop" data-toggle="popover" title="Extended MHC region" data-content="In case you would like to exclude extended MHC region, please specify here. By default, normal MHC region (between MOG and COL11A2 genes) will be used.">
+        <a class="infoPop" data-toggle="popover" title="Extended MHC region" data-content="In case you would like to exclude an extended MHC region, please specify here. If this option is not given, the default MHC region (between MOG and COL11A2 genes) will be used.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a><br/>
         <span class="info"><i class="fa fa-info"></i>e.g. 25000000-33000000<br/>
