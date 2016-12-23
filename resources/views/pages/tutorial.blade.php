@@ -28,6 +28,32 @@
       }
     }
 
+    $('.inpage').on('click', function(){
+      var hashid = $(this).attr('href');
+      hashid = hashid.replace(/\/\w+#/, "#");
+      var side = [];
+      $('.sidebar-nav li a').each(function(){
+        side.push($(this).attr("href"));
+      })
+      if(hashid==""){
+        $('a[href*="#overview"]').trigger('click');
+      }else{
+        if(side.indexOf(hashid)>=0){
+          // $(hashid).show();
+          $('a[href*="'+hashid+'"]').trigger('click');
+        }else{
+          $('.subside a').each(function(){
+            if($(this).attr("href")==hashid){
+              var parent = '#'+$(this).parent().attr("id").replace("sub", "");
+              // $(parent).show();
+              $('a[href*="'+parent+'"]').trigger('click');
+              $(this).trigger('click');
+            }
+          });
+        }
+      }
+    })
+
     $('.infoPop').popover();
   });
 
@@ -71,9 +97,9 @@
       <h3>Overview of the FUMA GWAS</h3>
       <div style="margin-left: 40px;">
         <p>The platform mainly consists of two separate process, SNP2GENE and GENE2FUNC.</p>
-        <p>To annotate and prioritize SNPs and genes from your GWAS summary statistics, go to <a href="/IPGAP/snp2gene"><strong>SNP2GENE</strong></a> which compute LD structure,
+        <p>To annotate and prioritize SNPs and genes from your GWAS summary statistics, go to <a href="{{ Config::get('app.subdir') }}/snp2gene"><strong>SNP2GENE</strong></a> which compute LD structure,
           annotate functions to SNPs, and prioritize candidate genes.</p>
-        <p>If you already have a list of genes, go to <a href="/IPGAP/gene2func"><strong>GENE2FUNC</strong></a> to check expression pattern and shared molecular functions.<p/>
+        <p>If you already have a list of genes, go to <a href="{{ Config::get('app.subdir') }}/gene2func"><strong>GENE2FUNC</strong></a> to check expression pattern and shared molecular functions.<p/>
         <br/>
         <img src="{{ URL::asset('/image/pipeline.png') }}" width="600" align="middle">
       </div>
@@ -115,7 +141,7 @@
 
           <p><h4><strong>2. Submit new job at <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a></strong></h4>
             GWAS summary statistics is a mandatory input and a variety of file formats are supported.
-            Please refer the section of input files of this tutorial <a href="{{ Config::get('app.subdir') }}/tutorial#prepare-input-files">here</a> for details.
+            Please refer the section of input files of this tutorial <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#prepare-input-files">here</a> for details.
             If your file is an ouput of PLINK, SNPTEST or METAL, you can directory submit the file (no need to chagne columns).<br/>
             Optionally, if you already know lead SNPs and you want to use them as lead SNPs, you can upload a file with 3 columns; rsID, chromosome and position.<br/>
             In addition, if you are interested in specific genomic regions, you can also provide them by uploading a file with 3 columns; chromosome, start and end position.<br/><br/>
@@ -124,7 +150,7 @@
 
           <p><h4><strong>3. Set parameters</strong></h4>
             Please check your parameters carefully. Default setting perform identification of lead SNPs at r2=0.6 and maps SNPs to genes up to 10kb apart.<br/>
-            To filter SNPs by functional annotations and use eQTL mapping, please refer the parmeters section from <a href="{{ Config::get('app.subdir') }}/tutorial#parameters">here</a>.<br/>
+            To filter SNPs by functional annotations and use eQTL mapping, please refer the parmeters section from <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#parameters">here</a>.<br/>
             If all inputs are valid, 'Submit Job' button will be activated. Once you submit a job, this will be listed in My Jobs.<br/><br/>
             <img src="{!! URL::asset('/image/submitjob.png') !!}" style="width:70%"/><br/>
           </p>
@@ -140,7 +166,7 @@
             <strong>Results</strong>: Tables of lead SNPs, genomic risk loci, candidate SNPs with annotations, eQTLs (only when eQTL mapping is performed), mapped genes and GWAS-catalog reported SNPs matched with candidate SNPs.
             You can also create interactive regional plot with functional annotations from this tab.<br/>
             <strong>Downloads</strong>: Download Results as text files.<br/>
-            Details for each panel are described in this tutorial <a href="{{ Config::get('app.subdir') }}/tutorial#outputs">here</a>.<br/><br/>
+            Details for each panel are described in this tutorial <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#outputs">here</a>.<br/><br/>
             <img src="{!! URL::asset('/image/result.png') !!}" style="width:70%"/><br/><br/>
             <img src="{!! URL::asset('/image/resultpanels.png') !!}" style="width:90%"/><br/>
           </p>
@@ -159,7 +185,7 @@
             <strong>Tissue Specificity</strong>: The bar plots of enrichment of differentially expressed genes across tissue types.<br/>
             <strong>Gene Sets</strong>: Plots and tables of enriched gene sets.<br/>
             <strong>Gene Table</strong>: Table of input genes with lnks to OMIM, Drugbank and GeneCards.<br/>
-            Details for each panel are described in this tutorial <a href="{{ Config::get('app.subdir') }}/tutorial#gene2funcOutputs">here</a>.<br/><br/>
+            Details for each panel are described in this tutorial <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#gene2funcOutputs">here</a>.<br/><br/>
             <img src="{!! URL::asset('/image/gene2funcResults.png') !!}" style="width:70%"/><br/>
           </p>
         </div>
@@ -308,7 +334,7 @@
                   Only plain test is acceptable. Please uncompress archive files.
                   As well as full results of GWAS summary statistics, subset of results can also be used.
                   e.g. If you would like to look up specific SNPs, you can filter out other SNPs.
-                  Please follow <a href="{{ Config::get('app. subdir') }}/tutorial#prepare-input-files">Input files</a> section for file format.
+                  Please follow <a class="inpage" href="{{ Config::get('app. subdir') }}/tutorial#prepare-input-files">Input files</a> section for file format.
                 </td>
                 <td>File upload</td>
                 <td>none</td>
@@ -922,7 +948,7 @@
               <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
               <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by <a href="https://www.ncbi.nlm.nih.gov/pubmed/24487276" target="_blank">Kicher et al.</a></li>
               <li><strong>RDB</strong> : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.</li>
-              <li><strong>E001~E129</strong> : Chromatin state predicted by ChrHMM. ID of tissue cell types and description of 15 states are available from <a href="/IPGAP/link">Link</a>.</li>
+              <li><strong>E001~E129</strong> : Chromatin state predicted by ChrHMM. ID of tissue cell types and description of 15 states are available from <a href="{{ Config::get('app.subdir') }}/link">Link</a>.</li>
             </ul>
           </ul>
           <ul>
