@@ -2,7 +2,17 @@
 @section('head')
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('#snp2genebtn').on('click', function(){
+      window.location.href="{{ Config::get('app.subdir') }}/snp2gene";
+    });
 
+    $('#gene2funcbtn').on('click', function(){
+      window.location.href="{{ Config::get('app.subdir') }}/gene2func";
+    })
+  });
+</script>
 @stop
 @section('content')
 <div class="container" style="padding-top:50px;">
@@ -24,6 +34,24 @@
     <br/>
     When using FUMA, please acknowledge Watanabe et al. xxx
   </p>
+  <br/>
+
+  <div class="row">
+    <div class="col-md-6 col-xs-6 col-sm-6" style="text-align:center; padding: 20px;">
+      <div style="background-color: #dfdfdf; padding-top:20px; padding-bottom:20px;">
+        <button id="snp2genebtn" class="btn btn-primary">SNP2GENE</button>
+        <br/><br/>
+        <img src="{{ URL::asset('/image/homeSNP2GENE.png') }}" align="middle" style="width:90%;">
+      </div>
+    </div>
+    <div class="col-md-6 col-xs-6 col-sm-6" style="text-align:center; padding: 20px;">
+      <div style="background-color: #dfdfdf; padding-top:20px; padding-bottom:20px;">
+        <button id="gene2funcbtn" class="btn btn-success">GENE2FUNC</button>
+        <br/><br/>
+        <img src="{{ URL::asset('/image/homeGENE2FUNC.png') }}" align="middle" style="width:90%;">
+      </div>
+    </div>
+  </div>
 
 </div>
 </br>

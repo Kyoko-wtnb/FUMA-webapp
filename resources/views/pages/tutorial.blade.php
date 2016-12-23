@@ -110,7 +110,7 @@
           <p><h4><strong>1. Registration/Login</strong></h4>
             If you haven't registered yet, please do so from <a href="{{ url('/register') }}">Register</a>.<br/>
             Before you submit your GWAS summary statistics, please log in to your account.<br/><br/>
-            <img src="{!! URL::asset('/image/homereg.png') !!}" style="max-width:80%"/><br/>
+            <img src="{!! URL::asset('/image/homereg.png') !!}" style="width:80%"/><br/>
           </p>
 
           <p><h4><strong>2. Submit new job at <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a></strong></h4>
@@ -119,14 +119,14 @@
             If your file is an ouput of PLINK, SNPTEST or METAL, you can directory submit the file (no need to chagne columns).<br/>
             Optionally, if you already know lead SNPs and you want to use them as lead SNPs, you can upload a file with 3 columns; rsID, chromosome and position.<br/>
             In addition, if you are interested in specific genomic regions, you can also provide them by uploading a file with 3 columns; chromosome, start and end position.<br/><br/>
-            <img src="{!! URL::asset('/image/newjobfile.png') !!}" style="max-width:80%"/><br/>
+            <img src="{!! URL::asset('/image/newjobfile.png') !!}" style="width:80%"/><br/>
           </p>
 
           <p><h4><strong>3. Set parameters</strong></h4>
             Please check your parameters carefully. Default setting perform identification of lead SNPs at r2=0.6 and maps SNPs to genes up to 10kb apart.<br/>
             To filter SNPs by functional annotations and use eQTL mapping, please refer the parmeters section from <a href="{{ Config::get('app.subdir') }}/tutorial#parameters">here</a>.<br/>
             If all inputs are valid, 'Submit Job' button will be activated. Once you submit a job, this will be listed in My Jobs.<br/><br/>
-            <img src="{!! URL::asset('/image/submitjob.png') !!}" style="max-width:70%"/><br/>
+            <img src="{!! URL::asset('/image/submitjob.png') !!}" style="width:70%"/><br/>
           </p>
 
           <p><h4><strong>4. Check your results</strong></h4>
@@ -141,8 +141,8 @@
             You can also create interactive regional plot with functional annotations from this tab.<br/>
             <strong>Downloads</strong>: Download Results as text files.<br/>
             Details for each panel are described in this tutorial <a href="{{ Config::get('app.subdir') }}/tutorial#outputs">here</a>.<br/><br/>
-            <img src="{!! URL::asset('/image/result.png') !!}" style="max-width:70%"/><br/><br/>
-            <img src="{!! URL::asset('/image/resultpanels.png') !!}" style="max-width:90%"/><br/>
+            <img src="{!! URL::asset('/image/result.png') !!}" style="width:70%"/><br/><br/>
+            <img src="{!! URL::asset('/image/resultpanels.png') !!}" style="width:90%"/><br/>
           </p>
         </div>
         <br/>
@@ -150,7 +150,7 @@
         <p>In the <a href="{{ Config::get('app.subdir') }}/gene2func"><strong>GENE2FUNC</strong></a>, you can check expression in different tissue types, tissue specificity and enrichment of publicly available gene sets of genes of interest.<br/>
           You can use mapped genes from SNP2GENE by clicking the button in the result page (Results tab).<br/>
           You have to provide a list of genes of interest and background genes (for hypergeometric test).<br/><br/>
-          <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="max-width:70%"/><br/>
+          <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="width:70%"/><br/>
         </p>
         <div style="margin-left: 40px">
           <p>
@@ -160,7 +160,7 @@
             <strong>Gene Sets</strong>: Plots and tables of enriched gene sets.<br/>
             <strong>Gene Table</strong>: Table of input genes with lnks to OMIM, Drugbank and GeneCards.<br/>
             Details for each panel are described in this tutorial <a href="{{ Config::get('app.subdir') }}/tutorial#gene2funcOutputs">here</a>.<br/><br/>
-            <img src="{!! URL::asset('/image/gene2funcResults.png') !!}" style="max-width:70%"/><br/>
+            <img src="{!! URL::asset('/image/gene2funcResults.png') !!}" style="width:70%"/><br/>
           </p>
         </div>
         <br/>
@@ -776,7 +776,7 @@
           You can also access to the results page from My Job list.
           The result page display 4 additional side bars.
         </p><br/>
-        <img src="{!! URL::asset('/image/result.png') !!}" style="max-width:80%"/><br/><br/>
+        <img src="{!! URL::asset('/image/result.png') !!}" style="width:80%"/><br/><br/>
 
         <h4>2. Genome-wide plots</h4>
         <p>This panel displays manhattan plots and Q-Q plots for both GWAS summary statistics (input file) and gene-based association test.<br/>
@@ -802,7 +802,7 @@
           </li>
         </ul>
         <br/>
-        <img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="max-width:80%"/><br/><br/>
+        <img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="width:80%"/><br/><br/>
         <br/>
 
         <h4>3. Summary of results</h4>
@@ -828,7 +828,7 @@
           </li>
         </ul>
         <br/>
-        <img src="{!! URL::asset('/image/snp2geneSummary.png') !!}" style="max-width:80%"/><br/><br/>
+        <img src="{!! URL::asset('/image/snp2geneSummary.png') !!}" style="width:80%"/><br/><br/>
         <br/>
 
         <h4>4. Result tables</h4>
@@ -848,8 +848,8 @@
           <li>eQTLs: This is only available when eQTL mapping is performed. eQTLs are plotted per gene and colored per tissue types.</li>
         </ul>
         <br/>
-        <img src="{!! URL::asset('/image/snp2geneResults.png') !!}" style="max-width:80%"/><br/>
-        <img src="{!! URL::asset('/image/snp2geneAnnotPlot.png') !!}" style="max-width:70%"/><br/><br/>
+        <img src="{!! URL::asset('/image/snp2geneResults.png') !!}" style="width:80%"/><br/>
+        <img src="{!! URL::asset('/image/snp2geneAnnotPlot.png') !!}" style="width:70%"/><br/><br/>
         <br/>
         <h4>Description of tables</h4>
         <div style="margin-left: 40px;">
@@ -1080,14 +1080,14 @@
             Method of multiple test correction (FDR BH), adjusted P-value cutoff (0.05) and minimum number of overlapped genes (2) are set at default values.
             These options can be fixed by resubmitting query (click "Submit" button in New Query tab).
           </p>
-          <img src="{!! URL::asset('/image/snp2genejump.png') !!}" style="max-width:80%"/><br/>
+          <img src="{!! URL::asset('/image/snp2genejump.png') !!}" style="width:80%"/><br/>
 
           <h4>Option 2. Use a list of genes of interest</h4>
           <p>To analyse your genes, you have to prepare list of genes as either ENSG ID, entrez ID or gene symbol.
           Genes can be provided in the text are (one gene per line) or uploading file in the left panel. When you upload a file, genes have to be in the first column with header. Header can be anything (even just a new line is fine) but start your genes from second row.</p>
           <p>To analyse your genes, you need to specify background genes. You can choose from the gene types which is the easiest way. However, in the case that you need to use specific background genes, please provide them either in the text area of by uploading a file of the right panel.
           File format should be same as described for genes on interest.</p>
-          <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="max-width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="width:80%"/>
         </div>
 
         <h3 id="gene2funcOutputs">Results and Outputs</h3>
@@ -1104,7 +1104,7 @@
           <p>Tissues (column) and genes (row) can be ordered by alphabetically or cluster (hiarachial clustering). <br/>
             The heatmap is downloadable as PNG file. Note that currentlly displaying image will be downloaded.
           </p>
-          <img src="{!! URL::asset('/image/gene2funcHeatmap.png') !!}" style="max-width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcHeatmap.png') !!}" style="width:80%"/>
           <br/><br/>
 
           <h4>2. Tissue specificity</h4>
@@ -1119,7 +1119,7 @@
             Significant enrichment at FDR &le; 0.05 are coloured in red.<br/>
             Results and images are downloadable as text files and PNG files.
           </p>
-          <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="max-width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:80%"/>
           <br/><br/>
 
           <h4>3. Gene Sets</h4>
@@ -1133,7 +1133,7 @@
             In each category, plot view and table view are selectable.
             In the plot view, images are downloadable as PNG file.
           </p>
-          <img src="{!! URL::asset('/image/gene2funcGS.png') !!}" style="max-width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcGS.png') !!}" style="width:80%"/>
           <br/><br/>
 
           <h4>4. Gene Table</h4>
@@ -1143,7 +1143,7 @@
             OMIM IDs and Drug IDs are linked to the original sources which opens the new tab.
             Links of GeneCards will be displayed in the frame below.
           </p>
-          <img src="{!! URL::asset('/image/gene2funcGT.png') !!}" style="max-width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcGT.png') !!}" style="width:80%"/>
 
         </div>
       </div>
