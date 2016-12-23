@@ -8,11 +8,17 @@
   <table class="table table-bordered inputTable" id="NewJobFiles" style="width: auto;">
     <tr>
       <td>GWAS summary statistics
-        <a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file" data-content="Every row should have information on one SNP. The minimum required columns are ‘chromosome, position and P-value’ or ‘rsID and P-value’. If you provide position, please make sure the position is in hg19. The input file should be plain text format and not compressed.">
+        <a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file" data-content="Every row should have information on one SNP.
+        The minimum required columns are ‘chromosome, position and P-value’ or ‘rsID and P-value’.
+        If you provide position, please make sure the position is in hg19.
+        The input file should be plain text format and not compressed.
+        If you would like to test FUMA, please check 'Use example input', this will load an example file automatically.">
           <i class="fa fa-question-circle-o fa-lg"></i>
         </a>
       </td>
-      <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary" onchange="CheckAll()"/></td>
+      <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary" onchange="CheckAll()"/>
+        Or <input type="checkbox" class="form-check-input" name="egGWAS" id="egGWAS" onchange="CheckAll()"/> : Use example input (Crohn's disease, Franke et al. 2010).
+      </td>
       <td></td>
     </tr>
     <tr>

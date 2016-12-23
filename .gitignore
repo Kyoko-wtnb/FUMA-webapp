@@ -7,3 +7,4 @@ Homestead.json
 .env
 /database/jobs.table
 storage/scripts/app.config
+storage/example/

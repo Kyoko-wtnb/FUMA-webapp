@@ -91,10 +91,12 @@ class JobController extends Controller
 
     public function newJob(Request $request){
       // check file type
-      if(mime_content_type($_FILES["GWASsummary"]["tmp_name"])!="text/plain"){
-        $jobID = null;
-        return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatGWAS']);
-        // return back()->withInput(['status'=> 'fileFormat']); // parameter is not working
+      if($request -> hasFile('GWASsummary')){
+        if(mime_content_type($_FILES["GWASsummary"]["tmp_name"])!="text/plain"){
+          $jobID = null;
+          return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatGWAS']);
+          // return back()->withInput(['status'=> 'fileFormat']); // parameter is not working
+        }
       }
       if($request -> hasFile('leadSNPs')){
         if(mime_content_type($_FILES["leadSNPs"]["tmp_name"])!="text/plain"){
@@ -142,12 +144,17 @@ class JobController extends Controller
       $GWASfileup = 0;
       $regionsfileup = 0;
       // $gwasformat = $request->input('gwasformat'); //removed this option
-      $gwasformat = "Plain";
+      // $gwasformat = "Plain";
 
       if($request -> has('addleadSNPs')){$addleadSNPs=1;}
       else{$addleadSNPs=0;}
+
       if($request -> hasFile('GWASsummary')){
         $request -> file('GWASsummary')->move($filedir, $GWAS);
+        $GWASfileup = 1;
+      }else if($request -> has('egGWAS')){
+        $exfile = config('app.jobdir').'/example/CD.gwas';
+        File::copy($exfile, $filedir.'/input.gwas');
         $GWASfileup = 1;
       }
       if($request -> hasFile('leadSNPs')){
@@ -283,7 +290,11 @@ class JobController extends Controller
       File::append($paramfile, "title=$jobtitle\n");
 
       File::append($paramfile, "\n[inputfiles]\n");
-      File::append($paramfile, "gwasfile=".$_FILES["GWASsummary"]["name"]."\n");
+      if($request -> hasFile('GWASsummary')){
+        File::append($paramfile, "gwasfile=".$_FILES["GWASsummary"]["name"]."\n");
+      }else{
+        File::append($paramfile, "gwasfile=fuma.example.CD.gwas\n");
+      }
       if($leadSNPsfileup==1){File::append($paramfile, "leadSNPsfile=".$_FILES["leadSNPs"]["name"]."\n");}
       else{File::append($paramfile, "leadSNPsfile=NA\n");}
       File::append($paramfile, "addleadSNPs=$addleadSNPs\n");

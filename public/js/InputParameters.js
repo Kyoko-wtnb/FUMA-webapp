@@ -28,11 +28,19 @@ function CheckAll(){
 
   table = $('#NewJobFiles')[0];
   if($('#GWASsummary').val().length==0){
-    $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-                    +'<i class="fa fa-ban"></i> Mandatory input</div></td>');
-    // $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-    //                 +'<i class="fa fa-ban"></i> Please chose GWAS summary stats file first.</div></td>');
-    submit=false;
+    if($('#egGWAS').is(':checked')){
+      $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+                      +'<i class="fa fa-check"></i> OK. An example file will be used.</div></td>');
+      $('#N').val(21389);
+      submit=true;
+    }else{
+      $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+                      +'<i class="fa fa-ban"></i> Mandatory input</div></td>');
+      // $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      //                 +'<i class="fa fa-ban"></i> Please chose GWAS summary stats file first.</div></td>');
+      $('#N').val('');
+      submit=false;
+    }
   }else{
     // var file = document.getElementById('GWASsummary');
     // console.log("File type:", file.type);
