@@ -49,7 +49,7 @@
       <li class="active"><a href="#newquery">New Query<i class="sub_icon fa fa-upload"></i></a></li>
       <div id="resultSide">
         <li><a href="#expPanel">Heatmap<i class="sub_icon fa fa-th"></i></a></li>
-        <li><a href="#tsEnrichBarPanel">Tissue sepcificity<i class="sub_icon fa fa-bar-chart"></i></a></li>
+        <li><a href="#tsEnrichBarPanel">Tissue specificity<i class="sub_icon fa fa-bar-chart"></i></a></li>
         <li><a href="#GeneSetPanel">Gene sets<i class="sub_icon fa fa-bar-chart"></i></a></li>
         <li><a href="#GeneTablePanel">Gene table<i class="sub_icon fa fa-table"></i></a></li>
       </div>
@@ -74,14 +74,14 @@
                   When both are provided, only genes pasted in the text box will be used.
                 </p>
                 1. Paste genes
-                <a class="infoPop" data-toggle="popover" data-content="Please pasge gene per line. ENSG ID, entrez ID and gene symbol are acceptable.">
+                <a class="infoPop" data-toggle="popover" data-content="Please paste one gene per line. ENSG ID, entrez ID or gene symbols are accepted.">
                   <i class="fa fa-question-circle-o fa-lg"></i>
                 </a>
                 <br/>
                 <textarea id="genes" name="genes" rows="12" cols="50" placeholder="Please enter each gene per line here." onkeyup="checkInput()" oninput="checkInput()"></textarea><br/>
                 <br/>
                 2. Upload file
-                <a class="infoPop" data-toggle="popover" data-content="The first column shoud be the genes without header. Extra columns will be ignored. ENSG ID, entrez ID and gene symbol are acceptable.">
+                <a class="infoPop" data-toggle="popover" data-content="The first column should be the genes without header. Extra columns will be ignored. ENSG ID, entrez ID or gene symbols are accepted.">
                   <i class="fa fa-question-circle-o fa-lg"></i>
                 </a>
                 <tab><input class="form-control-file" type="file" name="genesfile" id="genesfile" onchange="checkInput()"/>
@@ -96,7 +96,7 @@
               <div class="panel-body" style="padding-bottom: 0;">
                 <h4>Background genes</h4>
                 <p class="info"><i class="fa fa-info"></i>
-                  Please specify background genes for hypergeometric test.
+                  Please specify background genes against which your list of genes should be tested in the hypergeometric test.
                 </p>
                 1. Select background genes by gene type <a id="bkgeneSelectClear">Clear</a><br/>
                 <span class="info"><i class="fa fa-info"></i>
@@ -113,13 +113,13 @@
                   <option value="TR_C_gene:TR_D_gene:TR_V_gene:TR_J_gene">TR genes</option>
                 </select>
                 <br/>
-                2. Paste genes
+                2. Paste custom list of backbround genes
                 <a class="infoPop" data-toggle="popover" data-content="Please pasge gene per line. ENSG ID, entrez ID and gene symbol are acceptable.">
                   <i class="fa fa-question-circle-o fa-lg"></i>
                 </a><br/>
                 <textarea id="bkgenes" name="bkgenes" rows="5" cols="50" placeholder="Please enter each gene per line here." onkeyup="checkInput();" oninput="checkInput()"></textarea><br/>
                 <br/>
-                3. Upload file
+                3. Upload a file with a custom list of background genes
                 <a class="infoPop" data-toggle="popover" data-content="The first column shoud be the genes without header. Extra columns will be ignored. ENSG ID, entrez ID and gene symbol are acceptable.">
                   <i class="fa fa-question-circle-o fa-lg"></i>
                 </a>
@@ -134,10 +134,10 @@
           <div class="panel-body" style="padding:10;">
             <h4>Other optional parameters</h4>
             <!-- <tab><input type="checkbox" id="Xchr" name="Xchr">&nbsp;Execlude genes on X chromosome. <span style="color: #004d99">*Please check to EXCLUDE X chromosome.</span><br/> -->
-            <tab><input type="checkbox" id="MHC" name="MHC">&nbsp;Execlude the MHC region.
-            <span class="info"><i class="fa fa-info"></i> Please check to EXCLUDE genes in MHC region.</span><br/>
+            <tab><input type="checkbox" id="MHC" name="MHC">&nbsp;Exclude the MHC region.
+            <!-- <span class="info"><i class="fa fa-info"></i> Please check to EXCLUDE genes in MHC region.</span><br/> -->
             <span class="form-inline">
-              <tab>Multiple test correction method:
+              <tab>Desired mMultiple testing correction method for gene-set enrichment testing:
                 <select class="form-control" id="adjPmeth" name="adjPmeth" style="width:auto;">
                   <option value="bonferroni">Bonferroni</option>
                   <option value="sidak">Sidak</option>
@@ -153,10 +153,18 @@
             </span>
             <tab>&nbsp;<span class="info"><i class="fa fa-info"></i> Options are available from python module <code>statsmodels.sandbox.stats.multicomp.multipletests</code>.</span><br/>
             <span class="form-inline">
-              <tab>Adjusted P-value cutoff (&lt;): <input class="form-control" type="number" id="adjPcut" name="adjPcut" value="0.05"/><br/>
+              <tab>Adjusted P-value cutoff for gene set enrichment (&lt;): <input class="form-control" type="number" id="adjPcut" name="adjPcut" value="0.05"/>
+              <a class="infoPop" data-toggle="popover" title="Adjusted P-value cutoff" data-content="Only gene sets significantly enriched at given adjusted P-value threshold will be reported.">
+                <i class="fa fa-question-circle-o fa-lg"></i>
+              </a>
+              <br/>
             </span>
             <span class="form-inline">
-              <tab>Minimum overlapped genes (&ge;): <input class="form-control" type="number" id="minOverlap" name="minOverlap" value="2"/></br>
+              <tab>Minimum overlapping genes with gene sets (&ge;): <input class="form-control" type="number" id="minOverlap" name="minOverlap" value="2"/>
+              <a class="infoPop" data-toggle="popover" title="Minimum overlapping genes with gene sets" data-content="Only gene sets which overlapping with more than or equal to the given number of genes in the input genes will be reported.">
+                <i class="fa fa-question-circle-o fa-lg"></i>
+              </a>
+              </br>
             </span>
           </div>
         </div>
@@ -178,8 +186,18 @@
           		<option value="log2RPKM" selected>Average RPKM per tissue (log2 transformed)</option>
           		<option value="norm">Average of normalized RPKM per tissue (zero mean across tissues)</option>
           	</select>
-            <a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="<b>Average RPKM per tissue</b>: This is average value of log2 transformed RPKM per tissue after winsorization at 50. This allows comparison of expression across tissues and genes.<br/>
-              <b>Average or normalized RPKM per tissue</b>: This is the average expression value per tissue after zero mean normalization of log2 transformed RPKM. This allows comparison of expression across tissues. Note that values of genes in a cirtine tissues are not comparable.">
+            <a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="<b>Average RPKM per tissue</b>:
+              This is average value of the log2 transformed RPKM per tissue per gene after winsorization at 50.
+              This allows comparison of expression across tissues and genes.
+              Thus, a more red box for gene A in tissue X means a relatively higher expression of that gene in tissue X,
+              compared to a blue box of gene B in tissue Y.<br/>
+              <b>Average normalized RPKM per tissue</b>:
+              This is the average expression value per tissue per gene after zero mean normalization of the log2 transformed RPKM.
+              This allows comparison of expression across tissues.
+              Note that values of genes in a cirtine tissues are not comparable.
+              Thus a red box for gene A in tissue X means a relatively higher expression of that gene in tissue X,
+              compare to a blue box of the same gene in tissue Y.<br/>
+              <b>RPKM = Reads Per Killobase per Million</b>">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </span>
@@ -245,7 +263,7 @@
         <!-- GeneSet enrichment -->
         <div id="GeneSetPanel"  class="sidePanel container" style="padding-top:50px;">
           <!-- <button class="btn" id="GSdown" name="GSdown">Download text file</button><br/><br/> -->
-          <h4>Enriched Gene Sets</h4>
+          <h4>Enrichment of input genes in genes Gene Sets</h4>
           <form action="fileDown" method="post" target="_blank">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="id" value="{{$id}}"/>
