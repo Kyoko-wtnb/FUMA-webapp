@@ -10,7 +10,13 @@
 
     $('#gene2funcbtn').on('click', function(){
       window.location.href="{{ Config::get('app.subdir') }}/gene2func";
-    })
+    });
+
+    function blinker() {
+      $('.blinking').fadeOut(500);
+      $('.blinking').fadeIn(500);
+    }
+    setInterval(blinker, 2000);
   });
 </script>
 @stop
@@ -39,6 +45,7 @@
   <div class="row">
     <div class="col-md-6 col-xs-6 col-sm-6" style="text-align:center; padding: 20px;">
       <div style="background-color: #dfdfdf; padding-top:20px; padding-bottom:20px;">
+        <h4 class="blinking" style="color:#000099">Start from here with GWAS summary statistics</h4>
         <button id="snp2genebtn" class="btn btn-primary">SNP2GENE</button>
         <br/><br/>
         <img src="{{ URL::asset('/image/homeSNP2GENE.png') }}" align="middle" style="width:90%;">
@@ -46,6 +53,7 @@
     </div>
     <div class="col-md-6 col-xs-6 col-sm-6" style="text-align:center; padding: 20px;">
       <div style="background-color: #dfdfdf; padding-top:20px; padding-bottom:20px;">
+        <h4 class="blinking" style="color:#000099">Start from here with a list of genes</h4>
         <button id="gene2funcbtn" class="btn btn-success">GENE2FUNC</button>
         <br/><br/>
         <img src="{{ URL::asset('/image/homeGENE2FUNC.png') }}" align="middle" style="width:90%;">
