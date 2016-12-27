@@ -19,12 +19,24 @@ $(document).ready(function(){
     CheckAll();
   });
 
+  // input parameters data toggle
+  $('.panel-heading a').on('click', function(){
+    if($(this).attr('class')=="active"){
+      $(this).removeClass('active');
+      $(this).children('i').attr('class', 'fa fa-chevron-down');
+    }else{
+      $(this).addClass('active');
+      $(this).children('i').attr('class', 'fa fa-chevron-up');
+    }
+  });
+
 });
 
 
 function CheckAll(){
   var submit = true;
   var table;
+  var tablecheck = true;
 
   table = $('#NewJobFiles')[0];
   if($('#GWASsummary').val().length==0){
@@ -40,6 +52,7 @@ function CheckAll(){
       //                 +'<i class="fa fa-ban"></i> Please chose GWAS summary stats file first.</div></td>');
       $('#N').val('');
       submit=false;
+      tablecheck=false;
     }
   }else{
     // var file = document.getElementById('GWASsummary');
@@ -76,20 +89,30 @@ function CheckAll(){
       +'<i class="fa fa-check"></i> OK.</div></td>');
   }
 
+  if(tablecheck==false){
+    $('#NewJobFilesPanel').parent().attr("class", "panel panel-danger");
+  }else{
+    $('#NewJobFilesPanel').parent().attr("class", "panel panel-default");
+  }
+
+  tablecheck=true;
   table=$('#NewJobParams')[0];
   if($('#N').val().length==0){
     $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-ban"></i> Mandatory input</div></td>');
     submit=false;
+    tablecheck=false;
   }else{
     if(isNaN($('#N').val())){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }else if($('#N').val()<50){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input. Smple size must be greater than 50.</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK</div></td>');
@@ -100,11 +123,13 @@ function CheckAll(){
     $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
   }else{
     if(isNaN($('#leadP').val())){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }else if($('#leadP').val()>=0 && $('#leadP').val()<=1){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -112,6 +137,7 @@ function CheckAll(){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }
   }
 
@@ -119,11 +145,13 @@ function CheckAll(){
     $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-ban"></i> Invalid input</div></td>');
     submit=false;
+    tablecheck=false;
   }else{
     if(isNaN($('#r2').val())){
       $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }else if($('#r2').val()>=0 && $('#r2').val()<=1){
       $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -131,6 +159,7 @@ function CheckAll(){
       $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }
   }
 
@@ -138,11 +167,13 @@ function CheckAll(){
     $(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-ban"></i> Invalid input</div></td>');
     submit=false;
+    tablecheck=false;
   }else{
     if(isNaN($('#gwasP').val())){
       $(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }else if($('#gwasP').val()>=0 && $('#gwasP').val()<=1){
       $(table.rows[3].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -150,6 +181,7 @@ function CheckAll(){
       $(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }
   }
 
@@ -160,11 +192,13 @@ function CheckAll(){
     $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-ban"></i> Invalid input</div></td>');
     submit=false;
+    tablecheck=false;
   }else{
     if(isNaN($('#maf').val())){
       $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }else if($('#maf').val()>=0 && $('#maf').val()<=1){
       $(table.rows[6].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -172,6 +206,7 @@ function CheckAll(){
       $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }
   }
 
@@ -179,17 +214,26 @@ function CheckAll(){
     $(table.rows[7].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-ban"></i> Invalid input</div></td>');
     submit=false;
+    tablecheck=false;
   }else{
     if(isNaN($('#mergeDist').val())){
       $(table.rows[7].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       $(table.rows[7].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
     }
   }
 
+  if(tablecheck==false){
+    $('#NewJobParamsPanel').parent().attr("class", "panel panel-danger");
+  }else{
+    $('#NewJobParamsPanel').parent().attr("class", "panel panel-default");
+  }
+
+  tablecheck=true;
   table = $('#NewJobPosMap')[0];
   var ms=0;
   $('#posMapAnnot option').each(function(){
@@ -207,11 +251,13 @@ function CheckAll(){
         $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Mandatory since you checked distance based mapping.</div></td>');
         submit=false;
+        tablecheck=false;
       }else{
         if(isNaN($('#posMapWindow').val())){
           $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
             +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
           submit=false;
+          tablecheck=false;
         }else{
           $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
             +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -224,6 +270,7 @@ function CheckAll(){
         $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
         submit=false;
+        tablecheck=false;
       }else{
         $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
@@ -240,7 +287,8 @@ function CheckAll(){
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Please select either positional or eQTL mapping.</div></td>');
-      submit-false;
+      submit=false;
+      tablecheck=false;
     }
   }
 
@@ -255,6 +303,7 @@ function CheckAll(){
       $(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Please select at least one annotation or check distance based mapping.</div></td>');
       submit=false;
+      tablecheck=false;
     }
   }
 
@@ -266,11 +315,13 @@ function CheckAll(){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Mandatory input.</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       if(isNaN($('#posMapCADDth').val())){
         $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
         submit=false;
+        tablecheck=false;
       }else{
         $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -309,6 +360,7 @@ function CheckAll(){
       $(table.rows[5].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Please select at least one tissue/cell type.</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       $(table.rows[5].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -317,6 +369,7 @@ function CheckAll(){
       $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input. Please choose between 1 to 15.</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       if($('#posMapChr15Max').val()>=1 && $('#posMapChr15Max').val()<=15){
         $(table.rows[6].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
@@ -325,6 +378,7 @@ function CheckAll(){
         $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Invalid input. Please choose between 1 to 15.</div></td>');
         submit=false;
+        tablecheck=false;
       }
     }
     $(table.rows[7].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
@@ -340,6 +394,13 @@ function CheckAll(){
       +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
   }
 
+  if(tablecheck==false){
+    $('#NewJobPosMapPanel').parent().attr("class", "panel panel-danger");
+  }else{
+    $('#NewJobPosMapPanel').parent().attr("class", "panel panel-default");
+  }
+
+  tablecheck=true;
   table = $('#NewJobEqtlMap')[0];
   if($('#eqtlMap').is(":checked")==true){
     $('.eqtlMapOptions').show();
@@ -360,6 +421,7 @@ function CheckAll(){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Please select at least one tissue type.</div></td>');
       submit=false;
+      tablecheck=false;
     }
     if($('#sigeqtlCheck').is(":checked")==true){
       $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
@@ -369,10 +431,12 @@ function CheckAll(){
         $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Please either check only significant eQTLs or type P-value threshold.</div></td>');
         submit=false;
+        tablecheck=false;
       }else if(isNaN($('#eqtlP').val())){
         $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
         submit=false;
+        tablecheck=false;
       }else if($('#eqtlP').val()>=0 && $('#eqtlP').val()<=1){
         $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -380,6 +444,7 @@ function CheckAll(){
         $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
         submit=false;
+        tablecheck=false;
       }
     }
   }else{
@@ -403,11 +468,13 @@ function CheckAll(){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Mandatory input.</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       if(isNaN($('#eqtlMapCADDth').val())){
         $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
         submit=false;
+        tablecheck=false;
       }else{
         $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -446,6 +513,7 @@ function CheckAll(){
       $(table.rows[5].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Please select at least one tissue/cell type.</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       $(table.rows[5].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -454,6 +522,7 @@ function CheckAll(){
       $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input. Please choose between 1 to 15.</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       if($('#eqtlMapChr15Max').val()>=1 && $('#eqtlMapChr15Max').val()<=15){
         $(table.rows[6].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
@@ -462,6 +531,7 @@ function CheckAll(){
         $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
           +'<i class="fa fa-ban"></i> Invalid input. Please choose between 1 to 15.</div></td>');
         submit=false;
+        tablecheck=false;
       }
     }
     $(table.rows[7].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
@@ -477,6 +547,13 @@ function CheckAll(){
       +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
   }
 
+  if(tablecheck==false){
+    $('#NewJobEqtlMapPanel').parent().attr("class", "panel panel-danger");
+  }else{
+    $('#NewJobEqtlMapPanel').parent().attr("class", "panel panel-default");
+  }
+
+  tablecheck=true;
   table = $('#NewJobMHC')[0];
   if($('#MHCregion').is(':checked')==true){
     $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
