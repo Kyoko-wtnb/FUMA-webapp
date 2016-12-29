@@ -11,3 +11,5 @@
     </div>
   </div>
 </footer>
+
+<script type="text/javascript" src="{!! URL::asset('js/fuma.js') !!}"></script>

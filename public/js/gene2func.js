@@ -37,9 +37,6 @@ $(document).ready(function(){
     checkInput();
   });
 
-  // popover
-  $('.infoPop').popover();
-
   //GeneCard onload scroll download
   $('#GeneCards_iframe').load(function(){
     $(window).scrollTop($('#GeneCards_iframe').offset().top);
