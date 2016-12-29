@@ -53,8 +53,6 @@
         }
       }
     })
-
-    $('.infoPop').popover();
   });
 
 </script>
