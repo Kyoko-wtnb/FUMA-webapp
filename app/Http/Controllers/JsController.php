@@ -84,7 +84,7 @@ class JsController extends Controller
 
     public function geneTable(Request $request){
       $jobID = $request->input('id');
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/gene2func/'.$jobID.'/';
       $f = fopen($filedir."geneTable.txt", 'r');
       $head = fgetcsv($f, 0, "\t");
       $head[] = "GeneCard";

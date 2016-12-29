@@ -34,7 +34,9 @@
   });
   var public_path = "{{ URL::asset('/image/ajax-loader2.gif') }}";
   var storage_path = "<?php echo storage_path();?>";
+  var subdir = "{{ Config::get('app.subdir') }}";
   var status = "{{$status}}";
+  var jobID = "{{$id}}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}"></script>
@@ -47,6 +49,7 @@
     </ul>
     <ul class="sidebar-nav" id="sidebar">
       <li class="active"><a href="#newquery">New Query<i class="sub_icon fa fa-upload"></i></a></li>
+      <li class="active"><a href="#queryhistory">Query History<i class="sub_icon fa fa-history"></i></a></li>
       <div id="resultSide">
         <li><a href="#expPanel">Heatmap<i class="sub_icon fa fa-th"></i></a></li>
         <li><a href="#tsEnrichBarPanel">Tissue specificity<i class="sub_icon fa fa-bar-chart"></i></a></li>
@@ -66,7 +69,7 @@
         {!! Form::open(array('url' => 'gene2func/submit', 'files'=>true)) !!}
         <!-- <h3>Input list of genes</h3> -->
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-6 col-xs-6 col-sm-6">
             <div class="panel panel-default">
               <div class="panel-body" style="padding-bottom: 0;">
                 <h4>Genes of interest</h4>
@@ -90,7 +93,7 @@
               </div>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-6 col-xs-6 col-sm-6">
             <div id="backgroundGenes"></div>
             <div class="panel panel-default">
               <div class="panel-body" style="padding-bottom: 0;">
@@ -166,6 +169,10 @@
               </a>
               </br>
             </span>
+            <span class="form-inline">
+              <tab>Title: <input type="text" class="form-control" id="title" name="title">
+              <span class="info"><i class="fa fa-info"></i> Optional</span>
+            </span>
           </div>
         </div>
 
@@ -173,6 +180,33 @@
         <div id="checkBkGenes"></div>
         <input type="submit" value="Submit" class="btn" id="geneSubmit" name="geneSubmit" style="float: right;"/><br/><br/>
         {!! Form::close() !!}
+      </div>
+
+      <div id="queryhistory" class="sidePanel container" style="padding-top:50px;">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            Gene query history
+          </div>
+          <div class="panel-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Job ID</th>
+                  <th>Title</th>
+                  <th>SNP2GENE job ID</th>
+                  <th>SNP2GENE title</th>
+                  <th>Submit date</th>
+                  <th>Link</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="6" style="Text-align:center;">Retrieving data</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <div id="results">

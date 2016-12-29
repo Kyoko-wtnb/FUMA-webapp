@@ -486,9 +486,40 @@ class JobController extends Controller
       }
     }
 
+    public function getG2FJobList(){
+        $email = $this->user->email;
+
+        if($email){
+            $results = DB::table('gene2func')->where('email', $email)
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }else{
+            $results = array();
+        }
+
+        return response()->json($results);
+    }
+
     public function gene2funcSubmit(Request $request){
-      $id = uniqid();
-      $filedir = config('app.jobdir').'/jobs/'.$id.'/';
+      // $id = uniqid();
+      $date = date('Y-m-d H:i:s');
+      $jobID;
+      $filedir;
+      $email = $this->user->email;
+
+      if($request->has('title')){
+        $title = $request->input('title');
+      }else{
+        $title = "None";
+      }
+
+      DB::table('gene2func')->insert(
+        ['title'=>$title, 'email'=>$email, 'created_at'=>$date]
+      );
+
+      // Get jobID (automatically generated)
+      $jobID = DB::table('gene2func')->where('email', $email)->where('created_at', $date)->first()->jobID;
+      $filedir = config('app.jobdir').'/gene2func/'.$jobID;
       File::makeDirectory($filedir);
       $filedir = $filedir.'/';
       #$id = "gene2func";
@@ -539,7 +570,7 @@ class JobController extends Controller
       $minOverlap = $request -> input('minOverlap');
 
       JavaScript::put([
-        'id' => $id,
+        'id' => $jobID,
         'filedir' => $filedir,
         'gtype' => $gtype,
         'gval' => $gval,
@@ -574,46 +605,80 @@ class JobController extends Controller
     }
 
     public function snp2geneGeneQuery(Request $request){
-      $jobID = $request -> input('jobID');
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      $gtype="text";
-      $bkgtype="select";
+      $s2gID = $request -> input('jobID');
 
-      $params = parse_ini_file($filedir.'params.config');
-      // $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
-      $MHC = $params['exMHC'];
-      $bkgval = $params['genetype'];
-      $adjPmeth = "fdr_bh";
-      $adjPcut = 0.05;
-      $minOverlap = 2;
 
-      $gval = null;
-      $f = fopen($filedir."genes.txt", 'r');
-      fgetcsv($f, 0, "\t");
-      while($row = fgetcsv($f, 0, "\t")){
-        if($gval==null){
-          $gval = $row[0];
+      $checkExists = DB::table('gene2func')->where('snp2gene', $s2gID)->first();
+      if($checkExists==null){
+        $date = date('Y-m-d H:i:s');
+        $jobID;
+        $filedir;
+        $email = $this->user->email;
+
+        if($request->has('title')){
+          $title = $request->input('title');
         }else{
-          $gval = $gval.":".$row[0];
+          $title = "None";
         }
+
+        // $jobTable = new gene2func;
+        // $jobTable->email = $email;
+        // $jobTable->created_at = $date;
+        // $jobTable->snp2gene = $s2gID;
+        // $jobTable->save();
+        $s2gTitle = DB::table('SubmitJobs')->where('jobID', $s2gID)->first()->title;
+
+        DB::table('gene2func')->insert(
+          ['title'=>$title,'email'=>$email, 'snp2gene'=>$s2gID, 'snp2geneTitle'=>$s2gTitle, 'created_at'=>$date]
+        );
+
+        // Get jobID (automatically generated)
+        $jobID = DB::table('gene2func')->where('snp2gene', $s2gID)->first()->jobID;
+        $filedir = config('app.jobdir').'/gene2func/'.$jobID;
+        File::makeDirectory($filedir);
+        $filedir = $filedir.'/';
+
+        $s2gfiledir = config('app.jobdir').'/jobs/'.$s2gID.'/';
+        $gtype="text";
+        $bkgtype="select";
+        $params = parse_ini_file($s2gfiledir.'params.config');
+        // $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
+        $MHC = $params['exMHC'];
+        $bkgval = $params['genetype'];
+        $adjPmeth = "fdr_bh";
+        $adjPcut = 0.05;
+        $minOverlap = 2;
+
+        $gval = null;
+        $f = fopen($s2gfiledir."genes.txt", 'r');
+        fgetcsv($f, 0, "\t");
+        while($row = fgetcsv($f, 0, "\t")){
+          if($gval==null){
+            $gval = $row[0];
+          }else{
+            $gval = $gval.":".$row[0];
+          }
+        }
+
+        JavaScript::put([
+          'id' => $jobID,
+          'filedir' => $filedir,
+          'gtype' => $gtype,
+          'gval' => $gval,
+          'bkgtype' => $bkgtype,
+          'bkgval' => $bkgval,
+          // 'Xchr' => $Xchr,
+          'MHC' => $MHC,
+          'adjPmeth' => $adjPmeth,
+          'adjPcut' => $adjPcut,
+          'minOverlap' => $minOverlap
+        ]);
+        return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]);
+
+      }else{
+        $jobID = $checkExists->jobID;
+        return redirect("gene2func/".$jobID);
       }
-
-      JavaScript::put([
-        'id' => $jobID,
-        'filedir' => $filedir,
-        'gtype' => $gtype,
-        'gval' => $gval,
-        'bkgtype' => $bkgtype,
-        'bkgval' => $bkgval,
-        // 'Xchr' => $Xchr,
-        'MHC' => $MHC,
-        'adjPmeth' => $adjPmeth,
-        'adjPcut' => $adjPcut,
-        'minOverlap' => $minOverlap
-      ]);
-
-       return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]);
-
     }
 
     public function SelectOption(Request $request){

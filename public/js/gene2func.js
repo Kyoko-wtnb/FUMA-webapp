@@ -45,10 +45,47 @@ $(document).ready(function(){
     $(window).scrollTop($('#GeneCards_iframe').offset().top);
   })
 
+  // Download buttongs
+  $('#DEGdown').on('click', function(){
+    fileDown('DEG.txt', id);
+  });
+  $('#DEGgdown').on('click', function(){
+    fileDown('DEGgeneral.txt', id);
+  });
+  $('#GSdown').on('click', function(){
+    filedown('GS.txt', id);
+  });
+
+  $.getJSON( subdir + "/gene2func/getG2FJobList", function( data ) {
+      var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
+      if(data.length){
+          items = '';
+          $.each( data, function( key, val ) {
+              var status = '<a href="'+subdir+'/gene2func/'+val.jobID+'">load results</a>';
+              items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"+val.snp2gene+"</td><td>"+val.snp2geneTitle+"</td><td>"+val.created_at+"</td><td>"+status+"</td></tr>";
+          });
+      }
+
+      // Put list in table
+      $('#queryhistory table tbody')
+          .empty()
+          .append(items);
+  });
+
   if(status=="new"){
     checkInput();
     $('#resultSide').hide()
     // $('#results').hide();
+  }else if(status=="getJob"){
+    console.log(jobID);
+    var id = jobID;
+    checkInput();
+    expHeatMap(id);
+    tsEnrich(id);
+    tsGeneralEnrich(id);
+    GeneSet(id);
+    GeneTable(id);
+    $('a[href="#expPanel"]').trigger('click');
   }else if(status=="query"){
     $('#geneSubmit').attr("disabled", true);
     var id = IPGAPvar.id;
@@ -120,24 +157,15 @@ $(document).ready(function(){
         $('#overlay').remove();
       },
       complete: function(){
-        checkInput();
-        expHeatMap(id);
-        tsEnrich(id);
-        tsGeneralEnrich(id);
-        GeneSet(id);
-        GeneTable(id);
-        $('a[href="#expPanel"]').trigger('click');
+        window.location.href=subdir+'/gene2func/'+id;
+        // checkInput();
+        // expHeatMap(id);
+        // tsEnrich(id);
+        // tsGeneralEnrich(id);
+        // GeneSet(id);
+        // GeneTable(id);
+        // $('a[href="#expPanel"]').trigger('click');
       }
-    });
-
-    $('#DEGdown').on('click', function(){
-      fileDown('DEG.txt', id);
-    });
-    $('#DEGgdown').on('click', function(){
-      fileDown('DEGgeneral.txt', id);
-    });
-    $('#GSdown').on('click', function(){
-      filedown('GS.txt', id);
     });
   }
 

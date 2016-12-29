@@ -8,3 +8,4 @@ Homestead.json
 /database/jobs.table
 storage/scripts/app.config
 storage/example/
+storage/gene2func/
