@@ -11,7 +11,14 @@
                         <th>Job ID</th>
                         <th>Job name</th>
                         <th>Submit date</th>
-                        <th>Status</th>
+                        <th>Status
+                          <a class="infoPop" data-toggle="popover" data-html="true" data-content="<b>NEW: </b>The job has been submitted.<br/>
+                            <b>QUEUED</b>: The job has beed dispatched to queue.<br/><b>RUNNING</b>: The job is running.<br/>
+                            <b>Go to results</b>: The job has been completed. This is linked to result page.<br/>
+                            <b>ERROR</b>: An error occured durting the process. Please refer bottom of the page for details.">
+                            <i class="fa fa-question-circle-o fa-lg"></i>
+                          </a>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,6 +29,20 @@
             </table>
         </div>
     </div>
+
+    <!-- <div>
+      <h4>Error types</h4>
+      ERROR:001 <br/>
+      ERROR:002 <br/>
+      ERROR:003 <br/>
+      ERROR:004 <br/>
+      ERROR:005 <br/>
+      ERROR:006 <br/>
+      ERROR:007 <br/>
+      ERROR:008 <br/>
+      ERROR:009 <br/>
+      ERROR:010 <br/>
+    </div> -->
 </div>
 
 <script>

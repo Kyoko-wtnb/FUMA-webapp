@@ -956,10 +956,10 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
       }
     });
 
-    var out = "<h5>Selected lead SNP</h5><table class='table table-striped'><tr><td>lead SNP</td><td>"+rowData["rsID"]
-              +"</td></tr><tr><td>Chrom</td><td>"+rowData["chr"]+"</td></tr><tr><td>BP</td><td>"
-              +rowData["pos"]+"</td></tr><tr><td>P-value</td><td>"+rowData["p"]+"</td></tr><tr><td>SNPs within LD</td><td>"
-              +rowData["nSNPs"]+"</td></tr><tr><td>GWAS SNPs within LD</td><td>"+rowData["nGWASSNPs"]+"</td></tr>";
+    var out = "<h5>Selected lead SNP</h5><table class='table table-striped'><tr><td>lead SNP</td><td>"+rowData[3]
+              +"</td></tr><tr><td>Chrom</td><td>"+rowData[4]+"</td></tr><tr><td>BP</td><td>"
+              +rowData[5]+"</td></tr><tr><td>P-value</td><td>"+rowData[6]+"</td></tr><tr><td>SNPs within LD</td><td>"
+              +rowData[7]+"</td></tr><tr><td>GWAS SNPs within LD</td><td>"+rowData[8]+"</td></tr>";
     $('#selectedLeadSNP').html(out);
   });
 
@@ -1088,11 +1088,11 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
       }
     });
     var rowData = intervalTable.row(rowI).data();
-    var out = "<h5>Selected Loci</h5><table class='table table-striped'><tr><td>top lead SNP</td><td>"+rowData["rsID"]
-              +"</td></tr><tr><td>Chrom</td><td>"+rowData["chr"]+"</td></tr><tr><td>BP</td><td>"
-              +rowData["pos"]+"</td></tr><tr><td>P-value</td><td>"+rowData["p"]+"</td></tr><tr><td>lead SNPs</td><td>"+rowData["nLeadSNPs"]
+    var out = "<h5>Selected Loci</h5><table class='table table-striped'><tr><td>top lead SNP</td><td>"+rowData[2]
+              +"</td></tr><tr><td>Chrom</td><td>"+rowData[3]+"</td></tr><tr><td>BP</td><td>"
+              +rowData[4]+"</td></tr><tr><td>P-value</td><td>"+rowData[5]+"</td></tr><tr><td>#lead SNPs</td><td>"+rowData[6]
               +"</td></tr><tr><td>SNPs within LD</td><td>"
-              +rowData["nSNPs"]+"</td></tr><tr><td>GWAS SNPs within LD</td><td>"+rowData["nGWASSNPs"]+"</td></tr>";
+              +rowData[9]+"</td></tr><tr><td>GWAS SNPs within LD</td><td>"+rowData[10]+"</td></tr>";
 
     $('#selectedLeadSNP').html(out);
   });
@@ -1355,7 +1355,7 @@ function Chr15Select(){
       $('#CheckAnnotPlotOpt').html('<span class="alert alert-danger">You have selected to plot 15-core chromatin state. Please select at least one tissue/cell type.</span>');
       $('#annotPlotSubmit').attr("disabled", true);
     }else if(ts.length>0 && gts.length>0){
-      $('#CheckAnnotPlotOpt').html("<span class='alert alert-warning'>OK. Both inspanidual and general tisue/cell types are selected.<br/>All selected tissue/cell types will be used for filtering.</span>");
+      $('#CheckAnnotPlotOpt').html("<span class='alert alert-warning'>OK. Both individual and general tissue/cell types are selected.<br/>All selected tissue/cell types will be used for filtering.</span>");
       $('#annotPlotSubmit').attr("disabled", false);
     }else if(ts.length>0){
       $('#CheckAnnotPlotOpt').html("<span class='alert alert-success'>OK. Selected inspanidual tissue/cell types will be used for chromatine state filtering.</span>");

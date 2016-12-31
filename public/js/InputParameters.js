@@ -20,7 +20,7 @@ $(document).ready(function(){
   });
 
   // input parameters data toggle
-  $('.panel-heading a').on('click', function(){
+  $('.panel-heading.input a').on('click', function(){
     if($(this).attr('class')=="active"){
       $(this).removeClass('active');
       $(this).children('i').attr('class', 'fa fa-chevron-down');

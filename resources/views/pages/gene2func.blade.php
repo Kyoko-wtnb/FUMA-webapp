@@ -154,7 +154,6 @@
                   <option value="fdr_tsbky">two-step Benjamini-Krieger-Yekuteieli (FDR)</option>
                 </select><br/>
             </span>
-            <tab>&nbsp;<span class="info"><i class="fa fa-info"></i> Options are available from python module <code>statsmodels.sandbox.stats.multicomp.multipletests</code>.</span><br/>
             <span class="form-inline">
               <tab>Adjusted P-value cutoff for gene set enrichment (&lt;): <input class="form-control" type="number" id="adjPcut" name="adjPcut" value="0.05"/>
               <a class="infoPop" data-toggle="popover" title="Adjusted P-value cutoff" data-content="Only gene sets significantly enriched at given adjusted P-value threshold will be reported.">
@@ -257,8 +256,13 @@
         <!-- Tissue specificity bar chart -->
         <div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50px;">
           <h4>Differentially expressed genes across 53 tissues (GTEx)
-            <a class="infoPop" data-toggle="popover" title="DEG of 53 tissue types" data-content="Differentially expressed genes for each of tissue types were tested against all other tissues types. DEG set consists of genes which are more or less expressed compared to other tissues.
-            Up- and Down-regulated DEG were defined by taking sign of T-statistics account which are subset of DEG set.">
+            <a class="infoPop" data-toggle="popover" title="DEG of 53 tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for 53 tissue types using normalized gene expression data from GTEx.
+            To define the DEG sets, two-sided t-tests were performed per gene per tissue against all other tissues.
+            After the Bonferroni correction, genes with a corrected p-value ≤ 0.05 and absolute log fold change ≥ 0.58 were defined as a DEG set in a given tissue.
+            Thus, genes included in a pre-calculated DEG set have a significantly different expression in the specific tissue compared to other tissues.
+            The same gene can be a DEG in multiple tissues.
+            For the signed DEG, the direction of expression was taken intoc account (i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in that tissue compared to other tissues).
+            The -log10 of the P values in the graph refer to the outcome of the hypergeomteric test for assessing overlap of the set of input genes with the genes in the DEG sets">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
@@ -272,12 +276,11 @@
           <button class="btn btn-xs ImgDown" id="tsEnrichBarImg" style="float:right; margin-right:100px;">Download PNG</button>
           <div id="tsEnrichBar"></div>
           <span class="info"><i class="fa fa-info"></i>
-            Significantly enriched DEG sets (FDR at 0.05) are highlighted in red.
+            DEG sets with significant enrichment of input genes (FDR at 0.05) are highlighted in red.
           </span>
           <br/><br/>
           <h4>Differrentially expressed genes across 30 general tissue types (GTEx)
-            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Differentially expressed genes for each of tissue types were tested againstß all other tissues types. DEG set consists of genes which are more or less expressed compared to other tissues.
-            Up- and Down-regulated DEG were defined by taking sign of T-statistics account which are subset of DEG set.">
+            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="The same method as mentioned above (for 53 tissue types) was applied, except 53 tissue types were merged into 30 general tissue types.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
@@ -297,7 +300,7 @@
         <!-- GeneSet enrichment -->
         <div id="GeneSetPanel"  class="sidePanel container" style="padding-top:50px;">
           <!-- <button class="btn" id="GSdown" name="GSdown">Download text file</button><br/><br/> -->
-          <h4>Enrichment of input genes in genes Gene Sets</h4>
+          <h4>Enrichment of input genes in Gene Sets</h4>
           <form action="fileDown" method="post" target="_blank">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="id" value="{{$id}}"/>
@@ -310,13 +313,13 @@
         </div>
         <!-- Gene Table -->
         <div id="GeneTablePanel" class="sidePanel container" style="padding-top:50px;">
-          <h4>Linked to external databases</h4>
-          <p class="info"><i class="fa fa-info"></i> Links of OMIM nad DrugBank will open new tab due to the security reason.
-          <br/><i class="fa fa-info"></i> Links of GeneCards will be displayed in the frame below.</p>
+          <h4>Links to external databases</h4>
+          <p class="info"><i class="fa fa-info"></i> Links to OMIM and DrugBank will open in a new tab.
+          <br/><i class="fa fa-info"></i> Links to GeneCards will be displayed in the frame below.</p>
           <table id="GeneTable" class="display dt-body-center compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
             <thead>
               <tr>
-                <th>ENSG</th><th>entrezID</th><th>symbol</th><th>OMIM</th><th>UniProtID</th><th>DrugBank</th><th>GeneCard</th>
+                <th>ENSG</th><th>entrezID</th><th>symbol</th><th>OMIM</th><th>UniProtID</th><th>DrugBank</th><th>GeneCards</th>
               </tr>
             </thead>
             <tbody></tbody>

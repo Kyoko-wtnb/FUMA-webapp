@@ -5,7 +5,7 @@
     <thead>
       <tr>
         <th>Data source/tool</th>
-        <th>Description</th>
+        <th>Used for</th>
         <th>Links</th>
         <th>Last update</th>
         <th style="width: 30%;">Reference</th>
@@ -39,7 +39,7 @@
       </tr>
       <tr>
         <td>ANNOVAR</td>
-        <td>A variant annotation tool used to annotate positional annotation of candidate SNPs.</td>
+        <td>A variant annotation tool used to obtain functional consequences of SNPs on gene functions.</td>
         <td>Info and download: <a href="http://annovar.openbioinformatics.org/en/latest/" target="_blank">http://annovar.openbioinformatics.org/en/latest/</a></td>
         <td>5 December 2016</td>
         <td>
@@ -49,7 +49,7 @@
       </tr>
       <tr>
         <td>CADD v1.3</td>
-        <td>A deleterious score of variants computed by integrating 63 functional annotations. The higher the score, the more derelerious.</td>
+        <td>A deleterious score of variants computed by integrating 63 functional annotations. The higher the score, the more deleterious.</td>
         <td>
           Info: <a href="http://cadd.gs.washington.edu/" target="_blank">http://cadd.gs.washington.edu/</a><br/>
           Data: <a href="http://cadd.gs.washington.edu/download" target="_blank">http://cadd.gs.washington.edu/download</a>
@@ -75,7 +75,7 @@
       </tr>
       <tr>
         <td>15-core chromatin state</td>
-        <td>Chromatin state for 127 epigenomes was lerned by ChromHMM using 5 chromatin markers (H3K4me3, H3K4me1, H3K36me3, H3K27me3, H3K9me3).</td>
+        <td>Chromatin state for 127 epigenomes was lerned by ChromHMM derived from 5 chromatin markers (H3K4me3, H3K4me1, H3K36me3, H3K27me3, H3K9me3).</td>
         <td style="word-break: break-all;">
           Info: <a href="http://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html" target="_blank">http://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html</a><br/>
           Data: <a href="http://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/coreMarks/jointModel/final/all.mnemonics.bedFiles.tgz" target="_blank">http://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/coreMarks/jointModel/final/all.mnemonics.bedFiles.tgz</a>
@@ -90,8 +90,8 @@
       </tr>
       <tr>
         <td>GTEx v6</td>
-        <td>eQTLs and gene expression used in the pipelin was obtained from GTEx v6 (Note that the latest version availalble on the repository is v6p).<br/>
-          For gene expression 53 tissue types are available and 44 of those which have more tha 70 samples have been done eQTL analyses.
+        <td>eQTLs and gene expression used in the pipeline were obtained from GTEx v6.<br/>
+          For gene expression 53 tissue types are available and 44 of those which have more than 70 samples are included in eQTL analyses.
         </td>
         <td>
           Info and data: <a href="http://www.gtexportal.org/home/" target="_blank">http://www.gtexportal.org/home/</a>
@@ -104,7 +104,7 @@
       </tr>
       <tr>
         <td>MsigDB v5.2</td>
-        <td>Collection of publicly availalbe gene sets. Data sets include KEGG, Reactmoe, BioCarta, GO terms and so on.</td>
+        <td>Collection of publicly available gene sets. Data sets include e.g. KEGG, Reactome, BioCarta, GO terms and so on.</td>
         <td>Info and data: <a href="http://software.broadinstitute.org/gsea/msigdb" target="_blank">http://software.broadinstitute.org/gsea/msigdb</a></td>
         <td>5 December 2016</td>
         <td>
@@ -114,7 +114,7 @@
       </tr>
       <tr>
         <td>WikiPathways</td>
-        <td>The curated biological pathways. (WikiPathways is not part of MsigDB.)</td>
+        <td>The curated biological pathways.</td>
         <td style="word-break: break-all;">
           Info: <a href="http://wikipathways.org/index.php/WikiPathways" target="_blank">http://wikipathways.org/index.php/WikiPathways</a><br/>
           Data: <a href=">http://data.wikipathways.org/20161110/gmt/wikipathways-20161110-gmt-Homo_sapiens.gmt" target="_blank">http://data.wikipathways.org/20161110/gmt/wikipathways-20161110-gmt-Homo_sapiens.gmt</a>

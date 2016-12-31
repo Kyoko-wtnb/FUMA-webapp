@@ -83,7 +83,8 @@
         <div class="container">
           <h4 style="color: #00004d">Manhattan Plot (GWAS summary statistics)</h4>
           <span class="info"><i class="fa fa-info"></i>
-            This is a manhattan plot of input GWAS summary statistics. Overlapped data points were filtered out in this plot (only P-value &le; 1e-5).
+            This is a manhattan plot of your input GWAS summary statistics.<br/>
+            For plotting purposes, overlapping data points are not drawn (see tutorial for detail of filtering, filtering was performed only for SNPs with P-value &le; 1e-5).
           </span><br/>
           <button class="btn btn-xs CanvDown" id="manhattanCanvasDown" style="float:right; margin-right:200px;">Download PNG</button>
           <div id="manhattanPane">
@@ -95,7 +96,8 @@
           <br/><br/>
           <h4 style="color: #00004d">Mahattan Plot (gene-based test)</h4>
           <span class="info"><i class="fa fa-info"></i>
-            This is a manhattan plot of gene-based test computed by MAGMA.<br/>Results of MAGMA is downloadable from 'Download' tab.
+            This is a manhattan plot of the gene-based test as computed by MAGMA based on your input GWAS summary statistics.<br/>
+            The gene-based P-value is downloadable from 'Download' tab from the left side bar.
           </span><br/>
           <button class="btn btn-xs CanvDown" id="geneManhattanCanvasDown" style="float:right; margin-right:200px;">Download PNG</button>
           <div id="geneManhattanPane">
@@ -110,7 +112,8 @@
               <div class="col-md-6">
                 <h4 style="color: #00004d">QQ plots (GWAS summary statisics)</h4>
                 <span class="info"><i class="fa fa-info"></i>
-                  This is a Q-Q plot of GWAS summary statistics. <br/>Overlapped data points were filtered out for his plot (only P-value &le; 0.05).
+                  This is a Q-Q plot of GWAS summary statistics. <br/>
+                  For plotting purposes, overlapping data points are not drawn (see tutorial for detail of filtering, filtering was performed only for SNPs with P-value &le; 1e-5).
                 </span><br/>
                 <button class="btn btn-xs CanvDown" id="QQplotCanvasDown" style="float:right; margin-right:100px;">Download PNG</button><br/>
                 <div>
@@ -123,7 +126,7 @@
               <div class="col-md-6">
                 <h4 style="color: #00004d">QQ plots (gene-based test)</h4>
                 <span class="info"><i class="fa fa-info"></i>
-                  This is a Q-Q plot of gene-based test computed by MAGMA. <br/>
+                  This is a Q-Q plot of the gene-based test computed by MAGMA.<br/>
                 </span><br/>
                 <button class="btn btn-xs CanvDown" id="geneQQplotCanvasDown" style="float:right; margin-right:100px;">Download PNG</button><br/>
                 <div>
@@ -317,8 +320,12 @@
             <h4 style="color: #00004d">Regional Plot (GWAS association)</h4>
             <!-- <div class="row collapse in" id="regionalPlotPanel"> -->
             <span class="info"><i class="fa fa-info"></i>
-              This plot only displays SNPs which are in LD of one of the lead SNPs. You can zoom in/out by mouse scroll. <br/>
-              Lead SNPs are colored in purple. When independe lead SNPs are selected instead of genomic loci, SNPs which are in the same loci but no in LD of selected lead SNPs are colored in grey.
+              Please click one of the row of lead SNPs or Genomic risk loci tables to display regional plot.<br/>
+              This plot only displays SNPs that are in LD with one of the lead SNPs.
+              You can zoom in/out by mouse scroll. <br/>
+              Lead SNPs are colored in purple.
+              When independe lead SNPs are selected instead of genomic loci, SNPs which are in the same loci but not in LD with the selected lead SNPs are colored in grey.<br/>
+              SNPs that are in LD with a lead SNP but do not have a P-value because they were not available in the summary statistics, are displayed at the top of the plot (1000G SNPs).
             </span>
             <div class="row">
               <div class="col-md-9">
@@ -338,7 +345,7 @@
         <!-- <div class="panel panel-default"><div class="panel-body"> -->
           <div id="annotPlotPanel">
             <h4><span style="color: #00004d">Regional plot with annotation</span>
-              <a class="infoPop" data-toggle="popover" data-content="To create regional plot with genes and annotations, select the following options and click 'Plot'. Genes are included by default.">
+              <a class="infoPop" data-toggle="popover" data-content="To create regional plot with genes and annotations, select the following options and click 'Plot'.">
                 <i class="fa fa-question-circle-o fa-lg"></i>
               </a>
             </h4>

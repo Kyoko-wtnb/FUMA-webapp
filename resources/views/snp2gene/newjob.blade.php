@@ -5,7 +5,7 @@
   <br/>
   <!-- Input files upload -->
   <div class="panel panel-default" style="padding-top: 0px;">
-    <div class="panel-heading" style="padding:5px;">
+    <div class="panel-heading input" style="padding:5px;">
       <h4>1. Upload input files <a href="#NewJobFilesPanel" data-toggle="collapse" class="active" style="float: right; padding-right:20px;"><i class="fa fa-chevron-up"></i></a></h4>
     </div>
     <div class="panel-body collapse in" id="NewJobFilesPanel">
@@ -59,7 +59,7 @@
 
   <!-- Parameters for lead SNPs and candidate SNPs -->
   <div class="panel panel-default" style="padding-top: 0px;">
-    <div class="panel-heading" style="padding:5px;">
+    <div class="panel-heading input" style="padding:5px;">
       <h4>2. Parameters for lead SNPs and candidate SNPs identification<a href="#NewJobParamsPanel" data-toggle="collapse" class="active" style="float: right; padding-right:20px;"><i class="fa fa-chevron-up"></i></a></h4>
     </div>
     <div class="panel-body collapse in" id="NewJobParamsPanel">
@@ -154,7 +154,7 @@
   <!-- Parameters for gene mapping -->
   <!-- <h4>3. Parameters for gene mapping</h4> -->
   <div class="panel panel-default" style="padding:0px;">
-    <div class="panel-heading" style="padding:5px;">
+    <div class="panel-heading input" style="padding:5px;">
       <h4>3-1. Gene Mapping (positional mapping) <a href="#NewJobPosMapPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
     </div>
     <div class="panel-body collapse" id="NewJobPosMapPanel">
@@ -498,7 +498,7 @@
   </div>
 
   <div class="panel panel-default" style="padding: 0px;">
-    <div class="panel-heading" style="padding:5px;">
+    <div class="panel-heading input" style="padding:5px;">
       <h4>3-2. Gene Mapping (eQTL mapping)<a href="#NewJobEqtlMapPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
     </div>
     <div class="panel-body collapse" id="NewJobEqtlMapPanel">
@@ -906,7 +906,7 @@
 
   <!-- Gene type multiple selection -->
   <div class="panel panel-default" style="padding:0px;">
-    <div class="panel-heading" style="padding:5px;">
+    <div class="panel-heading input" style="padding:5px;">
       <h4>4. Gene types<a href="#NewJobGenePanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
     </div>
     <div class="panel-body collapse" id="NewJobGenePanel">
@@ -942,7 +942,7 @@
 
   <!-- MHC regions -->
   <div class="panel panel-default" style="padding:0px;">
-    <div class="panel-heading" style="padding:5px;">
+    <div class="panel-heading input" style="padding:5px;">
       <h4>5. MHC region<a href="#NewJobMHCPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
     </div>
     <div class="panel-body collapse" id="NewJobMHCPanel">
@@ -972,10 +972,10 @@
 
   <!-- job title -->
   <div class="panel panel-default" style="padding:0px;">
-    <div class="panel-heading" style="padding:5px;">
+    <div class="panel-heading input" style="padding:5px;">
       <h4>6. Title of job submittion<a href="#NewJobTitlePanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
     </div>
-    <div class="panel-body collapse" id="NewJobTitlePnale">
+    <div class="panel-body collapse" id="NewJobTitlePanel">
       <table class="table table-bordered inputTable" id="NewJobSubmit" style="width: auto;">
         <tr>
           <td>Title</td>

@@ -52,7 +52,7 @@ while($head =~ /^#/){
 	}
 	my @head = split(/\s+/, $head);
 	foreach my $i (0..$#head){
-		if($head[$i] =~ /^SNP$|^MarkerName$|^rsID$/i){$rsIDcol=$i}
+		if($head[$i] =~ /^SNP$|^MarkerName$|^rsID$|^snpid$/i){$rsIDcol=$i}
 		elsif($head[$i] =~ /^CHR$|^chromosome$|^chrom$/i){$chrcol=$i}
 		elsif($head[$i] =~ /^BP$|^pos$|^position$/i){$poscol=$i}
 		elsif($head[$i] =~ /^A1$|^Effect_allele$|^alt$|^allele1$|^alleleB$/i){$altcol=$i}

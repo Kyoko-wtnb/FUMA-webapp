@@ -841,10 +841,10 @@ function GeneSet(id){
                   'Oncogenetic_signatures', 'Immunologic_signatures', 'Wikipathways',
                   'GWAScatalog'
                 ];
-  var category_title = {'Hallmark_gene_sets' : 'Hallmark gene set (MsigDB v5.2 h)',
+  var category_title = {'Hallmark_gene_sets' : 'Hallmark gene sets (MsigDB v5.2 h)',
                   'Positional_gene_sets' : 'Positional gene sets (MsigDB v5.2 c1)',
                   'Curetaed_gene_sets' : 'All curated gene sets (MsigDB v5.2 c2)',
-                  'Chemical_and_Genetic_pertubation' : 'Chemical and Genetic pertubation (MsigDB v5.2 c2)',
+                  'Chemical_and_Genetic_pertubation' : 'Chemical and Genetic pertubation gene sets (MsigDB v5.2 c2)',
                   'Canonical_Pathways' : 'All Canonical Pathways (MsigDB v5.2 c2)',
                   'BioCarta' : 'BioCarta (MsigDB v5.2 c2)',
                   'KEGG' : 'KEGG (MsigDB v5.2 c2)',
@@ -1046,7 +1046,7 @@ function GeneSet(id){
         .text("Proportion").attr("font-size", "12px");
         svg.append("text").attr("text-anchor", "middle")
           .attr("transform", "translate("+(barplotwidth/2)+","+(-margin.top/2-6)+")")
-          .text("Proportion of overlapped genes").attr("font-size", "12px");
+          .text("Proportion of overlapping genes").attr("font-size", "12px");
         svg.append("text").attr("text-anchor", "middle")
           .attr("transform", "translate("+(barplotwidth/2)+","+(-margin.top/2+6)+")")
           .text("in gene sets").attr("font-size", "12px");
@@ -1057,12 +1057,12 @@ function GeneSet(id){
         svg.append("text").attr("text-anchor", "middle")
           .attr("transform", "translate("+(barplotwidth*1.5)+","+(-margin.top/2)+")")
           .text("Enrichment P-value").attr("font-size", "12px");
-        svg.append("text").attr("text-anchor", "middle")
-          .attr("transform", "translate("+(barplotwidth*2+10+width)/2+","+(height+70)+")")
-          .text("genes").attr("font-size", "12px");
+        // svg.append("text").attr("text-anchor", "middle")
+        //   .attr("transform", "translate("+(barplotwidth*2+10+width)/2+","+(height+70)+")")
+        //   .text("genes").attr("font-size", "12px");
         svg.append("text").attr("text-anchor", "middle")
           .attr("transform", "translate("+(barplotwidth*2+10+width)/2+","+(-margin.top/2)+")")
-          .text("Overlapped genes").attr("font-size", "12px");
+          .text("overlapping genes").attr("font-size", "12px");
 
         svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
         svg.selectAll('text').style('font-family', 'sans-serif');

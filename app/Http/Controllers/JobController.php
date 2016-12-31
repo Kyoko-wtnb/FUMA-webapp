@@ -92,20 +92,23 @@ class JobController extends Controller
     public function newJob(Request $request){
       // check file type
       if($request -> hasFile('GWASsummary')){
-        if(mime_content_type($_FILES["GWASsummary"]["tmp_name"])!="text/plain"){
+        $type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
+        if($type!="text/plain" || $type!="application/zip" || $type!="application/x-gzip"){
           $jobID = null;
           return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatGWAS']);
           // return back()->withInput(['status'=> 'fileFormat']); // parameter is not working
         }
       }
       if($request -> hasFile('leadSNPs')){
-        if(mime_content_type($_FILES["leadSNPs"]["tmp_name"])!="text/plain"){
+        $type = mime_content_type($_FILES["leadSNPs"]["tmp_name"]);
+        if($type!="text/plain" || $type!="application/zip" || $type!="application/x-gzip"){
           $jobID = null;
           return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatLead']);
         }
       }
       if($request -> hasFile('regions')){
-        if(mime_content_type($_FILES["regions"]["tmp_name"])!="text/plain"){
+        $type = mime_content_type($_FILES["regions"]["tmp_name"]);
+        if($type!="text/plain" || $type!="application/zip" || $type!="application/x-gzip"){
           $jobID = null;
           return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatRegions']);
         }
