@@ -61,7 +61,7 @@ while($head =~ /^#/){
 	}
 
 if(!(defined $pcol)){die "P-value column was not found\n";}
-elsif(!(defined $chrcol && defined $poscol && defined $rsIDcol)){die "Chromosome, position or rsID column was not found\n";}
+elsif(!(defined $chrcol && defined $poscol) && !(defined $rsIDcol)){die "Chromosome, position or rsID column was not found\n";}
 
 my %GWAS;
 #print "chr: $chrcol, pos: $poscol, rsID: $rsIDcol, ref: $refcol, alt: $altcol, p: $pcol\n";
