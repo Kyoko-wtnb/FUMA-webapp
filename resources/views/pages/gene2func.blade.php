@@ -314,8 +314,8 @@
         <!-- Gene Table -->
         <div id="GeneTablePanel" class="sidePanel container" style="padding-top:50px;">
           <h4>Links to external databases</h4>
-          <p class="info"><i class="fa fa-info"></i> Links to OMIM and DrugBank will open in a new tab.
-          <br/><i class="fa fa-info"></i> Links to GeneCards will be displayed in the frame below.</p>
+          <!-- <p class="info"><i class="fa fa-info"></i> Links to OMIM and DrugBank will open in a new tab.
+          <br/><i class="fa fa-info"></i> Links to GeneCards will be displayed in the frame below.</p> -->
           <table id="GeneTable" class="display dt-body-center compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
             <thead>
               <tr>
@@ -326,9 +326,9 @@
           </table>
 
           <br/>
-          <h4>GeneCards</h4><br/>
+          <!-- <h4>GeneCards</h4><br/>
           <iframe src="http://www.genecards.org/" name="GeneCards_iframe" id="GeneCards_iframe" width="100%" height="500p"></iframe>
-          <br/><br/>
+          <br/><br/> -->
         </div>
       </div>
     </div>

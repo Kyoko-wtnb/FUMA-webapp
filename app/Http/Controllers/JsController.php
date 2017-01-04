@@ -104,7 +104,7 @@ class JsController extends Controller
             }
           }
         }
-        $row[] = '<a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene='.$row[2].'" target="GeneCards_iframe">GeneCard</a>';
+        $row[] = '<a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene='.$row[2].'" target="_blank">GeneCard</a>';
         $all_rows[] = array_combine($head, $row);
       }
 
