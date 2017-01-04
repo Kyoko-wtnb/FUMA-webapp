@@ -92,9 +92,9 @@ class JobController extends Controller
     public function newJob(Request $request){
       // check file type
       if($request -> hasFile('GWASsummary')){
-        if(mime_content_type($_FILES["GWASsummary"]["tmp_name"])!="text/plain"){
+        $type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
+        if($type != "text/plain" && $type != "application/zip" && $type != "application/x-gzip"){
         // if(mime_content_type($request->input("GWASsummary"))!="text/plain"){
-          file_put_contents("/media/sf_Documents/VU/Data/WebApp/test.txt", $_FILES["GWASsummary"]["tmp_name"]."\n".mime_content_type($_FILES["GWASsummary"]["tmp_name"]));
           $jobID = null;
           return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatGWAS']);
           // return back()->withInput(['status'=> 'fileFormat']); // parameter is not working
@@ -151,20 +151,67 @@ class JobController extends Controller
       if($request -> has('addleadSNPs')){$addleadSNPs=1;}
       else{$addleadSNPs=0;}
 
+      // GWAS smmary stats file
       if($request -> hasFile('GWASsummary')){
-        $request -> file('GWASsummary')->move($filedir, $GWAS);
+        $type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
+        if($type=="text/plain"){
+          $request -> file('GWASsummary')->move($filedir, $GWAS);
+        }else if($type=="application/zip"){
+          $request -> file('GWASsummary')->move($filedir, "temp.zip");
+          $zip = new \ZipArchive;
+          $zip -> open($filedir.'/temp.zip');
+          $zf = $zip->getNameIndex(0);
+          $zip->extractTo($filedir);
+          File::move($filedir.'/'.$zf, $filedir.'/'.$GWAS);
+        }else{
+          $f = $_FILES["GWASsummary"]["name"];
+          $request -> file('GWASsummary')->move($filedir, $f);
+          system("gzip -cd $filedir/$f > $filedir/$GWAS");
+        }
         $GWASfileup = 1;
       }else if($request -> has('egGWAS')){
         $exfile = config('app.jobdir').'/example/CD.gwas';
         File::copy($exfile, $filedir.'/input.gwas');
         $GWASfileup = 1;
       }
+
+      // pre-defined lead SNPS file
       if($request -> hasFile('leadSNPs')){
-        $request -> file('leadSNPs')->move($filedir, $leadSNPs);
+        $type = mime_content_type($_FILES["leadSNPs"]["tmp_name"]);
+        if($type=="text/plain"){
+          $request -> file('leadSNPs')->move($filedir, $leadSNPs);
+        }else if($type=="application/zip"){
+          $request -> file('leadSNPs')->move($filedir, "temp.zip");
+          $zip = new \ZipArchive;
+          $zip -> open($filedir.'/temp.zip');
+          $zf = $zip->getNameIndex(0);
+          $zip->extractTo($filedir);
+          File::move($filedir.'/'.$zf, $filedir.'/'.$leadSNPs);
+        }else{
+          $f = $_FILES["leadSNPs"]["name"];
+          $request -> file('leadSNPs')->move($filedir, $f);
+          system("gzip -cd $filedir/$f > $filedir/$leadSNPs");
+        }
         $leadSNPsfileup = 1;
       }
+
+      // pre-defined genomic region file
       if($request -> hasFile('regions')){
-        $request -> file('regions')->move($filedir, $regions);
+        $type = mime_content_type($_FILES["regions"]["tmp_name"]);
+        if($type=="text/plain"){
+          $request -> file('regions')->move($filedir, $regions);
+        }else if($type=="application/zip"){
+          $request -> file('regions')->move($filedir, "temp.zip");
+          $zip = new \ZipArchive;
+          $zip -> open($filedir.'/temp.zip');
+          $zf = $zip->getNameIndex(0);
+          $zip->extractTo($filedir);
+          File::move($filedir.'/'.$zf, $filedir.'/'.$regions);
+        }else{
+          $f = $_FILES["regions"]["name"];
+          $request -> file('regions')->move($filedir, $f);
+          system("gzip -cd $filedir/$f > $filedir/$regions");
+        }
         $regionsfileup = 1;
       }
 

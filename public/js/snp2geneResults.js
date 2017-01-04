@@ -33,17 +33,17 @@ $(document).ready(function(){
   }else if(status=="fileFormatGWAS"){
     $('a[href="#newJob"]').trigger('click');
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
-      +'<b>Provided file (GWAS summary statistics) format was not valid. Only text files are acceptable (extention does not matter).</b>'
+      +'<b>Provided file (GWAS summary statistics) format was not valid. Text files (with any extention), zip file or gzip files are acceptable.</b>'
       +'</div>');
   }else if(status=="fileFormatLead"){
     $('a[href="#newJob"]').trigger('click');
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
-      +'<b>Provided file (pre-defined lead SNPs) format was not valid. Only text files are acceptable (extention does not matter).</b>'
+    +'<b>Provided file (Pre-defined lead SNPs) format was not valid. Text files (with any extention), zip file or gzip files are acceptable.</b>'
       +'</div>');
   }else if(status=="fileFormatRegions"){
     $('a[href="#newJob"]').trigger('click');
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
-      +'<b>Provided file (pre-defined genomic regions) format was not valid. Only text files are acceptable (extention does not matter).</b>'
+    +'<b>Provided file (Pre-defined genomic regions) format was not valid. Text files (with any extention), zip file or gzip files are acceptable.</b>'
       +'</div>');
   }else{
     $('#annotPlotSubmit').attr("disabled", true);
