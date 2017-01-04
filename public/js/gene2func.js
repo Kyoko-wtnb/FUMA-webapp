@@ -37,11 +37,6 @@ $(document).ready(function(){
     checkInput();
   });
 
-  //GeneCard onload scroll download
-  $('#GeneCards_iframe').load(function(){
-    $(window).scrollTop($('#GeneCards_iframe').offset().top);
-  })
-
   // Download buttongs
   $('#DEGdown').on('click', function(){
     fileDown('DEG.txt', id);
@@ -167,14 +162,6 @@ $(document).ready(function(){
   }
 
 });
-
-function ImgDown(id){
-  console.log(id);
-  // var svg = $('#'+id).html();
-  // canvg('canvas', svg);
-  // var canvas = document.getElementById('canvas');
-  // Canvas2Image.saveAsPNG(canvas);
-}
 
 function checkInput(){
   var g = document.getElementById('genes').value;
@@ -563,33 +550,33 @@ function tsEnrich(id){
             .attr("height", height+margin.top+margin.bottom)
             .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
 
-  var gradient1 = svg.append("defs").append("linearGradient")
-                    .attr("id", 'gradient1')
-                    .attr("x1", "0%")
-                    .attr("y1", "0%")
-                    .attr("x2", "100%")
-                    .attr("y2", "100%")
-                    .attr("spreadMethod", "pad");
-  gradient1.append("stop").attr("offset", "0%")
-          .attr("stop-color", "#c00")
-          .attr("stop-ocupacity", 1);
-  gradient1.append("stop").attr("offset", "100%")
-          .attr("stop-color", "#3c2c2c")
-          .attr("stop-ocupacity", 1);
-
-  var gradient2 = svg.append("defs").append("linearGradient")
-                    .attr("id", 'gradient2')
-                    .attr("x1", "0%")
-                    .attr("y1", "0%")
-                    .attr("x2", "100%")
-                    .attr("y2", "100%")
-                    .attr("spreadMethod", "pad");
-  gradient2.append("stop").attr("offset", "0%")
-          .attr("stop-color", "#5668f4")
-          .attr("stop-ocupacity", 1);
-  gradient2.append("stop").attr("offset", "100%")
-          .attr("stop-color", "#606060")
-          .attr("stop-ocupacity", 1);
+  // var gradient1 = svg.append("defs").append("linearGradient")
+  //                   .attr("id", 'gradient1')
+  //                   .attr("x1", "0%")
+  //                   .attr("y1", "0%")
+  //                   .attr("x2", "100%")
+  //                   .attr("y2", "100%")
+  //                   .attr("spreadMethod", "pad");
+  // gradient1.append("stop").attr("offset", "0%")
+  //         .attr("stop-color", "#c00")
+  //         .attr("stop-ocupacity", 1);
+  // gradient1.append("stop").attr("offset", "100%")
+  //         .attr("stop-color", "#3c2c2c")
+  //         .attr("stop-ocupacity", 1);
+  //
+  // var gradient2 = svg.append("defs").append("linearGradient")
+  //                   .attr("id", 'gradient2')
+  //                   .attr("x1", "0%")
+  //                   .attr("y1", "0%")
+  //                   .attr("x2", "100%")
+  //                   .attr("y2", "100%")
+  //                   .attr("spreadMethod", "pad");
+  // gradient2.append("stop").attr("offset", "0%")
+  //         .attr("stop-color", "#5668f4")
+  //         .attr("stop-ocupacity", 1);
+  // gradient2.append("stop").attr("offset", "100%")
+  //         .attr("stop-color", "#606060")
+  //         .attr("stop-ocupacity", 1);
 
   d3.json("d3text/"+id+"/DEG.txt", function(data){
     data.forEach(function(d){
@@ -611,9 +598,13 @@ function tsEnrich(id){
       .attr("y", function(d){return yup(d.logP)})
       .attr("height", function(d){return currentHeight+span-yup(d.logP);})
       .style("fill", function(d){
-        if(d.FDR>0.05){return "url(#gradient2)";}
-        else{return "url(#gradient1)";}
-      });
+        // if(d.FDR>0.05){return "url(#gradient2)";}
+        // else{return "url(#gradient1)";}
+        if(d.FDR>0.05){return "#5668f4";}
+        else{return "#c00";}
+      })
+      .style("stroke", "grey")
+      .style("stroke-width", 0.3);
     svg.append('g').attr("class", "y axis")
       .call(yAxisup)
       .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
@@ -638,9 +629,13 @@ function tsEnrich(id){
       .attr("y", function(d){return ydown(d.logP)})
       .attr("height", function(d){return currentHeight+span-ydown(d.logP);})
       .style("fill", function(d){
-        if(d.FDR>0.05){return "url(#gradient2)";}
-        else{return "url(#gradient1)";}
-      });
+        // if(d.FDR>0.05){return "url(#gradient2)";}
+        // else{return "url(#gradient1)";}
+        if(d.FDR>0.05){return "#5668f4";}
+        else{return "#c00";}
+      })
+      .style("stroke", "grey")
+      .style("stroke-width", 0.3);
     svg.append('g').attr("class", "y axis")
       .call(yAxisdown)
       .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
@@ -664,9 +659,13 @@ function tsEnrich(id){
       .attr("y", function(d){return y(d.logP)})
       .attr("height", function(d){return currentHeight+span-y(d.logP);})
       .style("fill", function(d){
-        if(d.FDR>0.05){return "url(#gradient2)";}
-        else{return "url(#gradient1)";}
-      });
+        // if(d.FDR>0.05){return "url(#gradient2)";}
+        // else{return "url(#gradient1)";}
+        if(d.FDR>0.05){return "#5668f4";}
+        else{return "#c00";}
+      })
+      .style("stroke", "grey")
+      .style("stroke-width", 0.3);
     svg.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
       .text("DEG (both side)");
@@ -707,33 +706,34 @@ function tsGeneralEnrich(id){
             .attr("height", height+margin.top+margin.bottom)
             .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
 
-  var gradient1 = svg.append("defs").append("linearGradient")
-                    .attr("id", 'gradient1')
-                    .attr("x1", "0%")
-                    .attr("y1", "0%")
-                    .attr("x2", "100%")
-                    .attr("y2", "100%")
-                    .attr("spreadMethod", "pad");
-  gradient1.append("stop").attr("offset", "0%")
-          .attr("stop-color", "#c00")
-          .attr("stop-ocupacity", 1);
-  gradient1.append("stop").attr("offset", "100%")
-          .attr("stop-color", "#3c2c2c")
-          .attr("stop-ocupacity", 1);
+  // var gradient1 = svg.append("defs").append("linearGradient")
+  //                   .attr("id", 'gradient1')
+  //                   .attr("x1", "0%")
+  //                   .attr("y1", "0%")
+  //                   .attr("x2", "100%")
+  //                   .attr("y2", "100%")
+  //                   .attr("spreadMethod", "pad");
+  // gradient1.append("stop").attr("offset", "0%")
+  //         .attr("stop-color", "#c00")
+  //         .attr("stop-ocupacity", 1);
+  // gradient1.append("stop").attr("offset", "100%")
+  //         .attr("stop-color", "#3c2c2c")
+  //         .attr("stop-ocupacity", 1);
+  //
+  // var gradient2 = svg.append("defs").append("linearGradient")
+  //                   .attr("id", 'gradient2')
+  //                   .attr("x1", "0%")
+  //                   .attr("y1", "0%")
+  //                   .attr("x2", "100%")
+  //                   .attr("y2", "100%")
+  //                   .attr("spreadMethod", "pad");
+  // gradient2.append("stop").attr("offset", "0%")
+  //         .attr("stop-color", "#5668f4")
+  //         .attr("stop-ocupacity", 1);
+  // gradient2.append("stop").attr("offset", "100%")
+  //         .attr("stop-color", "#606060")
+  //         .attr("stop-ocupacity", 1);
 
-  var gradient2 = svg.append("defs").append("linearGradient")
-                    .attr("id", 'gradient2')
-                    .attr("x1", "0%")
-                    .attr("y1", "0%")
-                    .attr("x2", "100%")
-                    .attr("y2", "100%")
-                    .attr("spreadMethod", "pad");
-  gradient2.append("stop").attr("offset", "0%")
-          .attr("stop-color", "#5668f4")
-          .attr("stop-ocupacity", 1);
-  gradient2.append("stop").attr("offset", "100%")
-          .attr("stop-color", "#606060")
-          .attr("stop-ocupacity", 1);
   d3.json("d3text/"+id+"/DEGgeneral.txt", function(data){
     data.forEach(function(d){
       d.logFDR = +d.logFDR;
@@ -754,9 +754,13 @@ function tsGeneralEnrich(id){
       .attr("y", function(d){return yup(d.logP)})
       .attr("height", function(d){return currentHeight+span-yup(d.logP);})
       .style("fill", function(d){
-        if(d.FDR>0.05){return "url(#gradient2)";}
-        else{return "url(#gradient1)";}
-      });
+        // if(d.FDR>0.05){return "url(#gradient2)";}
+        // else{return "url(#gradient1)";}
+        if(d.FDR>0.05){return "#5668f4";}
+        else{return "#c00";}
+      })
+      .style("stroke", "grey")
+      .style("stroke-width", 0.3);
     svg.append('g').attr("class", "y axis")
       .call(yAxisup)
       .selectAll('test').style('font-size', '11px');
@@ -780,9 +784,13 @@ function tsGeneralEnrich(id){
       .attr("y", function(d){return ydown(d.logP)})
       .attr("height", function(d){return currentHeight+span-ydown(d.logP);})
       .style("fill", function(d){
-        if(d.FDR>0.05){return "url(#gradient2)";}
-        else{return "url(#gradient1)";}
-      });
+        // if(d.FDR>0.05){return "url(#gradient2)";}
+        // else{return "url(#gradient1)";}
+        if(d.FDR>0.05){return "#5668f4";}
+        else{return "#c00";}
+      })
+      .style("stroke", "grey")
+      .style("stroke-width", 0.3);
     svg.append('g').attr("class", "y axis")
       .call(yAxisdown)
       .selectAll('test').style('font-size', '11px');
@@ -805,9 +813,13 @@ function tsGeneralEnrich(id){
       .attr("y", function(d){return y(d.logP)})
       .attr("height", function(d){return height-y(d.logP);})
       .style("fill", function(d){
-        if(d.FDR>0.05){return "url(#gradient2)";}
-        else{return "url(#gradient1)";}
-      });
+        // if(d.FDR>0.05){return "url(#gradient2)";}
+        // else{return "url(#gradient1)";}
+        if(d.FDR>0.05){return "#5668f4";}
+        else{return "#c00";}
+      })
+      .style("stroke", "grey")
+      .style("stroke-width", 0.3);
     svg.append("text").attr("text-anchor", "middle")
       .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
       .text("DEG (both side)");
@@ -930,45 +942,45 @@ function GeneSet(id){
                   .attr("height", height+margin.top+margin.bottom)
                   .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
 
-        var gradient1 = svg.append("defs").append("linearGradient")
-                          .attr("id", 'gradient1')
-                          .attr("x1", "0%")
-                          .attr("y1", "0%")
-                          .attr("x2", "100%")
-                          .attr("y2", "100%")
-                          .attr("spreadMethod", "pad");
-        gradient1.append("stop").attr("offset", "0%")
-                .attr("stop-color", "#4d4dff")
-                .attr("stop-ocupacity", 1);
-        gradient1.append("stop").attr("offset", "100%")
-                .attr("stop-color", "#00003d")
-                .attr("stop-ocupacity", 1);
-        var gradient3 = svg.append("defs").append("linearGradient")
-                          .attr("id", 'gradient3')
-                          .attr("x1", "0%")
-                          .attr("y1", "0%")
-                          .attr("x2", "100%")
-                          .attr("y2", "100%")
-                          .attr("spreadMethod", "pad");
-        gradient3.append("stop").attr("offset", "0%")
-                .attr("stop-color", "#ff6666")
-                .attr("stop-ocupacity", 1);
-        gradient3.append("stop").attr("offset", "100%")
-                .attr("stop-color", "#4d0000")
-                .attr("stop-ocupacity", 1);
-        var gradient = svg.append("defs").append("linearGradient")
-                          .attr("id", 'gradient2')
-                          .attr("x1", "0%")
-                          .attr("y1", "0%")
-                          .attr("x2", "100%")
-                          .attr("y2", "100%")
-                          .attr("spreadMethod", "pad");
-        gradient.append("stop").attr("offset", "0%")
-                .attr("stop-color", "#ffa64d")
-                .attr("stop-ocupacity", 1);
-        gradient.append("stop").attr("offset", "100%")
-                .attr("stop-color", "#653800")
-                .attr("stop-ocupacity", 1);
+        // var gradient1 = svg.append("defs").append("linearGradient")
+        //                   .attr("id", 'gradient1')
+        //                   .attr("x1", "0%")
+        //                   .attr("y1", "0%")
+        //                   .attr("x2", "100%")
+        //                   .attr("y2", "100%")
+        //                   .attr("spreadMethod", "pad");
+        // gradient1.append("stop").attr("offset", "0%")
+        //         .attr("stop-color", "#4d4dff")
+        //         .attr("stop-ocupacity", 1);
+        // gradient1.append("stop").attr("offset", "100%")
+        //         .attr("stop-color", "#00003d")
+        //         .attr("stop-ocupacity", 1);
+        // var gradient3 = svg.append("defs").append("linearGradient")
+        //                   .attr("id", 'gradient3')
+        //                   .attr("x1", "0%")
+        //                   .attr("y1", "0%")
+        //                   .attr("x2", "100%")
+        //                   .attr("y2", "100%")
+        //                   .attr("spreadMethod", "pad");
+        // gradient3.append("stop").attr("offset", "0%")
+        //         .attr("stop-color", "#ff6666")
+        //         .attr("stop-ocupacity", 1);
+        // gradient3.append("stop").attr("offset", "100%")
+        //         .attr("stop-color", "#4d0000")
+        //         .attr("stop-ocupacity", 1);
+        // var gradient = svg.append("defs").append("linearGradient")
+        //                   .attr("id", 'gradient2')
+        //                   .attr("x1", "0%")
+        //                   .attr("y1", "0%")
+        //                   .attr("x2", "100%")
+        //                   .attr("y2", "100%")
+        //                   .attr("spreadMethod", "pad");
+        // gradient.append("stop").attr("offset", "0%")
+        //         .attr("stop-color", "#ffa64d")
+        //         .attr("stop-ocupacity", 1);
+        // gradient.append("stop").attr("offset", "100%")
+        //         .attr("stop-color", "#653800")
+        //         .attr("stop-ocupacity", 1);
 
         // bar plot (overlap proportion)
         var xprop = d3.scale.linear().range([0, barplotwidth]);
@@ -983,7 +995,9 @@ function GeneSet(id){
           .attr("width", function(d){return barplotwidth-xprop(d.N_overlap/d.N_genes)})
           .attr("y", function(d){return y(d.GeneSet)})
           .attr("height", 15)
-          .style("fill", "url(#gradient3)");
+          .style("fill", "#ff6666")
+          .style("stroke", "grey")
+          .style("stroke-width", 0.3);
         svg.append('g').attr("class", "x axis")
           .attr("transform", "translate(0,"+height+")")
           .call(xpropAxis)
@@ -1010,7 +1024,9 @@ function GeneSet(id){
           .attr("width", function(d){return xbar(d.logFDR)-barplotwidth})
           .attr("y", function(d){return y(d.GeneSet)})
           .attr("height", 15)
-          .style("fill", "url(#gradient1)");
+          .style("fill", "#4d4dff")
+          .style("stroke", "grey")
+          .style("stroke-width", 0.3);
         svg.append('g').attr("class", "y axis")
           .call(yAxis).selectAll('text').style('font-size', '11px');
         svg.append('g').attr("class", "x axis")
@@ -1030,7 +1046,9 @@ function GeneSet(id){
           .attr("y", function(d){return y(d.GeneSet)})
           .attr("width", 15)
           .attr("height", 15)
-          .style("fill", "url(#gradient2)");
+          .style("fill", "#ffa64a")
+          .style("stroke", "grey")
+          .style("stroke-width", 0.3);
         svg.append('g').attr("class", "y axis")
           .attr("transform", "translate("+(barplotwidth*2+10)+",0)")
           .call(yAxis).selectAll("text").remove();
