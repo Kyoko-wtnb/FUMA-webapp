@@ -16,7 +16,7 @@
             <a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file" data-content="Every row should have information on one SNP.
             The minimum required columns are ‘chromosome, position and P-value’ or ‘rsID and P-value’.
             If you provide position, please make sure the position is in hg19.
-            The input file should be plain text format and not compressed.
+            The input file should be plain text, zip or gzip files.
             If you would like to test FUMA, please check 'Use example input', this will load an example file automatically.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
