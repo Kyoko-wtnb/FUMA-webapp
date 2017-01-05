@@ -33,7 +33,7 @@ GeneSetTest <- function(genes, allgenes, adjP.method="BH", adjP.cutoff=0.05, MHC
 #local     data <- fread(paste("/media/sf_Documents/VU/Data/GeneSet/", files[i], sep=""), head=F) #local
     data <- fread(paste("/data/GeneSet/", files[i], sep=""), head=F) #webserver
 
-    colnames(data) <- c("GeneSet", "n", "genes")
+    colnames(data)[1:3] <- c("GeneSet", "n", "genes")
 
     for(j in 1:nrow(data)){
       tempg <- unlist(strsplit(data$genes[j], ":"))

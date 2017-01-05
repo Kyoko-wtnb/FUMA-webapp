@@ -2,15 +2,17 @@ library(data.table)
 library(kimisc)
 args <- commandArgs(TRUE)
 filedir <- args[1]
-gtype <- args[2]
-gval <- args[3]
-bkgtype <- args[4]
-bkgval <- args[5]
-MHC <- as.numeric(args[6])
 
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
+
+params <- ConfigParser(file=paste(filedir,'params.config', sep=""))
+gtype <- params$params$gtype
+gval <- params$params$gval
+bkgtype <- params$params$bkgtype
+bkgval <- params$params$bkgval
+MHC <- as.numeric(params$params$MHC)
 
 if(gtype == "text"){
   genes <- unlist(strsplit(gval, ":"))

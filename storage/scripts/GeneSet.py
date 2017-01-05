@@ -29,19 +29,24 @@ cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
 ensgdir = cfg.get('data', 'ENSG')
 gsdir = cfg.get('data', 'GeneSet')
 
-if len(sys.argv)<9:
-	raise Exception('ERROR: not enough arguments\nUSAGE ./gene2func.py <filedir> <gtype> <gval> <bkgtype> <bkgval> <X chrom> <MHC> <adjPmeth> <adjPcutoff> <minOverlap> <testCategory>\n')
+if len(sys.argv)<1:
+	raise Exception('ERROR: not enough arguments\nUSAGE ./GeneSet.py <filedir>\n')
 
 filedir = sys.argv[1]
-gtype = sys.argv[2]
-gval = sys.argv[3]
-bkgtype = sys.argv[4]
-bkgval = sys.argv[5]
+if re.match("\/$", filedir) is None:
+	filedir += '/'
+param = ConfigParser.ConfigParser()
+param.read(filedir+'params.config')
+
+gtype = param.get('params', 'gtype')
+gval = param.get('params', 'gval')
+bkgtype = param.get('params', 'bkgtype')
+bkgval = param.get('params', 'bkgval')
 #Xchr = int(sys.argv[6]) #1 for exclude
-MHC = int(sys.argv[6]) #1 for exclude
-adjPmeth = sys.argv[7]
-adjPcut = float(sys.argv[8])
-minOverlap = int(sys.argv[9])
+MHC = int(param.get('params', 'MHC')) #1 for exclude
+adjPmeth = param.get('params', 'adjPmeth')
+adjPcut = float(param.get('params', 'adjPcut'))
+minOverlap = int(param.get('params', 'minOverlap'))
 #testCategory = sys.argv[11]
 
 if gtype == "text":

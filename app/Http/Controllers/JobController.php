@@ -618,6 +618,20 @@ class JobController extends Controller
       $adjPcut = $request -> input('adjPcut');
       $minOverlap = $request -> input('minOverlap');
 
+      $paramfile = $filedir.'params.config';
+      File::put($paramfile, "[jobinfo]\n");
+      File::append($paramfile, "created_at=$date\n");
+      File::append($paramfile, "title=$title\n");
+      File::append($paramfile, "\n[params]\n");
+      File::append($paramfile, "gtype=$gtype\n");
+      File::append($paramfile, "gval=$gval\n");
+      File::append($paramfile, "bkgtype=$bkgtype\n");
+      File::append($paramfile, "bkgval=$bkgval\n");
+      File::append($paramfile, "MHC=$MHC\n");
+      File::append($paramfile, "adjPmeth=$adjPmeth\n");
+      File::append($paramfile, "adjPcut=$adjPcut\n");
+      File::append($paramfile, "minOverlap=$minOverlap\n");
+
       JavaScript::put([
         'id' => $jobID,
         'filedir' => $filedir,
@@ -632,7 +646,7 @@ class JobController extends Controller
         'minOverlap' => $minOverlap
       ]);
 
-      return view('pages.gene2func', ['status'=>'query', 'id'=>'gene2func']);
+      return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]);
     }
 
     public function geneQuery(Request $request){
@@ -648,9 +662,9 @@ class JobController extends Controller
       $minOverlap = $request -> input('minOverlap');
 
       $script = storage_path()."/scripts/gene2func.R";
-      exec("Rscript $script $filedir $gtype $gval $bkgtype $bkgval $MHC");
+      exec("Rscript $script $filedir");
       $script = storage_path()."/scripts/GeneSet.py";
-      exec("$script $filedir $gtype $gval $bkgtype $bkgval $MHC $adjPmeth $adjPcut $minOverlap");
+      exec("$script $filedir");
     }
 
     public function snp2geneGeneQuery(Request $request){
@@ -670,11 +684,6 @@ class JobController extends Controller
           $title = "None";
         }
 
-        // $jobTable = new gene2func;
-        // $jobTable->email = $email;
-        // $jobTable->created_at = $date;
-        // $jobTable->snp2gene = $s2gID;
-        // $jobTable->save();
         $s2gTitle = DB::table('SubmitJobs')->where('jobID', $s2gID)->first()->title;
 
         DB::table('gene2func')->insert(
@@ -708,6 +717,22 @@ class JobController extends Controller
             $gval = $gval.":".$row[0];
           }
         }
+
+        $paramfile = $filedir.'params.config';
+        File::put($paramfile, "[jobinfo]\n");
+        File::append($paramfile, "created_at=$date\n");
+        File::append($paramfile, "title=$title\n");
+        File::append($paramfile, "snp2geneID=$s2gID\n");
+        File::append($paramfile, "snp2geneTitle=$s2gTitle\n");
+        File::append($paramfile, "\n[params]\n");
+        File::append($paramfile, "gtype=$gtype\n");
+        File::append($paramfile, "gval=$gval\n");
+        File::append($paramfile, "bkgtype=$bkgtype\n");
+        File::append($paramfile, "bkgval=$bkgval\n");
+        File::append($paramfile, "MHC=$MHC\n");
+        File::append($paramfile, "adjPmeth=$adjPmeth\n");
+        File::append($paramfile, "adjPcut=$adjPcut\n");
+        File::append($paramfile, "minOverlap=$minOverlap\n");
 
         JavaScript::put([
           'id' => $jobID,
