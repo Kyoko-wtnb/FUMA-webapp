@@ -129,10 +129,17 @@ def hypTest(l, c):
 	if x>0:
 		p = stats.hypergeom.sf(x, N ,n, m)
 		gin = ENSG[ArrayIn(ENSG[:,9], gin),2]
-		return([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), 0.0, 0.0])
+		if len(l)>3:
+			return([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), l[3]])
+		else:
+			return([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), ""])
 	else:
 		p=1
-		return([c.group(1), l[0], n, x, p, 1.0, "", 0.0, 0.0])
+		if len(l)>3:
+			return([c.group(1), l[0], n, x, p, 1.0, "", l[3]])
+		else:
+			return([c.group(1), l[0], n, x, p, 1.0, "", ""])
+
 
 def GeneSetTest(f):
 	print f
@@ -148,13 +155,13 @@ def GeneSetTest(f):
 	tmp = tmp[tmp[:,5].astype(float)<adjPcut]
 	tmp = tmp[tmp[:,3].astype(int)>=minOverlap]
 	tmp = tmp[tmp[:,4].astype(float).argsort()]
-	tmp[:,7] = -np.log10(tmp[:,4].astype(float))
-	tmp[:,8] = -np.log10(tmp[:,5].astype(float))
+	# tmp[:,7] = -np.log10(tmp[:,4].astype(float))
+	# tmp[:,8] = -np.log10(tmp[:,5].astype(float))
 	return tmp;
 
 tmp = Parallel(n_jobs=n_cores)(delayed(GeneSetTest)(f) for f in files)
 out = open(filedir+"GS.txt", 'w')
-out.write("\t".join(["Category", "GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes", "logP", "logFDR"])+"\n")
+out.write("\t".join(["Category", "GeneSet", "N_genes", "N_overlap", "p", "adjP", "genes", "link"])+"\n")
 
 for i in tmp:
 	for j in i:

@@ -893,8 +893,8 @@ function GeneSet(id){
       var genesplot = [];
       var gs_max = 0;
       tdata.forEach(function(d){
-        d.logP = +d.logP;
-        d.logFDR = +d.logFDR;
+        // d.P = +d.P;
+        d.adjP = +d.adjP;
         d.N_overlap = +d.N_overlap;
         d.N_genes = +d.N_genes;
         var g = d.genes.split(":");
@@ -1014,14 +1014,14 @@ function GeneSet(id){
         // bar plot (enrichment P-value)
         var xbar = d3.scale.linear().range([barplotwidth, barplotwidth*2]);
         var xbarAxis = d3.svg.axis().scale(xbar).orient("bottom");
-        xbar.domain([0, d3.max(tdata, function(d){return d.logFDR})]);
+        xbar.domain([0, d3.max(tdata, function(d){return -Math.log10(d.adjP)})]);
         // var y = d3.scale.ordinal().rangeBands([0,height]);
         // var yAxis = d3.svg.axis().scale(y).orient("left");
         // y.domain(tdata.map(function(d){return d.GeneSet;}));
         svg.selectAll('rect.p').data(tdata).enter()
           .append("rect").attr("class", "bar")
           .attr("x", xbar(0))
-          .attr("width", function(d){return xbar(d.logFDR)-barplotwidth})
+          .attr("width", function(d){return xbar(-Math.log10(d.adjP))-barplotwidth})
           .attr("y", function(d){return y(d.GeneSet)})
           .attr("height", 15)
           .style("fill", "#4d4dff")
@@ -1086,10 +1086,18 @@ function GeneSet(id){
         svg.selectAll('text').style('font-family', 'sans-serif');
         // Table
         var table = '<table class="table table-bordered"><thead><td>GeneSet</td><td>N</td><td>n</td><td>P-value</td><td>adjusted P</td><td>genes</td></thead>';
-        tdata.forEach(function(d){
-          table += '<tr><td>'+d.GeneSet+'</td><td>'+d.N_genes+'</td><td>'+d.N_overlap
-                  +'</td><td>'+Number(Number(d.p).toPrecision(3)).toExponential(2)+'</td><td>'+Number(Number(d.FDR).toPrecision(3)).toExponential(2)+'</td><td>'+d.genes.split(":").join(", ")+'</td></tr>';
-        });
+        if(category[i]=="GWAScatalog"){
+          tdata.forEach(function(d){
+            table += '<tr><td>'+d.GeneSet+'</td><td>'+d.N_genes+'</td><td>'+d.N_overlap
+                    +'</td><td>'+Number(Number(d.p).toPrecision(3)).toExponential(2)+'</td><td>'+Number(Number(d.adjP).toPrecision(3)).toExponential(2)+'</td><td>'+d.genes.split(":").join(", ")+'</td></tr>';
+          });
+        }else{
+          tdata.forEach(function(d){
+            table += '<tr><td><a href="'+d.link+'" target="_blank">'+d.GeneSet+'</a></td><td>'+d.N_genes+'</td><td>'+d.N_overlap
+                    +'</td><td>'+Number(Number(d.p).toPrecision(3)).toExponential(2)+'</td><td>'+Number(Number(d.adjP).toPrecision(3)).toExponential(2)+'</td><td>'+d.genes.split(":").join(", ")+'</td></tr>';
+          });
+        }
+
         table += '</table>'
         $('#'+category[i]+"Table").html(table);
       }

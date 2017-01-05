@@ -137,10 +137,10 @@
           <div class="panel-body" style="padding:10;">
             <h4>Other optional parameters</h4>
             <!-- <tab><input type="checkbox" id="Xchr" name="Xchr">&nbsp;Execlude genes on X chromosome. <span style="color: #004d99">*Please check to EXCLUDE X chromosome.</span><br/> -->
-            <tab><input type="checkbox" id="MHC" name="MHC">&nbsp;Exclude the MHC region.
+            <tab><input type="checkbox" id="MHC" name="MHC">&nbsp;Exclude the MHC region.<br/>
             <!-- <span class="info"><i class="fa fa-info"></i> Please check to EXCLUDE genes in MHC region.</span><br/> -->
             <span class="form-inline">
-              <tab>Desired mMultiple testing correction method for gene-set enrichment testing:
+              <tab>Desired multiple testing correction method for gene-set enrichment testing:
                 <select class="form-control" id="adjPmeth" name="adjPmeth" style="width:auto;">
                   <option value="bonferroni">Bonferroni</option>
                   <option value="sidak">Sidak</option>
