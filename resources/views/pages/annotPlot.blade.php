@@ -591,6 +591,7 @@ $(document).ready(function(){
             svg.append("g").attr("class", "y axis").call(yAxis)
               .selectAll('text').style('font-size', '11px');
             // currentHeight = currentHeight+160;
+            RDBlegend();
           }
 
           //chr15 and eqtl plot
@@ -609,6 +610,7 @@ $(document).ready(function(){
               // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
 
               var cells = d3.set(data1.map(function(d){return d.cell;})).values();
+              EIDlegend(cells);
               var chr15gcol = [];
               var y_element = [];
               for(var i=0; i<Chr15eid.length; i++){
@@ -793,6 +795,7 @@ $(document).ready(function(){
               // var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
               // var y_element = d3.set(data1.map(function(d){return d.cell;})).values();
               var cells = d3.set(data1.map(function(d){return d.cell;})).values();
+              EIDlegend(cells);
               var chr15gcol = [];
               var y_element = [];
               for(var i=0; i<Chr15eid.length; i++){
@@ -1125,6 +1128,168 @@ function geneOver(genes, x, width){
   return tg;
 }
 
+function RDBlegend(){
+  var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    width = 600,
+    height = 350;
+  var svg = d3.select('#RDBlegend').append('svg')
+            .attr("width", width+margin.left+margin.right)
+            .attr("height", height+margin.top+margin.bottom)
+            .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
+  d3.json("legendText/RDB.txt", function(data){
+    svg.append("text")
+      .attr("x", 0)
+      .attr("y", 0)
+      .text("RegulomeDB Categorical Scores")
+      .style("font-size", "14px");
+    var curHeight = 20;
+    svg.append("rect")
+      .attr("x", 0)
+      .attr("y", 6)
+      .attr("height",1)
+      .attr("width", 550);
+    svg.append("rect")
+      .attr("x", 0)
+      .attr("y", curHeight+5)
+      .attr("height",1)
+      .attr("width", 550);
+
+    svg.append("text")
+      .attr("x", 5)
+      .attr("y", curHeight)
+      .text("Category")
+      .style("font-size", "13px");
+    svg.append("text")
+      .attr("x", (500+60)/2)
+      .attr("y", curHeight)
+      .text("Description")
+      .style("font-size", "13px");
+    data.forEach(function(d){
+      if(d.Category==""){
+        curHeight += 5;
+      }
+      svg.append("text")
+        .attr("x", 5)
+        .attr("y", curHeight+15)
+        .text(d.Category)
+        .style("font-size", "13px");
+      svg.append("text")
+        .attr("x", 60)
+        .attr("y", curHeight+15)
+        .text(d.Description)
+        .style("font-size", "13px");
+      curHeight +=15;
+
+    });
+    svg.append("rect")
+      .attr("x", 0)
+      .attr("y", curHeight+5)
+      .attr("height",1)
+      .attr("width", 550);
+    svg.selectAll('text').style("font-family", "sans-serif");
+  });
+}
+
+function EIDlegend(cells){
+  var margin = {top: 20, right: 20, bottom: 20, left: 20},
+    width = 800,
+    height = 30+15*cells.length;
+  var svg = d3.select('#EIDlegend').append('svg')
+            .attr("width", width+margin.left+margin.right)
+            .attr("height", height+margin.top+margin.bottom)
+            .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
+
+  d3.json("legendText/EID.txt", function(data){
+    svg.append("text")
+      .attr("x", 0)
+      .attr("y", 0)
+      .text("Epigenome ID")
+      .style("font-size", "14px");
+    var curHeight = 20;
+    svg.append("rect")
+      .attr("x", 0)
+      .attr("y", 6)
+      .attr("height",1)
+      .attr("width", 750);
+    svg.append("rect")
+      .attr("x", 0)
+      .attr("y", curHeight+3)
+      .attr("height",1)
+      .attr("width", 750);
+
+    svg.append("text")
+      .attr("x", 5)
+      .attr("y", curHeight)
+      .text("EID")
+      .style("font-size", "13px");
+    svg.append("text")
+      .attr("x", 50)
+      .attr("y", curHeight)
+      .text("Color")
+      .style("font-size", "13px");
+    svg.append("text")
+      .attr("x", 120)
+      .attr("y", curHeight)
+      .text("Group")
+      .style("font-size", "13px");
+    svg.append("text")
+      .attr("x", 210)
+      .attr("y", curHeight)
+      .text("Anatomy")
+      .style("font-size", "13px");
+    svg.append("text")
+      .attr("x", 370)
+      .attr("y", curHeight)
+      .text("Standerdized epigenome name")
+      .style("font-size", "13px");
+
+    data.forEach(function(d){
+      if(cells.indexOf(d.EID)>=0){
+        svg.append("text")
+          .attr("x", 5)
+          .attr("y", curHeight+15)
+          .text(d.EID)
+          .style("font-size", "13px");
+        svg.append("rect")
+          .attr("x", 50)
+          .attr("y", curHeight+4)
+          .attr("width", 60)
+          .attr("height", 15)
+          .attr("fill", d.Color);
+        svg.append("text")
+          .attr("x", 50)
+          .attr("y", curHeight+15)
+          .text(d.Color)
+          .style("fill", function(){if(d.Color=="#000000"){return "white"}else{return "black"}})
+          .style("font-size", "13px");
+        svg.append("text")
+          .attr("x", 120)
+          .attr("y", curHeight+15)
+          .text(d.Group)
+          .style("font-size", "13px");
+        svg.append("text")
+          .attr("x", 210)
+          .attr("y", curHeight+15)
+          .text(d.Anatomy)
+          .style("font-size", "13px");
+        svg.append("text")
+          .attr("x", 370)
+          .attr("y", curHeight+15)
+          .text(d.Name)
+          .style("font-size", "13px");
+        curHeight +=15;
+
+      }
+    });
+    svg.append("rect")
+      .attr("x", 0)
+      .attr("y", curHeight+5)
+      .attr("height",1)
+      .attr("width", 750);
+    svg.selectAll('text').style("font-family", "sans-serif");
+  });
+}
+
 </script>
 @stop
 @section('content')
@@ -1140,6 +1305,10 @@ function geneOver(genes, x, width){
     <a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
     <button class="btn btn-xs ImgDown" id="annotPlotImg" style="float:right; margin-right:50px;">Download img</button>
     <div id="annotPlot"></div>
+    <br/>
+    <div id="RDBlegend"></div>
+    <br/>
+    <div id="EIDlegend"></div>
   </div>
   <div class="col-md-4" style="text-align: center;">
     <h4>SNP annotations</h4>

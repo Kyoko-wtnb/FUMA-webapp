@@ -63,6 +63,8 @@ Route::get('snp2gene/locusPlot/{ldI}/{type}/{jobID}', "D3jsController@locusPlot"
 
 Route::get('snp2gene/d3text/{jobID}/{file}', 'D3jsController@d3js_textfile');
 
+Route::get('snp2gene/legendText/{file}', 'D3jsController@legendText');
+
 Route::post('snp2gene/annotPlot', 'JobController@annotPlot');
 
 Route::post('snp2gene/filedown', 'JobController@filedown');

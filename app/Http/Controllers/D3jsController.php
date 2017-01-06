@@ -53,6 +53,19 @@ class D3jsController extends Controller
       }
     }
 
+    public function legendText($file){
+      $f = storage_path().'/legends/'.$file;
+      if(file_exists($f)){
+        $file = fopen($f, 'r');
+        $header = fgetcsv($file, 0, "\t");
+        $all_rows = array();
+        while($row = fgetcsv($file, 0, "\t")){
+          $all_rows[] = array_combine($header, $row);
+        }
+        echo json_encode($all_rows);
+      }
+    }
+
     public function manhattan($type, $jobID, $file){
       if($type=="jobs"){
         $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
