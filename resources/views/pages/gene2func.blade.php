@@ -63,7 +63,6 @@
 
   <div id="page-content-wrapper">
     <div class="page-content inset">
-      <div id="test"></div>
       <!-- Submit genes -->
       <div id="newquery" class="sidePanel container" style="padding-top:50px;">
         {!! Form::open(array('url' => 'gene2func/submit', 'files'=>true)) !!}
