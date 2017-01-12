@@ -99,7 +99,7 @@ class D3jsController extends Controller
             $row[3] = (int)$row[3];
             $row[8] = (float)$row[8];
             // $all_rows[] = array_combine($header, $row);
-            $all_rows[] = array($row[1], $row[2], $row[3], $row[8]);
+            $all_rows[] = array($row[1], $row[2], $row[3], $row[8], $row[9]);
           }
           echo json_encode($all_rows);
         }

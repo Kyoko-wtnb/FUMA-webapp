@@ -99,6 +99,10 @@
             The gene-based P-value is downloadable from 'Download' tab from the left side bar.
           </span><br/>
           <button class="btn btn-xs ImgDown" id="geneManhattanImg" style="float:right; margin-right:200px;">Download PNG</button>
+          <br/>
+          <span class="form-inline">
+            Label top <input class="form-control" type="number" id="topGenes" style="width: 80px;"> genes.<br/>
+          </span>
           <div id="geneManhattanPane">
             <canvas id="geneManhattanCanvas" style="display: none;"></canvas>
             <div id="geneManhattan"></div>

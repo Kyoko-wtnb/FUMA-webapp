@@ -39,3 +39,5 @@ unless(-e $filedir."magma.genes.out"){
 system "rm $filedir*.raw $filedir*.log";
 system "sed 's/ \\+/\\t/g' ".$filedir."magma.genes.out > $filedir"."temp.txt";
 system "mv ".$filedir."temp.txt ".$filedir."magma.genes.out";
+
+system "Rscript $dir/magma_gene.R $filedir";

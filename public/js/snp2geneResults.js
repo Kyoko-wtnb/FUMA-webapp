@@ -356,6 +356,16 @@ function GWplot(jobID){
       d[3] = +d[3]; //p
   	});
 
+    var nSigGenes=0;
+    var sortedP = [];
+    sortedP.push(0);
+    data.forEach(function(d){
+      if(d[3]<=0.05/data.length){nSigGenes++;}
+      sortedP.push(d[3]);
+    });
+    $('#topGenes').val(nSigGenes);
+
+    sortedP = sortedP.sort(function(a,b){return a-b;});
     // var chr = d3.set(data.map(function(d){return d.CHR;})).values();
     var chr = d3.set(data.map(function(d){return d[0];})).values();
     var max_chr = chr.length;
@@ -384,6 +394,14 @@ function GWplot(jobID){
       .attr("cy", function(d){return y(-Math.log10(d[3]))})
       .attr("fill", function(d){if(d[0]%2==0){return "steelblue"}else{return "blue"}});
 
+    svg2.selectAll('text.gene').data(data.filter(function(d){if(d[3]<=0.05/data.length){return d;}})).enter()
+      .append("text")
+      .attr("class", "gene")
+      .attr("x", function(d){return x((d[1]+d[2])/2+chromStart[d[0]-1])})
+      .attr("y", function(d){return y(-Math.log10(d[3]))-2})
+      .text(function(d){return d[4]})
+      .style("font-size", "10px");
+
     svg2.append("line")
   	 .attr("x1", 0).attr("x2", width)
     	.attr("y1", y(-Math.log10(0.05/data.length))).attr("y2", y(-Math.log10(0.05/data.length)))
@@ -410,6 +428,19 @@ function GWplot(jobID){
     svg2.selectAll('path').style('fill', 'none').style('stroke', 'grey');
     svg2.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
     svg2.selectAll('text').style("font-family", "sans-serif");
+
+    $('#topGenes').on("input", function(){
+      svg2.selectAll(".gene").remove();
+      var n = $('#topGenes').val();
+      svg2.selectAll('text.gene').data(data.filter(function(d){if(d[3]<=sortedP[n]){return d;}})).enter()
+        .append("text")
+        .attr("class", "gene")
+        .attr("x", function(d){return x((d[1]+d[2])/2+chromStart[d[0]-1])})
+        .attr("y", function(d){return y(-Math.log10(d[3]))-2})
+        .text(function(d){return d[4]})
+        .style("font-size", "10px")
+        .style("font-family", "sans-serif");
+    })
   });
 }
 
