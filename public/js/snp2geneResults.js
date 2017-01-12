@@ -308,7 +308,7 @@ function GWplot(jobID){
     // 		// }
     // 	});
 
-    svg.selectAll("dot").data(data).enter()
+    svg.selectAll("dot.manhattan").data(data).enter()
       .append("circle")
       .attr("r", 2)
       .attr("cx", function(d){return x(d[1]+chromStart[d[0]-1])})
@@ -387,7 +387,7 @@ function GWplot(jobID){
     // 		canvas2.fill();
     // 	});
 
-    svg2.selectAll("dot").data(data).enter()
+    svg2.selectAll("dot.geneManhattan").data(data).enter()
       .append("circle")
       .attr("r", 2)
       .attr("cx", function(d){return x((d[1]+d[2])/2+chromStart[d[0]-1])})
@@ -496,7 +496,7 @@ function QQplot(jobID){
   	// 	// }
   	// });
 
-    qqSNP.selectAll("dot").data(data).enter()
+    qqSNP.selectAll("dot.QQ").data(data).enter()
       .append("circle")
       .attr("r", 2)
       .attr("cx", function(d){return x(d.exp)})
@@ -553,7 +553,7 @@ function QQplot(jobID){
   	// 	canvasGene.fill();
   	// });
 
-    qqGene.selectAll("dot").data(data).enter()
+    qqGene.selectAll("dot.geneQQ").data(data).enter()
       .append("circle")
       .attr("r", 2)
       .attr("cx", function(d){return x(d.exp)})
