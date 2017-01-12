@@ -32,7 +32,7 @@ $(document).ready(function(){
       // $("#test").html('<img src="'+png+'"/>');
       DOMURL.revokeObjectURL(png);
     }
-    // img.src = url;
+    img.src = url;
 
     var a = document.createElement('a');
     a.href = url;

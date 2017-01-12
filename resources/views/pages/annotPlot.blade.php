@@ -39,6 +39,7 @@ $(document).ready(function(){
       var png = canvas.toDataURL("image/png");
       DOMURL.revokeObjectURL(png);
     }
+    img.src = url;
 
     var a = document.createElement('a');
     a.href = url;
