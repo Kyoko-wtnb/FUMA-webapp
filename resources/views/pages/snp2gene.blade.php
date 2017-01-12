@@ -86,12 +86,11 @@
             This is a manhattan plot of your input GWAS summary statistics.<br/>
             For plotting purposes, overlapping data points are not drawn (see tutorial for detail of filtering, filtering was performed only for SNPs with P-value &le; 1e-5).
           </span><br/>
-          <button class="btn btn-xs CanvDown" id="manhattanCanvasDown" style="float:right; margin-right:200px;">Download PNG</button>
+          <button class="btn btn-xs ImgDown" id="manhattanImg" style="float:right; margin-right:200px;">Download PNG</button>
           <div id="manhattanPane">
-            <canvas id="manhattanCanvas"></canvas>
-            <canvas id="manhattanTmp" style="display: none;"></canvas>
-            <canvas id="manhattanMain" style="display: none;"></canvas>
-            <div id="manhattan" style="display: none;"></div>
+            <canvas id="manhattanCanvas" style="display: none;"></canvas>
+            <div id="manhattan"></div>
+            <div id="manhattanPNG" style="display: none;"></div>
           </div>
           <br/><br/>
           <h4 style="color: #00004d">Mahattan Plot (gene-based test)</h4>
@@ -99,12 +98,11 @@
             This is a manhattan plot of the gene-based test as computed by MAGMA based on your input GWAS summary statistics.<br/>
             The gene-based P-value is downloadable from 'Download' tab from the left side bar.
           </span><br/>
-          <button class="btn btn-xs CanvDown" id="geneManhattanCanvasDown" style="float:right; margin-right:200px;">Download PNG</button>
+          <button class="btn btn-xs ImgDown" id="geneManhattanImg" style="float:right; margin-right:200px;">Download PNG</button>
           <div id="geneManhattanPane">
-            <canvas id="geneManhattanCanvas"></canvas>
-            <canvas id="geneManhattanTmp" style="display: none;"></canvas>
-            <canvas id="geneManhattanMain" style="display: none;"></canvas>
-            <div id="geneManhattan" style="display:none;"></div>
+            <canvas id="geneManhattanCanvas" style="display: none;"></canvas>
+            <div id="geneManhattan"></div>
+            <div id="geneManhattanPNG" style="display:none;"></div>
           </div>
           <br/><br/>
           <div id="QQplotPane">
@@ -115,12 +113,11 @@
                   This is a Q-Q plot of GWAS summary statistics. <br/>
                   For plotting purposes, overlapping data points are not drawn (see tutorial for detail of filtering, filtering was performed only for SNPs with P-value &le; 1e-5).
                 </span><br/>
-                <button class="btn btn-xs CanvDown" id="QQplotCanvasDown" style="float:right; margin-right:100px;">Download PNG</button><br/>
+                <button class="btn btn-xs ImgDown" id="QQplotImg" style="float:right; margin-right:100px;">Download PNG</button><br/>
                 <div>
-                  <canvas id="QQplotCanvas"></canvas>
-                  <canvas id="QQplotTmp" style="display: none;"></canvas>
-                  <canvas id="QQplotMain" style="display: none;"></canvas>
-                  <div id="QQplot" style="display:none;"></div>
+                  <canvas id="QQplotCanvas" style="display:none;"></canvas>
+                  <div id="QQplot"></div>
+                  <!-- <div id="QQplotPNG" style="display:none;"></div> -->
                 </div>
               </div>
               <div class="col-md-6">
@@ -128,12 +125,10 @@
                 <span class="info"><i class="fa fa-info"></i>
                   This is a Q-Q plot of the gene-based test computed by MAGMA.<br/>
                 </span><br/>
-                <button class="btn btn-xs CanvDown" id="geneQQplotCanvasDown" style="float:right; margin-right:100px;">Download PNG</button><br/>
+                <button class="btn btn-xs ImgDown" id="geneQQplotImg" style="float:right; margin-right:100px;">Download PNG</button><br/>
                 <div>
-                  <canvas id="geneQQplotCanvas"></canvas>
-                  <canvas id="geneQQplotTmp" style="display: none;"></canvas>
-                  <canvas id="geneQQplotMain" style="display: none;"></canvas>
-                  <div id="geneQQplot" style="display:none;"></div>
+                  <canvas id="geneQQplotCanvas" style="display:none;"></canvas>
+                  <div id="geneQQplot"></div>
                 </div>
               </div>
             <!-- </div> -->
