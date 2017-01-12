@@ -251,6 +251,7 @@
         	<div id="expHeat"></div>
           <div id="expBox"></div>
           <br/>
+          <div id="test" class="tempPNG"></div>
         </div>
         <!-- Tissue specificity bar chart -->
         <div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50px;">

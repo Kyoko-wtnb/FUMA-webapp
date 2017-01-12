@@ -37,16 +37,17 @@ $(document).ready(function(){
     img.onload=function(){
       ctx.drawImage(img, 0, 0);
       var png = canvas.toDataURL("image/png");
+      var a = document.createElement('a');
+      a.href = png;
+      a.download = id+".png";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      DOMURL.revokeObjectURL(png);
       DOMURL.revokeObjectURL(png);
     }
     img.src = url;
 
-    var a = document.createElement('a');
-    a.href = url;
-    a.download = id+".png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
     // Canvas2Image.saveAsPNG(canvas);
   });
 
