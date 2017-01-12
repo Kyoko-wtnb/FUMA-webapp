@@ -44,7 +44,6 @@ $(document).ready(function(){
       a.click();
       document.body.removeChild(a);
       DOMURL.revokeObjectURL(png);
-      DOMURL.revokeObjectURL(png);
     }
     img.src = url;
 
