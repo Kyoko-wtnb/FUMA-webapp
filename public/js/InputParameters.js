@@ -69,6 +69,7 @@ function CheckAll(){
       // $(table.rows[1].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       //   +'<i class="fa fa-exclamation-triangle"></i> OK. Please make sure correct format is selected.</div></td>');
       submit=false;
+      tablecheck=false;
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK. Please check your input file format.</div></td>');
