@@ -43,6 +43,16 @@ class snp2geneProcess extends Job implements ShouldQueue
       $jobtitle = DB::table('SubmitJobs') -> where('jobID', $jobID)
           ->first() ->title;
 
+      // file check
+      if(!file_exists(config('app.jobdir').'/jobs/'.$jobID.'/input.gwas')){
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
+                          ->delete();
+        if($email!=null){
+          $this->sendJobCompMail($email, $jobtitle, $jobID, -1);
+          return;
+        }
+      }
+
       // get parameters
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $params = parse_ini_file($filedir."params.config");
