@@ -67,12 +67,12 @@ $(document).ready(function(){
   }else if(status=="fileFormatLead"){
     $('a[href="#newJob"]').trigger('click');
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
-    +'<b>Provided file (Pre-defined lead SNPs) format was not valid. Text files (with any extention), zip file or gzip files are acceptable.</b>'
+    +'<b>Provided file (Pre-defined lead SNPs) format was not valid. Only plain text files (with any extention) is acceptable.</b>'
       +'</div>');
   }else if(status=="fileFormatRegions"){
     $('a[href="#newJob"]').trigger('click');
     $('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
-    +'<b>Provided file (Pre-defined genomic regions) format was not valid. Text files (with any extention), zip file or gzip files are acceptable.</b>'
+    +'<b>Provided file (Pre-defined genomic regions) format was not valid. Only plain text files (with any extention) is acceptable.</b>'
       +'</div>');
   }else{
     $('#annotPlotSubmit').attr("disabled", true);

@@ -21,7 +21,11 @@
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </td>
-          <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary" onchange="CheckAll()"/>
+          <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary"/>
+            <span class="info">
+              <i class="fa fa-info"></i>
+              The maximum file size is 600Mb. Please gzip if your file is bigger than 600Mb.<br/>
+            </span>
             Or <input type="checkbox" class="form-check-input" name="egGWAS" id="egGWAS" onchange="CheckAll()"/> : Use example input (Crohn's disease, Franke et al. 2010).
           </td>
           <td></td>

@@ -1,3 +1,4 @@
+var gwasFileSize = 0;
 $(document).ready(function(){
   $("#newJob").show();
   $("#jobinfoSide").hide();
@@ -19,6 +20,12 @@ $(document).ready(function(){
     CheckAll();
   });
 
+  $("#GWASsummary").bind('change', function(){
+    console.log(this.files[0].size);
+    gwasFileSize = this.files[0].size;
+    CheckAll();
+  });
+
   // input parameters data toggle
   $('.panel-heading.input a').on('click', function(){
     if($(this).attr('class')=="active"){
@@ -31,7 +38,6 @@ $(document).ready(function(){
   });
 
 });
-
 
 function CheckAll(){
   var submit = true;
@@ -57,11 +63,19 @@ function CheckAll(){
   }else{
     // var file = document.getElementById('GWASsummary');
     // console.log("File type:", file.type);
-    $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-check"></i> OK. Please check your input file format.</div></td>');
-    // $(table.rows[1].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-    //   +'<i class="fa fa-exclamation-triangle"></i> OK. Please make sure correct format is selected.</div></td>');
-    submit=true;
+    if(gwasFileSize>=600000000){
+      $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        +'<i class="fa fa-check"></i> The file size if above 600Mb. Please gzip your file.</div></td>');
+      // $(table.rows[1].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      //   +'<i class="fa fa-exclamation-triangle"></i> OK. Please make sure correct format is selected.</div></td>');
+      submit=false;
+    }else{
+      $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        +'<i class="fa fa-check"></i> OK. Please check your input file format.</div></td>');
+      // $(table.rows[1].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      //   +'<i class="fa fa-exclamation-triangle"></i> OK. Please make sure correct format is selected.</div></td>');
+      submit=true;
+    }
   }
 
   if($('#leadSNPs').val().length==0){
