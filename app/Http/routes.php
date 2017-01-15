@@ -75,6 +75,7 @@ Route::get('snp2gene/{jobID}', function($jobID){
   return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
 })->middleware('auth');
 
+Route::post('snp2gene/deleteJob', 'JobController@deleteJob');
 
 // ********************** GENE2FUNC ************************
 

@@ -391,6 +391,13 @@ class JobController extends Controller
       return redirect("/snp2gene#joblist-panel");
     }
 
+    public function deleteJob(Request $request){
+      $jobID = $request->input('jobID');
+      DB::table('SubmitJobs')->where('jobID', $jobID)->delete();
+      File::deleteDirectory(config('app/jobdir').'/jobs/'.$jobID);
+      return;
+    }
+
     public function annotPlot(Request $request){
       $jobID = $request -> input('jobID');
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';

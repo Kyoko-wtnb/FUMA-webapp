@@ -5,6 +5,7 @@
             <div class="panel-title">List of Jobs <tab><a id="refreshTable"><i class="fa fa-refresh"></i></a></div>
         </div>
         <div class="panel-body">
+          <button class="btn btn-sm" id="deleteJob" name="deleteJob" style="float:right; margin-right:20px;">Delete selected jobs</button>
             <table class="table">
                 <thead>
                     <tr>
@@ -19,11 +20,12 @@
                             <i class="fa fa-question-circle-o fa-lg"></i>
                           </a>
                         </th>
+                        <th>Select</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="4" style="text-align:center;">Retrieving data</td>
+                        <td colspan="5" style="text-align:center;">Retrieving data</td>
                     </tr>
                 </tbody>
             </table>
@@ -47,36 +49,62 @@
 
 <script>
     $(document).ready(function() {
+      // Get Joblist
+      function getJobList(){
+        $('#joblist-panel table tbody')
+            .empty()
+            .append('<tr><td colspan="4" style="text-align:center;">Retrieving data</td></tr>');
 
-        // Get Joblist
-        function getJobList(){
-          $('#joblist-panel table tbody')
-              .empty()
-              .append('<tr><td colspan="4" style="text-align:center;">Retrieving data</td></tr>');
+        $.getJSON( subdir + "/snp2gene/getJobList", function( data ) {
+            var items = '<tr><td colspan="4">No Jobs Found</td></tr>';
+            if(data.length){
+                items = '';
+                $.each( data, function( key, val ) {
+                    if(val.status == 'OK'){
+                        val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">Go to results</a>';
+                    }
+                    items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title
+                      +"</td><td>"+val.created_at+"</td><td>"+val.status
+                      +'</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
+                      +val.jobID+'"/></td></tr>';
+                });
+            }
 
-          $.getJSON( subdir + "/snp2gene/getJobList", function( data ) {
-              var items = '<tr><td colspan="4">No Jobs Found</td></tr>';
-              if(data.length){
-                  items = '';
-                  $.each( data, function( key, val ) {
-                      if(val.status == 'OK'){
-                          val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">Go to results</a>';
-                      }
-                      items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"+val.created_at+"</td><td>"+val.status+"</td></tr>";
-                  });
-              }
+            // Put list in table
+            $('#joblist-panel table tbody')
+                .empty()
+                .append(items);
+        });
+      }
 
-              // Put list in table
-              $('#joblist-panel table tbody')
-                  .empty()
-                  .append(items);
+      getJobList();
+
+      $('#refreshTable').on('click', function(){
+        getJobList();
+      });
+
+      $('#deleteJob').on('click', function(){
+        var c = confirm("Do you really want to remove selected jobs?");
+        if(c){
+          $('.deleteJobCheck').each(function(){
+            if($(this).is(":checked")){
+              console.log($(this).val());
+              $.ajax({
+                url: subdir+"snp2gene/deleteJob",
+                type: "POST",
+                data: {
+                  jobID: $(this).val()
+                },
+                error: function(){
+                  alert("error at deleteJob");
+                },
+                complete: function(){
+                  getJobList();
+                }
+              });
+            }
           });
         }
-
-        getJobList();
-
-        $('#refreshTable').on('click', function(){
-          getJobList();
-        });
+      });
     });
 </script>
