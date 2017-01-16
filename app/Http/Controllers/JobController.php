@@ -393,8 +393,8 @@ class JobController extends Controller
 
     public function deleteJob(Request $request){
       $jobID = $request->input('jobID');
+      File::deleteDirectory(config('app.jobdir').'/jobs/'.$jobID);
       DB::table('SubmitJobs')->where('jobID', $jobID)->delete();
-      File::deleteDirectory(config('app/jobdir').'/jobs/'.$jobID);
       return;
     }
 
