@@ -21,10 +21,7 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
-<!-- <script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/StackBlur.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/canvg.js"></script>
-<script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script> -->
+
 <script type="text/javascript" src="{!! URL::asset('js/FileSaver.js') !!}"></script> -->
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
@@ -280,7 +277,6 @@
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
-          <!-- <button class="btn" id="DEGdown" name="DEGdown">Download text file</button><br/> -->
 
           Download the plot as
           <button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","png");'>PNG</button>
@@ -343,7 +339,6 @@
         </div>
         <!-- GeneSet enrichment -->
         <div id="GeneSetPanel"  class="sidePanel container" style="padding-top:50px;">
-          <!-- <button class="btn" id="GSdown" name="GSdown">Download text file</button><br/><br/> -->
           <h4>Enrichment of input genes in Gene Sets</h4>
           <form action="fileDown" method="post" target="_blank">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">

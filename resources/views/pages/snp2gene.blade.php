@@ -64,14 +64,6 @@
         @include('snp2gene.joblist')
         @include('snp2gene.newjob')
 
-      <!-- results panel -->
-      <!-- job info table -->
-      <!-- <div class="sidePanel container" style="padding-top:50px; height:100vh;" id="jobInfo">
-        <h4 style="color: #00004d">Information of your job</h4>
-        <div id="jobInfoTable"></div>
-        <div id="ErrorMess"></div>
-      </div> -->
-
       <!-- genome wide plots -->
       <div class="sidePanel container" style="padding-top:50px;" id="genomePlots">
         <!-- <h3>Genome Wide Plot</h3> -->

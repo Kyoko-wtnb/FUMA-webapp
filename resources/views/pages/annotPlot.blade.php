@@ -21,37 +21,6 @@
 $(document).ready(function(){
   $('.ImgDownSubmit').hide();
 
-  // plot download
-  // $(".ImgDown").on('click', function(){
-  //   var id = $(this).attr("id");
-  //   id = id.replace("Img", "");
-  //   // var svg = $('#'+id).html();
-  //   // canvg('canvas', svg);
-  //   $('#canvas').attr("height", $('#'+id+' svg').attr("height"))
-  //     .attr("width", $('#'+id+' svg').attr("width"));
-  //   var svgString = new XMLSerializer().serializeToString(document.querySelector('#'+id+' svg'));
-  //   var canvas = document.getElementById('canvas');
-  //   var ctx = canvas.getContext("2d");
-  //   var DOMURL = self.URL || self.webkitURL || self;
-  //   var img = new Image();
-  //   var svg = new Blob([svgString], {type:"image/svg+xml;character=utf-8"});
-  //   var url = DOMURL.createObjectURL(svg);
-  //   img.onload=function(){
-  //     ctx.drawImage(img, 0, 0);
-  //     var png = canvas.toDataURL("image/png");
-  //     var a = document.createElement('a');
-  //     a.href = png;
-  //     a.download = id+".png";
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-  //     DOMURL.revokeObjectURL(png);
-  //   }
-  //   img.src = url;
-  //
-  //   // Canvas2Image.saveAsPNG(canvas);
-  // });
-
   var filedir = IPGAPvar.filedir;
   var jobID = IPGAPvar.jobID;
   var type = IPGAPvar.type;
