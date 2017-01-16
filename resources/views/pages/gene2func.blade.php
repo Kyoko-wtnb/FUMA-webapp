@@ -21,8 +21,6 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
-
-<script type="text/javascript" src="{!! URL::asset('js/FileSaver.js') !!}"></script> -->
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 <script type="text/javascript">

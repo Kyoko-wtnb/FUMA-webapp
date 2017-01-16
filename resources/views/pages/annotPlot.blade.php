@@ -2,20 +2,15 @@
 @extends('layouts.simple')
 @section('head')
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
-<script type="text/javascript" src="https://cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
-<script type="text/javascript" src="https://d3js.org/queue.v1.min.js"></script>
-<script type="text/javascript" src="http://rawgit.com/krunkosaurus/simg/v1.1.0/src/simg.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/StackBlur.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/canvg.js"></script>
-<script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script>
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<script type="text/javascript" src="//cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
+<script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
 
 <script type="text/javascript">
 var jobID;
