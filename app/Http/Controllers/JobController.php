@@ -778,9 +778,8 @@ class JobController extends Controller
       }else{
         $outfile .= $fileName.'.'.$type;
         $image = new \Imagick();
+        $image->setResolution(300,300);
         $image->readImageBlob('<?xml version="1.0"?>'.file_get_contents($svgfile));
-        $image->setImageResolution(72,72);
-        $image->resampleImage(144,144, \Imagick::FILTER_UNDEFINED, 1);
         $image->setImageFormat($type);
         $image->writeImage($outfile);
         return response() -> download($outfile);

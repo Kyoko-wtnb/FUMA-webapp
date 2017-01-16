@@ -19,36 +19,38 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-  // plot download
-  $(".ImgDown").on('click', function(){
-    var id = $(this).attr("id");
-    id = id.replace("Img", "");
-    // var svg = $('#'+id).html();
-    // canvg('canvas', svg);
-    $('#canvas').attr("height", $('#'+id+' svg').attr("height"))
-      .attr("width", $('#'+id+' svg').attr("width"));
-    var svgString = new XMLSerializer().serializeToString(document.querySelector('#'+id+' svg'));
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext("2d");
-    var DOMURL = self.URL || self.webkitURL || self;
-    var img = new Image();
-    var svg = new Blob([svgString], {type:"image/svg+xml;character=utf-8"});
-    var url = DOMURL.createObjectURL(svg);
-    img.onload=function(){
-      ctx.drawImage(img, 0, 0);
-      var png = canvas.toDataURL("image/png");
-      var a = document.createElement('a');
-      a.href = png;
-      a.download = id+".png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      DOMURL.revokeObjectURL(png);
-    }
-    img.src = url;
+  $('.ImgDownSubmit').hide();
 
-    // Canvas2Image.saveAsPNG(canvas);
-  });
+  // plot download
+  // $(".ImgDown").on('click', function(){
+  //   var id = $(this).attr("id");
+  //   id = id.replace("Img", "");
+  //   // var svg = $('#'+id).html();
+  //   // canvg('canvas', svg);
+  //   $('#canvas').attr("height", $('#'+id+' svg').attr("height"))
+  //     .attr("width", $('#'+id+' svg').attr("width"));
+  //   var svgString = new XMLSerializer().serializeToString(document.querySelector('#'+id+' svg'));
+  //   var canvas = document.getElementById('canvas');
+  //   var ctx = canvas.getContext("2d");
+  //   var DOMURL = self.URL || self.webkitURL || self;
+  //   var img = new Image();
+  //   var svg = new Blob([svgString], {type:"image/svg+xml;character=utf-8"});
+  //   var url = DOMURL.createObjectURL(svg);
+  //   img.onload=function(){
+  //     ctx.drawImage(img, 0, 0);
+  //     var png = canvas.toDataURL("image/png");
+  //     var a = document.createElement('a');
+  //     a.href = png;
+  //     a.download = id+".png";
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     document.body.removeChild(a);
+  //     DOMURL.revokeObjectURL(png);
+  //   }
+  //   img.src = url;
+  //
+  //   // Canvas2Image.saveAsPNG(canvas);
+  // });
 
   var filedir = IPGAPvar.filedir;
   var jobID = IPGAPvar.jobID;
@@ -1310,6 +1312,15 @@ function EIDlegend(cells){
   });
 }
 
+function ImgDown(id, type){
+  $('#'+id+'Data').val($('#'+id).html());
+  $('#'+id+'Type').val(type);
+  $('#'+id+'JobID').val(jobID);
+  $('#'+id+'FileName').val(id);
+  $('#'+id+'Dir').val("gene2func");
+  $('#'+id+'Submit').trigger('click');
+}
+
 </script>
 @stop
 @section('content')
@@ -1323,8 +1334,21 @@ function EIDlegend(cells){
   <div class="col-md-8">
     <div id='title' style="text-align: center;"><h4>Regional plot</h4></div>
     <a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
-    <button class="btn btn-xs ImgDown" id="annotPlotImg" style="float:right; margin-right:50px;">Download img</button>
-    <div id="annotPlot"></div>
+    Download the plot as
+    <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","png");'>PNG</button>
+    <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","jpeg");'>JPG</button>
+    <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","svg");'>SVG</button>
+    <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","pdf");'>PDF</button>
+
+    <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+      <input type="hidden" name="_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="dir" id="annotPlotDir" val=""/>
+      <input type="hidden" name="id" id="annotPlotJobID" val=""/>
+      <input type="hidden" name="data" id="annotPlotData" val=""/>
+      <input type="hidden" name="type" id="annotPlotType" val=""/>
+      <input type="hidden" name="fileName" id="annotPlotFileName" val=""/>
+      <input type="submit" id="annotPlotSubmit" class="ImgDownSubmit"/>
+    </form>    <div id="annotPlot"></div>
     <br/>
     <div id="RDBlegend"></div>
     <br/>

@@ -104,7 +104,7 @@ $(document).ready(function(){
       var posMap;
       var eqtlMap;
       $.ajax({
-          url: 'getParams',
+          url: subdir+'/snp2gene/getParams',
           type: 'POST',
           data:{
             jobID: jobid
