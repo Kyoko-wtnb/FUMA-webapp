@@ -13,11 +13,11 @@
     This job has been deleted but the last job you have submitted could still be under process.<br/>
     Please check the list of jobs from <ahref="http://fuma.ctglab.nl/fuma/snp2gene">here</a> (login required).'
   }else if($status==1){
-    echo ' (Not enough columns are provided in GWAS summary statistics file / '.{{ $msg }}).'<br/>
+    echo ' (Not enough columns are provided in GWAS summary statistics file / '.$msg.')<br/>
     Please make sure your input file have sufficient column names.
     Please refer <a href="http://fuma.ctglab.nl/fuma/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
   }else if($status==2){
-    echo ' (Error from MAGMA / '.{{ $msg }}).'<br/>
+    echo ' (Error from MAGMA / '.$msg.')<br/>
     This error might be because of the rsID and/or p-value columns are wrongly labeled.
     Please make sure your input file have sufficient column names.
     Please refer <a href="http://fuma.ctglab.nl/fuma/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
