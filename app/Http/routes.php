@@ -77,6 +77,8 @@ Route::get('snp2gene/{jobID}', function($jobID){
 
 Route::post('snp2gene/deleteJob', 'JobController@deleteJob');
 
+Route::post('snp2gene/imgdown', 'JobController@imgdown');
+
 // ********************** GENE2FUNC ************************
 
 Route::get('gene2func', function(){

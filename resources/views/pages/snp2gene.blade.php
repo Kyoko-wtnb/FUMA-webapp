@@ -19,10 +19,6 @@
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/StackBlur.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/canvg.js"></script>
-<script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script>
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 <script type="text/javascript">
@@ -85,53 +81,102 @@
           <span class="info"><i class="fa fa-info"></i>
             This is a manhattan plot of your input GWAS summary statistics.<br/>
             For plotting purposes, overlapping data points are not drawn (see tutorial for detail of filtering, filtering was performed only for SNPs with P-value &le; 1e-5).
-          </span><br/>
-          <button class="btn btn-xs ImgDown" id="manhattanImg" style="float:right; margin-right:200px;">Download PNG</button>
+          </span><br/><br/>
+          Download the plot as
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","pdf");'>PDF</button>
+
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="manhattanDir" val=""/>
+            <input type="hidden" name="id" id="manhattanJobID" val=""/>
+            <input type="hidden" name="data" id="manhattanData" val=""/>
+            <input type="hidden" name="type" id="manhattanType" val=""/>
+            <input type="hidden" name="fileName" id="manhattanFileName" val=""/>
+            <input type="submit" id="manhattanSubmit" class="ImgDownSubmit"/>
+          </form>
           <div id="manhattanPane">
-            <canvas id="manhattanCanvas" style="display: none;"></canvas>
             <div id="manhattan"></div>
-            <div id="manhattanPNG" style="display: none;"></div>
           </div>
           <br/><br/>
           <h4 style="color: #00004d">Mahattan Plot (gene-based test)</h4>
           <span class="info"><i class="fa fa-info"></i>
             This is a manhattan plot of the gene-based test as computed by MAGMA based on your input GWAS summary statistics.<br/>
             The gene-based P-value is downloadable from 'Download' tab from the left side bar.
-          </span><br/>
-          <button class="btn btn-xs ImgDown" id="geneManhattanImg" style="float:right; margin-right:200px;">Download PNG</button>
+          </span><br/><br/>
+          Download the plot as
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","pdf");'>PDF</button>
+
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="geneManhattanDir" val=""/>
+            <input type="hidden" name="id" id="geneManhattanJobID" val=""/>
+            <input type="hidden" name="data" id="geneManhattanData" val=""/>
+            <input type="hidden" name="type" id="geneManhattanType" val=""/>
+            <input type="hidden" name="fileName" id="geneManhattanFileName" val=""/>
+            <input type="submit" id="geneManhattanSubmit" class="ImgDownSubmit"/>
+          </form>
           <br/>
           <span class="form-inline">
             Label top <input class="form-control" type="number" id="topGenes" style="width: 80px;"> genes.<br/>
           </span>
           <div id="geneManhattanPane">
-            <canvas id="geneManhattanCanvas" style="display: none;"></canvas>
             <div id="geneManhattan"></div>
-            <div id="geneManhattanPNG" style="display:none;"></div>
           </div>
           <br/><br/>
           <div id="QQplotPane">
             <!-- <div class="row"> -->
-              <div class="col-md-6">
+              <div class="col-md-6 col-xs-6 col-sm-6">
                 <h4 style="color: #00004d">QQ plots (GWAS summary statisics)</h4>
                 <span class="info"><i class="fa fa-info"></i>
                   This is a Q-Q plot of GWAS summary statistics. <br/>
                   For plotting purposes, overlapping data points are not drawn (see tutorial for detail of filtering, filtering was performed only for SNPs with P-value &le; 1e-5).
-                </span><br/>
-                <button class="btn btn-xs ImgDown" id="QQplotImg" style="float:right; margin-right:100px;">Download PNG</button><br/>
+                </span><br/><br/>
+                Download the plot as
+                <button class="btn btn-xs ImgDown" onclick='ImgDown("QQplot","png");'>PNG</button>
+                <button class="btn btn-xs ImgDown" onclick='ImgDown("QQplot","jpeg");'>JPG</button>
+                <button class="btn btn-xs ImgDown" onclick='ImgDown("QQplot","svg");'>SVG</button>
+                <button class="btn btn-xs ImgDown" onclick='ImgDown("QQplot","pdf");'>PDF</button>
+
+                <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
+                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="dir" id="QQplotDir" val=""/>
+                  <input type="hidden" name="id" id="QQplotJobID" val=""/>
+                  <input type="hidden" name="data" id="QQplotData" val=""/>
+                  <input type="hidden" name="type" id="QQplotType" val=""/>
+                  <input type="hidden" name="fileName" id="QQplotFileName" val=""/>
+                  <input type="submit" id="QQplotSubmit" class="ImgDownSubmit"/>
+                </form>
                 <div>
-                  <canvas id="QQplotCanvas" style="display:none;"></canvas>
                   <div id="QQplot"></div>
-                  <!-- <div id="QQplotPNG" style="display:none;"></div> -->
                 </div>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-6 col-xs-6 col-sm-6">
                 <h4 style="color: #00004d">QQ plots (gene-based test)</h4>
                 <span class="info"><i class="fa fa-info"></i>
                   This is a Q-Q plot of the gene-based test computed by MAGMA.<br/>
-                </span><br/>
-                <button class="btn btn-xs ImgDown" id="geneQQplotImg" style="float:right; margin-right:100px;">Download PNG</button><br/>
+                </span><br/><br/>
+                Download the plot as
+                <button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","png");'>PNG</button>
+                <button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","jpeg");'>JPG</button>
+                <button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","svg");'>SVG</button>
+                <button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","pdf");'>PDF</button>
+
+                <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
+                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="dir" id="geneQQplotDir" val=""/>
+                  <input type="hidden" name="id" id="geneQQplotJobID" val=""/>
+                  <input type="hidden" name="data" id="geneQQplotData" val=""/>
+                  <input type="hidden" name="type" id="geneQQplotType" val=""/>
+                  <input type="hidden" name="fileName" id="geneQQplotFileName" val=""/>
+                  <input type="submit" id="geneQQplotSubmit" class="ImgDownSubmit"/>
+                </form>
                 <div>
-                  <canvas id="geneQQplotCanvas" style="display:none;"></canvas>
                   <div id="geneQQplot"></div>
                 </div>
               </div>
@@ -155,9 +200,23 @@
                 <i class="fa fa-question-circle-o fa-lg"></i>
               </a>
             </h4>
-            <button class="btn btn-xs ImgDown" id="snpAnnotPlotImg" style="float:right; margin-right:100px;">Download PNG</button>
+            Download the plot as
+            <button class="btn btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","png");'>PNG</button>
+            <button class="btn btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","jpeg");'>JPG</button>
+            <button class="btn btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","svg");'>SVG</button>
+            <button class="btn btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","pdf");'>PDF</button>
+
+            <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
+              <input type="hidden" name="_token" value="{{ csrf_token() }}">
+              <input type="hidden" name="dir" id="snpAnnotPlotDir" val=""/>
+              <input type="hidden" name="id" id="snpAnnotPlotJobID" val=""/>
+              <input type="hidden" name="data" id="snpAnnotPlotData" val=""/>
+              <input type="hidden" name="type" id="snpAnnotPlotType" val=""/>
+              <input type="hidden" name="fileName" id="snpAnnotPlotFileName" val=""/>
+              <input type="submit" id="snpAnnotPlotSubmit" class="ImgDownSubmit"/>
+            </form>
             <div id="snpAnnotPlot"></div>
-            <canvas id="snpAnnotPlotCanvas" style="display: none;"></canvas>
+            <!-- <canvas id="snpAnnotPlotCanvas" style="display: none;"></canvas> -->
           </div>
         </div>
         <br/>
@@ -167,9 +226,22 @@
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
-          <button class="btn btn-xs ImgDown" id="intervalPlotImg" style="margin-left:800px;">Download PNG</button>
+          Download the plot as
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("intervalPlot","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("intervalPlot","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("intervalPlot","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("intervalPlot","pdf");'>PDF</button>
+
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="intervalPlotDir" val=""/>
+            <input type="hidden" name="id" id="intervalPlotJobID" val=""/>
+            <input type="hidden" name="data" id="intervalPlotData" val=""/>
+            <input type="hidden" name="type" id="intervalPlotType" val=""/>
+            <input type="hidden" name="fileName" id="intervalPlotFileName" val=""/>
+            <input type="submit" id="intervalPlotSubmit" class="ImgDownSubmit"/>
+          </form>
           <div id="intervalPlot"></div>
-          <canvas id="intervalPlotCanvas" style="display: none;"></canvas>
         </div>
         <br/><br/>
       </div>

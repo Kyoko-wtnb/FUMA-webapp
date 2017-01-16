@@ -3,6 +3,8 @@ var intervalTable_selected=null;
 // var SNPtable_selected=null;
 var annotPlotSelected;
 $(document).ready(function(){
+  // hide submit buttons for imgDown
+  $('.ImgDownSubmit').hide();
 
   var hashid = window.location.hash;
   if(hashid==""){
@@ -10,38 +12,6 @@ $(document).ready(function(){
   }else{
     $('a[href="'+hashid+'"]').trigger('click');
   }
-
-  // plot download
-  $(".ImgDown").on('click', function(){
-    var id = $(this).attr("id");
-    id = id.replace("Img", "");
-    // var svg = $('#'+id).html();
-    // canvg('canvas', svg);
-    $('#canvas').attr("height", $('#'+id+' svg').attr("height"))
-      .attr("width", $('#'+id+' svg').attr("width"));
-    var svgString = new XMLSerializer().serializeToString(document.querySelector('#'+id+' svg'));
-    var canvas = document.getElementById('canvas');
-    var ctx = canvas.getContext("2d");
-    var DOMURL = self.URL || self.webkitURL || self;
-    var img = new Image();
-    var svg = new Blob([svgString], {type:"image/svg+xml;character=utf-8"});
-    var url = DOMURL.createObjectURL(svg);
-    img.onload=function(){
-      ctx.drawImage(img, 0, 0);
-      var png = canvas.toDataURL("image/png");
-      // $("#test").html('<img src="'+png+'"/>');
-      var a = document.createElement('a');
-      a.href = png;
-      a.download = id+".png";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      DOMURL.revokeObjectURL(png);
-    }
-    img.src = url;
-
-    // Canvas2Image.saveAsPNG(canvas);
-  });
 
   $(".CanvDown").on('click', function(){
     var id = $(this).attr("id");
@@ -177,66 +147,6 @@ $(document).ready(function(){
   });
 
 });
-
-function errorHandling(status){
-  if(status == "ERROR:001"){
-    $('#ErrorMess').html('<div class="alert alert-denger">'
-        +'ERROR:001 (Not enough columns are provided in GWAS summary statistics file)<br/>'
-        +'Please make sure your input file have sufficient column names. '
-        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
-        +'</div>');
-  }else if(status == "ERRUR:002"){
-    $('#ErrorMess').html('<div class="alert alert-denger">'
-        +'ERROR:002 (Error from MAGMA)<br/>'
-        +'This error might be because of the rsID and/or p-value columns are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. '
-        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
-        +'</div>');
-  }else if(status == "ERRUR:003" || status=="ERROR:004"){
-    $('#ErrorMess').html('<div class="alert alert-denger">'
-        +status+' (Error during SNPs filtering for manhattan plot)<br/>'
-        +'This error might be because of the p-value column is wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. '
-        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
-        +'</div>');
-  }else if(status=="ERROR:005"){
-    $('#ErrorMess').html('<div class="alert alert-denger">'
-        +status+' (Error from lead SNPs and candidate SNPs identification)<br/>'
-        +'This error occures when no candidate SNPs were identified.'
-        +'It might be becaseu there is no significant hit at your defined P-value cutoff for lead SNPs and GWAS tagged SNPs.'
-        +'In that case, you can relax threshold or provide predefined lead SNPs.'
-        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#snp2gene">Tutorial<a/> for detilas.<br/>'
-        +'</div>');
-  }else if(status=="ERROR:006"){
-    $('#ErrorMess').html('<div class="alert alert-denger">'
-        +status+' (Error from lead SNPs and candidate SNPs identification)<br/>'
-        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. '
-        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
-        +'</div>');
-  }else if(status=="ERRUR:007"){
-    $('#ErrorMess').html('<div class="alert alert-denger">'
-        +status+' (Error during SNPs annotation extraction)<br/>'
-        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. '
-        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
-        +'</div>');
-  }else if(status=="ERROR:008" || status=="ERRUR:009"){
-    $('#ErrorMess').html('<div class="alert alert-denger">'
-        +status+' (Error during extracting ecternal data sources)<br/>'
-        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. '
-        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
-        +'</div>');
-  }else if(status=="ERRUR:010"){
-    $('#ErrorMess').html('<div class="alert alert-denger">'
-        +status+' (Error during gene mapping)<br/>'
-        +'This error might be because of either invalid input parameters or columns which are wrongly labeled.'
-        +'Please make sure your input file have sufficient column names. '
-        +'Please refer <a href="http://ctg.labs.vu.nl/IPGAP/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>'
-        +'</div>');
-  }
-}
 
 function GWplot(jobID){
   var chromSize = [249250621, 243199373, 198022430, 191154276, 180915260, 171115067,
@@ -1167,11 +1077,6 @@ function PlotSNPAnnot(jobID){
             .attr("width", width+margin.left+margin.right)
             .attr("height", height+margin.top+margin.bottom)
             .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
-  // var svg = d3.select('#SnpAnnotPlotSVG')
-  //           .attr("width", width+margin.left+margin.right)
-  //           .attr("height", height+margin.top+margin.bottom)
-  //           .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
-
   var tip = d3.tip()
       .attr('class', 'd3-tip')
       .offset([-5, 0])
@@ -1223,7 +1128,7 @@ function PlotIntervalSum(jobID){
       d.nWithinGene = +d.nWithinGene;
     });
     var y_element = data.map(function(d){return d.label;});
-    var margin = {top:30, right: 30, bottom:50, left:150},
+    var margin = {top:30, right: 30, bottom:50, left:180},
         width = 600,
         height = 15*y_element.length;
     var y = d3.scale.ordinal().domain(y_element).rangeBands([0, height], 0.1);
@@ -1271,18 +1176,18 @@ function PlotIntervalSum(jobID){
         .attr("transform", "translate(0,"+height+")")
         .call(xAxis).selectAll("text")
         .style("text-anchor", "end")
-        .attr("transform", function (d) {return "rotate(-65)";})
-        .attr("dx","-.65em").attr("dy", "-.2em");
+        .attr("transform", function (d) {return "translate(-12,3)rotate(-65)";});
+        // .attr("dx","-.65em").attr("dy", "-.2em");
     svg.append('g').attr("class", "y axis")
         .call(yAxis)
         .append("text").attr("transform", "rotate(-90)")
         .attr("dy", ".71em")
         .style("text-anchor", "end");
     svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2)+","+0+")")
+        .attr("transform", "translate(-50,-5)")
         .text("Genomic loci");
     svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+0+")")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-5)+")")
         .style("text-anchor", "middle")
         .text("Size (kb)");
     svg.append("text").attr("text-anchor", "middle")
@@ -1306,13 +1211,13 @@ function PlotIntervalSum(jobID){
         .attr("transform", "translate(0,"+height+")")
         .call(xAxis).selectAll("text")
         .style("text-anchor", "end")
-        .attr("transform", function (d) {return "rotate(-65)";})
-        .attr("dx","-.65em").attr("dy", "-.2em");
+        .attr("transform", function (d) {return "translate(-12,3)rotate(-65)";});
+        // .attr("dx","-.65em").attr("dy", "-.2em");
     svg.append('g').attr("class", "y axis")
         .attr("transform", "translate("+currentWidth+",0)")
         .call(yAxis).selectAll("text").remove();
     svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+0+")")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-5)+")")
         .style("text-anchor", "middle")
         .text("#SNPs");
     svg.append("text").attr("text-anchor", "middle")
@@ -1337,13 +1242,13 @@ function PlotIntervalSum(jobID){
         .attr("transform", "translate(0,"+height+")")
         .call(xAxis).selectAll("text")
         .style("text-anchor", "end")
-        .attr("transform", function (d) {return "rotate(-65)";})
-        .attr("dx","-.65em").attr("dy", "-.2em");
+        .attr("transform", function (d) {return "translate(-12,3)rotate(-65)";});
+        // .attr("dx","-.65em").attr("dy", "-.2em");
     svg.append('g').attr("class", "y axis")
         .attr("transform", "translate("+currentWidth+",0)")
         .call(yAxis).selectAll("text").remove();
     svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+0+")")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-5)+")")
         .style("text-anchor", "middle")
         .text("#mapped genes");
     svg.append("text").attr("text-anchor", "middle")
@@ -1368,20 +1273,21 @@ function PlotIntervalSum(jobID){
         .attr("transform", "translate(0,"+height+")")
         .call(xAxis).selectAll("text")
         .style("text-anchor", "end")
-        .attr("transform", function (d) {return "rotate(-65)";})
-        .attr("dx","-.65em").attr("dy", "-.2em");
+        .attr("transform", function (d) {return "translate(-12,3)rotate(-65)";});
+        // .attr("dx","-.65em").attr("dy", "-.2em");
     svg.append('g').attr("class", "y axis")
         .attr("transform", "translate("+currentWidth+",0)")
         .call(yAxis).selectAll("text").remove();
     svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+0+")")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-5)+")")
         .style("text-anchor", "middle")
         .text("#genes within loci");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-5)+")")
         .style("text-anchor", "middle")
         .text("#genes within loci");
-    svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+    svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
     svg.selectAll('text').style('font-family', 'sans-serif');
     svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
   });
@@ -1439,4 +1345,13 @@ function DownloadFiles(){
   if(paramfile || leadfile || intervalfile || snpsfile || annovfile || annotfile || genefile || eqtlfile || magmafile){
     document.getElementById('download').disabled=false;
   }
+}
+
+function ImgDown(id, type){
+  $('#'+id+'Data').val($('#'+id).html());
+  $('#'+id+'Type').val(type);
+  $('#'+id+'JobID').val(jobid);
+  $('#'+id+'FileName').val(id);
+  $('#'+id+'Dir').val("jobs");
+  $('#'+id+'Submit').trigger('click');
 }
