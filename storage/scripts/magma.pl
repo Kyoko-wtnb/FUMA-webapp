@@ -34,9 +34,9 @@ my $magma = $cfg->param('magma.magmadir');
 
 system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
 unless(-e $filedir."magma.genes.out"){
-	die "201";
+	die "MAGMA ERROR";
 }
-system "rm $filedir*.raw $filedir*.log";
+system "rm $filedir*.raw $filedir"."magma*.log";
 system "sed 's/ \\+/\\t/g' ".$filedir."magma.genes.out > $filedir"."temp.txt";
 system "mv ".$filedir."temp.txt ".$filedir."magma.genes.out";
 
