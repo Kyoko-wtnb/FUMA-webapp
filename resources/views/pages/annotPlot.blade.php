@@ -18,11 +18,12 @@
 <script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script>
 
 <script type="text/javascript">
+var jobID;
 $(document).ready(function(){
   $('.ImgDownSubmit').hide();
 
   var filedir = IPGAPvar.filedir;
-  var jobID = IPGAPvar.jobID;
+  jobID = IPGAPvar.jobID;
   var type = IPGAPvar.type;
   var rowI = IPGAPvar.rowI;
   var chr = IPGAPvar.chr;
@@ -40,7 +41,7 @@ $(document).ready(function(){
   var xMax_init = IPGAPvar.xMax_init;
   // $('#test').html("<p>xMax: "+xMax+" xMin: "+xMin+"</p>");
 
-  var margin = {top:50, right:250, left:50, bottom:100},
+  var margin = {top:50, right:250, left:60, bottom:100},
       // height = (GWASplot*1+Chr15*1)*210+(CADDplot*1+RDBplot*1)*160+60+eqtl*(eqtlNgenes*55),
       width = 600;
   var side = (xMax_init*1-xMin_init*1)*0.05;
@@ -532,7 +533,7 @@ $(document).ready(function(){
             // var y = d3.scale.ordinal().domain(y_element).rangePoints([currentHeight, currentHeight+150]);
             var y = d3.scale.ordinal().domain(y_element).rangePoints([rdbTop, rdbTop+rdbHeight]);
             var yAxis = d3.svg.axis().scale(y).tickFormat(function(d){return d;}).orient("left");
-            svg.selectAll("dot").data(data1.filter(function(d){if(d.RDB!=="NA"){return d;}})).enter()
+            svg.selectAll("dot").data(data1.filter(function(d){if(d.RDB!="NA" && d.RDB!=""){return d;}})).enter()
               .append("circle")
               .attr("class", "RDBdot")
               .attr("r", 3.5)
@@ -687,7 +688,7 @@ $(document).ready(function(){
                 svg.append("g").attr("class", "y axis").call(yAxisChr15).selectAll("text").remove();
               }else{
                 svg.append("g").attr("class", "y axis").call(yAxisChr15)
-                .selectAll("text").attr("dx", "-.5em").style("font-size", "10px");
+                .selectAll("text").attr("transform", "translate(-5,0)").style("font-size", "10px");
               }
               for(var i=0; i<y_element.length; i++){
                 svg.append("rect").attr("x", -10).attr("y", yChr15(y_element[i]))
@@ -756,13 +757,9 @@ $(document).ready(function(){
                     .attr("x", 0).attr("y", y(0))
                     .attr("width", width).attr("height", 0.3)
                     .style("fill", "grey");
-                  // svg.append("g").attr("class", "x axis eqtl"+i)
-                  //   // .attr("class", eqtlclass)
-                  //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
-                  //   .call(xAxis).selectAll("text").remove();
                 }
                 svg.append("g").attr("class", "y axis").call(yAxis)
-                  .selectAll('text').style('font-size', '11px');
+                  .selectAll('text').attr("transform", "translate(-5,0)").style('font-size', '11px');
                 // currentHeight2 = currentHeight2+55;
               }
 
@@ -770,7 +767,9 @@ $(document).ready(function(){
                 .attr("transform", "translate("+(-margin.left/2-15)+","+(eqtlTop+eqtlHeight/2)+")rotate(-90)")
                 .text("eQTL -log10 P-value")
                 .style("font-size", "10px");
-              svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+              svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+              svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+              svg.selectAll('text').style('font-family', 'sans-serif');
             });
 
           }else if(Chr15==1 && eqtlplot==0){
@@ -875,7 +874,7 @@ $(document).ready(function(){
                   .selectAll("text").remove();
               }else{
                 svg.append("g").attr("class", "y axis").call(yAxisChr15)
-                  .selectAll("text").attr("dx", "-.5em").style("font-size", "10px");
+                  .selectAll("text").attr("transform", "translate(-5,0)").style("font-size", "10px");
               }
               for(var i=0; i<y_element.length; i++){
                 svg.append("rect").attr("x", -10).attr("y", yChr15(y_element[i]))
@@ -891,8 +890,9 @@ $(document).ready(function(){
                     .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-30)+")")
                     .text("No eQTL of selected tissues exists in this region.");
               }
-              svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
-            });
+              svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+              svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+              svg.selectAll('text').style('font-family', 'sans-serif');            });
           }else if(eqtl==1 && eqtlplot==1){
             xAxisLabel="eqtl";
               queue().defer(d3.json, "d3text/"+jobID+"/eqtlplot.txt")
@@ -957,10 +957,6 @@ $(document).ready(function(){
                       .attr("width", width).attr("height", 0.3)
                       .style("fill", "grey");
 
-                    // svg.append("g").attr("class", "x axis eqtl"+i)
-                    //   // .attr("class", eqtlclass)
-                    //   .attr("transform", "translate(0,"+(currentHeight2+50)+")")
-                    //   .call(xAxis).selectAll("text").remove();
                   }
                   svg.append("g").attr("class", "y axis").call(yAxis)
                     .selectAll('text').style('font-size', '11px');
@@ -970,11 +966,14 @@ $(document).ready(function(){
                   .attr("transform", "translate("+(-margin.left/2-15)+","+(eqtlTop+eqtlHeight/2)+")rotate(-90)")
                   .text("eQTL -log10 P-value")
                   .style("font-size", "10px");
-                svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
-
+                svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+                svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+                svg.selectAll('text').style('font-family', 'sans-serif');
               });
           }
-          svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+          svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+          svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+          svg.selectAll('text').style('font-family', 'sans-serif');
 
       });
 
@@ -1286,7 +1285,7 @@ function ImgDown(id, type){
   $('#'+id+'Type').val(type);
   $('#'+id+'JobID').val(jobID);
   $('#'+id+'FileName').val(id);
-  $('#'+id+'Dir').val("gene2func");
+  $('#'+id+'Dir').val("jobs");
   $('#'+id+'Submit').trigger('click');
 }
 
@@ -1309,7 +1308,7 @@ function ImgDown(id, type){
     <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","svg");'>SVG</button>
     <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","pdf");'>PDF</button>
 
-    <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+    <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
       <input type="hidden" name="_token" value="{{ csrf_token() }}">
       <input type="hidden" name="dir" id="annotPlotDir" val=""/>
       <input type="hidden" name="id" id="annotPlotJobID" val=""/>

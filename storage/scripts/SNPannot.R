@@ -23,6 +23,7 @@ snps$dist <- sapply(snps$uniqID, function(x){min(annov$dist[annov$uniqID==x])})
 snps$func <- sapply(snps$uniqID, function(x){paste(annov$annot[annov$uniqID==x & annov$dist==min(annov$dist[annov$uniqID==x])], collapse=":")})
 snps$CADD <- annot$CADD[match(snps$uniqID, annot$uniqID)]
 snps$RDB <- annot$RDB[match(snps$uniqID, annot$uniqID)]
+snps$RDB[snps$RDB==""] <- NA
 snps$minChrState <- apply(annot[,4:ncol(annot)], 1, min)
 snps$commonChrState <- apply(annot[,4:ncol(annot)], 1, function(x){names(sort(table(x), decreasing=T))[1]})
 write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
