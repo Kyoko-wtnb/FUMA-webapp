@@ -762,6 +762,31 @@ class JobController extends Controller
       }
     }
 
+    public function imgdown(Request $request){
+      $svg = $request->input('data');
+      $dir = $request->input('dir');
+      $jobID = $request -> input('id');
+      $type = $request->input('type');
+      $fileName = $request->input('fileName');
+      $svgfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/temp.svg';
+      file_put_contents($svgfile, $svg);
+      $outfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/';
+      if($type=="svg"){
+        $outfile .= $fileName.'.svg';
+        File::move($svgfile, $outfile);
+        return response() -> download($outfile);
+      }else{
+        $outfile .= $fileName.'.'.$type;
+        $image = new \Imagick();
+        $image->readImageBlob('<?xml version="1.0"?>'.file_get_contents($svgfile));
+        $image->setImageResolution(72,72);
+        $image->resampleImage(144,144, \Imagick::FILTER_UNDEFINED, 1);
+        $image->setImageFormat($type);
+        $image->writeImage($outfile);
+        return response() -> download($outfile);
+      }
+    }
+
     public function SelectOption(Request $request){
       $type = $request -> input('type');
       $domain = $request -> input('domain');
@@ -1001,7 +1026,7 @@ class JobController extends Controller
     public function gene2funcFileDown(Request $request){
       $file = $request -> input('file');
       $id = $request -> input('id');
-      $filedir = config('app.jobdir').'/jobs/'.$id.'/'.$file;
+      $filedir = config('app.jobdir').'/gene2func/'.$id.'/'.$file;
       return response() -> download($filedir);
     }
 

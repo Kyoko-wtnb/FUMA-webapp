@@ -21,11 +21,11 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
-<script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
+<!-- <script type="text/javascript" src="//canvg.github.io/canvg/rgbcolor.js"></script>
 <script type="text/javascript" src="//canvg.github.io/canvg/StackBlur.js"></script>
 <script type="text/javascript" src="//canvg.github.io/canvg/canvg.js"></script>
-<script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script>
-
+<script type="text/javascript" src="{!! URL::asset('js/canvas2image.js') !!}"></script> -->
+<script type="text/javascript" src="{!! URL::asset('js/FileSaver.js') !!}"></script> -->
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 <script type="text/javascript">
@@ -35,6 +35,7 @@
   var public_path = "{{ URL::asset('/image/ajax-loader2.gif') }}";
   var storage_path = "<?php echo storage_path();?>";
   var subdir = "{{ Config::get('app.subdir') }}";
+  var jobdir = "{{ Config::get('app.jobdir') }}";
   var status = "{{$status}}";
   var jobID = "{{$id}}";
 </script>
@@ -246,8 +247,22 @@
           		<option value="clst">Cluster</option>
           		<option value="alph" selected>Alphabetical order</option>
           	</select>
-          </span><br/>
-          <button class="btn btn-xs ImgDown" id="expHeatImg" style="float:right; margin-right:150px">Download PNG</button>
+          </span><br/><br/>
+          Download the plot as
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","pdf");'>PDF</button>
+
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="expHeatDir" val=""/>
+            <input type="hidden" name="id" id="expHeatJobID" val=""/>
+            <input type="hidden" name="data" id="expHeatData" val=""/>
+            <input type="hidden" name="type" id="expHeatType" val=""/>
+            <input type="hidden" name="fileName" id="expHeatFileName" val=""/>
+            <input type="submit" id="expHeatSubmit" class="ImgDownSubmit"/>
+          </form>
         	<div id="expHeat"></div>
           <div id="expBox"></div>
           <br/>
@@ -266,13 +281,29 @@
             </a>
           </h4>
           <!-- <button class="btn" id="DEGdown" name="DEGdown">Download text file</button><br/> -->
+
+          Download the plot as
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","pdf");'>PDF</button>
+
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="tsEnrichBarDir" val=""/>
+            <input type="hidden" name="id" id="tsEnrichBarJobID" val=""/>
+            <input type="hidden" name="data" id="tsEnrichBarData" val=""/>
+            <input type="hidden" name="type" id="tsEnrichBarType" val=""/>
+            <input type="hidden" name="fileName" id="tsEnrichBarFileName" val=""/>
+            <input type="submit" id="tsEnrichBarSubmit" class="ImgDownSubmit"/>
+          </form>
+          <br/>
           <form action="fileDown" method="post" target="_blank">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="id" value="{{$id}}"/>
             <input type="hidden" name="file" value="DEG.txt"/>
-            <input type="submit" class="btn btn-xs" id="DEGdown" name="DEGdown" value="Download text file" style="float:right; margin-right:100px;">
+            <input type="submit" class="btn btn-xs" id="DEGdown" name="DEGdown" value="Download text file">
           </form>
-          <button class="btn btn-xs ImgDown" id="tsEnrichBarImg" style="float:right; margin-right:100px;">Download PNG</button>
           <div id="tsEnrichBar"></div>
           <span class="info"><i class="fa fa-info"></i>
             DEG sets with significant enrichment of input genes (FDR at 0.05) are highlighted in red.
@@ -283,14 +314,28 @@
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
-          <!-- <button class="btn" id="DEGgdown" name="DEGgdown">Download text file</button><br/> -->
+          Download the plot as
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","pdf");'>PDF</button>
+
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="tsGeneralEnrichBarDir" val=""/>
+            <input type="hidden" name="id" id="tsGeneralEnrichBarJobID" val=""/>
+            <input type="hidden" name="data" id="tsGeneralEnrichBarData" val=""/>
+            <input type="hidden" name="type" id="tsGeneralEnrichBarType" val=""/>
+            <input type="hidden" name="fileName" id="tsGeneralEnrichBarFileName" val=""/>
+            <input type="submit" id="tsGeneralEnrichBarSubmit" class="ImgDownSubmit"/>
+          </form>
+          <br/>
           <form class="form-inline" action="fileDown" method="post" target="_blank">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="id" value="{{$id}}"/>
             <input type="hidden" name="file" value="DEGgeneral.txt"/>
             <input type="submit" class="btn btn-xs" id="DEGgdown" name="DEGgdown" value="Download text file" style="float:right; margin-right:100px;">
           </form>
-          <button class="btn btn-xs ImgDown" id="tsGeneralEnrichBarImg" style="float:right; margin-right:100px;">Download PNG</button>
           <div id="tsGeneralEnrichBar"></div>
           <span class="info"><i class="fa fa-info"></i>
             Significantly enriched DEG sets (FDR at 0.05) are highlighted in red.
@@ -304,9 +349,18 @@
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="id" value="{{$id}}"/>
             <input type="hidden" name="file" value="GS.txt"/>
-            <input type="submit" class="btn btn-xs" id="GSdown" name="GSdown" value="Download text file" style="float:right; margin-right:150px;">
+            <input type="submit" class="btn btn-xs" id="GSdown" name="GSdown" value="Download text file">
           </form>
           <br/><br/>
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="GSDir" val=""/>
+            <input type="hidden" name="id" id="GSJobID" val=""/>
+            <input type="hidden" name="data" id="GSData" val=""/>
+            <input type="hidden" name="type" id="GSType" val=""/>
+            <input type="hidden" name="fileName" id="GSFileName" val=""/>
+            <input type="submit" id="GSSubmit" class="ImgDownSubmit"/>
+          </form>
           <div id="GeneSet">
           </div>
         </div>

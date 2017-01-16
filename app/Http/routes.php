@@ -101,6 +101,8 @@ Route::get('gene2func/{jobID}', function($jobID){
   return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID]);
 })->middleware('auth');
 
+Route::post('gene2func/imgdown', 'JobController@imgdown');
+
 // ********************** GWASRESULT ************************
 
 Route::get('GWASresult', function(){
