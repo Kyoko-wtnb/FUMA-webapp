@@ -34,13 +34,45 @@ if(type=="leadSNP"){
   snps$ld[snps$uniqID %in% ls] <- 2
 }
 
-if("or" %in% colnames(snps) & "se" %in% colnames(snps)){
-  snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "or", "se"))
-}else if("or" %in% colnames(snps)){
-  snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "or"))
-}else if("se" %in% colnames(snps)){
-  snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "se"))
+xMin <- min(snps$pos)
+xMax <- max(snps$pos)
+temp <- fread(paste(filedir, "input.snps", sep=""), data.table=F)
+temp <- temp[temp$chr==snps$chr[1],]
+temp <- temp[temp$bp>=xMin-1000000 & temp$bp<=xMax+1000000,]
+temp <- temp[!(temp$bp %in% snps$pos),]
+
+if(nrow(temp)>0){
+  temp$logP <- -log10(temp$p)
+  temp$logP[is.na(temp$logP)] <- 0
+  temp$ld <- 0
+  temp$MAF <- NA
+  temp$r2 <- NA
+  if("or" %in% colnames(snps) & "se" %in% colnames(snps)){
+    snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "or", "se"))
+    temp <- subset(temp, select=c("bp", "p","logP", "ld", "r2", "rsID", "MAF", "or", "se"))
+  }else if("or" %in% colnames(snps)){
+    snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "or"))
+    temp <- subset(temp, select=c("bp", "p","logP", "ld", "r2", "rsID", "MAF", "or"))
+  }else if("se" %in% colnames(snps)){
+    snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "se"))
+    temp <- subset(temp, select=c("bp", "p","logP", "ld", "r2", "rsID", "MAF", "se"))
+  }else{
+    snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF"))
+    temp <- subset(temp, select=c("bp", "p","logP", "ld", "r2", "rsID", "MAF"))
+  }
+
+  colnames(temp) <- colnames(snps)
+  snps <- rbind(snps, temp)
 }else{
-  snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF"))
+  if("or" %in% colnames(snps) & "se" %in% colnames(snps)){
+    snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "or", "se"))
+  }else if("or" %in% colnames(snps)){
+    snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "or"))
+  }else if("se" %in% colnames(snps)){
+    snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "se"))
+  }else{
+    snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF"))
+  }
 }
+
 write.table(snps, paste(filedir, "locusPlot.txt", sep=""), quote=F, row.names=F, sep="\t")

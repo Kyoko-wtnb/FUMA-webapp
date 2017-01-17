@@ -1024,7 +1024,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         .attr('class', 'dot')
         .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
         .attr("cy", function(d){return y(d.logP);})
-        .style('fill', function(d){return colorScale(d.r2);})
+        .style('fill', function(d){if(d.ld==0){return "grey";}else{return colorScale(d.r2);}})
         .on("mouseover", tip.show)
         .on("mouseout", tip.hide);
       // rect for 1KG SNPs
@@ -1066,7 +1066,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         svg.select(".x.axis").call(xAxis);
         svg.selectAll(".dot").attr("cx", function(d){return x(d.pos);})
           .attr("cy", function(d){return y(d.logP);})
-          .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return colorScale(d.r2);}});
+          .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return"grey";}else{return colorScale(d.r2);}});
         svg.selectAll(".KGSNPs")
           .attr("x", function(d){return x(d.pos)})
           .attr("y", -20)
