@@ -21,7 +21,9 @@ $(document).ready(function(){
   });
 
   $("#GWASsummary").bind('change', function(){
-    gwasFileSize = this.files[0].size;
+    if($(this).val().length>0){
+      gwasFileSize = this.files[0].size;
+    }
     CheckAll();
   });
 
