@@ -34,5 +34,13 @@ if(type=="leadSNP"){
   snps$ld[snps$uniqID %in% ls] <- 2
 }
 
-snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2"))
+if("or" %in% colnames(snps) & "se" %in% colnames(snps)){
+  snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "or", "se"))
+}else if("or" %in% colnames(snps)){
+  snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "or"))
+}else if("se" %in% colnames(snps)){
+  snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF", "se"))
+}else{
+  snps <- subset(snps, select=c("pos", "gwasP","logP", "ld", "r2", "rsID", "MAF"))
+}
 write.table(snps, paste(filedir, "locusPlot.txt", sep=""), quote=F, row.names=F, sep="\t")

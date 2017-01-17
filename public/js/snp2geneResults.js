@@ -817,9 +817,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
     Chr15Select();
 
     var rowData = leadTable.row(rowI).data();
-    var chr = rowData['chr'];
+    var chr = rowData[4];
     // create plot space
-    var colorScale = d3.scale.linear().domain([0.2,0.6,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+    var colorScale = d3.scale.linear().domain([0.0,0.5,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
     var margin = {top:30, right: 30, bottom:50, left:50},
         width = 700-margin.right - margin.left,
         height = 300-margin.top - margin.bottom;
@@ -849,7 +849,12 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
       // tip
       var tip = d3.tip().attr("class", "d3-tip")
         .offset([-10,0])
-        .html(function(d){return "BP:"+d.pos+"<br/>P: "+d.gwasP;});
+        .html(function(d){
+          var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF;
+          if(orcol!="NA"){out += "<br/>OR: "+d.or;}
+          if(secol!="NA"){out += "<br/>SE: "+d.se;}
+          return out;
+        });
       svg.call(tip);
       // zoom
       var zoom = d3.behavior.zoom().x(x).scaleExtent([1,10]).on("zoom", zoomed);
@@ -964,9 +969,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
     Chr15Select();
 
     var rowData = intervalTable.row(rowI).data();
-    var chr = rowData['chr'];
+    var chr = rowData[3];
     // create plot space
-    var colorScale = d3.scale.linear().domain([0.2,0.6,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+    var colorScale = d3.scale.linear().domain([0.0,0.5,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
     var margin = {top:30, right: 30, bottom:50, left:50},
         width = 700-margin.right - margin.left,
         height = 300-margin.top - margin.bottom;
@@ -999,7 +1004,12 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
       // tip
       var tip = d3.tip().attr("class", "d3-tip")
         .offset([-10,0])
-        .html(function(d){return "BP:"+d.pos+"<br/>P: "+d.gwasP;});
+        .html(function(d){
+          var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF;
+          if(orcol!="NA"){out += "<br/>OR: "+d.or;}
+          if(secol!="NA"){out += "<br/>SE: "+d.se;}
+          return out;
+        });
       svg.call(tip);
       // zoom
       var zoom = d3.behavior.zoom().x(x).scaleExtent([1,10]).on("zoom", zoomed);
