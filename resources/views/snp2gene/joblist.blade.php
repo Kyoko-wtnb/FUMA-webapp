@@ -88,9 +88,8 @@
         if(c){
           $('.deleteJobCheck').each(function(){
             if($(this).is(":checked")){
-              console.log($(this).val());
               $.ajax({
-                url: subdir+"snp2gene/deleteJob",
+                url: subdir+"/snp2gene/deleteJob",
                 type: "POST",
                 data: {
                   jobID: $(this).val()
