@@ -86,7 +86,9 @@ class JobController extends Controller
       $params = parse_ini_file($filedir."params.config");
       $posMap = $params['posMap'];
       $eqtlMap = $params['eqtlMap'];
-      echo "$filedir:$posMap:$eqtlMap";
+      $orcol = $params['orcol'];
+      $secol = $params['secol'];
+      echo "$filedir:$posMap:$eqtlMap:$orcol:$secol";
     }
 
     public function newJob(Request $request){

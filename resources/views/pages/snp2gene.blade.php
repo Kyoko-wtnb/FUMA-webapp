@@ -293,12 +293,6 @@
               <span class="info"><i class="fa fa-info"></i> This table contain all SNPs in LD of identified lead SNPs even if functional filtering is performed for gene mapping.</span>
               <br/>
               <table id="SNPtable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-                <thead>
-                  <tr>
-                    <th>uniqID</th><th>rsID</th><th>chr</th><th>bp</th><th>MAF</th><th>P-value</th><th>Interval</th><th>r2</th><th>leadSNP</th><th>Nearest gene</th>
-                    <th>dist</th><th>position</th><th>CADD</th><th>RDB</th><th>minChrState(127)</th><th>commonChrState(127)</th>
-                  </tr>
-                </thead>
               </table>
             </div>
             <div role="tabpanel" class="tab-pane" id="annovTablePane">

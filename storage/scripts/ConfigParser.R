@@ -16,6 +16,7 @@ ConfigParser <- function(file){
       names(config)[[i]] <- sub("\\[(.*)\\]", "\\1", l)
       next
     }else{
+      if(i==0){next}
       tmp <- unlist(strsplit(l, "="))
       config[[i]][length(config[[i]])+1] <- tmp[2]
       names(config[[i]])[length(config[[i]])] <- tmp[1]

@@ -88,6 +88,11 @@ $secol = undef if($secol eq "NA");
 if(!(defined $pcol)){die "P-value column was not found\n";}
 elsif(!(defined $chrcol && defined $poscol) && !(defined $rsIDcol)){die "Chromosome, position or rsID column was not found\n";}
 
+## modify params.config orcol and secol
+if($params->param("inputfiles.orcol") eq "NA" && defined $orcol){$params->param("inputfiles.orcol", "or")}
+if($params->param("inputfiles.secol") eq "NA" defined $secol){$params->param("inputfiles.secol", "se")}
+$params->save();
+
 my %GWAS;
 #print "chr: $chrcol, pos: $poscol, rsID: $rsIDcol, ref: $refcol, alt: $altcol, p: $pcol\n";
 

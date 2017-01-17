@@ -73,6 +73,8 @@ $(document).ready(function(){
       var filedir;
       var posMap;
       var eqtlMap;
+      var orcol;
+      var secol;
       $.ajax({
           url: subdir+'/snp2gene/getParams',
           type: 'POST',
@@ -88,12 +90,14 @@ $(document).ready(function(){
             filedir = tmp[0];
             posMap = parseInt(tmp[1]);
             eqtlMap = parseInt(tmp[2]);
+            orcol = tmp[3];
+            secol = tmp[4];
           },
           complete: function(){
             // jobInfo(jobid);
             GWplot(jobid);
             QQplot(jobid);
-            showResultTables(filedir, jobid, posMap, eqtlMap);
+            showResultTables(filedir, jobid, posMap, eqtlMap, orcol, secol);
             $('#results').show();
             $('#resultsSide').show();
           }
@@ -498,7 +502,7 @@ function QQplot(jobID){
   });
 }
 
-function showResultTables(filedir, jobID, posMap, eqtlMap){
+function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
   $('#plotClear').hide();
   $('#download').attr('disabled', false);
   if(eqtlMap==0){
@@ -584,7 +588,28 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
       buttons: ['csv']
   });
 
+  var table = "<thead>"
+      +"<tr>"
+        +"<th>uniqID</th><th>rsID</th><th>chr</th><th>bp</th><th>MAF</th><th>P-value</th>";
+  if(orcol!="NA"){
+    table += "<th>OR</th>";
+  }
+  if(secol!="NA"){
+    table += "<th>SE</th>";
+  }
+  table +="<th>Interval</th><th>r2</th><th>leadSNP</th><th>Nearest gene</th><th>dist</th><th>position</th><th>CADD</th><th>RDB</th><th>minChrState(127)</th><th>commonChrState(127)</th>"
+      +"</tr>"
+    +"</thead>";
   file = "snps.txt";
+  $('#SNPtable').html(table);
+  var cols = "uniqID:rsID:chr:pos:MAF:gwasP";
+  if(orcol!="NA"){
+    cols += ":or";
+  }
+  if(secol!="NA"){
+    cols += ":se";
+  }
+  cols += ":Interval:r2:leadSNP:nearestGene:dist:func:CADD:RDB:minChrState:commonChrState";
   var SNPtable = $('#SNPtable').DataTable({
     processing: true,
     serverSide: false,
@@ -595,7 +620,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap){
       data: {
         filedir: filedir,
         infile: file,
-        header: "uniqID:rsID:chr:pos:MAF:gwasP:Interval:r2:leadSNP:nearestGene:dist:func:CADD:RDB:minChrState:commonChrState"
+        header: cols
       }
     },
     error: function(){
