@@ -201,6 +201,7 @@ if(defined $chrcol && defined $poscol){
 	print SNP $outhead;
 	while(<DB>){
 		my @line = split(/\s/, $_);
+		$line[1] = 23 if($line[1] =~ /x/i);
 		if(exists $GWAS{$line[3]}){
 			if(defined $refcol && defined $altcol){
 				if(($line[4] eq $GWAS{$line[3]}{"ref"} && $line[5] eq $GWAS{$line[3]}{"alt"}) || ($line[5] eq $GWAS{$line[3]}{"ref"} && $line[4] eq $GWAS{$line[3]}{"alt"})){
