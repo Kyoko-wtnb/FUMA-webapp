@@ -101,12 +101,18 @@
         <tr>
           <td>Sample size (N)
             <a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of individuals (cases + controls, or total N) used in GWAS.
-            This is only used for MAGMA. It does not affect functional annotations and prioritizations.
+            This is only used for MAGMA. When total sample size is defined, the same number will be used for all SNPs.
+            If you have column 'N' in yout input GWAS summary statistics file, specified column will be used for N per SNP.
+            It does not affect functional annotations and prioritizations.
             If you don't know the sample size, the random number should be fine (> 50), yet that does not render the gene-based tests from MAGMA invalid.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </td>
-          <td><input type="number" class="form-control" id="N" name="N" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
+          <td>
+            Total sample size (integer): <input type="number" class="form-control" id="N" name="N" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();">
+            OR<br/>
+            Column name for N per SNP (text): <input type="text" class="form-control" id="Ncol" name="Ncol" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();">
+          </td>
           <td></td>
         </tr>
         <tr>

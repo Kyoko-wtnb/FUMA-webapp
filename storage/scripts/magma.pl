@@ -15,6 +15,9 @@ my $params = new Config::Simple($filedir.'params.config');
 
 # my $N = $ARGV[1];
 my $N = $params->param('params.N');
+my $Ncol = $params->param('params.Ncol');
+$N = undef if($N eq "NA");
+
 # my $pop = $ARGV[2];
 my $pop = $params->param('params.pop');
 if($pop =~ /\+/){
@@ -29,10 +32,21 @@ my $outSNPs = $filedir."input.snps";
 my $magmain = $filedir."magma.input";
 my $magmafiles = $cfg->param('magma.magmafiles');
 my $ref = "$magmafiles/g1000_".lc($pop)."_146";
-system "awk 'NR>=2' $outSNPs | cut -f 5,6 | sort -u -k 1,1 > $magmain";
-my $magma = $cfg->param('magma.magmadir');
 
-system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
+my $magma = $cfg->param('magma.magmadir');
+if(defined $N){
+	system "awk 'NR>=2' $outSNPs | cut -f 5,6 | sort -u -k 1,1 > $magmain";
+	system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
+}else{
+	open(TMP, $outSNPs);
+	my $head = <TMP>;
+	close TMP;
+	my @head = split(/\s+/, $head);
+	$Ncol = $#head+1;
+	system "awk 'NR>=2' $outSNPs | cut -f 5,6,$Ncol | sort -u -k 1,1 > $magmain";
+	system "$magma/magma --bfile $ref --pval $magmain ncol=3 --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
+}
+
 unless(-e $filedir."magma.genes.out"){
 	die "MAGMA ERROR";
 }

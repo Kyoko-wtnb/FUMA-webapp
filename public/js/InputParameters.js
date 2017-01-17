@@ -113,26 +113,28 @@ function CheckAll(){
 
   tablecheck=true;
   table=$('#NewJobParams')[0];
-  if($('#N').val().length==0){
+  if($('#N').val().length==0 && $('#Ncol').val().length==0){
+    $('#N').attr("disabled", false);
+    $('#Ncol').attr("disabled", false);
     $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-ban"></i> Mandatory input</div></td>');
+      +'<i class="fa fa-ban"></i> Mandatory input. <br/>Please provide either total sample size of GWAS study or column name of N in input file.</div></td>');
     submit=false;
     tablecheck=false;
-  }else{
-    if(isNaN($('#N').val())){
-      $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-ban"></i> Invalid input</div></td>');
-      submit=false;
-      tablecheck=false;
-    }else if($('#N').val()<50){
+  }else if($('#N').val().length>0){
+    $('#Ncol').attr("disabled", true);
+    if($('#N').val()<50){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input. Smple size must be greater than 50.</div></td>');
       submit=false;
       tablecheck=false;
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-check"></i> OK</div></td>');
+        +'<i class="fa fa-check"></i> OK. The total sample size will be applied to all SNPs.</div></td>');
     }
+  }else{
+    $('#N').attr("disabled", true);
+    $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-check"></i> OK. The defined column will be used for sample size per SNP.</div></td>');
   }
 
   if($('#leadP').val().length==0){

@@ -613,4 +613,4 @@ system "$annov/annotate_variation.pl -out $annovout -build hg19 $annovin $humand
 my $annov1 = $filedir."annov.variant_function";
 my $annov2 = $filedir."annov.txt";
 system "$dir/annov_geneSNPs.pl $annov1 $annov2";
-system "rm $annovin $annovout\.variant_function $annovout\.exonic_variant_function $filedir*.log";
+system "rm $annovin $annovout\.variant_function $annovout\.exonic_variant_function $filedir"."annov*.log";

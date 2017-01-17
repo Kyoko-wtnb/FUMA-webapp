@@ -245,7 +245,13 @@ class JobController extends Controller
       // gene type
       $genetype = implode(":", $request -> input('genetype'));
       // others
-      $N = $request -> input('N');
+      $N="NA";
+      $Ncol="NA";
+      if($request->has('N')){
+        $N = $request->input('N');
+      }else if($request->has('Ncol')){
+        $Ncol = $request->input('Ncol');
+      }
       $leadP = $request -> input('leadP');
       $r2 = $request -> input('r2');
       $gwasP = $request -> input('gwasP');
@@ -383,6 +389,7 @@ class JobController extends Controller
 
       File::append($paramfile, "\n[params]\n");
       File::append($paramfile, "N=$N\n");
+      File::append($paramfile, "Ncol=$Ncol\n");
       File::append($paramfile, "exMHC=$exMHC\n");
       File::append($paramfile, "extMHC=$extMHC\n");
       // File::append($paramfile, "include chromosome X\t$Xchr\n");
