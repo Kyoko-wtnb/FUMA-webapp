@@ -275,7 +275,9 @@
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
-
+          <span class="info"><i class="fa fa-info"></i>
+            DEG sets with significant enrichment of input genes (FDR at 0.05) are highlighted in red.
+          </span><br/><br/>
           Download the plot as
           <button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","png");'>PNG</button>
           <button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","jpeg");'>JPG</button>
@@ -299,15 +301,15 @@
             <input type="submit" class="btn btn-xs" id="DEGdown" name="DEGdown" value="Download text file">
           </form>
           <div id="tsEnrichBar"></div>
-          <span class="info"><i class="fa fa-info"></i>
-            DEG sets with significant enrichment of input genes (FDR at 0.05) are highlighted in red.
-          </span>
           <br/><br/>
           <h4>Differrentially expressed genes across 30 general tissue types (GTEx)
             <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="The same method as mentioned above (for 53 tissue types) was applied, except 53 tissue types were merged into 30 general tissue types.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
+          <span class="info"><i class="fa fa-info"></i>
+            Significantly enriched DEG sets (FDR at 0.05) are highlighted in red.
+          </span><br/><br/>
           Download the plot as
           <button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","png");'>PNG</button>
           <button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","jpeg");'>JPG</button>
@@ -328,12 +330,9 @@
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="id" value="{{$id}}"/>
             <input type="hidden" name="file" value="DEGgeneral.txt"/>
-            <input type="submit" class="btn btn-xs" id="DEGgdown" name="DEGgdown" value="Download text file" style="float:right; margin-right:100px;">
+            <input type="submit" class="btn btn-xs" id="DEGgdown" name="DEGgdown" value="Download text file">
           </form>
           <div id="tsGeneralEnrichBar"></div>
-          <span class="info"><i class="fa fa-info"></i>
-            Significantly enriched DEG sets (FDR at 0.05) are highlighted in red.
-          </span>
         </div>
         <!-- GeneSet enrichment -->
         <div id="GeneSetPanel"  class="sidePanel container" style="padding-top:50px;">
