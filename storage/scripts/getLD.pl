@@ -20,6 +20,11 @@ my $params = new Config::Simple($filedir.'/params.config');
 my $dir = dirname(__FILE__);
 my $cfg = new Config::Simple($dir.'/app.config');
 
+my $orcol = $params->param('inputfiles.orcol');
+my $secol = $params->param('inputfiles.secol');
+$orcol = undef if($orcol eq "NA");
+$secol = undef if($secol eq "NA");
+
 my $pop = $params->param('params.pop');
 my $leadP = $params->param('params.leadP');
 my $KGSNPs = $params->param('params.Incl1KGSNPs'); #1 to add, 0 to not add
@@ -66,6 +71,23 @@ while(<RS>){
 }
 close RS;
 =cut
+# column matched with the output file from gwas_file.pl
+my $rsIDcol=4;
+my $chrcol=0;
+my $poscol=1;
+my $pcol=5;
+my $refcol=2;
+my $altcol=3;
+
+open(GWAS, "$gwas") or die "Cannot open $gwas\n";
+my $head = <GWAS>;
+close GWAS;
+my @head = split(/\s+/, $head);
+foreach my $i (0..$#head){
+	if($head[$i] eq "or"){$orcol=$i}
+	elsif($head[$i] eq "se"){$secol=$i}
+}
+
 my $out1 = $filedir."ld.txt";
 my $out2 = $filedir."snps.txt";
 my $out3 = $filedir."annot.txt";
@@ -74,7 +96,11 @@ open(LD, ">$out1") or die "Cannot open $out1\n";
 print LD "SNP1\tSNP2\tr2\n";
 close LD;
 open(OUT, ">$out2");
-print OUT "uniqID\trsID\tchr\tpos\tref\talt\tMAF\tgwasP\n";
+my $outhead = "uniqID\trsID\tchr\tpos\tref\talt\tMAF\tgwasP";
+$outhead .= "\tor" if(defined $orcol);
+$outhead .= "\tse" if(defined $secol);
+$outhead .= "\n";
+print OUT $outhead;
 close OUT;
 open(ANNOT, ">$out3");
 print ANNOT "uniqID\tCADD\tRDB";
@@ -90,13 +116,6 @@ foreach(@chr15){
 print ANNOT "\n";
 close ANNOT;
 
-# column matched with the output file from gwas_file.pl
-my $rsIDcol=4;
-my $chrcol=0;
-my $poscol=1;
-my $pcol=5;
-my $refcol=2;
-my $altcol=3;
 
 ######
 # reagion file
@@ -138,6 +157,7 @@ foreach my $chr (1..23){
 		next unless(exists $regions{$chr});
 	}
 
+	print "Start chr $chr: \n";
 	print "Reading GWAS file ...\n";
 
 	### Store SNPs into hash (%GWAS)
@@ -173,6 +193,8 @@ foreach my $chr (1..23){
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{$id}{"ref"}=$line[$refcol];
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{$id}{"alt"}=$line[$altcol];
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{$id}{"rsID"}=$line[$rsIDcol];
+		$GWAS{$line[$chrcol]}{$line[$poscol]}{$id}{"or"}=$line[$orcol] if(defined $orcol);
+		$GWAS{$line[$chrcol]}{$line[$poscol]}{$id}{"se"}=$line[$secol] if(defined $secol);
 
 =begin
 ## Older version with input.gwas as input
@@ -271,7 +293,7 @@ foreach my $chr (1..23){
 	#		## write script
 	#	}
 	#}else{
-	print "Start chr $chr: \n";
+
 	my $ldfile = "$refgenome/".$pop."/".$pop.".chr$chr.ld.gz";
 	my $maffile = "$refgenome/".$pop."/chr$chr.data.txt.gz";
 
@@ -284,7 +306,7 @@ foreach my $chr (1..23){
 			my $pos=$leadSNPs{$chr}{$ls};
       # print "LD tabix $chr:$pos-$pos\n";
 
-			my $start = $pos -1000000;
+			my $start = $pos - 1000000;
 			my $end = $pos + 1000000;
       # print "MAF tabix\n";
 			my @MAF = split(/\n/, `tabix $maffile $chr:$start-$end`);
@@ -295,10 +317,10 @@ foreach my $chr (1..23){
 			foreach my $m (@MAF){
 				my @line = split(/\s/, $m);
 				next if($MHC==1 && $line[0]==6 && $line[1]>=$MHCstart && $line[1]<=$MHCend);
-			    if(exists $GWAS{$line[0]}{$line[1]}{$line[6]}{"p"}){
-			      next if($GWAS{$line[0]}{$line[1]}{$line[6]}{"p"}>$gwasP);
-			    }
-			    next if($line[5]<$maf);
+		    if(exists $GWAS{$line[0]}{$line[1]}{$line[6]}{"p"}){
+		      next if($GWAS{$line[0]}{$line[1]}{$line[6]}{"p"}>$gwasP);
+		    }
+		    next if($line[5]<$maf);
 				$maf{$line[4]}{"uniqID"}=$line[6];
 				$maf{$line[4]}{"pos"}=$line[1];
 				$maf{$line[4]}{"MAF"}=$line[5];
@@ -320,12 +342,15 @@ foreach my $chr (1..23){
 			next unless(exists $maf{$ls}{"pos"});
 			unless(exists $riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}){
 				#$riskSNPs{$chr}{$maf{$ls}{"uniqID"}}{"pos"}=$maf{$ls}{"pos"};
+
 				$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"MAF"}=$maf{$ls}{"MAF"};
 				$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"rsID"}=$ls;
 				#$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"uniqID"}=$maf{$ls}{"uniqID"};
 				$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"gwasP"}=$GWAS{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"p"};
 				$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"ref"}=$GWAS{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"ref"};
 				$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"alt"}=$GWAS{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"alt"};
+				$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"or"}=$GWAS{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"or"} if(defined $orcol);
+				$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"se"}=$GWAS{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"se"} if(defined $secol);
 				$riskSNPs{$chr}{$maf{$ls}{"pos"}}{$maf{$ls}{"uniqID"}}{"annot"}=$maf{$ls}{"annot"};
 				print LD $maf{$ls}{"uniqID"}, "\t",$maf{$ls}{"uniqID"},"\t1\n";
 			}
@@ -346,6 +371,8 @@ foreach my $chr (1..23){
 								#$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{"uniqID"}=$maf{$line[3]}{"uniqID"};
 								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"ref"}=$GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"ref"};
 								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"alt"}=$GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"alt"};
+								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"or"}=$GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"or"} if(defined $orcol);
+								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"se"}=$GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"se"} if(defined $secol);
 								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"annot"}=$maf{$line[3]}{"annot"};
 							}
 						}else{
@@ -354,6 +381,8 @@ foreach my $chr (1..23){
 							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"gwasP"}="NA";
 							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"ref"}=$maf{$line[3]}{"ref"};
 							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"alt"}=$maf{$line[3]}{"alt"};
+							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"or"}="NA" if(defined $orcol);
+							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"se"}="NA" if(defined $secol);
 							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"annot"}=$maf{$line[3]}{"annot"};
 						}
 					}
@@ -443,6 +472,8 @@ foreach my $chr (1..23){
 					$riskSNPs{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"gwasP"}=$GWAS{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"p"};
 					$riskSNPs{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"ref"}=$GWAS{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"ref"};
 					$riskSNPs{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"alt"}=$GWAS{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"alt"};
+					$riskSNPs{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"or"}=$GWAS{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"or"} if(defined $orcol);
+					$riskSNPs{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"se"}=$GWAS{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"se"} if(defined $secol);
 					$riskSNPs{$chr}{$maf{$line[2]}{"pos"}}{$maf{$line[2]}{"uniqID"}}{"annot"}=$maf{$line[2]}{"annot"};
 					print LD $maf{$line[2]}{"uniqID"}, "\t",$maf{$line[2]}{"uniqID"},"\t1\n";
 					$count++;
@@ -458,6 +489,8 @@ foreach my $chr (1..23){
 								#$riskSNPs{$chr}{$maf{$line[3]}{"uniqID"}}{"pos"}=$maf{$line[3]}{"pos"};
 								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"ref"}=$GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"ref"};
 								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"alt"}=$GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"alt"};
+								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"or"}=$GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"or"} if(defined $orcol);
+								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"se"}=$GWAS{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"se"} if(defined $secol);
 								$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"annot"}=$maf{$line[3]}{"annot"};
 							}
 						}else{
@@ -467,6 +500,8 @@ foreach my $chr (1..23){
 							#$riskSNPs{$chr}{$maf{$line[3]}{"uniqID"}}{"pos"}=$maf{$line[3]}{"pos"};
 							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"ref"}=$maf{$line[3]}{"ref"};
 							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"alt"}=$maf{$line[3]}{"alt"};
+							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"or"}="NA" if(defined $orcol);
+							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"se"}="NA" if(defined $secol);
 							$riskSNPs{$chr}{$maf{$line[3]}{"pos"}}{$maf{$line[3]}{"uniqID"}}{"annot"}=$maf{$line[3]}{"annot"};
 						}
 					}
@@ -519,7 +554,10 @@ foreach my $chr (1..23){
 			if($KGSNPs==0){
 				if(exists $GWAS{$chr}{$pos}{$id}{"p"}){
 					if($GWAS{$chr}{$pos}{$id}{"p"} <= $gwasP){
-						print OUT join("\t", ($id, $riskSNPs{$chr}{$pos}{$id}{"rsID"}, $chr, $pos, $riskSNPs{$chr}{$pos}{$id}{"ref"}, $riskSNPs{$chr}{$pos}{$id}{"alt"}, $riskSNPs{$chr}{$pos}{$id}{"MAF"}, $riskSNPs{$chr}{$pos}{$id}{"gwasP"})), "\n";
+						print OUT join("\t", ($id, $riskSNPs{$chr}{$pos}{$id}{"rsID"}, $chr, $pos, $riskSNPs{$chr}{$pos}{$id}{"ref"}, $riskSNPs{$chr}{$pos}{$id}{"alt"}, $riskSNPs{$chr}{$pos}{$id}{"MAF"}, $riskSNPs{$chr}{$pos}{$id}{"gwasP"}));
+						print OUT "\t", $riskSNPs{$chr}{$pos}{$id}{"or"} if(defined $orcol);
+						print OUT "\t", $riskSNPs{$chr}{$pos}{$id}{"se"} if(defined $secol);
+						print OUT "\n";
 						print ANNOT join("\t", $id, $riskSNPs{$chr}{$pos}{$id}{"annot"}), "\n";
 						#my @a = split(/:/, $id);
 						#print OUT2 join("\t", ($chr, $riskSNPs{$chr}{$id}{"pos"},$riskSNPs{$chr}{$id}{"pos"},$a[2],$a[3])), "\n";
@@ -528,13 +566,19 @@ foreach my $chr (1..23){
 			}else{
 				if(exists $GWAS{$chr}{$pos}{$id}{"p"}){
 					if($GWAS{$chr}{$pos}{$id}{"p"} <= $gwasP){
-						print OUT join("\t", ($id, $riskSNPs{$chr}{$pos}{$id}{"rsID"}, $chr, $pos, $riskSNPs{$chr}{$pos}{$id}{"ref"}, $riskSNPs{$chr}{$pos}{$id}{"alt"}, $riskSNPs{$chr}{$pos}{$id}{"MAF"}, $riskSNPs{$chr}{$pos}{$id}{"gwasP"})), "\n";
+						print OUT join("\t", ($id, $riskSNPs{$chr}{$pos}{$id}{"rsID"}, $chr, $pos, $riskSNPs{$chr}{$pos}{$id}{"ref"}, $riskSNPs{$chr}{$pos}{$id}{"alt"}, $riskSNPs{$chr}{$pos}{$id}{"MAF"}, $riskSNPs{$chr}{$pos}{$id}{"gwasP"}));
+						print OUT "\t", $riskSNPs{$chr}{$pos}{$id}{"or"} if(defined $orcol);
+						print OUT "\t", $riskSNPs{$chr}{$pos}{$id}{"se"} if(defined $secol);
+						print OUT "\n";
 						print ANNOT join("\t", $id, $riskSNPs{$chr}{$pos}{$id}{"annot"}), "\n";
 						#my @a = split(/:/, $id);
 						#print OUT2 join("\t", ($chr, $riskSNPs{$chr}{$id}{"pos"},$riskSNPs{$chr}{$id}{"pos"},$a[2],$a[3])), "\n";
 					}
 				}else{
-					print OUT join("\t", ($id, $riskSNPs{$chr}{$pos}{$id}{"rsID"}, $chr, $pos, $riskSNPs{$chr}{$pos}{$id}{"ref"}, $riskSNPs{$chr}{$pos}{$id}{"alt"}, $riskSNPs{$chr}{$pos}{$id}{"MAF"}, $riskSNPs{$chr}{$pos}{$id}{"gwasP"})), "\n";
+					print OUT join("\t", ($id, $riskSNPs{$chr}{$pos}{$id}{"rsID"}, $chr, $pos, $riskSNPs{$chr}{$pos}{$id}{"ref"}, $riskSNPs{$chr}{$pos}{$id}{"alt"}, $riskSNPs{$chr}{$pos}{$id}{"MAF"}, $riskSNPs{$chr}{$pos}{$id}{"gwasP"}));
+					print OUT "\t", $riskSNPs{$chr}{$pos}{$id}{"or"} if(defined $orcol);
+					print OUT "\t", $riskSNPs{$chr}{$pos}{$id}{"se"} if(defined $secol);
+					print OUT "\n";
 					print ANNOT join("\t", $id, $riskSNPs{$chr}{$pos}{$id}{"annot"}), "\n";
 					#my @a = split(/:/, $id);
 					#print OUT2 join("\t", ($chr, $riskSNPs{$chr}{$id}{"pos"},$riskSNPs{$chr}{$id}{"pos"},$a[2],$a[3])), "\n";

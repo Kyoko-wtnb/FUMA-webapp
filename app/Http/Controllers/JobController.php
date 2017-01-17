@@ -216,6 +216,25 @@ class JobController extends Controller
       }
 
       // get parameters
+      // column names
+      $chrcol = "NA";
+      $poscol = "NA";
+      $rsIDcol = "NA";
+      $pcol = "NA";
+      $altcol = "NA";
+      $refcol = "NA";
+      $orcol = "NA";
+      $secol = "NA";
+      // $mafcol = "NA";
+      if($request -> has('chrcol')){$chrcol = $request->input('chrcol');}
+      if($request -> has('poscol')){$poscol = $request->input('poscol');}
+      if($request -> has('rsIDcol')){$rsIDcol = $request->input('rsIDcol');}
+      if($request -> has('pcol')){$pcol = $request->input('pcol');}
+      if($request -> has('altcol')){$altcol = $request->input('altcol');}
+      if($request -> has('refcol')){$refcol = $request->input('refcol');}
+      if($request -> has('orcol')){$orcol = $request->input('orcol');}
+      if($request -> has('secol')){$secol = $request->input('secol');}
+      // if($request -> has('mafcol')){$chrcol = $request->input('mafcol');}
       // MHC region
       if($request -> has('MHCregion')){$exMHC=1;}
       else{$exMHC=0;}
@@ -344,6 +363,16 @@ class JobController extends Controller
       }else{
         File::append($paramfile, "gwasfile=fuma.example.CD.gwas\n");
       }
+      File::append($paramfile, "chrcol=$chrcol\n");
+      File::append($paramfile, "poscol=$poscol\n");
+      File::append($paramfile, "rsIDcol=$rsIDcol\n");
+      File::append($paramfile, "pcol=$pcol\n");
+      File::append($paramfile, "altcol=$altcol\n");
+      File::append($paramfile, "refcol=$refcol\n");
+      File::append($paramfile, "orcol=$orcol\n");
+      File::append($paramfile, "secol=$secol\n");
+      // File::append($paramfile, "mafcol=$mafcol\n");
+
       if($leadSNPsfileup==1){File::append($paramfile, "leadSNPsfile=".$_FILES["leadSNPs"]["name"]."\n");}
       else{File::append($paramfile, "leadSNPsfile=NA\n");}
       File::append($paramfile, "addleadSNPs=$addleadSNPs\n");

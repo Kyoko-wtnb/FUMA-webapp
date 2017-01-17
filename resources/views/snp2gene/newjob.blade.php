@@ -31,6 +31,36 @@
           <td></td>
         </tr>
         <tr>
+          <td>GWAS summary statistics file columns
+            <a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file columns" data-content="This is optional parameter to define column names.
+            Unless defined, FUMA will automatically detect columns from the list of acceptable column names (see tutorial for detail).
+            However, to avoid error, please provide column names.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </td>
+          <td>
+            <span class="info"><i class="fa fa-info"></i> case insensitive</span><br/>
+            <span class="form-inline">Chromosome: <input type="text" class="form-control" id="chrcol" name="chrcol"></span><br/>
+            <span class="form-inline">Position: <input type="text" class="form-control" id="poscol" name="poscol"></span><br/>
+            <span class="form-inline">rsID: <input type="text" class="form-control" id="rsIDcol" name="rsIDcol"></span><br/>
+            <span class="form-inline">P-value: <input type="text" class="form-control" id="pcol" name="pcol"></span><br/>
+            <span class="form-inline">Risk allele: <input type="text" class="form-control" id="altcol" name="altcol"></span><br/>
+            <span class="form-inline">Other allele: <input type="text" class="form-control" id="refcol" name="refcol"></span><br/>
+            <span class="form-inline">OR: <input type="text" class="form-control" id="orcol" name="orcol"></span><br/>
+            <span class="form-inline">SE: <input type="text" class="form-control" id="secol" name="secol"></span><br/>
+            <!-- <span class="form-inline">MAF: <input type="text" class="form-control" id="mafcol" name="mafcol"></span>
+            <a class="infoPop" data-toggle="popover" title="Minor allele frequency" data-content="Only when provided the column name of MAF, FUMA will use the input MAF for filtering of SNPs.
+            Otherwise, MAF of reference panel (1000G Phase3) of defined population will be used.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a><br/> -->
+          </td>
+          <td>
+            <div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">
+              <i class="fa fa-exclamation-circle"></i> Optional. Please fill as much as you can. It is not necessary to fill all column names.
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td>Pre-defined lead SNPs
             <a class="infoPop" data-toggle="popover" title="Pre-defined lead SNPs" data-content="This option can be used when you already have determined lead SNPs and do not want FUMA to do this for you. This option can be also used when you want to include specific SNPs as lead SNPs which do no reach significant P-value threshold. The input file should have 3 columns, rsID, chromosome and position with header (header could be anything but the order of columns have to match).">
               <i class="fa fa-question-circle-o fa-lg"></i>
