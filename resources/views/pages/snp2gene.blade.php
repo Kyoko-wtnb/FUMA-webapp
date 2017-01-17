@@ -98,6 +98,7 @@
             This is a manhattan plot of the gene-based test as computed by MAGMA based on your input GWAS summary statistics.<br/>
             The gene-based P-value is downloadable from 'Download' tab from the left side bar.
           </span><br/><br/>
+          <span id="geneManhattanDesc"></span><br/><br/>
           Download the plot as
           <button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","png");'>PNG</button>
           <button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","jpeg");'>JPG</button>
