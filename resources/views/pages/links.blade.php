@@ -103,6 +103,26 @@
         </td>
       </tr>
       <tr>
+        <td>Blood eQTL Browser</td>
+        <td>eQTLs of blood cells. Only cis-eQTLs with FDR &le; 0.05 are available in FUMA.</td>
+        <td>Info and data: <a href="http://genenetwork.nl/bloodeqtlbrowser/" taget="_blank">http://genenetwork.nl/bloodeqtlbrowser/</a></td>
+        <td>17 January 2017</td>
+        <td>
+          Westra et al. 2013. Systematic identification of trans eQTLs as putative divers of known disease associations. <i>Nat. Genet.</i> <b>45</b>, 1238-1243.<br/>
+          <a href="https://www.ncbi.nlm.nih.gov/pubmed/3991562" target="_blank">PMID:3991562</a>
+        </td>
+      </tr>
+      <tr>
+        <td>BIOS QTL browser</td>
+        <td>eQTLs of blood cells in Dutch population. Only cis-eQTLs (gene-level) with FDR &le; 0.05 are available in FUMA.</td>
+        <td>Info and data: <a href="http://genenetwork.nl/biosqtlbrowser/" target="_blank">http://genenetwork.nl/biosqtlbrowser/</a></td>
+        <td>17 January 2017</td>
+        <td>
+          Zhernakova et al. 2017. Identification of context-dependent expression quantitative trait loci in whole blood. <i>Nat. Genet.</i> <b>49</b>, 139-145.<br/>
+          <a href="https://www.ncbi.nlm.nih.gov/pubmed/27918533" target="_blank">PMID:27918533</a>
+        </td>
+      </tr>
+      <tr>
         <td>MsigDB v5.2</td>
         <td>Collection of publicly available gene sets. Data sets include e.g. KEGG, Reactome, BioCarta, GO terms and so on.</td>
         <td>Info and data: <a href="http://software.broadinstitute.org/gsea/msigdb" target="_blank">http://software.broadinstitute.org/gsea/msigdb</a></td>
