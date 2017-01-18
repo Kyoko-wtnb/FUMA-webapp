@@ -1013,7 +1013,7 @@
   <!-- job title -->
   <div class="panel panel-default" style="padding:0px;">
     <div class="panel-heading input" style="padding:5px;">
-      <h4>6. Title of job submittion<a href="#NewJobTitlePanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
+      <h4>6. Title of job submission<a href="#NewJobTitlePanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
     </div>
     <div class="panel-body collapse" id="NewJobTitlePanel">
       <table class="table table-bordered inputTable" id="NewJobSubmit" style="width: auto;">
