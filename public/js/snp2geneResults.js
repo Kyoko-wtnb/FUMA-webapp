@@ -100,7 +100,7 @@ $(document).ready(function(){
             GWplot(jobid);
             QQplot(jobid);
             showResultTables(filedir, jobid, posMap, eqtlMap, orcol, secol);
-            $('#GSplotSide').show();
+            $('#GWplotSide').show();
             $('#results').show();
             $('#resultsSide').show();
           }
