@@ -9,8 +9,9 @@
   <?php
   if($status==-1){
     echo ' File upload failed.<br/>
-    You might have clicked the button "Subtmi Job" several time.<br/>
-    This job has been deleted but the last job you have submitted could still be under process.<br/>
+    This error occures because of uploading error. Please do not leave the page after clicked submit buttun while uploading the file.<br/>
+    You might have clicked the button "Subtmi Job" several time.
+    The job has been deleted but the last job you have submitted could still be under process.<br/>
     Please check the list of jobs from <ahref="http://fuma.ctglab.nl/snp2gene">here</a> (login required).';
   }else if($status==1){
     echo ' (Not enough columns are provided in GWAS summary statistics file / '.$msg.')<br/>
