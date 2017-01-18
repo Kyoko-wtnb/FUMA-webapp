@@ -20,21 +20,15 @@ class D3jsController extends Controller
         $this->middleware('auth');
     }
 
-    public function locusPlot($ldI, $type, $jobID){
-      $script = storage_path()."/scripts/locusPlot.R";
+    public function locusPlot(Request $request){
+      $jobID = $request->input('jobID');
+      $type = $request->input('type');
+      $rowI = $request->input('rowI');
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      exec("Rscript $script $filedir $ldI $type");
 
-      $f = $filedir."locusPlot.txt";
-      if(file_exists($f)){
-        $file = fopen($f, 'r');
-        $header = fgetcsv($file, 0, "\t");
-        $all_rows = array();
-        while($row = fgetcsv($file, 0, "\t")){
-          $all_rows[] = array_combine($header, $row);
-        }
-        echo json_encode($all_rows);
-      }
+      $script = storage_path()."/scripts/locusPlot.py";
+      exec("python $script $filedir $rowI $type");
+      return;
     }
 
     public function d3js_textfile($jobID, $file){

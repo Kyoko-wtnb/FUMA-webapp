@@ -855,148 +855,21 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
 
     var rowData = leadTable.row(rowI).data();
     var chr = rowData[4];
-    // create plot space
-    var colorScale = d3.scale.linear().domain([0.0,0.5,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-    var margin = {top:30, right: 30, bottom:50, left:50},
-        width = 700-margin.right - margin.left,
-        height = 300-margin.top - margin.bottom;
-    // set range
-    var x = d3.scale.linear().range([0, width]);
-    var y = d3.scale.linear().range([height, 0]);
-    d3.select('#locusPlot').select("svg").remove();
-    $('#selectedLeadSNP').html("");
-    var svg = d3.select("#locusPlot").append("svg")
-              .attr("width", width+margin.left+margin.right)
-              .attr("height", height+margin.top+margin.bottom)
-              .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
-    //Get data
-    d3.json("locusPlot/"+rowI+'/"leadSNP"/'+jobID, function(data){
-      data.forEach(function(d){
-        d.pos = +d.pos;
-        d.logP = +d.logP;
-        d.r2 = +d.r2;
-        d.ld = +d.ld;
-        // d.gwasP = +d.gwasP;
-      });
-      var side=(d3.max(data, function(d){return d.pos})-d3.min(data, function(d){return d.pos}))*0.05;
-      x.domain([d3.min(data, function(d){return d.pos})-side, d3.max(data, function(d){return d.pos})+side]);
-      y.domain([0, d3.max(data, function(d){return d.logP})]);
-      var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
-      var yAxis = d3.svg.axis().scale(y).orient("left");
-      // tip
-      var tip = d3.tip().attr("class", "d3-tip")
-        .offset([-10,0])
-        .html(function(d){
-          var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF;
-          if(orcol!="NA"){out += "<br/>OR: "+d.or;}
-          if(secol!="NA"){out += "<br/>SE: "+d.se;}
-          return out;
-        });
-      svg.call(tip);
-      // zoom
-      var zoom = d3.behavior.zoom().x(x).scaleExtent([1,10]).on("zoom", zoomed);
-      svg.call(zoom);
-      // add rect
-      svg.append("rect").attr("width", width).attr("height", height)
-        .style("fill", "transparent")
-        .style("shape-rendering", "crispEdges");
 
-      // dot plot for gwas tagged SNPs
-      // SNPs not in LD
-      svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA" && d.ld==0){return d;}})).enter()
-        .append("circle")
-        .attr("class", "dot")
-        .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
-        .attr("cy", function(d){return y(d.logP);})
-        .style('fill', "grey");
-      // SNPs in LD
-      svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA" && d.ld!=0){return d;}})).enter()
-        .append("circle")
-        .attr("class", "dot")
-        .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
-        .attr("cy", function(d){return y(d.logP);})
-        .style('fill', function(d){return colorScale(d.r2);})
-        .on("mouseover", tip.show)
-        .on("mouseout", tip.hide);
-      // add rect for 1KG SNPs
-      svg.selectAll("rect.KGSNPs").data(data.filter(function(d){if(d.gwasP==="NA"){return d;}})).enter()
-        .append("rect")
-        .attr("class", "KGSNPs")
-        .attr("x", function(d){return x(d.pos)})
-        .attr("y", -20)
-        .attr("height", "10")
-        .attr("width", "3")
-        .style('fill', function(d){if(d.ld==0){return "grey";}else{return colorScale(d.r2);}})
-        .on("mouseover", tip.show)
-        .on("mouseout", tip.hide);
-      // add square to lead SNPs
-      // svg.selectAll("rect.leadSNPs").data(data.filter(function(d){if(d.ld==2){return d;}})).enter()
-      //   .append("rect")
-      //   .attr("class", "leadSNPs")
-      //   .attr("x", function(d){return x(d.pos)-4})
-      //   .attr("y", function(d){return y(d.logP)-4;})
-      //   .attr("width", "8")
-      //   .attr("height", "8")
-      //   .attr("transform", function(d){return "rotate(-45,"+x(d.pos)+","+y(d.logP)+")";})
-      //   .style("fill", "purple").style("stroke", "black")
-      //   .on("mouseover", tip.show)
-      //   .on("mouseout", tip.hide);
-      svg.selectAll("dot.leadSNPs").data(data.filter(function(d){if(d.ld==2){return d;}})).enter()
-        .append("circle")
-        .attr("class", "leadSNPs")
-        .attr("cx", function(d){return x(d.pos)})
-        .attr("cy", function(d){return y(d.logP);})
-        .attr("r", 4.5)
-        .style("fill", "purple").style("stroke", "black")
-        .on("mouseover", tip.show)
-        .on("mouseout", tip.hide);
-      // axis labels
-      svg.append("g").attr("class", "x axis")
-        .attr("transform", "translate(0,"+height+")").call(xAxis);
-      svg.append("g").attr("class", "y axis").call(yAxis);
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-5)+","+(height/2)+")rotate(-90)")
-        .text("-log10 P-value");
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-15)+")")
-        .text("Chromosome "+chr);
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2)+", -15)")
-        .style("font-size", "8px")
-        .text("1000G SNPs");
-
-      function zoomed() {
-        svg.select(".x.axis").call(xAxis);
-        // svg.select(".y.axis").call(yAxis);
-        // svg.selectAll(".dot").attr("transform", transform);
-        // svg.selectAll(".dot").filter(function(d){if(x(d.pos)>=0 && x(d.pos)<=width){return d;}}).attr("cx", function(d){if(x(d.pos)>=0 && x(d.pos)<width){return x(d.pos);}})
-        //   .attr("cy", function(d){if(x(d.pos)>=0 && x(d.pos)<width){return y(d.logP);}});
-        svg.selectAll(".dot").attr("cx", function(d){return x(d.pos);})
-          .attr("cy", function(d){return y(d.logP);})
-          .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return"grey";}else{return colorScale(d.r2);}});
-        svg.selectAll(".KGSNPs")
-          .attr("x", function(d){return x(d.pos)})
-          .attr("y", -20)
-          .style('fill', function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey";}else{return colorScale(d.r2);}});
-        svg.selectAll(".leadSNPs")
-          .attr("cx", function(d){return x(d.pos);})
-          .attr("cy", function(d){return y(d.logP);})
-          .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "purple";}})
-          .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black";}});
-        }
-
-      d3.select('#plotClear').on('click', reset);
-      function reset(){
-        d3.transition().duration(750).tween("zoom", function(){
-          var ix = d3.interpolate(x.domain(), [d3.min(data, function(d){return d.pos})-side, d3.max(data, function(d){return d.pos})+side]);
-          return function(t){
-            zoom.x(x.domain(ix(t)));
-            zoomed();
-          }
-        });
+    $.ajax({
+      url: subdir+'/snp2gene/locusPlot',
+      type: "POST",
+      data:{
+        type: "leadSNP",
+        jobID: jobID,
+        rowI: rowI
+      },
+      complete: function(){
+        locusPlot(jobID, "leadSNP", chr);
       }
     });
 
+    $('#selectedLeadSNP').html("");
     var out = "<h5>Selected lead SNP</h5><table class='table table-striped'><tr><td>lead SNP</td><td>"+rowData[3]
               +"</td></tr><tr><td>Chrom</td><td>"+rowData[4]+"</td></tr><tr><td>BP</td><td>"
               +rowData[5]+"</td></tr><tr><td>P-value</td><td>"+rowData[6]+"</td></tr><tr><td>SNPs within LD</td><td>"
@@ -1015,133 +888,21 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
 
     var rowData = intervalTable.row(rowI).data();
     var chr = rowData[3];
-    // create plot space
-    var colorScale = d3.scale.linear().domain([0.0,0.5,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-    var margin = {top:30, right: 30, bottom:50, left:50},
-        width = 700-margin.right - margin.left,
-        height = 300-margin.top - margin.bottom;
-    // set range
-    var x = d3.scale.linear().range([0, width]);
-    var y = d3.scale.linear().range([height, 0]);
-    // var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
-    // var yAxis = d3.svg.axis().scale(y).orient("left");
-    d3.select('#locusPlot').select("svg").remove();
-    $('#selectedLeadSNP').html("");
-    var tooltip = d3.select('#locusPlot').append("div").attr("class", "tooltip").style("opacity",0);
-    var svg = d3.select("#locusPlot").append("svg")
-              .attr("width", width+margin.left+margin.right)
-              .attr("height", height+margin.top+margin.bottom)
-              .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
-    //Get data
-    d3.json("locusPlot/"+rowI+'/"intervals"/'+jobID, function(data){
-      data.forEach(function(d){
-        d.pos = +d.pos;
-        d.logP = +d.logP;
-        d.r2 = +d.r2;
-        d.ld = +d.ld;
-        // d.gwasP = +d.gwasP;
-      });
-      var side=(d3.max(data, function(d){return d.pos})-d3.min(data, function(d){return d.pos}))*0.05;
-      x.domain([d3.min(data, function(d){return d.pos})-side, d3.max(data, function(d){return d.pos})+side]);
-      y.domain([0, d3.max(data, function(d){return d.logP})]);
-      var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
-      var yAxis = d3.svg.axis().scale(y).orient("left");
-      // tip
-      var tip = d3.tip().attr("class", "d3-tip")
-        .offset([-10,0])
-        .html(function(d){
-          var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF;
-          if(orcol!="NA"){out += "<br/>OR: "+d.or;}
-          if(secol!="NA"){out += "<br/>SE: "+d.se;}
-          return out;
-        });
-      svg.call(tip);
-      // zoom
-      var zoom = d3.behavior.zoom().x(x).scaleExtent([1,10]).on("zoom", zoomed);
-      svg.call(zoom);
-      // add rect
-      svg.append("rect").attr("width", width).attr("height", height)
-        .style("fill", "transparent")
-        .style("shape-rendering", "crispEdges");
-      // plot
-      // dot for GWAS tagged SNPs
-      // SNPs not in LD
-      svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA" && d.ld==0){return d;}})).enter()
-        .append("circle")
-        .attr("class", "dot")
-        .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
-        .attr("cy", function(d){return y(d.logP);})
-        .style('fill', "grey");
-      // SNPs in LD
-      svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA"){return d;}})).enter().append("circle")
-        .attr('class', 'dot')
-        .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
-        .attr("cy", function(d){return y(d.logP);})
-        .style('fill', function(d){return colorScale(d.r2);})
-        .on("mouseover", tip.show)
-        .on("mouseout", tip.hide);
-      // rect for 1KG SNPs
-      svg.selectAll("rect.KGSNPs").data(data.filter(function(d){if(d.gwasP==="NA"){return d;}})).enter()
-        .append("rect")
-        .attr("class", "KGSNPs")
-        .attr("x", function(d){return x(d.pos)})
-        .attr("y", -20)
-        .attr("height", "10")
-        .attr("width", "3")
-        .style('fill', function(d){return colorScale(d.r2);})
-        .on("mouseover", tip.show)
-        .on("mouseout", tip.hide);
-      // add square to lead SNPs
-      svg.selectAll("dot.leadSNPs").data(data.filter(function(d){if(d.ld==2){return d;}})).enter()
-        .append("circle")
-        .attr("class", "leadSNPs")
-        .attr("cx", function(d){return x(d.pos)})
-        .attr("cy", function(d){return y(d.logP);})
-        .attr("r", 4.5)
-        .style("fill", "purple").style("stroke", "black")
-        .on("mouseover", tip.show)
-        .on("mouseout", tip.hide);
-      // axis labels
-      svg.append("g").attr("class", "x axis")
-        .attr("transform", "translate(0,"+height+")").call(xAxis);
-      svg.append("g").attr("class", "y axis").call(yAxis);
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-5)+","+(height/2)+")rotate(-90)")
-        .text("-log10 P-value");
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-15)+")")
-        .text("Chromosome "+chr);
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2)+", -15)")
-        .style("font-size", "8px")
-        .text("1000G SNPs");
-      function zoomed() {
-        svg.select(".x.axis").call(xAxis);
-        svg.selectAll(".dot").attr("cx", function(d){return x(d.pos);})
-          .attr("cy", function(d){return y(d.logP);})
-          .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return"grey";}else{return colorScale(d.r2);}});
-        svg.selectAll(".KGSNPs")
-          .attr("x", function(d){return x(d.pos)})
-          .attr("y", -20)
-          .style('fill', function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey";}else{return colorScale(d.r2);}});
-        svg.selectAll(".leadSNPs")
-          .attr("cx", function(d){return x(d.pos);})
-          .attr("cy", function(d){return y(d.logP);})
-          .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "purple";}})
-          .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black";}});
-      }
-      d3.select('#plotClear').on('click', reset);
-      function reset(){
-        d3.transition().duration(750).tween("zoom", function(){
-          var ix = d3.interpolate(x.domain(), [d3.min(data, function(d){return d.pos})-side, d3.max(data, function(d){return d.pos})+side]);
-          return function(t){
-            zoom.x(x.domain(ix(t)));
-            zoomed();
-          }
-        });
+
+    $.ajax({
+      url: subdir+'/snp2gene/locusPlot',
+      type: "POST",
+      data:{
+        type: "loci",
+        jobID: jobID,
+        rowI: rowI
+      },
+      complete: function(){
+        locusPlot(jobID, "loci", chr);
       }
     });
-    var rowData = intervalTable.row(rowI).data();
+
+    $('#selectedLeadSNP').html("");
     var out = "<h5>Selected Loci</h5><table class='table table-striped'><tr><td>top lead SNP</td><td>"+rowData[2]
               +"</td></tr><tr><td>Chrom</td><td>"+rowData[3]+"</td></tr><tr><td>BP</td><td>"
               +rowData[4]+"</td></tr><tr><td>P-value</td><td>"+rowData[5]+"</td></tr><tr><td>#lead SNPs</td><td>"+rowData[6]
@@ -1150,6 +911,148 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
 
     $('#selectedLeadSNP').html(out);
   });
+
+  function locusPlot(jobID, type, chr){
+    // create plot space
+    var colorScale = d3.scale.linear().domain([0.0,0.5,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+    var margin = {top:30, right: 30, bottom:50, left:50},
+        width = 700-margin.right - margin.left,
+        height = 300-margin.top - margin.bottom;
+    // set range
+    var x = d3.scale.linear().range([0, width]);
+    var y = d3.scale.linear().range([height, 0]);
+    d3.select('#locusPlot').select("svg").remove();
+
+    var svg = d3.select("#locusPlot").append("svg")
+              .attr("width", width+margin.left+margin.right)
+              .attr("height", height+margin.top+margin.bottom)
+              .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
+
+    queue().defer(d3.json, "d3text/"+jobID+"/locusPlot.txt")
+      .defer(d3.json, "d3text/"+jobID+"/temp.txt")
+      .awaitAll(function(error, data){
+        var data1 = data[0];
+        var data2 = data[1];
+
+        data1.forEach(function(d){
+          d.pos = +d.pos;
+          d.gwasP = +d.gwasP;
+          d.r2 = +d.r2;
+          d.ld = +d.ld;
+        });
+
+        data2.forEach(function(d){
+          d.pos = +d.pos;
+          d.p = +d.gwasP;
+        });
+
+        var side=(d3.max(data2, function(d){return d.pos})-d3.min(data2, function(d){return d.pos}))*0.05;
+        x.domain([d3.min(data2, function(d){return d.pos})-side, d3.max(data2, function(d){return d.pos})+side]);
+        y.domain([0, Math.max(d3.max(data1, function(d){return -Math.log10(d.gwasP)}), d3.max(data2, function(d){return -Math.log10(d.gwasP)}))]);
+        var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
+        var yAxis = d3.svg.axis().scale(y).orient("left");
+        // tip
+        var tip = d3.tip().attr("class", "d3-tip")
+          .offset([-10,0])
+          .html(function(d){
+            var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF;
+            if(orcol!="NA"){out += "<br/>OR: "+d.or;}
+            if(secol!="NA"){out += "<br/>SE: "+d.se;}
+            return out;
+          });
+        svg.call(tip);
+        // zoom
+        var zoom = d3.behavior.zoom().x(x).scaleExtent([1,10]).on("zoom", zoomed);
+        svg.call(zoom);
+        // add rect
+        svg.append("rect").attr("width", width).attr("height", height)
+          .style("fill", "transparent")
+          .style("shape-rendering", "crispEdges");
+
+        // dot plot for gwas tagged SNPs
+        // SNPs not in LD
+        svg.selectAll("dot").data(data2).enter()
+          .append("circle")
+          .attr("class", "nonLD")
+          .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
+          .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+          .style('fill', "grey");
+        // SNPs in LD
+        svg.selectAll("dot").data(data1.filter(function(d){if(!isNaN(d.gwasP) && d.ld!=0){return d;}})).enter()
+          .append("circle")
+          .attr("class", "dot")
+          .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
+          .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+          .style('fill', function(d){return colorScale(d.r2);})
+          .on("mouseover", tip.show)
+          .on("mouseout", tip.hide);
+        // add rect for 1KG SNPs
+        svg.selectAll("rect.KGSNPs").data(data1.filter(function(d){if(isNaN(d.gwasP)){return d;}})).enter()
+          .append("rect")
+          .attr("class", "KGSNPs")
+          .attr("x", function(d){return x(d.pos)})
+          .attr("y", -20)
+          .attr("height", "10")
+          .attr("width", "3")
+          .style('fill', function(d){if(d.ld==0){return "grey";}else{return colorScale(d.r2);}})
+          .on("mouseover", tip.show)
+          .on("mouseout", tip.hide);
+
+        svg.selectAll("dot.leadSNPs").data(data1.filter(function(d){if(d.ld==2){return d;}})).enter()
+          .append("circle")
+          .attr("class", "leadSNPs")
+          .attr("cx", function(d){return x(d.pos)})
+          .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+          .attr("r", 4.5)
+          .style("fill", "purple").style("stroke", "black")
+          .on("mouseover", tip.show)
+          .on("mouseout", tip.hide);
+        // axis labels
+        svg.append("g").attr("class", "x axis")
+          .attr("transform", "translate(0,"+height+")").call(xAxis);
+        svg.append("g").attr("class", "y axis").call(yAxis);
+        svg.append("text").attr("text-anchor", "middle")
+          .attr("transform", "translate("+(-margin.left/2-5)+","+(height/2)+")rotate(-90)")
+          .text("-log10 P-value");
+        svg.append("text").attr("text-anchor", "middle")
+          .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-15)+")")
+          .text("Chromosome "+chr);
+        svg.append("text").attr("text-anchor", "middle")
+          .attr("transform", "translate("+(-margin.left/2)+", -15)")
+          .style("font-size", "8px")
+          .text("1000G SNPs");
+
+        function zoomed() {
+          svg.select(".x.axis").call(xAxis);
+          svg.selectAll(".nonLD").attr("cx", function(d){return x(d.pos);})
+            .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+            .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return"grey";}});
+          svg.selectAll(".dot").attr("cx", function(d){return x(d.pos);})
+            .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+            .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return"grey";}else{return colorScale(d.r2);}});
+          svg.selectAll(".KGSNPs")
+            .attr("x", function(d){return x(d.pos)})
+            .attr("y", -20)
+            .style('fill', function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey";}else{return colorScale(d.r2);}});
+          svg.selectAll(".leadSNPs")
+            .attr("cx", function(d){return x(d.pos);})
+            .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+            .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "purple";}})
+            .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black";}});
+        }
+
+        d3.select('#plotClear').on('click', reset);
+        function reset(){
+          d3.transition().duration(750).tween("zoom", function(){
+            var ix = d3.interpolate(x.domain(), [d3.min(data2, function(d){return d.pos})-side, d3.max(data2, function(d){return d.pos})+side]);
+            return function(t){
+              zoom.x(x.domain(ix(t)));
+              zoomed();
+            }
+          });
+        }
+    });
+  }
 }
 
 function PlotSNPAnnot(jobID){
