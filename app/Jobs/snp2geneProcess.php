@@ -43,12 +43,15 @@ class snp2geneProcess extends Job implements ShouldQueue
       $jobtitle = DB::table('SubmitJobs') -> where('jobID', $jobID)
           ->first() ->title;
 
+      //error message
+      $msg = "";
+
       // file check
       if(!file_exists(config('app.jobdir').'/jobs/'.$jobID.'/input.gwas')){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           ->delete();
         if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, -1);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, -1, $msg);
           return;
         }
       }
@@ -60,9 +63,6 @@ class snp2geneProcess extends Job implements ShouldQueue
       // log files
       $logfile = $filedir."job.log";
       $errorfile = $filedir."error.log";
-
-      //error message
-      $msg = "";
 
       //gwas_file.pl
       file_put_contents($logfile, "----- gwas_file.pl -----\n");

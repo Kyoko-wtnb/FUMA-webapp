@@ -55,7 +55,6 @@ my $secol=$params->param('inputfiles.secol');
 # my $mafcol=$params->param('inputfiles.mafcol');
 # $mafcol = undef if($mafcol eq "NA");
 my $Ncol=$params->param('params.Ncol');
-$Ncol = undef if($Ncol eq "NA");
 
 while($head =~ /^#/){
 		$head = <GWAS>;
@@ -82,7 +81,8 @@ $refcol = undef if($refcol eq "NA");
 $altcol = undef if($altcol eq "NA");
 $orcol = undef if($orcol eq "NA");
 $secol = undef if($secol eq "NA");
-if($Ncol eq $params->param('params.Ncol')){
+$Ncol = undef if($Ncol eq "NA");
+if(defined $Ncol && $Ncol eq $params->param('params.Ncol')){
 	die "N column name was not found";
 }
 
@@ -101,8 +101,29 @@ $params->save();
 
 my %GWAS;
 #print "chr: $chrcol, pos: $poscol, rsID: $rsIDcol, ref: $refcol, alt: $altcol, p: $pcol\n";
-
-if(defined $chrcol && defined $poscol){
+if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && defined $refcol){
+	my $outhead = "chr\tbp\tref\talt\trsID\tp";
+	$outhead .= "\tor" if(defined $orcol);
+	$outhead .= "\tse" if(defined $secol);
+	$outhead .= "\tN" if(defined $Ncol);
+	$outhead .= "\n";
+	open(SNP, ">$outSNPs");
+	print SNP $outhead;
+	while(<GWAS>){
+		next if(/^#/);
+		my @line = split(/\s/, $_);
+		$line[$rsIDcol] = $rsID{$line[$rsIDcol]} if(exists $rsID{$line[$rsIDcol]});
+		print SNP join("\t", ($line[$chrcol], $line[$poscol], $line[$refcol], $line[$altcol], $line[$rsIDcol], $line[$pcol]));
+		print SNP "\t", $line[$orcol] if(defined $orcol);
+		print SNP "\t", $line[$secol] if(defined $secol);
+		print SNP "\t", $line[$Ncol] if(defined $Ncol);
+		print SNP "\n";
+	}
+	close SNP;
+	my $temp = $filedir."temp.txt";
+	system "sort -k 1n -k 2n $outSNPs > $temp";
+	system "mv $temp $outSNPs";
+}elsif(defined $chrcol && defined $poscol){
 	while(<GWAS>){
 		next if(/^#/);
 		my @line = split(/\s/, $_);
