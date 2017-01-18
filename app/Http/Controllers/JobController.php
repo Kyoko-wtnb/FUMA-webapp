@@ -91,6 +91,19 @@ class JobController extends Controller
       echo "$filedir:$posMap:$eqtlMap:$orcol:$secol";
     }
 
+    public function Error5(Request $request){
+      $jobID = $request->input('jobID');
+
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      $f = fopen($filedir.'topSNPs.txt', 'r');
+      $rows = [];
+      while($row = fgetcsv($f, 0, "\t")){
+        $rows[] = $row;
+      }
+
+      return json_encode($rows);
+    }
+
     public function newJob(Request $request){
       // check file type
       if($request -> hasFile('GWASsummary')){

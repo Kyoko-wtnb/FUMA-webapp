@@ -1,7 +1,8 @@
 var gwasFileSize = 0;
 $(document).ready(function(){
   $("#newJob").show();
-  $("#jobinfoSide").hide();
+  $("#GWplotSide").hide();
+  $("#Error5Side").hide();
   $("#resultsSide").hide();
   $('#SubmitNewJob').attr('disabled',true);
   $('#go2job').attr('disabled',true);

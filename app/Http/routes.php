@@ -45,6 +45,8 @@ Route::get('snp2gene/checkJobStatus/{jobid}', 'JobController@checkJobStatus');
 
 Route::post('snp2gene/getParams', 'JobController@getParams');
 
+Route::post('snp2gene/Error5', 'JobController@Error5');
+
 Route::post('snp2gene/CandidateSelection', 'JobController@CandidateSelection');
 
 Route::post('snp2gene/DTfile', 'JsController@DTfile');

@@ -13,7 +13,7 @@
   Kyoko Watanabe<br/>
   VU University Amsterdam<br/>
   Dept. Complex Trait Genetics<br/>
-  De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<be/>
+  De Boelelaan 1085 WN-B628 1018HV Amsterdam The Netherlands<br/>
   k.watanabe@vu.nl<br/>
 </p>
 </body>

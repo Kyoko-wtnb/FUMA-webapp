@@ -154,10 +154,12 @@ class snp2geneProcess extends Job implements ShouldQueue
         if($NoCandidates){
           DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:005']);
+          $script = storage_path().'/scripts/getTopSNPs.py';
+          exec("python $script $filedir >>$logfile 2>>$errorfile");
           if($email!=null){
             $this->sendJobCompMail($email, $jobtitle, $jobID, 5, $msg);
-            return;
           }
+          return;
         }else{
           DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:006']);
@@ -250,6 +252,7 @@ class snp2geneProcess extends Job implements ShouldQueue
         $data = [
           'status'=>$status,
           'jobtitle'=>$jobtitle,
+          'jobID'=>$jobID,
           'msg'=>$msg
         ];
         Mail::send('emails.jobError', $data, function($m) use($user){

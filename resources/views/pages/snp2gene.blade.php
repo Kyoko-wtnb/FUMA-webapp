@@ -48,8 +48,13 @@
       <!-- <div id="jobinfoSide">
         <li><a href="#jobInfo">Job Info<i class="sub_icon fa fa-info-circle"></i></a></li>
       </div> -->
-      <div id="resultsSide">
+      <div id="GWplotSide">
         <li><a href="#genomePlots">Genome-wide plots<i class="sub_icon fa fa-bar-chart"></i></a></li>
+      </div>
+      <div id="Error5Side">
+        <li><a href="#error5">ERROR:005<i class="sub_icon fa fa-exclamation-triangle"></i></a></li>
+      </div>
+      <div id="resultsSide">
         <li><a href="#summaryTable">Summary of results<i class="sub_icon fa fa-bar-chart"></i></a></li>
         <li><a href="#tables">Results<i class="sub_icon fa fa-table"></i></a></li>
         <li><a href="#downloads">Downloads<i class="sub_icon fa fa-download"></i></a></li>
@@ -177,6 +182,25 @@
           </div>
           <br/><br/>
         </div>
+      </div>
+
+      <!-- ERROR:005 -->
+      <div class="sidePanel container" style="padding-top:50px;" id="error5">
+        <h4 style="color: #00004d">ERROR:005 No candidate SNPs were found</h4>
+        <div id="error5mes">
+          <p>This error occurs because there was no significant SNP in your GWAS summary statistics.<br/>
+            To obtain annotations, either relax P-value threshold for lead SNPs or provide predefined lead SNPs.<br/>
+          </p>
+        </div>
+        <br/>
+        <h4 style="color: #00004d">Top 10 SNPs in yout input file</h4>
+        <span class="info"><i class="fa fa-info"></i>
+          The following SNPs are top 10 significant SNPs from your input file which exist in the reference panel.
+          Please refer the following P-value to set threshold for lead SNPs in the next submission.<br/>
+          Note that, MHC region is excluded by default. If there are significatn SNPs in MHC region and you would like to include them, please uncheck the option.
+        </span>
+        <br/>
+        <table class="table table-bordered" id="topSNPs"></table>
       </div>
 
       <!-- Summary panel -->

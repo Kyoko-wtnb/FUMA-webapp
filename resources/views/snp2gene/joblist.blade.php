@@ -61,7 +61,9 @@
                 items = '';
                 $.each( data, function( key, val ) {
                     if(val.status == 'OK'){
-                        val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">Go to results</a>';
+                      val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">Go to results</a>';
+                    }else if(val.status == 'ERROR:005'){
+                      val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">ERROR:005</a>';
                     }
                     items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title
                       +"</td><td>"+val.created_at+"</td><td>"+val.status

@@ -64,10 +64,12 @@ $(document).ready(function(){
         if(jobStatus=="OK"){
           loadResults();
           $('a[href="#genomePlots"]').trigger('click');
+        }else if(jobStatus=="ERROR:005"){
+          error5();
+          $('a[href="#genomePlots"]').trigger('click');
         }
       }
     });
-
 
     function loadResults(){
       var filedir;
@@ -98,12 +100,47 @@ $(document).ready(function(){
             GWplot(jobid);
             QQplot(jobid);
             showResultTables(filedir, jobid, posMap, eqtlMap, orcol, secol);
+            $('#GSplotSide').show();
             $('#results').show();
             $('#resultsSide').show();
           }
       });
     }
 
+    function error5(){
+      GWplot(jobid);
+      QQplot(jobid);
+      $.ajax({
+        url: subdir+'/snp2gene/Error5',
+        type: 'POST',
+        data: {
+          jobID: jobid
+        },
+        error: function(){
+          alert("Error5 read file error");
+        },
+        success: function(data){
+          var temp = JSON.parse(data);
+          var out = "<thead><tr>";
+          $.each(temp[0], function(key, d){
+            out += "<th>"+d+"</th>";
+          });
+          out += "</tr></thead><tbody>";
+          for(var i=1; i<temp.length; i++){
+            out += "<tr>"
+            $.each(temp[i], function(key, d){
+              out += "<td>"+d+"</td>";
+            });
+            out += "</tr>";
+          }
+          out += "</tbody>";
+          $('#topSNPs').html(out);
+        }
+      });
+      $('#results').show();
+      $('#GWplotSide').show();
+      $('#Error5Side').show();
+    }
   }
 
   // download file selection
@@ -1040,7 +1077,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         .attr('class', 'dot')
         .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
         .attr("cy", function(d){return y(d.logP);})
-        .style('fill', function(d){ireturn colorScale(d.r2);})
+        .style('fill', function(d){return colorScale(d.r2);})
         .on("mouseover", tip.show)
         .on("mouseout", tip.hide);
       // rect for 1KG SNPs
