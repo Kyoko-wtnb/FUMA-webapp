@@ -43,6 +43,14 @@ snps$logP[is.na(snps$logP)] <- 0
 
 snps <- subset(snps, select=c("uniqID", "chr", "pos", "rsID", "leadSNP", "gwasP", "logP", "r2", "ld", "CADD", "RDB", "nearestGene", "func"))
 
+xMin <- min(snps$pos)
+xMax <- max(snps$pos)
+temp <- fread(paste(filedir, "input.snps", sep=""), data.table=F)
+temp <- temp[temp$chr==snps$chr[1],]
+temp <- temp[temp$bp>=xMin-5000000 & temp$bp<=xMax+5000000,]
+temp <- temp[!(temp$bp %in% snps$pos),]
+write.table(temp, paste(filedir, "temp.txt", sep=""), sep="\t", quote=F, row.names=F)
+
 if(Chr15==1){
   annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
   annot <- annot[annot$uniqID %in% snps$uniqID, ]
