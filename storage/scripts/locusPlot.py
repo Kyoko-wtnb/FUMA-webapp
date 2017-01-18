@@ -63,17 +63,17 @@ xMin = min(snps[:,3])
 xMax = max(snps[:,3])
 
 if "or" in snpshead and "se" in snpshead:
-    snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("rsID"), snpshead.index("MAF"), snpshead.index("or"), snpshead.index("se")]]
-    snpshead = ["pos", "gwasP", "ld", "r2", "rsID", "MAF", "or", "se"]
+    snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("leadSNP"), snpshead.index("rsID"), snpshead.index("MAF"), snpshead.index("or"), snpshead.index("se")]]
+    snpshead = ["pos", "gwasP", "ld", "r2", "leadSNP", "rsID", "MAF", "or", "se"]
 elif "or" in snpshead:
-    snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("rsID"), snpshead.index("MAF"), snpshead.index("or")]]
-    snpshead = ["pos", "gwasP", "ld", "r2", "rsID", "MAF", "or"]
+    snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("leadSNP"), snpshead.index("rsID"), snpshead.index("MAF"), snpshead.index("or")]]
+    snpshead = ["pos", "gwasP", "ld", "r2", "leadSNP", "rsID", "MAF", "or"]
 elif "se" in snpshead:
-    snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("rsID"), snpshead.index("MAF"), snpshead.index("se")]]
-    snpshead = ["pos", "gwasP", "ld", "r2", "rsID", "MAF", "se"]
+    snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("leadSNP"), snpshead.index("rsID"), snpshead.index("MAF"), snpshead.index("se")]]
+    snpshead = ["pos", "gwasP", "ld", "r2", "leadSNP", "rsID", "MAF", "se"]
 else:
-    snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("rsID"), snpshead.index("MAF")]]
-    snpshead = ["pos", "gwasP", "ld", "r2", "rsID", "MAF"]
+    snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("leadSNP"), snpshead.index("rsID"), snpshead.index("MAF")]]
+    snpshead = ["pos", "gwasP", "ld", "r2", "leadSNP", "rsID", "MAF"]
 
 outfile = open(filedir+"locusPlot.txt", 'w')
 outfile.write("\t".join(snpshead)+"\n")

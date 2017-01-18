@@ -955,7 +955,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         var tip = d3.tip().attr("class", "d3-tip")
           .offset([-10,0])
           .html(function(d){
-            var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF;
+            var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF
+                      +"<br/>r2: "+d.r2+"<br/>lead SNP: "+d.leadSNP;
             if(orcol!="NA"){out += "<br/>OR: "+d.or;}
             if(secol!="NA"){out += "<br/>SE: "+d.se;}
             return out;
