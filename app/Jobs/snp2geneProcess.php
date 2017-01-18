@@ -50,6 +50,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       if(!file_exists(config('app.jobdir').'/jobs/'.$jobID.'/input.gwas')){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           ->delete();
+        File::deleteDirectory(config('app.jobdir').'/jobs/'.$jobID);
         if($email!=null){
           $this->sendJobCompMail($email, $jobtitle, $jobID, -1, $msg);
           return;
