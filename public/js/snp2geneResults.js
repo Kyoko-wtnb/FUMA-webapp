@@ -865,12 +865,20 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         .style("shape-rendering", "crispEdges");
 
       // dot plot for gwas tagged SNPs
-      svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA"){return d;}})).enter()
+      // SNPs not in LD
+      svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA" && d.ld==0){return d;}})).enter()
         .append("circle")
         .attr("class", "dot")
         .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
         .attr("cy", function(d){return y(d.logP);})
-        .style('fill', function(d){if(d.ld==0){return "grey";}else{return colorScale(d.r2);}})
+        .style('fill', "grey");
+      // SNPs in LD
+      svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA" && d.ld!=0){return d;}})).enter()
+        .append("circle")
+        .attr("class", "dot")
+        .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
+        .attr("cy", function(d){return y(d.logP);})
+        .style('fill', function(d){return colorScale(d.r2);})
         .on("mouseover", tip.show)
         .on("mouseout", tip.hide);
       // add rect for 1KG SNPs
@@ -1020,11 +1028,19 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         .style("shape-rendering", "crispEdges");
       // plot
       // dot for GWAS tagged SNPs
+      // SNPs not in LD
+      svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA" && d.ld==0){return d;}})).enter()
+        .append("circle")
+        .attr("class", "dot")
+        .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
+        .attr("cy", function(d){return y(d.logP);})
+        .style('fill', "grey");
+      // SNPs in LD
       svg.selectAll("dot").data(data.filter(function(d){if(d.gwasP!=="NA"){return d;}})).enter().append("circle")
         .attr('class', 'dot')
         .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
         .attr("cy", function(d){return y(d.logP);})
-        .style('fill', function(d){if(d.ld==0){return "grey";}else{return colorScale(d.r2);}})
+        .style('fill', function(d){ireturn colorScale(d.r2);})
         .on("mouseover", tip.show)
         .on("mouseout", tip.hide);
       // rect for 1KG SNPs
