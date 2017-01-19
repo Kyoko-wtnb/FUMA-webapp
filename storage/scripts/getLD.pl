@@ -184,6 +184,9 @@ foreach my $chr (1..23){
 
 		last if($line[$chrcol] > $chr); ## need to commnet out if the input file is not ordered
 
+		$line[$refcol] = uc($line[$refcol]);
+		$line[$altcol] = uc($line[$altcol]);
+
 		## exclude MHC region id necessally
 		next if($MHC==1 && $line[$chrcol]==6 && $line[$poscol]>=$MHCstart && $line[$poscol]<=$MHCend);
 		my $id = join(":", ($line[$chrcol], $line[$poscol], sort($line[$refcol], $line[$altcol]))); ## uniqID
