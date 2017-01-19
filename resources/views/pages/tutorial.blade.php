@@ -156,22 +156,20 @@
             To filter SNPs by functional annotations and use eQTL mapping, please refer the parmeters section from <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#parameters">here</a>.<br/>
             If all inputs are valid, 'Submit Job' button will be activated. Once you submit a job, this will be listed in My Jobs.<br/><br/>
             <img src="{!! URL::asset('/image/submitjob.png') !!}" style="width:70%"/><br/>
-          </p>
+          </p><br/>
 
           <p><h4><strong>4. Check your results</strong></h4>
-            One process is done, you will receive an email.
-            Unless an error occured during the process, the email includes the link to results page (this again requires login).
-            You can also access to the results page from My Job list.
-
+            Once process is done, you will receive an email.
+            Unless an error occured during the process, the email includes the link to the result page (this again requires login).
+            You can also access to the results page from My Jobs page. <br/>
             The result page display 4 additional side bars.<br/>
             <strong>Genome-wide plots</strong>: Manhattan plots and Q-Q plots for GWAS sumary statistics and gene-based test by MAGMA.<br/>
             <strong>Summary of results</strong>: Summarised results such as the number of candidate SNPs and mapped genes for overall and per genomic loci.<br/>
             <strong>Results</strong>: Tables of lead SNPs, genomic risk loci, candidate SNPs with annotations, eQTLs (only when eQTL mapping is performed), mapped genes and GWAS-catalog reported SNPs matched with candidate SNPs.
-            You can also create interactive regional plot with functional annotations from this tab.<br/>
-            <strong>Downloads</strong>: Download Results as text files.<br/>
-            Details for each panel are described in this tutorial <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#outputs">here</a>.<br/><br/>
+            You can also create interactive regional plots with functional annotations from this tab.<br/>
+            <strong>Downloads</strong>: Download results as text files.<br/>
+            Details for each panel are described in the <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#outputs">Outputs</a> section of this tutorial.<br/><br/>
             <img src="{!! URL::asset('/image/result.png') !!}" style="width:70%"/><br/><br/>
-            <img src="{!! URL::asset('/image/resultpanels.png') !!}" style="width:90%"/><br/>
           </p>
         </div>
         <br/>
