@@ -714,7 +714,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:posMapCHPs:posMapMaxCADD:eqtlMapSNPs:eqtlMapminP:eqltMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
+          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:posMapSNPs:posMapMaxCADD:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -733,7 +733,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:posMapCHPs:posMapMaxCADD:minGwasP:leadSNPs"
+          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:posMapSNPs:posMapMaxCADD:minGwasP:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -752,7 +752,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:eqtlMapSNPs:eqtlMapminP:eqltMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
+          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
