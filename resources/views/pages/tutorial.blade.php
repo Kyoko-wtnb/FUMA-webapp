@@ -68,6 +68,7 @@
     <li class="active"><a href="#overview">Overview<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
     <li><a href="#quick-start">Quick Start<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
       <div class="subside" id="quick-startsub">
+        <a href="#generalInfo">General Info</a>
         <a href="#getCandidate">Get candiates</a>
         <a href="#geneQuery">Gene functions</a>
       </div>
@@ -106,12 +107,14 @@
     <div id="quick-start" class="sidePanel container" style="padding-top:50px;">
       <h2>Quick Start</h2>
       <div style="margin-left: 40px;">
-        <h3>General Information</h3>
+        <h3 id="generalInfo">General Information</h3>
           <p>
-            Each page will contain information and description of inputs and results to help you understand without go through entire tutorial.<br/>
+            Each page will contain information and brief description of inputs and results to help you understand them without going through entire tutorial.<br/>
             <div style="padding-left: 40px">
               <span class="info"><i class="fa fa-info"></i> This is information of inputs or results.</span><br/><br/>
-              <a class="infoPop" data-toggle="popover" data-content="This popuover will show brief description."><i class="fa fa-question-circle-o fa-lg"></i></a> :click this question mark to display brief description.<br/><br/>
+              <a class="infoPop" data-toggle="popover" data-content="This popuover will show brief description. Click anywhere outside of this popover to close.">
+                <i class="fa fa-question-circle-o fa-lg"></i>
+              </a> :click this question mark to display brief description.<br/><br/>
               <span class="alert alert-info" style="padding: 5px;">
                 This is for optional inputs/parameters.
               </span><br/><br/>
@@ -133,20 +136,22 @@
         <div style="margin-left: 40px">
           <p><h4><strong>1. Registration/Login</strong></h4>
             If you haven't registered yet, please do so from <a href="{{ url('/register') }}">Register</a>.<br/>
-            Before you submit your GWAS summary statistics, please log in to your account.<br/><br/>
+            Before you submit your GWAS summary statistics, please log in to your account.
+            You can login from either <a href="{{ url('/login') }}">login</a> page or <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a> page directry.<br/><br/>
             <img src="{!! URL::asset('/image/homereg.png') !!}" style="width:80%"/><br/>
-          </p>
+          </p><br/>
 
           <p><h4><strong>2. Submit new job at <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a></strong></h4>
             GWAS summary statistics is a mandatory input and a variety of file formats are supported.
-            Please refer the section of input files of this tutorial <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#prepare-input-files">here</a> for details.
-            If your file is an ouput of PLINK, SNPTEST or METAL, you can directory submit the file (no need to chagne columns).<br/>
-            Optionally, if you already know lead SNPs and you want to use them as lead SNPs, you can upload a file with 3 columns; rsID, chromosome and position.<br/>
+            Please refer the section of <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#prepare-input-files">Input files</a> for details.
+            If your file is an ouput of PLINK, SNPTEST or METAL, you can directory submit the file without specifying column names.<br/>
+            Optionally, if you would like to specify lead SNPs, you can upload a file with 3 columns; rsID, chromosome and position.<br/>
             In addition, if you are interested in specific genomic regions, you can also provide them by uploading a file with 3 columns; chromosome, start and end position.<br/><br/>
             <img src="{!! URL::asset('/image/newjobfile.png') !!}" style="width:80%"/><br/>
-          </p>
+          </p><br/>
 
           <p><h4><strong>3. Set parameters</strong></h4>
+            In the same page as you specify input files, there are a variety of optional parameters.
             Please check your parameters carefully. Default setting perform identification of lead SNPs at r2=0.6 and maps SNPs to genes up to 10kb apart.<br/>
             To filter SNPs by functional annotations and use eQTL mapping, please refer the parmeters section from <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#parameters">here</a>.<br/>
             If all inputs are valid, 'Submit Job' button will be activated. Once you submit a job, this will be listed in My Jobs.<br/><br/>

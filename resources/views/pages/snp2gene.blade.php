@@ -404,10 +404,11 @@
             <!-- <div class="row collapse in" id="regionalPlotPanel"> -->
             <span class="info"><i class="fa fa-info"></i>
               Please click one of the row of lead SNPs or Genomic risk loci tables to display regional plot.<br/>
-              This plot only displays SNPs that are in LD with one of the lead SNPs.
               You can zoom in/out by mouse scroll. <br/>
               Lead SNPs are colored in purple.
-              When independe lead SNPs are selected instead of genomic loci, SNPs which are in the same loci but not in LD with the selected lead SNPs are colored in grey.<br/>
+              SNPs which are in LD of the selected lead SNP are colored in based on r<sup>2</sup>.
+              When a genomic risk locus is selected instead of independent lead SNPs, all independent lead SNPs within that locus and SNPs in LD of them are colored based on r2.
+              SNPs which are not in LD at given threshold are colored in grey.
               SNPs that are in LD with a lead SNP but do not have a P-value because they were not available in the summary statistics, are displayed at the top of the plot (1000G SNPs).
             </span>
             <div class="row">
