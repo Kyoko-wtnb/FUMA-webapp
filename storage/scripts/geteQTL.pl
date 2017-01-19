@@ -32,7 +32,15 @@ my $out = $filedir."eqtl.txt";
 
 #tissues
 my @ts;
-if($tsall eq "all"){
+my @tempts = split(/:/, $tsall);
+my $all = 0;
+foreach my $t (@tempts){
+	if($t eq "all"){
+		$all = 1;
+		last;
+	}
+}
+if($all==1){
 	my @temp = `ls $gtexdir/*.sig.txt.gz`;
 	chomp @temp;
 	foreach my $f (@temp){

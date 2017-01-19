@@ -113,6 +113,8 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		next if(/^#/);
 		my @line = split(/\s/, $_);
 		$line[$rsIDcol] = $rsID{$line[$rsIDcol]} if(exists $rsID{$line[$rsIDcol]});
+		$line[$chrcol] =~ s/chr//;
+		$line[$chrcol] = 23 if($line[$chrcol]=~/x/i);
 		print SNP join("\t", ($line[$chrcol], $line[$poscol], $line[$refcol], $line[$altcol], $line[$rsIDcol], $line[$pcol]));
 		print SNP "\t", $line[$orcol] if(defined $orcol);
 		print SNP "\t", $line[$secol] if(defined $secol);
