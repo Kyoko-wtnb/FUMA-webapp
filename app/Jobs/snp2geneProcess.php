@@ -97,7 +97,7 @@ class snp2geneProcess extends Job implements ShouldQueue
           $errorout = file_get_contents($logfile);
           $errorout = explode("\n", $errorout);
           foreach($errorout as $l){
-            if(preg_match("ERROR - ", $l)==1){
+            if(preg_match("/ERROR - /", $l)==1){
               $msg = $l;
               break;
             }
