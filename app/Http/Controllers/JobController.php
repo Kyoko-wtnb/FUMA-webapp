@@ -481,6 +481,8 @@ class JobController extends Controller
       }
       if($request -> has('annotPlot_eqtl')){$eqtl=1;}
 
+      $script = storage_path()."/scripts/annotPlot.py";
+      exec("python $script $filedir $type $rowI $GWAS $CADD $RDB $eqtl $Chr15 $Chr15cells");
       $script = storage_path()."/scripts/annotPlot.R";
       exec("Rscript $script $filedir $type $rowI $GWAS $CADD $RDB $eqtl $Chr15 $Chr15cells");
 
