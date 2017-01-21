@@ -78,7 +78,7 @@
         <a href="#parameters">Parameters</a>
         <!-- <a href="#submit-job">Subit your job</a> -->
         <a href="#eQTLs">eQTLs</a>
-        <a href="#outputs">Outputs</a>
+        <a href="#results">Results</a>
         <!-- <a href="#examples">Example senarios</a> -->
       </div>
     <li><a href="#gene2func">GENE2FUNC<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
@@ -937,15 +937,15 @@
         </div>
         <br/>
 
-        <h3 id="outputs">Outputs</h3>
+        <h3 id="results">Result page</h3>
         <p>One process is done, you will receive an email.
           Unless an error occured during the process, the email includes the link to results page (this again requires login).
           You can also access to the results page from My Job list.
           The result page display 4 additional side bars.
         </p><br/>
-        <img src="{!! URL::asset('/image/result.png') !!}" style="width:80%"/><br/><br/>
+        <img src="{!! URL::asset('/image/result.png') !!}" style="width:55%"/><br/><br/>
 
-        <h4>2. Genome-wide plots</h4>
+        <h4>1. Genome-wide plots</h4>
         <p>This panel displays manhattan plots and Q-Q plots for both GWAS summary statistics (input file) and gene-based association test.<br/>
           Images are downloadable as PNG files.
         </p>
@@ -969,10 +969,10 @@
           </li>
         </ul>
         <br/>
-        <img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="width:80%"/><br/><br/>
+        <img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="width:55%"/><br/><br/>
         <br/>
 
-        <h4>3. Summary of results</h4>
+        <h4>2. Summary of results</h4>
         <p>This panel shows summary of your GWAS input. Images are downloadable as PNG files.</p>
         <ul>
           <li>Summary of SNPs and mapped genes<ul>
@@ -995,10 +995,10 @@
           </li>
         </ul>
         <br/>
-        <img src="{!! URL::asset('/image/snp2geneSummary.png') !!}" style="width:80%"/><br/><br/>
+        <img src="{!! URL::asset('/image/snp2geneSummary.png') !!}" style="width:55%"/><br/><br/>
         <br/>
 
-        <h4>4. Result tables</h4>
+        <h4>3. Result tables</h4>
         <p>This panel contain multiple tables of your results.
           Here are descriptions for columns in each tables. Each columns will be described in the following section.
           Downloadable text files have the same column as shown in the interface unless methioned.
@@ -1015,223 +1015,230 @@
           <li>eQTLs: This is only available when eQTL mapping is performed. eQTLs are plotted per gene and colored per tissue types.</li>
         </ul>
         <br/>
-        <img src="{!! URL::asset('/image/snp2geneResults.png') !!}" style="width:80%"/><br/>
-        <img src="{!! URL::asset('/image/snp2geneAnnotPlot.png') !!}" style="width:70%"/><br/><br/>
+        <img src="{!! URL::asset('/image/snp2geneResults.png') !!}" style="width:60%"/><br/>
+        <img src="{!! URL::asset('/image/snp2geneAnnotPlot.png') !!}" style="width:50%"/><br/><br/>
         <br/>
-        <h4>Description of tables</h4>
-        <div style="margin-left: 40px;">
+        <h4><strong>Table Columns</strong></h4>
+        <ul>
+          <li><p>lead SNPs</p>
+          <p>All independent lead SNPs identified by FUMA.</p>
           <ul>
-            <li><p>lead SNPs / leadSNPs.txt</p>
-            <p>All independent lead SNPs identified by FUMA.</p>
+            <li><strong>No</strong> : Index of lead SNPs</li>
+            <li><strong>Genomic Locus</strong> : Index of assigned genomic locus matched with "Genomic risk loci" table.
+              Multiple independent lead SNPs can be assigned to the same genomic locus.</li>
+            <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
+            <li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
+            <li><strong>chr</strong> : chromosome</li>
+            <li><strong>pos</strong> : position on hg19</li>
+            <li><strong>P-value</strong> : P-value (from the input file).</li>
+            <li><strong>nSNPs</strong> : The number of SNPs within LD of the lead SNP given r2, including non-GWAS-tagged SNPs (which are extracted from 1000G).</li>
+            <li><strong>nGWASSNPs</strong> : The number of GWAS-tagged SNPs within LD of the lead SNP given r2. This is a subset of &quot;nSNPs&quot;.</li>
+          </ul>
+          </li>
+        </ul>
+        <ul>
+          <li><p>Genomic risk loci</p>
+          <p>Genomic risk loci defined from independent lead SNPs based on the provided maximum distance (250 kb by default).
+          Each locus is represented by the top lead SNP which has the minimum P-value in the locus.</p>
+          <ul>
+            <li><strong>Genomic locus</strong> : Index of genomic rick loci.</li>
+            <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
+            <li><strong>rsID</strong> : rsID of the top lead SNP based on dbSNP build 146.</li>
+            <li><strong>chr</strong> : chromosome of top lead SNP</li>
+            <li><strong>pos</strong> : position of top lead SNP on hg19</li>
+            <li><strong>P-value</strong> : P-value of top lead SNP (from the input file).</li>
+            <li><strong>nLeadSNPs</strong> : The number of lead SNPs merged into the interval.</li>
+            <li><strong>start</strong> : Start position of the locus.</li>
+            <li><strong>start</strong> : End postion of the locus.</li>
+            <li><strong>nSNPs</strong> : The number of canidate SNPs in the interval, including non-GWAS-tagged SNPs (which are extracted from 1000G).</li>
+            <li><strong>nGWASSNPs</strong> : The number of GWAS-tagged candidate SNPs within the interval. This is a subset of &quot;nSNPs&quot;.</li>
+          </ul>
+          </li>
+        </ul>
+        <ul>
+          <li><p>SNPs</p>
+          <p>All candidate SNPs (SNPs which are in LD of any independent lead SNPs) with annotations.
+            Note that depending on your mapping criterion, not all candidate SNPs displaying in this table are mapped to genes.</p>
+          <ul>
+            <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
+            <li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
+            <li><strong>chr</strong> : chromosome</li>
+            <li><strong>pos</strong> : position on hg19</li>
+            <li><strong>ref</strong> : Reference allele. Non-effect allele if it is provided in the input GWAS summary statistics file. If not, this is the reference allele in 1000G.</li>
+            <li><strong>alt</strong> : Alternative allele. Effect allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.</li>
+            <li><strong>MAF</strong> : Minor allele frequency computed based on 1000G.</li>
+            <li><strong>gwasP</strong> : P-value provided in the input GWAS summary statistics file.
+              For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
+            </li>
+            <li><strong>or</strong> : Odds ratio provided in the input GWAS summary statistics file if available.
+              For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
+            </li>
+            <li><strong>beta</strong> : Beta provided in the input GWAS summary statistics file if available.
+              For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
+            </li>
+            <li><strong>se</strong> : Standard error provided in the input GWAS summary statistics file if available.
+              For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
+            </li>
+            <li><strong>r2</strong> : The maximum r2 of the SNP with one of the independent lead SNP (this dosen't have to be top lead SNPs in the intervals).</li>
+            <li><strong>leadSNP</strong> : rsID of a independent lead SNP which has the maximum r2 of the SNP.</li>
+            <li><strong>Genomic locus</strong> : Index of the genomic risk loci matching with "Genomic risk loci" table.</li>
+            <li><strong>nearestGene</strong> : The nearest Gene of the SNP. Genes are ecoded in symbol, if it is available otherwise Ensembl ID.
+              Genes here include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.</li>
+            <li><strong>dist</strong> : Distance to the nearest gene.</li>
+            <li><strong>func</strong> : Potisional annotation obtained from ANNOVAR. For exonic SNPs, detail annotation (e.g. non-synonymous, stop gain and so on) is available in ANNOVAR table (annov.txt).</li>
+            <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al(ref).</li>
+            <li><strong>RDB</strong> : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.</li>
+            <li><strong>minChrState</strong> : The minimum 15-core chromatin state over 127 tissue/cell type.</li>
+            <li><strong>commonChrState</strong> : The majority of the 15-core chromatin state over 127 tissue/cell types.</li>
+          </ul>
+          </li>
+          <span class="info"><i class="fa fa-info"></i>
+            Complete annotations of 15-core chromatin state (for every 127 epigenomes) are available in the "annot.txt" from download.
+          </span><br/>
+        </ul>
+        <ul>
+          <li><p>ANNOVAR</p>
+          <p>Since one SNP can be annotated multiple positional information, the table of ANNOVAR output is separated from SNPs table.
+            This table contain unique SNP-annotation combination.</p>
+          <ul>
+            <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
+            <li><strong>chr</strong> : chromosome</li>
+            <li><strong>pos</strong> : position on hg19</li>
+            <li><strong>Gene</strong> : ENSG ID</li>
+            <li><strong>Symbol</strong> : Gene Symbol</li>
+            <li><strong>Distance</strong> : Distance to the gene</li>
+            <li><strong>Function</strong> : Positional annotation</li>
+            <li><strong>Exonic function</strong> : Functional annotation of exonic SNPs</li>
+            <li><strong>Exon</strong> : Index of exon</li>
+          </ul>
+          </li>
+        </ul>
+        <ul>
+          <li><p>Mapped genes</p>
+          <p>The genes which are mapped by SNPs in SNPs table based on defined mapping parameters.
+            Columns with posMap or eqtlMap in the parenthese are only available when positional or eQTL mapping is performed, respectively.
+          </p>
+          <ul>
+            <li><strong>Gene</strong> : ENSG ID</li>
+            <li><strong>Symbol</strong> : Gene Symbol</li>
+            <li><strong>entrezID</strong> : entrez ID</li>
+            <li><strong>Genomic locus</strong> : Index of genomic loci where mapped SNPs are from. This could contain more than one interval in the case that eQTLs are mapped to genes from distinct genomic risk loci.</li>
+            <li><strong>chr</strong> : chromosome</li>
+            <li><strong>start</strong> : gene starting position</li>
+            <li><strong>end</strong> : gene ending position</li>
+            <li><strong>strand</strong> : strand od gene</li>
+            <li><strong>status</strong> : status of gene from Ensembl</li>
+            <li><strong>type</strong> : gene biotype from Ensembl</li>
+            <li><strong>HUGO</strong> : HUGO (HGNC) gene symbol</li>
+            <li><strong>posMapSNPs</strong> (posMap): The number of SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).</li>
+            <li><strong>posMapMaxCADD</strong> (posMap): The maximum CADD score of mapped SNPs by positional mapping.</li>
+            <li><strong>eqtlMapSNPs</strong> (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.</li>
+            <li><strong>eqtlMapminP</strong> (eqtlMap): The minimum eQTL P-value of mapped SNPs.</li>
+            <li><strong>eqtlMapmin!</strong> (eqtlMap): The minimum eQTL FDR of mapped SNPs.</li>
+            <li><strong>eqtlMapts</strong> (eqtlMap): Tissue types of mapped eQTL SNPs.</li>
+            <li><strong>eqtlDirection</strong> (eqtlMap): consecutive direction of mapped eQTL SNPs.</li>
+            <li><strong>minGwasP</strong> : The minimum P-value of mapped SNPs.</li>
+            <li><strong>leadSNPs</strong> : All independent lead SNPs of mapped SNPs.</li>
+          </ul>
+          </li>
+        </ul>
+        <ul>
+          <li><p>eQTL</p>
+          <p>This table is only shown wheneQTL mapping is performed.
+           The table contains unique pair of SNP-gene-tissue, therefore, a SNP could appear multiple times.</p>
+          <ul>
+            <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
+            <li><strong>chr</strong> : chromosome</li>
+            <li><strong>pos</strong> : position on hg19</li>
+            <li><strong>DB</strong> : Data source of eQTLs. Currently GTEx, BloodeQTL and BIOS are available. Please refer &quot;External Data sources&quot; for details.</li>
+            <li><strong>tissue</strong> : tissue type</li>
+            <li><strong>Gene</strong> : ENSG ID</li>
+            <li><strong>Symbol</strong> : Gene symbol</li>
+            <li><strong>P-value</strong> : P-value of eQTLs</li>
+            <li><strong>FDR</strong> : FDR of eQTLs. Note that method to compute FDR differs between data sources. Please refer &quot;External Data sources&quot; for details.</li>
+            <li><strong>tz</strong> : T-statistics or z score depends on data source.</li>
+          </ul>
+          </li>
+        </ul>
+        <ul>
+          <li><p>GWAScatalog</p>
+            <p>List of SNPs reported in GWAScatalog which are candidate SNPs of your GWAS summary statistics. <br/>
+              <span class="info"><i class="fa fa-info"></i>
+                The table does not show all columns available. The complete table is available by downloading.
+              </span>
+            </p>
             <ul>
-              <li><strong>No</strong> : Index of lead SNPs</li>
-              <li><strong>Interval</strong> : Index of assigned genomic interval (risk locus). This matches with the index of interval table.</li>
-              <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-              <li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
+              <li><strong>Genomic locus</strong> : Index of genomic risk loci.</li>
+              <li><strong>lead SNP</strong> : The lad SNP of the SNP in GWAScatalog.</li>
               <li><strong>chr</strong> : chromosome</li>
-              <li><strong>pos</strong> : position on hg19</li>
-              <li><strong>P-value</strong> : P-value (from the input file).</li>
-              <li><strong>nSNPs</strong> : The number of SNPs within LD of the lead SNP given r2, including non-GWAS-tagged SNPs (which are extracted from 1000G).</li>
-              <li><strong>nGWASSNPs</strong> : The number of GWAS-tagged SNPs within LD of the lead SNP given r2. This is a subset of &quot;nSNPs&quot;.</li>
+              <li><strong>bp</strong> : position on hg19</li>
+              <li><strong>snp</strong> : rsID of reported SNP in GWAS catalog</li>
+              <li><strong>PMID</strong> : PubMed ID</li>
+              <li><strong>Trait</strong> : The trait reported in GWAScatalog</li>
+              <li><strong>FirthAuth</strong> : First author reported in GWAScatalog</li>
+              <li><strong>Date</strong> : Date added in GWAScatalog</li>
+              <li><strong>P-value</strong> : Reported P-value</li>
             </ul>
-            </li>
-          </ul>
+          </li>
+        </ul>
+        <ul>
+          <li><p>Parameters</p>
+          <p>The table of input parameters.
+            The downloadable file is config file with INI format.
+          </p>
           <ul>
-            <li><p>Genomic risk loci / intervals.txt</p>
-            <p>Genomic risk loci (intervals) defined from independent lead SNPs.
-            Each interval is represented by the top lead SNP which has the minimum P-value in the interval.</p>
-            <ul>
-              <li><strong>Interval</strong> : Index of genomic interval.</li>
-              <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-              <li><strong>rsID</strong> : rsID of the top lead SNP based on dbSNP build 146.</li>
-              <li><strong>chr</strong> : chromosome of top lead SNP</li>
-              <li><strong>pos</strong> : position of top lead SNP on hg19</li>
-              <li><strong>P-value</strong> : P-value of top lead SNP (from the input file).</li>
-              <li><strong>nLeadSNPs</strong> : The number of lead SNPs merged into the interval.</li>
-              <li><strong>start</strong> : Start position of the interval.</li>
-              <li><strong>start</strong> : End postion of the interval.</li>
-              <li><strong>nSNPs</strong> : The number of canidate SNPs in the interval, including non-GWAS-tagged SNPs (which are extracted from 1000G).</li>
-              <li><strong>nGWASSNPs</strong> : The number of GWAS-tagged candidate SNPs within the interval. This is a subset of &quot;nSNPs&quot;.</li>
-            </ul>
-            </li>
+            [jobinfo]
+            <li><strong>created_at</strong> : Date of job created</li>
+            <li><strong>title</strong> : Job title</li>
+            [inputfiles]
+            <li><strong>gwasfile</strong> : File name of GWAS summary statistics</li>
+            <li><strong>leadSNPsfile</strong> : File name of pre-defined lead SNPs if provided.</li>
+            <li><strong>addleadSNPs</strong> : 1 if option is checked, 0 otherwise. If pre-defined lead SNPs are not provided, it is always 1.</li>
+            <li><strong>regionsfile</strong> : File name of pre-defined genetic regions if provided.</li>
+            <li><strong>**col</strong> : The column names of input GWAS summary statistics file if provided.</li>
+            [params]
+            <li><strong>N</strong> : Sample size of GWAS</li>
+            <li><strong>exMHC</strong> : 1 to exclude MHC region, 0 otherwise</li>
+            <li><strong>extMHC</strong> : user defined MHC region if provided, NA otherwise</li>
+            <li><strong>genetype</strong> : All selected gene type.</li>
+            <li><strong>leadP</strong> : the maximum threshold of P-value to be lead SNP</li>
+            <li><strong>r2</strong> : the minimum threshold for SNPs to ne in LD of the lead SNPs</li>
+            <li><strong>gwasP</strong> : the maximum threshold of P-value to be candidate SNP</li>
+            <li><strong>pop</strong> : The population of reference panel</li>
+            <li><strong>MAF</strong> : the minimum minor allele frequency based on 1000 genome reference of given population</li>
+            <li><strong>Incl1KGSNPs</strong> : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise</li>
+            <li><strong>mergeDist</strong> : The maximum distance between LD blocks to merge into interval</li>
+            [posMap]
+            <li><strong>posMap</strong> : 1 to perform positional mapping, 0 otherwise</li>
+            <li><strong>posMapWindow</strong> : 1 to perform positional mapping based on distance to the genes, 0 otherwise</li>
+            <li><strong>posMapWindowSize</strong> : If window based positional mapping is performed, which distance (kb) as the maximum. If window based mapping is 0, this parameter set at 10 as default but will be ignored.</li>
+            <li><strong>posMapAnnot</strong> : Positional annotations selected if window based mapping is 0.</li>
+            <li><strong>posMapCADDth</strong> : The minimum CADD score for SNP filtering</li>
+            <li><strong>posMapRDBth</strong> : The minimum RegulomeDB score for SNP filtering</li>
+            <li><strong>posMapChr15</strong> : Select tissue/cell types, NA otherwise</li>
+            <li><strong>posMapChr15Max</strong> : The maximum 15-core chromatin state</li>
+            <li><strong>posMapChr15Meth</strong> : The method of chromatin state filtering</li>
+            [eqtlMap]
+            <li><strong>eqtlMap</strong> : 1 to perform eQTL mapping, 0 otherwise</li>
+            <li><strong>eqtlMaptss</strong> : Selected tissue typed for eQTL mapping</li>
+            <li><strong>eqtlMapSig</strong> : 1 to use only significant snp-gene pairs, 0 otherwise</li>
+            <li><strong>eqtlMapP</strong> : The P-value threshold for eQTLs if <code> eqtlMap significant only</code> is not selected.</li>
+            <li><strong>eqtlMapCADDth</strong> : The minimum CADD score for SNP filtering</li>
+            <li><strong>eqtlMapRDBth</strong> : The minimum RegulomeDB score for SNP filtering</li>
+            <li><strong>eqtlMapChr15</strong> : Select tissue/cell types, NA otherwise</li>
+            <li><strong>eqtlMapChr15Max</strong> : The maximum 15-core chromatin state</li>
+            <li><strong>eqtlMapChr15Meth</strong> : The method of chromatin state filtering</li>
           </ul>
-          <ul>
-            <li><p>SNPs (annotation) / snps.txt</p>
-            <p>All candidate SNPs with annotations. Note that depending on your mapping criterion, not all candidate SNPs are mapped to genes.</p>
-            <ul>
-              <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-              <li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
-              <li><strong>chr</strong> : chromosome</li>
-              <li><strong>pos</strong> : position on hg19</li>
-              <li><strong>ref</strong> : Reference allele. Non-effect allele if it is provided in the input GWAS summary statistics file. If not, this is the reference allele in 1000G.</li>
-              <li><strong>alt</strong> : Alternative allele. Effect allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.</li>
-              <li><strong>MAF</strong> : Minor allele frequency computed based on 1000G.</li>
-              <li><strong>gwasP</strong> : P-value (from the input file).</li>
-              <li><strong>r2</strong> : The maximum r2 of the SNP with one of the independent lead SNP (this dosen't have to be top lead SNPs in the intervals).</li>
-              <li><strong>leadSNP</strong> : rsID of a independent lead SNP which has the maximum r2 of the SNP.</li>
-              <li><strong>Interval</strong> : Index of the interval.</li>
-              <li><strong>nearestGene</strong> : The nearest Gene of the SNP. Genes are ecoded in symbol, if it is available. If not, ENSG ID is shown. Genes here include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.</li>
-              <li><strong>dist</strong> : Distance to the nearest gene.</li>
-              <li><strong>func</strong> : Potisional annotation obtained from ANNOVAR. For exonic SNPs, detail annotation (e.g. non-synonymous, stop gain and so on) is available in ANNOVAR table (annov.txt).</li>
-              <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al(ref).</li>
-              <li><strong>RDB</strong> : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.</li>
-              <li><strong>minChrState</strong> : The minimum 15-core chromatin state over 127 tissue/cell type.</li>
-              <li><strong>commonChrState</strong> : The majority of the 15-core chromatin state over 127 tissue/cell types.</li>
-            </ul>
-            </li>
-          </ul>
-          <ul>
-            <li><p>annot.txt (Not shown in the interface but downloadable)</p></li>
-            <p>This file contains annotation of candidate SNPs.
-              CADD score, RegulomeDB score and summarized chromatin state are shown in the SNPs table.
-              This file contains all 127 tissue/cell types of chromatin states</p>
-            <ul>
-              <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-              <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by <a href="https://www.ncbi.nlm.nih.gov/pubmed/24487276" target="_blank">Kicher et al.</a></li>
-              <li><strong>RDB</strong> : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.</li>
-              <li><strong>E001~E129</strong> : Chromatin state predicted by ChrHMM. ID of tissue cell types and description of 15 states are available from <a href="{{ Config::get('app.subdir') }}/link">Link</a>.</li>
-            </ul>
-          </ul>
-          <ul>
-            <li><p>ANNOVAR / annov.txt</p>
-            <p>Since one SNP can be annotated multiple positional information, the table of ANNOVAR output is separated from SNPs table. This table contain unique SNP-annotation combination.</p>
-            <ul>
-              <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-              <li><strong>chr</strong> : chromosome</li>
-              <li><strong>pos</strong> : position on hg19</li>
-              <li><strong>Gene</strong> : ENSG ID</li>
-              <li><strong>Symbol</strong> : Gene Symbol</li>
-              <li><strong>Distance</strong> : Distance to the gene</li>
-              <li><strong>Function</strong> : Positional annotation</li>
-              <li><strong>Exonic function</strong> : Functional annotation of exonic SNPs</li>
-              <li><strong>Exon</strong> : Index of exon</li>
-            </ul>
-            </li>
-          </ul>
-          <ul>
-            <li><p>Mapped genes / genes.txt</p>
-            <p>The summary of mapped genes based on your defined mapping criterion.
-             Columns change for positional and eQTL mappings.
-             When both mappings are performed, all columns exit in the table.</p>
-            <ul>
-              <li><strong>Gene</strong> : ENSG ID</li>
-              <li><strong>Symbol</strong> : Gene Symbol</li>
-              <li><strong>entrezID</strong> : entrez ID</li>
-              <li><strong>Interval</strong> : Index of interval where mapped SNPs are from. This could contain more than one interval in the case that eQTLs are mapped to genes from distinct genomic intervals.</li>
-              <li><strong>chr</strong> : chromosome</li>
-              <li><strong>start</strong> : gene starting position</li>
-              <li><strong>end</strong> : gene ending position</li>
-              <li><strong>strand</strong> : strand od gene</li>
-              <li><strong>status</strong> : status of gene from Ensembl</li>
-              <li><strong>type</strong> : gene biotype from Ensembl</li>
-              <li><strong>HUGO</strong> : HUGO (HGNC) gene symbol</li>
-              <li><strong>posMapSNPs</strong> (posMap): The number of SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).</li>
-              <li><strong>posMapMaxCADD</strong> (posMap): The maximum CADD score of mapped SNPs by positional mapping.</li>
-              <li><strong>eqtlMapSNPs</strong> (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.</li>
-              <li><strong>eqtlMapminP</strong> (eqtlMap): The minimum eQTL P-value of mapped SNPs.</li>
-              <li><strong>eqtlMapmin!</strong> (eqtlMap): The minimum eQTL FDR of mapped SNPs.</li>
-              <li><strong>eqtlMapts</strong> (eqtlMap): Tissue types of mapped eQTL SNPs.</li>
-              <li><strong>eqtlDirection</strong> (eqtlMap): consecutive direction of mapped eQTL SNPs.</li>
-              <li><strong>minGwasP</strong> : The minimum P-value of mapped SNPs.</li>
-              <li><strong>leadSNPs</strong> : All independent lead SNPs of mapped SNPs.</li>
-            </ul>
-            </li>
-          </ul>
-          <ul>
-            <li><p>eQTL / eqtl.txt</p>
-            <p>This table is only shown when you performed eQTL mapping.
-             The table contain unique pair of SNP-gene-tissue, therefore, the same SNP could appear in the table multiple times.</p>
-            <ul>
-              <li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-              <li><strong>chr</strong> : chromosome</li>
-              <li><strong>pos</strong> : position on hg19</li>
-              <li><strong>DB</strong> : Data source of eQTLs. Currently GTEx, BloodeQTL and BIOS are available. Please refer &quot;External Data sources&quot; for details.</li>
-              <li><strong>tissue</strong> : tissue type</li>
-              <li><strong>Gene</strong> : ENSG ID</li>
-              <li><strong>Symbol</strong> : Gene symbol</li>
-              <li><strong>P-value</strong> : P-value of eQTLs</li>
-              <li><strong>FDR</strong> : FDR of eQTLs. Note that method to compute FDR differs between data sources. Please refer &quot;External Data sources&quot; for details.</li>
-              <li><strong>tz</strong> : T-statistics or z score depends on data source.</li>
-            </ul>
-            </li>
-          </ul>
-          <ul>
-            <li><p>GWAScatalog / gwascatalog.txt</p>
-              <p>List of SNPs reported in GWAScatalog which are candidate SNPs of your GWAS summary statistics. The table does not contain all recode from GWAScatalog. To get full information, please download from &quot;Downloads&quot; tab.</p>
-              <ul>
-                <li><strong>Interval</strong> : Index of interval.</li>
-                <li><strong>lead SNP</strong> : The lad SNP of the SNP in GWAScatalog.</li>
-                <li><strong>chr</strong> : chromosome</li>
-                <li><strong>bp</strong> : position on hg19</li>
-                <li><strong>snp</strong> : rsID of reported SNP in GWAS catalog</li>
-                <li><strong>PMID</strong> : PubMed ID</li>
-                <li><strong>Trait</strong> : The trait reported in GWAScatalog</li>
-                <li><strong>FirthAuth</strong> : First author reported in GWAScatalog</li>
-                <li><strong>Date</strong> : Date added in GWAScatalog</li>
-                <li><strong>P-value</strong> : Reported P-value</li>
-              </ul>
-            </li>
-          </ul>
-          <ul>
-            <li><p>Parameters / params.config</p>
-            <p>The table of input parameters. The downloadable file is config file with INI format.</p>
-            <ul>
-              <li><strong>created_at</strong> : Date of job created</li>
-              <li><strong>title</strong> : Job title</li>
-              <li><strong>gwasfile</strong> : File name of GWAS summary statistics</li>
-              <li><strong>leadSNPsfile</strong> : File name of pre-defined lead SNPs if provided.</li>
-              <li><strong>addleadSNPs</strong> : 1 if option is checked, 0 otherwise. If pre-defined lead SNPs are not provided, it is always 1.</li>
-              <li><strong>regionsfile</strong> : File name of pre-defined genetic regions if provided.</li>
-              <li><strong>N</strong> : Sample size of GWAS</li>
-              <li><strong>exMHC</strong> : 1 to exclude MHC region, 0 otherwise</li>
-              <li><strong>extMHC</strong> : user defined MHC region if provided, NA otherwise</li>
-              <li><strong>genetype</strong> : All selected gene type.</li>
-              <li><strong>leadP</strong> : the maximum threshold of P-value to be lead SNP</li>
-              <li><strong>r2</strong> : the minimum threshold for SNPs to ne in LD of the lead SNPs</li>
-              <li><strong>gwasP</strong> : the maximum threshold of P-value to be candidate SNP</li>
-              <li><strong>pop</strong> : The population of reference panel</li>
-              <li><strong>MAF</strong> : the minimum minor allele frequency based on 1000 genome reference of given population</li>
-              <li><strong>Incl1KGSNPs</strong> : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise</li>
-              <li><strong>mergeDist</strong> : The maximum distance between LD blocks to merge into interval</li>
-              <li><strong>posMap</strong> : 1 to perform positional mapping, 0 otherwise</li>
-              <li><strong>posMapWindow</strong> : 1 to perform positional mapping based on distance to the genes, 0 otherwise</li>
-              <li><strong>posMapWindowSize</strong> : If window based positional mapping is performed, which distance (kb) as the maximum. If window based mapping is 0, this parameter set at 10 as default but will be ignored.</li>
-              <li><strong>posMapAnnot</strong> : Positional annotations selected if window based mapping is 0.</li>
-              <li><strong>posMapCADDth</strong> : The minimum CADD score for SNP filtering</li>
-              <li><strong>posMapRDBth</strong> : The minimum RegulomeDB score for SNP filtering</li>
-              <li><strong>posMapChr15</strong> : Select tissue/cell types, NA otherwise</li>
-              <li><strong>posMapChr15Max</strong> : The maximum 15-core chromatin state</li>
-              <li><strong>posMapChr15Meth</strong> : The method of chromatin state filtering</li>
-              <li><strong>eqtlMap</strong> : 1 to perform eQTL mapping, 0 otherwise</li>
-              <li><strong>eqtlMaptss</strong> : Selected tissue typed for eQTL mapping</li>
-              <li><strong>eqtlMapSig</strong> : 1 to use only significant snp-gene pairs, 0 otherwise</li>
-              <li><strong>eqtlMapP</strong> : The P-value threshold for eQTLs if <code> eqtlMap significant only</code> is not selected.</li>
-              <li><strong>eqtlMapCADDth</strong> : The minimum CADD score for SNP filtering</li>
-              <li><strong>eqtlMapRDBth</strong> : The minimum RegulomeDB score for SNP filtering</li>
-              <li><strong>eqtlMapChr15</strong> : Select tissue/cell types, NA otherwise</li>
-              <li><strong>eqtlMapChr15Max</strong> : The maximum 15-core chromatin state</li>
-              <li><strong>eqtlMapChr15Meth</strong> : The method of chromatin state filtering</li>
-            </ul>
-            </li>
-          </ul>
-        </div>
+          </li>
+        </ul>
         <br/>
 
-        <h4>5. Downloads</h4>
+        <h4>4. Downloads</h4>
         <p>All results are downloadable as text file.
-          Columns are same as descrived above.<br/>
+          Columns are described in README file.<br/>
+          When SNP table is downloaded, <strong>ld.txt</strong> will be also downloaded at the same time.
+          This file contains r2 computed from 1000G reference panel for all pairs of one of the independent lead SNPs and all other SNPs within the LD.
         </p>
-
-        <div style="padding-left: 40px;">
-          When SNP table is downloaded, <strong>ld.txt</strong> will be also downloaded at the same tome.
-          This file contains r2 computed from 1000G reference panel for all pair of one of the independent lead SNPs and all other SNPs within the LD.
-          <ul>
-            <li><strong>SNP1</strong> : One of the independent lead SNPs</li>
-            <li><strong>SNP2</strong> : One of the candidate SNPs (including lead SNPs)</li>
-            <li><strong>r2</strong> : r2 computed using 1000G reference panel of user defined population</li>
-          </ul>
-        </div>
-        <br/>
       </div>
     </div>
 

@@ -579,24 +579,21 @@ class JobController extends Controller
       if($request -> has('gwascatfile')){$files[] = "gwascatalog.txt";}
       if($request -> has('magmafile')){$files[] = "magma.genes.out";}
 
-      if(count($files)==1){
-        return response() -> download($filedir.$files[0]);
-      }else{
-        $zip = new \ZipArchive();
-        $zipfile = $filedir."IPGAP.zip";
+      $zip = new \ZipArchive();
+      $zipfile = $filedir."IPGAP.zip";
 
-        if(File::exists($zipfile)){
-          File::delete($zipfile);
-        }
-        // Zipper::make($zipfile)->add($files);
-        // sleep(5);
-        $zip -> open($zipfile, \ZipArchive::CREATE);
-        foreach($files as $f){
-          $zip->addFile($filedir.$f, $f);
-        }
-        $zip -> close();
-        return response() -> download($zipfile);
+      if(File::exists($zipfile)){
+        File::delete($zipfile);
       }
+      // Zipper::make($zipfile)->add($files);
+      // sleep(5);
+      $zip -> open($zipfile, \ZipArchive::CREATE);
+      $zip->addFile(storage_path().'/README', "README");
+      foreach($files as $f){
+        $zip->addFile($filedir.$f, $f);
+      }
+      $zip -> close();
+      return response() -> download($zipfile);
     }
 
     public function getG2FJobList(){

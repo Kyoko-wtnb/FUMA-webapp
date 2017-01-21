@@ -629,7 +629,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
 
   var table = "<thead>"
       +"<tr>"
-        +"<th>uniqID</th><th>rsID</th><th>chr</th><th>bp</th><th>MAF</th><th>P-value</th>";
+        +"<th>uniqID</th><th>rsID</th><th>chr</th><th>bp</th><th>MAF</th><th>gwasP</th>";
   if(orcol!="NA"){
     table += "<th>OR</th>";
   }
