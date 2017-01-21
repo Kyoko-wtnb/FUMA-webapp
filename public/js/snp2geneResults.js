@@ -1,5 +1,5 @@
 var leadSNPtable_selected=null;
-var intervalTable_selected=null;
+var lociTable_selected=null;
 // var SNPtable_selected=null;
 var annotPlotSelected;
 $(document).ready(function(){
@@ -46,7 +46,7 @@ $(document).ready(function(){
       +'</div>');
   }else{
     $('#annotPlotSubmit').attr("disabled", true);
-    $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or interval to plot. If you haven\'t selected any row, please click one of the row of lead SNP or interval table.</div>');
+    $('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or genomic risk loci to plot. If you haven\'t selected any row, please click one of the row of lead SNP or genomic risk loci table.</div>');
     if($('#annotPlot_Chrom15').is(":checked")==false){
       $('#annotPlotChr15Opt').hide();
     }
@@ -147,7 +147,7 @@ $(document).ready(function(){
   $('#allfiles').on('click', function(){
     $('#paramfile').prop('checked', true);
     $('#leadfile').prop('checked', true);
-    $('#intervalfile').prop('checked', true);
+    $('#locifile').prop('checked', true);
     $('#snpsfile').prop('checked', true);
     $('#annovfile').prop('checked', true);
     $('#annotfile').prop('checked', true);
@@ -161,7 +161,7 @@ $(document).ready(function(){
   $('#clearfiles').on('click', function(){
     $('#paramfile').prop('checked', false);
     $('#leadfile').prop('checked', false);
-    $('#intervalfile').prop('checked', false);
+    $('#locifile').prop('checked', false);
     $('#snpsfile').prop('checked', false);
     $('#annovfile').prop('checked', false);
     $('#annotfile').prop('checked', false);
@@ -575,7 +575,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
     },
     complete: function(){
       PlotSNPAnnot(jobID);
-      PlotIntervalSum(jobID);
+      PlotLocuSum(jobID);
     }
   });
 
@@ -590,7 +590,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "No:interval:uniqID:rsID:chr:pos:p:nSNPs:nGWASSNPs"
+          header: "No:GenomicLocus:uniqID:rsID:chr:pos:p:nSNPs:nGWASSNPs"
         }
       },
       error: function(){
@@ -602,8 +602,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
       buttons: ['csv']
   });
 
-  file = "intervals.txt";
-  var intervalTable = $('#intervalTable').DataTable({
+  file = "GenomicRiskLoci.txt";
+  var lociTable = $('#lociTable').DataTable({
       "processing": true,
       serverSide: false,
       select: true,
@@ -613,11 +613,11 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "Interval:uniqID:rsID:chr:pos:p:nLeadSNPs:start:end:nSNPs:nGWASSNPs"
+          header: "GenomicLocus:uniqID:rsID:chr:pos:p:nLeadSNPs:start:end:nSNPs:nGWASSNPs"
         }
       },
       error: function(){
-        alert("interval table error");
+        alert("GenomicRiskLoci table error");
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10,
@@ -634,7 +634,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
   if(secol!="NA"){
     table += "<th>SE</th>";
   }
-  table +="<th>Interval</th><th>r2</th><th>leadSNP</th><th>Nearest gene</th><th>dist</th><th>position</th><th>CADD</th><th>RDB</th><th>minChrState(127)</th><th>commonChrState(127)</th>"
+  table +="<th>Genomic Locus</th><th>r2</th><th>leadSNP</th><th>Nearest gene</th><th>dist</th><th>position</th><th>CADD</th><th>RDB</th><th>minChrState(127)</th><th>commonChrState(127)</th>"
       +"</tr>"
     +"</thead>";
   file = "snps.txt";
@@ -646,7 +646,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
   if(secol!="NA"){
     cols += ":se";
   }
-  cols += ":Interval:r2:leadSNP:nearestGene:dist:func:CADD:RDB:minChrState:commonChrState";
+  cols += ":GenomicLocus:r2:leadSNP:nearestGene:dist:func:CADD:RDB:minChrState:commonChrState";
   var SNPtable = $('#SNPtable').DataTable({
     processing: true,
     serverSide: false,
@@ -691,7 +691,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
   });
 
   file = "genes.txt";
-  var thead = "<thead><tr><th>Gene</th><th>Symbol</th><th>entrezID</th><th>Interval</th><th>chr</th><th>start</th><th>end</th>";
+  var thead = "<thead><tr><th>Gene</th><th>Symbol</th><th>entrezID</th><th>Genomic Locus</th><th>chr</th><th>start</th><th>end</th>";
   thead += "<th>strand</th><th>status</th><th>type</th><th>HUGO</th>";
   if(posMap==1){
     thead += "<th>posMapSNPs</th><th>posMapMaxCADD</th>";
@@ -714,7 +714,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:posMapSNPs:posMapMaxCADD:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
+          header: "ensg:symbol:entrezID:GenomicLocus:chr:start:end:strand:status:type:HUGO:posMapSNPs:posMapMaxCADD:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -733,7 +733,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:posMapSNPs:posMapMaxCADD:minGwasP:leadSNPs"
+          header: "ensg:symbol:entrezID:GenomicLocus:chr:start:end:strand:status:type:HUGO:posMapSNPs:posMapMaxCADD:minGwasP:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -752,7 +752,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:interval:chr:start:end:strand:status:type:HUGO:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
+          header: "ensg:symbol:entrezID:GenomicLocus:chr:start:end:strand:status:type:HUGO:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -797,7 +797,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "Interval:leadSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
+          header: "GenomicLocus:leadSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
         }
       },
         "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -819,7 +819,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
   //     }
   //   },
   //   columns:[
-  //     {"data": "Interval", name:"Interval"},
+  //     {"data": "GenomicLocus", name:"GenomicLocus"},
   //     {"data": "uniqID", name:"uniqID"},
   //     {"data": "chr", name:"chr"},
   //     {"data": "pos", name:"bp"},
@@ -852,7 +852,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
     leadSNPtable_selected=rowI;
     $('#annotPlotRow').val(rowI);
     Chr15Select();
-
+    d3.select('#locusPlot').select("svg").remove();
     var rowData = leadTable.row(rowI).data();
     var chr = rowData[4];
 
@@ -877,16 +877,16 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
     $('#selectedLeadSNP').html(out);
   });
 
-  $('#intervalTable tbody').on('click', 'tr', function(){
+  $('#lociTable tbody').on('click', 'tr', function(){
     $('#plotClear').show();
     $('#annotPlotPanel').show();
-    $('#annotPlotSelect').val('interval');
-    var rowI = intervalTable.row(this).index();
-    intervalTable_selected=rowI;
+    $('#annotPlotSelect').val('GenomicLocus');
+    var rowI = lociTable.row(this).index();
+    lociTable_selected=rowI;
     $('#annotPlotRow').val(rowI);
     Chr15Select();
-
-    var rowData = intervalTable.row(rowI).data();
+    d3.select('#locusPlot').select("svg").remove();
+    var rowData = lociTable.row(rowI).data();
     var chr = rowData[3];
 
     $.ajax({
@@ -921,7 +921,6 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
     // set range
     var x = d3.scale.linear().range([0, width]);
     var y = d3.scale.linear().range([height, 0]);
-    d3.select('#locusPlot').select("svg").remove();
 
     var svg = d3.select("#locusPlot").append("svg")
               .attr("width", width+margin.left+margin.right)
@@ -1112,7 +1111,7 @@ function PlotSNPAnnot(jobID){
 
 }
 
-function PlotIntervalSum(jobID){
+function PlotLocuSum(jobID){
   var file="interval_sum.txt";
   // filedir = filedir.replace("../", "");
   d3.json("d3text/"+jobID+"/"+file, function(data){
@@ -1128,7 +1127,7 @@ function PlotIntervalSum(jobID){
         height = 15*y_element.length;
     var y = d3.scale.ordinal().domain(y_element).rangeBands([0, height], 0.1);
     var yAxis = d3.svg.axis().scale(y).orient("left");
-    var svg = d3.select('#intervalPlot').append('svg')
+    var svg = d3.select('#lociPlot').append('svg')
               .attr("class", 'plotSVG')
               .attr("width", width+margin.left+margin.right)
               .attr("height", height+margin.top+margin.bottom)
@@ -1329,7 +1328,7 @@ function DownloadFiles(){
   // var allfiles = document.getElementById('allfiles').checked;
   var paramfile = document.getElementById('paramfile').checked;
   var leadfile = document.getElementById('leadfile').checked;
-  var intervalfile = document.getElementById('intervalfile').checked;
+  var locifile = document.getElementById('locifile').checked;
   var snpsfile = document.getElementById('snpsfile').checked;
   var annovfile = document.getElementById('annovfile').checked;
   var annotfile = document.getElementById('annotfile').checked;
@@ -1337,7 +1336,7 @@ function DownloadFiles(){
   var eqtlfile = document.getElementById('eqtlfile').checked;
   // var exacfile = document.getElementById('exacfile').checked;
   var magmafile = document.getElementById('magmafile').checked;
-  if(paramfile || leadfile || intervalfile || snpsfile || annovfile || annotfile || genefile || eqtlfile || magmafile){
+  if(paramfile || leadfile || locifile || snpsfile || annovfile || annotfile || genefile || eqtlfile || magmafile){
     document.getElementById('download').disabled=false;
   }
 }

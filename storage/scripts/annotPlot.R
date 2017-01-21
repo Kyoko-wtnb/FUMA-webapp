@@ -17,7 +17,9 @@ source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
 snps <- fread(paste(filedir, "annotPlot.txt", sep=""), data.table=F)
-eqtl <- fread(paste(filedir, "eqtlplot.txt", sep=""), data.table=F)
+if(eqtlplot==1){
+  eqtl <- fread(paste(filedir, "eqtlplot.txt", sep=""), data.table=F)
+}
 
 load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 

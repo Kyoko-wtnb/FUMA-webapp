@@ -499,7 +499,7 @@ class JobController extends Controller
         fgetcsv($eqtlfile, 0, "\t");
         $eqtlgenes = array();
         while($row = fgetcsv($eqtlfile, 0, "\t")){
-          $eqtlgenes[] = $row[0];
+          $eqtlgenes[] = $row[3];
         }
         if(empty($eqtlgenes)){$eqtplot=0;}
         else{$eqtlplot=1;}
@@ -565,7 +565,7 @@ class JobController extends Controller
       $files = array();
       if($request -> has('paramfile')){ $files[] = "params.config";}
       if($request -> has('leadfile')){$files[] = "leadSNPs.txt";}
-      if($request -> has('intervalfile')){$files[] = "intervals.txt";}
+      if($request -> has('locifile')){$files[] = "GenomicRiskLoci.txt";}
       if($request -> has('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
       if($request -> has('annovfile')){$files[] = "annov.txt";}
       if($request -> has('annotfile')){$files[] = "annot.txt";}

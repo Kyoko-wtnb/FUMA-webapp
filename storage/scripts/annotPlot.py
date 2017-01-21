@@ -49,28 +49,27 @@ if Chr15==1:
 snps = pd.read_table(filedir+"snps.txt", sep="\t")
 snpshead = list(snps.columns.values)
 snps = snps.as_matrix()
-lead = pd.read_table(filedir+"leadSNPs.txt", sep="\t")
-lead = lead.as_matrix()
 ld = pd.read_table(filedir+"ld.txt", sep="\t")
 ld = ld.as_matrix()
 
 if Type=="leadSNP":
-    ls = str(lead[i, 1])
-    loci = int(lead[i,8])
-    ld = ld[ld[:,0]==ls]
-
-    snps = snps[snps[:,snpshead.index("Interval")]==loci]
-    snps = np.c_[snps, [0]*len(snps)]
-    snps[ArrayIn(snps[:,0], ld[:,1]),len(snps[0])-1] = 1
-    snps[snps[:,0]==ls,len(snps[0])-1] = 2
-    snps = snps[snps[:, len(snps[0])-1]>0]
+	lead = pd.read_table(filedir+"leadSNPs.txt", sep="\t")
+	lead = lead.as_matrix()
+	ls = str(lead[i, 2])
+	loci = int(lead[i,1])
+	ld = ld[ld[:,0]==ls]
+	snps = snps[snps[:,snpshead.index("GenomicLocus")]==loci]
+	snps = np.c_[snps, [0]*len(snps)]
+	snps[ArrayIn(snps[:,0], ld[:,1]),len(snps[0])-1] = 1
+	snps[snps[:,0]==ls,len(snps[0])-1] = 2
+	snps = snps[snps[:, len(snps[0])-1]>0]
 else:
-    loci = pd.read_table(filedir+"intervals.txt", sep="\t")
+    loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
     loci = loci.as_matrix()
     ls = np.array(loci[i,9].split(":"))
     ls = snps[ArrayIn(snps[:,1], ls), 0]
     ld = ld[ArrayIn(ld[:,0], ls)]
-    snps = snps[snps[:,snpshead.index("Interval")]==i+1]
+    snps = snps[snps[:,snpshead.index("GenomicLocus")]==i+1]
     snps = snps[ArrayIn(snps[:,0], ld[:,1])]
     snps = np.c_[snps, [1]*len(snps)]
     snps[ArrayIn(snps[:,0],ls),len(snps[0])-1] = 2

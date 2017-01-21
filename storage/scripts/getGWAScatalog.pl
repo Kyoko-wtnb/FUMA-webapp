@@ -21,7 +21,7 @@ my $out = $filedir."gwascatalog.txt";
 #chomp $head;
 my @head = qw(chr bp snp DateAddedToCatalog PMID FirstAuth Date Journal Link Study Trait InitialN ReplicationN	Region ReportedGene MappedGene UpGene DownGene SNP_Gene_ID UpGeneDist DownGeneDist Strongest SNPs marged SNP_ID_cur Context intergenic RiskAF P Pmlog Ptext OrBeta 95CI Platform CNV);
 open(OUT, ">$out");
-print OUT join("\t", ("Interval", "leadSNP", @head)), "\n";
+print OUT join("\t", ("GenomicLocus", "leadSNP", @head)), "\n";
 open(IN, "$in") or die "Cannot open $in\n";
 my $chr = 0;
 my $start = 0;
@@ -30,7 +30,7 @@ my %SNP;
 <IN>;
 while(<IN>){
 	my @line = split(/\s/, $_);
-	$SNP{$line[1]}{"interval"}=$line[10];
+	$SNP{$line[1]}{"GenomicLocus"}=$line[10];
 	$SNP{$line[1]}{"leadSNP"}=$line[9];
 	$start = $line[3] if($start == 0);
 	if($line[2]==$chr){
@@ -40,8 +40,8 @@ while(<IN>){
 			my @temp = split(/\n/, `tabix $gwascat $chr:$start-$end`);
 			foreach my $l (@temp){
 				my @l = split(/\t/, $l);
-				if(exists $SNP{$l[2]}{"interval"}){
-					print OUT join("\t", ($SNP{$l[2]}{"interval"}, $SNP{$l[2]}{"leadSNP"}, @l)), "\n";
+				if(exists $SNP{$l[2]}{"GenomicLocus"}){
+					print OUT join("\t", ($SNP{$l[2]}{"GenomicLocus"}, $SNP{$l[2]}{"leadSNP"}, @l)), "\n";
 				}
 			}
 			$start = $end;

@@ -239,27 +239,27 @@
         </div>
         <br/>
         <div style="text-align:center;">
-          <h4><span style="color: #00004d">Summary per genomic risk loci</span>
-            <a class="infoPop" data-toggle="popover" data-content="The histgrams dispaly summary results per genomic loci. Note that genomic loci could contain more than one independent lead SNPs.">
+          <h4><span style="color: #00004d">Summary per genomic risk locus</span>
+            <a class="infoPop" data-toggle="popover" data-content="The histgrams dispaly summary results per genomic locus. Note that genomic loci could contain more than one independent lead SNPs.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
           Download the plot as
-          <button class="btn btn-xs ImgDown" onclick='ImgDown("intervalPlot","png");'>PNG</button>
-          <button class="btn btn-xs ImgDown" onclick='ImgDown("intervalPlot","jpeg");'>JPG</button>
-          <button class="btn btn-xs ImgDown" onclick='ImgDown("intervalPlot","svg");'>SVG</button>
-          <button class="btn btn-xs ImgDown" onclick='ImgDown("intervalPlot","pdf");'>PDF</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("lociPlot","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("lociPlot","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("lociPlot","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("lociPlot","pdf");'>PDF</button>
 
           <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
-            <input type="hidden" name="dir" id="intervalPlotDir" val=""/>
-            <input type="hidden" name="id" id="intervalPlotJobID" val=""/>
-            <input type="hidden" name="data" id="intervalPlotData" val=""/>
-            <input type="hidden" name="type" id="intervalPlotType" val=""/>
-            <input type="hidden" name="fileName" id="intervalPlotFileName" val=""/>
-            <input type="submit" id="intervalPlotSubmit" class="ImgDownSubmit"/>
+            <input type="hidden" name="dir" id="lociPlotDir" val=""/>
+            <input type="hidden" name="id" id="lociPlotJobID" val=""/>
+            <input type="hidden" name="data" id="lociPlotData" val=""/>
+            <input type="hidden" name="type" id="lociPlotType" val=""/>
+            <input type="hidden" name="fileName" id="lociPlotFileName" val=""/>
+            <input type="submit" id="lociPlotSubmit" class="ImgDownSubmit"/>
           </form>
-          <div id="intervalPlot"></div>
+          <div id="lociPlot"></div>
         </div>
         <br/><br/>
       </div>
@@ -273,7 +273,7 @@
             <ul class="nav nav-tabs" role="tablist">
               <!-- <li role="presentation" class="active"><a href="#summaryTable" aria-controls="summaryTable" rolw="tab" data-toggle="tab">Summary</a></li> -->
               <li role="presentation" class="active"><a href="#leadSNPtablePane" aria-controls="leadSNPtablePane" rolw="tab" data-toggle="tab">lead SNPs</a></li>
-              <li role="presentation"><a href="#intervalTablePane" aria-controls="intervalTablePane" rolw="tab" data-toggle="tab">Genomic risk loci</a></li>
+              <li role="presentation"><a href="#lociTablePane" aria-controls="lociTablePane" rolw="tab" data-toggle="tab">Genomic risk loci</a></li>
               <li role="presentation"><a href="#SNPtablePane" aria-controls="SNPtablePane" rolw="tab" data-toggle="tab">SNPs (annotations)</a></li>
               <li role="presentation"><a href="#annovTablePane" aria-controls="annovTablePane" rolw="tab" data-toggle="tab">ANNOVAR</a></li>
               <li role="presentation"><a href="#geneTablePane" aria-controls="geneTablePane" rolw="tab" data-toggle="tab">Mapped Genes</a></li>
@@ -293,21 +293,21 @@
               <table id="leadSNPtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
-                    <th>No</th><th>Interval</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nSNPs</th><th>nGWASSNPs</th>
+                    <th>No</th><th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nSNPs</th><th>nGWASSNPs</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
               </table>
             </div>
-            <div role="tabpanel" class="tab-pane" id="intervalTablePane">
+            <div role="tabpanel" class="tab-pane" id="lociTablePane">
               <br/>
               <p class="info">
                 <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
               </p>
-              <table id="intervalTable" class="display compact dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+              <table id="lociTable" class="display compact dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
-                    <th>Interval</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nLeadSNPs</th><th>start</th><th>end</th><th>nSNPs</th><th>nGWASSNPs</th>
+                    <th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nLeadSNPs</th><th>start</th><th>end</th><th>nSNPs</th><th>nGWASSNPs</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -371,7 +371,7 @@
               <table id="gwascatTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
-                    <th>Interval</th><th>lead SNP</th><th>chr</th><th>bp</th><th>rsID</th><th>PMID</th><th>Trait</th><th>FirstAuth</th><th>Date</th><th>P-value</th>
+                    <th>Genomic Locus</th><th>lead SNP</th><th>chr</th><th>bp</th><th>rsID</th><th>PMID</th><th>Trait</th><th>FirstAuth</th><th>Date</th><th>P-value</th>
                   </tr>
                 </thead>
               </table>
@@ -381,7 +381,7 @@
               <table id="exacTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
-                    <th>Interval</th><th>uniqID</th><th>chr</th><th>bp</th><th>ref</th><th>alt</th><th>Annotation</th><th>Gene</th><th>MAF</th>
+                    <th>Genomic Locus</th><th>uniqID</th><th>chr</th><th>bp</th><th>ref</th><th>alt</th><th>Annotation</th><th>Gene</th><th>MAF</th>
                     <th>MAF(FIN)</th><th>MAF(NFE)</th><th>MAF(AMR)</th><th>MAF(AFR)</th><th>MAF(EAS)</th><th>MAF(SAS)</th><th>MAF(OTH)<th>
                   </tr>
                 </thead>
@@ -636,13 +636,13 @@
           <!-- <input type="checkbox" name="allfiles" id="allfiles" checked onchange="DownloadFiles();">All files</br> -->
           <input type="checkbox" name="paramfile" id="paramfile" checked onchange="DownloadFiles();">Parameters</br>
           <input type="checkbox" name="leadfile" id="leadfile" checked onchange="DownloadFiles();">lead SNP table (independent lead SNPs) </br>
-          <input type="checkbox" name="intervalfile" id="intervalfile" checked onchange="DownloadFiles();">Interval table <br/>
-          <input type="checkbox" name="snpsfile" id="snpsfile" checked onchange="DownloadFiles();"> SNP table (Candidate SNPs with chr, bp, P-value, CADD, RDB, nearest gene, interval and lead SNPs)<br/>
+          <input type="checkbox" name="locifile" id="locifile" checked onchange="DownloadFiles();">Genomic risk loci table <br/>
+          <input type="checkbox" name="snpsfile" id="snpsfile" checked onchange="DownloadFiles();"> SNP table (Candidate SNPs with chr, bp, P-value, CADD, RDB, nearest gene, genomic risk loci and lead SNPs)<br/>
           <input type="checkbox" name="annovfile" id="annovfile" checked onchange="DownloadFiles();">ANNOVAR results (uniqID, annotation, gene and distance, SNP-gene pair per line)<br/>
           <input type="checkbox" name="annotfile" id="annotfile" checked onchange="DownloadFiles();">Annotations (CADD, RDB and Chromatin state of 127 tissue/cell types)<br/>
           <input type="checkbox" name="genefile" id="genefile" checked onchange="DownloadFiles();">Gene table (mapped genes)<br/>
           <div id="eqtlfiledown"><input type="checkbox" name="eqtlfile" id="eqtlfile" checked onchange="DownloadFiles();">eQTL table (eQTL of selected tissue types)<br/></div>
-          <!-- <input type="checkbox" name="exacfile" id="exacfile" checked onchange="DownloadFiles();">ExAC variants (rare variants from ExAC within intervals)<br/> -->
+          <!-- <input type="checkbox" name="exacfile" id="exacfile" checked onchange="DownloadFiles();">ExAC variants (rare variants from ExAC within genomic risk locis)<br/> -->
           <input type="checkbox" name="gwascatfile" id="gwascatfile" checked onchange="DownloadFiles();">GWAScatalog (full recode from GWAScatalog)<br/>
           <input type="checkbox" name="magmafile" id="magmafile" checked onchange="DownloadFiles();">MAGMA results<br/>
           <a id="allfiles"> Select All </a><tab><a id="clearfiles"> Clear</a><br/>

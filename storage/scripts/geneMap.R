@@ -179,11 +179,11 @@ if(nrow(geneTable)>0){
     geneTable$leadSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")})
   }
 
-  loci.table <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
-  geneTable$interval <- NA
+  leadS <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
+  geneTable$GenomicLocus <- NA
   for(i in 1:nrow(geneTable)){
     ls <- unlist(strsplit(geneTable$leadSNPs[i], ":"))
-    geneTable$interval[i] <- paste(unique(loci.table$interval[loci.table$rsID %in% ls]), collapse=":")
+    geneTable$GenomicLocus[i] <- paste(unique(leadS$GenomicLocus[leadS$rsID %in% ls]), collapse=":")
   }
 }
 
@@ -191,35 +191,35 @@ write.table(geneTable, paste(filedir, "genes.txt", sep=""), quote=F, row.names=F
 
 summary <- data.frame(matrix(nrow=5, ncol=2))
 summary[,1] <- c("#lead SNPs", "#Genomic risk loci", "#candidate SNPs", "#candidate GWAS tagged SNPs", "#mapped genes")
-loci.table <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
-intervals <- fread(paste(filedir, "intervals.txt", sep=""), data.table=F)
-summary[1,2] <- nrow(loci.table)
-summary[2,2] <- nrow(intervals)
+leadS <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
+loci <- fread(paste(filedir, "GenomicRiskLoci.txt", sep=""), data.table=F)
+summary[1,2] <- nrow(leadS)
+summary[2,2] <- nrow(loci)
 summary[3,2] <- nrow(snps)
 summary[4,2] <- length(which(!is.na(snps$gwasP)))
 summary[5,2] <- nrow(geneTable)
 write.table(summary, paste(filedir, "summary.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
 
-int.table <- data.frame(interval=intervals$Interval, label=NA, nSNPs=NA, size=NA, nGenes=NA, nWithinGene=NA)
-int.table$label <- paste(intervals$chr, paste(intervals$start, intervals$end, sep="-"), sep=":")
-temp <- table(snps$Interval)
+int.table <- data.frame(GenomicLocus=loci$GenomicLocus, label=NA, nSNPs=NA, size=NA, nGenes=NA, nWithinGene=NA)
+int.table$label <- paste(loci$chr, paste(loci$start, loci$end, sep="-"), sep=":")
+temp <- table(snps$GenomicLocus)
 temp <- data.frame(name=names(temp), n=as.numeric(temp))
-int.table$nSNPs <- temp$n[match(int.table$interval, temp$name)]
+int.table$nSNPs <- temp$n[match(int.table$GenomicLocus, temp$name)]
 int.table$nSNPs[is.na(int.table$nSNPs)] <- 0
-int.table$size <- intervals$end - intervals$start
+int.table$size <- loci$end - loci$start
 if(nrow(geneTable)>0){
-  temp <- table(unlist(strsplit(geneTable$interval, ":")))
+  temp <- table(unlist(strsplit(geneTable$GenomicLocus, ":")))
   temp <- data.frame(name=names(temp), n=as.numeric(temp))
-  int.table$nGenes <- temp$n[match(int.table$interval, temp$name)]
+  int.table$nGenes <- temp$n[match(int.table$GenomicLocus, temp$name)]
 }
 
 int.table$nGenes[is.na(int.table$nGenes)] <- 0
 for(i in 1:nrow(int.table)){
-  int.table$nWithinGene[i] <- length(which(ENSG.all.genes$chromosome_name==intervals$chr[i] & (
-    (ENSG.all.genes$start_position<=intervals$start[i] & ENSG.all.genes$end_position>=intervals$end[i])
-    | (ENSG.all.genes$start_position>=intervals$start[i] & ENSG.all.genes$start_position<=intervals$end[i])
-    | (ENSG.all.genes$end_position>=intervals$start[i] & ENSG.all.genes$end_position<=intervals$end[i])
-    | (ENSG.all.genes$start_position>=intervals$start[i] & ENSG.all.genes$end_position<=intervals$end[i])
+  int.table$nWithinGene[i] <- length(which(ENSG.all.genes$chromosome_name==loci$chr[i] & (
+    (ENSG.all.genes$start_position<=loci$start[i] & ENSG.all.genes$end_position>=loci$end[i])
+    | (ENSG.all.genes$start_position>=loci$start[i] & ENSG.all.genes$start_position<=loci$end[i])
+    | (ENSG.all.genes$end_position>=loci$start[i] & ENSG.all.genes$end_position<=loci$end[i])
+    | (ENSG.all.genes$start_position>=loci$start[i] & ENSG.all.genes$end_position<=loci$end[i])
   )))
 }
 

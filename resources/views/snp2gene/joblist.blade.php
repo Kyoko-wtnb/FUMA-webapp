@@ -16,7 +16,7 @@
                           <a class="infoPop" data-toggle="popover" data-html="true" data-content="<b>NEW: </b>The job has been submitted.<br/>
                             <b>QUEUED</b>: The job has beed dispatched to queue.<br/><b>RUNNING</b>: The job is running.<br/>
                             <b>Go to results</b>: The job has been completed. This is linked to result page.<br/>
-                            <b>ERROR</b>: An error occured durting the process. Please refer bottom of the page for details.">
+                            <b>ERROR</b>: An error occured durting the process. Please refer email for detail message.">
                             <i class="fa fa-question-circle-o fa-lg"></i>
                           </a>
                         </th>
