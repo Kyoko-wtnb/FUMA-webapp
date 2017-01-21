@@ -76,6 +76,7 @@ $(document).ready(function(){
       var posMap;
       var eqtlMap;
       var orcol;
+      var becol;
       var secol;
       $.ajax({
           url: subdir+'/snp2gene/getParams',
@@ -93,13 +94,14 @@ $(document).ready(function(){
             posMap = parseInt(tmp[1]);
             eqtlMap = parseInt(tmp[2]);
             orcol = tmp[3];
-            secol = tmp[4];
+            becol = tmp[4];
+            secol = tmp[5];
           },
           complete: function(){
             // jobInfo(jobid);
             GWplot(jobid);
             QQplot(jobid);
-            showResultTables(filedir, jobid, posMap, eqtlMap, orcol, secol);
+            showResultTables(filedir, jobid, posMap, eqtlMap, orcol, becol, secol);
             $('#GWplotSide').show();
             $('#results').show();
             $('#resultsSide').show();
@@ -539,7 +541,7 @@ function QQplot(jobID){
   });
 }
 
-function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
+function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
   $('#plotClear').hide();
   $('#download').attr('disabled', false);
   if(eqtlMap==0){
@@ -631,6 +633,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
   if(orcol!="NA"){
     table += "<th>OR</th>";
   }
+  if(becol!="NA"){
+    table += "<th>Beta</th>";
+  }
   if(secol!="NA"){
     table += "<th>SE</th>";
   }
@@ -642,6 +647,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
   var cols = "uniqID:rsID:chr:pos:MAF:gwasP";
   if(orcol!="NA"){
     cols += ":or";
+  }
+  if(becol!="NA"){
+    cols += ":beta";
   }
   if(secol!="NA"){
     cols += ":se";
@@ -957,6 +965,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, secol){
             var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF
                       +"<br/>r2: "+d.r2+"<br/>lead SNP: "+d.leadSNP;
             if(orcol!="NA"){out += "<br/>OR: "+d.or;}
+            if(becol!="NA"){out += "<br/>Beta: "+d.beta;}
             if(secol!="NA"){out += "<br/>SE: "+d.se;}
             return out;
           });

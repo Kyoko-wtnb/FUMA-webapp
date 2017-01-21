@@ -51,9 +51,8 @@ my $pcol=$params->param('inputfiles.pcol');
 my $refcol=$params->param('inputfiles.refcol');
 my $altcol=$params->param('inputfiles.altcol');
 my $orcol=$params->param('inputfiles.orcol');
+my $becol=$params->param('inputfiles.becol');
 my $secol=$params->param('inputfiles.secol');
-# my $mafcol=$params->param('inputfiles.mafcol');
-# $mafcol = undef if($mafcol eq "NA");
 my $Ncol=$params->param('params.Ncol');
 
 while($head =~ /^#/){
@@ -68,6 +67,7 @@ foreach my $i (0..$#head){
 	elsif(uc($head[$i]) eq uc($refcol) ||$head[$i] =~ /^A2$|^Non_Effect_allele$|^ref$|^allele2$|^alleleA$/i){$refcol=$i}
 	elsif(uc($head[$i]) eq uc($pcol) ||$head[$i] =~ /^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$/i){$pcol=$i}
 	elsif(uc($head[$i]) eq uc($orcol) ||$head[$i] =~ /^OR$/i){$orcol=$i}
+	elsif(uc($head[$i]) eq uc($becol) ||$head[$i] =~ /^beta$/i){$becol=$i}
 	elsif(uc($head[$i]) eq uc($secol) ||$head[$i] =~ /^SE$/i){$secol=$i}
 	# elsif(uc($head[$i]) eq uc($mafcol)){$mafcol=$i}
 	elsif(uc($head[$i]) eq uc($Ncol) ||$head[$i] =~ /^SE$/i){$Ncol=$i}
@@ -80,6 +80,7 @@ $pcol = undef if($pcol eq "NA");
 $refcol = undef if($refcol eq "NA");
 $altcol = undef if($altcol eq "NA");
 $orcol = undef if($orcol eq "NA");
+$becol = undef if($becol eq "NA");
 $secol = undef if($secol eq "NA");
 $Ncol = undef if($Ncol eq "NA");
 if(defined $Ncol && $Ncol eq $params->param('params.Ncol')){
@@ -94,8 +95,9 @@ if(defined $Ncol && $Ncol eq $params->param('params.Ncol')){
 if(!(defined $pcol)){die "P-value column was not found\n";}
 elsif(!(defined $chrcol && defined $poscol) && !(defined $rsIDcol)){die "Chromosome, position or rsID column was not found\n";}
 
-## modify params.config orcol and secol
+## modify params.config orcol, becol and secol
 if($params->param("inputfiles.orcol") eq "NA" && defined $orcol){$params->param("inputfiles.orcol", "or")}
+if($params->param("inputfiles.becol") eq "NA" && defined $becol){$params->param("inputfiles.becol", "or")}
 if($params->param("inputfiles.secol") eq "NA" && defined $secol){$params->param("inputfiles.secol", "se")}
 $params->save();
 
@@ -104,6 +106,7 @@ my %GWAS;
 if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && defined $refcol){
 	my $outhead = "chr\tbp\tref\talt\trsID\tp";
 	$outhead .= "\tor" if(defined $orcol);
+	$outhead .= "\tbeta" if(defined $becol);
 	$outhead .= "\tse" if(defined $secol);
 	$outhead .= "\tN" if(defined $Ncol);
 	$outhead .= "\n";
@@ -117,6 +120,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		$line[$chrcol] = 23 if($line[$chrcol]=~/x/i);
 		print SNP join("\t", ($line[$chrcol], $line[$poscol], $line[$refcol], $line[$altcol], $line[$rsIDcol], $line[$pcol]));
 		print SNP "\t", $line[$orcol] if(defined $orcol);
+		print SNP "\t", $line[$becol] if(defined $becol);
 		print SNP "\t", $line[$secol] if(defined $secol);
 		print SNP "\t", $line[$Ncol] if(defined $Ncol);
 		print SNP "\n";
@@ -136,6 +140,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"ref"}=uc($line[$refcol]) if(defined $refcol);
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"or"}=$line[$orcol] if(defined $orcol);
+		$GWAS{$line[$chrcol]}{$line[$poscol]}{"be"}=$line[$becol] if(defined $becol);
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"se"}=$line[$secol] if(defined $secol);
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"N"}=$line[$Ncol] if(defined $Ncol);
 		# if(defined $mafcol){
@@ -178,6 +183,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 
 	my $outhead = "chr\tbp\tref\talt\trsID\tp";
 	$outhead .= "\tor" if(defined $orcol);
+	$outhead .= "\tbeta" if(defined $becol);
 	$outhead .= "\tse" if(defined $secol);
 	# $outhead .= "\tmaf" if(defined $mafcol);
 	$outhead .= "\tN" if(defined $Ncol);
@@ -188,6 +194,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		foreach my $pos (sort {$a<=>$b} keys %{$GWAS{$chr}}){
 			print SNP join("\t", ($chr, $pos, $GWAS{$chr}{$pos}{"ref"}, $GWAS{$chr}{$pos}{"alt"}, $GWAS{$chr}{$pos}{"rsID"}, $GWAS{$chr}{$pos}{"p"}));
 			print SNP "\t", $GWAS{$chr}{$pos}{"or"} if(defined $orcol);
+			print SNP "\t", $GWAS{$chr}{$pos}{"be"} if(defined $becol);
 			print SNP "\t", $GWAS{$chr}{$pos}{"se"} if(defined $secol);
 			# print SNP "\t", $GWAS{$chr}{$pos}{"maf"} if(defined $mafcol);
 			print SNP "\t", $GWAS{$chr}{$pos}{"N"} if(defined $Ncol);
@@ -204,6 +211,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		$GWAS{$line[$rsIDcol]}{"ref"}=uc($line[$refcol]) if(defined $refcol);
 		$GWAS{$line[$rsIDcol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);
 		$GWAS{$line[$rsIDcol]}{"or"}=$line[$orcol] if(defined $orcol);
+		$GWAS{$line[$rsIDcol]}{"be"}=$line[$becol] if(defined $becol);
 		$GWAS{$line[$rsIDcol]}{"se"}=$line[$secol] if(defined $secol);
 		$GWAS{$line[$rsIDcol]}{"N"}=$line[$secol] if(defined $Ncol);
 		# if(defined $mafcol){
@@ -217,6 +225,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 	open(SNP, ">$outSNPs");
 	my $outhead = "chr\tbp\tref\talt\trsID\tp";
 	$outhead .= "\tor" if(defined $orcol);
+	$outhead .= "\tbeta" if(defined $becol);
 	$outhead .= "\tse" if(defined $secol);
 	$outhead .= "\tN" if(defined $Ncol);
 	# $outhead .= "\tmaf" if(defined $mafcol);
@@ -230,6 +239,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 				if(($line[4] eq $GWAS{$line[3]}{"ref"} && $line[5] eq $GWAS{$line[3]}{"alt"}) || ($line[5] eq $GWAS{$line[3]}{"ref"} && $line[4] eq $GWAS{$line[3]}{"alt"})){
 					print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"};
 					print SNP "\t", $GWAS{$line[3]}{"or"} if(defined $orcol);
+					print SNP "\t", $GWAS{$line[3]}{"be"} if(defined $becol);
 					print SNP "\t", $GWAS{$line[3]}{"se"} if(defined $secol);
 					# print SNP "\t", $GWAS{$line[3]}{"maf"} if(defined $mafcol);
 					print SNP "\t", $GWAS{$line[3]}{"N"} if(defined $Ncol);
@@ -239,6 +249,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 				if($line[5] eq $GWAS{$line[3]}{"ref"} || $line[4] eq $GWAS{$line[3]}{"ref"}){
 					print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"};
 					print SNP "\t", $GWAS{$line[3]}{"or"} if(defined $orcol);
+					print SNP "\t", $GWAS{$line[3]}{"be"} if(defined $becol);
 					print SNP "\t", $GWAS{$line[3]}{"se"} if(defined $secol);
 					# print SNP "\t", $GWAS{$line[3]}{"maf"} if(defined $mafcol);
 					print SNP "\t", $GWAS{$line[3]}{"N"} if(defined $Ncol);
@@ -248,6 +259,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 				if($line[5] eq $GWAS{$line[3]}{"alt"} || $line[4] eq $GWAS{$line[3]}{"alt"}){
 					print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"};
 					print SNP "\t", $GWAS{$line[3]}{"or"} if(defined $orcol);
+					print SNP "\t", $GWAS{$line[3]}{"be"} if(defined $becol);
 					print SNP "\t", $GWAS{$line[3]}{"se"} if(defined $secol);
 					# print SNP "\t", $GWAS{$line[3]}{"maf"} if(defined $mafcol);
 					print SNP "\t", $GWAS{$line[3]}{"N"} if(defined $Ncol);
@@ -256,6 +268,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 			}else{
 				print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"};
 				print SNP "\t", $GWAS{$line[3]}{"or"} if(defined $orcol);
+				print SNP "\t", $GWAS{$line[3]}{"be"} if(defined $becol);
 				print SNP "\t", $GWAS{$line[3]}{"se"} if(defined $secol);
 				# print SNP "\t", $GWAS{$line[3]}{"maf"} if(defined $mafcol);
 				print SNP "\t", $GWAS{$line[3]}{"N"} if(defined $Ncol);

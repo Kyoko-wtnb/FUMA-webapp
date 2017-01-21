@@ -87,8 +87,9 @@ class JobController extends Controller
       $posMap = $params['posMap'];
       $eqtlMap = $params['eqtlMap'];
       $orcol = $params['orcol'];
+      $becol = $params['becol'];
       $secol = $params['secol'];
-      echo "$filedir:$posMap:$eqtlMap:$orcol:$secol";
+      echo "$filedir:$posMap:$eqtlMap:$orcol:$becol:$secol";
     }
 
     public function Error5(Request $request){
@@ -239,6 +240,7 @@ class JobController extends Controller
       $altcol = "NA";
       $refcol = "NA";
       $orcol = "NA";
+      $becol = "NA";
       $secol = "NA";
       // $mafcol = "NA";
       if($request -> has('chrcol')){$chrcol = $request->input('chrcol');}
@@ -248,6 +250,7 @@ class JobController extends Controller
       if($request -> has('altcol')){$altcol = $request->input('altcol');}
       if($request -> has('refcol')){$refcol = $request->input('refcol');}
       if($request -> has('orcol')){$orcol = $request->input('orcol');}
+      if($request -> has('becol')){$orcol = $request->input('becol');}
       if($request -> has('secol')){$secol = $request->input('secol');}
       // if($request -> has('mafcol')){$chrcol = $request->input('mafcol');}
       // MHC region
@@ -391,6 +394,7 @@ class JobController extends Controller
       File::append($paramfile, "altcol=$altcol\n");
       File::append($paramfile, "refcol=$refcol\n");
       File::append($paramfile, "orcol=$orcol\n");
+      File::append($paramfile, "becol=$becol\n");
       File::append($paramfile, "secol=$secol\n");
       // File::append($paramfile, "mafcol=$mafcol\n");
 

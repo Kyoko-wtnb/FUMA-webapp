@@ -47,6 +47,7 @@
             <span class="form-inline">Risk allele: <input type="text" class="form-control" id="altcol" name="altcol"></span><br/>
             <span class="form-inline">Other allele: <input type="text" class="form-control" id="refcol" name="refcol"></span><br/>
             <span class="form-inline">OR: <input type="text" class="form-control" id="orcol" name="orcol"></span><br/>
+            <span class="form-inline">Beta: <input type="text" class="form-control" id="becol" name="becol"></span><br/>
             <span class="form-inline">SE: <input type="text" class="form-control" id="secol" name="secol"></span><br/>
             <!-- <span class="form-inline">MAF: <input type="text" class="form-control" id="mafcol" name="mafcol"></span>
             <a class="infoPop" data-toggle="popover" title="Minor allele frequency" data-content="Only when provided the column name of MAF, FUMA will use the input MAF for filtering of SNPs.
