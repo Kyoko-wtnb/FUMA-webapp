@@ -1247,26 +1247,26 @@
       <div style="padding-left: 40px;">
         <h3>Submit genes</h3>
         <div style="padding-left: 40px;">
-          <h4>Option 1. Use mapped genes from SNP2GENE</h4>
+          <h4><strong>Option 1. Use mapped genes from SNP2GENE</strong></h4>
           <p>If you want to use mapped genes from SNP2GENE, just click a button in Mapped genes panel of the result page.
             It will open a new tab and automatically starts analyses.
             This will take all mapped genes and use background genes with selected gene types for gene mapping (such as "protein-coding" or "ncRNA").
             Method of multiple test correction (FDR BH), adjusted P-value cutoff (0.05) and minimum number of overlapped genes (2) are set at default values.
             These options can be fixed by resubmitting query (click "Submit" button in New Query tab).
           </p>
-          <img src="{!! URL::asset('/image/snp2genejump.png') !!}" style="width:80%"/><br/>
-
-          <h4>Option 2. Use a list of genes of interest</h4>
+          <img src="{!! URL::asset('/image/snp2genejump.png') !!}" style="width:70%"/><br/>
+          <br/>
+          <h4><strong>Option 2. Use a list of genes of interest</strong></h4>
           <p>To analyse your genes, you have to prepare list of genes as either ENSG ID, entrez ID or gene symbol.
           Genes can be provided in the text are (one gene per line) or uploading file in the left panel. When you upload a file, genes have to be in the first column with header. Header can be anything (even just a new line is fine) but start your genes from second row.</p>
           <p>To analyse your genes, you need to specify background genes. You can choose from the gene types which is the easiest way. However, in the case that you need to use specific background genes, please provide them either in the text area of by uploading a file of the right panel.
           File format should be same as described for genes on interest.</p>
-          <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcSubmit.png') !!}" style="width:60%"/>
         </div>
 
         <h3 id="gene2funcOutputs">Results and Outputs</h3>
         <div style="padding-left: 40px;">
-          <h4>1. Gene Expression Heatmap</h4>
+          <h4><strong>1. Gene Expression Heatmap</strong></h4>
           <p>
             The heatmap displays two expression values.<br/>
             1) <b>Average RPKM per tissue</b> : This is averaged RPKM per tissue per gene following to winsorization at 50 and log 2 transformation with pseudocount 1.
@@ -1278,10 +1278,10 @@
           <p>Tissues (column) and genes (row) can be ordered by alphabetically or cluster (hiarachial clustering). <br/>
             The heatmap is downloadable as PNG file. Note that currentlly displaying image will be downloaded.
           </p>
-          <img src="{!! URL::asset('/image/gene2funcHeatmap.png') !!}" style="width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcHeatmap.png') !!}" style="width:60%"/>
           <br/><br/>
 
-          <h4>2. Tissue specificity</h4>
+          <h4><strong>2. Tissue specificity</strong></h4>
           <p>
              Differentially expressed gene (DEG) sets for 53 tissue types from GTEx were contracted by performing two-sided t-test for any one of tissues agains all others.
              For this, expresstion values were normalized (zero-mean) following to log 2 transformation of RPKM.
@@ -1293,10 +1293,10 @@
             Significant enrichment at FDR &le; 0.05 are coloured in red.<br/>
             Results and images are downloadable as text files and PNG files.
           </p>
-          <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:60%"/>
           <br/><br/>
 
-          <h4>3. Gene Sets</h4>
+          <h4><strong>3. Gene Sets</strong></h4>
           <p>
             Hypergeometric tests are performed to test if genes of interest are overrepresented in any of gene sets.
             Multiple test correction is performed per category, (i.e. canonical pathways, GO biological processes and so on, separately).
@@ -1307,17 +1307,16 @@
             In each category, plot view and table view are selectable.
             In the plot view, images are downloadable as PNG file.
           </p>
-          <img src="{!! URL::asset('/image/gene2funcGS.png') !!}" style="width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcGS.png') !!}" style="width:70%"/>
           <br/><br/>
 
-          <h4>4. Gene Table</h4>
+          <h4><strong>4. Gene Table</strong></h4>
           <p>
             Input genes are mapped to OMIM ID, UniProt ID, Drug ID of DrugBank and links to GeneCards.
             Drug IDs are assigned if the UniProt ID of the gene is one of the targets of the drug.<br/>
-            OMIM IDs and Drug IDs are linked to the original sources which opens the new tab.
-            Links of GeneCards will be displayed in the frame below.
+            Each link to OMIM, Drugbank and GeneCards will open new tab.
           </p>
-          <img src="{!! URL::asset('/image/gene2funcGT.png') !!}" style="width:80%"/>
+          <img src="{!! URL::asset('/image/gene2funcGT.png') !!}" style="width:70%"/>
 
         </div>
       </div>
