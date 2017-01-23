@@ -213,7 +213,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		$GWAS{$line[$rsIDcol]}{"or"}=$line[$orcol] if(defined $orcol);
 		$GWAS{$line[$rsIDcol]}{"be"}=$line[$becol] if(defined $becol);
 		$GWAS{$line[$rsIDcol]}{"se"}=$line[$secol] if(defined $secol);
-		$GWAS{$line[$rsIDcol]}{"N"}=$line[$secol] if(defined $Ncol);
+		$GWAS{$line[$rsIDcol]}{"N"}=$line[$Ncol] if(defined $Ncol);
 		# if(defined $mafcol){
 		# 	$line[$mafcol] = 1-$line[$mafcol] if($line[$mafcol]>0.5);
 		# 	$GWAS{$line[$rsIDcol]}{"maf"}=$line[$mafcol];
