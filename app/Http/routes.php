@@ -106,23 +106,3 @@ Route::get('gene2func/{jobID}', function($jobID){
 })->middleware('auth');
 
 Route::post('gene2func/imgdown', 'JobController@imgdown');
-
-// ********************** GWASRESULT ************************
-
-Route::get('GWASresult', function(){
-  return view('pages.GWASresult', ['/IPGAP']);
-});
-
-Route::get('GWASresult/d3text/{dbName}/{file}', 'D3jsController@d3js_GWAS_textfile');
-
-Route::get('GWASresult/QQplot/{dbName}/{type}', 'D3jsController@d3js_GWAS_QQ');
-
-Route::post('GWASresult/gwasDBtable', 'JobController@gwasDBtable');
-
-Route::post('GWASresult/SelectOption', 'JobController@SelectOption');
-
-Route::post('GWASresult/selectTable', 'JobController@selectTable');
-
-Route::get('GWASresult/manhattan/{type}/{jobID}/{file}', 'D3jsController@manhattan');
-
-Route::get('GWASresult/QQplot/{type}/{jobID}/{plot}', 'D3jsController@QQplot');
