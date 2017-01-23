@@ -97,7 +97,7 @@ elsif(!(defined $chrcol && defined $poscol) && !(defined $rsIDcol)){die "Chromos
 
 ## modify params.config orcol, becol and secol
 if($params->param("inputfiles.orcol") eq "NA" && defined $orcol){$params->param("inputfiles.orcol", "or")}
-if($params->param("inputfiles.becol") eq "NA" && defined $becol){$params->param("inputfiles.becol", "or")}
+if($params->param("inputfiles.becol") eq "NA" && defined $becol){$params->param("inputfiles.becol", "beta")}
 if($params->param("inputfiles.secol") eq "NA" && defined $secol){$params->param("inputfiles.secol", "se")}
 $params->save();
 
