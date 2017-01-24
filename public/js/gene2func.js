@@ -19,20 +19,29 @@ $(document).ready(function(){
     checkInput();
   });
 
-  $.getJSON( subdir + "/gene2func/getG2FJobList", function( data ) {
-      var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
-      if(data.length){
-          items = '';
-          $.each( data, function( key, val ) {
-              var status = '<a href="'+subdir+'/gene2func/'+val.jobID+'">load results</a>';
-              items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"+val.snp2gene+"</td><td>"+val.snp2geneTitle+"</td><td>"+val.created_at+"</td><td>"+status+"</td></tr>";
-          });
-      }
+  updateList();
 
-      // Put list in table
-      $('#queryhistory table tbody')
-          .empty()
-          .append(items);
+  $('#deleteJob').on('click', function(){
+    var c = confirm("Do you really want to remove selected jobs?");
+    if(c){
+      $('.deleteJobCheck').each(function(){
+        if($(this).is(":checked")){
+          $.ajax({
+            url: subdir+"/gene2func/deleteJob",
+            type: "POST",
+            data: {
+              jobID: $(this).val()
+            },
+            error: function(){
+              alert("error at deleteJob");
+            },
+            complete: function(){
+              updateList();
+            }
+          });
+        }
+      });
+    }
   });
 
   if(status=="new"){
@@ -190,6 +199,28 @@ function checkInput(){
   }
 
 };
+
+function updateList(){
+  $.getJSON( subdir + "/gene2func/getG2FJobList", function( data ) {
+      var items = '<tr><td colspan="7" style="text-align: center;">No Jobs Found</td></tr>';
+      if(data.length){
+          items = '';
+          $.each( data, function( key, val ) {
+              var status = '<a href="'+subdir+'/gene2func/'+val.jobID+'">load results</a>';
+              items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"
+                +val.snp2gene+"</td><td>"+val.snp2geneTitle+"</td><td>"
+                +val.created_at+"</td><td>"+status+"</td>"
+                +'<td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
+                +val.jobID+'"/></td></tr>';
+          });
+      }
+
+      // Put list in table
+      $('#queryhistory table tbody')
+          .empty()
+          .append(items);
+  });
+}
 
 function AjaxLoad(){
   var over = '<div id="overlay"><div id="loading">'

@@ -61,7 +61,7 @@
     <div class="page-content inset">
       <!-- Submit genes -->
       <div id="newquery" class="sidePanel container" style="padding-top:50px;">
-        {!! Form::open(array('url' => 'gene2func/submit', 'files'=>true)) !!}
+        {!! Form::open(array('url' => 'gene2func/submit', 'files'=>true, 'novalidate'=>'novalidate')) !!}
         <!-- <h3>Input list of genes</h3> -->
         <div class="row">
           <div class="col-md-6 col-xs-6 col-sm-6">
@@ -182,6 +182,7 @@
             Gene query history
           </div>
           <div class="panel-body">
+            <button class="btn btn-sm" id="deleteJob" name="deleteJob" style="float:right; margin-right:20px;">Delete selected jobs</button>
             <table class="table">
               <thead>
                 <tr>
@@ -191,11 +192,12 @@
                   <th>SNP2GENE title</th>
                   <th>Submit date</th>
                   <th>Link</td>
+                  <th>Select</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="6" style="Text-align:center;">Retrieving data</td>
+                  <td colspan="7" style="Text-align:center;">Retrieving data</td>
                 </tr>
               </tbody>
             </table>

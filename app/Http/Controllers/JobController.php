@@ -453,6 +453,13 @@ class JobController extends Controller
       return;
     }
 
+    public function G2FdeleteJob(Request $request){
+      $jobID = $request->input('jobID');
+      File::deleteDirectory(config('app.jobdir').'/gene2func/'.$jobID);
+      DB::table('gene2func')->where('jobID', $jobID)->delete();
+      return;
+    }
+
     public function annotPlot(Request $request){
       $jobID = $request -> input('jobID');
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';

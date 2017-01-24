@@ -105,4 +105,6 @@ Route::get('gene2func/{jobID}', function($jobID){
   return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID]);
 })->middleware('auth');
 
+Route::post('gene2func/deleteJob', 'JobController@G2FdeleteJob');
+
 Route::post('gene2func/imgdown', 'JobController@imgdown');
