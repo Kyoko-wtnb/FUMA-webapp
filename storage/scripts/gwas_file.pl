@@ -58,6 +58,7 @@ my $Ncol=$params->param('params.Ncol');
 while($head =~ /^#/){
 		$head = <GWAS>;
 }
+close GWAS;
 my @head = split(/\s+/, $head);
 foreach my $i (0..$#head){
 	if(uc($head[$i]) eq uc($rsIDcol) || $head[$i] =~ /^SNP$|^MarkerName$|^rsID$|^snpid$/i){$rsIDcol=$i}
@@ -112,6 +113,11 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 	$outhead .= "\n";
 	open(SNP, ">$outSNPs");
 	print SNP $outhead;
+	open(GWAS, "$gwas") or die "Cannot open $gwas\n";
+	<GWAS>;
+	while($head =~ /^#/){
+			$head = <GWAS>;
+	}
 	while(<GWAS>){
 		next if(/^#/);
 		my @line = split(/\s/, $_);
@@ -125,11 +131,17 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		print SNP "\t", $line[$Ncol] if(defined $Ncol);
 		print SNP "\n";
 	}
+	close GWAS;
 	close SNP;
 	my $temp = $filedir."temp.txt";
 	system "sort -k 1n -k 2n $outSNPs > $temp";
 	system "mv $temp $outSNPs";
 }elsif(defined $chrcol && defined $poscol){
+	open(GWAS, "$gwas") or die "Cannot open $gwas\n";
+	<GWAS>;
+	while($head =~ /^#/){
+			$head = <GWAS>;
+	}
 	while(<GWAS>){
 		next if(/^#/);
 		my @line = split(/\s/, $_);
@@ -152,6 +164,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 			$GWAS{$line[$chrcol]}{$line[$poscol]}{"rsID"}=$line[$rsIDcol];
 		}
 	}
+	close GWAS;
 
 	unless(defined $refcol && defined $altcol && defined $rsIDcol){
 		print "Either ref, alt or rsID is not defined\n";
@@ -204,6 +217,11 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 	close SNP;
 }else{
 	print "Either chr or pos is not defined\n";
+	open(GWAS, "$gwas") or die "Cannot open $gwas\n";
+	<GWAS>;
+	while($head =~ /^#/){
+			$head = <GWAS>;
+	}
 	while(<GWAS>){
 		my @line = split(/\s/, $_);
 		$line[$rsIDcol] = $rsID{$line[$rsIDcol]} if(exists $rsID{$line[$rsIDcol]});
@@ -219,6 +237,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		# 	$GWAS{$line[$rsIDcol]}{"maf"}=$line[$mafcol];
 		# }
 	}
+	close GWAS;
 
 	my $dbSNP = "$dbSNPfile/snp146_pos_allele.txt";
  	open(DB, "$dbSNP") or die "Cannot opne $dbSNP\n";
