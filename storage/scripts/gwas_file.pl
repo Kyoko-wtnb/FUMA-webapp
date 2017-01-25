@@ -127,6 +127,8 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		$line[$rsIDcol] = $rsID{$line[$rsIDcol]} if(exists $rsID{$line[$rsIDcol]});
 		$line[$chrcol] =~ s/chr//;
 		$line[$chrcol] = 23 if($line[$chrcol]=~/x/i);
+		$line[$refcol] = uc($line[$refcol]);
+		$line[$altcol] = uc($line[$altcol]);
 		print SNP join("\t", ($line[$chrcol], $line[$poscol], $line[$refcol], $line[$altcol], $line[$rsIDcol], $line[$pcol]));
 		print SNP "\t", $line[$orcol] if(defined $orcol);
 		print SNP "\t", $line[$becol] if(defined $becol);
@@ -352,9 +354,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		# }
 
 		if($count>=2000){
-			open(SNP, ">>$outSNPs");
 			&mysql();
-			close SNP;
 
 			delete @GWAS{keys %GWAS};
 			$count = 0;
@@ -364,6 +364,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		}
 	}
 	close GWAS;
+
 	&mysql();
 
 	sub mysql{
@@ -490,6 +491,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 				}
 			}
 		}
+		close SNP;
 	}
 
 	my $temp = $filedir."temp.txt";
