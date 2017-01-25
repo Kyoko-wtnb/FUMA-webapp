@@ -12,12 +12,15 @@ use warnings;
 use IO::Zlib;
 use Config::Simple;
 use File::Basename;
+use DBI;
+
+# die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir> <gwas file format>\n" if(@ARGV<2);
+die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir>\n" if(@ARGV<1);
 
 my $dir = dirname(__FILE__);
 my $cfg = new Config::Simple($dir.'/app.config');
 
-# die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir> <gwas file format>\n" if(@ARGV<2);
-die "ERROR: not enought arguments\nUSAGE./gwas_file.pl <filedir>\n" if(@ARGV<1);
+my $start = time;
 
 my $filedir = $ARGV[0];
 $filedir .='/' unless($filedir =~ /\/$/);
@@ -31,18 +34,6 @@ my $params = new Config::Simple($filedir.'params.config');
 my $outSNPs = $filedir."input.snps";
 my $outMAGMA = $filedir."magma.in";
 
-my $dbSNPfile = $cfg->param('data.dbSNP');
-my %rsID;
-open(RS, "$dbSNPfile/RsMerge146.txt");
-while(<RS>){
-	my @line = split(/\s/, $_);
-	$rsID{$line[0]}=$line[1];
-}
-close RS;
-
-open(GWAS, "$gwas") or die "Cannot open $gwas\n";
-my $head = <GWAS>;
-
 ## update column name options 17-01-2017
 my $chrcol=$params->param('inputfiles.chrcol');
 my $poscol=$params->param('inputfiles.poscol');
@@ -54,6 +45,9 @@ my $orcol=$params->param('inputfiles.orcol');
 my $becol=$params->param('inputfiles.becol');
 my $secol=$params->param('inputfiles.secol');
 my $Ncol=$params->param('params.Ncol');
+
+open(GWAS, "$gwas") or die "Cannot open $gwas\n";
+my $head = <GWAS>;
 
 while($head =~ /^#/){
 		$head = <GWAS>;
@@ -105,6 +99,15 @@ $params->save();
 my %GWAS;
 #print "chr: $chrcol, pos: $poscol, rsID: $rsIDcol, ref: $refcol, alt: $altcol, p: $pcol\n";
 if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && defined $refcol){
+	my $dbSNPfile = $cfg->param('data.dbSNP');
+	my %rsID;
+	open(RS, "$dbSNPfile/RsMerge146.txt");
+	while(<RS>){
+		my @line = split(/\s/, $_);
+		$rsID{$line[0]}=$line[1];
+	}
+	close RS;
+
 	my $outhead = "chr\tbp\tref\talt\trsID\tp";
 	$outhead .= "\tor" if(defined $orcol);
 	$outhead .= "\tbeta" if(defined $becol);
@@ -137,17 +140,44 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 	system "sort -k 1n -k 2n $outSNPs > $temp";
 	system "mv $temp $outSNPs";
 }elsif(defined $chrcol && defined $poscol){
+	my $outhead = "chr\tbp\tref\talt\trsID\tp";
+	$outhead .= "\tor" if(defined $orcol);
+	$outhead .= "\tbeta" if(defined $becol);
+	$outhead .= "\tse" if(defined $secol);
+	# $outhead .= "\tmaf" if(defined $mafcol);
+	$outhead .= "\tN" if(defined $Ncol);
+	$outhead .= "\n";
+	open(SNP, ">$outSNPs");
+	print SNP $outhead;
+	close SNP;
+	# $chrcol--;
+	# $poscol--;
+	#system "sort -k $chrcol"."n -k $poscol"."n $filedir"."input.gwas > $filedir"."temp.txt";
+	#system "mv $filedir"."temp.txt $filedir"."input.gwas";
+	# my $database = "hg19";
+	# my $hostname = "genome-mysql.cse.ucsc.edu";
+	# my $user="genomep";
+	# my $password = "password";
+	# my $dsn = "DBI:mysql:database=$database;host=$hostname";
+	# my $db = DBI->connect($dsn, $user, $password);
+	my $dbSNPfile = $cfg->param('data.dbSNP');
+	my $count = 0;
 	open(GWAS, "$gwas") or die "Cannot open $gwas\n";
 	<GWAS>;
 	while($head =~ /^#/){
 			$head = <GWAS>;
 	}
+
 	while(<GWAS>){
 		next if(/^#/);
+
 		my @line = split(/\s/, $_);
 		$line[$chrcol] =~ s/chr//;
 		$line[$chrcol]=23 if($line[$chrcol]=~/X|x/);
 		$line[$pcol] = 1e-308 if($line[$pcol]<1e-308); #avoid NA or inf in R
+
+		$count++;
+
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"p"}=$line[$pcol];
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"ref"}=uc($line[$refcol]) if(defined $refcol);
 		$GWAS{$line[$chrcol]}{$line[$poscol]}{"alt"}=uc($line[$altcol]) if(defined $altcol);
@@ -159,41 +189,116 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		# 	$line[$mafcol] = 1-$line[$mafcol] if($line[$mafcol]>0.5);
 		# 	$GWAS{$line[$chrcol]}{$line[$poscol]}{"maf"}=$line[$mafcol];
 		# }
-		if(defined $rsIDcol){
-			$line[$rsIDcol] = $rsID{$line[$rsIDcol]} if(exists $rsID{$line[$rsIDcol]});
-			$GWAS{$line[$chrcol]}{$line[$poscol]}{"rsID"}=$line[$rsIDcol];
+		# if(defined $rsIDcol){
+		# 	# $line[$rsIDcol] = $rsID{$line[$rsIDcol]} if(exists $rsID{$line[$rsIDcol]});
+		# 	# $GWAS{$line[$chrcol]}{$line[$poscol]}{"rsID"}=$line[$rsIDcol];
+		# }
+		if($count>=1000000){
+			open(SNP, ">>$outSNPs");
+			foreach my $chr (sort {$a<=>$b} keys %GWAS){
+				my $min = 0;
+				my $max = 0;
+				foreach my $pos (sort {$a<=>$b} keys %{$GWAS{$chr}}){
+					$min = $pos if($min==0);
+					$max = $pos if($max==0);
+					if($pos-$min>5000000){
+						&Tabix($chr, $min, $max);
+						$min=$pos;
+						$max=$pos;
+					}else{
+						$max=$pos;
+					}
+				}
+				&Tabix($chr, $min, $max);
+			}
+			close SNP;
+
+			delete @GWAS{keys %GWAS};
+			$count = 0;
+			# foreach my $key (keys %GWAS){
+			# 	delete $GWAS{$key};
+			# }
 		}
 	}
 	close GWAS;
+	open(SNP, ">>$outSNPs");
+	foreach my $chr (sort {$a<=>$b} keys %GWAS){
+		my $min = 0;
+		my $max = 0;
+		foreach my $pos (sort {$a<=>$b} keys %{$GWAS{$chr}}){
+			$min = $pos if($min==0);
+			$max = $pos if($max==0);
+			if($pos-$min>5000000){
+				&Tabix($chr, $min, $max);
+				$min=$pos;
+				$max=$pos;
+			}else{
+				$max=$pos;
+			}
+		}
+		&Tabix($chr, $min, $max);
+	}
+	close SNP;
 
-	unless(defined $refcol && defined $altcol && defined $rsIDcol){
-		print "Either ref, alt or rsID is not defined\n";
-		foreach my $chr(1..23){
-			next unless(exists $GWAS{$chr});
-			my $refgenome = $cfg->param('data.refgenome');
-			my $file = "$refgenome/ALL/ALL.chr$chr.frq.gz";
- 			my $fin = IO::Zlib->new($file, 'rb');
-			while(<$fin>){
-				my @line = split(/\s/, $_);
-				if(exists $GWAS{$line[0]}{$line[1]}{"p"}){
-					$GWAS{$line[0]}{$line[1]}{"rsID"}=$line[2] unless(defined $rsIDcol);
-					$GWAS{$line[0]}{$line[1]}{"rsID"}=$rsID{$GWAS{$line[0]}{$line[1]}{"rsID"}} if(exists $rsID{$GWAS{$line[0]}{$line[1]}{"rsID"}});
-					next if(defined $refcol && defined $altcol);
-					if(defined $refcol){
-						if($GWAS{$line[0]}{$line[1]}{"ref"} eq $line[4]){$GWAS{$line[0]}{$line[1]}{"alt"}=$line[5]}
-						else{$GWAS{$line[0]}{$line[1]}{"alt"}=$line[4]}
-					}elsif(defined $altcol){
-						if($GWAS{$line[0]}{$line[1]}{"alt"} eq $line[4]){$GWAS{$line[0]}{$line[1]}{"ref"}=$line[5]}
-						else{$GWAS{$line[0]}{$line[1]}{"ref"}=$line[4]}
-					}else{
-						$GWAS{$line[0]}{$line[1]}{"ref"}=$line[5];
-						$GWAS{$line[0]}{$line[1]}{"alt"}=$line[4];
+	sub Tabix{
+		my $chr = $_[0];
+		my $min = $_[1];
+		my $max = $_[2];
+
+		# my $sth = $db->prepare("SELECT name,chrom,chromEnd,refNCBI,alleles FROM snp146 WHERE chrom='chr".$chr."' AND chromEnd>=$min AND chromEnd<=$max");
+		# $sth->execute();
+
+		my $file = $dbSNPfile.'/dbSNP146.chr'.$chr.'.vcf.gz';
+		my @tabix = split(/\n/, `tabix $file $chr:$min-$max`);
+		#######################
+		# 0:chr 1:pos 2:rsID 3:ref 4:alt
+		#######################
+		# while(my @row = $sth->fetchrow_array()){
+		foreach my $t (@tabix){
+			my @row = split(/\s/, $t);
+			$row[4] =~ s/,$//;
+			my @alleles = ($row[3], $row[4]);
+
+			if(exists $GWAS{$chr}{$row[1]}{"p"}){
+				if(defined $refcol && defined $altcol){
+					if(In($GWAS{$chr}{$row[1]}{"ref"}, \@alleles)==0 && In($GWAS{$chr}{$row[1]}{"alt"}, \@alleles)==0){
+						print SNP join("\t", ($chr, $row[1], $GWAS{$chr}{$row[1]}{"ref"}, $GWAS{$chr}{$row[1]}{"alt"}, $row[2], $GWAS{$chr}{$row[1]}{"p"}));
+						print SNP "\t", $GWAS{$chr}{$row[1]}{"or"} if(defined $orcol);
+						print SNP "\t", $GWAS{$chr}{$row[1]}{"be"} if(defined $becol);
+						print SNP "\t", $GWAS{$chr}{$row[1]}{"se"} if(defined $secol);
+						print SNP "\t", $GWAS{$chr}{$row[1]}{"N"} if(defined $Ncol);
+						print SNP "\n";
 					}
+				}elsif(defined $altcol){
+					if(In($GWAS{$chr}{$row[1]}{"alt"}, \@alleles)==0){
+						my $a;
+						if($row[3] eq $GWAS{$chr}{$row[1]}{"alt"}){$a=$row[4]}
+						else{$a=$row[3]}
+						print SNP join("\t", ($chr, $row[1], $a, $GWAS{$chr}{$row[1]}{"alt"}, $row[2], $GWAS{$chr}{$row[1]}{"p"}));
+						print SNP "\t", $GWAS{$chr}{$row[1]}{"or"} if(defined $orcol);
+						print SNP "\t", $GWAS{$chr}{$row[1]}{"be"} if(defined $becol);
+						print SNP "\t", $GWAS{$chr}{$row[1]}{"se"} if(defined $secol);
+						print SNP "\t", $GWAS{$chr}{$row[1]}{"N"} if(defined $Ncol);
+						print SNP "\n";
+					}
+				}else{
+					print SNP join("\t", ($chr, $row[1], $row[3], $row[4], $row[2], $GWAS{$chr}{$row[1]}{"p"}));
+					print SNP "\t", $GWAS{$chr}{$row[1]}{"or"} if(defined $orcol);
+					print SNP "\t", $GWAS{$chr}{$row[1]}{"be"} if(defined $becol);
+					print SNP "\t", $GWAS{$chr}{$row[1]}{"se"} if(defined $secol);
+					print SNP "\t", $GWAS{$chr}{$row[1]}{"N"} if(defined $Ncol);
+					print SNP "\n";
 				}
 			}
 		}
 	}
 
+	my $temp = $filedir."temp.txt";
+	system "sort -k 1n -k 2n $outSNPs > $temp";
+	system "mv $temp $outSNPs";
+
+}else{
+	print "Either chr or pos is not defined\n";
 	my $outhead = "chr\tbp\tref\talt\trsID\tp";
 	$outhead .= "\tor" if(defined $orcol);
 	$outhead .= "\tbeta" if(defined $becol);
@@ -203,27 +308,36 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 	$outhead .= "\n";
 	open(SNP, ">$outSNPs");
 	print SNP $outhead;
-	foreach my $chr (sort {$a<=>$b} keys %GWAS){
-		foreach my $pos (sort {$a<=>$b} keys %{$GWAS{$chr}}){
-			print SNP join("\t", ($chr, $pos, $GWAS{$chr}{$pos}{"ref"}, $GWAS{$chr}{$pos}{"alt"}, $GWAS{$chr}{$pos}{"rsID"}, $GWAS{$chr}{$pos}{"p"}));
-			print SNP "\t", $GWAS{$chr}{$pos}{"or"} if(defined $orcol);
-			print SNP "\t", $GWAS{$chr}{$pos}{"be"} if(defined $becol);
-			print SNP "\t", $GWAS{$chr}{$pos}{"se"} if(defined $secol);
-			# print SNP "\t", $GWAS{$chr}{$pos}{"maf"} if(defined $mafcol);
-			print SNP "\t", $GWAS{$chr}{$pos}{"N"} if(defined $Ncol);
-			print SNP "\n";
-		}
-	}
 	close SNP;
-}else{
-	print "Either chr or pos is not defined\n";
+
+	my $dbSNPfile = $cfg->param('data.dbSNP');
+	my %rsID;
+	open(RS, "$dbSNPfile/RsMerge146.txt");
+	while(<RS>){
+		my @line = split(/\s/, $_);
+		$rsID{$line[0]}=$line[1];
+	}
+	close RS;
+
+	my $database = "hg19";
+	my $hostname = "genome-mysql.cse.ucsc.edu";
+	my $user="genomep";
+	my $password = "password";
+	my $dsn = "DBI:mysql:database=$database;host=$hostname";
+	my $db = DBI->connect($dsn, $user, $password);
+
 	open(GWAS, "$gwas") or die "Cannot open $gwas\n";
 	<GWAS>;
 	while($head =~ /^#/){
 			$head = <GWAS>;
 	}
+
+	my $count = 0;
 	while(<GWAS>){
 		my @line = split(/\s/, $_);
+		$line[$pcol] = 1e-308 if($line[$pcol]<1e-308); #avoid NA or inf in R
+
+		$count++;
 		$line[$rsIDcol] = $rsID{$line[$rsIDcol]} if(exists $rsID{$line[$rsIDcol]});
 		$GWAS{$line[$rsIDcol]}{"p"}=$line[$pcol];
 		$GWAS{$line[$rsIDcol]}{"ref"}=uc($line[$refcol]) if(defined $refcol);
@@ -236,69 +350,170 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 		# 	$line[$mafcol] = 1-$line[$mafcol] if($line[$mafcol]>0.5);
 		# 	$GWAS{$line[$rsIDcol]}{"maf"}=$line[$mafcol];
 		# }
+
+		if($count>=2000){
+			open(SNP, ">>$outSNPs");
+			&mysql();
+			close SNP;
+
+			delete @GWAS{keys %GWAS};
+			$count = 0;
+			# foreach my $key (keys %GWAS){
+			# 	delete $GWAS{$key};
+			# }
+		}
 	}
 	close GWAS;
+	&mysql();
 
-	my $dbSNP = "$dbSNPfile/snp146_pos_allele.txt";
- 	open(DB, "$dbSNP") or die "Cannot opne $dbSNP\n";
-	open(SNP, ">$outSNPs");
-	my $outhead = "chr\tbp\tref\talt\trsID\tp";
-	$outhead .= "\tor" if(defined $orcol);
-	$outhead .= "\tbeta" if(defined $becol);
-	$outhead .= "\tse" if(defined $secol);
-	$outhead .= "\tN" if(defined $Ncol);
-	# $outhead .= "\tmaf" if(defined $mafcol);
-	$outhead .= "\n";
-	print SNP $outhead;
-	while(<DB>){
-		my @line = split(/\s/, $_);
-		$line[1] = 23 if($line[1] =~ /x/i);
-		if(exists $GWAS{$line[3]}){
-			if(defined $refcol && defined $altcol){
-				if(($line[4] eq $GWAS{$line[3]}{"ref"} && $line[5] eq $GWAS{$line[3]}{"alt"}) || ($line[5] eq $GWAS{$line[3]}{"ref"} && $line[4] eq $GWAS{$line[3]}{"alt"})){
-					print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"};
-					print SNP "\t", $GWAS{$line[3]}{"or"} if(defined $orcol);
-					print SNP "\t", $GWAS{$line[3]}{"be"} if(defined $becol);
-					print SNP "\t", $GWAS{$line[3]}{"se"} if(defined $secol);
-					# print SNP "\t", $GWAS{$line[3]}{"maf"} if(defined $mafcol);
-					print SNP "\t", $GWAS{$line[3]}{"N"} if(defined $Ncol);
-					print SNP "\n";
-				}
-			}elsif(defined $refcol){
-				if($line[5] eq $GWAS{$line[3]}{"ref"} || $line[4] eq $GWAS{$line[3]}{"ref"}){
-					print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"};
-					print SNP "\t", $GWAS{$line[3]}{"or"} if(defined $orcol);
-					print SNP "\t", $GWAS{$line[3]}{"be"} if(defined $becol);
-					print SNP "\t", $GWAS{$line[3]}{"se"} if(defined $secol);
-					# print SNP "\t", $GWAS{$line[3]}{"maf"} if(defined $mafcol);
-					print SNP "\t", $GWAS{$line[3]}{"N"} if(defined $Ncol);
-					print SNP "\n";
-				}
-			}elsif(defined $altcol){
-				if($line[5] eq $GWAS{$line[3]}{"alt"} || $line[4] eq $GWAS{$line[3]}{"alt"}){
-					print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"};
-					print SNP "\t", $GWAS{$line[3]}{"or"} if(defined $orcol);
-					print SNP "\t", $GWAS{$line[3]}{"be"} if(defined $becol);
-					print SNP "\t", $GWAS{$line[3]}{"se"} if(defined $secol);
-					# print SNP "\t", $GWAS{$line[3]}{"maf"} if(defined $mafcol);
-					print SNP "\t", $GWAS{$line[3]}{"N"} if(defined $Ncol);
-					print SNP "\n";
-				}
+	sub mysql{
+		my $rsID = undef;
+		foreach my $id (keys %GWAS){
+			if(defined $rsID){
+				$rsID .= " OR name='$id'";
 			}else{
-				print SNP "$line[1]\t$line[2]\t$line[4]\t$line[5]\t$line[3]\t", $GWAS{$line[3]}{"p"};
-				print SNP "\t", $GWAS{$line[3]}{"or"} if(defined $orcol);
-				print SNP "\t", $GWAS{$line[3]}{"be"} if(defined $becol);
-				print SNP "\t", $GWAS{$line[3]}{"se"} if(defined $secol);
-				# print SNP "\t", $GWAS{$line[3]}{"maf"} if(defined $mafcol);
-				print SNP "\t", $GWAS{$line[3]}{"N"} if(defined $Ncol);
-				print SNP "\n";
+				$rsID = "name='$id'";
+			}
+		}
+		my $sth = $db->prepare("SELECT name,chrom,chromEnd,refNCBI,alleles FROM snp146 WHERE ".$rsID);
+		$sth->execute();
+		open(SNP, ">>$outSNPs");
+
+		while(my @row = $sth->fetchrow_array()){
+			$row[1] =~ s/chr//;
+			$row[4] =~ s/,$//;
+			my @alleles = split(/,/, $row[4]);
+
+			if(exists $GWAS{$row[0]}{"p"}){
+				if(defined $refcol && defined $altcol){
+					if(In($GWAS{$row[0]}{"ref"}, \@alleles)==0 && In($GWAS{$row[0]}{"alt"}, \@alleles)==0){
+						print SNP join("\t", ($row[1], $row[2], $GWAS{$row[0]}{"ref"}, $GWAS{$row[0]}{"alt"}, $row[0], $GWAS{$row[0]}{"p"}));
+						print SNP "\t", $GWAS{$row[0]}{"or"} if(defined $orcol);
+						print SNP "\t", $GWAS{$row[0]}{"be"} if(defined $becol);
+						print SNP "\t", $GWAS{$row[0]}{"se"} if(defined $secol);
+						print SNP "\t", $GWAS{$row[0]}{"N"} if(defined $Ncol);
+						print SNP "\n";
+					}else{
+						foreach my $i (0..$#alleles){
+							$alleles[$i] =~ tr/ATGC/TACG/;
+						}
+						if(In($refcol, \@alleles)==0 && In($altcol, \@alleles)==0){
+							print SNP join("\t", ($row[1], $row[2], $GWAS{$row[0]}{"ref"}, $GWAS{$row[0]}{"alt"}, $row[0], $GWAS{$row[0]}{"p"}));
+							print SNP "\t", $GWAS{$row[0]}{"or"} if(defined $orcol);
+							print SNP "\t", $GWAS{$row[0]}{"be"} if(defined $becol);
+							print SNP "\t", $GWAS{$row[0]}{"se"} if(defined $secol);
+							print SNP "\t", $GWAS{$row[0]}{"N"} if(defined $Ncol);
+							print SNP "\n";
+						}
+					}
+				}elsif(defined $refcol){
+					if(In($GWAS{$row[0]}{"ref"}, \@alleles)==0 && @alleles==2){
+						my $a;
+						if($GWAS{$row[0]}{"ref"} eq $alleles[0]){$a = $alleles[1]}
+						else{$a = $alleles[0]}
+						print SNP join("\t", ($row[1], $row[2], $GWAS{$row[0]}{"ref"}, $a, $row[0], $GWAS{$row[0]}{"p"}));
+						print SNP "\t", $GWAS{$row[0]}{"or"} if(defined $orcol);
+						print SNP "\t", $GWAS{$row[0]}{"be"} if(defined $becol);
+						print SNP "\t", $GWAS{$row[0]}{"se"} if(defined $secol);
+						print SNP "\t", $GWAS{$row[0]}{"N"} if(defined $Ncol);
+						print SNP "\n";
+					}else{
+						foreach my $i (0..$#alleles){
+							$alleles[$i] =~ tr/ATGC/TACG/;
+						}
+						if(In($GWAS{$row[0]}{"ref"}, \@alleles)==0 && @alleles==2){
+							my $a;
+							if($GWAS{$row[0]}{"ref"} eq $alleles[0]){$a = $alleles[1]}
+							else{$a = $alleles[0]}
+							print SNP join("\t", ($row[1], $row[2], $GWAS{$row[0]}{"ref"}, $a, $row[0], $GWAS{$row[0]}{"p"}));
+							print SNP "\t", $GWAS{$row[0]}{"or"} if(defined $orcol);
+							print SNP "\t", $GWAS{$row[0]}{"be"} if(defined $becol);
+							print SNP "\t", $GWAS{$row[0]}{"se"} if(defined $secol);
+							print SNP "\t", $GWAS{$row[0]}{"N"} if(defined $Ncol);
+							print SNP "\n";
+						}
+					}
+				}elsif(defined $altcol){
+					if(In($GWAS{$row[0]}{"alt"}, \@alleles)==0 && @alleles==2){
+						my $a;
+						if($GWAS{$row[0]}{"alt"} eq $alleles[0]){$a = $alleles[1]}
+						else{$a = $alleles[0]}
+						print SNP join("\t", ($row[1], $row[2], $a, $GWAS{$row[0]}{"alt"}, $row[0], $GWAS{$row[0]}{"p"}));
+						print SNP "\t", $GWAS{$row[0]}{"or"} if(defined $orcol);
+						print SNP "\t", $GWAS{$row[0]}{"be"} if(defined $becol);
+						print SNP "\t", $GWAS{$row[0]}{"se"} if(defined $secol);
+						print SNP "\t", $GWAS{$row[0]}{"N"} if(defined $Ncol);
+						print SNP "\n";
+					}else{
+						foreach my $i (0..$#alleles){
+							$alleles[$i] =~ tr/ATGC/TACG/;
+						}
+						if(In($GWAS{$row[0]}{"alt"}, \@alleles)==0 && @alleles==2){
+							my $a;
+							if($GWAS{$row[0]}{"alt"} eq $alleles[0]){$a = $alleles[1]}
+							else{$a = $alleles[0]}
+							print SNP join("\t", ($row[1], $row[2], $a, $GWAS{$row[0]}{"alt"}, $row[0], $GWAS{$row[0]}{"p"}));
+							print SNP "\t", $GWAS{$row[0]}{"or"} if(defined $orcol);
+							print SNP "\t", $GWAS{$row[0]}{"be"} if(defined $becol);
+							print SNP "\t", $GWAS{$row[0]}{"se"} if(defined $secol);
+							print SNP "\t", $GWAS{$row[0]}{"N"} if(defined $Ncol);
+							print SNP "\n";
+						}
+					}
+				}else{
+					if(In($row[3], @alleles)==0 && @alleles==2){
+						my $a;
+						if($row[3] eq $alleles[0]){$a = $alleles[1]}
+						else{$a = $alleles[0]}
+						print SNP join("\t", ($row[1], $row[2], $row[3], $a, $row[0], $GWAS{$row[0]}{"p"}));
+						print SNP "\t", $GWAS{$row[0]}{"or"} if(defined $orcol);
+						print SNP "\t", $GWAS{$row[0]}{"be"} if(defined $becol);
+						print SNP "\t", $GWAS{$row[0]}{"se"} if(defined $secol);
+						print SNP "\t", $GWAS{$row[0]}{"N"} if(defined $Ncol);
+						print SNP "\n";
+					}else{
+						foreach my $i (0..$#alleles){
+							$alleles[$i] =~ tr/ATGC/TACG/;
+						}
+						if(In($row[3], @alleles)==0 && @alleles==2){
+							my $a;
+							if($row[3] eq $alleles[0]){$a = $alleles[1]}
+							else{$a = $alleles[0]}
+							print SNP join("\t", ($row[1], $row[2], $row[3], $a, $row[0], $GWAS{$row[0]}{"p"}));
+							print SNP "\t", $GWAS{$row[0]}{"or"} if(defined $orcol);
+							print SNP "\t", $GWAS{$row[0]}{"be"} if(defined $becol);
+							print SNP "\t", $GWAS{$row[0]}{"se"} if(defined $secol);
+							print SNP "\t", $GWAS{$row[0]}{"N"} if(defined $Ncol);
+							print SNP "\n";
+						}
+					}
+				}
 			}
 		}
 	}
-	close DB;
-	close SNP;
+
+	my $temp = $filedir."temp.txt";
+	system "sort -k 1n -k 2n $outSNPs > $temp";
+	system "mv $temp $outSNPs";
 }
 
 close GWAS;
-delete @rsID{keys %rsID};
-delete @GWAS{keys %GWAS};
+# delete @rsID{keys %rsID};
+# delete @GWAS{keys %GWAS};
+
+sub In{
+	my $e = $_[0];
+	my $a = $_[1];
+	my @a = @$a;
+	my $check = 1;
+	foreach (@a){
+		next unless(defined $_);
+		if($e eq $_){
+			$check = 0;
+			last;
+		}
+	}
+	return $check;
+}
+
+print "Execution time: ", time-$start, "\n";
