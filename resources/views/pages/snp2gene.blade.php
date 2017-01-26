@@ -184,7 +184,7 @@
           <br/><br/>
           <h4 style="color: #00004d">MAGMA Gene-set analysis</h4>
           <span class="info"><i class="fa fa-info"></i>
-            MAGMA Gene-set analysis was performed for curated gene sets and GO terms (total of 6179 gene sets) obtained from MsigDB v5.1.<br/>
+            MAGMA Gene-set analysis was performed for curated gene sets and GO terms (total of 10894 gene sets) obtained from MsigDB v5.2.<br/>
             The table only displays either top 10 significant gene sets (or all gene sets with P<sub>bon</sub> < 0.05 if it is more than 10).
             Complete results are downloadable from "Download" tab.
           </span><br/><br/>

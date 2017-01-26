@@ -218,7 +218,7 @@ MAGMA gene analysis and gene-set analysis were performed with MAGMA v1.6.
   magma.genes.out: output of gene analysis containing gene P-value
   magma.genes.raw: output of gene analysis which is used for gene-set analysis
 2. Gene-set analysis
-  Gene sets were obtained from MsigDB v5.1. Total of 6179 gene sets (Curated gene sets (4725) and GO terms (1454)) were tested.
+  Gene sets were obtained from MsigDB v5.2. Total of 10894 gene sets (Curated gene sets (4728) and GO terms (6166)) were tested.
   Curated gene sets consists of 9 data resources including KEGG, Reactome and BioCarta (http://software.broadinstitute.org/gsea/msigdb/collection_details.jsp#C2 for details).
   GO terms consists of three categories, biological processes (bp), cellular components (cc) and molecular functions (mf).
   All parameters were set as default (competitive test).
