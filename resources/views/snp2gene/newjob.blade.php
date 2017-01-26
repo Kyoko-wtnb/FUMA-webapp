@@ -632,6 +632,18 @@
                   <option class="level2" value="GTEx_Uterus">GTEx Uterus</option>
                   <option class="level1" value="null">GTEx Vagina (1)</option>
                   <option class="level2" value="GTEx_Vagina">GTEx Vagina</option>
+                  <option class="level1" value="null">BRAINEAC (11)</option>
+                  <option class="level2" value="BRAINEAC_CRBL">BRAINEAC Cerebellar cortex</option>
+                  <option class="level2" value="BRAINEAC_FCTX">BRAINEAC Frontal cortex</option>
+                  <option class="level2" value="BRAINEAC_HIPP">BRAINEAC Hippocampus</option>
+                  <option class="level2" value="BRAINEAC_MEDU">BRAINEAC Inferior olivary nucleus (sub-dissected from the medulla)</option>
+                  <option class="level2" value="BRAINEAC_OCTX">BRAINEAC Occipital cortex</option>
+                  <option class="level2" value="BRAINEAC_PUTM">BRAINEAC Putamen (at the level of the anterior commissure)</option>
+                  <option class="level2" value="BRAINEAC_SNIG">BRAINEAC Substantia nigra</option>
+                  <option class="level2" value="BRAINEAC_TCTX">BRAINEAC Temporal cortex</option>
+                  <option class="level2" value="BRAINEAC_THAL">BRAINEAC Thalamus (at the level of the lateral geniculate nucleus)</option>
+                  <option class="level2" value="BRAINEAC_WHMT">BRAINEAC Intralobular white matter</option>
+                  <option class="level2" value="BRAINEAC_aveALL">BRAINEAC Averaged expression of 10 brain regions</option>
                 </select>
               </span>
             </td>

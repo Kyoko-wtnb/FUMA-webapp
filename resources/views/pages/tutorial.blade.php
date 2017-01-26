@@ -927,13 +927,30 @@
             2,116 whole peripheral blood samples of healthy adults from 4 Durch cohorts (<a href="https://www.ncbi.nlm.nih.gov/pubmed/27918533">Zhernakova et al. 2017</a>).
           </p><br/>
 
-          <!-- <h4><strong>4. BRAINEAC</strong></h4>
+          <h4><strong>4. BRAINEAC</strong></h4>
           <p><strong>Data source</strong><br/>
+            eQTL was obtained by applying to data access (<a target="_blank" href="http://www.braineac.org/">http://www.braineac.org/</a>).<br/>
           </p>
           <p><strong>Description</strong><br/>
+            The data include all eQTLs with nominal P-value < 0.05.
+            eQTLs were identified for each of the following 10 brain regions and based on aberaged expression across them.
+            <ul>
+              <li>Cerebellar cortex</li>
+              <li>Frontal cortex</li>
+              <li>Hippocampus</li>
+              <li>Inferior olivary nucleus (sub-dissected from the medulla)</li>
+              <li>Occipital cortex</li>
+              <li>Putamen (at the level of the anterior commissure)</li>
+              <li>Substantia nigra</li>
+              <li>Temporal cortex</li>
+              <li>Thalamus (at the level of the lateral geniculate nucleus)</li>
+              <li>Intralobular white matter</li>
+            </ul>
           </p>
           <p><strong>Samples</strong><br/>
-          </p> -->
+            134 neuropathologically confirmed control individuals of European descent from <a target="_blank" href="https://ukbec.wordpress.com/">UK Brain Expression Consortium</a>
+            (<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/25174004">Ramasamy et al. 2014</a>).
+          </p>
         </div>
         <br/>
 

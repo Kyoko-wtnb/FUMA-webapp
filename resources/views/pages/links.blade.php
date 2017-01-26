@@ -123,6 +123,16 @@
         </td>
       </tr>
       <tr>
+        <td>BRAINEAC</td>
+        <td>eQTLs of 10 brain regions. Cis-eQTLs with nominal P-value &lt; 0.05 are available in FUMA.</td>
+        <td>Info and data: <a href="http://www.braineac.org/" target="_blank">http://www.braineac.org/</a></td>
+        <td>26 January 2017</td>
+        <td>
+          Ramasamy et al. 2014. Genetic variability in the regulation of gene expression in ten regions of the human brain. <i>Nat. Neurosci.</i> <b>17</b>, 1418-1428.<br/>
+          <a href="https://www.ncbi.nlm.nih.gov/pubmed/25174004" target="_blank">PMID:27918533</a>
+        </td>
+      </tr>
+      <tr>
         <td>MsigDB v5.2</td>
         <td>Collection of publicly available gene sets. Data sets include e.g. KEGG, Reactome, BioCarta, GO terms and so on.</td>
         <td>Info and data: <a href="http://software.broadinstitute.org/gsea/msigdb" target="_blank">http://software.broadinstitute.org/gsea/msigdb</a></td>
