@@ -841,6 +841,7 @@ class JobController extends Controller
       if($fileName=="expHeat"){
         $svg = preg_replace("/\),rotate/", ")rotate", $svg);
       }
+      $fileName .= "_FUMAjob".$jobID;
       if($type=="svg"){
         file_put_contents($svgfile, $svg);
         $outfile .= $fileName.'.svg';
