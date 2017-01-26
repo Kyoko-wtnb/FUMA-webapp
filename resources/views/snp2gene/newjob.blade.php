@@ -563,88 +563,81 @@
             </td>
             <td>
               <span class="multiSelect">
-                Specific Tissue types: <tab><a>clear</a><br/>
-                <select multiple class="form-control" id="eqtlMapTs" name="eqtlMapTs[]" onchange="CheckAll();">
+                <a style="float:right;">clear</a><br/>
+                <select multiple class="form-control" id="eqtlMapTs" name="eqtlMapTs[]" size="10" onchange="CheckAll();">
                   <option value="all">All</option>
-                  <option value='GTEx_Adipose_Subcutaneous'>GTEx Adipose Subcutaneous (Adipose Tissue)</option>
-                  <option value='GTEx_Adipose_Visceral_Omentum'>GTEx Adipose Visceral Omentum (Adipose Tissue)</option>
-                  <option value='GTEx_Adrenal_Gland'>GTEx Adrenal Gland (Adrenal Gland)</option>
-                  <option value='GTEx_Artery_Aorta'>GTEx Artery Aorta (Blood Vessel)</option>
-                  <option value='GTEx_Artery_Coronary'>GTEx Artery Coronary (Blood Vessel)</option>
-                  <option value='GTEx_Artery_Tibial'>GTEx Artery Tibial (Blood Vessel)</option>
-                  <option value='GTEx_Brain_Anterior_cingulate_cortex_BA24'>GTEx Brain Anterior cingulate cortex BA24 (Brain)</option>
-                  <option value='GTEx_Brain_Caudate_basal_ganglia'>GTEx Brain Caudate basal ganglia (Brain)</option>
-                  <option value='GTEx_Brain_Cerebellar_Hemisphere'>GTEx Brain Cerebellar Hemisphere (Brain)</option>
-                  <option value='GTEx_Brain_Cerebellum'>GTEx Brain Cerebellum (Brain)</option>
-                  <option value='GTEx_Brain_Cortex'>GTEx Brain Cortex (Brain)</option>
-                  <option value='GTEx_Brain_Frontal_Cortex_BA9'>GTEx Brain Frontal Cortex BA9 (Brain)</option>
-                  <option value='GTEx_Brain_Hippocampus'>GTEx Brain Hippocampus (Brain)</option>
-                  <option value='GTEx_Brain_Hypothalamus'>GTEx Brain Hypothalamus (Brain)</option>
-                  <option value='GTEx_Brain_Nucleus_accumbens_basal_ganglia'>GTEx Brain Nucleus accumbens basal ganglia (Brain)</option>
-                  <option value='GTEx_Brain_Putamen_basal_ganglia'>GTEx Brain Putamen basal ganglia (Brain)</option>
-                  <option value='GTEx_Breast_Mammary_Tissue'>GTEx Breast Mammary Tissue (Breast)</option>
-                  <option value='GTEx_Cells_EBV-transformed_lymphocytes'>GTEx Cells EBV-transformed lymphocytes (Blood)</option>
-                  <option value='GTEx_Cells_Transformed_fibroblasts'>GTEx Cells Transformed fibroblasts (Skin)</option>
-                  <option value='GTEx_Colon_Sigmoid'>GTEx Colon Sigmoid (Colon)</option>
-                  <option value='GTEx_Colon_Transverse'>GTEx Colon Transverse (Colon)</option>
-                  <option value='GTEx_Esophagus_Gastroesophageal_Junction'>GTEx Esophagus Gastroesophageal Junction (Esophagus)</option>
-                  <option value='GTEx_Esophagus_Mucosa'>GTEx Esophagus Mucosa (Esophagus)</option>
-                  <option value='GTEx_Esophagus_Muscularis'>GTEx Esophagus Muscularis (Esophagus)</option>
-                  <option value='GTEx_Heart_Atrial_Appendage'>GTEx Heart Atrial Appendage (Heart)</option>
-                  <option value='GTEx_Heart_Left_Ventricle'>GTEx Heart Left Ventricle (Heart)</option>
-                  <option value='GTEx_Liver'>GTEx Liver (Liver)</option>
-                  <option value='GTEx_Lung'>GTEx Lung (Lung)</option>
-                  <option value='GTEx_Muscle_Skeletal'>GTEx Muscle Skeletal (Muscle)</option>
-                  <option value='GTEx_Nerve_Tibial'>GTEx Nerve Tibial (Nerve)</option>
-                  <option value='GTEx_Ovary'>GTEx Ovary (Ovary)</option>
-                  <option value='GTEx_Pancreas'>GTEx Pancreas (Pancreas)</option>
-                  <option value='GTEx_Pituitary'>GTEx Pituitary (Pituitary)</option>
-                  <option value='GTEx_Prostate'>GTEx Prostate (Prostate)</option>
-                  <option value='GTEx_Skin_Not_Sun_Exposed_Suprapubic'>GTEx Skin Not Sun Exposed Suprapubic (Skin)</option>
-                  <option value='GTEx_Skin_Sun_Exposed_Lower_leg'>GTEx Skin Sun Exposed Lower leg (Skin)</option>
-                  <option value='GTEx_Small_Intestine_Terminal_Ileum'>GTEx Small Intestine Terminal Ileum (Small Intestine)</option>
-                  <option value='GTEx_Spleen'>GTEx Spleen (Spleen)</option>
-                  <option value='GTEx_Stomach'>GTEx Stomach (Stomach)</option>
-                  <option value='GTEx_Testis'>GTEx Testis (Testis)</option>
-                  <option value='GTEx_Thyroid'>GTEx Thyroid (Thyroid)</option>
-                  <option value='GTEx_Uterus'>GTEx Uterus (Uterus)</option>
-                  <option value='GTEx_Vagina'>GTEx Vagina (Vagina)</option>
-                  <option value='GTEx_Whole_Blood'>GTEx Whole Blood (Blood)</option>
-                  <option value='BloodeQTL_BloodeQTL'>Westra et al (2013). Blood (Blood)</option>
-                  <option value='BIOSQTL_BIOS_eQTL_geneLevel'>BBMRI BIOS. Blood (Blood)</option>
-                </select>
-
-              </span>
-              <br/>
-              <span class="multiSelect">
-                General tissue types: <tab><a>clear</a><br/>
-                <select multiple class="form-control" id="eqtlMapGts" name="eqtlMapGts[]" onchange="CheckAll();">
-                  <option value="all">All</option>
-                  <option value='GTEx_Adipose_Subcutaneous:GTEx_Adipose_Visceral_Omentum'>GTEx Adipose Tissue (2)</option>
-                  <option value='GTEx_Adrenal_Gland'>GTEx Adrenal Gland (1)</option>
-                  <option value='GTEx_Cells_EBV-transformed_lymphocytes:GTEx_Whole_Blood'>GTEx Blood (2)</option>
-                  <option value='GTEx_Artery_Aorta:GTEx_Artery_Coronary:GTEx_Artery_Tibial'>GTEx Blood Vessel (3)</option>
-                  <option value='GTEx_Brain_Anterior_cingulate_cortex_BA24:GTEx_Brain_Caudate_basal_ganglia:GTEx_Brain_Cerebellar_Hemisphere:GTEx_Brain_Cerebellum:GTEx_Brain_Cortex:GTEx_Brain_Frontal_Cortex_BA9:GTEx_Brain_Hippocampus:GTEx_Brain_Hypothalamus:GTEx_Brain_Nucleus_accumbens_basal_ganglia:GTEx_Brain_Putamen_basal_ganglia'>GTEx Brain (10)</option>
-                  <option value='GTEx_Breast_Mammary_Tissue'>GTEx Breast (1)</option>
-                  <option value='GTEx_Colon_Sigmoid:GTEx_Colon_Transverse'>GTEx Colon (2)</option>
-                  <option value='GTEx_Esophagus_Gastroesophageal_Junction:GTEx_Esophagus_Mucosa:GTEx_Esophagus_Muscularis'>GTEx Esophagus (3)</option>
-                  <option value='GTEx_Heart_Atrial_Appendage:GTEx_Heart_Left_Ventricle'>GTEx Heart (2)</option>
-                  <option value='GTEx_Liver'>GTEx Liver (1)</option>
-                  <option value='GTEx_Lung'>GTEx Lung (1)</option>
-                  <option value='GTEx_Muscle_Skeletal'>GTEx Muscle (1)</option>
-                  <option value='GTEx_Nerve_Tibial'>GTEx Nerve (1)</option>
-                  <option value='GTEx_Ovary'>GTEx Ovary (1)</option>
-                  <option value='GTEx_Pancreas'>GTEx Pancreas (1)</option>
-                  <option value='GTEx_Pituitary'>GTEx Pituitary (1)</option>
-                  <option value='GTEx_Prostate'>GTEx Prostate (1)</option>
-                  <option value='GTEx_Cells_Transformed_fibroblasts:GTEx_Skin_Not_Sun_Exposed_Suprapubic:GTEx_Skin_Sun_Exposed_Lower_leg'>GTEx Skin (3)</option>
-                  <option value='GTEx_Small_Intestine_Terminal_Ileum'>GTEx Small Intestine (1)</option>
-                  <option value='GTEx_Spleen'>GTEx Spleen (1)</option>
-                  <option value='GTEx_Stomach'>GTEx Stomach (1)</option>
-                  <option value='GTEx_Testis'>GTEx Testis (1)</option>
-                  <option value='GTEx_Thyroid'>GTEx Thyroid (1)</option>
-                  <option value='GTEx_Uterus'>GTEx Uterus (1)</option>
-                  <option value='GTEx_Vagina'>GTEx Vagina (1)</option>
+                  <option class="level1" value="null">Blood eQTLs</option>
+                  <option class="level2" value='BloodeQTL_BloodeQTL'>Westra et al (2013). Blood (Blood)</option>
+                  <option class="level2" value='BIOSQTL_BIOS_eQTL_geneLevel'>BBMRI BIOS. Blood (Blood)</option> -->
+                  <option class="level1" value="null">GTEx Adipose Tissue (2)</option>
+                  <option class="level2" value="GTEx_Adipose_Subcutaneous">GTEx Adipose Subcutaneous</option>
+                  <option class="level2" value="GTEx_Adipose_Visceral_Omentum">GTEx Adipose Visceral Omentum</option>
+                  <option class="level1" value="null">GTEx Adrenal Gland (1)</option>
+                  <option class="level2" value="GTEx_Adrenal_Gland">GTEx Adrenal Gland</option>
+                  <option class="level1" value="null">GTEx Blood (2)</option>
+                  <option class="level2" value="GTEx_Cells_EBV-transformed_lymphocytes">GTEx Cells EBV-transformed lymphocytes</option>
+                  <option class="level2" value="GTEx_Whole_Blood">GTEx Whole Blood</option>
+                  <option class="level1" value="null">GTEx Blood Vessel (3)</option>
+                  <option class="level2" value="GTEx_Artery_Aorta">GTEx Artery Aorta</option>
+                  <option class="level2" value="GTEx_Artery_Coronary">GTEx Artery Coronary</option>
+                  <option class="level2" value="GTEx_Artery_Tibial">GTEx Artery Tibial</option>
+                  <option class="level1" value="null">GTEx Brain (10)</option>
+                  <option class="level2" value="GTEx_Brain_Anterior_cingulate_cortex_BA24">GTEx Brain Anterior cingulate cortex BA24</option>
+                  <option class="level2" value="GTEx_Brain_Caudate_basal_ganglia">GTEx Brain Caudate basal ganglia</option>
+                  <option class="level2" value="GTEx_Brain_Cerebellar_Hemisphere">GTEx Brain Cerebellar Hemisphere</option>
+                  <option class="level2" value="GTEx_Brain_Cerebellum">GTEx Brain Cerebellum</option>
+                  <option class="level2" value="GTEx_Brain_Cortex">GTEx Brain Cortex</option>
+                  <option class="level2" value="GTEx_Brain_Frontal_Cortex_BA9">GTEx Brain Frontal Cortex BA9</option>
+                  <option class="level2" value="GTEx_Brain_Hippocampus">GTEx Brain Hippocampus</option>
+                  <option class="level2" value="GTEx_Brain_Hypothalamus">GTEx Brain Hypothalamus</option>
+                  <option class="level2" value="GTEx_Brain_Nucleus_accumbens_basal_ganglia">GTEx Brain Nucleus accumbens basal ganglia</option>
+                  <option class="level2" value="GTEx_Brain_Putamen_basal_ganglia">GTEx Brain Putamen basal ganglia</option>
+                  <option class="level1" value="null">GTEx Breast (1)</option>
+                  <option class="level2" value="GTEx_Breast_Mammary_Tissue">GTEx Breast Mammary Tissue</option>
+                  <option class="level1" value="null">GTEx Colon (2)</option>
+                  <option class="level2" value="GTEx_Colon_Sigmoid">GTEx Colon Sigmoid</option>
+                  <option class="level2" value="GTEx_Colon_Transverse">GTEx Colon Transverse</option>
+                  <option class="level1" value="null">GTEx Esophagus (3)</option>
+                  <option class="level2" value="GTEx_Esophagus_Gastroesophageal_Junction">GTEx Esophagus Gastroesophageal Junction</option>
+                  <option class="level2" value="GTEx_Esophagus_Mucosa">GTEx Esophagus Mucosa</option>
+                  <option class="level2" value="GTEx_Esophagus_Muscularis">GTEx Esophagus Muscularis</option>
+                  <option class="level1" value="null">GTEx Heart (2)</option>
+                  <option class="level2" value="GTEx_Heart_Atrial_Appendage">GTEx Heart Atrial Appendage</option>
+                  <option class="level2" value="GTEx_Heart_Left_Ventricle">GTEx Heart Left Ventricle</option>
+                  <option class="level1" value="null">GTEx Liver (1)</option>
+                  <option class="level2" value="GTEx_Liver">GTEx Liver</option>
+                  <option class="level1" value="null">GTEx Lung (1)</option>
+                  <option class="level2" value="GTEx_Lung">GTEx Lung</option>
+                  <option class="level1" value="null">GTEx Muscle (1)</option>
+                  <option class="level2" value="GTEx_Muscle_Skeletal">GTEx Muscle Skeletal</option>
+                  <option class="level1" value="null">GTEx Nerve (1)</option>
+                  <option class="level2" value="GTEx_Nerve_Tibial">GTEx Nerve Tibial</option>
+                  <option class="level1" value="null">GTEx Ovary (1)</option>
+                  <option class="level2" value="GTEx_Ovary">GTEx Ovary</option>
+                  <option class="level1" value="null">GTEx Pancreas (1)</option>
+                  <option class="level2" value="GTEx_Pancreas">GTEx Pancreas</option>
+                  <option class="level1" value="null">GTEx Pituitary (1)</option>
+                  <option class="level2" value="GTEx_Pituitary">GTEx Pituitary</option>
+                  <option class="level1" value="null">GTEx Prostate (1)</option>
+                  <option class="level2" value="GTEx_Prostate">GTEx Prostate</option>
+                  <option class="level1" value="null">GTEx Skin (3)</option>
+                  <option class="level2" value="GTEx_Cells_Transformed_fibroblasts">GTEx Cells Transformed fibroblasts</option>
+                  <option class="level2" value="GTEx_Skin_Not_Sun_Exposed_Suprapubic">GTEx Skin Not Sun Exposed Suprapubic</option>
+                  <option class="level2" value="GTEx_Skin_Sun_Exposed_Lower_leg">GTEx Skin Sun Exposed Lower leg</option>
+                  <option class="level1" value="null">GTEx Small Intestine (1)</option>
+                  <option class="level2" value="GTEx_Small_Intestine_Terminal_Ileum">GTEx Small Intestine Terminal Ileum</option>
+                  <option class="level1" value="null">GTEx Spleen (1)</option>
+                  <option class="level2" value="GTEx_Spleen">GTEx Spleen</option>
+                  <option class="level1" value="null">GTEx Stomach (1)</option>
+                  <option class="level2" value="GTEx_Stomach">GTEx Stomach</option>
+                  <option class="level1" value="null">GTEx Testis (1)</option>
+                  <option class="level2" value="GTEx_Testis">GTEx Testis</option>
+                  <option class="level1" value="null">GTEx Thyroid (1)</option>
+                  <option class="level2" value="GTEx_Thyroid">GTEx Thyroid</option>
+                  <option class="level1" value="null">GTEx Uterus (1)</option>
+                  <option class="level2" value="GTEx_Uterus">GTEx Uterus</option>
+                  <option class="level1" value="null">GTEx Vagina (1)</option>
+                  <option class="level2" value="GTEx_Vagina">GTEx Vagina</option>
                 </select>
               </span>
             </td>

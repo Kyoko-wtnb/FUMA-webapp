@@ -39,6 +39,33 @@ $(document).ready(function(){
     }
   });
 
+  $('.level1').on('click', function(){
+    var cur = $(this);
+    var selected = $(this).is(":selected");
+
+    while(cur.next().hasClass('level2')){
+      cur = cur.next();
+      cur.prop('selected', selected);
+    }
+  });
+
+  $('.level2').on('click', function(){
+    var cur = $(this);
+    var selected = $(this).is(":selected");
+
+    var total = true;
+    while(cur.next().hasClass('level2')){
+      cur = cur.next();
+      total = (total && cur.is(':selected'));
+    }
+    cur = $(this);
+    while(cur.prev().hasClass('level2')){
+      cur = cur.prev();
+      total = (total && cur.is(':selected'));
+    }
+    cur.prev().prop('selected', total);
+  });
+
 });
 
 function CheckAll(){
@@ -433,6 +460,15 @@ function CheckAll(){
     $('#eqtlMapGts option').each(function(){
       if($(this).is(":checked")==true){ts++;}
     });
+    // console.log($('#eqtlMapTs').children('.level1').html())
+    // $('.level1').each(function(){
+    //   var cur = $(this);
+    //   while(cur.next().hasClass('level2')){
+    //     cur = cur.next();
+    //     console.log(cur.val());
+    //   }
+    //
+    // });
     if(ts>0){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');

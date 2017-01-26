@@ -323,8 +323,15 @@ class JobController extends Controller
 
       if($request -> has('eqtlMap')){
         $eqtlMap=1;
-        $eqtlMapTs = $request -> input('eqtlMapTs');
-        $eqtlMapGts = $request -> input('eqtlMapGts');
+        $temp = $request -> input('eqtlMapTs');
+        // $eqtlMapGts = $request -> input('eqtlMapGts');
+        $eqtlMapTs = [];
+        $eqtlMapGts = [];
+        foreach($temp as $ts){
+          if($ts != "null"){
+            $eqtlMapTs[] = $ts;
+          }
+        }
         if(!empty($eqtlMapTs) && !empty($eqtlMapGts)){
           $eqtlMapTs = implode(":", $eqtlMapTs);
           $eqtlMapGts = implode(":", $eqtlMapGts);

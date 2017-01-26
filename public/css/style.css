@@ -124,15 +124,11 @@ button.accordion.active, button.accordion:hover {
   border-top: 2px dotted #222222;
 }*/
 
-#NewsFeed a{
-  color: #222222;
+.level1 {
+  font-weight: bold;
 }
-
-blockquote p{
-  font-size: 14px;
-}
-blockquote table{
-  font-size: 14px;
+.level2 {
+  padding-left: 15px;
 }
 
 /*Styles for D3.js plots*/
