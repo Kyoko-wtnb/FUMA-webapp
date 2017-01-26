@@ -830,9 +830,12 @@ class JobController extends Controller
       $type = $request->input('type');
       $fileName = $request->input('fileName');
       $svgfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/temp.svg';
-      file_put_contents($svgfile, $svg);
       $outfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/';
+      if($fileName=="expHeat"){
+        $svg = preg_replace("/\),rotate/", ")rotate", $svg);
+      }
       if($type=="svg"){
+        file_put_contents($svgfile, $svg);
         $outfile .= $fileName.'.svg';
         File::move($svgfile, $outfile);
         return response() -> download($outfile);
@@ -840,7 +843,7 @@ class JobController extends Controller
         $outfile .= $fileName.'.'.$type;
         $image = new \Imagick();
         $image->setResolution(300,300);
-        $image->readImageBlob('<?xml version="1.0"?>'.file_get_contents($svgfile));
+        $image->readImageBlob('<?xml version="1.0"?>'.$svg);
         $image->setImageFormat($type);
         $image->writeImage($outfile);
         return response() -> download($outfile);
