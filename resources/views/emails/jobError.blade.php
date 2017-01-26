@@ -32,6 +32,8 @@
     This error occures when no candidate SNPs were identified.
     It might be becaseu there is no significant hit at your defined P-value cutoff for lead SNPs and GWAS tagged SNPs.
     In that case, you can relax threshold or provide predefined lead SNPs.
+    There could be some significant SNPs with very low minor allele frequency.
+    Please try decreasing MAF threshold (default 0.01). 
     Manhattan plots and significant top 10 SNPs in your input file are avilable from <a href="http://fuma.ctglab.nl/snp2gene/'.$jobID.'">SNP2GENE<a/>.<br/>';
   }else if($status==6){
     echo ' (Error from lead SNPs and candidate SNPs identification)<br/>

@@ -209,6 +209,8 @@
         <span class="info"><i class="fa fa-info"></i>
           The following SNPs are top 10 significant SNPs from your input file which exist in the reference panel.
           Please refer the following P-value to set threshold for lead SNPs in the next submission.<br/>
+          There could be significant SNPs with very low minor allele frequecy.
+          By deccreasing MAF threshold might find some hits (default MAF &ge; 0.01). <br/>
           Note that, MHC region is excluded by default. If there are significatn SNPs in MHC region and you would like to include them, please uncheck the option.
         </span>
         <br/>
