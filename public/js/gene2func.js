@@ -5,7 +5,9 @@ $(document).ready(function(){
 
   // hash activate
   var hashid = window.location.hash;
-  if(hashid==""){
+  if(hashid=="" && status=="getJob"){
+    $('a[href="#expPanel"]').trigger('click');
+  }else if(hashid==""){
     $('a[href="#newquery"]').trigger('click');
   }else{
     $('a[href="'+hashid+'"]').trigger('click');
@@ -56,7 +58,6 @@ $(document).ready(function(){
     tsGeneralEnrich(id);
     GeneSet(id);
     GeneTable(id);
-    $('a[href="#expPanel"]').trigger('click');
   }else if(status=="query"){
     $('#geneSubmit').attr("disabled", true);
     var id = IPGAPvar.id;

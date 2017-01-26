@@ -7,8 +7,10 @@ $(document).ready(function(){
   $('.ImgDownSubmit').hide();
 
   var hashid = window.location.hash;
-  if(hashid==""){
+  if(hashid=="" && status.length==0){
     $('a[href="#newJob"]').trigger('click');
+  }else if(hashid==""){
+    $('a[href="#genomePlots"]').trigger('click');
   }else{
     $('a[href="'+hashid+'"]').trigger('click');
   }
@@ -63,10 +65,8 @@ $(document).ready(function(){
       complete: function(){
         if(jobStatus=="OK"){
           loadResults();
-          $('a[href="#genomePlots"]').trigger('click');
         }else if(jobStatus=="ERROR:005"){
           error5();
-          $('a[href="#genomePlots"]').trigger('click');
         }
       }
     });
