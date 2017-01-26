@@ -1,6 +1,7 @@
 README file of FUMA web application
 
 This file contains description of columns for every downloadable file.
+The output files of MAGMA will be described at the bottom of this README.
 
 ######################
 # leadSNPs.txt
@@ -206,3 +207,21 @@ eqtlMapRDBth : The minimum RegulomeDB score for SNP filtering
 eqtlMapChr15 : Select tissue/cell types, NA otherwise
 eqtlMapChr15Max : The maximum 15-core chromatin state
 eqtlMapChr15Meth : The method of chromatin state filtering
+
+######################
+# MAGMA outputs
+######################
+MAGMA gene analysis and gene-set analysis were performed with MAGMA v1.6.
+1. Gene analysis
+  SNPs are mapped to 19436 protein coding genes (with unqiue ensembl ID) if SNPs are located within gene body.
+  All parameters were set as default (SNP-wise model for gene test).
+  magma.genes.out: output of gene analysis containing gene P-value
+  magma.genes.raw: output of gene analysis which is used for gene-set analysis
+2. Gene-set analysis
+  Gene sets were obtained from MsigDB v5.1. Total of 6179 gene sets (Curated gene sets (4725) and GO terms (1454)) were tested.
+  Curated gene sets consists of 9 data resources including KEGG, Reactome and BioCarta (http://software.broadinstitute.org/gsea/msigdb/collection_details.jsp#C2 for details).
+  GO terms consists of three categories, biological processes (bp), cellular components (cc) and molecular functions (mf).
+  All parameters were set as default (competitive test).
+  magma.sets.out: output of gene-set analysis containing P-value per gene set
+  magma.setgenes.out: output of gene-set analysis containing all genes in each gene set
+Please refer the manual of MAGMA from https://ctg.cncr.nl/software/magma for more details.
