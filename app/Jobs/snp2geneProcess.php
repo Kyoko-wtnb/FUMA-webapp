@@ -230,13 +230,16 @@ class snp2geneProcess extends Job implements ShouldQueue
         }
       }
 
+      exec("gzip $filedir"."input.gwas");
+      exec("gzip $filedir"."input.snps");
+
       DB::table('SubmitJobs') -> where('jobID', $jobID)
                         -> update(['status'=>'OK']);
 
       if($email != null){
         $this->sendJobCompMail($email, $jobtitle, $jobID, 0, $msg);
       }
-
+      return;
     }
 
     public function sendJobCompMail($email, $jobtitle, $jobID, $status, $msg){
