@@ -567,8 +567,8 @@
                 <select multiple class="form-control" id="eqtlMapTs" name="eqtlMapTs[]" size="10" onchange="CheckAll();">
                   <option value="all">All</option>
                   <option class="level1" value="null">Blood eQTLs</option>
-                  <option class="level2" value='BloodeQTL_BloodeQTL'>Westra et al (2013). Blood (Blood)</option>
-                  <option class="level2" value='BIOSQTL_BIOS_eQTL_geneLevel'>BBMRI BIOS. Blood (Blood)</option> -->
+                  <option class="level2" value='BloodeQTL_BloodeQTL'>Westra et al. (2013) Blood eQTL Browser</option>
+                  <option class="level2" value='BIOSQTL_BIOS_eQTL_geneLevel'>Zhernakova et al. (2017) BIOS QTL Browser</option>
                   <option class="level1" value="null">GTEx Adipose Tissue (2)</option>
                   <option class="level2" value="GTEx_Adipose_Subcutaneous">GTEx Adipose Subcutaneous</option>
                   <option class="level2" value="GTEx_Adipose_Visceral_Omentum">GTEx Adipose Visceral Omentum</option>
