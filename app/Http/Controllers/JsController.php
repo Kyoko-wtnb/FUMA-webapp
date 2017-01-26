@@ -46,6 +46,8 @@ class JsController extends Controller
         $json = (array('data'=> $all_rows));
 
         echo json_encode($json);
+      }else{
+        echo '{"data":[]}';
       }
     }
 

@@ -128,7 +128,7 @@
             <div id="geneManhattan"></div>
           </div>
           <br/><br/>
-          <div id="QQplotPane">
+          <div id="QQplotPane" class="row">
             <!-- <div class="row"> -->
               <div class="col-md-6 col-xs-6 col-sm-6">
                 <h4 style="color: #00004d">QQ plots (GWAS summary statisics)</h4>
@@ -182,6 +182,17 @@
             <!-- </div> -->
           </div>
           <br/><br/>
+          <h4 style="color: #00004d">MAGMA Gene-set analysis</h4>
+          <span class="info"><i class="fa fa-info"></i>
+            MAGMA Gene-set analysis was performed for curated gene sets and GO terms (total of 6179 gene sets) obtained from MsigDB v5.2.<br/>
+            The table only displays either top 10 significant gene sets (or all gene sets with P<sub>bon</sub> < 0.05 if it is more than 10).
+            Complete results are downloadable from "Download" tab.
+          </span><br/><br/>
+          <table id="MAGMAtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+            <thead>
+              <th>Gene Set</th><th>N genes</th><th>Beta</th><th>Beta STD</th><th>SE</th><th>P</th><th>P<sub>bon</sub></th>
+            </thead>
+          </table>
         </div>
       </div>
 

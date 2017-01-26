@@ -581,7 +581,29 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
     }
   });
 
-  var file = "leadSNPs.txt";
+  var file = "magma.sets.top";
+  $('#MAGMAtable').DataTable({
+    "processing": true,
+    serverSide: false,
+    select: true,
+    "ajax" : {
+      url: "DTfile",
+      type: "POST",
+      data: {
+        filedir: filedir,
+        infile: file,
+        header: "FULL_NAME:NGENES:BETA:BETA_STD:SE:P:Pbon"
+      }
+    },
+    error: function(){
+      alert("leadSNPs table error");
+    },
+    "order": [[6, 'asc']],
+    "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    "iDisplayLength": 10
+  });
+
+  file = "leadSNPs.txt";
   var leadTable = $('#leadSNPtable').DataTable({
       "processing": true,
       serverSide: false,

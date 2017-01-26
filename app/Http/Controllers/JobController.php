@@ -584,10 +584,17 @@ class JobController extends Controller
       if($request -> has('eqtlfile')){$files[] = "eqtl.txt";}
       // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
       if($request -> has('gwascatfile')){$files[] = "gwascatalog.txt";}
-      if($request -> has('magmafile')){$files[] = "magma.genes.out";}
+      if($request -> has('magmafile')){
+        $files[] = "magma.genes.out";
+        if(File::exists($filedir."magma.sets.out")){
+          $files[] = "magma.genes.raw";
+          $files[] = "magma.sets.out";
+          $files[] = "magma.setgenes.out";
+        }
+      }
 
       $zip = new \ZipArchive();
-      $zipfile = $filedir."IPGAP.zip";
+      $zipfile = $filedir."FUMA_job".$jobID.".zip";
 
       if(File::exists($zipfile)){
         File::delete($zipfile);

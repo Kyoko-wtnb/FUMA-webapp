@@ -44,14 +44,28 @@ if(defined $N){
 	my @head = split(/\s+/, $head);
 	$Ncol = $#head+1;
 	system "awk 'NR>=2' $outSNPs | cut -f 5,6,$Ncol | sort -u -k 1,1 > $magmain";
+	open(IN, "$magmain");
+	open(OUT, ">temp.txt");
+	while(<IN>){
+		my @line = split(/\s/, $_);
+		$line[2] = int($line[2]);
+		print OUT join("\t", @line), "\n";
+	}
+	close OUT;
+	close IN;
+	system "mv temp.txt $magmain";
 	system "$magma/magma --bfile $ref --pval $magmain ncol=3 --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
 }
 
 unless(-e $filedir."magma.genes.out"){
 	die "MAGMA ERROR";
 }
-system "rm $filedir*.raw $filedir"."magma*.log";
+
 system "sed 's/ \\+/\\t/g' ".$filedir."magma.genes.out > $filedir"."temp.txt";
 system "mv ".$filedir."temp.txt ".$filedir."magma.genes.out";
+
+# MAGMA gene set
+system "magma --gene-results $filedir"."magma.genes.raw --set-annot $magmafiles/magma_GS.txt --out $filedir"."magma";
+system "rm $filedir"."magma*.log";
 
 system "Rscript $dir/magma_gene.R $filedir";
