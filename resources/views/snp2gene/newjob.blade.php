@@ -563,7 +563,7 @@
             </td>
             <td>
               <span class="multiSelect">
-                Tissue types: <tab><a>clear</a><br/>
+                Specific Tissue types: <tab><a>clear</a><br/>
                 <select multiple class="form-control" id="eqtlMapTs" name="eqtlMapTs[]" onchange="CheckAll();">
                   <option value="all">All</option>
                   <option value='GTEx_Adipose_Subcutaneous'>GTEx Adipose Subcutaneous (Adipose Tissue)</option>
@@ -613,6 +613,7 @@
                   <option value='BloodeQTL_BloodeQTL'>Westra et al (2013). Blood (Blood)</option>
                   <option value='BIOSQTL_BIOS_eQTL_geneLevel'>BBMRI BIOS. Blood (Blood)</option>
                 </select>
+
               </span>
               <br/>
               <span class="multiSelect">

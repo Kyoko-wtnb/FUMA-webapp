@@ -319,22 +319,19 @@ function expHeatMap(id){
           var rowLabels = svg.append("g").selectAll(".rowLabel")
                           .data(rows).enter().append("text")
                           .text(function(d){return d.gene;})
-                          .attr("x", 0)
+                          .attr("x", -3)
                           .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;})
                           .style("font-size", "10px")
-                          .style("text-anchor", "end")
-                          .attr("dx", "-.3em");
-          // x axis labelz
+                          .style("text-anchor", "end");
+                          // .attr("dx", "-.3em");
+          // x axis label
           var colLabels = svg.append("g").selectAll(".colLabel")
                           .data(cols).enter().append("text")
                           .text(function(d){return d.ts;})
-                          .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
-                          .attr("x", height)
-                          .style("font-size", "10px")
                           .style("text-anchor", "end")
-                          .attr("dx", "-.3em")
+                          .style("font-size", "10px")
                           .attr("transform", function(d){
-                            return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                            return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
                           });
           // colLabels.selectAll(".colLabel").attr("transform", function(d){return "rotate(-65)"});
 
@@ -373,7 +370,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height+3)+")rotate(-90)";
                     });
                 }else if(gsort=="clst" && tssort=="alph"){
                   heatMap.transition().duration(2000)
@@ -385,7 +382,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height+3)+")rotate(-90)";
                     });
                 }else if(gsort=="alph" && tssort=="clst"){
                   heatMap.transition().duration(2000)
@@ -397,7 +394,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height+3)+")rotate(-90)";
                     });
                 }else if(gsort=="alph" && tssort=="alph"){
                   heatMap.transition().duration(2000)
@@ -409,7 +406,7 @@ function expHeatMap(id){
                   colLabels.transition().duration(2000)
                     .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height+3)+")rotate(-90)";
                     });
                 }
               }else{
@@ -427,9 +424,8 @@ function expHeatMap(id){
                   rowLabels.transition().duration(2000)
                     .attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol;});
                   colLabels.transition().duration(2000)
-                    .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
                     });
                 }else if(gsort=="clst" && tssort=="alph"){
                   heatMap.transition().duration(2000)
@@ -439,9 +435,8 @@ function expHeatMap(id){
                   rowLabels.transition().duration(2000)
                     .attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol;});
                   colLabels.transition().duration(2000)
-                    .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
                     });
                 }else if(gsort=="alph" && tssort=="clst"){
                   heatMap.transition().duration(2000)
@@ -451,9 +446,8 @@ function expHeatMap(id){
                   rowLabels.transition().duration(2000)
                     .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
                   colLabels.transition().duration(2000)
-                    .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
                     });
                 }else if(gsort=="alph" && tssort=="alph"){
                   heatMap.transition().duration(2000)
@@ -463,9 +457,8 @@ function expHeatMap(id){
                   rowLabels.transition().duration(2000)
                     .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
                   colLabels.transition().duration(2000)
-                    .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
                     });
                 }
               }
@@ -496,18 +489,16 @@ function expHeatMap(id){
                   heatMap.transition().duration(2000)
                    .attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
                   colLabels.transition().duration(2000)
-                    .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
                     });
 
                 }else{
                   heatMap.transition().duration(2000)
                    .attr("x", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
                   colLabels.transition().duration(2000)
-                    .attr("y", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeCol;})
                     .attr("transform", function(d){
-                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                      return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
                     });
 
                 }
@@ -515,9 +506,8 @@ function expHeatMap(id){
                 heatMap.transition().duration(2000)
                   .attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
                 colLabels.transition().duration(2000)
-                  .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
                   .attr("transform", function(d){
-                    return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height)+")rotate(-90)";
+                    return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
                   });
               }
             }
