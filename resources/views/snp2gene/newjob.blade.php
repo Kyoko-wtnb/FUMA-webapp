@@ -337,175 +337,169 @@
             </td>
             <td>
               <span class="multiSelect">
-                Individual tissue/cell types:<tab><a>clear</a><br/>
-                <select multiple class="form-control" id="posMapChr15Ts" name="posMapChr15Ts[]" onchange="CheckAll();">
+                <a style="float:right; padding-right:20px;">clear</a><br/>
+                <select multiple class="form-control" size="10" id="posMapChr15Ts" name="posMapChr15Ts[]" onchange="CheckAll();">
                   <option value="all">All</option>
-                  <option value='E001'>E001 (ESC) ES-I3 Cells</option>
-                  <option value='E002'>E002 (ESC) ES-WA7 Cells</option>
-                  <option value='E003'>E003 (ESC) H1 Cells</option>
-                  <option value='E004'>E004 (ESC Derived) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
-                  <option value='E005'>E005 (ESC Derived) H1 BMP4 Derived Trophoblast Cultured Cells</option>
-                  <option value='E006'>E006 (ESC Derived) H1 Derived Mesenchymal Stem Cells</option>
-                  <option value='E007'>E007 (ESC Derived) H1 Derived Neuronal Progenitor Cultured Cells</option>
-                  <option value='E008'>E008 (ESC) H9 Cells</option>
-                  <option value='E009'>E009 (ESC Derived) H9 Derived Neuronal Progenitor Cultured Cells</option>
-                  <option value='E010'>E010 (ESC Derived) H9 Derived Neuron Cultured Cells</option>
-                  <option value='E011'>E011 (ESC Derived) hESC Derived CD184+ Endoderm Cultured Cells</option>
-                  <option value='E012'>E012 (ESC Derived) hESC Derived CD56+ Ectoderm Cultured Cells</option>
-                  <option value='E013'>E013 (ESC Derived) hESC Derived CD56+ Mesoderm Cultured Cells</option>
-                  <option value='E014'>E014 (ESC) HUES48 Cells</option>
-                  <option value='E015'>E015 (ESC) HUES6 Cells</option>
-                  <option value='E016'>E016 (ESC) HUES64 Cells</option>
-                  <option value='E017'>E017 (Lung) IMR90 fetal lung fibroblasts Cell Line</option>
-                  <option value='E018'>E018 (iPSC) iPS-15b Cells</option>
-                  <option value='E019'>E019 (iPSC) iPS-18 Cells</option>
-                  <option value='E020'>E020 (iPSC) iPS-20b Cells</option>
-                  <option value='E021'>E021 (iPSC) iPS DF 6.9 Cells</option>
-                  <option value='E022'>E022 (iPSC) iPS DF 19.11 Cells</option>
-                  <option value='E023'>E023 (Fat) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
-                  <option value='E024'>E024 (ESC) ES-UCSF4  Cells</option>
-                  <option value='E025'>E025 (Fat) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
-                  <option value='E026'>E026 (Stromal Connective) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
-                  <option value='E027'>E027 (Breast) Breast Myoepithelial Primary Cells</option>
-                  <option value='E028'>E028 (Breast) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
-                  <option value='E029'>E029 (Blood) Primary monocytes from peripheral blood</option>
-                  <option value='E030'>E030 (Blood) Primary neutrophils from peripheral blood</option>
-                  <option value='E031'>E031 (Blood) Primary B cells from cord blood</option>
-                  <option value='E032'>E032 (Blood) Primary B cells from peripheral blood</option>
-                  <option value='E033'>E033 (Blood) Primary T cells from cord blood</option>
-                  <option value='E034'>E034 (Blood) Primary T cells from peripheral blood</option>
-                  <option value='E035'>E035 (Blood) Primary hematopoietic stem cells</option>
-                  <option value='E036'>E036 (Blood) Primary hematopoietic stem cells short term culture</option>
-                  <option value='E037'>E037 (Blood) Primary T helper memory cells from peripheral blood 2</option>
-                  <option value='E038'>E038 (Blood) Primary T helper naive cells from peripheral blood</option>
-                  <option value='E039'>E039 (Blood) Primary T helper naive cells from peripheral blood</option>
-                  <option value='E040'>E040 (Blood) Primary T helper memory cells from peripheral blood 1</option>
-                  <option value='E041'>E041 (Blood) Primary T helper cells PMA-I stimulated</option>
-                  <option value='E042'>E042 (Blood) Primary T helper 17 cells PMA-I stimulated</option>
-                  <option value='E043'>E043 (Blood) Primary T helper cells from peripheral blood</option>
-                  <option value='E044'>E044 (Blood) Primary T regulatory cells from peripheral blood</option>
-                  <option value='E045'>E045 (Blood) Primary T cells effector/memory enriched from peripheral blood</option>
-                  <option value='E046'>E046 (Blood) Primary Natural Killer cells from peripheral blood</option>
-                  <option value='E047'>E047 (Blood) Primary T CD8+ naive cells from peripheral blood</option>
-                  <option value='E048'>E048 (Blood) Primary T CD8+ memory cells from peripheral blood</option>
-                  <option value='E049'>E049 (Stromal Connective) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
-                  <option value='E050'>E050 (Blood) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
-                  <option value='E051'>E051 (Blood) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
-                  <option value='E052'>E052 (Muscle) Muscle Satellite Cultured Cells</option>
-                  <option value='E053'>E053 (Brain) Cortex derived primary cultured neurospheres</option>
-                  <option value='E054'>E054 (Brain) Ganglion Eminence derived primary cultured neurospheres</option>
-                  <option value='E055'>E055 (Skin) Foreskin Fibroblast Primary Cells skin01</option>
-                  <option value='E056'>E056 (Skin) Foreskin Fibroblast Primary Cells skin02</option>
-                  <option value='E057'>E057 (Skin) Foreskin Keratinocyte Primary Cells skin02</option>
-                  <option value='E058'>E058 (Skin) Foreskin Keratinocyte Primary Cells skin03</option>
-                  <option value='E059'>E059 (Skin) Foreskin Melanocyte Primary Cells skin01</option>
-                  <option value='E061'>E061 (Skin) Foreskin Melanocyte Primary Cells skin03</option>
-                  <option value='E062'>E062 (Blood) Primary mononuclear cells from peripheral blood</option>
-                  <option value='E063'>E063 (Fat) Adipose Nuclei</option>
-                  <option value='E065'>E065 (Vascular) Aorta</option>
-                  <option value='E066'>E066 (Liver) Liver</option>
-                  <option value='E067'>E067 (Brain) Brain Angular Gyrus</option>
-                  <option value='E068'>E068 (Brain) Brain Anterior Caudate</option>
-                  <option value='E069'>E069 (Brain) Brain Cingulate Gyrus</option>
-                  <option value='E070'>E070 (Brain) Brain Germinal Matrix</option>
-                  <option value='E071'>E071 (Brain) Brain Hippocampus Middle</option>
-                  <option value='E072'>E072 (Brain) Brain Inferior Temporal Lobe</option>
-                  <option value='E073'>E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
-                  <option value='E074'>E074 (Brain) Brain Substantia Nigra</option>
-                  <option value='E075'>E075 (GI Colon) Colonic Mucosa</option>
-                  <option value='E076'>E076 (GI Colon) Colon Smooth Muscle</option>
-                  <option value='E077'>E077 (GI Duodenum) Duodenum Mucosa</option>
-                  <option value='E078'>E078 (GI Duodenum) Duodenum Smooth Muscle</option>
-                  <option value='E079'>E079 (GI Esophagus) Esophagus</option>
-                  <option value='E080'>E080 (Adrenal) Fetal Adrenal Gland</option>
-                  <option value='E081'>E081 (Brain) Fetal Brain Male</option>
-                  <option value='E082'>E082 (Brain) Fetal Brain Female</option>
-                  <option value='E083'>E083 (Heart) Fetal Heart</option>
-                  <option value='E084'>E084 (GI Intestine) Fetal Intestine Large</option>
-                  <option value='E085'>E085 (GI Intestine) Fetal Intestine Small</option>
-                  <option value='E086'>E086 (Kidney) Fetal Kidney</option>
-                  <option value='E087'>E087 (Pancreas) Pancreatic Islets</option>
-                  <option value='E088'>E088 (Lung) Fetal Lung</option>
-                  <option value='E089'>E089 (Muscle) Fetal Muscle Trunk</option>
-                  <option value='E090'>E090 (Muscle) Fetal Muscle Leg</option>
-                  <option value='E091'>E091 (Placenta) Placenta</option>
-                  <option value='E092'>E092 (GI Stomach) Fetal Stomach</option>
-                  <option value='E093'>E093 (Thymus) Fetal Thymus</option>
-                  <option value='E094'>E094 (GI Stomach) Gastric</option>
-                  <option value='E095'>E095 (Heart) Left Ventricle</option>
-                  <option value='E096'>E096 (Lung) Lung</option>
-                  <option value='E097'>E097 (Ovary) Ovary</option>
-                  <option value='E098'>E098 (Pancreas) Pancreas</option>
-                  <option value='E099'>E099 (Placenta) Placenta Amnion</option>
-                  <option value='E100'>E100 (Muscle) Psoas Muscle</option>
-                  <option value='E101'>E101 (GI Rectum) Rectal Mucosa Donor 29</option>
-                  <option value='E102'>E102 (GI Rectum) Rectal Mucosa Donor 31</option>
-                  <option value='E103'>E103 (GI Rectum) Rectal Smooth Muscle</option>
-                  <option value='E104'>E104 (Heart) Right Atrium</option>
-                  <option value='E105'>E105 (Heart) Right Ventricle</option>
-                  <option value='E106'>E106 (GI Colon) Sigmoid Colon</option>
-                  <option value='E107'>E107 (Muscle) Skeletal Muscle Male</option>
-                  <option value='E108'>E108 (Muscle) Skeletal Muscle Female</option>
-                  <option value='E109'>E109 (GI Intestine) Small Intestine</option>
-                  <option value='E110'>E110 (GI Stomach) Stomach Mucosa</option>
-                  <option value='E111'>E111 (GI Stomach) Stomach Smooth Muscle</option>
-                  <option value='E112'>E112 (Thymus) Thymus</option>
-                  <option value='E113'>E113 (Spleen) Spleen</option>
-                  <option value='E114'>E114 (Lung) A549 EtOH 0.02pct Lung Carcinoma Cell Line</option>
-                  <option value='E115'>E115 (Blood) Dnd41 TCell Leukemia Cell Line</option>
-                  <option value='E116'>E116 (Blood) GM12878 Lymphoblastoid Cells</option>
-                  <option value='E117'>E117 (Cervix) HeLa-S3 Cervical Carcinoma Cell Line</option>
-                  <option value='E118'>E118 (Liver) HepG2 Hepatocellular Carcinoma Cell Line</option>
-                  <option value='E119'>E119 (Breast) HMEC Mammary Epithelial Primary Cells</option>
-                  <option value='E120'>E120 (Muscle) HSMM Skeletal Muscle Myoblasts Cells</option>
-                  <option value='E121'>E121 (Muscle) HSMM cell derived Skeletal Muscle Myotubes Cells</option>
-                  <option value='E122'>E122 (Vascular) HUVEC Umbilical Vein Endothelial Primary Cells</option>
-                  <option value='E123'>E123 (Blood) K562 Leukemia Cells</option>
-                  <option value='E124'>E124 (Blood) Monocytes-CD14+ RO01746 Primary Cells</option>
-                  <option value='E125'>E125 (Brain) NH-A Astrocytes Primary Cells</option>
-                  <option value='E126'>E126 (Skin) NHDF-Ad Adult Dermal Fibroblast Primary Cells</option>
-                  <option value='E127'>E127 (Skin) NHEK-Epidermal Keratinocyte Primary Cells</option>
-                  <option value='E128'>E128 (Lung) NHLF Lung Fibroblast Primary Cells</option>
-                  <option value='E129'>E129 (Bone) Osteoblast Primary Cells</option>
+                  <option class="level1" value="null">Adrenal (1)</option>
+                  <option class="level2" value="E080">E080 (Other) Fetal Adrenal Gland</option>
+                  <option class="level1" value="null">Blood (27)</option>
+                  <option class="level2" value="E029">E029 (HSC & B-cell) Primary monocytes from peripheral blood</option>
+                  <option class="level2" value="E030">E030 (HSC & B-cell) Primary neutrophils from peripheral blood</option>
+                  <option class="level2" value="E031">E031 (HSC & B-cell) Primary B cells from cord blood</option>
+                  <option class="level2" value="E032">E032 (HSC & B-cell) Primary B cells from peripheral blood</option>
+                  <option class="level2" value="E033">E033 (Blood & T-cell) Primary T cells from cord blood</option>
+                  <option class="level2" value="E034">E034 (Blood & T-cell) Primary T cells from peripheral blood</option>
+                  <option class="level2" value="E035">E035 (HSC & B-cell) Primary hematopoietic stem cells</option>
+                  <option class="level2" value="E036">E036 (HSC & B-cell) Primary hematopoietic stem cells short term culture</option>
+                  <option class="level2" value="E037">E037 (Blood & T-cell) Primary T helper memory cells from peripheral blood 2</option>
+                  <option class="level2" value="E038">E038 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
+                  <option class="level2" value="E039">E039 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
+                  <option class="level2" value="E040">E040 (Blood & T-cell) Primary T helper memory cells from peripheral blood 1</option>
+                  <option class="level2" value="E041">E041 (Blood & T-cell) Primary T helper cells PMA-I stimulated</option>
+                  <option class="level2" value="E042">E042 (Blood & T-cell) Primary T helper 17 cells PMA-I stimulated</option>
+                  <option class="level2" value="E043">E043 (Blood & T-cell) Primary T helper cells from peripheral blood</option>
+                  <option class="level2" value="E044">E044 (Blood & T-cell) Primary T regulatory cells from peripheral blood</option>
+                  <option class="level2" value="E045">E045 (Blood & T-cell) Primary T cells effector/memory enriched from peripheral blood</option>
+                  <option class="level2" value="E046">E046 (HSC & B-cell) Primary Natural Killer cells from peripheral blood</option>
+                  <option class="level2" value="E047">E047 (Blood & T-cell) Primary T CD8+ naive cells from peripheral blood</option>
+                  <option class="level2" value="E048">E048 (Blood & T-cell) Primary T CD8+ memory cells from peripheral blood</option>
+                  <option class="level2" value="E050">E050 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
+                  <option class="level2" value="E051">E051 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
+                  <option class="level2" value="E062">E062 (Blood & T-cell) Primary mononuclear cells from peripheral blood</option>
+                  <option class="level2" value="E115">E115 (ENCODE2012) Dnd41 TCell Leukemia Cell Line</option>
+                  <option class="level2" value="E116">E116 (ENCODE2012) GM12878 Lymphoblastoid Cells</option>
+                  <option class="level2" value="E123">E123 (ENCODE2012) K562 Leukemia Cells</option>
+                  <option class="level2" value="E124">E124 (ENCODE2012) Monocytes-CD14+ RO01746 Primary Cells</option>
+                  <option class="level1" value="null">Bone (1)</option>
+                  <option class="level2" value="E129">E129 (ENCODE2012) Osteoblast Primary Cells</option>
+                  <option class="level1" value="null">Brain (13)</option>
+                  <option class="level2" value="E053">E053 (Neurosph) Cortex derived primary cultured neurospheres</option>
+                  <option class="level2" value="E054">E054 (Neurosph) Ganglion Eminence derived primary cultured neurospheres</option>
+                  <option class="level2" value="E067">E067 (Brain) Brain Angular Gyrus</option>
+                  <option class="level2" value="E068">E068 (Brain) Brain Anterior Caudate</option>
+                  <option class="level2" value="E069">E069 (Brain) Brain Cingulate Gyrus</option>
+                  <option class="level2" value="E070">E070 (Brain) Brain Germinal Matrix</option>
+                  <option class="level2" value="E071">E071 (Brain) Brain Hippocampus Middle</option>
+                  <option class="level2" value="E072">E072 (Brain) Brain Inferior Temporal Lobe</option>
+                  <option class="level2" value="E073">E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
+                  <option class="level2" value="E074">E074 (Brain) Brain Substantia Nigra</option>
+                  <option class="level2" value="E081">E081 (Brain) Fetal Brain Male</option>
+                  <option class="level2" value="E082">E082 (Brain) Fetal Brain Female</option>
+                  <option class="level2" value="E125">E125 (ENCODE2012) NH-A Astrocytes Primary Cells</option>
+                  <option class="level1" value="null">Breast (3)</option>
+                  <option class="level2" value="E027">E027 (Epithelial) Breast Myoepithelial Primary Cells</option>
+                  <option class="level2" value="E028">E028 (Epithelial) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
+                  <option class="level2" value="E119">E119 (ENCODE2012) HMEC Mammary Epithelial Primary Cells</option>
+                  <option class="level1" value="null">Cervix (1)</option>
+                  <option class="level2" value="E117">E117 (ENCODE2012) HeLa-S3 Cervical Carcinoma Cell Line</option>
+                  <option class="level1" value="null">ESC (8)</option>
+                  <option class="level2" value="E001">E001 (ESC) ES-I3 Cells</option>
+                  <option class="level2" value="E002">E002 (ESC) ES-WA7 Cells</option>
+                  <option class="level2" value="E003">E003 (ESC) H1 Cells</option>
+                  <option class="level2" value="E008">E008 (ESC) H9 Cells</option>
+                  <option class="level2" value="E014">E014 (ESC) HUES48 Cells</option>
+                  <option class="level2" value="E015">E015 (ESC) HUES6 Cells</option>
+                  <option class="level2" value="E016">E016 (ESC) HUES64 Cells</option>
+                  <option class="level2" value="E024">E024 (ESC) ES-UCSF4  Cells</option>
+                  <option class="level1" value="null">ESC Derived (9)</option>
+                  <option class="level2" value="E004">E004 (ES-deriv) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
+                  <option class="level2" value="E005">E005 (ES-deriv) H1 BMP4 Derived Trophoblast Cultured Cells</option>
+                  <option class="level2" value="E006">E006 (ES-deriv) H1 Derived Mesenchymal Stem Cells</option>
+                  <option class="level2" value="E007">E007 (ES-deriv) H1 Derived Neuronal Progenitor Cultured Cells</option>
+                  <option class="level2" value="E009">E009 (ES-deriv) H9 Derived Neuronal Progenitor Cultured Cells</option>
+                  <option class="level2" value="E010">E010 (ES-deriv) H9 Derived Neuron Cultured Cells</option>
+                  <option class="level2" value="E011">E011 (ES-deriv) hESC Derived CD184+ Endoderm Cultured Cells</option>
+                  <option class="level2" value="E012">E012 (ES-deriv) hESC Derived CD56+ Ectoderm Cultured Cells</option>
+                  <option class="level2" value="E013">E013 (ES-deriv) hESC Derived CD56+ Mesoderm Cultured Cells</option>
+                  <option class="level1" value="null">Fat (3)</option>
+                  <option class="level2" value="E023">E023 (Mesench) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
+                  <option class="level2" value="E025">E025 (Mesench) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
+                  <option class="level2" value="E063">E063 (Adipose) Adipose Nuclei</option>
+                  <option class="level1" value="null">GI Colon (3)</option>
+                  <option class="level2" value="E075">E075 (Digestive) Colonic Mucosa</option>
+                  <option class="level2" value="E076">E076 (Sm. Muscle) Colon Smooth Muscle</option>
+                  <option class="level2" value="E106">E106 (Digestive) Sigmoid Colon</option>
+                  <option class="level1" value="null">GI Duodenum (2)</option>
+                  <option class="level2" value="E077">E077 (Digestive) Duodenum Mucosa</option>
+                  <option class="level2" value="E078">E078 (Sm. Muscle) Duodenum Smooth Muscle</option>
+                  <option class="level1" value="null">GI Esophagus (1)</option>
+                  <option class="level2" value="E079">E079 (Digestive) Esophagus</option>
+                  <option class="level1" value="null">GI Intestine (3)</option>
+                  <option class="level2" value="E084">E084 (Digestive) Fetal Intestine Large</option>
+                  <option class="level2" value="E085">E085 (Digestive) Fetal Intestine Small</option>
+                  <option class="level2" value="E109">E109 (Digestive) Small Intestine</option>
+                  <option class="level1" value="null">GI Rectum (3)</option>
+                  <option class="level2" value="E101">E101 (Digestive) Rectal Mucosa Donor 29</option>
+                  <option class="level2" value="E102">E102 (Digestive) Rectal Mucosa Donor 31</option>
+                  <option class="level2" value="E103">E103 (Sm. Muscle) Rectal Smooth Muscle</option>
+                  <option class="level1" value="null">GI Stomach (4)</option>
+                  <option class="level2" value="E092">E092 (Digestive) Fetal Stomach</option>
+                  <option class="level2" value="E094">E094 (Digestive) Gastric</option>
+                  <option class="level2" value="E110">E110 (Digestive) Stomach Mucosa</option>
+                  <option class="level2" value="E111">E111 (Sm. Muscle) Stomach Smooth Muscle</option>
+                  <option class="level1" value="null">Heart (4)</option>
+                  <option class="level2" value="E083">E083 (Heart) Fetal Heart</option>
+                  <option class="level2" value="E095">E095 (Heart) Left Ventricle</option>
+                  <option class="level2" value="E104">E104 (Heart) Right Atrium</option>
+                  <option class="level2" value="E105">E105 (Heart) Right Ventricle</option>
+                  <option class="level1" value="null">Kidney (1)</option>
+                  <option class="level2" value="E086">E086 (Other) Fetal Kidney</option>
+                  <option class="level1" value="null">Liver (2)</option>
+                  <option class="level2" value="E066">E066 (Other) Liver</option>
+                  <option class="level2" value="E118">E118 (ENCODE2012) HepG2 Hepatocellular Carcinoma Cell Line</option>
+                  <option class="level1" value="null">Lung (5)</option>
+                  <option class="level2" value="E017">E017 (IMR90) IMR90 fetal lung fibroblasts Cell Line</option>
+                  <option class="level2" value="E088">E088 (Other) Fetal Lung</option>
+                  <option class="level2" value="E096">E096 (Other) Lung</option>
+                  <option class="level2" value="E114">E114 (ENCODE2012) A549 EtOH 0.02pct Lung Carcinoma Cell Line</option>
+                  <option class="level2" value="E128">E128 (ENCODE2012) NHLF Lung Fibroblast Primary Cells</option>
+                  <option class="level1" value="null">Muscle (7)</option>
+                  <option class="level2" value="E052">E052 (Myosat) Muscle Satellite Cultured Cells</option>
+                  <option class="level2" value="E089">E089 (Muscle) Fetal Muscle Trunk</option>
+                  <option class="level2" value="E100">E100 (Muscle) Psoas Muscle</option>
+                  <option class="level2" value="E107">E107 (Muscle) Skeletal Muscle Male</option>
+                  <option class="level2" value="E108">E108 (Muscle) Skeletal Muscle Female</option>
+                  <option class="level2" value="E120">E120 (ENCODE2012) HSMM Skeletal Muscle Myoblasts Cells</option>
+                  <option class="level2" value="E121">E121 (ENCODE2012) HSMM cell derived Skeletal Muscle Myotubes Cells</option>
+                  <option class="level1" value="null">Muscle Leg (1)</option>
+                  <option class="level2" value="E090">E090 (Muscle) Fetal Muscle Leg</option>
+                  <option class="level1" value="null">Ovary (1)</option>
+                  <option class="level2" value="E097">E097 (Other) Ovary</option>
+                  <option class="level1" value="null">Pancreas (2)</option>
+                  <option class="level2" value="E087">E087 (Other) Pancreatic Islets</option>
+                  <option class="level2" value="E098">E098 (Other) Pancreas</option>
+                  <option class="level1" value="null">Placenta (2)</option>
+                  <option class="level2" value="E091">E091 (Other) Placenta</option>
+                  <option class="level2" value="E099">E099 (Other) Placenta Amnion</option>
+                  <option class="level1" value="null">Skin (8)</option>
+                  <option class="level2" value="E055">E055 (Epithelial) Foreskin Fibroblast Primary Cells skin01</option>
+                  <option class="level2" value="E056">E056 (Epithelial) Foreskin Fibroblast Primary Cells skin02</option>
+                  <option class="level2" value="E057">E057 (Epithelial) Foreskin Keratinocyte Primary Cells skin02</option>
+                  <option class="level2" value="E058">E058 (Epithelial) Foreskin Keratinocyte Primary Cells skin03</option>
+                  <option class="level2" value="E059">E059 (Epithelial) Foreskin Melanocyte Primary Cells skin01</option>
+                  <option class="level2" value="E061">E061 (Epithelial) Foreskin Melanocyte Primary Cells skin03</option>
+                  <option class="level2" value="E126">E126 (ENCODE2012) NHDF-Ad Adult Dermal Fibroblast Primary Cells</option>
+                  <option class="level2" value="E127">E127 (ENCODE2012) NHEK-Epidermal Keratinocyte Primary Cells</option>
+                  <option class="level1" value="null">Spleen (1)</option>
+                  <option class="level2" value="E113">E113 (Other) Spleen</option>
+                  <option class="level1" value="null">Stromal Connective (2)</option>
+                  <option class="level2" value="E026">E026 (Mesench) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
+                  <option class="level2" value="E049">E049 (Mesench) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
+                  <option class="level1" value="null">Thymus (2)</option>
+                  <option class="level2" value="E093">E093 (Thymus) Fetal Thymus</option>
+                  <option class="level2" value="E112">E112 (Thymus) Thymus</option>
+                  <option class="level1" value="null">Vascular (2)</option>
+                  <option class="level2" value="E065">E065 (Heart) Aorta</option>
+                  <option class="level2" value="E122">E122 (ENCODE2012) HUVEC Umbilical Vein Endothelial Primary Cells</option>
+                  <option class="level1" value="null">iPSC (5)</option>
+                  <option class="level2" value="E018">E018 (iPSC) iPS-15b Cells</option>
+                  <option class="level2" value="E019">E019 (iPSC) iPS-18 Cells</option>
+                  <option class="level2" value="E020">E020 (iPSC) iPS-20b Cells</option>
+                  <option class="level2" value="E021">E021 (iPSC) iPS DF 6.9 Cells</option>
+                  <option class="level2" value="E022">E022 (iPSC) iPS DF 19.11 Cells</option>
                 </select>
               </span>
               <br/>
-              <span class="multiSelect">
-                General tissue/cell types:<tab><a>clear</a><br/>
-                <span class="info"><i class="fa fa-info"></i> Numbers in parentheses represent the numbr of epigenoms belongs to the correspond tissue types (anatomy).</span>
-                <select multiple class="form-control" id="posMapChr15Gts" name="posMapChr15Gts[]" onchange="CheckAll();">
-                  <option value="all">All</option>
-                  <option value='E080'>Adrenal (1)</option>
-                  <option value='E062:E034:E045:E033:E044:E043:E039:E041:E042:E040:E037:E048:E038:E047:E029:E031:E035:E051:E050:E036:E032:E046:E030:E115:E116:E123:E124'>Blood (27)</option>
-                  <option value='E129'>Bone (1)</option>
-                  <option value='E054:E053:E071:E074:E068:E069:E072:E067:E073:E070:E082:E081:E125'>Brain (13)</option>
-                  <option value='E028:E027:E119'>Breast (3)</option>
-                  <option value='E117'>Cervix (1)</option>
-                  <option value='E002:E008:E001:E015:E014:E016:E003:E024'>ESC (8)</option>
-                  <option value='E007:E009:E010:E013:E012:E011:E004:E005:E006'>ESC Derived (9)</option>
-                  <option value='E025:E023:E063'>Fat (3)</option>
-                  <option value='E076:E106:E075'>GI Colon (3)</option>
-                  <option value='E078:E077'>GI Duodenum (2)</option>
-                  <option value='E079'>GI Esophagus (1)</option>
-                  <option value='E085:E084:E109'>GI Intestine (3)</option>
-                  <option value='E103:E101:E102'>GI Rectum (3)</option>
-                  <option value='E111:E092:E110:E094'>GI Stomach (4)</option>
-                  <option value='E083:E104:E095:E105'>Heart (4)</option>
-                  <option value='E020:E019:E018:E021:E022'>iPSC (5)</option>
-                  <option value='E086'>Kidney (1)</option>
-                  <option value='E066:E118'>Liver (2)</option>
-                  <option value='E017:E088:E096:E114:E128'>Lung (5)</option>
-                  <option value='E052:E100:E108:E107:E089:E120:E121:E090'>Muscle (8)</option>
-                  <option value='E097'>Ovary (1)</option>
-                  <option value='E087:E098'>Pancreas (2)</option>
-                  <option value='E099:E091'>Placenta (2)</option>
-                  <option value='E055:E056:E059:E061:E057:E058:E126:E127'>Skin (8)</option>
-                  <option value='E113'>Spleen (1)</option>
-                  <option value='E026:E049'>Stromal Connective (2)</option>
-                  <option value='E112:E093'>Thymus (2)</option>
-                  <option value='E065:E122'>Vascular (2)</option>
-                </select>
-              </span>
             </td>
             <td></td>
           </tr>
@@ -563,7 +557,7 @@
             </td>
             <td>
               <span class="multiSelect">
-                <a style="float:right;">clear</a><br/>
+                <a style="float:right; padding-right:20px;">clear</a><br/>
                 <select multiple class="form-control" id="eqtlMapTs" name="eqtlMapTs[]" size="10" onchange="CheckAll();">
                   <option value="all">All</option>
                   <option class="level1" value="null">Blood eQTLs</option>
@@ -739,172 +733,166 @@
             </td>
             <td>
               <span class="multiSelect">
-                Individual tissue/cell types: <tab><a>clear</a><br/>
-                <select multiple class="form-control" id="eqtlMapChr15Ts" name="eqtlMapChr15Ts[]" onchange="CheckAll();">
+                <a style="float:right; padding-right:20px;">clear</a><br/>
+                <select multiple class="form-control" size="10" id="eqtlMapChr15Ts" name="eqtlMapChr15Ts[]" onchange="CheckAll();">
                   <option value="all">All</option>
-                  <option value='E001'>E001 (ESC) ES-I3 Cells</option>
-                  <option value='E002'>E002 (ESC) ES-WA7 Cells</option>
-                  <option value='E003'>E003 (ESC) H1 Cells</option>
-                  <option value='E004'>E004 (ESC Derived) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
-                  <option value='E005'>E005 (ESC Derived) H1 BMP4 Derived Trophoblast Cultured Cells</option>
-                  <option value='E006'>E006 (ESC Derived) H1 Derived Mesenchymal Stem Cells</option>
-                  <option value='E007'>E007 (ESC Derived) H1 Derived Neuronal Progenitor Cultured Cells</option>
-                  <option value='E008'>E008 (ESC) H9 Cells</option>
-                  <option value='E009'>E009 (ESC Derived) H9 Derived Neuronal Progenitor Cultured Cells</option>
-                  <option value='E010'>E010 (ESC Derived) H9 Derived Neuron Cultured Cells</option>
-                  <option value='E011'>E011 (ESC Derived) hESC Derived CD184+ Endoderm Cultured Cells</option>
-                  <option value='E012'>E012 (ESC Derived) hESC Derived CD56+ Ectoderm Cultured Cells</option>
-                  <option value='E013'>E013 (ESC Derived) hESC Derived CD56+ Mesoderm Cultured Cells</option>
-                  <option value='E014'>E014 (ESC) HUES48 Cells</option>
-                  <option value='E015'>E015 (ESC) HUES6 Cells</option>
-                  <option value='E016'>E016 (ESC) HUES64 Cells</option>
-                  <option value='E017'>E017 (Lung) IMR90 fetal lung fibroblasts Cell Line</option>
-                  <option value='E018'>E018 (iPSC) iPS-15b Cells</option>
-                  <option value='E019'>E019 (iPSC) iPS-18 Cells</option>
-                  <option value='E020'>E020 (iPSC) iPS-20b Cells</option>
-                  <option value='E021'>E021 (iPSC) iPS DF 6.9 Cells</option>
-                  <option value='E022'>E022 (iPSC) iPS DF 19.11 Cells</option>
-                  <option value='E023'>E023 (Fat) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
-                  <option value='E024'>E024 (ESC) ES-UCSF4  Cells</option>
-                  <option value='E025'>E025 (Fat) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
-                  <option value='E026'>E026 (Stromal Connective) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
-                  <option value='E027'>E027 (Breast) Breast Myoepithelial Primary Cells</option>
-                  <option value='E028'>E028 (Breast) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
-                  <option value='E029'>E029 (Blood) Primary monocytes from peripheral blood</option>
-                  <option value='E030'>E030 (Blood) Primary neutrophils from peripheral blood</option>
-                  <option value='E031'>E031 (Blood) Primary B cells from cord blood</option>
-                  <option value='E032'>E032 (Blood) Primary B cells from peripheral blood</option>
-                  <option value='E033'>E033 (Blood) Primary T cells from cord blood</option>
-                  <option value='E034'>E034 (Blood) Primary T cells from peripheral blood</option>
-                  <option value='E035'>E035 (Blood) Primary hematopoietic stem cells</option>
-                  <option value='E036'>E036 (Blood) Primary hematopoietic stem cells short term culture</option>
-                  <option value='E037'>E037 (Blood) Primary T helper memory cells from peripheral blood 2</option>
-                  <option value='E038'>E038 (Blood) Primary T helper naive cells from peripheral blood</option>
-                  <option value='E039'>E039 (Blood) Primary T helper naive cells from peripheral blood</option>
-                  <option value='E040'>E040 (Blood) Primary T helper memory cells from peripheral blood 1</option>
-                  <option value='E041'>E041 (Blood) Primary T helper cells PMA-I stimulated</option>
-                  <option value='E042'>E042 (Blood) Primary T helper 17 cells PMA-I stimulated</option>
-                  <option value='E043'>E043 (Blood) Primary T helper cells from peripheral blood</option>
-                  <option value='E044'>E044 (Blood) Primary T regulatory cells from peripheral blood</option>
-                  <option value='E045'>E045 (Blood) Primary T cells effector/memory enriched from peripheral blood</option>
-                  <option value='E046'>E046 (Blood) Primary Natural Killer cells from peripheral blood</option>
-                  <option value='E047'>E047 (Blood) Primary T CD8+ naive cells from peripheral blood</option>
-                  <option value='E048'>E048 (Blood) Primary T CD8+ memory cells from peripheral blood</option>
-                  <option value='E049'>E049 (Stromal Connective) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
-                  <option value='E050'>E050 (Blood) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
-                  <option value='E051'>E051 (Blood) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
-                  <option value='E052'>E052 (Muscle) Muscle Satellite Cultured Cells</option>
-                  <option value='E053'>E053 (Brain) Cortex derived primary cultured neurospheres</option>
-                  <option value='E054'>E054 (Brain) Ganglion Eminence derived primary cultured neurospheres</option>
-                  <option value='E055'>E055 (Skin) Foreskin Fibroblast Primary Cells skin01</option>
-                  <option value='E056'>E056 (Skin) Foreskin Fibroblast Primary Cells skin02</option>
-                  <option value='E057'>E057 (Skin) Foreskin Keratinocyte Primary Cells skin02</option>
-                  <option value='E058'>E058 (Skin) Foreskin Keratinocyte Primary Cells skin03</option>
-                  <option value='E059'>E059 (Skin) Foreskin Melanocyte Primary Cells skin01</option>
-                  <option value='E061'>E061 (Skin) Foreskin Melanocyte Primary Cells skin03</option>
-                  <option value='E062'>E062 (Blood) Primary mononuclear cells from peripheral blood</option>
-                  <option value='E063'>E063 (Fat) Adipose Nuclei</option>
-                  <option value='E065'>E065 (Vascular) Aorta</option>
-                  <option value='E066'>E066 (Liver) Liver</option>
-                  <option value='E067'>E067 (Brain) Brain Angular Gyrus</option>
-                  <option value='E068'>E068 (Brain) Brain Anterior Caudate</option>
-                  <option value='E069'>E069 (Brain) Brain Cingulate Gyrus</option>
-                  <option value='E070'>E070 (Brain) Brain Germinal Matrix</option>
-                  <option value='E071'>E071 (Brain) Brain Hippocampus Middle</option>
-                  <option value='E072'>E072 (Brain) Brain Inferior Temporal Lobe</option>
-                  <option value='E073'>E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
-                  <option value='E074'>E074 (Brain) Brain Substantia Nigra</option>
-                  <option value='E075'>E075 (GI Colon) Colonic Mucosa</option>
-                  <option value='E076'>E076 (GI Colon) Colon Smooth Muscle</option>
-                  <option value='E077'>E077 (GI Duodenum) Duodenum Mucosa</option>
-                  <option value='E078'>E078 (GI Duodenum) Duodenum Smooth Muscle</option>
-                  <option value='E079'>E079 (GI Esophagus) Esophagus</option>
-                  <option value='E080'>E080 (Adrenal) Fetal Adrenal Gland</option>
-                  <option value='E081'>E081 (Brain) Fetal Brain Male</option>
-                  <option value='E082'>E082 (Brain) Fetal Brain Female</option>
-                  <option value='E083'>E083 (Heart) Fetal Heart</option>
-                  <option value='E084'>E084 (GI Intestine) Fetal Intestine Large</option>
-                  <option value='E085'>E085 (GI Intestine) Fetal Intestine Small</option>
-                  <option value='E086'>E086 (Kidney) Fetal Kidney</option>
-                  <option value='E087'>E087 (Pancreas) Pancreatic Islets</option>
-                  <option value='E088'>E088 (Lung) Fetal Lung</option>
-                  <option value='E089'>E089 (Muscle) Fetal Muscle Trunk</option>
-                  <option value='E090'>E090 (Muscle) Fetal Muscle Leg</option>
-                  <option value='E091'>E091 (Placenta) Placenta</option>
-                  <option value='E092'>E092 (GI Stomach) Fetal Stomach</option>
-                  <option value='E093'>E093 (Thymus) Fetal Thymus</option>
-                  <option value='E094'>E094 (GI Stomach) Gastric</option>
-                  <option value='E095'>E095 (Heart) Left Ventricle</option>
-                  <option value='E096'>E096 (Lung) Lung</option>
-                  <option value='E097'>E097 (Ovary) Ovary</option>
-                  <option value='E098'>E098 (Pancreas) Pancreas</option>
-                  <option value='E099'>E099 (Placenta) Placenta Amnion</option>
-                  <option value='E100'>E100 (Muscle) Psoas Muscle</option>
-                  <option value='E101'>E101 (GI Rectum) Rectal Mucosa Donor 29</option>
-                  <option value='E102'>E102 (GI Rectum) Rectal Mucosa Donor 31</option>
-                  <option value='E103'>E103 (GI Rectum) Rectal Smooth Muscle</option>
-                  <option value='E104'>E104 (Heart) Right Atrium</option>
-                  <option value='E105'>E105 (Heart) Right Ventricle</option>
-                  <option value='E106'>E106 (GI Colon) Sigmoid Colon</option>
-                  <option value='E107'>E107 (Muscle) Skeletal Muscle Male</option>
-                  <option value='E108'>E108 (Muscle) Skeletal Muscle Female</option>
-                  <option value='E109'>E109 (GI Intestine) Small Intestine</option>
-                  <option value='E110'>E110 (GI Stomach) Stomach Mucosa</option>
-                  <option value='E111'>E111 (GI Stomach) Stomach Smooth Muscle</option>
-                  <option value='E112'>E112 (Thymus) Thymus</option>
-                  <option value='E113'>E113 (Spleen) Spleen</option>
-                  <option value='E114'>E114 (Lung) A549 EtOH 0.02pct Lung Carcinoma Cell Line</option>
-                  <option value='E115'>E115 (Blood) Dnd41 TCell Leukemia Cell Line</option>
-                  <option value='E116'>E116 (Blood) GM12878 Lymphoblastoid Cells</option>
-                  <option value='E117'>E117 (Cervix) HeLa-S3 Cervical Carcinoma Cell Line</option>
-                  <option value='E118'>E118 (Liver) HepG2 Hepatocellular Carcinoma Cell Line</option>
-                  <option value='E119'>E119 (Breast) HMEC Mammary Epithelial Primary Cells</option>
-                  <option value='E120'>E120 (Muscle) HSMM Skeletal Muscle Myoblasts Cells</option>
-                  <option value='E121'>E121 (Muscle) HSMM cell derived Skeletal Muscle Myotubes Cells</option>
-                  <option value='E122'>E122 (Vascular) HUVEC Umbilical Vein Endothelial Primary Cells</option>
-                  <option value='E123'>E123 (Blood) K562 Leukemia Cells</option>
-                  <option value='E124'>E124 (Blood) Monocytes-CD14+ RO01746 Primary Cells</option>
-                  <option value='E125'>E125 (Brain) NH-A Astrocytes Primary Cells</option>
-                  <option value='E126'>E126 (Skin) NHDF-Ad Adult Dermal Fibroblast Primary Cells</option>
-                  <option value='E127'>E127 (Skin) NHEK-Epidermal Keratinocyte Primary Cells</option>
-                  <option value='E128'>E128 (Lung) NHLF Lung Fibroblast Primary Cells</option>
-                  <option value='E129'>E129 (Bone) Osteoblast Primary Cells</option>
-                </select><br/>
-              </span>
-              <span class="multiSelect">
-                General tissue/cell types: <tab><a>clear</a><br/>
-                <span class="info"><i class="fa fa-info"></i> Numbers in parentheses represent the numbr of epigenoms belongs to the correspond tissue types (anatomy).</span>
-                <select multiple class="form-control" id="eqtlMapChr15Gts" name="eqtlMapChr15Gts[]" onchange="CheckAll();">
-                  <option value="all">All</option>
-                  <option value='E080'>Adrenal (1)</option>
-                  <option value='E062:E034:E045:E033:E044:E043:E039:E041:E042:E040:E037:E048:E038:E047:E029:E031:E035:E051:E050:E036:E032:E046:E030:E115:E116:E123:E124'>Blood (27)</option>
-                  <option value='E129'>Bone (1)</option>
-                  <option value='E054:E053:E071:E074:E068:E069:E072:E067:E073:E070:E082:E081:E125'>Brain (13)</option>
-                  <option value='E028:E027:E119'>Breast (3)</option>
-                  <option value='E117'>Cervix (1)</option>
-                  <option value='E002:E008:E001:E015:E014:E016:E003:E024'>ESC (8)</option>
-                  <option value='E007:E009:E010:E013:E012:E011:E004:E005:E006'>ESC Derived (9)</option>
-                  <option value='E025:E023:E063'>Fat (3)</option>
-                  <option value='E076:E106:E075'>GI Colon (3)</option>
-                  <option value='E078:E077'>GI Duodenum (2)</option>
-                  <option value='E079'>GI Esophagus (1)</option>
-                  <option value='E085:E084:E109'>GI Intestine (3)</option>
-                  <option value='E103:E101:E102'>GI Rectum (3)</option>
-                  <option value='E111:E092:E110:E094'>GI Stomach (4)</option>
-                  <option value='E083:E104:E095:E105'>Heart (4)</option>
-                  <option value='E020:E019:E018:E021:E022'>iPSC (5)</option>
-                  <option value='E086'>Kidney (1)</option>
-                  <option value='E066:E118'>Liver (2)</option>
-                  <option value='E017:E088:E096:E114:E128'>Lung (5)</option>
-                  <option value='E052:E100:E108:E107:E089:E120:E121:E090'>Muscle (8)</option>
-                  <option value='E097'>Ovary (1)</option>
-                  <option value='E087:E098'>Pancreas (2)</option>
-                  <option value='E099:E091'>Placenta (2)</option>
-                  <option value='E055:E056:E059:E061:E057:E058:E126:E127'>Skin (8)</option>
-                  <option value='E113'>Spleen (1)</option>
-                  <option value='E026:E049'>Stromal Connective (2)</option>
-                  <option value='E112:E093'>Thymus (2)</option>
-                  <option value='E065:E122'>Vascular (2)</option>
+                  <option class="level1" value="null">Adrenal (1)</option>
+                  <option class="level2" value="E080">E080 (Other) Fetal Adrenal Gland</option>
+                  <option class="level1" value="null">Blood (27)</option>
+                  <option class="level2" value="E029">E029 (HSC & B-cell) Primary monocytes from peripheral blood</option>
+                  <option class="level2" value="E030">E030 (HSC & B-cell) Primary neutrophils from peripheral blood</option>
+                  <option class="level2" value="E031">E031 (HSC & B-cell) Primary B cells from cord blood</option>
+                  <option class="level2" value="E032">E032 (HSC & B-cell) Primary B cells from peripheral blood</option>
+                  <option class="level2" value="E033">E033 (Blood & T-cell) Primary T cells from cord blood</option>
+                  <option class="level2" value="E034">E034 (Blood & T-cell) Primary T cells from peripheral blood</option>
+                  <option class="level2" value="E035">E035 (HSC & B-cell) Primary hematopoietic stem cells</option>
+                  <option class="level2" value="E036">E036 (HSC & B-cell) Primary hematopoietic stem cells short term culture</option>
+                  <option class="level2" value="E037">E037 (Blood & T-cell) Primary T helper memory cells from peripheral blood 2</option>
+                  <option class="level2" value="E038">E038 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
+                  <option class="level2" value="E039">E039 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
+                  <option class="level2" value="E040">E040 (Blood & T-cell) Primary T helper memory cells from peripheral blood 1</option>
+                  <option class="level2" value="E041">E041 (Blood & T-cell) Primary T helper cells PMA-I stimulated</option>
+                  <option class="level2" value="E042">E042 (Blood & T-cell) Primary T helper 17 cells PMA-I stimulated</option>
+                  <option class="level2" value="E043">E043 (Blood & T-cell) Primary T helper cells from peripheral blood</option>
+                  <option class="level2" value="E044">E044 (Blood & T-cell) Primary T regulatory cells from peripheral blood</option>
+                  <option class="level2" value="E045">E045 (Blood & T-cell) Primary T cells effector/memory enriched from peripheral blood</option>
+                  <option class="level2" value="E046">E046 (HSC & B-cell) Primary Natural Killer cells from peripheral blood</option>
+                  <option class="level2" value="E047">E047 (Blood & T-cell) Primary T CD8+ naive cells from peripheral blood</option>
+                  <option class="level2" value="E048">E048 (Blood & T-cell) Primary T CD8+ memory cells from peripheral blood</option>
+                  <option class="level2" value="E050">E050 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
+                  <option class="level2" value="E051">E051 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
+                  <option class="level2" value="E062">E062 (Blood & T-cell) Primary mononuclear cells from peripheral blood</option>
+                  <option class="level2" value="E115">E115 (ENCODE2012) Dnd41 TCell Leukemia Cell Line</option>
+                  <option class="level2" value="E116">E116 (ENCODE2012) GM12878 Lymphoblastoid Cells</option>
+                  <option class="level2" value="E123">E123 (ENCODE2012) K562 Leukemia Cells</option>
+                  <option class="level2" value="E124">E124 (ENCODE2012) Monocytes-CD14+ RO01746 Primary Cells</option>
+                  <option class="level1" value="null">Bone (1)</option>
+                  <option class="level2" value="E129">E129 (ENCODE2012) Osteoblast Primary Cells</option>
+                  <option class="level1" value="null">Brain (13)</option>
+                  <option class="level2" value="E053">E053 (Neurosph) Cortex derived primary cultured neurospheres</option>
+                  <option class="level2" value="E054">E054 (Neurosph) Ganglion Eminence derived primary cultured neurospheres</option>
+                  <option class="level2" value="E067">E067 (Brain) Brain Angular Gyrus</option>
+                  <option class="level2" value="E068">E068 (Brain) Brain Anterior Caudate</option>
+                  <option class="level2" value="E069">E069 (Brain) Brain Cingulate Gyrus</option>
+                  <option class="level2" value="E070">E070 (Brain) Brain Germinal Matrix</option>
+                  <option class="level2" value="E071">E071 (Brain) Brain Hippocampus Middle</option>
+                  <option class="level2" value="E072">E072 (Brain) Brain Inferior Temporal Lobe</option>
+                  <option class="level2" value="E073">E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
+                  <option class="level2" value="E074">E074 (Brain) Brain Substantia Nigra</option>
+                  <option class="level2" value="E081">E081 (Brain) Fetal Brain Male</option>
+                  <option class="level2" value="E082">E082 (Brain) Fetal Brain Female</option>
+                  <option class="level2" value="E125">E125 (ENCODE2012) NH-A Astrocytes Primary Cells</option>
+                  <option class="level1" value="null">Breast (3)</option>
+                  <option class="level2" value="E027">E027 (Epithelial) Breast Myoepithelial Primary Cells</option>
+                  <option class="level2" value="E028">E028 (Epithelial) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
+                  <option class="level2" value="E119">E119 (ENCODE2012) HMEC Mammary Epithelial Primary Cells</option>
+                  <option class="level1" value="null">Cervix (1)</option>
+                  <option class="level2" value="E117">E117 (ENCODE2012) HeLa-S3 Cervical Carcinoma Cell Line</option>
+                  <option class="level1" value="null">ESC (8)</option>
+                  <option class="level2" value="E001">E001 (ESC) ES-I3 Cells</option>
+                  <option class="level2" value="E002">E002 (ESC) ES-WA7 Cells</option>
+                  <option class="level2" value="E003">E003 (ESC) H1 Cells</option>
+                  <option class="level2" value="E008">E008 (ESC) H9 Cells</option>
+                  <option class="level2" value="E014">E014 (ESC) HUES48 Cells</option>
+                  <option class="level2" value="E015">E015 (ESC) HUES6 Cells</option>
+                  <option class="level2" value="E016">E016 (ESC) HUES64 Cells</option>
+                  <option class="level2" value="E024">E024 (ESC) ES-UCSF4  Cells</option>
+                  <option class="level1" value="null">ESC Derived (9)</option>
+                  <option class="level2" value="E004">E004 (ES-deriv) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
+                  <option class="level2" value="E005">E005 (ES-deriv) H1 BMP4 Derived Trophoblast Cultured Cells</option>
+                  <option class="level2" value="E006">E006 (ES-deriv) H1 Derived Mesenchymal Stem Cells</option>
+                  <option class="level2" value="E007">E007 (ES-deriv) H1 Derived Neuronal Progenitor Cultured Cells</option>
+                  <option class="level2" value="E009">E009 (ES-deriv) H9 Derived Neuronal Progenitor Cultured Cells</option>
+                  <option class="level2" value="E010">E010 (ES-deriv) H9 Derived Neuron Cultured Cells</option>
+                  <option class="level2" value="E011">E011 (ES-deriv) hESC Derived CD184+ Endoderm Cultured Cells</option>
+                  <option class="level2" value="E012">E012 (ES-deriv) hESC Derived CD56+ Ectoderm Cultured Cells</option>
+                  <option class="level2" value="E013">E013 (ES-deriv) hESC Derived CD56+ Mesoderm Cultured Cells</option>
+                  <option class="level1" value="null">Fat (3)</option>
+                  <option class="level2" value="E023">E023 (Mesench) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
+                  <option class="level2" value="E025">E025 (Mesench) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
+                  <option class="level2" value="E063">E063 (Adipose) Adipose Nuclei</option>
+                  <option class="level1" value="null">GI Colon (3)</option>
+                  <option class="level2" value="E075">E075 (Digestive) Colonic Mucosa</option>
+                  <option class="level2" value="E076">E076 (Sm. Muscle) Colon Smooth Muscle</option>
+                  <option class="level2" value="E106">E106 (Digestive) Sigmoid Colon</option>
+                  <option class="level1" value="null">GI Duodenum (2)</option>
+                  <option class="level2" value="E077">E077 (Digestive) Duodenum Mucosa</option>
+                  <option class="level2" value="E078">E078 (Sm. Muscle) Duodenum Smooth Muscle</option>
+                  <option class="level1" value="null">GI Esophagus (1)</option>
+                  <option class="level2" value="E079">E079 (Digestive) Esophagus</option>
+                  <option class="level1" value="null">GI Intestine (3)</option>
+                  <option class="level2" value="E084">E084 (Digestive) Fetal Intestine Large</option>
+                  <option class="level2" value="E085">E085 (Digestive) Fetal Intestine Small</option>
+                  <option class="level2" value="E109">E109 (Digestive) Small Intestine</option>
+                  <option class="level1" value="null">GI Rectum (3)</option>
+                  <option class="level2" value="E101">E101 (Digestive) Rectal Mucosa Donor 29</option>
+                  <option class="level2" value="E102">E102 (Digestive) Rectal Mucosa Donor 31</option>
+                  <option class="level2" value="E103">E103 (Sm. Muscle) Rectal Smooth Muscle</option>
+                  <option class="level1" value="null">GI Stomach (4)</option>
+                  <option class="level2" value="E092">E092 (Digestive) Fetal Stomach</option>
+                  <option class="level2" value="E094">E094 (Digestive) Gastric</option>
+                  <option class="level2" value="E110">E110 (Digestive) Stomach Mucosa</option>
+                  <option class="level2" value="E111">E111 (Sm. Muscle) Stomach Smooth Muscle</option>
+                  <option class="level1" value="null">Heart (4)</option>
+                  <option class="level2" value="E083">E083 (Heart) Fetal Heart</option>
+                  <option class="level2" value="E095">E095 (Heart) Left Ventricle</option>
+                  <option class="level2" value="E104">E104 (Heart) Right Atrium</option>
+                  <option class="level2" value="E105">E105 (Heart) Right Ventricle</option>
+                  <option class="level1" value="null">Kidney (1)</option>
+                  <option class="level2" value="E086">E086 (Other) Fetal Kidney</option>
+                  <option class="level1" value="null">Liver (2)</option>
+                  <option class="level2" value="E066">E066 (Other) Liver</option>
+                  <option class="level2" value="E118">E118 (ENCODE2012) HepG2 Hepatocellular Carcinoma Cell Line</option>
+                  <option class="level1" value="null">Lung (5)</option>
+                  <option class="level2" value="E017">E017 (IMR90) IMR90 fetal lung fibroblasts Cell Line</option>
+                  <option class="level2" value="E088">E088 (Other) Fetal Lung</option>
+                  <option class="level2" value="E096">E096 (Other) Lung</option>
+                  <option class="level2" value="E114">E114 (ENCODE2012) A549 EtOH 0.02pct Lung Carcinoma Cell Line</option>
+                  <option class="level2" value="E128">E128 (ENCODE2012) NHLF Lung Fibroblast Primary Cells</option>
+                  <option class="level1" value="null">Muscle (7)</option>
+                  <option class="level2" value="E052">E052 (Myosat) Muscle Satellite Cultured Cells</option>
+                  <option class="level2" value="E089">E089 (Muscle) Fetal Muscle Trunk</option>
+                  <option class="level2" value="E100">E100 (Muscle) Psoas Muscle</option>
+                  <option class="level2" value="E107">E107 (Muscle) Skeletal Muscle Male</option>
+                  <option class="level2" value="E108">E108 (Muscle) Skeletal Muscle Female</option>
+                  <option class="level2" value="E120">E120 (ENCODE2012) HSMM Skeletal Muscle Myoblasts Cells</option>
+                  <option class="level2" value="E121">E121 (ENCODE2012) HSMM cell derived Skeletal Muscle Myotubes Cells</option>
+                  <option class="level1" value="null">Muscle Leg (1)</option>
+                  <option class="level2" value="E090">E090 (Muscle) Fetal Muscle Leg</option>
+                  <option class="level1" value="null">Ovary (1)</option>
+                  <option class="level2" value="E097">E097 (Other) Ovary</option>
+                  <option class="level1" value="null">Pancreas (2)</option>
+                  <option class="level2" value="E087">E087 (Other) Pancreatic Islets</option>
+                  <option class="level2" value="E098">E098 (Other) Pancreas</option>
+                  <option class="level1" value="null">Placenta (2)</option>
+                  <option class="level2" value="E091">E091 (Other) Placenta</option>
+                  <option class="level2" value="E099">E099 (Other) Placenta Amnion</option>
+                  <option class="level1" value="null">Skin (8)</option>
+                  <option class="level2" value="E055">E055 (Epithelial) Foreskin Fibroblast Primary Cells skin01</option>
+                  <option class="level2" value="E056">E056 (Epithelial) Foreskin Fibroblast Primary Cells skin02</option>
+                  <option class="level2" value="E057">E057 (Epithelial) Foreskin Keratinocyte Primary Cells skin02</option>
+                  <option class="level2" value="E058">E058 (Epithelial) Foreskin Keratinocyte Primary Cells skin03</option>
+                  <option class="level2" value="E059">E059 (Epithelial) Foreskin Melanocyte Primary Cells skin01</option>
+                  <option class="level2" value="E061">E061 (Epithelial) Foreskin Melanocyte Primary Cells skin03</option>
+                  <option class="level2" value="E126">E126 (ENCODE2012) NHDF-Ad Adult Dermal Fibroblast Primary Cells</option>
+                  <option class="level2" value="E127">E127 (ENCODE2012) NHEK-Epidermal Keratinocyte Primary Cells</option>
+                  <option class="level1" value="null">Spleen (1)</option>
+                  <option class="level2" value="E113">E113 (Other) Spleen</option>
+                  <option class="level1" value="null">Stromal Connective (2)</option>
+                  <option class="level2" value="E026">E026 (Mesench) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
+                  <option class="level2" value="E049">E049 (Mesench) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
+                  <option class="level1" value="null">Thymus (2)</option>
+                  <option class="level2" value="E093">E093 (Thymus) Fetal Thymus</option>
+                  <option class="level2" value="E112">E112 (Thymus) Thymus</option>
+                  <option class="level1" value="null">Vascular (2)</option>
+                  <option class="level2" value="E065">E065 (Heart) Aorta</option>
+                  <option class="level2" value="E122">E122 (ENCODE2012) HUVEC Umbilical Vein Endothelial Primary Cells</option>
+                  <option class="level1" value="null">iPSC (5)</option>
+                  <option class="level2" value="E018">E018 (iPSC) iPS-15b Cells</option>
+                  <option class="level2" value="E019">E019 (iPSC) iPS-18 Cells</option>
+                  <option class="level2" value="E020">E020 (iPSC) iPS-20b Cells</option>
+                  <option class="level2" value="E021">E021 (iPSC) iPS DF 6.9 Cells</option>
+                  <option class="level2" value="E022">E022 (iPSC) iPS DF 19.11 Cells</option>
                 </select>
               </span>
             </td>

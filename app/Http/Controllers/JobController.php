@@ -302,17 +302,14 @@ class JobController extends Controller
       }
 
       if($request -> has('posMapChr15check')){
-        $posMapChr15Ts = $request -> input('posMapChr15Ts');
-        $posMapChr15Gts = $request -> input('posMapChr15Gts');
-        if(!empty($posMapChr15Ts) && !empty($posMapChr15Gts)){
-          $posMapChr15Ts = implode(":", $posMapChr15Ts);
-          $posMapChr15Gts = implode(":", $posMapChr15Gts);
-          $posMapChr15 = implode(":", array($posMapChr15Ts, $posMapChr15Gts));
-        }else if(!empty($posMapChr15Ts)){
-          $posMapChr15 = implode(":", $posMapChr15Ts);
-        }else{
-          $posMapChr15 = implode(":", $posMapChr15Gts);
+        $temp = $request -> input('posMapChr15Ts');
+        $posMapChr15 = [];
+        foreach($temp as $ts){
+          if($ts != "null"){
+            $posMapChr15[] = $ts;
+          }
         }
+        $posMapChr15 = implode(":", $posMapChr15);
         $posMapChr15Max = $request -> input('posMapChr15Max');
         $posMapChr15Meth = $request -> input('posMapChr15Meth');
       }else{
@@ -364,17 +361,14 @@ class JobController extends Controller
         $eqtlMapRDBth = "NA";
       }
       if($request -> has('eqtlMapChr15check')){
-        $eqtlMapChr15Ts = $request -> input('eqtlMapChr15Ts');
-        $eqtlMapChr15Gts = $request -> input('eqtlMapChr15Gts');
-        if(!empty($eqtlMapChr15Ts) && !empty($eqtlMapChr15Gts)){
-          $eqtlMapChr15Ts = implode(":", $eqtlMapChr15Ts);
-          $eqtlMapChr15Gts = implode(":", $eqtlMapChr15Gts);
-          $eqtlMapChr15 = implode(":", array($eqtlMapChr15Ts, $eqtlMapChr15Gts));
-        }else if(!empty($eqtlMapChr15Ts)){
-          $eqtlMapChr15 = implode(":", $eqtlMapChr15Ts);
-        }else{
-          $eqtlMapChr15 = implode(":", $eqtlMapChr15Gts);
+        $temp = $request -> input('eqtlMapChr15Ts');
+        $eqtlMapChr15 = [];
+        foreach($temp as $ts){
+          if($ts != "null"){
+            $eqtlMapChr15[] = $ts;
+          }
         }
+        $eqtlMapChr15 = implode(":", $eqtlMapChr15);
         $eqtlMapChr15Max = $request -> input('eqtlMapChr15Max');
         $eqtlMapChr15Meth = $request -> input('eqtlMapChr15Meth');
       }else{
@@ -483,17 +477,14 @@ class JobController extends Controller
       if($request -> has('annotPlot_RDB')){$RDB=1;}
       if($request -> has('annotPlot_Chrom15')){
         $Chr15=1;
-        $Chr15Ts = $request -> input('annotPlotChr15Ts');
-        $Chr15Gts = $request -> input('annotPlotChr15Gts');
-        if(!empty($Chr15Ts) && !empty($Chr15Gts)){
-          $Chr15Ts = implode(":", $Chr15Ts);
-          $Chr15Gts = implode(":", $Chr15Gts);
-          $Chr15cells = implode(":", array($Chr15Ts, $Chr15Gts));
-        }else if(!empty($Chr15Ts)){
-          $Chr15cells = implode(":", $Chr15Ts);
-        }else{
-          $Chr15cells = implode(":", $Chr15Gts);
+        $temp = $request -> input('annotPlotChr15Ts');
+        $Chr15cells = [];
+        foreach($temp as $ts){
+          if($ts != "null"){
+            $Chr15cells[] = $ts;
+          }
         }
+        $Chr15cells = implode(":", $Chr15cells);
       }else{
         $Chr15cells="NA";
       }

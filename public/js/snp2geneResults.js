@@ -1328,24 +1328,11 @@ function Chr15Select(){
         ts.push(tmp.options[i].value);
       }
     }
-    var gts = [];
-    var tmp = document.getElementById('annotPlotChr15Gts');
-    for(var i=0; i<tmp.options.length; i++){
-      if(tmp.options[i].selected===true){
-        gts.push(tmp.options[i].value);
-      }
-    }
-    if(ts.length===0 && gts.length===0){
+    if(ts.length===0){
       $('#CheckAnnotPlotOpt').html('<span class="alert alert-danger">You have selected to plot 15-core chromatin state. Please select at least one tissue/cell type.</span>');
       $('#annotPlotSubmit').attr("disabled", true);
-    }else if(ts.length>0 && gts.length>0){
-      $('#CheckAnnotPlotOpt').html("<span class='alert alert-warning'>OK. Both individual and general tissue/cell types are selected.<br/>All selected tissue/cell types will be used for filtering.</span>");
-      $('#annotPlotSubmit').attr("disabled", false);
     }else if(ts.length>0){
-      $('#CheckAnnotPlotOpt').html("<span class='alert alert-success'>OK. Selected inspanidual tissue/cell types will be used for chromatine state filtering.</span>");
-      $('#annotPlotSubmit').attr("disabled", false);
-    }else if(gts.length>0){
-      $('#CheckAnnotPlotOpt').html("<span class='alert alert-success'>OK. Selected general tissue/cell types will be used for chromatine state filtering.</span>");
+      $('#CheckAnnotPlotOpt').html("<span class='alert alert-success'>OK. Selected tissue/cell types will appear in the plot.</span>");
       $('#annotPlotSubmit').attr("disabled", false);
     }
   }else{
