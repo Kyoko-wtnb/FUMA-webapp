@@ -721,15 +721,15 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
   });
 
   file = "genes.txt";
-  var thead = "<thead><tr><th>Gene</th><th>Symbol</th><th>entrezID</th><th>Genomic Locus</th><th>chr</th><th>start</th><th>end</th>";
-  thead += "<th>strand</th><th>status</th><th>type</th><th>HUGO</th>";
+  var thead = "<thead><tr><th>Gene</th><th>Symbol</th><th>HUGO</th><th>entrezID</th><th>chr</th><th>start</th><th>end</th>";
+  thead += "<th>strand</th><th>status</th><th>type</th><th>pLI</th>";
   if(posMap==1){
     thead += "<th>posMapSNPs</th><th>posMapMaxCADD</th>";
   }
   if(eqtlMap==1){
     thead += "<th>eqtlMapSNPs</th><th>eqtlMapminP</th><th>eqtlMapminQ</th><th>eqtlMapts</th><th>eqtlDirection</th>";
   }
-  thead += "<th>minGwasP</th><th>leadSNPs</th></tr></thead>";
+  thead += "<th>minGwasP</th><th>Genomic Locus</th><th>leadSNPs</th></tr></thead>";
 
   $('#geneTable').append(thead);
   var geneTable;
@@ -744,7 +744,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:GenomicLocus:chr:start:end:strand:status:type:HUGO:posMapSNPs:posMapMaxCADD:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
+          header: "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI:posMapSNPs:posMapMaxCADD:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:GenomicLocus:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -763,7 +763,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:GenomicLocus:chr:start:end:strand:status:type:HUGO:posMapSNPs:posMapMaxCADD:minGwasP:leadSNPs"
+          header: "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI:posMapSNPs:posMapMaxCADD:minGwasP:GenomicLocus:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -782,7 +782,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         data: {
           filedir: filedir,
           infile: file,
-          header: "ensg:symbol:entrezID:GenomicLocus:chr:start:end:strand:status:type:HUGO:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:leadSNPs"
+          header: "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:GenomicLocus:leadSNPs"
         }
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],

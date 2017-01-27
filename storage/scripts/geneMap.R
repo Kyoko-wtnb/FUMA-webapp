@@ -153,6 +153,10 @@ geneTable <- ENSG.all.genes[ENSG.all.genes$ensembl_gene_id %in% genes,]
 colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "status", "type", "entrezID","HUGO")
 if(nrow(geneTable)>0){
   geneTable$chr <- as.numeric(geneTable$chr)
+
+  pli <- fread(paste(config$data$geneIDs, "/pLI_exac.txt", sep=""), data.table=F)
+  geneTable$pLI <- pli$pLI[match(geneTable$ensg, pli$ensg)]
+
   if(posMap==1){
     geneTable$posMapSNPs <- sapply(geneTable$ensg, function(x){length(which(annov$gene==x))})
     geneTable$posMapMaxCADD <- sapply(geneTable$ensg, function(x){if(x %in% annov$gene){max(annot$CADD[annot$uniqID%in%annov$uniqID[annov$gene==x]])}else{0}})

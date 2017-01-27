@@ -34,12 +34,20 @@ class JsController extends Controller
         $head = fgetcsv($file, 0, "\t");
         $index = array();
         foreach($cols as $c){
-        	$index[] = array_search($c, $head);
+          if(array_search($c, $head)){
+            $index[] = array_search($c, $head);
+          }else{
+            $index[] = -1;
+          }
         }
         while($row = fgetcsv($file, 0, "\t")){
           $temp = [];
         	foreach($index as $i){
-        		$temp[] = $row[$i];
+            if($i==-1){
+              $temp[] = "NA";
+            }else{
+              $temp[] = $row[$i];
+            }
         	}
           $all_rows[] = $temp;
         }
