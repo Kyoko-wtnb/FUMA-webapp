@@ -1,3 +1,4 @@
+var sigSNPtable_selected=null;
 var leadSNPtable_selected=null;
 var lociTable_selected=null;
 // var SNPtable_selected=null;
@@ -603,8 +604,50 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
     "iDisplayLength": 10
   });
 
+  file = "GenomicRiskLoci.txt";
+  var lociTable = $('#lociTable').DataTable({
+      "processing": true,
+      serverSide: false,
+      select: true,
+      "ajax" : {
+        url: "DTfile",
+        type: "POST",
+        data: {
+          filedir: filedir,
+          infile: file,
+          header: "GenomicLocus:uniqID:rsID:chr:pos:p:start:end:nSNPs:nGWASSNPs:nIndSigSNPs:IndSigSNPs:nLeadSNPs:LeadSNPs"
+        }
+      },
+      error: function(){
+        alert("GenomicRiskLoci table error");
+      },
+      "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      "iDisplayLength": 10
+  });
+
   file = "leadSNPs.txt";
   var leadTable = $('#leadSNPtable').DataTable({
+      "processing": true,
+      serverSide: false,
+      select: true,
+      "ajax" : {
+        url: "DTfile",
+        type: "POST",
+        data: {
+          filedir: filedir,
+          infile: file,
+          header: "No:GenomicLocus:uniqID:rsID:chr:pos:p:nIndSigSNPs:IndSigSNPs"
+        }
+      },
+      error: function(){
+        alert("sigSNPs table error");
+      },
+      "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+      "iDisplayLength": 10,
+  });
+
+  file = "IndSigSNPs.txt";
+  var IndSigTable = $('#sigSNPtable').DataTable({
       "processing": true,
       serverSide: false,
       select: true,
@@ -618,65 +661,34 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         }
       },
       error: function(){
-        alert("leadSNPs table error");
+        alert("sigSNPs table error");
       },
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10,
-      dom: 'lBfrtip',
-      buttons: ['csv']
-  });
-
-  file = "GenomicRiskLoci.txt";
-  var lociTable = $('#lociTable').DataTable({
-      "processing": true,
-      serverSide: false,
-      select: true,
-      "ajax" : {
-        url: "DTfile",
-        type: "POST",
-        data: {
-          filedir: filedir,
-          infile: file,
-          header: "GenomicLocus:uniqID:rsID:chr:pos:p:nLeadSNPs:start:end:nSNPs:nGWASSNPs"
-        }
-      },
-      error: function(){
-        alert("GenomicRiskLoci table error");
-      },
-      "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-      "iDisplayLength": 10,
-      dom: 'lBfrtip',
-      buttons: ['csv']
   });
 
   var table = "<thead>"
       +"<tr>"
         +"<th>uniqID</th><th>rsID</th><th>chr</th><th>bp</th><th>MAF</th><th>gwasP</th>";
-  if(orcol!="NA"){
-    table += "<th>OR</th>";
-  }
-  if(becol!="NA"){
-    table += "<th>Beta</th>";
-  }
-  if(secol!="NA"){
-    table += "<th>SE</th>";
-  }
-  table +="<th>Genomic Locus</th><th>r2</th><th>leadSNP</th><th>Nearest gene</th><th>dist</th><th>position</th><th>CADD</th><th>RDB</th><th>minChrState(127)</th><th>commonChrState(127)</th>"
-      +"</tr>"
-    +"</thead>";
-  file = "snps.txt";
-  $('#SNPtable').html(table);
   var cols = "uniqID:rsID:chr:pos:MAF:gwasP";
   if(orcol!="NA"){
+    table += "<th>OR</th>";
     cols += ":or";
   }
   if(becol!="NA"){
+    table += "<th>Beta</th>";
     cols += ":beta";
   }
   if(secol!="NA"){
+    table += "<th>SE</th>";
     cols += ":se";
   }
-  cols += ":GenomicLocus:r2:leadSNP:nearestGene:dist:func:CADD:RDB:minChrState:commonChrState";
+  table +="<th>Genomic Locus</th><th>r2</th><th>IndSigSNP</th><th>Nearest gene</th><th>dist</th><th>position</th><th>CADD</th><th>RDB</th><th>minChrState(127)</th><th>commonChrState(127)</th>"
+      +"</tr>"
+    +"</thead>";
+  cols += ":GenomicLocus:r2:IndSigSNP:nearestGene:dist:func:CADD:RDB:minChrState:commonChrState";
+  file = "snps.txt";
+  $('#SNPtable').html(table)
   var SNPtable = $('#SNPtable').DataTable({
     processing: true,
     serverSide: false,
@@ -693,11 +705,9 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
     error: function(){
       alert("SNP table error");
     },
-    "order": [[2, 'asc'], [3, 'asc']],
+    // "order": [[2, 'asc'], [3, 'asc']],
     "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-    "iDisplayLength": 10,
-    dom: 'lBfrtip',
-    buttons: ['csv']
+    "iDisplayLength": 10
   });
 
   file = "annov.txt";
@@ -715,82 +725,41 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
       }
     },
     "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-    "iDisplayLength": 10,
-    dom: 'lBfrtip',
-    buttons: ['csv']
+    "iDisplayLength": 10
   });
 
   file = "genes.txt";
-  var thead = "<thead><tr><th>Gene</th><th>Symbol</th><th>HUGO</th><th>entrezID</th><th>chr</th><th>start</th><th>end</th>";
-  thead += "<th>strand</th><th>status</th><th>type</th><th>pLI</th>";
+  var table = "<thead><tr><th>Gene</th><th>Symbol</th><th>HUGO</th><th>entrezID</th><th>chr</th><th>start</th><th>end</th>";
+  table += "<th>strand</th><th>status</th><th>type</th><th>pLI</th>";
+  var col = "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI";
   if(posMap==1){
-    thead += "<th>posMapSNPs</th><th>posMapMaxCADD</th>";
+    table += "<th>posMapSNPs</th><th>posMapMaxCADD</th>";
+    col += ":posMapSNPs:posMapMaxCADD";
   }
   if(eqtlMap==1){
-    thead += "<th>eqtlMapSNPs</th><th>eqtlMapminP</th><th>eqtlMapminQ</th><th>eqtlMapts</th><th>eqtlDirection</th>";
+    table += "<th>eqtlMapSNPs</th><th>eqtlMapminP</th><th>eqtlMapminQ</th><th>eqtlMapts</th><th>eqtlDirection</th>";
+    col += ":eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection";
   }
-  thead += "<th>minGwasP</th><th>Genomic Locus</th><th>leadSNPs</th></tr></thead>";
-
-  $('#geneTable').append(thead);
+  table += "<th>minGwasP</th><th>Genomic Locus</th><th>IndSigSNPs</th></tr></thead>";
+  col += ":minGwasP:GenomicLocus:IndSigSNPs"
+  $('#geneTable').append(table);
   var geneTable;
-  if(posMap==1 && eqtlMap==1){
-    geneTable = $('#geneTable').DataTable({
-      processing: true,
-      serverSide: false,
-      select: false,
-      ajax:{
-        url: 'DTfile',
-        type: "POST",
-        data: {
-          filedir: filedir,
-          infile: file,
-          header: "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI:posMapSNPs:posMapMaxCADD:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:GenomicLocus:leadSNPs"
-        }
-      },
-      "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-      "iDisplayLength": 10,
-      dom: 'lBfrtip',
-      buttons: ['csv']
-    });
-  }else if(posMap==1){
-    geneTable = $('#geneTable').DataTable({
-      processing: true,
-      serverSide: false,
-      select: false,
-      ajax:{
-        url: 'DTfile',
-        type: "POST",
-        data: {
-          filedir: filedir,
-          infile: file,
-          header: "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI:posMapSNPs:posMapMaxCADD:minGwasP:GenomicLocus:leadSNPs"
-        }
-      },
-      "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-      "iDisplayLength": 10,
-      dom: 'lBfrtip',
-      buttons: ['csv']
-    });
-  }else{
-    geneTable = $('#geneTable').DataTable({
-      processing: true,
-      serverSide: false,
-      select: false,
-      ajax:{
-        url: 'DTfile',
-        type: "POST",
-        data: {
-          filedir: filedir,
-          infile: file,
-          header: "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI:eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection:minGwasP:GenomicLocus:leadSNPs"
-        }
-      },
-      "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-      "iDisplayLength": 10,
-      dom: 'lBfrtip',
-      buttons: ['csv']
-    });
-  }
+  geneTable = $('#geneTable').DataTable({
+    processing: true,
+    serverSide: false,
+    select: false,
+    ajax:{
+      url: 'DTfile',
+      type: "POST",
+      data: {
+        filedir: filedir,
+        infile: file,
+        header: col
+      }
+    },
+    "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+    "iDisplayLength": 10
+  });
 
   if(eqtlMap==1){
     file = "eqtl.txt";
@@ -809,10 +778,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
       },
       "order": [[1, 'asc'], [2, 'asc']],
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-      "iDisplayLength": 10,
-      dom: 'lBfrtip',
-      buttons: ['csv']
-      // deferLoading: 25
+      "iDisplayLength": 10
     });
   }
 
@@ -831,9 +797,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         }
       },
         "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-        "iDisplayLength": 10,
-        dom: 'lBfrtip',
-        buttons: ['csv']
+        "iDisplayLength": 10
   });
   // file = "ExAC.txt";
   // var eqtlTable = $('#exacTable').DataTable({
@@ -874,12 +838,45 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
   // });
 
 
+  $('#sigSNPtable tbody').on('click', 'tr', function(){
+    $('#plotClear').show();
+    $('#annotPlotPanel').show();
+    $('#annotPlotSelect').val('IndSigSNP');
+    var rowI = IndSigTable.row(this).index();
+    sigSNPtable_selected=rowI;
+    $('#annotPlotRow').val(rowI);
+    Chr15Select();
+    d3.select('#locusPlot').select("svg").remove();
+    var rowData = IndSigTable.row(rowI).data();
+    var chr = rowData[4];
+
+    $.ajax({
+      url: subdir+'/snp2gene/locusPlot',
+      type: "POST",
+      data:{
+        type: "IndSigSNP",
+        jobID: jobID,
+        rowI: rowI
+      },
+      complete: function(){
+        locusPlot(jobID, "InsSigSNP", chr);
+      }
+    });
+
+    $('#selectedLeadSNP').html("");
+    var out = "<h5>Selected Ind. Sig. SNP</h5><table class='table table-striped'><tr><td>Ind. Sig. SNP</td><td>"+rowData[3]
+              +"</td></tr><tr><td>Chrom</td><td>"+rowData[4]+"</td></tr><tr><td>BP</td><td>"
+              +rowData[5]+"</td></tr><tr><td>P-value</td><td>"+rowData[6]+"</td></tr><tr><td>SNPs within LD</td><td>"
+              +rowData[7]+"</td></tr><tr><td>GWAS SNPs within LD</td><td>"+rowData[8]+"</td></tr>";
+    $('#selectedLeadSNP').html(out);
+  });
+
   $('#leadSNPtable tbody').on('click', 'tr', function(){
     $('#plotClear').show();
     $('#annotPlotPanel').show();
     $('#annotPlotSelect').val('leadSNP');
     var rowI = leadTable.row(this).index();
-    leadSNPtable_selected=rowI;
+    sigSNPtable_selected=rowI;
     $('#annotPlotRow').val(rowI);
     Chr15Select();
     d3.select('#locusPlot').select("svg").remove();
@@ -900,10 +897,10 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
     });
 
     $('#selectedLeadSNP').html("");
-    var out = "<h5>Selected lead SNP</h5><table class='table table-striped'><tr><td>lead SNP</td><td>"+rowData[3]
+    var out = "<h5>Selected lead SNP</h5><table class='table table-striped'><tr><td>Lead SNP</td><td>"+rowData[3]
               +"</td></tr><tr><td>Chrom</td><td>"+rowData[4]+"</td></tr><tr><td>BP</td><td>"
-              +rowData[5]+"</td></tr><tr><td>P-value</td><td>"+rowData[6]+"</td></tr><tr><td>SNPs within LD</td><td>"
-              +rowData[7]+"</td></tr><tr><td>GWAS SNPs within LD</td><td>"+rowData[8]+"</td></tr>";
+              +rowData[5]+"</td></tr><tr><td>P-value</td><td>"+rowData[6]+"</td></tr>"
+              +"<tr><td>#Ind. Sig. SNPs</td><td>"+rowData[7]+"</td></tr>";
     $('#selectedLeadSNP').html(out);
   });
 
@@ -933,11 +930,12 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
     });
 
     $('#selectedLeadSNP').html("");
-    var out = "<h5>Selected Loci</h5><table class='table table-striped'><tr><td>top lead SNP</td><td>"+rowData[2]
+    var out = "<h5>Selected Locus</h5><table class='table table-striped'><tr><td>top lead SNP</td><td>"+rowData[2]
               +"</td></tr><tr><td>Chrom</td><td>"+rowData[3]+"</td></tr><tr><td>BP</td><td>"
-              +rowData[4]+"</td></tr><tr><td>P-value</td><td>"+rowData[5]+"</td></tr><tr><td>#lead SNPs</td><td>"+rowData[6]
+              +rowData[4]+"</td></tr><tr><td>P-value</td><td>"+rowData[5]+"</td></tr>"
+              +"<tr><td>#Ind. Sig. SNPs</td><td>"+rowData[10]+"</td></tr><tr><td>#lead SNPs</td><td>"+rowData[12]
               +"</td></tr><tr><td>SNPs within LD</td><td>"
-              +rowData[9]+"</td></tr><tr><td>GWAS SNPs within LD</td><td>"+rowData[10]+"</td></tr>";
+              +rowData[8]+"</td></tr><tr><td>GWAS SNPs within LD</td><td>"+rowData[9]+"</td></tr>";
 
     $('#selectedLeadSNP').html(out);
   });
@@ -985,7 +983,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
           .offset([-10,0])
           .html(function(d){
             var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF
-                      +"<br/>r2: "+d.r2+"<br/>lead SNP: "+d.leadSNP;
+                      +"<br/>r2: "+d.r2+"<br/>Ind. Sig. SNP: "+d.IndSigSNP;
             if(orcol!="NA"){out += "<br/>OR: "+d.or;}
             if(becol!="NA"){out += "<br/>Beta: "+d.beta;}
             if(secol!="NA"){out += "<br/>SE: "+d.se;}
@@ -1005,14 +1003,14 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         svg.selectAll("dot").data(data2).enter()
           .append("circle")
           .attr("class", "nonLD")
-          .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
+          .attr("r", 3).attr("cx", function(d){return x(d.pos);})
           .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
           .style('fill', "grey");
         // SNPs in LD
-        svg.selectAll("dot").data(data1.filter(function(d){if(!isNaN(d.gwasP) && d.ld!=0){return d;}})).enter()
+        svg.selectAll("dot").data(data1.filter(function(d){if(!isNaN(d.gwasP) && d.ld==1){return d;}})).enter()
           .append("circle")
           .attr("class", "dot")
-          .attr("r", 3.5).attr("cx", function(d){return x(d.pos);})
+          .attr("r", 3).attr("cx", function(d){return x(d.pos);})
           .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
           .style('fill', function(d){return colorScale(d.r2);})
           .on("mouseover", tip.show)
@@ -1029,13 +1027,22 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
           .on("mouseover", tip.show)
           .on("mouseout", tip.hide);
 
-        svg.selectAll("dot.leadSNPs").data(data1.filter(function(d){if(d.ld==2){return d;}})).enter()
+        svg.selectAll("dot.leadSNPs").data(data1.filter(function(d){if(d.ld>1){return d;}})).enter()
           .append("circle")
           .attr("class", "leadSNPs")
           .attr("cx", function(d){return x(d.pos)})
           .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-          .attr("r", 4.5)
-          .style("fill", "purple").style("stroke", "black")
+          .attr("r", function(d){
+            if(d.ld==2){return 3.5;}
+            else if(d.ld==3){return 4;}
+            else if(d.ld==4){return 4.5;}
+          })
+          .style("fill", function(d){
+              if(d.ld==2){return colorScale(d.r2);}
+              else if(d.ld==3){return "#9933ff"}
+              else if(d.ld==4){return "#4d0099"}
+          })
+          .style("stroke", "black").style("stroke-width", "2")
           .on("mouseover", tip.show)
           .on("mouseout", tip.hide);
         // axis labels
@@ -1068,7 +1075,12 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
           svg.selectAll(".leadSNPs")
             .attr("cx", function(d){return x(d.pos);})
             .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-            .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "purple";}})
+            .style("fill", function(d){
+              if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}
+              else if(d.ld==2){return colorScale(d.r2);}
+              else if(d.ld==3){return "#9933ff"}
+              else if(d.ld==4){return "#4d0099"}
+            })
             .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black";}});
         }
 

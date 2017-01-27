@@ -25,81 +25,83 @@ ld <- ld[ld$SNP2 %in% snps$uniqID,]
 
 inlead <- inlead[inlead$uniqID %in% snps$uniqID,]
 
-leadS <- data.frame(matrix(vector(), 0, 8, dimnames = list(c(),c("No","uniqID", "rsID", "chr", "pos", "p", "nSNPs", "nGWASSNPs"))))
+indS <- data.frame(matrix(vector(), 0, 8, dimnames = list(c(),c("No","uniqID", "rsID", "chr", "pos", "p", "nSNPs", "nGWASSNPs"))))
 leadSNPs <- unique(ld$SNP1)
 
 while(length(leadSNPs)>0){
-  j <- nrow(leadS)+1
+  j <- nrow(indS)+1
   ls <- snps$uniqID[snps$uniqID %in% leadSNPs][which.min(snps$gwasP[snps$uniqID %in% leadSNPs])]
-  leadS[j,2] <- ls
-  leadS[j,3] <- snps$rsID[which(snps$uniqID==ls)]
-  leadS[j,4] <- snps$chr[which(snps$uniqID==ls)]
-  leadS[j,5] <- snps$pos[which(snps$uniqID==ls)]
-  leadS[j,6] <- snps$gwasP[which(snps$uniqID==ls)]
-  leadS[j,7] <- length(which(ld$SNP1==ls))
-  leadS[j,8] <- length(which(ld$SNP2[ld$SNP1==ls] %in% snps$uniqID[!is.na(snps$gwasP)]))
+  indS[j,2] <- ls
+  indS[j,3] <- snps$rsID[which(snps$uniqID==ls)]
+  indS[j,4] <- snps$chr[which(snps$uniqID==ls)]
+  indS[j,5] <- snps$pos[which(snps$uniqID==ls)]
+  indS[j,6] <- snps$gwasP[which(snps$uniqID==ls)]
+  indS[j,7] <- length(which(ld$SNP1==ls))
+  indS[j,8] <- length(which(ld$SNP2[ld$SNP1==ls] %in% snps$uniqID[!is.na(snps$gwasP)]))
 
   leadSNPs <- leadSNPs[!(leadSNPs %in% ld$SNP2[which(ld$SNP1==ls)])]
 }
 
-leadS <- leadS[order(leadS$pos),]
-leadS <- leadS[order(leadS$chr),]
-leadS$No <- 1:nrow(leadS)
+indS <- indS[order(indS$pos),]
+indS <- indS[order(indS$chr),]
+indS$No <- 1:nrow(indS)
 
-ld <- ld[ld$SNP1 %in% leadS$uniqID,]
+ld <- ld[ld$SNP1 %in% indS$uniqID,]
 snps <- snps[snps$uniqID %in% ld$SNP2,]
 
-leadS$GenomicLocus <- NA
-loci <- data.frame(matrix(vector(), 0, 12, dimnames=list(c(), c("GenomicLocus","uniqID", "rsID", "chr", "pos", "p", "nLeadSNPs", "start", "end", "leadSNPs", "nSNPs", "nGWASSNPs"))))
+indS$GenomicLocus <- NA
+loci <- data.frame(matrix(vector(), 0, 12, dimnames=list(c(), c("GenomicLocus","uniqID", "rsID", "chr", "pos", "p", "start", "end", "nIndSigSNPs", "IndSigSNPs", "nSNPs", "nGWASSNPs"))))
 j<-1
 loci[j,1] <- j
-loci[j,2] <- leadS$uniqID[1]
-loci[j,3] <- leadS$rsID[1]
-loci[j,4] <- leadS$chr[1]
-loci[j,5] <- leadS$pos[1]
-loci[j,6] <- leadS$p[1]
-loci[j,7] <- 1
-loci[j,8] <- min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==leadS$uniqID[j]]])
-loci[j,9] <- max(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==leadS$uniqID[j]]])
-loci[j,10] <- leadS$rsID[1]
-leadS$GenomicLocus[j] <- 1
-if(nrow(leadS)>1){
-  for(i in 2:nrow(leadS)){
-    if(loci$chr[j]==leadS$chr[i] & min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==leadS$uniqID[i]]])-loci$end[j]<=mergeDist){
-      if(leadS$p[i] < loci[j,6]){
-      loci[j,2] <- leadS$uniqID[i]
-      loci[j,3] <- leadS$rsID[i]
-      loci[j,4] <- leadS$chr[i]
-      loci[j,5] <- leadS$pos[i]
-      loci[j,6] <- leadS$p[i]
+loci[j,2] <- indS$uniqID[1]
+loci[j,3] <- indS$rsID[1]
+loci[j,4] <- indS$chr[1]
+loci[j,5] <- indS$pos[1]
+loci[j,6] <- indS$p[1]
+loci[j,9] <- 1
+loci[j,7] <- min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[j]]])
+loci[j,8] <- max(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[j]]])
+loci[j,10] <- indS$rsID[1]
+indS$GenomicLocus[j] <- 1
+if(nrow(indS)>1){
+  for(i in 2:nrow(indS)){
+    if(loci$chr[j]==indS$chr[i] & min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])-loci$end[j]<=mergeDist){
+      if(indS$p[i] < loci[j,6]){
+      loci[j,2] <- indS$uniqID[i]
+      loci[j,3] <- indS$rsID[i]
+      loci[j,4] <- indS$chr[i]
+      loci[j,5] <- indS$pos[i]
+      loci[j,6] <- indS$p[i]
       }
-      loci[j,7] <- loci[j,7]+1
-      loci[j,8] <- min(c(loci[j,8], min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==leadS$uniqID[i]]])))
-      loci[j,9] <- max(c(loci[j,9], max(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==leadS$uniqID[i]]])))
-      loci[j,10] <- paste(loci[j,10], leadS$rsID[i], sep=":")
-      leadS$GenomicLocus[i] <- j
+      loci[j,9] <- loci[j,7]+1
+      loci[j,7] <- min(c(loci[j,8], min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])))
+      loci[j,8] <- max(c(loci[j,9], max(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])))
+      loci[j,10] <- paste(loci[j,10], indS$rsID[i], sep=":")
+      indS$GenomicLocus[i] <- j
     }else{
       j <- j+1
       loci[j,1] <- j
-      loci[j,2] <- leadS$uniqID[i]
-      loci[j,3] <- leadS$rsID[i]
-      loci[j,4] <- leadS$chr[i]
-      loci[j,5] <- leadS$pos[i]
-      loci[j,6] <- leadS$p[i]
-      loci[j,7] <- 1
-      loci[j,8] <- min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==leadS$uniqID[i]]])
-      loci[j,9] <- max(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==leadS$uniqID[i]]])
-      loci[j,10] <- leadS$rsID[i]
-      leadS$GenomicLocus[i] <- j
+      loci[j,2] <- indS$uniqID[i]
+      loci[j,3] <- indS$rsID[i]
+      loci[j,4] <- indS$chr[i]
+      loci[j,5] <- indS$pos[i]
+      loci[j,6] <- indS$p[i]
+      loci[j,9] <- 1
+      loci[j,7] <- min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])
+      loci[j,8] <- max(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])
+      loci[j,10] <- indS$rsID[i]
+      indS$GenomicLocus[i] <- j
     }
   }
 }
 
+loci <- loci[,c(1:8,11,12,9,10)]
+
 snps$r2 <- sapply(snps$uniqID, function(x){max(ld$r2[ld$SNP2==x])})
-snps$leadSNP <- sapply(snps$uniqID, function(x){paste(snps$rsID[snps$uniqID %in%ld$SNP1[ld$SNP2==x & ld$r2==max(ld$r2[ld$SNP2==x])]], collapse=":")})
+snps$IndSigSNP <- sapply(snps$uniqID, function(x){paste(snps$rsID[snps$uniqID %in%ld$SNP1[ld$SNP2==x & ld$r2==max(ld$r2[ld$SNP2==x])]], collapse=":")})
 snps$GenomicLocus <- NA
 for(i in 1:nrow(loci)){
-  ls <- snps$uniqID[snps$rsID %in% unlist(strsplit(loci$leadSNPs[i], ":"))]
+  ls <- snps$uniqID[snps$rsID %in% unlist(strsplit(loci$IndSigSNPs[i], ":"))]
   loci$nSNPs[i] <- length(unique(ld$SNP2[ld$SNP1 %in% ls]))
   loci$nGWASSNPs[i] <- length(unique(ld$SNP2[ld$SNP1 %in% ls & ld$SNP2 %in% snps$uniqID[!is.na(snps$gwasP)]]))
   snps$GenomicLocus[snps$chr==loci$chr[i]&snps$pos>=loci$start[i] & snps$pos<=loci$end[i]] <- i
@@ -110,9 +112,9 @@ annov.input <- data.frame(chr=snps$chr, start=snps$pos, end=snps$pos, ref=snps$r
 #annov.input$ref <- n[,1]
 #annov.input$alt <- n[,2]
 
-leadS <- subset(leadS, select=c("No","GenomicLocus", "uniqID", "rsID", "chr", "pos", "p", "nSNPs", "nGWASSNPs"))
+indS <- subset(indS, select=c("No","GenomicLocus", "uniqID", "rsID", "chr", "pos", "p", "nSNPs", "nGWASSNPs"))
 
-write.table(leadS, paste(filedir,"leadSNPs.txt",sep=""), quote=F, row.names=F, sep="\t")
+write.table(indS, paste(filedir,"IndSigSNPs.txt",sep=""), quote=F, row.names=F, sep="\t")
 write.table(loci, paste(filedir, "GenomicRiskLoci.txt", sep=""), quote=F, row.names=F, sep="\t")
 write.table(snps, paste(filedir,"snps.txt",sep=""), quote=F, row.names=F, sep="\t")
 write.table(ld, paste(filedir,"ld.txt",sep=""), quote=F, row.names=F, sep="\t")

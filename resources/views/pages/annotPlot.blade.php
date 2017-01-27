@@ -125,7 +125,8 @@ $(document).ready(function(){
               'rgb(164,0,255)', 'rgb(164,255,0)', 'rgb(192,0,255)', 'rgb(192,255,0)', 'rgb(221,0,255)', 'rgb(221,255,0)', 'rgb(250,0,255)',
               'rgb(250,255,0)', 'rgb(255,0,0)', 'rgb(255,0,29)', 'rgb(255,0,58)', 'rgb(255,0,87)', 'rgb(255,0,115)', 'rgb(255,0,144)',
               'rgb(255,0,173)', 'rgb(255,0,202)', 'rgb(255,0,231)', 'rgb(255,29,0)', 'rgb(255,58,0)', 'rgb(255,87,0)', 'rgb(255,115,0)',
-              'rgb(255,144,0)', 'rgb(255,173,0)', 'rgb(255,202,0)', 'rgb(255,231,0)', 'rgb(68, 36, 17)', 'rgb(47, 48, 51)'];
+              'rgb(255,144,0)', 'rgb(255,173,0)', 'rgb(255,202,0)', 'rgb(255,231,0)'
+            ];
   var eqtlts = ["Adipose_Subcutaneous", "Adipose_Visceral_Omentum", "Adrenal_Gland", "Bladder",
             "Cells_EBV-transformed_lymphocytes", "Whole_Blood", "Artery_Aorta", "Artery_Coronary",
             "Artery_Tibial", "Brain_Amygdala", "Brain_Anterior_cingulate_cortex_BA24", "Brain_Caudate_basal_ganglia",
@@ -139,9 +140,9 @@ $(document).ready(function(){
             "Skin_Not_Sun_Exposed_Suprapubic", "Skin_Sun_Exposed_Lower_leg", "Small_Intestine_Terminal_Ileum", "Spleen",
             "Stomach", "Testis", "Thyroid", "Uterus", "Vagina", "BloodeQTL", "BIOS_eQTL_geneLevel"];
   var eQTLcolors = {};
-  for(i=0; i<eqtlcols.length; i++){
-    eQTLcolors[eqtlts[i]] = eqtlcols[i];
-  }
+  // for(i=0; i<eqtlcols.length; i++){
+  //   eQTLcolors[eqtlts[i]] = eqtlcols[i];
+  // }
 
   queue().defer(d3.json, "d3text/"+jobID+"/annotPlot.txt")
         .defer(d3.json, "d3text/"+jobID+"/genesplot.txt")
@@ -370,7 +371,7 @@ $(document).ready(function(){
             //   .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
             //   .style("fill", "grey");
 
-            svg.selectAll("dot").data(data1.filter(function(d){if(!isNaN(d.gwasP) && d.ld!=0){return d;}})).enter()
+            svg.selectAll("dot").data(data1.filter(function(d){if(!isNaN(d.gwasP) && d.ld==1){return d;}})).enter()
               .append("circle")
               .attr("class", "GWASdot")
               .attr("r", 3.5)
@@ -381,7 +382,7 @@ $(document).ready(function(){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
-                        +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
+                        +'</td></tr><tr><td>Ind. Sig. SNPs</td><td>'+d.IndSigSNP
                         +'</td></tr><tr><td>GWAS P-value</td><td>'+d.gwasP
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
@@ -413,7 +414,7 @@ $(document).ready(function(){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
-                        +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
+                        +'</td></tr><tr><td>Ind. Sig. SNPs</td><td>'+d.IndSigSNP
                         +'</td></tr><tr><td>GWAS P-value</td><td>'+d.gwasP
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
@@ -434,18 +435,27 @@ $(document).ready(function(){
                 $('#annotTable').html(table);
               });
             // lead SNPs
-            svg.selectAll("dot.leadSNPs").data(data1.filter(function(d){if(d.ld==2){return d;}})).enter()
+            svg.selectAll("dot.leadSNPs").data(data1.filter(function(d){if(d.ld>=2){return d;}})).enter()
               .append("circle")
               .attr("class", "leadSNPs")
               .attr("cx", function(d){return x(d.pos)})
               .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-              .attr("r", 4.5)
-              .style("fill", "purple").style("stroke", "black")
+              .attr("r", function(d){
+                if(d.ld==2){return 3.5;}
+                else if(d.ld==3){return 4;}
+                else if(d.ld==4){return 4.5;}
+              })
+              .style("fill", function(d){
+                  if(d.ld==2){return colorScale(d.r2);}
+                  else if(d.ld==3){return "#9933ff"}
+                  else if(d.ld==4){return "#4d0099"}
+              })
+              .style("stroke", "black")
               .on("click", function(d){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
-                        +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
+                        +'</td></tr><tr><td>Ind. Sig. SNPs</td><td>'+d.IndSigSNP
                         +'</td></tr><tr><td>GWAS P-value</td><td>'+d.gwasP
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
@@ -502,7 +512,7 @@ $(document).ready(function(){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
-                        +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
+                        +'</td></tr><tr><td>Ind. Sig. SNPs</td><td>'+d.IndSigSNP
                         +'</td></tr><tr><td>GWAS P-value</td><td>'+d.gwasP
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
@@ -560,7 +570,7 @@ $(document).ready(function(){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
                         +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
-                        +'</td></tr><tr><td>lead SNPs</td><td>'+d.leadSNP
+                        +'</td></tr><tr><td>Ind. Sig. SNPs</td><td>'+d.IndSigSNP
                         +'</td></tr><tr><td>GWAS P-value</td><td>'+d.gwasP
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
@@ -722,6 +732,15 @@ $(document).ready(function(){
               var tissue = d3.set(data2.map(function(d){return d.tissue;})).values();
               // neqtl = genes.length;
 
+              // eqtl color and DB
+              var db = {};
+              for(i=0; i<tissue.length; i++){
+                eQTLcolors[tissue[i]] = eqtlcols[Math.round(i*eqtlcols.length/tissue.length)];
+                var temp;
+                data2.forEach(function(d){if(d.tissue==tissue[i]){temp=d.db}});
+                db[tissue[i]] = temp;
+              }
+
               var legData = [];
               for(i=0; i<tissue.length; i++){
                 legData.push(i);
@@ -739,7 +758,7 @@ $(document).ready(function(){
                 .attr("text-anchor", "start")
                 .attr("x", width+15)
                 .attr("y", function(d){return eqtlTop+18+d*10;})
-                .text(function(d){return tissue[d]})
+                .text(function(d){return db[tissue[d]]+" "+tissue[d]})
                 .style("font-size", "10px");
               for(i=0; i<genes.length; i++){
                 // var y = d3.scale.linear().range([currentHeight2+50, currentHeight2]);
@@ -923,6 +942,15 @@ $(document).ready(function(){
                 var tissue = d3.set(data.map(function(d){return d.tissue;})).values();
                 // neqtl = genes.length;
 
+                // eqtl color and db
+                var db = {};
+                for(i=0; i<tissue.length; i++){
+                  eQTLcolors[tissue[i]] = eqtlcols[Math.round(i*eqtlcols.length/tissue.length)];
+                  var temp;
+                  data.forEach(function(d){if(d.tissue==tissue[i]){temp=d.db}});
+                  db[tissue[i]] = temp;
+                }
+
                 var legData = [];
                 for(i=0; i<tissue.length; i++){
                   legData.push(i);
@@ -940,7 +968,7 @@ $(document).ready(function(){
                   .attr("text-anchor", "start")
                   .attr("x", width+15)
                   .attr("y", function(d){return eqtlTop+18+d*10;})
-                  .text(function(d){return tissue[d]})
+                  .text(function(d){return db[tissue[d]]+" "+tissue[d]})
                   .style("font-size", "10px");
 
                 for(i=0; i<genes.length; i++){
@@ -1029,7 +1057,12 @@ $(document).ready(function(){
     svg.selectAll(".KGSNPs").attr("x", function(d){return x(d.pos);})
       .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey"}else{return colorScale(d.r2)}});
     svg.selectAll(".leadSNPs").attr("cx", function(d){return x(d.pos);})
-      .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "purple"}})
+      .style("fill", function(d){
+        if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}
+        else if(d.ld==2){return colorScale(d.r2);}
+        else if(d.ld==3){return "#9933ff"}
+        else if(d.ld==4){return "#4d0099"}
+      })
       .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black"}});
     svg.selectAll(".CADDdot").attr("cx", function(d){return x(d.pos);})
       .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey"}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue"}});

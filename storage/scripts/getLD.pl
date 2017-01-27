@@ -621,6 +621,9 @@ if($Nsnps<2){
 #interval compute
 system "Rscript $dir/leadSNP.R $filedir $r2 $gwasP $leadP $maf $mergeDist $leadSNPs";
 
+#defnininf lead SNPs at r2 0.1
+system "python $dir/leadSNP.py $filedir";
+
 #annov
 my $annovout = $filedir."annov";
 my $annov = $cfg->param('annovar.annovdir');

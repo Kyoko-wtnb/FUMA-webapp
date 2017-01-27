@@ -4,20 +4,6 @@ This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
 
 ######################
-# leadSNPs.txt
-# All independent lead SNPs identified by FUMA
-######################
-No : Index of lead SNPs
-Genomic Locus : Index of assigned genomic locus matched with "GenomicRiskLoci.txt". Multiple independent lead SNPs can be assigned to the same genomic locus.
-uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
-rsID : rsID based on dbSNP build 146.
-chr : chromosome
-pos : position on hg19
-P-value : P-value (from the input file).
-nSNPs : The number of SNPs within LD of the lead SNP given r2, including non-GWAS-tagged SNPs (which are extracted from 1000G).
-nGWASSNPs : The number of GWAS-tagged SNPs within LD of the lead SNP given r2. This is a subset of &quot;nSNPs&quot;.
-
-######################
 # GenomicRiskLoci.txt
 # Genomic risk loci defined by independent lead SNPs and maximum distance between their LD block
 ######################
@@ -26,12 +12,44 @@ uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where allele
 rsID : rsID of the top lead SNP based on dbSNP build 146.
 chr : chromosome of top lead SNP
 pos : position of top lead SNP on hg19
-P-value : P-value of top lead SNP (from the input file).
-nLeadSNPs : The number of lead SNPs merged into the interval.
+p : P-value of top lead SNP (from the input file).
 start : Start position of the locus.
-start : End postion of the locus.
-nSNPs : The number of canidate SNPs in the interval, including non-GWAS-tagged SNPs (which are extracted from 1000G).
-nGWASSNPs : The number of GWAS-tagged candidate SNPs within the interval. This is a subset of &quot;nSNPs&quot;.
+end : End postion of the locus.
+nSNPs : Number of canidate SNPs in the interval, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+nGWASSNPs : Number of GWAS-tagged candidate SNPs within the interval. This is a subset of &quot;nSNPs&quot;.
+nIndSigSNPs : Number of independent significant SNPs in the genomic locus
+IndSigSNPs : rsID of independent significant SNPs in the genomic locus
+nLeadSNPs : Number of lead SNPs in the genomic locus
+LeadSNPs : rsID of lead SNPs in the genomic locus
+
+######################
+# leadSNPs.txt
+# lead SNPs defined at r2 0.1
+######################
+No : Index of lead SNPs
+Genomic Locus : Index of assigned genomic locus matched with "GenomicRiskLoci.txt". Multiple independent lead SNPs can be assigned to the same genomic locus.
+uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
+rsID : rsID based on dbSNP build 146.
+chr : chromosome
+pos : position on hg19
+p : P-value (from the input file).
+nIndSigSNPs : Number of independent significant SNPs in LD of the lead SNP at r2 0.1
+IndSigSNPs : rsID of independent significant SNPs in LD of the lead SNP at r2 0.1
+
+######################
+# IndSigSNPs.txt
+# All independent significant SNPs at user defined r2
+######################
+No : Index of lead SNPs
+Genomic Locus : Index of assigned genomic locus matched with "GenomicRiskLoci.txt". Multiple independent lead SNPs can be assigned to the same genomic locus.
+uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
+rsID : rsID based on dbSNP build 146.
+chr : chromosome
+pos : position on hg19
+p : P-value (from the input file).
+nSNPs : The number of SNPs within LD of the ind. sig. SNP given r2, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+nGWASSNPs : The number of GWAS-tagged SNPs within LD of the ind. sig. SNP given r2.
+
 
 ######################
 # snps.txt
@@ -49,7 +67,7 @@ or : Odds ratio provided in the input GWAS summary statistics file if available.
 beta : Beta provided in the input GWAS summary statistics file if available. For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
 se : Standard error provided in the input GWAS summary statistics file if available. For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
 r2 : The maximum r2 of the SNP with one of the independent lead SNP (this dosen't have to be top lead SNPs in the genomic loci).
-leadSNP : rsID of a independent lead SNP which has the maximum r2 of the SNP.
+IndSigSNP : rsID of a independent significant SNP which has the maximum r2 of the SNP.
 Genomic locus : Index of the genomic risk loci matching with "GenomicRiskLoci.txt".
 nearestGene : The nearest Gene of the SNP. Genes are ecoded in symbol, if it is available otherwise Ensembl ID.
   Genes here include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.
@@ -101,7 +119,7 @@ eqtlMapmin! (eqtlMap): The minimum eQTL FDR of mapped SNPs.
 eqtlMapts (eqtlMap): Tissue types of mapped eQTL SNPs.
 eqtlDirection (eqtlMap): consecutive direction of mapped eQTL SNPs.
 minGwasP : The minimum P-value of mapped SNPs.
-leadSNPs : All independent lead SNPs of mapped SNPs.
+IndSigSNPs : All independent significant SNPs of mapped SNPs.
 
 ######################
 # eqtl.txt
@@ -124,7 +142,7 @@ tz : T-statistics or z score depends on data source.
 # List of SNPs reported in GWAScatalog which are candidate SNPs of your GWAS summary statistics.
 ######################
 Genomic locus : Index of genomic risk loci.
-lead SNP : The lad SNP of the SNP in GWAScatalog.
+lead SNP : The lead SNP of the SNP in GWAScatalog.
 chr : chromosome
 bp : position on hg19
 snp : rsID of reported SNP in GWAS catalog

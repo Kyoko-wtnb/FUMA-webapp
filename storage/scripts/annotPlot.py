@@ -51,45 +51,80 @@ snpshead = list(snps.columns.values)
 snps = snps.as_matrix()
 ld = pd.read_table(filedir+"ld.txt", sep="\t")
 ld = ld.as_matrix()
+ind = pd.read_table(filedir+"IndSigSNPs.txt", sep="\t")
+ind = ind.as_matrix()
+lead = pd.read_table(filedir+"leadSNPs.txt", sep="\t")
+lead = lead.as_matrix()
+loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
+loci = loci.as_matrix()
 
-if Type=="leadSNP":
-	lead = pd.read_table(filedir+"leadSNPs.txt", sep="\t")
-	lead = lead.as_matrix()
-	ls = str(lead[i, 2])
-	loci = int(lead[i,1])
+# if Type=="leadSNP":
+# 	lead = pd.read_table(filedir+"IndSigSNPs.txt", sep="\t")
+# 	lead = lead.as_matrix()
+# 	ls = str(lead[i, 2])
+# 	loci = int(lead[i,1])
+# 	ld = ld[ld[:,0]==ls]
+# 	snps = snps[snps[:,snpshead.index("GenomicLocus")]==loci]
+# 	snps = np.c_[snps, [0]*len(snps)]
+# 	snps[ArrayIn(snps[:,0], ld[:,1]),len(snps[0])-1] = 1
+# 	snps[snps[:,0]==ls,len(snps[0])-1] = 2
+# 	snps = snps[snps[:, len(snps[0])-1]>0]
+# else:
+#     loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
+#     loci = loci.as_matrix()
+#     ls = np.array(loci[i,11].split(":"))
+#     ls = snps[ArrayIn(snps[:,1], ls), 0]
+#     ld = ld[ArrayIn(ld[:,0], ls)]
+#     snps = snps[snps[:,snpshead.index("GenomicLocus")]==i+1]
+#     snps = snps[ArrayIn(snps[:,0], ld[:,1])]
+#     snps = np.c_[snps, [1]*len(snps)]
+#     snps[ArrayIn(snps[:,0],ls),len(snps[0])-1] = 2
+if type=="IndSigSNP":
+	ls = str(ind[i, 2])
+	l = int(ind[i, 1])
 	ld = ld[ld[:,0]==ls]
-	snps = snps[snps[:,snpshead.index("GenomicLocus")]==loci]
-	snps = np.c_[snps, [0]*len(snps)]
-	snps[ArrayIn(snps[:,0], ld[:,1]),len(snps[0])-1] = 1
+	snps = snps[ArrayIn(snps[:,0], ld[:,1])]
+	snps = np.c_[snps, [1]*len(snps)]
 	snps[snps[:,0]==ls,len(snps[0])-1] = 2
-	snps = snps[snps[:, len(snps[0])-1]>0]
+	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
+	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
+
+elif type=="leadSNP":
+	ls = np.array(lead[i,8].split(":"))
+	ls = snps[ArrayIn(snps[:,1], ls),0]
+	ld = ld[ArrayIn(ld[:,0], ls)]
+	snps = snps[ArrayIn(snps[:,0], ld[:,1])]
+	snps = np.c_[snps, [1]*len(snps)]
+	snps[ArrayIn(snps[:,0], ind[:,2]),len(snps[0])-1] = 2
+	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
+	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 else:
-    loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
-    loci = loci.as_matrix()
-    ls = np.array(loci[i,9].split(":"))
-    ls = snps[ArrayIn(snps[:,1], ls), 0]
-    ld = ld[ArrayIn(ld[:,0], ls)]
-    snps = snps[snps[:,snpshead.index("GenomicLocus")]==i+1]
-    snps = snps[ArrayIn(snps[:,0], ld[:,1])]
-    snps = np.c_[snps, [1]*len(snps)]
-    snps[ArrayIn(snps[:,0],ls),len(snps[0])-1] = 2
+	ls = np.array(loci[i,11].split(":"))
+	ls = snps[ArrayIn(snps[:,1], ls), 0]
+	ld = ld[ArrayIn(ld[:,0], ls)]
+	snps = snps[snps[:,snpshead.index("GenomicLocus")]==i+1]
+	snps = snps[ArrayIn(snps[:,0], ld[:,1])]
+	snps = np.c_[snps, [1]*len(snps)]
+	snps[ArrayIn(snps[:,0], ind[:,2]),len(snps[0])-1] = 2
+	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
+	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 
 chrom = int(snps[0,2])
 xMin = min(snps[:,3])
 xMax = max(snps[:,3])
 
 if "or" in snpshead and "se" in snpshead:
-    snps = snps[:, [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("leadSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("or"), snpshead.index("se")]]
-    snpshead = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "leadSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "or", "se"]
+    snps = snps[:, [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("or"), snpshead.index("se")]]
+    snpshead = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "or", "se"]
 elif "or" in snpshead:
-    snps = snps[:, [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("leadSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("or")]]
-    snpshead = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "leadSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "or"]
+    snps = snps[:, [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("or")]]
+    snpshead = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "or"]
 elif "se" in snpshead:
-    snps = snps[:, [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("leadSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("se")]]
-    snpshead = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "leadSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "se"]
+    snps = snps[:, [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("se")]]
+    snpshead = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "se"]
 else:
-    snps = snps[:, [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("leadSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func")]]
-    snpshead = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "leadSNP", "MAF", "CADD", "RDB", "nearestGene", "func"]
+    snps = snps[:, [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func")]]
+    snpshead = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func"]
 
 snps[:, snpshead.index("RDB")] = snps[:, snpshead.index("RDB")].astype(str)
 snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]

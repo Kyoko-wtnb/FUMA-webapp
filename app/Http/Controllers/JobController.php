@@ -573,6 +573,7 @@ class JobController extends Controller
       // $zip = new ZipArchive();
       $files = array();
       if($request -> has('paramfile')){ $files[] = "params.config";}
+      if($request -> has('indSNPfile')){$files[] = "IndSigSNPs.txt";}
       if($request -> has('leadfile')){$files[] = "leadSNPs.txt";}
       if($request -> has('locifile')){$files[] = "GenomicRiskLoci.txt";}
       if($request -> has('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}

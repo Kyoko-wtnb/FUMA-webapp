@@ -34,7 +34,7 @@ class JsController extends Controller
         $head = fgetcsv($file, 0, "\t");
         $index = array();
         foreach($cols as $c){
-          if(array_search($c, $head)){
+          if(in_array($c, $head)){
             $index[] = array_search($c, $head);
           }else{
             $index[] = -1;

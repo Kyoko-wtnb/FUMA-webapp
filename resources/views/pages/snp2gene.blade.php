@@ -285,8 +285,9 @@
             <!-- Nav tabs -->
             <ul class="nav nav-tabs" role="tablist">
               <!-- <li role="presentation" class="active"><a href="#summaryTable" aria-controls="summaryTable" rolw="tab" data-toggle="tab">Summary</a></li> -->
-              <li role="presentation" class="active"><a href="#leadSNPtablePane" aria-controls="leadSNPtablePane" rolw="tab" data-toggle="tab">lead SNPs</a></li>
-              <li role="presentation"><a href="#lociTablePane" aria-controls="lociTablePane" rolw="tab" data-toggle="tab">Genomic risk loci</a></li>
+              <li role="presentation" class="active"><a href="#lociTablePane" aria-controls="lociTablePane" rolw="tab" data-toggle="tab">Genomic risk loci</a></li>
+              <li role="presentation"><a href="#leadSNPtablePane" aria-controls="leadSNPtablePane" rolw="tab" data-toggle="tab">lead SNPs</a></li>
+              <li role="presentation"><a href="#sigSNPtablePane" aria-controls="sigSNPtablePane" rolw="tab" data-toggle="tab">Ind. Sig. SNPs</a></li>
               <li role="presentation"><a href="#SNPtablePane" aria-controls="SNPtablePane" rolw="tab" data-toggle="tab">SNPs (annotations)</a></li>
               <li role="presentation"><a href="#annovTablePane" aria-controls="annovTablePane" rolw="tab" data-toggle="tab">ANNOVAR</a></li>
               <li role="presentation"><a href="#geneTablePane" aria-controls="geneTablePane" rolw="tab" data-toggle="tab">Mapped Genes</a></li>
@@ -298,12 +299,42 @@
             </ul>
             <!-- Tab panes -->
             <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="leadSNPtablePane">
+              <div role="tabpanel" class="tab-pane active" id="lociTablePane">
+                <br/>
+                <p class="info">
+                  <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
+                </p>
+                <table id="lociTable" class="display compact dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                  <thead>
+                    <tr>
+                      <th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>start</th><th>end</th><th>nSNPs</th><th>nGWASSNPs</th><th>nIndSigSNPs</th><th>IndSigSNPs</th><th>nLeadSNPs</th><th>LeadSNPs</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+
+            <div role="tabpanel" class="tab-pane" id="leadSNPtablePane">
               <br/>
               <p class="info">
                 <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
               </p>
               <table id="leadSNPtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                <thead>
+                  <tr>
+                    <th>No</th><th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nIndSigSNPs</th><th>IndSigSNPs</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="sigSNPtablePane">
+              <br/>
+              <p class="info">
+                <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
+              </p>
+              <table id="sigSNPtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                 <thead>
                   <tr>
                     <th>No</th><th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nSNPs</th><th>nGWASSNPs</th>
@@ -312,20 +343,7 @@
                 <tbody></tbody>
               </table>
             </div>
-            <div role="tabpanel" class="tab-pane" id="lociTablePane">
-              <br/>
-              <p class="info">
-                <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
-              </p>
-              <table id="lociTable" class="display compact dt-body-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-                <thead>
-                  <tr>
-                    <th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nLeadSNPs</th><th>start</th><th>end</th><th>nSNPs</th><th>nGWASSNPs</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
+
             <div role="tabpanel" class="tab-pane" id="SNPtablePane">
               <br/>
               <span class="info"><i class="fa fa-info"></i> This table contain all SNPs in LD of identified lead SNPs even if functional filtering is performed for gene mapping.</span>
@@ -644,8 +662,9 @@
           <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
           <!-- <input type="checkbox" name="allfiles" id="allfiles" checked onchange="DownloadFiles();">All files</br> -->
           <input type="checkbox" name="paramfile" id="paramfile" checked onchange="DownloadFiles();">Parameters</br>
-          <input type="checkbox" name="leadfile" id="leadfile" checked onchange="DownloadFiles();">lead SNP table (independent lead SNPs) </br>
           <input type="checkbox" name="locifile" id="locifile" checked onchange="DownloadFiles();">Genomic risk loci table <br/>
+          <input type="checkbox" name="leadfile" id="leadfile" checked onchange="DownloadFiles();">lead SNP table (independent lead SNPs at r2 0.1) </br>
+          <input type="checkbox" name="indSNPfile" id="indSNPfile" checked onchange="DownloadFiles();">Independent Significant SNPs table (independent at user defined r2) </br>
           <input type="checkbox" name="snpsfile" id="snpsfile" checked onchange="DownloadFiles();"> SNP table (Candidate SNPs with chr, bp, P-value, CADD, RDB, nearest gene, genomic risk loci and lead SNPs)<br/>
           <input type="checkbox" name="annovfile" id="annovfile" checked onchange="DownloadFiles();">ANNOVAR results (uniqID, annotation, gene and distance, SNP-gene pair per line)<br/>
           <input type="checkbox" name="annotfile" id="annotfile" checked onchange="DownloadFiles();">Annotations (CADD, RDB and Chromatin state of 127 tissue/cell types)<br/>

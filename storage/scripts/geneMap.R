@@ -172,36 +172,38 @@ if(nrow(geneTable)>0){
   if(posMap==1 & eqtlMap==1){
     geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & (snps$uniqID %in% annov$uniqID[annov$gene==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])))>0)
     {min(snps$gwasP[!is.na(snps$gwasP) & (snps$uniqID %in% annov$uniqID[annov$gene==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])])}else{NA}})
-    geneTable$leadSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% annov$uniqID[annov$gene==x] | ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")})
+    geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% annov$uniqID[annov$gene==x] | ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")})
   }else if(posMap==1){
     geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & snps$uniqID %in% annov$uniqID[which(annov$gene==x)]))>0)
     {min(snps$gwasP[!is.na(snps$gwasP) & snps$uniqID %in% annov$uniqID[annov$gene==x]])}else{NA}})
-    geneTable$leadSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% annov$uniqID[which(annov$gene==x)]]]), collapse = ":")})
+    geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% annov$uniqID[which(annov$gene==x)]]]), collapse = ":")})
   }else{
     geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & snps$uniqID %in% eqtl$uniqID[eqtl$gene==x]))>0)
     {min(snps$gwasP[!is.na(snps$gwasP) & snps$uniqID %in% eqtl$uniqID[eqtl$gene==x]])}else{NA}})
-    geneTable$leadSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")})
+    geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")})
   }
 
-  leadS <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
+  leadS <- fread(paste(filedir, "IndSigSNPs.txt", sep=""), data.table=F)
   geneTable$GenomicLocus <- NA
   for(i in 1:nrow(geneTable)){
-    ls <- unlist(strsplit(geneTable$leadSNPs[i], ":"))
+    ls <- unlist(strsplit(geneTable$IndSigSNPs[i], ":"))
     geneTable$GenomicLocus[i] <- paste(unique(leadS$GenomicLocus[leadS$rsID %in% ls]), collapse=":")
   }
 }
 
 write.table(geneTable, paste(filedir, "genes.txt", sep=""), quote=F, row.names=F, sep="\t")
 
-summary <- data.frame(matrix(nrow=5, ncol=2))
-summary[,1] <- c("#lead SNPs", "#Genomic risk loci", "#candidate SNPs", "#candidate GWAS tagged SNPs", "#mapped genes")
-leadS <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
+summary <- data.frame(matrix(nrow=6, ncol=2))
+summary[,1] <- c("#Genomic risk loci", "#lead SNPs", "#Ind. Sig. SNPs",  "#candidate SNPs", "#candidate GWAS tagged SNPs", "#mapped genes")
+indS <- fread(paste(filedir, "IndSigSNPs.txt", sep=""), data.table=F)
 loci <- fread(paste(filedir, "GenomicRiskLoci.txt", sep=""), data.table=F)
-summary[1,2] <- nrow(leadS)
-summary[2,2] <- nrow(loci)
-summary[3,2] <- nrow(snps)
-summary[4,2] <- length(which(!is.na(snps$gwasP)))
-summary[5,2] <- nrow(geneTable)
+leadS <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
+summary[1,2] <- nrow(loci)
+summary[2,2] <- nrow(leadS)
+summary[3,2] <- nrow(indS)
+summary[4,2] <- nrow(snps)
+summary[5,2] <- length(which(!is.na(snps$gwasP)))
+summary[6,2] <- nrow(geneTable)
 write.table(summary, paste(filedir, "summary.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
 
 int.table <- data.frame(GenomicLocus=loci$GenomicLocus, label=NA, nSNPs=NA, size=NA, nGenes=NA, nWithinGene=NA)

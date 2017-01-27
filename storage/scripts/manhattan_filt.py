@@ -26,7 +26,7 @@ l = 3100000000/(width/2)
 h = yMax/(height/2)
 #print yMax
 outfile = open(filedir+"manhattan.txt", 'w')
-for chrom in range(1,23):
+for chrom in range(1,24):
 	plotSNPs = []
 	if chrom==1:
 		plotSNPs.append(['chr', 'bp', 'p'])
