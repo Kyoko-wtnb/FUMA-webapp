@@ -88,6 +88,9 @@ class D3jsController extends Controller
           $header = fgetcsv($file, 0, "\t");
           $all_rows = array();
           while($row = fgetcsv($file, 0, "\t")){
+            if($row[1]=="X"){
+              $row[1]=23;
+            }
             $row[1] = (int)$row[1];
             $row[2] = (int)$row[2];
             $row[3] = (int)$row[3];
