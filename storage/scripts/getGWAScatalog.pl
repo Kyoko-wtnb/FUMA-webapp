@@ -27,11 +27,21 @@ my $chr = 0;
 my $start = 0;
 my $end = 0;
 my %SNP;
-<IN>;
+my $header = <IN>;
+my @header = split(/\s/, $header);
+my $locicol;
+my $leadSNPcol;
+foreach my $i (0..$#header){
+	if($header[$i] eq "GenomicLocus"){
+		$locicol = $i;
+	}else if($header[$i] eq "IndSigSNP"){
+		$leadSNPcol = $i;
+	}
+}
 while(<IN>){
 	my @line = split(/\s/, $_);
-	$SNP{$line[1]}{"GenomicLocus"}=$line[10];
-	$SNP{$line[1]}{"leadSNP"}=$line[9];
+	$SNP{$line[1]}{"GenomicLocus"}=$line[$locicol];
+	$SNP{$line[1]}{"leadSNP"}=$line[$leadSNPcol];
 	$start = $line[3] if($start == 0);
 	if($line[2]==$chr){
 		if($end-$start<1000000){
