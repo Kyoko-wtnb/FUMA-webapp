@@ -73,9 +73,9 @@ if(nrow(indS)>1){
       loci[j,5] <- indS$pos[i]
       loci[j,6] <- indS$p[i]
       }
-      loci[j,9] <- loci[j,7]+1
-      loci[j,7] <- min(c(loci[j,8], min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])))
-      loci[j,8] <- max(c(loci[j,9], max(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])))
+      loci[j,9] <- loci[j,9]+1
+      loci[j,7] <- min(c(loci[j,7], min(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])))
+      loci[j,8] <- max(c(loci[j,8], max(snps$pos[snps$uniqID %in% ld$SNP2[ld$SNP1==indS$uniqID[i]]])))
       loci[j,10] <- paste(loci[j,10], indS$rsID[i], sep=":")
       indS$GenomicLocus[i] <- j
     }else{

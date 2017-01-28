@@ -62,11 +62,11 @@ elif type=="leadSNP":
 	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
 	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 else:
-	ls = np.array(loci[i,11].split(":"))
-	ls = snps[ArrayIn(snps[:,1], ls), 0]
-	ld = ld[ArrayIn(ld[:,0], ls)]
+	# ls = np.array(loci[i,11].split(":"))
+	# ls = snps[ArrayIn(snps[:,1], ls), 0]
+	# ld = ld[ArrayIn(ld[:,0], ls)]
 	snps = snps[snps[:,snpshead.index("GenomicLocus")]==i+1]
-	snps = snps[ArrayIn(snps[:,0], ld[:,1])]
+	# snps = snps[ArrayIn(snps[:,0], ld[:,1])]
 	snps = np.c_[snps, [1]*len(snps)]
 	snps[ArrayIn(snps[:,0], ind[:,2]),len(snps[0])-1] = 2
 	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
