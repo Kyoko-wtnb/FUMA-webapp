@@ -943,7 +943,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
   function locusPlot(jobID, type, chr){
     // create plot space
     var colorScale = d3.scale.linear().domain([0.0,0.5,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-    var margin = {top:30, right: 30, bottom:50, left:50},
+    var margin = {top:50, right: 50, bottom:60, left:50},
         width = 700-margin.right - margin.left,
         height = 300-margin.top - margin.bottom;
     // set range
@@ -954,6 +954,50 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
               .attr("width", width+margin.left+margin.right)
               .attr("height", height+margin.top+margin.bottom)
               .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
+
+    var legData = [];
+    for(i=10; i>0; i--){
+      legData.push(i*0.1);
+    }
+    // document.getElementById('test').innerHTML += "0: "+legData[0]+"<br/>9:"+legData[9]+"<br>";
+    var legendGwas = svg.selectAll(".legendGWAS")
+      .data(legData)
+      .enter()
+      .append("g").attr("class", "legend")
+    legendGwas.append("rect")
+      .attr("x", width+10)
+      .attr("y", function(d){return 10+(10-d*10)*10})
+      .attr("width", 20)
+      .attr("height", 10)
+      .style("fill", function(d){return colorScale(d)});
+    legendGwas.append("text")
+      .attr("text-anchor", "start")
+      .attr("x", width+32)
+      .attr("y", function(d){return 20+(10-d*10)*10})
+      .text(function(d){return Math.round(d*100)/100})
+      .style("font-size", "10px");
+    svg.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(width+20)+",5)")
+      .text("r2").style("font-size", "10px");
+
+    svg.append("circle")
+      .attr("cx", 145).attr("cy", height+45).attr("r", 4.5)
+      .style("fill", "#4d0099").style("stroke", "black").style("strole-width", "2");
+    svg.append("text").attr("text-anchor", "top")
+      .attr("x", 150).attr("y", height+50)
+      .text("Top lead SNP");
+    svg.append("circle")
+      .attr("cx", 250).attr("cy", height+45).attr("r", 4)
+      .style("fill", "#9933ff").style("stroke", "black").style("strole-width", "2");
+    svg.append("text").attr("text-anchor", "top")
+      .attr("x", 255).attr("y", height+50)
+      .text("Lead SNPs");
+    svg.append("circle")
+      .attr("cx", 340).attr("cy", height+45).attr("r", 3.5)
+      .style("fill", "red").style("stroke", "black").style("strole-width", "2");
+    svg.append("text").attr("text-anchor", "top")
+      .attr("x", 345).attr("y", height+50)
+      .text("Independent significant SNPs");
 
     queue().defer(d3.json, "d3text/"+jobID+"/locusPlot.txt")
       .defer(d3.json, "d3text/"+jobID+"/temp.txt")
@@ -1053,7 +1097,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
           .attr("transform", "translate("+(-margin.left/2-5)+","+(height/2)+")rotate(-90)")
           .text("-log10 P-value");
         svg.append("text").attr("text-anchor", "middle")
-          .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-15)+")")
+          .attr("transform", "translate("+(width/2)+","+(height+32)+")")
           .text("Chromosome "+chr);
         svg.append("text").attr("text-anchor", "middle")
           .attr("transform", "translate("+(-margin.left/2)+", -15)")

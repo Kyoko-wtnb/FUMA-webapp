@@ -15,11 +15,11 @@ pos : position of top lead SNP on hg19
 p : P-value of top lead SNP (from the input file).
 start : Start position of the locus.
 end : End postion of the locus.
-nSNPs : Number of canidate SNPs in the interval, including non-GWAS-tagged SNPs (which are extracted from 1000G).
-nGWASSNPs : Number of GWAS-tagged candidate SNPs within the interval. This is a subset of &quot;nSNPs&quot;.
-nIndSigSNPs : Number of independent significant SNPs in the genomic locus
+nSNPs : Number of the canidate SNPs in the interval, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+nGWASSNPs : Number of the GWAS-tagged candidate SNPs within the interval. This is a subset of &quot;nSNPs&quot;.
+nIndSigSNPs : Number of the independent significant SNPs in the genomic locus
 IndSigSNPs : rsID of independent significant SNPs in the genomic locus
-nLeadSNPs : Number of lead SNPs in the genomic locus
+nLeadSNPs : Number of the lead SNPs in the genomic locus
 LeadSNPs : rsID of lead SNPs in the genomic locus
 
 ######################
@@ -33,7 +33,7 @@ rsID : rsID based on dbSNP build 146.
 chr : chromosome
 pos : position on hg19
 p : P-value (from the input file).
-nIndSigSNPs : Number of independent significant SNPs in LD of the lead SNP at r2 0.1
+nIndSigSNPs : Number of the independent significant SNPs in LD of the lead SNP at r2 0.1
 IndSigSNPs : rsID of independent significant SNPs in LD of the lead SNP at r2 0.1
 
 ######################
@@ -47,8 +47,8 @@ rsID : rsID based on dbSNP build 146.
 chr : chromosome
 pos : position on hg19
 p : P-value (from the input file).
-nSNPs : The number of SNPs within LD of the ind. sig. SNP given r2, including non-GWAS-tagged SNPs (which are extracted from 1000G).
-nGWASSNPs : The number of GWAS-tagged SNPs within LD of the ind. sig. SNP given r2.
+nSNPs : Number of the SNPs within LD of the ind. sig. SNP given r2, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+nGWASSNPs : Number of the GWAS-tagged SNPs within LD of the ind. sig. SNP given r2.
 
 
 ######################
@@ -111,15 +111,15 @@ strand : strand od gene
 status : status of gene from Ensembl
 type : gene biotype from Ensembl
 HUGO : HUGO (HGNC) gene symbol
-posMapSNPs (posMap): The number of SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).
+posMapSNPs (posMap): Number of the SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).
 posMapMaxCADD (posMap): The maximum CADD score of mapped SNPs by positional mapping.
-eqtlMapSNPs (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.
+eqtlMapSNPs (eqtlMap): Number of the SNPs mapped to the gene based on eQTL mapping.
 eqtlMapminP (eqtlMap): The minimum eQTL P-value of mapped SNPs.
 eqtlMapmin! (eqtlMap): The minimum eQTL FDR of mapped SNPs.
 eqtlMapts (eqtlMap): Tissue types of mapped eQTL SNPs.
 eqtlDirection (eqtlMap): consecutive direction of mapped eQTL SNPs.
 minGwasP : The minimum P-value of mapped SNPs.
-IndSigSNPs : All independent significant SNPs of mapped SNPs.
+IndSigSNPs : rsID of the all independent significant SNPs of mapped SNPs.
 
 ######################
 # eqtl.txt

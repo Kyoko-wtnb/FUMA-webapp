@@ -34,7 +34,7 @@ my $leadSNPcol;
 foreach my $i (0..$#header){
 	if($header[$i] eq "GenomicLocus"){
 		$locicol = $i;
-	}else if($header[$i] eq "IndSigSNP"){
+	}elsif($header[$i] eq "IndSigSNP"){
 		$leadSNPcol = $i;
 	}
 }
