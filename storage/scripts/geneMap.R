@@ -16,8 +16,7 @@ genetype <- params$params$genetype
 exMHC <- as.numeric(params$params$exMHC)
 extMHC <- params$params$extMHC
 posMap <- as.numeric(params$posMap$posMap)
-posMapWindow <- as.numeric(params$posMap$posMapWindow)
-posMapWindowSize <- as.numeric(params$posMap$posMapWindowSize)*1000
+posMapWindowSize <- params$posMap$posMapWindowSize
 posMapAnnot <- params$posMap$posMapAnnot
 posMapCADDth <- as.numeric(params$posMap$posMapCADDth)
 posMapRDBth <- params$posMap$posMapRDBth
@@ -34,6 +33,11 @@ eqtlMapChr15 <- params$eqtlMap$eqtlMapChr15
 eqtlMapChr15Max <- as.numeric(params$eqtlMap$eqtlMapChr15Max)
 eqtlMapChr15Meth <- params$eqtlMap$eqtlMapChr15Meth
 
+if(posMapWindowSize=="NA"){
+  posMapWindowSize <- NA
+}else{
+  posMapWindowSize <- as.numeric(posMapWindowSize)*1000
+}
 
 load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 
@@ -93,11 +97,14 @@ if(posMap==1){
     annov <- annov[annov$uniqID %in% epi$uniqID,]
     rm(epi, temp)
   }
-  if(posMapWindow==1){
-    annov <- annov[annov$dist <= posMapWindowSize,]
-  }else{
+  if(is.na(posMapWindowSize)){
     posMapAnnot <- unique(unlist(strsplit(posMapAnnot, ":")))
     annov <- annov[grepl(paste(posMapAnnot, collapse="|"), annov$annot),]
+  }else{
+    annov <- annov[annov$dist <= posMapWindowSize,]
+    if(posMapWindowSize==0){
+      annov <- annov[!grepl("upstream|downstream", annov$annot),]
+    }
   }
 
   genes <- c(genes, unique(annov$gene))

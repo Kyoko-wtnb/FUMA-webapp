@@ -3,6 +3,8 @@
 ###########################################################
 # eQTL file has to follow the following structure and tabixable
 # chr	pos 	ref	alt(tested)	gene	t/z	p	FDR(if applicable)
+#
+# matched with chr:pos:alt as alt alleles are assumed to be effect alleles
 ###########################################################
 
 use strict;
@@ -74,21 +76,22 @@ open(IN, "$snpfile") or die "Cannot opne $snpfile\n";
 <IN>;
 while(<IN>){
 	my @line = split(/\s/, $_);
+	my $id = join(":", ($line[2], $line[3], $line[5]));
 	if($lid == 0){
 		$lid++;
 		$Loci{$lid}{"chr"}=$line[2];
 		$Loci{$lid}{"start"}=$line[3];
 		$Loci{$lid}{"end"}=$line[3];
-		$SNPs{$lid}{$line[0]}{"pos"}=$line[3];
+		$SNPs{$lid}{$id}{"pos"}=$line[3];
 	}elsif($Loci{$lid}{"chr"}==$line[2] && $line[3]-$Loci{$lid}{"end"} <= $dist){
 		$Loci{$lid}{"end"}=$line[3];
-		$SNPs{$lid}{$line[0]}{"pos"}=$line[3];
+		$SNPs{$lid}{$id}{"pos"}=$line[3];
 	}else{
 		$lid++;
 		$Loci{$lid}{"chr"}=$line[2];
 		$Loci{$lid}{"start"}=$line[3];
 		$Loci{$lid}{"end"}=$line[3];
-		$SNPs{$lid}{$line[0]}{"pos"}=$line[3];
+		$SNPs{$lid}{$id}{"pos"}=$line[3];
 	}
 }
 close IN;
@@ -113,7 +116,7 @@ foreach my $s (keys %db){
 					my %sig;
 					foreach my $l (@eqtlsig){
 						my @line = split(/\s/, $l);
-						my $id = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
+						my $id = join(":", ($line[0], $line[1], $line[3]));
 						print OUT "$id\t$s\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t$line[7]\n" if(exists $SNPs{$lid}{$id});
 					}
 				}else{
@@ -121,14 +124,14 @@ foreach my $s (keys %db){
 					my %sig;
 					foreach my $l (@eqtlsig){
 						my @line = split(/\s/, $l);
-						my $id = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
+						my $id = join(":", ($line[0], $line[1], $line[3]));
 						$sig{$id}{$line[4]}=$line[7] if(exists $SNPs{$lid}{$id});
 					}
 					my @eqtl = split(/\n/, `tabix $file $chr:$start-$end`);
 					foreach my $l (@eqtl){
 						my @line = split(/\s/, $l);
 						next if($line[6]>$eqtlP);
-						my $id = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
+						my $id = join(":", ($line[0], $line[1], $line[3]));
 						if(exists $SNPs{$lid}{$id}){
 							$line[4] =~ s/(ENSG\d+).\d+/$1/;
 							print OUT "$id\t$s\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t";
@@ -153,7 +156,7 @@ foreach my $s (keys %db){
 					my @line = split(/\s/, $l);
 					if($sigonly){next if($line[7]>0.05)}
 					else{next if($line[6]>$eqtlP)}
-					my $id = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
+					my $id = join(":", ($line[0], $line[1], $line[3]));
 					if(exists $SNPs{$lid}{$id}){
 						print OUT join("\t", ($id, $s, $ts, $line[4], $line[3], $line[6], $line[5], $line[7])), "\n";
 					}

@@ -172,7 +172,7 @@
 
         <div id="checkGenes"></div>
         <div id="checkBkGenes"></div>
-        <input type="submit" value="Submit" class="btn" id="geneSubmit" name="geneSubmit" style="float: right;"/><br/><br/>
+        <input type="submit" value="Submit" class="btn" id="geneSubmit" name="geneSubmit"/><br/><br/>
         {!! Form::close() !!}
       </div>
 

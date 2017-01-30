@@ -1,19 +1,20 @@
 <h3 id="eQTLs">eQTLs</h3>
-FUMA contains several data srouces of eQTLs. Each data source will be described detail in this section.
+FUMA contains several data sources of eQTL information, and can include more sources when available.
+Each data source is described in more detail in this section.
 <div style="padding-left: 40px;">
   <h4><strong>1. GTEx v6</strong></h4>
   <p><strong>Data source</strong><br/>
     eQTL data was downloaded from <a href="http://www.gtexportal.org/home/datasets">http://www.gtexportal.org/home/datasets</a>.
     Under the section of GTEx V6, from single tissue eQTL data both <span style="color: blue;">GTEx_analysis_V6_eQTLs.tar.gz</span>
-    for significant SNP-gene assocition based on permutation and
+    for significant SNP-gene association based on permutation, and
     <span style="color: blue;">GTEx_Analysis_V6_all-snp-gene-associations.tar</span> for every SNP-gene association test (including non-significant paris)
     were downloaded.<br/>
     GTEx eQTL v6 contains 44 different tissue types across 23 general tissue types.
   </p>
   <p><strong>Description</strong><br/>
     FUMA contains all SNP-gene pairs of cis-eQTL including non-significant association.
-    Significant eQTLs are defined as such paris of SNP-gene with gene FDR &le; 0.05.
-    The gene FDR is defined by GTEx and every gene-tissue pair has define P-value threshold for eQTLs based on permutaion.
+    Significant eQTLs are defined as FDR &le; 0.05.
+    The gene FDR is pre-calculated by GTEx and every gene-tissue pair has a defined P-value threshold for eQTLs based on permutation.
   </p>
   <p><strong>Samples</strong><br/>
     <div class="panel panel-default">
@@ -87,7 +88,7 @@ FUMA contains several data srouces of eQTLs. Each data source will be described 
     eQTL data was downloaded from <a href="http://genenetwork.nl/bloodeqtlbrowser/">http://genenetwork.nl/bloodeqtlbrowser/</a>.
   </p>
   <p><strong>Description</strong><br/>
-    The data include eQTLs at FDR &le; 0.5.
+    The data only include eQTLs with FDR &le; 0.5.
     Genes in the original files were mapped to Ensembl ID in which genes are removed if they are not mapped to Ensembl ID.
   </p>
   <p><strong>Samples</strong><br/>
@@ -100,7 +101,7 @@ FUMA contains several data srouces of eQTLs. Each data source will be described 
     <span style="color:blue;">Cis-eQTLs Gene-level all primary effects</span> was downloaded which includes all SNP-gene pairs with FDR &le; 0.05.
   </p>
   <p><strong>Description</strong><br/>
-    The dada only include eQTLs with FDR &le; 0.05.
+    The data only include eQTLs with FDR &le; 0.05.
   </p>
   <p><strong>Samples</strong><br/>
     2,116 whole peripheral blood samples of healthy adults from 4 Durch cohorts (<a href="https://www.ncbi.nlm.nih.gov/pubmed/27918533">Zhernakova et al. 2017</a>).
@@ -108,7 +109,7 @@ FUMA contains several data srouces of eQTLs. Each data source will be described 
 
   <h4><strong>4. BRAINEAC</strong></h4>
   <p><strong>Data source</strong><br/>
-    eQTL was obtained by applying to data access (<a target="_blank" href="http://www.braineac.org/">http://www.braineac.org/</a>).<br/>
+    eQTL was obtained from <a target="_blank" href="http://www.braineac.org/">http://www.braineac.org/</a>.<br/>
   </p>
   <p><strong>Description</strong><br/>
     The data include all eQTLs with nominal P-value < 0.05.

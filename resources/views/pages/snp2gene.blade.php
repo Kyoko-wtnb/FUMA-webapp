@@ -58,7 +58,7 @@
       <div id="resultsSide">
         <li><a href="#summaryTable">Summary of results<i class="sub_icon fa fa-bar-chart"></i></a></li>
         <li><a href="#tables">Results<i class="sub_icon fa fa-table"></i></a></li>
-        <li><a href="#downloads">Downloads<i class="sub_icon fa fa-download"></i></a></li>
+        <li><a href="#downloads">Download<i class="sub_icon fa fa-download"></i></a></li>
       </div>
     </ul>
   </div>
@@ -159,6 +159,7 @@
                 <h4 style="color: #00004d">QQ plots (gene-based test)</h4>
                 <span class="info"><i class="fa fa-info"></i>
                   This is a Q-Q plot of the gene-based test computed by MAGMA.<br/>
+                  <br/>
                 </span><br/><br/>
                 Download the plot as
                 <button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","png");'>PNG</button>
@@ -184,9 +185,10 @@
           <br/><br/>
           <h4 style="color: #00004d">MAGMA Gene-set analysis</h4>
           <span class="info"><i class="fa fa-info"></i>
-            MAGMA Gene-set analysis was performed for curated gene sets and GO terms (total of 10894 gene sets) obtained from MsigDB v5.2.<br/>
-            The table only displays either top 10 significant gene sets (or all gene sets with P<sub>bon</sub> < 0.05 if it is more than 10).
-            Complete results are downloadable from "Download" tab.
+            MAGMA gene-set analysis was performed for curated gene sets and GO terms obtained from MsigDB v5.2 (total of 10894 gene sets).<br/>
+            The table only displays either top the 10 significant gene sets or all gene sets with P<sub>bon</sub> < 0.05 if it is more than 10.
+            Full results are downloadable from "Download" tab. <br/>
+            Note that MAGMA gene-set analyses uses the full distribution of SNP p-values and is different from pathway enrichment test that only test for enrichment of low P-values.
           </span><br/><br/>
           <table id="MAGMAtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
             <thead>
@@ -314,116 +316,119 @@
                 </table>
               </div>
 
-            <div role="tabpanel" class="tab-pane" id="leadSNPtablePane">
-              <br/>
-              <p class="info">
-                <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
-              </p>
-              <table id="leadSNPtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-                <thead>
-                  <tr>
-                    <th>No</th><th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nIndSigSNPs</th><th>IndSigSNPs</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
+              <div role="tabpanel" class="tab-pane" id="leadSNPtablePane">
+                <br/>
+                <p class="info">
+                  <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
+                </p>
+                <table id="leadSNPtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                  <thead>
+                    <tr>
+                      <th>No</th><th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nIndSigSNPs</th><th>IndSigSNPs</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
 
-            <div role="tabpanel" class="tab-pane" id="sigSNPtablePane">
-              <br/>
-              <p class="info">
-                <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
-              </p>
-              <table id="sigSNPtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-                <thead>
-                  <tr>
-                    <th>No</th><th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nSNPs</th><th>nGWASSNPs</th>
-                  </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
-            </div>
+              <div role="tabpanel" class="tab-pane" id="sigSNPtablePane">
+                <br/>
+                <p class="info">
+                  <i class="fa fa-info"></i> Click row to display a regional plot of GWAS summary statistics.
+                </p>
+                <table id="sigSNPtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                  <thead>
+                    <tr>
+                      <th>No</th><th>Genomic Locus</th><th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>P-value</th><th>nSNPs</th><th>nGWASSNPs</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
 
-            <div role="tabpanel" class="tab-pane" id="SNPtablePane">
-              <br/>
-              <span class="info"><i class="fa fa-info"></i> This table contain all SNPs in LD of identified lead SNPs even if functional filtering is performed for gene mapping.</span>
-              <br/>
-              <table id="SNPtable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-              </table>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="annovTablePane">
-              <br/>
-              <span class="info"><i class="fa fa-info"></i> This is result of annotation by ANNOVAR. SNPs can be appear multiple times in this table if they are annotated to more than one genes.</span>
-              <br/>
-              <table id="annovTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-                <thead>
-                  <tr>
-                    <th>uniqID</th><th>chr</th><th>bp</th><th>Gene</th><th>Symbol</th><th>Distance</th><th>Function</th><th>Exonic function</th><th>Exon</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="geneTablePane">
-              <br/>
-              <span class="info"><i class="fa fa-info"></i>
-                This table contains prioritized genes based on user defined mapping criteria. Note that these genes do no necessary contain all genes which are locating within genomic loci (depending on mapping paramters).
-              </span>
-              <!-- Jump to GENE2FUNC -->
-              <form action="{{ Config::get('app.subdir') }}/gene2func/geneSubmit" method="post" target="_blank">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
-                <span class="form-inline">
-                  <input type="submit" class="btn" id="geneQuerySubmit" name="geneQuerySubmit" value="Use mapped genes for GENE2FUNC (open new tab)">
-                  <a class="infoPop" data-toggle="popover" data-content="This is linked to GENE2FUNC process. All genes in the table below will be used. You can manually submit selected genes later on. This will open new tab.">
-                    <i class="fa fa-question-circle-o fa-lg"></i>
-                  </a>
+              <div role="tabpanel" class="tab-pane" id="SNPtablePane">
+                <br/>
+                <span class="info"><i class="fa fa-info"></i> This table contain all SNPs in LD of identified lead SNPs even if functional filtering is performed for gene mapping.</span>
+                <br/>
+                <table id="SNPtable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                </table>
+              </div>
+
+              <div role="tabpanel" class="tab-pane" id="annovTablePane">
+                <br/>
+                <span class="info"><i class="fa fa-info"></i> This is result of annotation by ANNOVAR. SNPs can be appear multiple times in this table if they are annotated to more than one genes.</span>
+                <br/>
+                <table id="annovTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                  <thead>
+                    <tr>
+                      <th>uniqID</th><th>chr</th><th>bp</th><th>Gene</th><th>Symbol</th><th>Distance</th><th>Function</th><th>Exonic function</th><th>Exon</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+
+              <div role="tabpanel" class="tab-pane" id="geneTablePane">
+                <br/>
+                <span class="info"><i class="fa fa-info"></i>
+                  This table contains prioritized genes based on user defined mapping criteria. Note that these genes do no necessary contain all genes which are locating within genomic loci (depending on mapping paramters).
                 </span>
-              </form>
-              <br/>
-              <table id="geneTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-              </table>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="eqtlTablePane">
-              <br/>
-              <table id="eqtlTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-                <thead>
-                  <tr>
-                    <th>uniqID</th><th>chr</th><th>bp</th><th>DB</th><th>tissue</th><th>Gene</th><th>Symbol</th><th>P-value</th><th>FDR</th><th>t/z</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="gwascatTablePane">
-              <br/>
-              <p class="info"><i class="fa fa-info"></i>
-                This table only shows subset of information from GWAS catalog. <br/>
-                Please download a output file (gwascatalog.txt) from "Download" tab to get full information
-              </p>
-              <table id="gwascatTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-                <thead>
-                  <tr>
-                    <th>Genomic Locus</th><th>lead SNP</th><th>chr</th><th>bp</th><th>rsID</th><th>PMID</th><th>Trait</th><th>FirstAuth</th><th>Date</th><th>P-value</th>
-                  </tr>
-                </thead>
-              </table>
-            </div>
-            <!-- <div role="tabpanel" class="tab-pane" id="exacTablePane">
-              <br/>
-              <table id="exacTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-                <thead>
-                  <tr>
-                    <th>Genomic Locus</th><th>uniqID</th><th>chr</th><th>bp</th><th>ref</th><th>alt</th><th>Annotation</th><th>Gene</th><th>MAF</th>
-                    <th>MAF(FIN)</th><th>MAF(NFE)</th><th>MAF(AMR)</th><th>MAF(AFR)</th><th>MAF(EAS)</th><th>MAF(SAS)</th><th>MAF(OTH)<th>
-                  </tr>
-                </thead>
-              </table>
-            </div> -->
-            <div role="tabpanel" class="tab-pane" id="paramsPane">
-              <br/>
-              <div id="paramTable"></div>
-            </div>
+                <!-- Jump to GENE2FUNC -->
+                <form action="{{ Config::get('app.subdir') }}/gene2func/geneSubmit" method="post" target="_blank">
+                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                  <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
+                  <span class="form-inline">
+                    <input type="submit" class="btn" id="geneQuerySubmit" name="geneQuerySubmit" value="Use mapped genes for GENE2FUNC (open new tab)">
+                    <a class="infoPop" data-toggle="popover" data-content="This is linked to GENE2FUNC process. All genes in the table below will be used. You can manually submit selected genes later on. This will open new tab.">
+                      <i class="fa fa-question-circle-o fa-lg"></i>
+                    </a>
+                  </span>
+                </form>
+                <br/>
+                <table id="geneTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                </table>
+              </div>
 
-          </div>
+              <div role="tabpanel" class="tab-pane" id="eqtlTablePane">
+                <br/>
+                <table id="eqtlTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                  <thead>
+                    <tr>
+                      <th>uniqID</th><th>chr</th><th>bp</th><th>DB</th><th>tissue</th><th>Gene</th><th>Symbol</th><th>P-value</th><th>FDR</th><th>t/z</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+
+              <div role="tabpanel" class="tab-pane" id="gwascatTablePane">
+                <br/>
+                <p class="info"><i class="fa fa-info"></i>
+                  This table only shows subset of information from GWAS catalog. <br/>
+                  Please download a output file (gwascatalog.txt) from "Download" tab to get full information
+                </p>
+                <table id="gwascatTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                  <thead>
+                    <tr>
+                      <th>Genomic Locus</th><th>lead SNP</th><th>chr</th><th>bp</th><th>rsID</th><th>PMID</th><th>Trait</th><th>FirstAuth</th><th>Date</th><th>P-value</th>
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+              <!-- <div role="tabpanel" class="tab-pane" id="exacTablePane">
+                <br/>
+                <table id="exacTable" class="display dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                  <thead>
+                    <tr>
+                      <th>Genomic Locus</th><th>uniqID</th><th>chr</th><th>bp</th><th>ref</th><th>alt</th><th>Annotation</th><th>Gene</th><th>MAF</th>
+                      <th>MAF(FIN)</th><th>MAF(NFE)</th><th>MAF(AMR)</th><th>MAF(AFR)</th><th>MAF(EAS)</th><th>MAF(SAS)</th><th>MAF(OTH)<th>
+                    </tr>
+                  </thead>
+                </table>
+              </div> -->
+              <div role="tabpanel" class="tab-pane" id="paramsPane">
+                <br/>
+                <div id="paramTable"></div>
+              </div>
+            </div>
           <!-- </div> -->
         </div></div>
 
@@ -434,13 +439,11 @@
             <h4 style="color: #00004d">Regional Plot (GWAS association)</h4>
             <!-- <div class="row collapse in" id="regionalPlotPanel"> -->
             <span class="info"><i class="fa fa-info"></i>
-              Please click one of the row of lead SNPs or Genomic risk loci tables to display regional plot.<br/>
+              Please click one of the row of Genomic risk loci, lead SNPs or ind. sig. SNPs tables to display regional plot.<br/>
               You can zoom in/out by mouse scroll. <br/>
-              Lead SNPs are colored in purple.
-              SNPs which are in LD of the selected lead SNP are colored in based on r<sup>2</sup>.
-              When a genomic risk locus is selected instead of independent lead SNPs, all independent lead SNPs within that locus and SNPs in LD of them are colored based on r2.
-              SNPs which are not in LD at given threshold are colored in grey.
-              SNPs that are in LD with a lead SNP but do not have a P-value because they were not available in the summary statistics, are displayed at the top of the plot (1000G SNPs).
+              Each SNP is colored by the highest r<sup>2</sup> to one of the ind. sig. SNPs if that is greater or eaqual to user defined threshold.
+              Other SNPs are colored in grey.
+              Top lead SNPs in genomic risk loci, lead SNPs and ind. sig. SNPs are circled in black and colored in dark-purple, purple and red, respectively.
             </span>
             <div class="row">
               <div class="col-md-9">
@@ -656,12 +659,12 @@
 
       <!-- Downloads -->
       <div class="sidePanel container" style="padding-top:50px; height: 100vh;" id="downloads">
-        <h4 style="color: #00004d">Download files </h4>
+        <h4 style="color: #00004d">Download files</h4>
         <form action="filedown" method="post" target="_blank">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
           <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
           <!-- <input type="checkbox" name="allfiles" id="allfiles" checked onchange="DownloadFiles();">All files</br> -->
-          <input type="checkbox" name="paramfile" id="paramfile" checked onchange="DownloadFiles();">Parameters</br>
+          <input type="checkbox" name="paramfile" id="paramfile" checked onchange="DownloadFiles();">Parameter settings</br>
           <input type="checkbox" name="locifile" id="locifile" checked onchange="DownloadFiles();">Genomic risk loci table <br/>
           <input type="checkbox" name="leadfile" id="leadfile" checked onchange="DownloadFiles();">lead SNP table (independent lead SNPs at r2 0.1) </br>
           <input type="checkbox" name="indSNPfile" id="indSNPfile" checked onchange="DownloadFiles();">Independent Significant SNPs table (independent at user defined r2) </br>
@@ -671,8 +674,8 @@
           <input type="checkbox" name="genefile" id="genefile" checked onchange="DownloadFiles();">Gene table (mapped genes)<br/>
           <div id="eqtlfiledown"><input type="checkbox" name="eqtlfile" id="eqtlfile" checked onchange="DownloadFiles();">eQTL table (eQTL of selected tissue types)<br/></div>
           <!-- <input type="checkbox" name="exacfile" id="exacfile" checked onchange="DownloadFiles();">ExAC variants (rare variants from ExAC within genomic risk locis)<br/> -->
-          <input type="checkbox" name="gwascatfile" id="gwascatfile" checked onchange="DownloadFiles();">GWAScatalog (full recode from GWAScatalog)<br/>
-          <input type="checkbox" name="magmafile" id="magmafile" checked onchange="DownloadFiles();">MAGMA results<br/>
+          <input type="checkbox" name="gwascatfile" id="gwascatfile" checked onchange="DownloadFiles();">SNPs in GWAS catalog (full features)<br/>
+          <input type="checkbox" name="magmafile" id="magmafile" checked onchange="DownloadFiles();">MAGMA (full) results<br/>
           <a id="allfiles"> Select All </a><tab><a id="clearfiles"> Clear</a><br/>
           <br/>
           <input class="btn" type="submit" name="download" id="download" value="Download files"/>

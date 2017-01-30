@@ -15,17 +15,14 @@
           <td>GWAS summary statistics
             <a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file" data-content="Every row should have information on one SNP.
             The minimum required columns are ‘chromosome, position and P-value’ or ‘rsID and P-value’.
-            If you provide position, please make sure the position is in hg19.
+            If you provide position, please make sure the position is on hg19.
+            The file could be complete results of GWAS or a subset of SNPs can be used as an input.
             The input file should be plain text, zip or gzip files.
             If you would like to test FUMA, please check 'Use example input', this will load an example file automatically.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </td>
           <td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary"/>
-            <span class="info">
-              <i class="fa fa-info"></i>
-              The maximum file size is 600Mb. Please gzip if your file is bigger than 600Mb.<br/>
-            </span>
             Or <input type="checkbox" class="form-check-input" name="egGWAS" id="egGWAS" onchange="CheckAll()"/> : Use example input (Crohn's disease, Franke et al. 2010).
           </td>
           <td></td>
@@ -212,49 +209,33 @@
         </tr>
         <div id="posMapOptions">
           <tr class="posMapOptions">
-            <td>Distance based mapping
-              <a class="infoPop" data-toggle="popover" title="Distance to genes" data-content="This maps SNPs to genes purely based on distances regardless of functional consequence. Please specify maximum distance in the box below.">
+            <td>Distance to genes or <br>functional consequences of SNPs on genes to map
+              <a class="infoPop" data-toggle="popover" title="Positional mapping" data-content="
+              Positional mapping can be performed purly based on the phisical distance between SNPs and genes by providing the maximum distance.
+              Optionally, functional consequences of SNPs on genes can be selected to map only specific SNPs such as SNPs locating on exonic regions.
+              Note that when functional consequnces are selected, only SNPs locationg on the gene body (distance 0) are mapped to genes except upstream and downstream SNPs which are up to 1kb apart from TSS or TES.">
                 <i class="fa fa-question-circle-o fa-lg"></i>
               </a>
-            </td>
-            <td><input type="checkbox" class="form-check-input" name="windowCheck" id="windowCheck" checked onchange="CheckAll();"></td>
-            <td></td>
-          </tr>
-          <tr class="posMapOptions">
-            <td>Maximum distance to genes (&le; kb)
-              <a class="infoPop" data-toggle="popover" title="Maximum distance to genes" data-content="This option is only valid when distance based mapping is performed. Note that 0 includes 1 kb up and down stream regions as 3' UTR and 5' UTR.">
-                <i class="fa fa-question-circle-o fa-lg"></i>
-              </a>
-            </td>
-            <td><span class="form-inline"><input type="number" class="form-control" id="posMapWindow" name="posMapWindow" value="10" min="0" max="1000" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"> kb</span></td>
-            <td></td>
-          </tr>
-          <tr class="posMapOptions">
-            <td>Annotation based mapping
-              <a class="infoPop" data-toggle="popover" title="Annotation based mapping" data-content="This is alternative positional mapping. Instead of mapping all SNPs to genes based on distance, anntation based mapping filters on SNPs that have selected functional consequences on genes. Unless intergenic SNPs are selected, all SNPs have distance 0 to the genes.">
-                <i class="fa fa-question-circle-o fa-lg"></i>
-              </a>
-              <br/>
-              <span class="info"><i class="fa fa-info"></i> Multiple annotations can be selected. <br/>
-                (usually ctrl+click (windows) or command+click (OS X))
-              </span>
             </td>
             <td>
+              <span class="form-inline">Maximum distance: <input type="number" class="form-control" id="posMapWindow" name="posMapWindow" value="10" min="0" max="1000" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"> kb</span><br/>
+              OR<br/>
+              Functional consequences of SNPs on genes:<br/>
               <span class="multiSelect">
                 <a>clear</a><br/>
                 <select multiple class="form-control" id="posMapAnnot" name="posMapAnnot[]" onchange="CheckAll();">
                   <option value="exonic">exonic</option>
                   <option value="splicing">splicing</option>
                   <option value="intronic">intronic</option>
-                  <option value="3utr">3UTR</option>
-                  <option value="5utr">5UTR</option>
+                  <option value="UTR3">3UTR</option>
+                  <option value="UTR5">5UTR</option>
                   <option value="upstream">upstream</option>
                   <option value="downstream">downstream</option>
                 </select>
               </span>
             </td>
             <td></td>
-          </tr class="posMapOptions">
+          </tr>
         </div>
       </table>
 
@@ -1005,21 +986,13 @@
     </div>
   </div>
 
-  <!-- job title -->
-  <div class="panel panel-default" style="padding:0px;">
-    <div class="panel-heading input" style="padding:5px;">
-      <h4>6. Title of job submission<a href="#NewJobTitlePanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
-    </div>
-    <div class="panel-body collapse" id="NewJobTitlePanel">
-      <table class="table table-bordered inputTable" id="NewJobSubmit" style="width: auto;">
-        <tr>
-          <td>Title</td>
-          <td><input type="text" class="form-control" name="NewJobTitle" id="NewJobTitle" onkeyup="CheckAll();" onpaste="CheckAll();"  oninput="CheckAll();"/></td>
-          <td></td>
-        </tr>
-      </table>
-    </div>
-  </div>
+  <span class="form-inline">
+    <span style="font-size:18px;">Title of job submission</span>:
+    <input type="text" class="form-control" name="NewJobTitle" id="NewJobTitle"/><br/>
+    <span class="info"><i class="fa fa-info"></i>
+      This is not mandatory, but job title might help you to track your jobs.
+    </span>
+  </span><br/><br/>
 
   <input class="btn" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
   {!! Form::close() !!}

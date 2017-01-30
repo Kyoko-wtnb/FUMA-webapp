@@ -282,14 +282,15 @@ class JobController extends Controller
       // else{$Xchr=0;}
       if($request -> has('posMap')){$posMap=1;}
       else{$posMap=0;}
-      if($request -> has('windowCheck')){
-        $posMapWindow=1;
+
+      if($request -> has('posMapWindow')){
+        $posMapWindowSize=$request -> input('posMapWindow');
         $posMapAnnot="NA";
       }else{
-        $posMapWindow=0;
+        $posMapWindow="NA";
         $posMapAnnot=implode(":",$request -> input('posMapAnnot'));
       }
-      $posMapWindowSize = $request -> input('posMapWindow');
+      // $posMapWindowSize = $request -> input('posMapWindow');
       if($request -> has('posMapCADDcheck')){
         $posMapCADDth = $request -> input('posMapCADDth');
       }else{
@@ -422,7 +423,7 @@ class JobController extends Controller
 
       File::append($paramfile, "\n[posMap]\n");
       File::append($paramfile, "posMap=$posMap\n");
-      File::append($paramfile, "posMapWindow=$posMapWindow\n");
+      // File::append($paramfile, "posMapWindow=$posMapWindow\n");
       File::append($paramfile, "posMapWindowSize=$posMapWindowSize\n");
       File::append($paramfile, "posMapAnnot=$posMapAnnot\n");
       File::append($paramfile, "posMapCADDth=$posMapCADDth\n");

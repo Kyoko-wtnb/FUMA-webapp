@@ -320,7 +320,7 @@ function GWplot(jobID){
     $('#topGenes').val(nSigGenes);
 
     $('#geneManhattanDesc').html("Input SNPs were mapped to "+data.length+" protein coding genes (distance 0). "
-      +"Genome wide significance (red dashed line in the plot) was defined at P = 0.05/"+data.length+" = "+((0.05/data.length).toExponential())+".");
+      +"Genome wide significance (red dashed line in the plot) was defined at P = 0.05/"+data.length+" = "+(Number((0.05/data.length).toPrecision(3)).toExponential())+".");
 
     sortedP = sortedP.sort(function(a,b){return a-b;});
     // var chr = d3.set(data.map(function(d){return d.CHR;})).values();
@@ -1209,7 +1209,7 @@ function PlotLocuSum(jobID){
       d.nWithinGene = +d.nWithinGene;
     });
     var y_element = data.map(function(d){return d.label;});
-    var margin = {top:30, right: 30, bottom:50, left:180},
+    var margin = {top:60, right: 30, bottom:70, left:180},
         width = 600,
         height = 15*y_element.length;
     var y = d3.scale.ordinal().domain(y_element).rangeBands([0, height], 0.1);
@@ -1272,7 +1272,7 @@ function PlotLocuSum(jobID){
         .style("text-anchor", "middle")
         .text("Size (kb)");
     svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-5)+")")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-20)+")")
         .style("text-anchor", "middle")
         .text("Size (kb)");
     currentWidth += eachWidth + 10;
@@ -1302,7 +1302,7 @@ function PlotLocuSum(jobID){
         .style("text-anchor", "middle")
         .text("#SNPs");
     svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-5)+")")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-20)+")")
         .style("text-anchor", "middle")
         .text("#SNPs");
     currentWidth += eachWidth + 10;
@@ -1331,11 +1331,11 @@ function PlotLocuSum(jobID){
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-5)+")")
         .style("text-anchor", "middle")
-        .text("#mapped genes");
+        .text("#prioritized genes");
     svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-5)+")")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-20)+")")
         .style("text-anchor", "middle")
-        .text("#mapped genes");
+        .text("#prioritized genes");
     currentWidth += eachWidth + 10;
 
     // plot nWithinGene
@@ -1360,13 +1360,21 @@ function PlotLocuSum(jobID){
         .attr("transform", "translate("+currentWidth+",0)")
         .call(yAxis).selectAll("text").remove();
     svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-20)+")")
+        .style("text-anchor", "middle")
+        .text("#genes phisically");
+    svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-5)+")")
         .style("text-anchor", "middle")
-        .text("#genes within loci");
+        .text("locating in loci");
+    svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-20)+")")
+        .style("text-anchor", "middle")
+        .text("#genes phisically");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-5)+")")
         .style("text-anchor", "middle")
-        .text("#genes within loci");
+        .text("locating in loci");
     svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
     svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
     svg.selectAll('text').style('font-family', 'sans-serif');

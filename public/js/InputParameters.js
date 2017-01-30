@@ -79,19 +79,46 @@ function CheckAll(){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
                       +'<i class="fa fa-check"></i> OK. An example file will be used.</div></td>');
       $('#N').val(21389);
+      $('#chrcol').attr("disabled", true);
+      $('#poscol').attr("disabled", true);
+      $('#rsIDcol').attr("disabled", true);
+      $('#pcol').attr("disabled", true);
+      $('#altcol').attr("disabled", true);
+      $('#refcol').attr("disabled", true);
+      $('#orcol').attr("disabled", true);
+      $('#becol').attr("disabled", true);
+      $('#secol').attr("disabled", true);
       submit=true;
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-                      +'<i class="fa fa-ban"></i> Mandatory input</div></td>');
+                      +'<i class="fa fa-ban"></i> Mandatory<br/>The maximum file size is 600Mb. Please gzip if your file is bigger than 600Mb.</div></td>');
       // $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       //                 +'<i class="fa fa-ban"></i> Please chose GWAS summary stats file first.</div></td>');
       $('#N').val('');
+      $('#chrcol').attr("disabled", true);
+      $('#poscol').attr("disabled", true);
+      $('#rsIDcol').attr("disabled", true);
+      $('#pcol').attr("disabled", true);
+      $('#altcol').attr("disabled", true);
+      $('#refcol').attr("disabled", true);
+      $('#orcol').attr("disabled", true);
+      $('#becol').attr("disabled", true);
+      $('#secol').attr("disabled", true);
       submit=false;
       tablecheck=false;
     }
   }else{
     // var file = document.getElementById('GWASsummary');
     // console.log("File type:", file.type);
+    $('#chrcol').attr("disabled", false);
+    $('#poscol').attr("disabled", false);
+    $('#rsIDcol').attr("disabled", false);
+    $('#pcol').attr("disabled", false);
+    $('#altcol').attr("disabled", false);
+    $('#refcol').attr("disabled", false);
+    $('#orcol').attr("disabled", false);
+    $('#becol').attr("disabled", false);
+    $('#secol').attr("disabled", false);
     if(gwasFileSize>=600000000){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> The file size if above 600Mb. Please gzip your file.</div></td>');
@@ -113,7 +140,9 @@ function CheckAll(){
       +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
     $(table.rows[3].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-exclamation-circle"></i> Optional. <br/>This is only valid when predefined lead SNPs are provided.</div></td>');
+    $('#addleadSNPs').attr("disabled", true);
   }else{
+    $('#addleadSNPs').attr("disabled", false);
     $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
     if($('#addleadSNPs').is(":checked")==true){
@@ -290,40 +319,23 @@ function CheckAll(){
     $('#posMapOptFilt').show();
     $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-check"></i> OK.</div></td>');
-    if($('#windowCheck').is(':checked')==true){
+    if($('#posMapWindow').val().length>0){
+      $('#posMapAnnot').attr("disabled", true);
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-check"></i> OK.</div></td>');
-      if($('#posMapWindow').val().length==0){
-        $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-          +'<i class="fa fa-ban"></i> Mandatory since you checked distance based mapping.</div></td>');
-        submit=false;
-        tablecheck=false;
-      }else{
-        if(isNaN($('#posMapWindow').val())){
-          $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-            +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
-          submit=false;
-          tablecheck=false;
-        }else{
-          $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-            +'<i class="fa fa-check"></i> OK.</div></td>');
-        }
-      }
+        +'<i class="fa fa-check"></i> OK. SNPs are mapped to genes up to '+$('#posMapWindow').val()+' kb</div></td>');
     }else{
+      $('#posMapAnnot').attr("disabled", false);
       if(ms==0){
+        $('#posMapWindow').attr("disabled", false);
         $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-          +'<i class="fa fa-ban"></i> Please check distance based mapping or select annotations for positional mapping.</div></td>');
-        $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-          +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
-        submit=false;
-        tablecheck=false;
+          +'<i class="fa fa-check"></i> Please either specify maximum distance or select functional consequences of SNPs to map to genes.</div></td>');
       }else{
-        $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-          +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
-        $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-          +'<i class="fa fa-exclamation-circle"></i> Optional. This option is only valid when distance based mapping is checked.</div></td>');
+        $('#posMapWindow').attr("disabled", true);
+        $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+          +'<i class="fa fa-check"></i> OK. SNPs with selected functional consequences on genes will be mapped.</div></td>');
       }
     }
+
   }else{
     $('.posMapOptions').hide();
     $('#posMapOptFilt').hide();
@@ -333,21 +345,6 @@ function CheckAll(){
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Please select either positional or eQTL mapping.</div></td>');
-      submit=false;
-      tablecheck=false;
-    }
-  }
-
-  if(ms>0){
-    $(table.rows[3].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-check"></i> OK. only selected annotations will be used for positional mapping.</div></td>');
-  }else{
-    if($('#windowCheck').is(':checked')==true){
-      $(table.rows[3].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-exclamation-circle"></i> Optional</div></td>');
-    }else{
-      $(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-ban"></i> Please select at least one annotation or check distance based mapping.</div></td>');
       submit=false;
       tablecheck=false;
     }
@@ -630,14 +627,6 @@ function CheckAll(){
       +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
   }
 
-  table = $('#NewJobSubmit')[0];
-  if($('#NewJobTitle').val().length==0){
-    $(table.rows[0].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-exclamation-triangle"></i> This is not mandatory but if you want to save a job, job title will be useful. <br/></div></td>');
-  }else{
-    $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-check"></i> OK.</div></td>');
-  }
   if(submit){$('#SubmitNewJob').attr("disabled", false)}
   else{$('#SubmitNewJob').attr("disabled", true)}
 }

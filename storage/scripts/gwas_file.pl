@@ -82,6 +82,11 @@ if(defined $Ncol && $Ncol eq $params->param('params.Ncol')){
 	die "N column name was not found";
 }
 
+if(defined $refcol && !defined $altcol){
+	$altcol = $refcol;
+	$refcol = undef;
+}
+
 # print "chrcol:$chrcol\nposcol:$poscol\nrsIDcol:$rsIDcol\npcol:$pcol\nrefcol:$refcol\naltcol:$altcol\norcol:$orcol\nsecol:$secol\n";
 # unless(defined $mafcol){
 # 	print "MAF columns is not defined\n";
@@ -382,6 +387,7 @@ if(defined $chrcol && defined $poscol && defined $rsIDcol && defined $altcol && 
 
 		while(my @row = $sth->fetchrow_array()){
 			$row[1] =~ s/chr//;
+			$row[1] = 23 if($row[1] =~ /x/i);
 			$row[4] =~ s/,$//;
 			my @alleles = split(/,/, $row[4]);
 
