@@ -111,6 +111,21 @@ class snp2geneProcess extends Job implements ShouldQueue
         }
       }
 
+      file_put_contents($logfile, "\n----- magma_geneset.pl -----\n", FILE_APPEND);
+      file_put_contents($errorfile, "\n----- magma_geneset.pl -----\n", FILE_APPEND);
+      $script = storage_path().'/scripts/magma_geneset.pl';
+      exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+      if($error != 0){
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
+                          -> update(['status'=>'ERROR:002']);
+        $errorout = file_get_contents($errorfile);
+        $msg = "MAGMA Gene-set analysis error";
+        if($email!=null){
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 2, $msg);
+          return;
+        }
+      }
+
       file_put_contents($logfile, "\n----- manhattan_filt.py -----\n", FILE_APPEND);
       file_put_contents($errorfile, "\n----- manhattan_filt.py -----\n", FILE_APPEND);
       $script = storage_path().'/scripts/manhattan_filt.py';
