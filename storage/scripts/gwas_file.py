@@ -146,7 +146,7 @@ if chrcol is None or poscol is None:
             l = l.split()
 
             if l[2] in rsIDs:
-                count += 1
+                # count += 1
                 checked.append(l[2])
                 # temptime = time.time()
                 # j = rsID.index(l[2])
