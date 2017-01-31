@@ -47,6 +47,17 @@ class D3jsController extends Controller
       }
     }
 
+    public function getPrioGenes($jobID){
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      $genes = [];
+      $f = fopen($filedir.'genes.txt', 'r');
+      fgetcsv($f, 0, "\t");
+      while($row=fgetcsv($f, 0, "\t")){
+        $genes[] = $row[1];
+      }
+      echo json_encode($genes);
+    }
+
     public function legendText($file){
       $f = storage_path().'/legends/'.$file;
       if(file_exists($f)){

@@ -143,16 +143,18 @@ $(document).ready(function(){
   // for(i=0; i<eqtlcols.length; i++){
   //   eQTLcolors[eqtlts[i]] = eqtlcols[i];
   // }
-
+  var propGenes;
   queue().defer(d3.json, "d3text/"+jobID+"/annotPlot.txt")
         .defer(d3.json, "d3text/"+jobID+"/genesplot.txt")
         .defer(d3.json, "d3text/"+jobID+"/exons.txt")
         .defer(d3.json, "d3text/"+jobID+"/temp.txt")
+        .defer(d3.json, "getPrioGenes/"+jobID)
         .awaitAll(function(error, data){
           var data1 = data[0];
           var data2 = data[1];
           var data3 = data[2];
           var data4 = data[3];
+          prioGenes = data[4];
 
           //gene plot
           data2.forEach(function(d){
@@ -160,12 +162,6 @@ $(document).ready(function(){
             d.end_position = +d.end_position;
             // d.strand = +d.strand;
             d.y = 1;
-            if(d.strand==1){
-              d.external_gene_name = d.external_gene_name+"\u2192";
-            }else{
-              d.external_gene_name = "\u2190"+d.external_gene_name;
-            }
-
           });
           // console.log(data2[0]);
           data2 = geneOver(data2, x, width);
@@ -222,6 +218,19 @@ $(document).ready(function(){
           // y.domain([-2.5,2.5]);
           y.domain([d3.max(data2, function(d){return d.y;})+1, 0]);
 
+          svg.append("rect").attr("x", width+20).attr("y", genesTop+10)
+            .attr("width", 20).attr("height", 5).attr("fill", "red");
+          svg.append("text").attr("x", width+45).attr("y", genesTop+15)
+            .text("Prioritized genes").style("font-size", "10px");
+          svg.append("rect").attr("x", width+20).attr("y", genesTop+25)
+            .attr("width", 20).attr("height", 5).attr("fill", "blue");
+          svg.append("text").attr("x", width+45).attr("y", genesTop+30)
+            .text("Protein coding genes").style("font-size", "10px");
+          svg.append("rect").attr("x", width+20).attr("y", genesTop+40)
+            .attr("width", 20).attr("height", 5).attr("fill", "#383838");
+          svg.append("text").attr("x", width+45).attr("y", genesTop+45)
+            .text("Non-coding genes").style("font-size", "10px");
+
           svg.selectAll('rect.gene').data(data2).enter().append("g")
             .insert('rect').attr("class", "cell").attr("class", "genesrect")
             .attr("x", function(d){
@@ -240,6 +249,7 @@ $(document).ready(function(){
             .attr("height", 1)
             .attr("fill", function(d){
               if(x(d.end)<0 || x(d.start)>width){return "transparent";}
+              else if(prioGenes.indexOf(d.external_gene_name)>=0){return "red";}
               else if(d.gene_biotype=="protein_coding"){return "blue";}
               else{return "#383838"}
             });
@@ -253,7 +263,13 @@ $(document).ready(function(){
             })
             .attr("y", function(d){return y(d.y);})
             .attr("dy", "-.7em")
-            .text(function(d){return d.external_gene_name;})
+            .text(function(d){
+              if(d.strand==1){
+                return d.external_gene_name+"\u2192";
+              }else{
+                return "\u2190"+d.external_gene_name;
+              }
+            })
             .style("font-size", "9px")
             .style("font-family", "sans-serif")
             .style("fill", function(d){
@@ -304,6 +320,7 @@ $(document).ready(function(){
             .attr("height", 9)
             .attr("fill", function(d){
               if(x(d.exon_chrom_start)>width || x(d.exon_chrom_end)<0){return "transparent";}
+              else if(prioGenes.indexOf(d.external_gene_name)>=0){return "red";}
               else if(d.gene_biotype=="protein_coding"){return "blue";}
               else{return "#383838"}
             });
@@ -339,20 +356,39 @@ $(document).ready(function(){
               .enter()
               .append("g").attr("class", "legend")
             legendGwas.append("rect")
-              .attr("x", width+10)
+              .attr("x", width+20)
               .attr("y", function(d){return 10+(10-d*10)*10})
               .attr("width", 20)
               .attr("height", 10)
               .style("fill", function(d){return colorScale(d)});
             legendGwas.append("text")
               .attr("text-anchor", "start")
-              .attr("x", width+32)
+              .attr("x", width+42)
               .attr("y", function(d){return 20+(10-d*10)*10})
               .text(function(d){return Math.round(d*100)/100})
               .style("font-size", "10px");
             svg.append("text").attr("text-anchor", "middle")
-              .attr("transform", "translate("+(width+20)+",5)")
+              .attr("transform", "translate("+(width+30)+",5)")
               .text("r2").style("font-size", "10px");
+
+            svg.append("circle")
+              .attr("cx", width+20).attr("cy", 130).attr("r", 4.5)
+              .style("fill", "#4d0099").style("stroke", "black").style("strole-width", "2");
+            svg.append("text").attr("text-anchor", "bottom")
+              .attr("x", width+30).attr("y", 133)
+              .text("Top lead SNP").style("font-size", "10px");
+            svg.append("circle")
+              .attr("cx", width+20).attr("cy", 145).attr("r", 4)
+              .style("fill", "#9933ff").style("stroke", "black").style("strole-width", "2");
+            svg.append("text").attr("text-anchor", "top")
+              .attr("x", width+30).attr("y", 148)
+              .text("Lead SNPs").style("font-size", "10px");
+            svg.append("circle")
+              .attr("cx", width+20).attr("cy", 160).attr("r", 3.5)
+              .style("fill", "red").style("stroke", "black").style("strole-width", "2");
+            svg.append("text").attr("text-anchor", "top")
+              .attr("x", width+30).attr("y", 163)
+              .text("Independent significant SNPs").style("font-size", "10px");
 
             y.domain([0, d3.max(data1, function(d){return -Math.log10(d.gwasP)})+1]);
             svg.selectAll("dot").data(data4).enter()
@@ -362,14 +398,6 @@ $(document).ready(function(){
               .attr("cx", function(d){return x(d.pos);})
               .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
               .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "grey";}});
-
-            // svg.selectAll("dot").data(data1.filter(function(d){if(!isNaN(d.gwasP) && d.ld==0){return d;}})).enter()
-            //   .append("circle")
-            //   .attr("class", "GWASdot")
-            //   .attr("r", 3.5)
-            //   .attr("cx", function(d){return x(d.pos);})
-            //   .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-            //   .style("fill", "grey");
 
             svg.selectAll("dot").data(data1.filter(function(d){if(!isNaN(d.gwasP) && d.ld==1){return d;}})).enter()
               .append("circle")
@@ -1080,6 +1108,7 @@ $(document).ready(function(){
         else{return x(d.end_position)-x(d.start_position);}
       })
       .style("fill", function(d){if(x(d.end_position)<0 || x(d.start_position)>width){return "transparent";}
+        else if(prioGenes.indexOf(d.external_gene_name)>=0){return "red";}
         else if(d.gene_biotype=="protein_coding"){return "blue";}
         else{return "#383838"}
       });
@@ -1106,6 +1135,7 @@ $(document).ready(function(){
         else{return x(d.exon_chrom_end)-x(d.exon_chrom_start);}
       })
       .style("fill", function(d){if(x(d.exon_chrom_end)<0 || x(d.exon_chrom_start)>width){return "transparent";}
+        else if(prioGenes.indexOf(d.external_gene_name)>=0){return "red";}
         else if(d.gene_biotype=="protein_coding"){return "blue";}
         else{return "#383838"}
       })
@@ -1160,7 +1190,12 @@ function geneOver(genes, x, width){
         ){return d2}
     })
     if(temp.length>1){
-      tg[i].y = d3.max(temp, function(d){return d.y})+1;
+      var ymin = d3.min(temp, function(d){return d.y});
+      if(ymin>1){
+        tg[i].y = 1;
+      }else{
+        tg[i].y = d3.max(temp, function(d){return d.y})+1;
+      }
     }else{
       tg[i].y = 1;
     }
@@ -1350,7 +1385,7 @@ function ImgDown(id, type){
 <br/><br/>
 <div class="container">
 <div class="row">
-  <div class="col-md-8">
+  <div class="col-md-9">
     <div id='title' style="text-align: center;"><h4>Regional plot</h4></div>
     <a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
     Download the plot as
@@ -1373,7 +1408,7 @@ function ImgDown(id, type){
     <br/>
     <div id="EIDlegend"></div>
   </div>
-  <div class="col-md-4" style="text-align: center;">
+  <div class="col-md-3" style="text-align: center;">
     <h4>SNP annotations</h4>
     <div id="annotTable">
       click any SNP on the plot</br>

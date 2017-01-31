@@ -73,6 +73,8 @@ Route::post('snp2gene/filedown', 'JobController@filedown');
 
 Route::post('snp2gene/geneTable', 'JsController@geneTable');
 
+Route::get('snp2gene/getPrioGenes/{jobID}', 'D3jsController@getPrioGenes');
+
 Route::get('snp2gene/{jobID}', function($jobID){
   return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
 })->middleware('auth');
