@@ -8,6 +8,7 @@ import numpy as np
 import ConfigParser
 import time
 from bisect import bisect_left
+import tabix
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -22,8 +23,9 @@ def ArrayNotIn(a1, a2):
         if i not in temp:
             results.append(i)
     return results
-if len(sys.argv)<1:
-	raise Exception('ERROR: not enough arguments\nUSAGE ./gwas_file.py <filedir>\n')
+
+if len(sys.argv)<2:
+	sys.exit('ERROR: not enough arguments\nUSAGE ./gwas_file.py <filedir>')
 
 start = time.time()
 
@@ -35,7 +37,8 @@ if re.match("\/$", filedir) is None:
 cfg = ConfigParser.ConfigParser()
 cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
 
-param = ConfigParser.ConfigParser()
+param = ConfigParser.RawConfigParser()
+param.optionxform = str
 param.read(filedir+'params.config')
 
 gwas = filedir+cfg.get('inputfiles', 'gwas')
@@ -104,9 +107,195 @@ if becol=="NA":
 if Ncol=="NA":
     Ncol = None
 
-if chrcol is None or poscol is None:
+if refcol is not None and altcol is None:
+    altcol = refcol
+    refcol = None
+
+if pcol is None:
+    sys.exit("P-value column was not found")
+if (chrcol is None or poscol is None) and rsIDcol is None:
+    sys.exit("Chromosome, position or rsID column was not found")
+
+if param.get('inputfiles', 'orcol')=="NA" and orcol is not None:
+    param.set('inputfiles', 'orcol', 'or')
+if param.get('inputfiles', 'becol')=="NA" and becol is not None:
+    param.set('inputfiles', 'becol', 'beta')
+if param.get('inputfiles', 'secol')=="NA" and secol is not None:
+    param.set('inputfiles', 'secol', 'se')
+
+paramout = open(filedir+"params.config", 'w+')
+param.write(paramout)
+paramout.close()
+
+if chrcol is not None and poscol is not None and rsIDcol is not None and altcol is not None and refcol is not None:
+    dbSNPfile = cfg.get('data', 'dbSNP')
+    rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
+    rsID = np.array(rsID)
+    rsIDs = set(rsID[:,0])
+    rsID = rsID[rsID[:,0].argsort()]
+
+    out = open(outSNPs, 'w')
+    out.write("chr\tbp\tref\talt\trsID\tp")
+    if orcol is not None:
+        out.write("\tor")
+    if becol is not None:
+        out.write("\tbeta")
+    if secol is not None:
+        out.write("\tse")
+    if Ncol is not None:
+        out.write("\tN")
+    out.write("\n")
+
+    gwasIn = open(gwas, 'r')
+    gwasIn.readline()
+    for l in gwasIn:
+        if re.match("^#", l):
+            next
+        l = l.strip()
+        l = l.split()
+        if l[rsIDcol] in rsIDs:
+            j = bisect_left(rsID, l[rsIDcol])
+            l[rsIDcol] = rsID[j,1]
+        l[chrcol] = l[chrcol].replace("chr", "")
+        if re.match("x", l[chrcol], re.IGNORECASE):
+            l[chrcol] = '23'
+        if float(l[pcol]) < 1e-308:
+            l[pcol] = str(1e-308)
+        out.write("\t".join([l[chrcol], l[poscol], l[refcol].upper(), l[altcol].upper(), l[rsIDcol], l[pcol]]))
+        if orcol is not None:
+            out.write("\t"+l[orcol])
+        if becol is not None:
+            out.write("\t"+l[becol])
+        if secol is not None:
+            out.write("\t"+l[secol])
+        if Ncol is not None:
+            out.write("\t"+l[Ncol])
+        out.write("\n")
+    gwasIn.close
+    out.close
+    tempfile = filedir+"temp.txt"
+    os.system("sort -k 1n -k 2n "+outSNPs+" > "+tempfile)
+    os.system("mv "+tempfile+" "+outSNPs)
+
+elif chrcol is not None and poscol is not None:
+
+    dbSNPfile = cfg.get('data', 'dbSNP')
+
+    def Tabix (chrom, start ,end, snps):
+        snps = np.array(snps)
+
+        poss = set(snps[:, poscol].astype(int))
+        pos = snps[:, poscol].astype(int)
+
+        tbfile = dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz"
+        tb = tabix.open(tbfile)
+        temp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
+
+        out = open(outSNPs, 'a+')
+        for l in temp:
+            if int(l[1]) in poss:
+                j = bisect_left(pos, int(l[1]))
+                if refcol is not None and altcol is not None:
+                    if (snps[j,refcol].upper()==l[3] and snps[j,altcol].upper()==l[4]) or (snps[j,refcol].upper()==l[4] and snps[j,altcol].upper()==l[3]):
+                        out.write("\t".join([l[0],l[1], snps[j,refcol].upper(), snps[j,altcol].upper(), l[2], snps[j,pcol]]))
+                        if orcol is not None:
+                            out.write("\t"+l[orcol])
+                        if becol is not None:
+                            out.write("\t"+l[becol])
+                        if secol is not None:
+                            out.write("\t"+l[secol])
+                        if Ncol is not None:
+                            out.write("\t"+l[Ncol])
+                        out.write("\n")
+                elif altcol is not None:
+                    if snps[j,altcol].upper()==l[3] or snps[j,altcol].upper()==l[4]:
+                        a = "NA"
+                        if snps[j,altcol]==l[3]:
+                            a = l[4]
+                        else:
+                            a = l[3]
+                        out.write("\t".join([l[0],l[1], a, snps[j,altcol].upper(), l[2], snps[j,pcol]]))
+                        if orcol is not None:
+                            out.write("\t"+l[orcol])
+                        if becol is not None:
+                            out.write("\t"+l[becol])
+                        if secol is not None:
+                            out.write("\t"+l[secol])
+                        if Ncol is not None:
+                            out.write("\t"+l[Ncol])
+                        out.write("\n")
+                else:
+                    out.write("\t".join([l[0],l[1], l[3], l[4], l[2], snps[j,pcol]]))
+                    if orcol is not None:
+                        out.write("\t"+l[orcol])
+                    if becol is not None:
+                        out.write("\t"+l[becol])
+                    if secol is not None:
+                        out.write("\t"+l[secol])
+                    if Ncol is not None:
+                        out.write("\t"+l[Ncol])
+                    out.write("\n")
+        out.close
+
+    tempfile = filedir + "temp.txt"
+    os.system("sort -k "+str(chrcol+1)+"n -k "+str(poscol+1)+"n "+gwas+" > "+tempfile)
+    os.system("mv "+tempfile+" "+gwas)
+
+    cur_chr = 1
+    minpos = 0
+    maxpos = 0
+
+    out = open(outSNPs, 'w')
+    out.write("chr\tbp\tref\talt\trsID\tp")
+    if orcol is not None:
+        out.write("\tor")
+    if becol is not None:
+        out.write("\tbeta")
+    if secol is not None:
+        out.write("\tse")
+    if Ncol is not None:
+        out.write("\tN")
+    out.write("\n")
+    out.close()
+
+    temp = []
+
+    gwasIn = open(gwas, 'r')
+    gwasIn.readline()
+    for l in gwasIn:
+        if re.match("^#", l):
+            next
+        l = l.strip()
+        l = l.split()
+        l[chrcol] = l[chrcol].replace("chr", "")
+        if re.match("x", l[chrcol], re.IGNORECASE):
+            l[chrcol] = '23'
+        if float(l[pcol]) < 1e-308:
+            l[pcol] = str(1e-308)
+
+        if int(l[chrcol]) == cur_chr:
+            if minpos==0:
+                minpos = int(l[poscol])
+            if int(l[poscol])-minpos<=1000000:
+                maxpos = int(l[poscol])
+                temp.append(l)
+            else:
+                Tabix(cur_chr, minpos, maxpos, temp)
+                minpos = int(l[poscol])
+                temp = []
+                temp.append(l)
+        else:
+            Tabix(cur_chr, minpos, maxpos, temp)
+            cur_chr = int(l[chrcol])
+            minpos = int(l[poscol])
+            maxpos = int(l[poscol])
+            temp = []
+            temp.append(l)
+    Tabix(cur_chr, minpos, maxpos, temp)
+
+elif chrcol is None or poscol is None:
     print "Either chr or pos is not provided"
-    gwas = pd.read_table(gwas, delim_whitespace=True)
+    gwas = pd.read_table(gwas, comment="#", delim_whitespace=True)
     gwas = gwas.as_matrix()
     gwas = gwas[gwas[:,rsIDcol].argsort()]
     # gwas = gwas[0:1000000]
@@ -151,6 +340,8 @@ if chrcol is None or poscol is None:
                 # temptime = time.time()
                 # j = rsID.index(l[2])
                 j = bisect_left(rsID, l[2])
+                if(gwas[j,pcol]<1e-308):
+                    gwas[j,pcol]=1e-308
                 # print time.time()-temptime
                 if altcol is not None and refcol is not None:
                     if (gwas[j,altcol].upper()==l[3] and gwas[j,refcol].upper()==l[4]) or gwas[j,altcol].upper()==l[4] and gwas[j,refcol].upper()==l[3]:
@@ -165,8 +356,14 @@ if chrcol is None or poscol is None:
                             out.write("\t"+str(gwas[j,Ncol]))
                         out.write("\n")
                 elif altcol is not None:
-                    if gwas[j,altcol]==l[3] or gwas[j,altcol]==l[4]:
-                        out.write("\t".join([str(chrom), str(l[1]), gwas[j,refcol].upper(), gwas[j,altcol].upper(), l[2], str(gwas[j,pcol])]))
+                    if gwas[j,altcol].upper()==l[3] or gwas[j,altcol].upper()==l[4]:
+                        a = "NA"
+                        if gwas[j,altcol].upper()==l[3]:
+                            a=l[4]
+                        else:
+                            a=l[3]
+
+                        out.write("\t".join([str(chrom), str(l[1]), a, gwas[j,altcol].upper(), l[2], str(gwas[j,pcol])]))
                         if orcol is not None:
                             out.write("\t"+str(gwas[j,orcol]))
                         if becol is not None:
@@ -177,7 +374,7 @@ if chrcol is None or poscol is None:
                             out.write("\t"+str(gwas[j,Ncol]))
                         out.write("\n")
                 else:
-                    out.write("\t".join([str(chrom), str(l[1]), gwas[j,refcol].upper(), gwas[j,altcol].upper(), l[2], str(gwas[j,pcol])]))
+                    out.write("\t".join([str(chrom), str(l[1]), l[3], l[4], l[2], str(gwas[j,pcol])]))
                     if orcol is not None:
                         out.write("\t"+str(gwas[j,orcol]))
                     if becol is not None:
@@ -200,5 +397,5 @@ if chrcol is None or poscol is None:
         checked = []
         if len(gwas)==0:
             break
-out.close
+    out.close
 print time.time()-start

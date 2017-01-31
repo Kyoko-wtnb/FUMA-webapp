@@ -10,6 +10,7 @@ ConfigParser <- function(file){
   i=0
   config <- list()
   for(l in line){
+    l = gsub(" ","", l)
     if(grepl("\\[.*\\]", l)){
       i <- i+1
       config[[i]]<-list()

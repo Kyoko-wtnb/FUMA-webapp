@@ -66,10 +66,10 @@ class snp2geneProcess extends Job implements ShouldQueue
       $errorfile = $filedir."error.log";
 
       //gwas_file.pl
-      file_put_contents($logfile, "----- gwas_file.pl -----\n");
-      file_put_contents($errorfile, "----- gwas_file.pl -----\n");
-      $script = storage_path().'/scripts/gwas_file.pl';
-      exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+      file_put_contents($logfile, "----- gwas_file.py -----\n");
+      file_put_contents($errorfile, "----- gwas_file.py -----\n");
+      $script = storage_path().'/scripts/gwas_file.py';
+      exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
       if($error != 0){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:001']);
