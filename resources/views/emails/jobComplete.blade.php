@@ -9,7 +9,7 @@
 </p>
 
 <p>
-  Please do not hesitate to contact us for any questions/suggestions.<br/><br/>
+  Please do not hesitate to contact me if you have questions/suggestions regarding FUMA.<br/><br/>
   Kyoko Watanabe<br/>
   VU University Amsterdam<br/>
   Dept. Complex Trait Genetics<br/>
