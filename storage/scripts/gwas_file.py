@@ -137,7 +137,7 @@ if chrcol is None or poscol is None:
 
     for chrom in range(1,24):
         print "start chr"+str(chrom)
-        count = 0
+        # count = 0
         fin = gzip.open(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", 'rb')
         for l in fin:
             l = l.decode('ascii')
@@ -188,8 +188,8 @@ if chrcol is None or poscol is None:
                     out.write("\n")
                 # gwas = np.delete(gwas, (j), axis=0)
                 # rsID = list(gwas[:, rsIDcol])
-                if count%100000==0 and count>0:
-                    print count
+                # if count%100000==0 and count>0:
+                #     print count
                     # gwas = gwas[ArrayNotIn(gwas[:,rsIDcol], checked)]
                     # temptime = time.time()
         gwas = np.delete(gwas, np.where(np.in1d(gwas[:,rsIDcol], checked)), 0)
@@ -197,5 +197,7 @@ if chrcol is None or poscol is None:
         # print time.time() - temptime
         rsID = list(gwas[:, rsIDcol])
         checked = []
+        if len(gwas)==0:
+            break
 
 print time.time()-start
