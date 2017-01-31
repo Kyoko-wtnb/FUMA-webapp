@@ -225,12 +225,16 @@
         <td>Distance to genes or functional consequences of SNPs on genes to map</td>
         <td>Mandatory if positional mapping is activated.</td>
         <td>Positional mappiing criterion either map SNPs to genes purly based on phisical distances or functional consequences of SNPs on genes. <br/>
-          When maximum distance is provided SNPs are mapped to genes based on the distance.
+          When maximum distance is provided SNPs are mapped to genes based on the distance given the user defined maximum distance.
           Alternatively, specific functional consequences of SNPs on genes can be selected which filtered SNPs to map to genes.
           Note that when functional consequences are selected, all SNPs are locating on the gene body (distance 0) except upstream and downstream SNPs whic hare up to 1kb apart from TSS or TSE. <br/>
           <span class="info"><i class="fa fa-info"></i>
             When the maximum distance is set at > 0kb and < 1kb all upstream and downstream SNPs are included since the actual distance is not provided by ANNOVAR.
             Therefore, the maximum distance > 0kb and < 1kb is same as the maximum distance 1 kb.
+          </span>
+          <span class="info"><i class="fa fa-info"></i>
+            For SNPs which are locating on a genomic region where multiple genes are overlapped, ANNOVAR has its own prioritization criteria to report the most deleterious function.
+            For those SNPs, only prioritized annotations are used.
           </span>
         </td>
         <td>Integer / Multiple selection</td>

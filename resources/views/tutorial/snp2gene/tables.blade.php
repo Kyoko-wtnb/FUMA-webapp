@@ -82,9 +82,13 @@
     <li><strong>r2</strong> : The maximum r2 of the SNP with one of the independent significant SNPs.</li>
     <li><strong>IndSigSNP</strong> : rsID of the independent significant SNP which has the maximum r2 with the SNP.</li>
     <li><strong>Genomic locus</strong> : Index of the genomic risk loci matching with "Genomic risk loci" table.</li>
-    <li><strong>nearestGene</strong> : The nearest Gene of the SNP. Genes are ecoded in symbol, if it is available otherwise Ensembl ID.
+    <li><strong>nearestGene</strong> : The nearest Gene of the SNP based on ANNOVAR annotations.
+      Note that ANNOVAR has its own prioritization criterion for SNPs which are locating a genomic region where multiple genes are obverlapped.
+      For such SNPs, only genes which ANNOVAR assigned to are shown here.
+      For intergenic SNPs, the closest genes are assigned.
+      Genes are ecoded in symbol, if it is available otherwise Ensembl ID.
       Genes here include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.</li>
-    <li><strong>dist</strong> : Distance to the nearest gene.</li>
+    <li><strong>dist</strong> : Distance to the nearest gene. SNPs which are locating in the gene body or 1kb up- or down-stream of TSS or TES have 0.</li>
     <li><strong>func</strong> : Functional consequence of the SNP on the gene obtained from ANNOVAR. For exonic SNPs, detailed annotation (e.g. non-synonymous, stop gain and so on) is available in the ANNOVAR table (annov.txt).</li>
     <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher the score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al (2014).</li>
     <li><strong>RDB</strong> : RegulomeDB score which is a categorical score (from 1a to 7). 1a is the highest score for SNPs with the most biological evidence to be a regulatory element.</li>

@@ -635,3 +635,8 @@ my $annov1 = $filedir."annov.variant_function";
 my $annov2 = $filedir."annov.txt";
 system "$dir/annov_geneSNPs.pl $annov1 $annov2";
 system "rm $annovin $annovout\.variant_function $annovout\.exonic_variant_function $filedir"."annov*.log";
+
+my $posMapWindowSize = $params->param('posMap.posMapWindowSize');
+unless($posMapWindowSize=~/NA/){
+	system "python $dir/geneDist.py $filedir";
+}
