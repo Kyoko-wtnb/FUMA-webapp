@@ -134,6 +134,7 @@ if chrcol is None or poscol is None:
         if l[0] in rsIDs:
             j = bisect_left(rsID, l[0])
             gwas[j,rsIDcol] = l[1]
+    rsID146.close
 
     for chrom in range(1,24):
         print "start chr"+str(chrom)
@@ -199,5 +200,5 @@ if chrcol is None or poscol is None:
         checked = []
         if len(gwas)==0:
             break
-
+out.close
 print time.time()-start
