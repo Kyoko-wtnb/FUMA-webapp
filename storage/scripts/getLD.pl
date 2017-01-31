@@ -434,8 +434,8 @@ foreach my $chr (1..23){
 			$start2 = 0 if($start2<0);
 			my $end2 = $end + 1000000;
 			my @MAF = split(/\n/, `tabix $maffile $chr:$start2-$end2`);
-			print "$chr:$start2-$end2\n";
-			print scalar @MAF, "\n";
+			#print "$chr:$start2-$end2\n";
+			#print scalar @MAF, "\n";
 			my %maf; #$maf{$rsID}{"uniqID/pos/MAF"}
 			foreach my $m (@MAF){
 				my @line = split(/\s/, $m);
