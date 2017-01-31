@@ -164,9 +164,6 @@ class JobController extends Controller
       // $gwasformat = $request->input('gwasformat'); //removed this option
       // $gwasformat = "Plain";
 
-      if($request -> has('addleadSNPs')){$addleadSNPs=1;}
-      else{$addleadSNPs=0;}
-
       // GWAS smmary stats file
       if($request -> hasFile('GWASsummary')){
         $type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
@@ -210,6 +207,10 @@ class JobController extends Controller
         }
         $leadSNPsfileup = 1;
       }
+
+      if($leadSNPsfileup==1 && $request -> has('addleadSNPs')){$addleadSNPs=1;}
+      else if($leadSNPs==0){$addleadSNPs=1;}
+      else{$addleadSNPs=0;}
 
       // pre-defined genomic region file
       if($request -> hasFile('regions')){
@@ -287,7 +288,7 @@ class JobController extends Controller
         $posMapWindowSize=$request -> input('posMapWindow');
         $posMapAnnot="NA";
       }else{
-        $posMapWindow="NA";
+        $posMapWindowSize="NA";
         $posMapAnnot=implode(":",$request -> input('posMapAnnot'));
       }
       // $posMapWindowSize = $request -> input('posMapWindow');
