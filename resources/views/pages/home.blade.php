@@ -29,7 +29,7 @@
   <br/>
   <p>FUMA is a platform that can be used to annotate, prioritize, visualize and interpret GWAS results.
   <br/>
-    The <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a> function takes GWAS summary statistics or a list of RSIDs as input,
+    The <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a> function takes GWAS summary statistics as an input,
     and provides extensive functional annotation for all SNPs in genomic areas identified by lead SNPs.
     <br/>
     The <a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a> function takes a list of geneids (as identified by SNP2GENE or as provided manually)
