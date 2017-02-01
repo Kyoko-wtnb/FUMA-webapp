@@ -135,7 +135,7 @@
             <tab><input type="checkbox" id="MHC" name="MHC">&nbsp;Exclude the MHC region.<br/>
             <!-- <span class="info"><i class="fa fa-info"></i> Please check to EXCLUDE genes in MHC region.</span><br/> -->
             <span class="form-inline">
-              <tab>Desired multiple test correction method for gene-set association testing:
+              <tab>Desired multiple test correction method for gene-set enrichment testing:
                 <select class="form-control" id="adjPmeth" name="adjPmeth" style="width:auto;">
                   <option value="bonferroni">Bonferroni</option>
                   <option value="sidak">Sidak</option>
@@ -218,10 +218,10 @@
           	</select>
             <a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="<b>Average RPKM per tissue</b>:
               Average expression value (after following log2 transformed RPKM per tissue per gene, winsorization at 50).
-              Darker red means higher expression of that gene in tissue X, compared to a darker blue color.<br/>
+              Darker red means higher expression of that gene, compared to a darker blue color.<br/>
               <b>Average normalized RPKM per tissue</b>:
-              Average value of the <u>relatively</u> expression value (after following RPKM log2 transformation, and zero mean normalization) 
-              Darker red means higher relative expression of that gene in tissue X, compared to a darker blue color.<br/>
+              Average value of the <u>relatively</u> expression value (after following RPKM log2 transformation, and zero mean normalization)
+              Darker red means higher relative expression of that gene in tissue X, compared to a darker blue color in the same tissue.<br/>
               <b>RPKM = Reads Per Killobase per Million</b>">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
