@@ -68,8 +68,8 @@
             <div class="panel panel-default">
               <div class="panel-body" style="padding-bottom: 0;">
                 <h4>Genes of interest</h4>
-                <p class="info"><i class="fa fa-info"></i> Please either paste or upload a file of genes to test.
-                  When both are provided, only genes pasted in the text box will be used.
+                <p class="info"><i class="fa fa-info"></i> Paste or upload a file that contains gene-symbols.
+                  Priority is given to the text box if both fields are used.
                 </p>
                 1. Paste genes
                 <a class="infoPop" data-toggle="popover" data-content="Please paste one gene per line. ENSG ID, entrez ID or gene symbols are accepted.">
@@ -94,11 +94,11 @@
               <div class="panel-body" style="padding-bottom: 0;">
                 <h4>Background genes</h4>
                 <p class="info"><i class="fa fa-info"></i>
-                  Please specify background genes against which your list of genes should be tested in the hypergeometric test.
+                  Specify background gene-set. This will be used in the hypergeometric test.
                 </p>
-                1. Select background genes by gene type <a id="bkgeneSelectClear">Clear</a><br/>
+                1. Select background genes by gene-type <a id="bkgeneSelectClear">Clear</a><br/>
                 <span class="info"><i class="fa fa-info"></i>
-                  Multiple gene types can be selected.
+                  Multiple gene-types can be selected.
                 </span>
                 <tab><select class="form-control" multiple size="5" name="genetype[]" id="genetype" onchange="checkInput();">
                   <option value="all">All</option>
@@ -135,7 +135,7 @@
             <tab><input type="checkbox" id="MHC" name="MHC">&nbsp;Exclude the MHC region.<br/>
             <!-- <span class="info"><i class="fa fa-info"></i> Please check to EXCLUDE genes in MHC region.</span><br/> -->
             <span class="form-inline">
-              <tab>Desired multiple testing correction method for gene-set enrichment testing:
+              <tab>Desired multiple test correction method for gene-set association testing:
                 <select class="form-control" id="adjPmeth" name="adjPmeth" style="width:auto;">
                   <option value="bonferroni">Bonferroni</option>
                   <option value="sidak">Sidak</option>
@@ -150,14 +150,14 @@
                 </select><br/>
             </span>
             <span class="form-inline">
-              <tab>Adjusted P-value cutoff for gene set enrichment (&lt;): <input class="form-control" type="number" id="adjPcut" name="adjPcut" value="0.05"/>
+              <tab>Adjusted P-value for gene set association (&lt;): <input class="form-control" type="number" id="adjPcut" name="adjPcut" value="0.05"/>
               <a class="infoPop" data-toggle="popover" title="Adjusted P-value cutoff" data-content="Only gene sets significantly enriched at given adjusted P-value threshold will be reported.">
                 <i class="fa fa-question-circle-o fa-lg"></i>
               </a>
               <br/>
             </span>
             <span class="form-inline">
-              <tab>Minimum overlapping genes with gene sets (&ge;): <input class="form-control" type="number" id="minOverlap" name="minOverlap" value="2"/>
+              <tab>Minimum overlapping genes with gene-sets (&ge;): <input class="form-control" type="number" id="minOverlap" name="minOverlap" value="2"/>
               <a class="infoPop" data-toggle="popover" title="Minimum overlapping genes with gene sets" data-content="Only gene sets which overlapping with more than or equal to the given number of genes in the input genes will be reported.">
                 <i class="fa fa-question-circle-o fa-lg"></i>
               </a>
@@ -217,16 +217,11 @@
           		<option value="norm">Average of normalized RPKM per tissue (zero mean across tissues)</option>
           	</select>
             <a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="<b>Average RPKM per tissue</b>:
-              This is average value of the log2 transformed RPKM per tissue per gene after winsorization at 50.
-              This allows comparison of expression across tissues and genes.
-              Thus, a more red box for gene A in tissue X means a relatively higher expression of that gene in tissue X,
-              compared to a blue box of gene B in tissue Y.<br/>
+              Average expression value (after following log2 transformed RPKM per tissue per gene, winsorization at 50).
+              Darker red means higher expression of that gene in tissue X, compared to a darker blue color.<br/>
               <b>Average normalized RPKM per tissue</b>:
-              This is the average expression value per tissue per gene after zero mean normalization of the log2 transformed RPKM.
-              This allows comparison of expression across tissues.
-              Note that values of genes in a cirtine tissues are not comparable.
-              Thus a red box for gene A in tissue X means a relatively higher expression of that gene in tissue X,
-              compare to a blue box of the same gene in tissue Y.<br/>
+              Average value of the <u>relatively</u> expression value (after following RPKM log2 transformation, and zero mean normalization) 
+              Darker red means higher relative expression of that gene in tissue X, compared to a darker blue color.<br/>
               <b>RPKM = Reads Per Killobase per Million</b>">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
@@ -267,13 +262,11 @@
         <!-- Tissue specificity bar chart -->
         <div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50px;">
           <h4>Differrentially expressed genes across 30 general tissue types (GTEx)
-            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for 30 general tissue types using normalized gene expression data from GTEx.
-            To define the DEG sets, two-sided t-tests were performed per gene per tissue against all other tissues.
-            After the Bonferroni correction, genes with a corrected p-value ≤ 0.05 and absolute log fold change ≥ 0.58 were defined as a DEG set in a given tissue.
-            Thus, genes included in a pre-calculated DEG set have a significantly different expression in the specific tissue compared to other tissues.
-            The same gene can be a DEG in multiple tissues.
+            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for the 30 general GTEx tissue types.
+            DEG sets are defined by a two-sided t-tests per tissue versus all remaining, and Bonferroni correction.
+            Genes with a adjusted p-value ≤ 0.05 and absolute log fold change ≥ 0.58 are selected.
             For the signed DEG, the direction of expression was taken intoc account (i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in that tissue compared to other tissues).
-            The -log10 of the P values in the graph refer to the outcome of the hypergeomteric test for assessing overlap of the set of input genes with the genes in the DEG sets.">
+            The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </h4>
