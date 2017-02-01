@@ -97,20 +97,20 @@ if(posMap==1){
     annov <- annov[annov$uniqID %in% epi$uniqID,]
     rm(epi, temp)
   }
-  if(is.na(posMapWindowSize)){
+  #if(is.na(posMapWindowSize)){
     posMapAnnot <- unique(unlist(strsplit(posMapAnnot, ":")))
     annov <- annov[grepl(paste(posMapAnnot, collapse="|"), annov$annot),]
     genes <- c(genes, unique(annov$gene))
-  }else{
+  #}else{
     #annov <- annov[annov$dist <= posMapWindowSize,]
     #if(posMapWindowSize==0){
     #  annov <- annov[!grepl("upstream|downstream", annov$annot),]
     #}
-    geneDist <- fread(paste(filedir, "geneDist.txt", sep=""), data.table=F)
-    geneDist <- geneDist[geneDist$ensg %in% ENSG.all.genes$ensembl_gene_id,]
-    geneDist <- geneDist[geneDist$uniqID %in% annov$uniqID,]
-    genes <- c(genes, unique(geneDist$ensg))
-  }
+    #geneDist <- fread(paste(filedir, "geneDist.txt", sep=""), data.table=F)
+    #geneDist <- geneDist[geneDist$ensg %in% ENSG.all.genes$ensembl_gene_id,]
+    #geneDist <- geneDist[geneDist$uniqID %in% annov$uniqID,]
+    #genes <- c(genes, unique(geneDist$ensg))
+  #}
 }
 
 if(eqtlMap==1){
@@ -168,13 +168,13 @@ if(nrow(geneTable)>0){
   geneTable$pLI <- pli$pLI[match(geneTable$ensg, pli$ensg)]
 
   if(posMap==1){
-    if(is.na(posMapWindowSize)){
+    #if(is.na(posMapWindowSize)){
       geneTable$posMapSNPs <- sapply(geneTable$ensg, function(x){length(which(annov$gene==x))})
       geneTable$posMapMaxCADD <- sapply(geneTable$ensg, function(x){if(x %in% annov$gene){max(annot$CADD[annot$uniqID%in%annov$uniqID[annov$gene==x]])}else{0}})
-    }else{
-      geneTable$posMapSNPs <- sapply(geneTable$ensg, function(x){length(which(geneDist$ensg==x))})
-      geneTable$posMapMaxCADD <- sapply(geneTable$ensg, function(x){if(x %in% geneDist$ensg){max(annot$CADD[annot$uniqID %in% geneDist$uniqID[geneDist$ensg==x]])}else{0}})
-    }
+    #}else{
+      #geneTable$posMapSNPs <- sapply(geneTable$ensg, function(x){length(which(geneDist$ensg==x))})
+      #geneTable$posMapMaxCADD <- sapply(geneTable$ensg, function(x){if(x %in% geneDist$ensg){max(annot$CADD[annot$uniqID %in% geneDist$uniqID[geneDist$ensg==x]])}else{0}})
+    #}
   }
   if(eqtlMap==1){
     geneTable$eqtlMapSNPs <- sapply(geneTable$ensg, function(x){length(unique(eqtl$uniqID[eqtl$gene==x]))})
@@ -185,25 +185,25 @@ if(nrow(geneTable)>0){
     geneTable$eqtlDirection <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){if(length(which(eqtl$tz[eqtl$gene==x]>0))>=length(which(eqtl$tz[eqtl$gene==x]<0))){"+"}else{"-"}}else{"NA"}})
   }
   if(posMap==1 & eqtlMap==1){
-    if(is.na(posMapWindowSize)){
+    #if(is.na(posMapWindowSize)){
       geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & (snps$uniqID %in% annov$uniqID[annov$gene==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])))>0)
       {min(snps$gwasP[!is.na(snps$gwasP) & (snps$uniqID %in% annov$uniqID[annov$gene==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])])}else{NA}})
       geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% annov$uniqID[annov$gene==x] | ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")})
-    }else{
-      geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & (snps$uniqID %in% geneDist$uniqID[geneDist$ensg==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])))>0)
-      {min(snps$gwasP[!is.na(snps$gwasP) & (snps$uniqID %in% geneDist$uniqID[geneDist$ensg==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])])}else{NA}})
-      geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% geneDist$uniqID[geneDist$ensg==x] | ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")})
-    }
+    #}else{
+      #geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & (snps$uniqID %in% geneDist$uniqID[geneDist$ensg==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])))>0)
+      #{min(snps$gwasP[!is.na(snps$gwasP) & (snps$uniqID %in% geneDist$uniqID[geneDist$ensg==x] | snps$uniqID %in% eqtl$uniqID[eqtl$gene==x])])}else{NA}})
+      #geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% geneDist$uniqID[geneDist$ensg==x] | ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")})
+    #}
   }else if(posMap==1){
-    if(is.na(posMapWindowSize)){
+    #if(is.na(posMapWindowSize)){
       geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & snps$uniqID %in% annov$uniqID[which(annov$gene==x)]))>0)
       {min(snps$gwasP[!is.na(snps$gwasP) & snps$uniqID %in% annov$uniqID[annov$gene==x]])}else{NA}})
       geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% annov$uniqID[which(annov$gene==x)]]]), collapse = ":")})
-    }else{
-      geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & snps$uniqID %in% geneDist$uniqID[which(geneDist$gene==x)]))>0)
-      {min(snps$gwasP[!is.na(snps$gwasP) & snps$uniqID %in% annov$uniqID[annov$gene==x]])}else{NA}})
-      geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% geneDist$uniqID[which(geneDist$ensg==x)]]]), collapse = ":")})
-    }
+    #}else{
+      #geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & snps$uniqID %in% geneDist$uniqID[which(geneDist$gene==x)]))>0)
+      #{min(snps$gwasP[!is.na(snps$gwasP) & snps$uniqID %in% annov$uniqID[annov$gene==x]])}else{NA}})
+      #geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% geneDist$uniqID[which(geneDist$ensg==x)]]]), collapse = ":")})
+    #}
   }else{
     geneTable$minGwasP <- sapply(geneTable$ensg, function(x){if(length(which(!is.na(snps$gwasP) & snps$uniqID %in% eqtl$uniqID[eqtl$gene==x]))>0)
     {min(snps$gwasP[!is.na(snps$gwasP) & snps$uniqID %in% eqtl$uniqID[eqtl$gene==x]])}else{NA}})
