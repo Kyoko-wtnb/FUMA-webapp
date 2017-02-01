@@ -117,7 +117,8 @@ foreach my $s (keys %db){
 					foreach my $l (@eqtlsig){
 						my @line = split(/\s/, $l);
 						my $id = join(":", ($line[0], $line[1], $line[3]));
-						print OUT "$id\t$s\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t$line[7]\n" if(exists $SNPs{$lid}{$id});
+						my $ID = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
+						print OUT "$ID\t$s\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t$line[7]\n" if(exists $SNPs{$lid}{$id});
 					}
 				}else{
 					my @eqtlsig = split(/\n/, `tabix $file2 $chr:$start-$end`);
@@ -132,9 +133,10 @@ foreach my $s (keys %db){
 						my @line = split(/\s/, $l);
 						next if($line[6]>$eqtlP);
 						my $id = join(":", ($line[0], $line[1], $line[3]));
+						my $ID = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
 						if(exists $SNPs{$lid}{$id}){
 							$line[4] =~ s/(ENSG\d+).\d+/$1/;
-							print OUT "$id\t$s\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t";
+							print OUT "$ID\t$s\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t";
 							if(exists $sig{$id}{$line[4]}){print OUT $sig{$id}{$line[4]}, "\n"}
 							else{print OUT "NA\n"}
 						}
@@ -157,8 +159,9 @@ foreach my $s (keys %db){
 					if($sigonly){next if($line[7]>0.05)}
 					else{next if($line[6]>$eqtlP)}
 					my $id = join(":", ($line[0], $line[1], $line[3]));
+					my $ID = join(":", $line[0], $line[1], sort($line[2], $line[3]));
 					if(exists $SNPs{$lid}{$id}){
-						print OUT join("\t", ($id, $s, $ts, $line[4], $line[3], $line[6], $line[5], $line[7])), "\n";
+						print OUT join("\t", ($ID, $s, $ts, $line[4], $line[3], $line[6], $line[5], $line[7])), "\n";
 					}
 				}
 			}
