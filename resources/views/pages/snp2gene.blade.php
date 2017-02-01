@@ -77,8 +77,8 @@
         <div class="container">
           <h4 style="color: #00004d">Manhattan Plot (GWAS summary statistics)</h4>
           <span class="info"><i class="fa fa-info"></i>
-            This is a manhattan plot of your input GWAS summary statistics.<br/>
-            For plotting purposes, overlapping data points are not drawn (see tutorial for detail of filtering, filtering was performed only for SNPs with P-value &le; 1e-5).
+            Manhattan plot of the input GWAS summary statistics.<br/>
+            For plotting, overlapping data points are not drawn (default filtering of SNPs P-value &le; 1e-5, see tutorial for more details).
           </span><br/><br/>
           Download the plot as
           <button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","png");'>PNG</button>
@@ -185,10 +185,10 @@
           <br/><br/>
           <h4 style="color: #00004d">MAGMA Gene-set analysis</h4>
           <span class="info"><i class="fa fa-info"></i>
-            MAGMA gene-set analysis was performed for curated gene sets and GO terms obtained from MsigDB v5.2 (total of 10894 gene sets).<br/>
-            The table only displays either top the 10 significant gene sets or all gene sets with P<sub>bon</sub> < 0.05 if it is more than 10.
+            MAGMA gene-set analysis is performed for curated gene sets and GO terms obtained from MsigDB (total of 10894 gene sets).<br/>
+            The table displays the top the 10 significant gene sets with a maximum of P<sub>bon</sub> < 0.05.
             Full results are downloadable from "Download" tab. <br/>
-            Note that MAGMA gene-set analyses uses the full distribution of SNP p-values and is different from pathway enrichment test that only test for enrichment of low P-values.
+            Note that MAGMA gene-set analyses uses the SNP P-value distribution which is different from pathway association analysis.
           </span><br/><br/>
           <table id="MAGMAtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
             <thead>
@@ -202,18 +202,17 @@
       <div class="sidePanel container" style="padding-top:50px;" id="error5">
         <h4 style="color: #00004d">ERROR:005 No candidate SNPs were found</h4>
         <div id="error5mes">
-          <p>This error occurs because there was no significant SNP in your GWAS summary statistics.<br/>
-            To obtain annotations, either relax P-value threshold for lead SNPs or provide predefined lead SNPs.<br/>
+          <p>Error because of no significant SNP in the GWAS summary statistics.<br/>
+            To obtain annotations; use a less stringent P-value threshold for lead SNPs or provide predefined lead SNPs.<br/>
           </p>
         </div>
         <br/>
-        <h4 style="color: #00004d">Top 10 SNPs in yout input file</h4>
+        <h4 style="color: #00004d">Top 10 SNPs in the input file</h4>
         <span class="info"><i class="fa fa-info"></i>
-          The following SNPs are top 10 significant SNPs from your input file which exist in the reference panel.
-          Please refer the following P-value to set threshold for lead SNPs in the next submission.<br/>
-          There could be significant SNPs with very low minor allele frequecy.
-          Deccreasing MAF threshold might find some hits (default MAF &ge; 0.01). <br/>
-          Note that, MHC region is excluded by default. If there are significatn SNPs in MHC region and you would like to include them, please uncheck the option.
+          Top 10 significant SNPs of the input file.
+          Refer the following P-value to set threshold for lead SNPs in the next submission.<br/>
+          Note that deccreasing MAF threshold may lead to more hits (default MAF &ge; 0.01). <br/>
+          Note that the MHC region is excluded by default. Check this option to include MHC in the analysis.
         </span>
         <br/>
         <table class="table table-bordered" id="topSNPs"></table>
