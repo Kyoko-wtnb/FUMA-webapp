@@ -214,7 +214,7 @@
         <td>Positional mapping</td>
         <td>Optional</td>
         <td>Check this if you want to perform positional mapping.
-          Positional mapping can be performed either purly based on phisical distance or based on functional consequences of SNPs on genes.
+          Positional mapping is based on ANNOVAR annotations by specifying the maximum distance between SNPs and genes or based on functional consequences of SNPs on genes.
           These parameters can be specified in the option below.
         </td>
         <td>Check</td>
@@ -224,7 +224,7 @@
       <tr>
         <td>Distance to genes or functional consequences of SNPs on genes to map</td>
         <td>Mandatory if positional mapping is activated.</td>
-        <td>Positional mappiing criterion either map SNPs to genes purly based on phisical distances or functional consequences of SNPs on genes. <br/>
+        <td>Positional mappiing criterion either map SNPs to genes based on phisical distances or functional consequences of SNPs on genes. <br/>
           When maximum distance is provided SNPs are mapped to genes based on the distance given the user defined maximum distance.
           Alternatively, specific functional consequences of SNPs on genes can be selected which filtered SNPs to map to genes.
           Note that when functional consequences are selected, all SNPs are locating on the gene body (distance 0) except upstream and downstream SNPs whic hare up to 1kb apart from TSS or TSE. <br/>
