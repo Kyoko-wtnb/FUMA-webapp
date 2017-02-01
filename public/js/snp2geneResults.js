@@ -1331,11 +1331,11 @@ function PlotLocuSum(jobID){
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-5)+")")
         .style("text-anchor", "middle")
-        .text("#prioritized genes");
+        .text("#mapped genes");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-20)+")")
         .style("text-anchor", "middle")
-        .text("#prioritized genes");
+        .text("#mapped genes");
     currentWidth += eachWidth + 10;
 
     // plot nWithinGene
@@ -1362,19 +1362,19 @@ function PlotLocuSum(jobID){
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-20)+")")
         .style("text-anchor", "middle")
-        .text("#genes phisically");
+        .text("#genes physically");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(-5)+")")
         .style("text-anchor", "middle")
-        .text("locating in loci");
+        .text("located in loci");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-20)+")")
         .style("text-anchor", "middle")
-        .text("#genes phisically");
+        .text("#genes physically");
     svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(currentWidth+eachWidth/2)+","+(height+margin.bottom-5)+")")
         .style("text-anchor", "middle")
-        .text("locating in loci");
+        .text("located in loci");
     svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
     svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
     svg.selectAll('text').style('font-family', 'sans-serif');
