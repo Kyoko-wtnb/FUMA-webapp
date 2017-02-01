@@ -10,3 +10,4 @@ storage/scripts/app.config
 storage/example/
 storage/gene2func/
 storage/scripts/gwas_file.pl
+storage/scripts/geneDist.py
