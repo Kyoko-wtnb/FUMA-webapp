@@ -311,10 +311,8 @@ elif chrcol is None or poscol is None:
     if Ncol is not None:
         out.write("\tN")
     out.write("\n")
-
     rsIDs = set(list(gwas[:, rsIDcol]))
     rsID = list(gwas[:, rsIDcol])
-    checked = []
     dbSNPfile = cfg.get('data', 'dbSNP')
     rsID146 = open(dbSNPfile+"/RsMerge146.txt", 'r')
     for l in rsID146:
@@ -324,6 +322,11 @@ elif chrcol is None or poscol is None:
             j = bisect_left(rsID, l[0])
             gwas[j,rsIDcol] = l[1]
     rsID146.close
+
+    gwas = gwas[gwas[:,rsIDcol].argsort()]
+    rsIDs = set(list(gwas[:, rsIDcol]))
+    rsID = list(gwas[:, rsIDcol])
+    checked = []
 
     for chrom in range(1,24):
         print "start chr"+str(chrom)
