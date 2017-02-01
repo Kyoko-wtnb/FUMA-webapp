@@ -221,15 +221,15 @@ $(document).ready(function(){
           svg.append("rect").attr("x", width+20).attr("y", genesTop+10)
             .attr("width", 20).attr("height", 5).attr("fill", "red");
           svg.append("text").attr("x", width+45).attr("y", genesTop+15)
-            .text("Prioritized genes").style("font-size", "10px");
+            .text("Mapped genes").style("font-size", "10px");
           svg.append("rect").attr("x", width+20).attr("y", genesTop+25)
             .attr("width", 20).attr("height", 5).attr("fill", "blue");
           svg.append("text").attr("x", width+45).attr("y", genesTop+30)
-            .text("Protein coding genes").style("font-size", "10px");
+            .text("Non-mapped protein coding genes").style("font-size", "10px");
           svg.append("rect").attr("x", width+20).attr("y", genesTop+40)
             .attr("width", 20).attr("height", 5).attr("fill", "#383838");
           svg.append("text").attr("x", width+45).attr("y", genesTop+45)
-            .text("Non-coding genes").style("font-size", "10px");
+            .text("Non-mapped non-coding genes").style("font-size", "10px");
 
           svg.selectAll('rect.gene').data(data2).enter().append("g")
             .insert('rect').attr("class", "cell").attr("class", "genesrect")
@@ -527,7 +527,17 @@ $(document).ready(function(){
             // var y = d3.scale.linear().range([currentHeight+150, currentHeight]);
             var y = d3.scale.linear().range([caddTop+caddHeight, caddTop]);
             var yAxis = d3.svg.axis().scale(y).orient("left");
+
             y.domain([0, d3.max(data1, function(d){return d.CADD})+1]);
+            svg.append("circle").attr("cx", width+20).attr("cy", caddTop+50)
+              .attr("r", 3.5).attr("fill", "blue");
+            svg.append("text").attr("x", width+30).attr("y", caddTop+53)
+              .text("exonic SNPs").style("font-size", "10px");
+            svg.append("circle").attr("cx", width+20).attr("cy", caddTop+70)
+              .attr("r", 3.5).attr("fill", "skyblue");
+            svg.append("text").attr("x", width+30).attr("y", caddTop+73)
+              .text("other SNPs").style("font-size", "10px");
+
             svg.selectAll("dot").data(data1.filter(function(d){if(d.ld!=0){return d;}})).enter()
               .append("circle")
               .attr("class", "CADDdot")
@@ -535,7 +545,7 @@ $(document).ready(function(){
               .attr("cx", function(d){return x(d.pos);})
               .attr("cy", function(d){return y(d.CADD);})
               // .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
-              .style("fill", function(d){if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
+              .style("fill", function(d){if(d.func=="exonic"){return "blue"}else{return "skyblue";}})
               .on("click", function(d){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
