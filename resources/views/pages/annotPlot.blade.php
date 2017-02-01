@@ -538,14 +538,46 @@ $(document).ready(function(){
             svg.append("text").attr("x", width+30).attr("y", caddTop+73)
               .text("other SNPs").style("font-size", "10px");
 
-            svg.selectAll("dot").data(data1.filter(function(d){if(d.ld!=0){return d;}})).enter()
+            svg.selectAll("dot").data(data1.filter(function(d){if(d.ld!=0 && d.func!="exonic"){return d;}})).enter()
               .append("circle")
               .attr("class", "CADDdot")
               .attr("r", 3.5)
               .attr("cx", function(d){return x(d.pos);})
               .attr("cy", function(d){return y(d.CADD);})
               // .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
-              .style("fill", function(d){if(d.func=="exonic"){return "blue"}else{return "skyblue";}})
+              .style("fill", "skyblue")
+              .on("click", function(d){
+                table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
+                        +'<tr><td>Selected SNP</td><td>'+d.rsID
+                        +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
+                        +'</td></tr><tr><td>Ind. Sig. SNPs</td><td>'+d.IndSigSNP
+                        +'</td></tr><tr><td>GWAS P-value</td><td>'+d.gwasP
+                        +'</td></tr><tr><td>Annotation</td><td>'+d.func
+                        +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
+                        +'</td></tr><tr><td>CADD</td><td>'+d.CADD
+                        +'</td></tr><tr><td>RDB</td><td>'+d.RDB
+                        +'</td></tr>';
+                if(Chr15==1){
+                  cells = Chr15cells.split(":");
+                  if(cells[0]=="all"){cells=Chr15eid;}
+                  for(var i=0; i<cells.length; i++){
+                    table += '<tr><td>'+cells[i]+'</td><td>'+d[cells[i]]+'</td></tr>';
+                  }
+                }
+                if(eqtl==1 & eqtlplot==1){
+                  table += '<tr><td>eQTLs</td><td>'+d.eqtl+'</td></tr>';
+                }
+                table += '</table>'
+                $('#annotTable').html(table);
+              });
+            svg.selectAll("dot").data(data1.filter(function(d){if(d.ld!=0 && d.func=="exonic"){return d;}})).enter()
+              .append("circle")
+              .attr("class", "CADDdot")
+              .attr("r", 3.5)
+              .attr("cx", function(d){return x(d.pos);})
+              .attr("cy", function(d){return y(d.CADD);})
+              // .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
+              .style("fill", "blue")
               .on("click", function(d){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
