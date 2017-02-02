@@ -280,11 +280,11 @@ elif chrcol is not None and poscol is not None:
                 maxpos = int(l[poscol])
                 temp.append(l)
             else:
-                Tabix(cur_chr, minpos, maxpos, temp)
-                minpos = int(l[poscol])
+				Tabix(cur_chr, minpos, maxpos, temp)
+				minpos = int(l[poscol])
 				maxpos = int(l[poscol])
-                temp = []
-                temp.append(l)
+				temp = []
+				temp.append(l)
         else:
             Tabix(cur_chr, minpos, maxpos, temp)
             cur_chr = int(l[chrcol])

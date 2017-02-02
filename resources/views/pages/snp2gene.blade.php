@@ -131,7 +131,7 @@
           <div id="QQplotPane" class="row">
             <!-- <div class="row"> -->
               <div class="col-md-6 col-xs-6 col-sm-6">
-                <h4 style="color: #00004d">QQ plots (GWAS summary statisics)</h4>
+                <h4 style="color: #00004d">QQ plot (GWAS summary statisics)</h4>
                 <span class="info"><i class="fa fa-info"></i>
                   This is a Q-Q plot of GWAS summary statistics. <br/>
                   For plotting purposes, overlapping data points are not drawn (see tutorial for detail of filtering, filtering was performed only for SNPs with P-value &le; 1e-5).
@@ -156,7 +156,7 @@
                 </div>
               </div>
               <div class="col-md-6 col-xs-6 col-sm-6">
-                <h4 style="color: #00004d">QQ plots (gene-based test)</h4>
+                <h4 style="color: #00004d">QQ plot (gene-based test)</h4>
                 <span class="info"><i class="fa fa-info"></i>
                   This is a Q-Q plot of the gene-based test computed by MAGMA.<br/>
                   <br/>
@@ -188,8 +188,7 @@
             MAGMA gene-set analysis is performed for curated gene sets and GO terms obtained from MsigDB (total of 10894 gene sets).<br/>
             The table displays the top the 10 significant gene sets with a maximum of P<sub>bon</sub> < 0.05.
             Full results are downloadable from "Download" tab. <br/>
-            Note that MAGMA gene-set analyses uses the SNP P-value distribution which is different from pathway association analysis.
-          </span><br/><br/>
+            Note that MAGMA gene-set analyses uses the full distribution of SNP p-values and is different from a pathway enrichment test as implemented in GENE2FUNC that only tests for enrichment of prioritized genes.          </span><br/><br/>
           <table id="MAGMAtable" class="display compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
             <thead>
               <th>Gene Set</th><th>N genes</th><th>Beta</th><th>Beta STD</th><th>SE</th><th>P</th><th>P<sub>bon</sub></th>
@@ -355,7 +354,7 @@
 
               <div role="tabpanel" class="tab-pane" id="annovTablePane">
                 <br/>
-                <span class="info"><i class="fa fa-info"></i> This is result of annotation by ANNOVAR. SNPs can be appear multiple times in this table if they are annotated to more than one genes.</span>
+                <span class="info"><i class="fa fa-info"></i> This is the result of annotation by ANNOVAR. SNPs can appear multiple times in this table if they are annotated to more than one genes.</span>
                 <br/>
                 <table id="annovTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                   <thead>
@@ -438,11 +437,11 @@
             <h4 style="color: #00004d">Regional Plot (GWAS association)</h4>
             <!-- <div class="row collapse in" id="regionalPlotPanel"> -->
             <span class="info"><i class="fa fa-info"></i>
-              Please click one of the row of Genomic risk loci, lead SNPs or ind. sig. SNPs tables to display regional plot.<br/>
+              Please click one of the row of 'Genomic risk loci', 'lead SNPs' or 'ind. sig. SNPs' tables to display a regional plot.<br/>
               You can zoom in/out by mouse scroll. <br/>
-              Each SNP is colored by the highest r<sup>2</sup> to one of the ind. sig. SNPs if that is greater or eaqual to user defined threshold.
-              Other SNPs are colored in grey.
-              Top lead SNPs in genomic risk loci, lead SNPs and ind. sig. SNPs are circled in black and colored in dark-purple, purple and red, respectively.
+              Each SNP is color-coded based on the highest r<sup>2</sup> to one of the ind. sig. SNPs, if that is greater or equal to the user defined threshold.
+              Other SNPs (i.e. below the user-defined r<sup>2</sup>) are colored in grey.
+              The top lead SNPs in genomic risk loci, lead SNPs and ind. sig. SNPs are circled in black and colored in dark-purple, purple and red, respectively.
             </span>
             <div class="row">
               <div class="col-md-9">
