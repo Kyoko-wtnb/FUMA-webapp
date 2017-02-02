@@ -8,15 +8,15 @@
     <li><strong>chr</strong> : chromosome of top lead SNP</li>
     <li><strong>pos</strong> : position of top lead SNP on hg19</li>
     <li><strong>P-value</strong> : P-value of top lead SNP (from the input file).</li>
-    <li><strong>start</strong> : Start position of the locus.</li>
-    <li><strong>end</strong> : End postion of the locus.</li>
-    <li><strong>nSNPs</strong> : Number of the unique canidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+    <li><strong>start</strong> : Start position of the locus</li>
+    <li><strong>end</strong> : End postion of the locus</li>
+    <li><strong>nSNPs</strong> : The number of unique canidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
       Candidate SNPs are all SNPs that are in LD (give user-defined r<sup>2</sup>) with any of independent significant SNPs and either have a P-value below the user defined threshold or are only available in 1000G.
     </li>
     <li><strong>nGWASSNPs</strong> : The number of unique GWAS-tagged candidate SNPs in the genomic locus which is available in the GWAS summarys statistics input file. This is a subset of "nSNPs".</li>
-    <li><strong>nIndSigSNPs</strong> : Number of the independent (at user defined r<sup>2</sup>) significant SNPs in the genomic locus.</li>
+    <li><strong>nIndSigSNPs</strong> : The number of the independent (at user defined r<sup>2</sup>) significant SNPs in the genomic locus.</li>
     <li><strong>IndSigSNPs</strong> : rsID of the independent significant SNPs in the genomic locus.</li>
-    <li><strong>nLeadSNPs</strong> : Number of lead SNPs in the genomic locus.
+    <li><strong>nLeadSNPs</strong> : The number of lead SNPs in the genomic locus.
       Lead SNPs are are subset of independent significant SNPs at r<sup>2</sup> 0.1.</li>
     <li><strong>LeadSNPs</strong> : rsID of lead SNPs in the genomic locus.</li>
   </ul>
@@ -42,7 +42,7 @@
   <li><p>independent significant SNPs (Independent significant SNPs)</p>
   <p>All independent lead SNPs identified by FUMA.</p>
   <ul>
-    <li><strong>No</strong> : Index of lead SNPs</li>
+    <li><strong>No</strong> : Index of independent significant SNPs</li>
     <li><strong>Genomic Locus</strong> : Index of assigned genomic locus matched with "Genomic risk loci" table.
       Multiple independent lead SNPs can be assigned to the same genomic locus.</li>
     <li><strong>uniqID</strong> : Unique ID of SNPs consisting of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
@@ -50,8 +50,8 @@
     <li><strong>chr</strong> : chromosome</li>
     <li><strong>pos</strong> : position on hg19</li>
     <li><strong>P-value</strong> : P-value (from the input file).</li>
-    <li><strong>nSNPs</strong> : Number of SNPs in LD with the lead SNP given r<sup>2</sup>, including non-GWAS-tagged SNPs (which are extracted from 1000G).</li>
-    <li><strong>nGWASSNPs</strong> : Number of GWAS-tagged SNPs in LD with the lead SNP given r<sup>2</sup>. This is a subset of "nSNPs".</li>
+    <li><strong>nSNPs</strong> : The number of SNPs in LD with the lead SNP given r<sup>2</sup>, including non-GWAS-tagged SNPs (which are extracted from 1000G).</li>
+    <li><strong>nGWASSNPs</strong> : The number of GWAS-tagged SNPs in LD with the lead SNP given r<sup>2</sup>. This is a subset of "nSNPs".</li>
   </ul>
   </li>
 </ul>
@@ -83,14 +83,12 @@
     <li><strong>IndSigSNP</strong> : rsID of the independent significant SNP which has the maximum r2 with the SNP.</li>
     <li><strong>Genomic locus</strong> : Index of the genomic risk loci matching with "Genomic risk loci" table.</li>
     <li><strong>nearestGene</strong> : The nearest Gene of the SNP based on ANNOVAR annotations.
-      Note that ANNOVAR has its own prioritization criterion for SNPs which are locating a genomic region where multiple genes are obverlapped.
-      For such SNPs, only genes which ANNOVAR assigned to are shown here.
-      For intergenic SNPs, the closest genes are assigned.
+      Note that ANNOVAR annotates "consequence" function by prioritizing the most deleterious annotaion for SNPs which are locating a genomic region where multiple genes are obverlapped.
       Genes are ecoded in symbol, if it is available otherwise Ensembl ID.
-      Genes here include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.</li>
+      Genes include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.</li>
     <li><strong>dist</strong> : Distance to the nearest gene. SNPs which are locating in the gene body or 1kb up- or down-stream of TSS or TES have 0.</li>
     <li><strong>func</strong> : Functional consequence of the SNP on the gene obtained from ANNOVAR. For exonic SNPs, detailed annotation (e.g. non-synonymous, stop gain and so on) is available in the ANNOVAR table (annov.txt).</li>
-    <li><strong>CADD</strong> : CADD score which is computed based on 67 annotations. The higher the score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al (2014).</li>
+    <li><strong>CADD</strong> : CADD score which is computed based on 63 annotations. The higher the score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al (2014).</li>
     <li><strong>RDB</strong> : RegulomeDB score which is a categorical score (from 1a to 7). 1a is the highest score for SNPs with the most biological evidence to be a regulatory element.</li>
     <li><strong>minChrState</strong> : The minimum 15-core chromatin state across 127 tissue/cell type.</li>
     <li><strong>commonChrState</strong> : The most common 15-core chromatin state across 127 tissue/cell types.</li>
@@ -111,7 +109,7 @@
     <li><strong>Gene</strong> : ENSG ID</li>
     <li><strong>Symbol</strong> : Gene Symbol</li>
     <li><strong>Distance</strong> : Distance to the gene</li>
-    <li><strong>Function</strong> : Positional annotation</li>
+    <li><strong>Function</strong> : Functional consequence on the gene</li>
     <li><strong>Exonic function</strong> : Functional annotation of exonic SNPs</li>
     <li><strong>Exon</strong> : Index of exon</li>
   </ul>
@@ -128,15 +126,16 @@
     <li><strong>entrezID</strong> : entrez ID</li>
     <li><strong>Genomic locus</strong> : Index of genomic loci where mapped SNPs are from. This could contain more than one interval in the case that eQTLs are mapped to genes from distinct genomic risk loci.</li>
     <li><strong>chr</strong> : chromosome</li>
-    <li><strong>start</strong> : gene starting position</li>
-    <li><strong>end</strong> : gene ending position</li>
-    <li><strong>strand</strong> : strand of gene</li>
-    <li><strong>status</strong> : status of gene from Ensembl</li>
-    <li><strong>type</strong> : gene biotype from Ensembl</li>
+    <li><strong>start</strong> : Starting position of the gene</li>
+    <li><strong>end</strong> : Ending position of the gene</li>
+    <li><strong>strand</strong> : Strand of gene</li>
+    <li><strong>status</strong> : Status of gene from Ensembl</li>
+    <li><strong>type</strong> : Gene biotype from Ensembl</li>
     <li><strong>HUGO</strong> : HUGO (HGNC) gene symbol</li>
-    <li><strong>posMapSNPs</strong> (posMap): Number of the SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).</li>
+    <li><strong>pLI</strong> : pLI score from ExAC database. The probability of being loss-of-function intolerant.</li>
+    <li><strong>posMapSNPs</strong> (posMap): The number of SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).</li>
     <li><strong>posMapMaxCADD</strong> (posMap): The maximum CADD score of mapped SNPs by positional mapping.</li>
-    <li><strong>eqtlMapSNPs</strong> (eqtlMap): Number of the SNPs mapped to the gene based on eQTL mapping.</li>
+    <li><strong>eqtlMapSNPs</strong> (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.</li>
     <li><strong>eqtlMapminP</strong> (eqtlMap): The minimum eQTL P-value of mapped SNPs.</li>
     <li><strong>eqtlMapmin!</strong> (eqtlMap): The minimum eQTL FDR of mapped SNPs.</li>
     <li><strong>eqtlMapts</strong> (eqtlMap): Tissue types of mapped eQTL SNPs.</li>
@@ -155,7 +154,7 @@
     <li><strong>chr</strong> : chromosome</li>
     <li><strong>pos</strong> : position on hg19</li>
     <li><strong>DB</strong> : Data source of eQTLs. Currently GTEx, BloodeQTL, BIOS and BRAINEAC are available. Please refer to the <a href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">eQTL</a> section for details.</li>
-    <li><strong>tissue</strong> : tissue type</li>
+    <li><strong>tissue</strong> : Tissue type</li>
     <li><strong>Gene</strong> : ENSG ID</li>
     <li><strong>Symbol</strong> : Gene symbol</li>
     <li><strong>P-value</strong> : P-value of eQTLs</li>

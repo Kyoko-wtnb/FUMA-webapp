@@ -1,5 +1,8 @@
 README file of FUMA web application
 
+Author: Kyoko Watanabe (k.watanabe@vu.nl)
+Version: 1.0 (2 Feb 2017)
+
 This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
 
@@ -13,13 +16,13 @@ rsID : rsID of the top lead SNP based on dbSNP build 146.
 chr : chromosome of top lead SNP
 pos : position of top lead SNP on hg19
 p : P-value of top lead SNP (from the input file).
-start : Start position of the locus.
-end : End postion of the locus.
-nSNPs : Number of the canidate SNPs in the interval, including non-GWAS-tagged SNPs (which are extracted from 1000G).
-nGWASSNPs : Number of the GWAS-tagged candidate SNPs within the interval. This is a subset of &quot;nSNPs&quot;.
-nIndSigSNPs : Number of the independent significant SNPs in the genomic locus
+start : Start position of the locus
+end : End postion of the locus
+nSNPs : The number of unique canidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+nGWASSNPs : The number of the GWAS-tagged candidate SNPs within the genomic locus. This is a subset of &quot;nSNPs&quot;.
+nIndSigSNPs : The number of the independent significant SNPs in the genomic locus
 IndSigSNPs : rsID of independent significant SNPs in the genomic locus
-nLeadSNPs : Number of the lead SNPs in the genomic locus
+nLeadSNPs : The number of lead SNPs in the genomic locus
 LeadSNPs : rsID of lead SNPs in the genomic locus
 
 ######################
@@ -33,22 +36,22 @@ rsID : rsID based on dbSNP build 146.
 chr : chromosome
 pos : position on hg19
 p : P-value (from the input file).
-nIndSigSNPs : Number of the independent significant SNPs in LD of the lead SNP at r2 0.1
-IndSigSNPs : rsID of independent significant SNPs in LD of the lead SNP at r2 0.1
+nIndSigSNPs : The number of independent significant SNPs which are in LD of the lead SNP at r2 0.1
+IndSigSNPs : rsID of independent significant SNPs which are in LD of the lead SNP at r2 0.1
 
 ######################
 # IndSigSNPs.txt
 # All independent significant SNPs at user defined r2
 ######################
-No : Index of lead SNPs
+No : Index of independent significant SNPs
 Genomic Locus : Index of assigned genomic locus matched with "GenomicRiskLoci.txt". Multiple independent lead SNPs can be assigned to the same genomic locus.
 uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
 rsID : rsID based on dbSNP build 146.
 chr : chromosome
 pos : position on hg19
 p : P-value (from the input file).
-nSNPs : Number of the SNPs within LD of the ind. sig. SNP given r2, including non-GWAS-tagged SNPs (which are extracted from 1000G).
-nGWASSNPs : Number of the GWAS-tagged SNPs within LD of the ind. sig. SNP given r2.
+nSNPs : The number of SNPs which are in LD of the independent significant SNP given r2, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+nGWASSNPs : The number of GWAS-tagged SNPs which are in LD of the ind. sig. SNP given r2.
 
 
 ######################
@@ -62,58 +65,75 @@ pos : position on hg19
 ref : Reference allele. Non-effect allele if it is provided in the input GWAS summary statistics file. If not, this is the reference allele in 1000G.
 alt : Alternative allele. Effect allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.
 MAF : Minor allele frequency computed based on 1000G.
-gwasP : P-value provided in the input GWAS summary statistics file. For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
-or : Odds ratio provided in the input GWAS summary statistics file if available. For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
-beta : Beta provided in the input GWAS summary statistics file if available. For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
-se : Standard error provided in the input GWAS summary statistics file if available. For non-GWAS tagged SNPs (which do not exist in input file but extracted from reference panel) have "NA" instead.
-r2 : The maximum r2 of the SNP with one of the independent lead SNP (this dosen't have to be top lead SNPs in the genomic loci).
+gwasP : P-value provided in the input GWAS summary statistics file. Non-GWAS tagged SNPs (which do not exist in input file but are extracted from the reference panel) have "NA" instead.
+or : Odds ratio provided in the input GWAS summary statistics file if available. Non-GWAS tagged SNPs (which do not exist in input file but are extracted from the reference panel) have "NA" instead.
+beta : Beta provided in the input GWAS summary statistics file if available. Non-GWAS tagged SNPs (which do not exist in input file but are extracted from the reference panel) have "NA" instead.
+se : Standard error provided in the input GWAS summary statistics file if available. Non-GWAS tagged SNPs (which do not exist in input file but are extracted from the reference panel) have "NA" instead.
+r2 : The maximum r2 of the SNP with one of the independent significant SNP (this doesn't have to be top lead SNPs in the genomic loci).
 IndSigSNP : rsID of a independent significant SNP which has the maximum r2 of the SNP.
 Genomic locus : Index of the genomic risk loci matching with "GenomicRiskLoci.txt".
-nearestGene : The nearest Gene of the SNP. Genes are ecoded in symbol, if it is available otherwise Ensembl ID.
-  Genes here include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.
-dist : Distance to the nearest gene.
-func : Potisional annotation obtained from ANNOVAR. For exonic SNPs, detail annotation (e.g. non-synonymous, stop gain and so on) is available in ANNOVAR table (annov.txt).
-CADD : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al(ref).
+nearestGene : The nearest Gene of the SNP based on ANNOVAR annotations.
+  Note that ANNOVAR annotates "consequence" function by prioritizing the most deleterious annotation for SNPs which are locating a genomic region where multiple genes are obverlapped.
+  Genes are encoded in symbol, if it is available, otherwise Ensembl ID.
+  Genes include all transcripts from Ensembl gene build 85 including non-protein coding genes and RNAs.
+dist : Distance to the nearest gene. SNPs which are locating in the gene body or 1kb up- or down-stream of TSS or TES have 0.
+func : Functional consequence of the SNP on the gene obtained from ANNOVAR. For exonic SNPs, detail annotation (e.g. non-synonymous, stop gain and so on) is available in ANNOVAR table (annov.txt).
+CADD : CADD score which is computed based on 63 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al(ref).
 RDB : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.
-minChrState : The minimum 15-core chromatin state over 127 tissue/cell type.
-commonChrState : The majority of the 15-core chromatin state over 127 tissue/cell types.
+minChrState : The minimum 15-core chromatin state across 127 tissue/cell type.
+commonChrState : The most common 15-core chromatin state across 127 tissue/cell types.
 
 ######################
 # ld.txt
 # r2 of all pairs of one of the independent lead SNPs and SNPs in LD with r2 greater or equal to the defined threshold
 ######################
-SNP1 : unique ID of one of the independent lead SNPs
-SNP2 : unique ID of SNPs which are LD of SNP1 with r2 greater or equal to the defined threshold
-r2 : r2 computed by plink using 1000 genomes reference panel (phase3) of defined Population
+SNP1 : unique ID of one of the independent significant SNPs
+SNP2 : unique ID of SNPs which are in LD of SNP1 with r2 greater or equal to the user defined threshold
+r2 : r2 computed by plink using 1000 genomes reference panel (phase3) of defined population
+
+######################
+# annov.txt
+# Full results of ANNOVAR
+######################
+uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
+chr : chromosome
+pos : position on hg19
+Gene : Ensembl gene ID
+Symbol : Gene symbol
+Distance : Distance to the gene
+Function : Functional consequence on the gene
+Exonic function : Functional annotation of exonic SNPs
+Exon : Index of exon
 
 ######################
 # annot.txt
 # annotations of all SNPs which are in LD of any independent lead SNP
 ######################
 uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
-CADD : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by <a href="https://www.ncbi.nlm.nih.gov/pubmed/24487276" target="_blank">Kicher et al.</a>
+CADD : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al. (2014).
 RDB : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.
-E001~E129 : Chromatin state predicted by ChrHMM. ID of tissue cell types and description of 15 states are available from <a href="{{ Config::get('app.subdir') }}/link">Link</a>.
+E001~E129 : Chromatin state predicted by ChrHMM.
 
 ######################
 # genes.txt
-# The list of genes mapped by SNPs in snps.txt based on defined mapping prameters.
-# Columns with posMap or eqtlMap in the parenthese are only available when positional or eQTL mapping is performed, respectively.
+# The list of genes mapped by SNPs in snps.txt based on the user defined mapping prameters.
+# Columns with posMap or eqtlMap in the parentheses are only available when positional or eQTL mapping is performed, respectively.
 ######################
 Gene : ENSG ID
 Symbol : Gene Symbol
 entrezID : entrez ID
 Genomic locus : Index of genomic loci where mapped SNPs are from. This could contain more than one interval in the case that eQTLs are mapped to genes from distinct genomic risk loci.
 chr : chromosome
-start : gene starting position
-end : gene ending position
-strand : strand od gene
-status : status of gene from Ensembl
-type : gene biotype from Ensembl
+start : Starting position of the gene
+end : Ending position of the gene
+strand : Strand of the gene
+status : Status of the gene from Ensembl
+type : Gene biotype from Ensembl
 HUGO : HUGO (HGNC) gene symbol
-posMapSNPs (posMap): Number of the SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).
+pLI : pLI score from ExAC database. The probability of being loss-of-function intolerant.
+posMapSNPs (posMap): The number of SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).
 posMapMaxCADD (posMap): The maximum CADD score of mapped SNPs by positional mapping.
-eqtlMapSNPs (eqtlMap): Number of the SNPs mapped to the gene based on eQTL mapping.
+eqtlMapSNPs (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.
 eqtlMapminP (eqtlMap): The minimum eQTL P-value of mapped SNPs.
 eqtlMapmin! (eqtlMap): The minimum eQTL FDR of mapped SNPs.
 eqtlMapts (eqtlMap): Tissue types of mapped eQTL SNPs.
@@ -129,8 +149,8 @@ IndSigSNPs : rsID of the all independent significant SNPs of mapped SNPs.
 uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
 chr : chromosome
 pos : position on hg19
-DB : Data source of eQTLs. Currently GTEx, BloodeQTL and BIOS are available. Please refer &quot;External Data sources&quot; for details.
-tissue : tissue type
+DB : Data source of eQTLs. Currently GTEx, BloodeQTL, BIOS and BRAINEAC are available.
+tissue : Tissue type
 Gene : ENSG ID
 Symbol : Gene symbol
 P-value : P-value of eQTLs
@@ -231,7 +251,7 @@ eqtlMapChr15Meth : The method of chromatin state filtering
 ######################
 MAGMA gene analysis and gene-set analysis were performed with MAGMA v1.6.
 1. Gene analysis
-  SNPs are mapped to 19436 protein coding genes (with unqiue ensembl ID) if SNPs are located within gene body.
+  SNPs are mapped to 19436 protein coding genes (with unique ensembl ID) if SNPs are located within gene body.
   All parameters were set as default (SNP-wise model for gene test).
   magma.genes.out: output of gene analysis containing gene P-value
   magma.genes.raw: output of gene analysis which is used for gene-set analysis
