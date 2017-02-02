@@ -154,7 +154,7 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and altcol 
         l = l.strip()
         l = l.split()
         if l[rsIDcol] in rsIDs:
-            j = bisect_left(rsID, l[rsIDcol])
+            j = bisect_left(rsID[:,0], l[rsIDcol])
             l[rsIDcol] = rsID[j,1]
         l[chrcol] = l[chrcol].replace("chr", "")
         if re.match("x", l[chrcol], re.IGNORECASE):
