@@ -23,7 +23,7 @@ def ArrayNotIn(a1, a2):
 start = timeit.default_timer()
 
 filedir = sys.argv[1]
-if re.match("\/$", filedir) is None:
+if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 i = int(sys.argv[2])
 i = i

@@ -33,7 +33,7 @@ if len(sys.argv)<1:
 	raise Exception('ERROR: not enough arguments\nUSAGE ./GeneSet.py <filedir>\n')
 
 filedir = sys.argv[1]
-if re.match("\/$", filedir) is None:
+if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 param = ConfigParser.ConfigParser()
 param.read(filedir+'params.config')

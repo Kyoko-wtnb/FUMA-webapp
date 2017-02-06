@@ -30,7 +30,7 @@ if len(sys.argv)<2:
 start = time.time()
 
 filedir = sys.argv[1]
-if re.match("\/$", filedir) is None:
+if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 
 ##### config variables #####
@@ -60,7 +60,7 @@ fin = open(gwas, 'r')
 header = fin.readline()
 while re.match("^#", header):
     header = fin.readline()
-fin.close
+fin.close()
 header = header.strip()
 header = header.split()
 
@@ -171,8 +171,8 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and altcol 
         if Ncol is not None:
             out.write("\t"+l[Ncol])
         out.write("\n")
-    gwasIn.close
-    out.close
+    gwasIn.close()
+    out.close()
     tempfile = filedir+"temp.txt"
     os.system("sort -k 1n -k 2n "+outSNPs+" > "+tempfile)
     os.system("mv "+tempfile+" "+outSNPs)
@@ -199,13 +199,13 @@ elif chrcol is not None and poscol is not None:
                     if (snps[j,refcol].upper()==l[3] and snps[j,altcol].upper()==l[4]) or (snps[j,refcol].upper()==l[4] and snps[j,altcol].upper()==l[3]):
                         out.write("\t".join([l[0],l[1], snps[j,refcol].upper(), snps[j,altcol].upper(), l[2], snps[j,pcol]]))
                         if orcol is not None:
-                            out.write("\t"+l[orcol])
+                            out.write("\t"+snps[j,orcol])
                         if becol is not None:
-                            out.write("\t"+l[becol])
+                            out.write("\t"+snps[j,becol])
                         if secol is not None:
-                            out.write("\t"+l[secol])
+                            out.write("\t"+snps[j,secol])
                         if Ncol is not None:
-                            out.write("\t"+l[Ncol])
+                            out.write("\t"+snps[j,Ncol])
                         out.write("\n")
                 elif altcol is not None:
                     if snps[j,altcol].upper()==l[3] or snps[j,altcol].upper()==l[4]:
@@ -216,26 +216,26 @@ elif chrcol is not None and poscol is not None:
                             a = l[3]
                         out.write("\t".join([l[0],l[1], a, snps[j,altcol].upper(), l[2], snps[j,pcol]]))
                         if orcol is not None:
-                            out.write("\t"+l[orcol])
+                            out.write("\t"+snps[j,orcol])
                         if becol is not None:
-                            out.write("\t"+l[becol])
+                            out.write("\t"+snps[j,becol])
                         if secol is not None:
-                            out.write("\t"+l[secol])
+                            out.write("\t"+snps[j,secol])
                         if Ncol is not None:
-                            out.write("\t"+l[Ncol])
+                            out.write("\t"+snps[j,Ncol])
                         out.write("\n")
                 else:
                     out.write("\t".join([l[0],l[1], l[3], l[4], l[2], snps[j,pcol]]))
                     if orcol is not None:
-                        out.write("\t"+l[orcol])
+                        out.write("\t"+snps[j,orcol])
                     if becol is not None:
-                        out.write("\t"+l[becol])
+                        out.write("\t"+snps[j,becol])
                     if secol is not None:
-                        out.write("\t"+l[secol])
+                        out.write("\t"+snps[j,secol])
                     if Ncol is not None:
-                        out.write("\t"+l[Ncol])
+                        out.write("\t"+snps[j,Ncol])
                     out.write("\n")
-        out.close
+        out.close()
 
     tempfile = filedir + "temp.txt"
     os.system("sort -k "+str(chrcol+1)+"n -k "+str(poscol+1)+"n "+gwas+" > "+tempfile)
@@ -322,7 +322,7 @@ elif chrcol is None or poscol is None:
         if l[0] in rsIDs:
             j = bisect_left(rsID, l[0])
             gwas[j,rsIDcol] = l[1]
-    rsID146.close
+    rsID146.close()
 
     gwas = gwas[gwas[:,rsIDcol].argsort()]
     rsIDs = set(list(gwas[:, rsIDcol]))
@@ -398,5 +398,5 @@ elif chrcol is None or poscol is None:
         checked = []
         if len(gwas)==0:
             break
-    out.close
+    out.close()
 print time.time()-start

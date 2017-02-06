@@ -10,7 +10,7 @@ import math
 import re
 
 filedir = sys.argv[1]
-if re.match("\/$", filedir) is None:
+if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 
 GWAS = pd.read_table(filedir+"input.snps", sep="\s+")

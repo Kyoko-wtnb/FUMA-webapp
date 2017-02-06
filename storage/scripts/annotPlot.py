@@ -22,7 +22,7 @@ def ArrayNotIn(a1, a2):
     return results
 
 filedir = sys.argv[1]
-if re.match("\/$", filedir) is None:
+if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 
 filedir = sys.argv[1]

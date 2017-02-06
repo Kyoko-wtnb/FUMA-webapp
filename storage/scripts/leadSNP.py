@@ -16,7 +16,7 @@ def ArrayIn(a1, a2):
 
 
 filedir = sys.argv[1]
-if re.match("\/$", filedir) is None:
+if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 
 cfg = ConfigParser.ConfigParser()
