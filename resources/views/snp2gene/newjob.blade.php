@@ -995,5 +995,8 @@
   </span><br/><br/>
 
   <input class="btn" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
+  <span style="color: red; font-size:18px;">
+    <i class="fa fa-exclamation-triangle"></i> Once click "Submit job" button, please wait until the page redirect.
+  </span>
   {!! Form::close() !!}
 </div>
