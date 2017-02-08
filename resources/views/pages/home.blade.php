@@ -3,6 +3,7 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+  var loggedin = "{{ Auth::check() }}";
   $(document).ready(function(){
     $('#snp2genebtn').on('click', function(){
       window.location.href="{{ Config::get('app.subdir') }}/snp2gene";

@@ -1,4 +1,9 @@
 @extends('layouts.master')
+@section('head')
+<script type="text/javascript">
+  var loggedin = "{{ Auth::check() }}";
+</script>
+@stop
 @section('content')
 <div class="container" style="padding-top: 50px;">
   <table class="table table-bordered">

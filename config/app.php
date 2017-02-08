@@ -202,8 +202,8 @@ return [
 
         'Collective\Html\HtmlServiceProvider',
         'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
-        'Chumper\Zipper\ZipperServiceProvider',
-        GeneaLabs\LaravelCaffeine\LaravelCaffeineServiceProvider::class
+        'Chumper\Zipper\ZipperServiceProvider'
+        // GeneaLabs\LaravelCaffeine\LaravelCaffeineServiceProvider::class
 
     ],
 

@@ -11,8 +11,7 @@
         "laracasts/utilities": "~2.0",
         "chumper/zipper": "^0.6.1",
         "guzzlehttp/guzzle": "^6.2",
-        "predis/predis": "^1.1",
-        "genealabs/laravel-caffeine": "~0.3.0"
+        "predis/predis": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

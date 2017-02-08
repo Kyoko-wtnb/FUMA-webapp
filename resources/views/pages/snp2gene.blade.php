@@ -29,8 +29,8 @@
   var status = "{{$status}}";
   var id = "{{$jobID}}";
   var jobid = id;
-  var subdir = "{{ Config::get('app.subdir') }}"
-  var preurl = "{{ URL::to('snp2gene') }}"
+  var subdir = "{{ Config::get('app.subdir') }}";
+  var loggedin = "{{ Auth::check() }}";
   // console.log(jobID);
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>

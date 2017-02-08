@@ -33,6 +33,7 @@
   var jobdir = "{{ Config::get('app.jobdir') }}";
   var status = "{{$status}}";
   var jobID = "{{$id}}";
+  var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}"></script>
