@@ -86,26 +86,33 @@
       });
 
       $('#deleteJob').on('click', function(){
-        var c = confirm("Do you really want to remove selected jobs?");
-        if(c){
-          $('.deleteJobCheck').each(function(){
-            if($(this).is(":checked")){
-              $.ajax({
-                url: subdir+"/snp2gene/deleteJob",
-                type: "POST",
-                data: {
-                  jobID: $(this).val()
-                },
-                error: function(){
-                  alert("error at deleteJob");
-                },
-                complete: function(){
-                  getJobList();
-                }
-              });
-            }
-          });
-        }
+        swal({
+          title: "Are you sure?",
+          text: "Do you really want to remove selected jobs?",
+          type: "warning",
+          showCancelButton: true,
+          closeOnConfirm: true,
+        }, function(isConfirm){
+          if (isConfirm){
+            $('.deleteJobCheck').each(function(){
+              if($(this).is(":checked")){
+                $.ajax({
+                  url: subdir+"/snp2gene/deleteJob",
+                  type: "POST",
+                  data: {
+                    jobID: $(this).val()
+                  },
+                  error: function(){
+                    alert("error at deleteJob");
+                  },
+                  complete: function(){
+                    getJobList();
+                  }
+                });
+              }
+            });
+          }
+        });
       });
     });
 </script>
