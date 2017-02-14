@@ -64,27 +64,63 @@ fin.close()
 header = header.strip()
 header = header.split()
 
+# Header detection
+# prioritize user defined colum name
+checkedheader = []
 for i in range(0,len(header)):
-    if chrcol == header[i].upper() or re.match("CHR$|^chromosome$|^chrom$", header[i], re.IGNORECASE):
-        chrcol = i
-    elif rsIDcol == header[i].upper() or re.match("SNP$|^MarkerName$|^rsID$|^snpid$", header[i], re.IGNORECASE):
+    if chrcol == header[i].upper():
+		chrcol = i
+		checkedheader.append(chrcol)
+    elif rsIDcol == header[i].upper():
         rsIDcol = i
-    elif poscol == header[i].upper() or re.match("^BP$|^pos$|^position$", header[i], re.IGNORECASE):
+        checkedheader.append(rsIDcol)
+    elif poscol == header[i].upper():
         poscol = i
-    elif altcol == header[i].upper() or re.match("^A1$|^Effect_allele$|^alt$|^allele1$|^alleleB$", header[i], re.IGNORECASE):
+        checkedheader.append(poscol)
+    elif altcol == header[i].upper():
         altcol = i
-    elif refcol == header[i].upper() or re.match("^A2$|^Non_Effect_allele$|^ref$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
+        checkedheader.append(altcol)
+    elif refcol == header[i].upper():
         refcol = i
-    elif pcol == header[i].upper() or re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$", header[i], re.IGNORECASE):
+        checkedheader.append(refcol)
+    elif pcol == header[i].upper():
         pcol = i
-    elif orcol == header[i].upper() or re.match("^or$", header[i], re.IGNORECASE):
+        checkedheader.append(pcol)
+    elif orcol == header[i].upper():
         orcol = i
-    elif becol == header[i].upper() or re.match("^beta$", header[i], re.IGNORECASE):
+        checkedheader.append(orcol)
+    elif becol == header[i].upper():
         becol = i
-    elif secol == header[i].upper() or re.match("^se$", header[i], re.IGNORECASE):
+        checkedheader.append(becol)
+    elif secol == header[i].upper():
         secol = i
-    elif Ncol == header[i].upper() or re.match("^N$", header[i], re.IGNORECASE):
+        checkedheader.append(becol)
+    elif Ncol == header[i].upper():
         Ncol = i
+        checkedheader.append(Ncol)
+for i in range(0, len(header)):
+	if i in checkedheader:
+		continue
+	if re.match("CHR$|^chromosome$|^chrom$", header[i], re.IGNORECASE):
+		chrcol = i
+	elif re.match("SNP$|^MarkerName$|^rsID$|^snpid$", header[i], re.IGNORECASE):
+		rsIDcol = i
+	elif re.match("^BP$|^pos$|^position$", header[i], re.IGNORECASE):
+		poscol = i
+	elif re.match("^A1$|^Effect_allele$|^alt$|^allele1$|^alleleB$", header[i], re.IGNORECASE):
+		altcol = i
+	elif re.match("^A2$|^Non_Effect_allele$|^ref$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
+		refcol = i
+	elif re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$", header[i], re.IGNORECASE):
+		pcol = i
+	elif re.match("^or$", header[i], re.IGNORECASE):
+		orcol = i
+	elif re.match("^beta$", header[i], re.IGNORECASE):
+		becol = i
+	elif re.match("^se$", header[i], re.IGNORECASE):
+		secol = i
+	elif re.match("^N$", header[i], re.IGNORECASE):
+		Ncol = i
 
 if chrcol=="NA":
     chrcol = None
