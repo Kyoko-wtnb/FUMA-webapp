@@ -996,7 +996,7 @@
 
   <input class="btn" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
   <span style="color: red; font-size:18px;">
-    <i class="fa fa-exclamation-triangle"></i> Once click "Submit job" button, please wait until the page redirect.
+    <i class="fa fa-exclamation-triangle"></i> After submitting, please wait a couple of seconds until the file is uploaded, and do not move away from the submission page.
   </span>
   {!! Form::close() !!}
 </div>
