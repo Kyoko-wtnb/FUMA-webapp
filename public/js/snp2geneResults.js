@@ -765,10 +765,11 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
     file = "eqtl.txt";
     var eqtlTable = $('#eqtlTable').DataTable({
       processing: true,
-      serverSide: false,
+      serverSide: true,
+      searchDelay: 3000,
       select: false,
       ajax:{
-        url: 'DTfile',
+        url: 'DTfileServerSide',
         type: "POST",
         data: {
           filedir: filedir,
@@ -776,7 +777,6 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
           header: "uniqID:chr:pos:db:tissue:gene:symbol:p:FDR:tz"
         }
       },
-      "order": [[1, 'asc'], [2, 'asc']],
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10
     });

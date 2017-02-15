@@ -51,6 +51,8 @@ Route::post('snp2gene/CandidateSelection', 'JobController@CandidateSelection');
 
 Route::post('snp2gene/DTfile', 'JsController@DTfile');
 
+Route::post('snp2gene/DTfileServerSide', 'JsController@DTfileServerSide');
+
 Route::post('snp2gene/jobInfo', 'JsController@jobInfo');
 
 Route::get('snp2gene/manhattan/{type}/{jobID}/{file}', 'D3jsController@manhattan');
