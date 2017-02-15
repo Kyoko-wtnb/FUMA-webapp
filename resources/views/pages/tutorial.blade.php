@@ -106,7 +106,7 @@
           <strong>GENE2FUNC</strong> can also be used for any list of pre-selected genes (i.e. created outside of SNP2GENE).
         <p/>
         <br/>
-        <img src="{{ URL::asset('/image/pipeline.png') }}" width="600" align="middle">
+        <img src="{{ URL::asset('/image/pipeline.png') }}" style="width: 80%; align: middle;">
       </div>
     </div>
 
