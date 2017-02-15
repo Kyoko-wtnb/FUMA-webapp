@@ -83,7 +83,7 @@ Route::get('snp2gene/{jobID}', function($jobID){
 
 Route::post('snp2gene/deleteJob', 'JobController@deleteJob');
 
-Route::post('snp2gene/imgdown', 'JobController@imgdown');
+Route::post('snp2gene/imgdown', 'JobController@imgdown')->middleware('auth');
 
 // ********************** GENE2FUNC ************************
 
@@ -93,11 +93,11 @@ Route::get('gene2func', function(){
 
 Route::get('gene2func/getG2FJobList', 'JobController@getG2FJobList');
 
-Route::post('gene2func/submit', 'JobController@gene2funcSubmit');
+Route::post('gene2func/submit', 'JobController@gene2funcSubmit')->middleware('auth');
 
 Route::post('gene2func/geneQuery', 'JobController@geneQuery');
 
-Route::post('gene2func/geneSubmit', 'JobController@snp2geneGeneQuery');
+Route::post('gene2func/geneSubmit', 'JobController@snp2geneGeneQuery')->middleware('auth');
 
 Route::post('gene2func/fileDown', 'JobController@gene2funcFileDown');
 
@@ -111,4 +111,4 @@ Route::get('gene2func/{jobID}', function($jobID){
 
 Route::post('gene2func/deleteJob', 'JobController@G2FdeleteJob');
 
-Route::post('gene2func/imgdown', 'JobController@imgdown');
+Route::post('gene2func/imgdown', 'JobController@imgdown')->middleware('auth');
