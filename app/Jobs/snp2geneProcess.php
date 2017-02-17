@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Mail;
 use Illuminate\Support\Facades\DB;
+use File;
 
 class snp2geneProcess extends Job implements ShouldQueue
 {
@@ -35,6 +36,7 @@ class snp2geneProcess extends Job implements ShouldQueue
     {
       // Update status when job is started
       $jobID = $this->jobID;
+      $started_at = date("Y-m-d H:i:s");
       DB::table('SubmitJobs') -> where('jobID', $jobID)
                       -> update(['status'=>'RUNNING']);
 
@@ -42,6 +44,8 @@ class snp2geneProcess extends Job implements ShouldQueue
       $email = $user->email;
       $jobtitle = DB::table('SubmitJobs') -> where('jobID', $jobID)
           ->first() ->title;
+      $created_at = DB::table('SubmitJobs') -> where('jobID', $jobID)
+          ->first() ->created_at;
 
       //error message
       $msg = "";
@@ -77,6 +81,7 @@ class snp2geneProcess extends Job implements ShouldQueue
         $errorout = file_get_contents($errorfile);
         $errorout = explode("\n", $errorout);
         $msg = $errorout[count($errorout)-2];
+        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
         if($email!=null){
           $this->sendJobCompMail($email, $jobtitle, $jobID, 1, $msg);
           return;
@@ -105,6 +110,7 @@ class snp2geneProcess extends Job implements ShouldQueue
         }else{
           $msg = "server error";
         }
+        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
         if($email!=null){
           $this->sendJobCompMail($email, $jobtitle, $jobID, 2, $msg);
           return;
@@ -118,6 +124,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       if($error != 0){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:003']);
+        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
         if($email!=null){
           $this->sendJobCompMail($email, $jobtitle, $jobID, 3, $msg);
           return;
@@ -131,6 +138,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       if($error != 0){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:004']);
+        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
         if($email!=null){
           $this->sendJobCompMail($email, $jobtitle, $jobID, 4, $msg);
           return;
@@ -157,15 +165,17 @@ class snp2geneProcess extends Job implements ShouldQueue
         if($NoCandidates){
           $script = storage_path().'/scripts/getTopSNPs.py';
           exec("python $script $filedir >>$logfile 2>>$errorfile");
+          DB::table('SubmitJobs') -> where('jobID', $jobID)
+                            -> update(['status'=>'ERROR:005']);
+          $this->JobMonitorUpdate($jobID, $created_at, $started_at);
           if($email!=null){
             $this->sendJobCompMail($email, $jobtitle, $jobID, 5, $msg);
           }
-          DB::table('SubmitJobs') -> where('jobID', $jobID)
-                            -> update(['status'=>'ERROR:005']);
           return;
         }else{
           DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:006']);
+          $this->JobMonitorUpdate($jobID, $created_at, $started_at);
           if($email!=null){
             $this->sendJobCompMail($email, $jobtitle, $jobID, 6, $msg);
             return;
@@ -181,6 +191,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       if($error != 0){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:007']);
+        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
         if($email!=null){
           $this->sendJobCompMail($email, $jobtitle, $jobID, 7, $msg);
           return;
@@ -194,6 +205,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       if($error != 0){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:008']);
+        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
         if($email!=null){
           $this->sendJobCompMail($email, $jobtitle, $jobID, 8, $msg);
           return;
@@ -210,6 +222,7 @@ class snp2geneProcess extends Job implements ShouldQueue
         if($error != 0){
           DB::table('SubmitJobs') -> where('jobID', $jobID)
                             -> update(['status'=>'ERROR:009']);
+          $this->JobMonitorUpdate($jobID, $created_at, $started_at);
           if($email!=null){
             $this->sendJobCompMail($email, $jobtitle, $jobID, 9, $msg);
             return;
@@ -224,6 +237,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       if($error != 0){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
                           -> update(['status'=>'ERROR:010']);
+        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
         if($email!=null){
           $this->sendJobCompMail($email, $jobtitle, $jobID, 10, $msg);
           return;
@@ -235,6 +249,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 
       DB::table('SubmitJobs') -> where('jobID', $jobID)
                         -> update(['status'=>'OK']);
+      $this->JobMonitorUpdate($jobID, $created_at, $started_at);
 
       if($email != null){
         $this->sendJobCompMail($email, $jobtitle, $jobID, 0, $msg);
@@ -265,7 +280,18 @@ class snp2geneProcess extends Job implements ShouldQueue
           $m->from('noreply@ctglab.nl', "FUMA web application");
           $m->to($user->email, $user->name)->subject("FUMA an error occured");
         });
-
+      }
+      return;
     }
-  }
+
+    public function JobMonitorUpdate($jobID, $created_at, $started_at){
+      $completed_at = date("Y-m-d H:i:s");
+      DB::table("JobMonitor")->insert([
+        "jobID"=>$jobID,
+        "created_at"=>$created_at,
+        "started_at"=>$started_at,
+        "completed_at"=>$completed_at
+      ]);
+      return;
+    }
 }

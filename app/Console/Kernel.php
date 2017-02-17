@@ -71,39 +71,87 @@ class Kernel extends ConsoleKernel
             }
             $queTable .= "</tbody></table>";
           }
-          $all = DB::table("SubmitJobs")->select('created_at')->get();
+          $all = DB::table("JobMonitor")->get();
           $dateStats = [];
+          $ProcessStartTimeAvg = [];
+          $ProcessTimeAvg = [];
           foreach($all as $a){
-            $tmp = $a->created_at;
-            $tmp = preg_replace("/(.+) \d+:\d+:\d/", '$1', $tmp);
-            if(array_key_exists($tmp, $dateStats)){
-              $dateStats[$tmp] += 1;
+            $created_at = $a->created_at;
+            $started_at = $a->started_at;
+            $completed_at = $a->completed_at;
+
+            $date = preg_replace("/(.+) \d+:\d+:\d/", '$1', $created_at);
+
+            $created_at = strtotime($created_at);
+            $started_at = strtotime($started_at);
+            $completed_at = strtotime($completed_at);
+
+            if(array_key_exists($date, $dateStats)){
+              $dateStats[$date] += 1;
+              $ProcessStartTimeAvg[$date] += $started_at - $created_at;
+              $ProcessTimeAvg[$date] += $completed_at - $started_at;
             }else{
-              $dateStats[$tmp] = 1;
+              $dateStats[$date] = 1;
+              $ProcessStartTimeAvg[$date] = $started_at - $created_at;
+              $ProcessTimeAvg[$date] = $completed_at - $started_at;
             }
           }
 
           $dateavg = 0;
-          foreach ($dateStats as $val){
+          foreach ($dateStats as $key => $val){
             $dateavg += $val;
+            $ProcessStartTimeAvg[$key] = $ProcessStartTimeAvg[$key]/$val;
+            $ProcessTimeAvg[$key] = $ProcessTimeAvg[$key]/$val;
           }
           $dateavg = $dateavg/count($dateStats);
+
+          $ProcessTable = "<table><thead><th>Date</th><th>ProcessStartTimeAvg</th><th>ProcessTimeAvg</th></thead><tbody>";
+          foreach ($ProcessTimeAvg as $key=>$val){
+            $ProcessTable .= "<tr>";
+            $ProcessTable .= "<td>".$key."</td>";
+            $ProcessTable .= "<td>".$ProcessStartTimeAvg[$key]."</td>";
+            $ProcessTable .= "<td>".$ProcessTimeAvg[$key]."</td>";
+            $ProcessTable .= "</tr>";
+          }
+          $ProcessTable .= "</tbody></table>";
 
           $data = [
             'date'=>$date,
             'totalNjobs'=>$totalNjobs,
             'running'=>count($running),
-            'runTable'=>$runTable,
             'queued'=>count($queued),
-            'queTable'=>$queTable,
             'dateavg'=>$dateavg
           ];
+
+          $file = storage_path().'/JobReport.html';
+          $html = "<html>
+            <head>
+              <h3>FUMA Monitor Report for $date</h3>
+            </head>
+            <body>
+            <p><h4>Process aberage time</h4>
+              $ProcessTable
+            </p>
+
+            <p><h4>Running jobs</h4>
+              $runTable
+            </p>
+
+            <p><h4>Queued jobs</h4>
+              $queTable
+            </p>
+            </body>
+            </html>";
+
+          file_put_contents($file, $html);
 
           Mail::send('emails.JobMonitor', $data, function($m){
             $m->from('noreply@ctglab.nl', "FUMA web application");
             $m->to("k.watanabe@vu.nl", "Kyoko Watanabe")->subject("FUMA Monitor Report");
+            $m->attach(storage_path()."/JobReport.html");
           });
-        })->everyMinute();
-        // })->twiceDaily(8, 20);
+        // })->everyMinute();
+        })->twiceDaily(8, 20);
     }
+
 }
