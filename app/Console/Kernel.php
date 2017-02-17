@@ -48,7 +48,7 @@ class Kernel extends ConsoleKernel
           $running = DB::table("SubmitJobs")->where("status", "RUNNING")->get();
           $runTable = "";
           if(count($running)>0){
-            $runTable .= "<table><thead><th>jobID</th><th>email<th><th>created_at</th></thead><tbody>";
+            $runTable .= "<table class='table table-bordered'><thead><th>jobID</th><th>email<th><th>created_at</th></thead><tbody>";
             foreach($running as $row){
               $runtable .= "<tr>";
               $runTable .= "<td>".$row->jobID."</td>";
@@ -61,7 +61,7 @@ class Kernel extends ConsoleKernel
           $queued = DB::table("SubmitJobs")->where("status", "QUEUED")->get();
           $queTable = "";
           if(count($queued)>0){
-            $queTable .= "<table><thead><th>jobID</th><th>email<th><th>created_at</th></thead><tbody>";
+            $queTable .= "<table class='table table-bordered'><thead><th>jobID</th><th>email<th><th>created_at</th></thead><tbody>";
             foreach($queued as $row){
               $quetable .= "<tr>";
               $queTable .= "<td>".$row->jobID."</td>";
@@ -80,20 +80,19 @@ class Kernel extends ConsoleKernel
             $started_at = $a->started_at;
             $completed_at = $a->completed_at;
 
-            $date = preg_replace("/(.+) \d+:\d+:\d/", '$1', $created_at);
-
+            $datetmp = preg_replace("/(.+) \d+:\d+:\d+/", '$1', $created_at);
             $created_at = strtotime($created_at);
             $started_at = strtotime($started_at);
             $completed_at = strtotime($completed_at);
 
-            if(array_key_exists($date, $dateStats)){
-              $dateStats[$date] += 1;
-              $ProcessStartTimeAvg[$date] += $started_at - $created_at;
-              $ProcessTimeAvg[$date] += $completed_at - $started_at;
+            if(array_key_exists($datetmp, $dateStats)){
+              $dateStats[$datetmp] += 1;
+              $ProcessStartTimeAvg[$datetmp] += $started_at - $created_at;
+              $ProcessTimeAvg[$datetmp] += $completed_at - $started_at;
             }else{
-              $dateStats[$date] = 1;
-              $ProcessStartTimeAvg[$date] = $started_at - $created_at;
-              $ProcessTimeAvg[$date] = $completed_at - $started_at;
+              $dateStats[$datetmp] = 1;
+              $ProcessStartTimeAvg[$datetmp] = $started_at - $created_at;
+              $ProcessTimeAvg[$datetmp] = $completed_at - $started_at;
             }
           }
 
@@ -105,7 +104,7 @@ class Kernel extends ConsoleKernel
           }
           $dateavg = $dateavg/count($dateStats);
 
-          $ProcessTable = "<table><thead><th>Date</th><th>ProcessStartTimeAvg</th><th>ProcessTimeAvg</th></thead><tbody>";
+          $ProcessTable = "<table class='table table-bordered'><thead><th>Date</th><th>ProcessStartTimeAvg</th><th>ProcessTimeAvg</th></thead><tbody>";
           foreach ($ProcessTimeAvg as $key=>$val){
             $ProcessTable .= "<tr>";
             $ProcessTable .= "<td>".$key."</td>";
@@ -127,6 +126,7 @@ class Kernel extends ConsoleKernel
           $html = "<html>
             <head>
               <h3>FUMA Monitor Report for $date</h3>
+              <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
             </head>
             <body>
             <p><h4>Process aberage time</h4>
@@ -150,8 +150,8 @@ class Kernel extends ConsoleKernel
             $m->to("k.watanabe@vu.nl", "Kyoko Watanabe")->subject("FUMA Monitor Report");
             $m->attach(storage_path()."/JobReport.html");
           });
-        // })->everyMinute();
-        })->twiceDaily(8, 20);
+        })->everyMinute();
+        // })->twiceDaily(8, 20);
     }
 
 }
