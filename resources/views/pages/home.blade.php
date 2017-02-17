@@ -39,7 +39,8 @@
     Please log in to use FUMA.
     If you have't registered yet, you can do from <a href="{{ url('/register') }}">here</a>.
     <br/>
-    When using FUMA, please cite Watanabe et al. xxx
+    When using FUMA, please cite the following.<br/>
+    K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma, <i>FUMA: Functional mapping and annotation of genetic associations.</i> In preparation.
   </p>
   <br/>
 
