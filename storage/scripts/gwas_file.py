@@ -187,8 +187,11 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and altcol 
     for l in gwasIn:
         if re.match("^#", l):
             next
-        l = l.strip()
-        l = l.split()
+        l = l.strip().split()
+        if len(l) < pcol+1:
+			continue
+        if l[pcol]=="":
+			continue
         if l[rsIDcol] in rsIDs:
             j = bisect_left(rsID[:,0], l[rsIDcol])
             l[rsIDcol] = rsID[j,1]
@@ -231,6 +234,8 @@ elif chrcol is not None and poscol is not None:
         for l in temp:
             if int(l[1]) in poss:
                 j = bisect_left(pos, int(l[1]))
+                if snps[j,pcol] is None:
+					continue
                 if refcol is not None and altcol is not None:
                     if (snps[j,refcol].upper()==l[3] and snps[j,altcol].upper()==l[4]) or (snps[j,refcol].upper()==l[4] and snps[j,altcol].upper()==l[3]):
                         out.write("\t".join([l[0],l[1], snps[j,refcol].upper(), snps[j,altcol].upper(), l[2], snps[j,pcol]]))
@@ -301,32 +306,35 @@ elif chrcol is not None and poscol is not None:
     for l in gwasIn:
         if re.match("^#", l):
             next
-        l = l.strip()
-        l = l.split()
+        l = l.strip().split()
+        if len(l) < pcol+1:
+			continue
+        if l[pcol]=="":
+			continue
         l[chrcol] = l[chrcol].replace("chr", "")
-        if re.match("x", l[chrcol], re.IGNORECASE):
+        if re.match(r"x", l[chrcol], re.IGNORECASE):
             l[chrcol] = '23'
         if float(l[pcol]) < 1e-308:
             l[pcol] = str(1e-308)
 
-        if int(l[chrcol]) == cur_chr:
+        if int(float(l[chrcol])) == cur_chr:
             if minpos==0:
-                minpos = int(l[poscol])
-            if int(l[poscol])-minpos<=1000000:
-                maxpos = int(l[poscol])
+                minpos = int(float(l[poscol]))
+            if int(float(l[poscol]))-minpos<=1000000:
+                maxpos = int(float(l[poscol]))
                 temp.append(l)
             else:
 				Tabix(cur_chr, minpos, maxpos, temp)
-				minpos = int(l[poscol])
-				maxpos = int(l[poscol])
+				minpos = int(float(l[poscol]))
+				maxpos = int(float(l[poscol]))
 				temp = []
 				temp.append(l)
         else:
 			if minpos!=0 and maxpos!=0:
 				Tabix(cur_chr, minpos, maxpos, temp)
 				cur_chr = int(l[chrcol])
-				minpos = int(l[poscol])
-				maxpos = int(l[poscol])
+				minpos = int(float(l[poscol]))
+				maxpos = int(float(l[poscol]))
 			temp = []
 			temp.append(l)
     Tabix(cur_chr, minpos, maxpos, temp)
