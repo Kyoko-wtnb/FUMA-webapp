@@ -114,31 +114,36 @@ class JsController extends Controller
     public function geneTable(Request $request){
       $jobID = $request->input('id');
       $filedir = config('app.jobdir').'/gene2func/'.$jobID.'/';
-      $f = fopen($filedir."geneTable.txt", 'r');
-      $head = fgetcsv($f, 0, "\t");
-      $head[] = "GeneCard";
-      $all_rows = [];
-      while($row = fgetcsv($f, 0, "\t")){
-        if(strcmp($row[3], "NA")!=0){
-          $row[3] = '<a href="https://www.omim.org/entry/'.$row[3].'" target="_blank">'.$row[3].'</a>';
-        }
-        if(strcmp($row[5], "NA")!=0){
-          $db = explode(":", $row[5]);
-          $row[5] = "";
-          foreach ($db as $i){
-            if(strlen($row[5])==0){
-              $row[5] = '<a href="https://www.drugbank.ca/drugs/'.$i.'" target="_blank">'.$i.'</a>';
-            }else{
-              $row[5] .= ', <a href="https://www.drugbank.ca/drugs/'.$i.'" target="_blank">'.$i.'</a>';
+      if(file_exists($filedir."geneTable.txt")){
+        $f = fopen($filedir."geneTable.txt", 'r');
+        $head = fgetcsv($f, 0, "\t");
+        $head[] = "GeneCard";
+        $all_rows = [];
+        while($row = fgetcsv($f, 0, "\t")){
+          if(strcmp($row[3], "NA")!=0){
+            $row[3] = '<a href="https://www.omim.org/entry/'.$row[3].'" target="_blank">'.$row[3].'</a>';
+          }
+          if(strcmp($row[5], "NA")!=0){
+            $db = explode(":", $row[5]);
+            $row[5] = "";
+            foreach ($db as $i){
+              if(strlen($row[5])==0){
+                $row[5] = '<a href="https://www.drugbank.ca/drugs/'.$i.'" target="_blank">'.$i.'</a>';
+              }else{
+                $row[5] .= ', <a href="https://www.drugbank.ca/drugs/'.$i.'" target="_blank">'.$i.'</a>';
+              }
             }
           }
+          $row[] = '<a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene='.$row[2].'" target="_blank">GeneCard</a>';
+          $all_rows[] = array_combine($head, $row);
         }
-        $row[] = '<a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene='.$row[2].'" target="_blank">GeneCard</a>';
-        $all_rows[] = array_combine($head, $row);
+
+        $json = array('data'=>$all_rows);
+        echo json_encode($json);
+      }else{
+        echo '{"data": []}';
       }
 
-      $json = array('data'=>$all_rows);
-      echo json_encode($json);
     }
 
 }
