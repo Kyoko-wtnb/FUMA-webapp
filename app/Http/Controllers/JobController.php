@@ -738,9 +738,15 @@ class JobController extends Controller
       $minOverlap = $request -> input('minOverlap');
 
       $script = storage_path()."/scripts/gene2func.R";
-      exec("Rscript $script $filedir");
+      exec("Rscript $script $filedir", $output, $error);
+
       $script = storage_path()."/scripts/GeneSet.py";
-      exec("$script $filedir");
+      exec("$script $filedir", $output2, $error2);
+      if($error != 0 || $error2 != 0){
+        echo "ERROR:".$output.":".$output2;
+      }else{
+        echo "OK";
+      }
     }
 
     public function snp2geneGeneQuery(Request $request){

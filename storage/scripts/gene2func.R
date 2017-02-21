@@ -62,7 +62,10 @@ if(length(which(toupper(genes) %in% toupper(ENSG.all.genes$external_gene_name)))
 }else if(length(which(genes %in% ENSG.all.genes$entrezID))>0){
   genes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$entrezID%in%genes]
   type <- 2
+}else{
+  stop("gene ID did not match")
 }
+
 
 if(length(which(toupper(bkgenes) %in% toupper(ENSG.all.genes$external_gene_name)))>0){
   bkgenes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$external_gene_name)%in%toupper(bkgenes)]
@@ -72,54 +75,69 @@ if(length(which(toupper(bkgenes) %in% toupper(ENSG.all.genes$external_gene_name)
   bkgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$entrezID%in%bkgenes]
 }
 
-#bkg <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$gene_biotype %in% bkg]
-
-
 load(paste(config$data$GTExExp, "/gtex.avg.log2RPKM.ts.RData", sep=""))
 load(paste(config$data$GTExExp, "/gtex.avg.ts.RData", sep=""))
 
-gtex.exp.log2 <- gtex.avg.log2RPKM.ts[rownames(gtex.avg.log2RPKM.ts) %in% genes, ]
-gtex.exp.norm <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
-rm(gtex.avg.ts, gtex.avg.log2RPKM.ts)
-#if(type==0){
-#  rownames(gtex.exp) <- paste(rownames(gtex.exp), ENSG.all.genes$external_gene_name[match(rownames(gtex.exp), ENSG.all.genes$ensembl_gene_id)], sep=":")
-#}else if(type==2){
-#  rownames(gtex.exp) <- paste(rownames(gtex.exp), ENSG.all.genes$entrezID[match(rownames(gtex.exp), ENSG.all.genes$ensembl_gene_id)], sep=":")
-#}
-rownames(gtex.exp.log2) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp.log2), ENSG.all.genes$ensembl_gene_id)]
-rownames(gtex.exp.norm) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp.norm), ENSG.all.genes$ensembl_gene_id)]
+if(length(which(rownames(gtex.avg.ts) %in% genes))>1){
+  gtex.exp.log2 <- gtex.avg.log2RPKM.ts[rownames(gtex.avg.log2RPKM.ts) %in% genes, ]
+  gtex.exp.norm <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
+  rm(gtex.avg.ts, gtex.avg.log2RPKM.ts)
+  rownames(gtex.exp.log2) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp.log2), ENSG.all.genes$ensembl_gene_id)]
+  rownames(gtex.exp.norm) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp.norm), ENSG.all.genes$ensembl_gene_id)]
 
-g.sort <- 1:nrow(gtex.exp.log2)
-names(g.sort) <- sort(rownames(gtex.exp.log2))
-row.order <- data.frame(gene=rownames(gtex.exp.log2), alph=g.sort[rownames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
+  g.sort <- 1:nrow(gtex.exp.log2)
+  names(g.sort) <- sort(rownames(gtex.exp.log2))
+  row.order <- data.frame(gene=rownames(gtex.exp.log2), alph=g.sort[rownames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
 
-hc <- hclust(dist(gtex.exp.log2))
-#gtex.exp <- gtex.exp[rownames(gtex.exp)[hc$order],]
-names(g.sort) <- hc$labels[hc$order]
-row.order$clstLog2 <- g.sort[rownames(gtex.exp.log2)]
-hc <- hclust(dist(gtex.exp.norm))
-names(g.sort) <- hc$labels[hc$order]
-row.order$clstNorm <- g.sort[rownames(gtex.exp.log2)]
-write.table(row.order, paste(filedir, "exp.row.txt", sep=""), quote=F, row.names=F, sep="\t")
+  hc <- hclust(dist(gtex.exp.log2))
+  #gtex.exp <- gtex.exp[rownames(gtex.exp)[hc$order],]
+  names(g.sort) <- hc$labels[hc$order]
+  row.order$clstLog2 <- g.sort[rownames(gtex.exp.log2)]
+  hc <- hclust(dist(gtex.exp.norm))
+  names(g.sort) <- hc$labels[hc$order]
+  row.order$clstNorm <- g.sort[rownames(gtex.exp.log2)]
+  write.table(row.order, paste(filedir, "exp.row.txt", sep=""), quote=F, row.names=F, sep="\t")
 
-ts.sort <- 1:ncol(gtex.exp.log2)
-names(ts.sort) <- sort(colnames(gtex.exp.log2))
-col.order <- data.frame(ts=colnames(gtex.exp.log2), alph=ts.sort[colnames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
+  ts.sort <- 1:ncol(gtex.exp.log2)
+  names(ts.sort) <- sort(colnames(gtex.exp.log2))
+  col.order <- data.frame(ts=colnames(gtex.exp.log2), alph=ts.sort[colnames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
 
-hc <- hclust(dist(t(gtex.exp.log2)))
-names(ts.sort) <- hc$labels[hc$order]
-col.order$clstLog2 <- ts.sort[colnames(gtex.exp.log2)]
-hc <- hclust(dist(t(gtex.exp.norm)))
-names(ts.sort) <- hc$labels[hc$order]
-col.order$clstNorm <- ts.sort[colnames(gtex.exp.log2)]
-write.table(col.order, paste(filedir, "exp.col.txt", sep=""), quote=F, row.names=F, sep="\t")
+  hc <- hclust(dist(t(gtex.exp.log2)))
+  names(ts.sort) <- hc$labels[hc$order]
+  col.order$clstLog2 <- ts.sort[colnames(gtex.exp.log2)]
+  hc <- hclust(dist(t(gtex.exp.norm)))
+  names(ts.sort) <- hc$labels[hc$order]
+  col.order$clstNorm <- ts.sort[colnames(gtex.exp.log2)]
+  write.table(col.order, paste(filedir, "exp.col.txt", sep=""), quote=F, row.names=F, sep="\t")
 
-gtex.exp <- melt(gtex.exp.log2)
-colnames(gtex.exp) <- c("gene", "ts", "log2")
-temp <- melt(gtex.exp.norm)
-gtex.exp$norm <- temp$value
-write.table(gtex.exp, paste(filedir, "exp.txt", sep=""), quote=F, row.names=F, sep="\t")
-rm(hc, gtex.exp, gtex.exp.log2, gtex.exp.norm, temp)
+  gtex.exp <- melt(gtex.exp.log2)
+  colnames(gtex.exp) <- c("gene", "ts", "log2")
+  temp <- melt(gtex.exp.norm)
+  gtex.exp$norm <- temp$value
+  write.table(gtex.exp, paste(filedir, "exp.txt", sep=""), quote=F, row.names=F, sep="\t")
+}else if(length(which(rownames(gtex.avg.ts) %in% genes))==1){
+  gtex.exp.log2 <- gtex.avg.log2RPKM.ts[rownames(gtex.avg.log2RPKM.ts) %in% genes, ]
+  gtex.exp.norm <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
+  rm(gtex.avg.ts, gtex.avg.log2RPKM.ts)
+  gname <- ENSG.all.genes$external_gene_name[ENSG.all.genes$ensembl_gene_id %in% genes]
+  cat(gname)
+  row.order <- data.frame(gene=gname, alph=1, clstLog2=1, clstNorm=1)
+  write.table(row.order, paste(filedir, "exp.row.txt", sep=""), quote=F, row.names=F, sep="\t")
+
+  col.order <- data.frame(ts=names(gtex.exp.log2), alph=1:length(gtex.exp.log2), clstLog2=1:length(gtex.exp.log2), clstNorm=1:length(gtex.exp.log2))
+  write.table(col.order, paste(filedir, "exp.col.txt", sep=""), quote=F, row.names=F, sep="\t")
+
+  gtex.exp <- data.frame(matrix(nrow=53, ncol=4))
+  colnames(gtex.exp) <- c("gene", "ts", "log2", "norm")
+  gtex.exp$gene <- gname
+  gtex.exp$ts <- names(gtex.exp.log2)
+  gtex.exp$log2 <- gtex.exp.log2
+  gtex.exp$norm <- gtex.exp.norm
+  write.table(gtex.exp, paste(filedir, "exp.txt", sep=""), quote=F, row.names=F, sep="\t")
+}else{
+  stop("No gene exsits in expression data")
+}
+rm(hc, gtex.exp, gtex.exp.log2, gtex.exp.norm)
 
 source(paste(config$data$scripts, "/GeneSet.R", sep=""))
 
@@ -147,9 +165,3 @@ load(paste(config$data$geneIDs, "/DrugBank.RData", sep=""))
 
 geneTable$DrugBank <- DrugBank$DrugBank[match(geneTable$uniprotID, DrugBank$uniprotID)]
 write.table(geneTable, paste(filedir, "geneTable.txt", sep=""), quote=F, row.names=F, sep="\t")
-
-#GS <- GeneSetTest(unique(ENSG.all.genes$entrezID[ENSG.all.genes$ensembl_gene_id %in% genes]), allgenes=unique(ENSG.all.genes$entrezID[ENSG.all.genes$ensembl_gene_id %in% bkgenes]), MHC=MHC)
-#GS <- entrez2symbol(GS)
-#GS$logP <- -log10(GS$p)
-#GS$logFDR <- -log10(GS$FDR)
-#write.table(GS, paste(filedir, "GS.txt", sep=""), quote=F, row.names=F, sep="\t")

@@ -19,7 +19,6 @@ start = timeit.default_timer()
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
-	# results = [i for i, x in enumerate(a1) if x in a2]
 	results = np.where(np.in1d(a1, a2))[0]
 	return results
 
@@ -42,33 +41,35 @@ gtype = param.get('params', 'gtype')
 gval = param.get('params', 'gval')
 bkgtype = param.get('params', 'bkgtype')
 bkgval = param.get('params', 'bkgval')
-#Xchr = int(sys.argv[6]) #1 for exclude
 MHC = int(param.get('params', 'MHC')) #1 for exclude
 adjPmeth = param.get('params', 'adjPmeth')
 adjPcut = float(param.get('params', 'adjPcut'))
 minOverlap = int(param.get('params', 'minOverlap'))
-#testCategory = sys.argv[11]
 
 if gtype == "text":
 	genes = gval.split(":")
 else:
-	lines = pd.read_table(filedir+gval, header=None, sep="\s+")
+	lines = pd.read_table(filedir+gval, header=None, delim_whitespace=True)
 	lines = np.array(lines)
 	genes = list(lines[:,0])
+genes = [s.upper() for s in genes]
+print genes
 
-ENSG = pd.read_table(ensgdir+"/ENSG.all.genes.txt", header=None, sep="\t")
+ENSG = pd.read_table(ensgdir+"/ENSG.all.genes.txt", header=None, delim_whitespace=True)
 ENSG = np.array(ENSG)
 
 if bkgtype == "select":
-	bkgval = bkgval.split(":")
+	bkgval = list(bkgval.split(":"))
 	ENSG = ENSG[ArrayIn(ENSG[:,8], bkgval),]
 	bkgenes = list(ENSG[:,9])
 elif bkgtype == "text":
 	bkgenes = bkgval.split(":")
+	bkgenes = [s.upper() for s in bkgenes]
 else:
 	lines = pd.read_table(filedir+bkgval, sep="\s+")
 	lines = np.array(lines)
 	bkgenes = lsit(lines[:,0])
+	bkgenes = [s.upper() for s in bkgenes]
 
 # if Xchr == 1:
 # 	ENSG = ENSG[ENSG[:,3]!=23,]
@@ -103,7 +104,12 @@ bkgenes = np.array(bkgenes)
 bkgenes = np.unique(bkgenes)
 
 genes = genes[ArrayIn(genes, bkgenes)]
-#entrez2symbol = ENSG[ArrayIn(ENSG[:,9], genes)][:,[2,9]]
+
+if len(genes)==0:
+	sys.exit("No input genes matched with DB")
+if len(genes)==1:
+	sys.exit("Only one gene remained")
+
 ENSG = ENSG[ArrayIn(ENSG[:,9], genes)]
 
 fglob = glob.glob(gsdir+'/*.txt')
@@ -148,11 +154,13 @@ def hypTest(l, c):
 
 def GeneSetTest(f):
 	print f
-	c = re.match(".*GeneSet/(\w+)\.txt", f)
+	c = re.match(r".*GeneSet/(\w+)\.txt", f)
 	gs = pd.read_table(f)
 	gs = np.array(gs)
 	tmp = []
 	for l in gs:
+		if len(l) < 3:
+			continue
 		tmp.append(hypTest(l, c))
 	tmp = np.array(tmp)
 	padj = multicomp.multipletests(list(tmp[:,4].astype(float)), alpha=0.05, method=adjPmeth, is_sorted=False, returnsorted=False)
