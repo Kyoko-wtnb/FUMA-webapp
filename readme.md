@@ -1,27 +1,17 @@
-# Laravel PHP Framework
+# FUMA: Functional mapping and annotation of genetic associations
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+FUMA is an online web application to annotate and prioritize genetic associations.
+The application is available from [http://fuma.ctglab.nl](http://fuma.ctglab.nl).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+Currently FUMA is only available online, API will be available in near future.
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+## Citation
+Manuscript is under the preparation now. When it is possible please cite the following. Preprint is available at BioRxiv ([doi: https://doi.org/10.1101/110023](http://biorxiv.org/content/early/2017/02/20/110023)).
 
-## Official Documentation
+Kyoko Watanabe, Erdogan Taskesen, Arjen van Bobhoven and Danielle Posthuma. FUMA: Functional mapping and annotation of genetic associations. In preparation
 
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+## PHP frame work
+FUMA web application is based on [Laravel PHP Framework](https://laravel.com/docs/5.4).
 
 ## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+The FUMA is open source online web tool licensed under the [MIT license](http://opensource.org/licenses/MIT).
