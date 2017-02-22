@@ -139,22 +139,20 @@ if(length(which(rownames(gtex.avg.ts) %in% genes))>1){
 }
 rm(hc, gtex.exp, gtex.exp.log2, gtex.exp.norm)
 
-if(length(which(genes %in% bkgenes))<=1){
-  stop("The number of input genes is less than 1")
+if(length(which(genes %in% bkgenes))>1){
+  source(paste(config$data$scripts, "/GeneSet.R", sep=""))
+
+  DEG <- DEGtest(genes, allgenes=bkgenes, MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
+  DEG$logP <- -log10(DEG$p)
+  DEG$logFDR <- -log10(DEG$FDR)
+  write.table(DEG, paste(filedir, "DEG.txt", sep=""), quote=F, row.names=F, sep="\t")
+  rm(DEG)
+  DEGgeneral <- DEGgeneraltest(genes, allgenes=bkgenes, MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
+  DEGgeneral$logP <- -log10(DEGgeneral$p)
+  DEGgeneral$logFDR <- -log10(DEGgeneral$FDR)
+  write.table(DEGgeneral, paste(filedir, "DEGgeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
+  rm(DEGgeneral)
 }
-
-source(paste(config$data$scripts, "/GeneSet.R", sep=""))
-
-DEG <- DEGtest(genes, allgenes=bkgenes, MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
-DEG$logP <- -log10(DEG$p)
-DEG$logFDR <- -log10(DEG$FDR)
-write.table(DEG, paste(filedir, "DEG.txt", sep=""), quote=F, row.names=F, sep="\t")
-rm(DEG)
-DEGgeneral <- DEGgeneraltest(genes, allgenes=bkgenes, MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
-DEGgeneral$logP <- -log10(DEGgeneral$p)
-DEGgeneral$logFDR <- -log10(DEGgeneral$FDR)
-write.table(DEGgeneral, paste(filedir, "DEGgeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
-rm(DEGgeneral)
 
 geneTable <- ENSG.all.genes[toupper(ENSG.all.genes$ensembl_gene_id) %in% toupper(genes),]
 geneTable <- subset(geneTable, select=c("ensembl_gene_id", "entrezID", "external_gene_name"))
