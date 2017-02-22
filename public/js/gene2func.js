@@ -260,10 +260,11 @@ function expHeatMap(id){
         .defer(d3.json, "d3text/"+id+"/exp.row.txt")
         .defer(d3.json, "d3text/"+id+"/exp.col.txt")
         .awaitAll(function(error, data){
-          if(data == undefined){
-            $('#expHeat').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> No input gene exists in expression data.</span></br>'
+          if(data==null || data==undefined){
+            $('#expHeat').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> None of your input genes exists in expression data.</span></br>'
             +'Only genes which have average RPKM per tissue > 1 in at least one tissue type are availalbe in the expression data.<br/>'
             +'This might also be because of the mismatch of input gene ID or symbol.<br/></div>');
+            $('#expHeat').parent().children('.ImgDown').each(function(){$(this).prop("disabled", true)});
           }else{
             var exp = data[0];
             var rows = data[1];
@@ -566,145 +567,125 @@ function tsEnrich(id){
             .attr("height", height+margin.top+margin.bottom)
             .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
 
-  // var gradient1 = svg.append("defs").append("linearGradient")
-  //                   .attr("id", 'gradient1')
-  //                   .attr("x1", "0%")
-  //                   .attr("y1", "0%")
-  //                   .attr("x2", "100%")
-  //                   .attr("y2", "100%")
-  //                   .attr("spreadMethod", "pad");
-  // gradient1.append("stop").attr("offset", "0%")
-  //         .attr("stop-color", "#c00")
-  //         .attr("stop-ocupacity", 1);
-  // gradient1.append("stop").attr("offset", "100%")
-  //         .attr("stop-color", "#3c2c2c")
-  //         .attr("stop-ocupacity", 1);
-  //
-  // var gradient2 = svg.append("defs").append("linearGradient")
-  //                   .attr("id", 'gradient2')
-  //                   .attr("x1", "0%")
-  //                   .attr("y1", "0%")
-  //                   .attr("x2", "100%")
-  //                   .attr("y2", "100%")
-  //                   .attr("spreadMethod", "pad");
-  // gradient2.append("stop").attr("offset", "0%")
-  //         .attr("stop-color", "#5668f4")
-  //         .attr("stop-ocupacity", 1);
-  // gradient2.append("stop").attr("offset", "100%")
-  //         .attr("stop-color", "#606060")
-  //         .attr("stop-ocupacity", 1);
-
   d3.json("d3text/"+id+"/DEG.txt", function(data){
-    data.forEach(function(d){
-      d.logFDR = +d.logFDR;
-      d.logP = +d.logP;
-      d.FDR = +d.FDR;
-    });
-    x.domain(data.map(function(d){return d.GeneSet;}));
+    if(data==null || data==undefined){
+      $('#tsEnrichBar').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in the selected background genes was 0 or 1.</span></br>'
+      +'Enrichment of differentially expressed genes in different tissue types require at least 2 gene to test.<br/>'
+      +'This might be because of the mismatch of input gene ID or symbol.<br/></div>');
+      $('#DEGdown').prop("disabled", true);
+      $('#tsEnrichBarPanel').children('.ImgDown').each(function(){$(this).prop("disabled", true)});
+    }else{
+      data.forEach(function(d){
+        d.logFDR = +d.logFDR;
+        d.logP = +d.logP;
+        d.FDR = +d.FDR;
+      });
+      x.domain(data.map(function(d){return d.GeneSet;}));
 
-    //up-regulated
-    var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
-    var yAxisup = d3.svg.axis().scale(yup).orient("left");
-    yup.domain([currentHeight, d3.max(data, function(d){return d.logP})]);
+      //up-regulated
+      var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxisup = d3.svg.axis().scale(yup).orient("left");
+      yup.domain([currentHeight, d3.max(data, function(d){return d.logP})]);
 
-    svg.selectAll('rect.up').data(data.filter(function(d){if(d.Category=="DEG.up"){return d;}})).enter()
-      .append("rect").attr("class", "bar")
-      .attr("x", function(d){return x(d.GeneSet);})
-      .attr("width", x.rangeBand())
-      .attr("y", function(d){return yup(d.logP)})
-      .attr("height", function(d){return currentHeight+span-yup(d.logP);})
-      .style("fill", function(d){
-        // if(d.FDR>0.05){return "url(#gradient2)";}
-        // else{return "url(#gradient1)";}
-        if(d.FDR>0.05){return "#5668f4";}
-        else{return "#c00";}
-      })
-      .style("stroke", "grey")
-      .style("stroke-width", 0.3);
-    svg.append('g').attr("class", "y axis")
-      .call(yAxisup)
-      .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-    svg.append('g').attr("class", "x axis")
-      .attr("transform", "translate(0,"+(currentHeight+span)+")")
-      .call(xAxis)
-      .selectAll('text').remove();
-    svg.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-      .text("Up-regulated DEG");
-    currentHeight += span+10;
+      svg.selectAll('rect.up').data(data.filter(function(d){if(d.Category=="DEG.up"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return x(d.GeneSet);})
+        .attr("width", x.rangeBand())
+        .attr("y", function(d){return yup(d.logP)})
+        .attr("height", function(d){return currentHeight+span-yup(d.logP);})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d.FDR>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append('g').attr("class", "y axis")
+        .call(yAxisup)
+        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+(currentHeight+span)+")")
+        .call(xAxis)
+        .selectAll('text').remove();
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("Up-regulated DEG");
+      currentHeight += span+10;
 
-    //down regulated
-    var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
-    var yAxisdown = d3.svg.axis().scale(ydown).orient("left");
-    ydown.domain([0, d3.max(data, function(d){return d.logP})]);
+      //down regulated
+      var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxisdown = d3.svg.axis().scale(ydown).orient("left");
+      ydown.domain([0, d3.max(data, function(d){return d.logP})]);
 
-    svg.selectAll('rect.down').data(data.filter(function(d){if(d.Category=="DEG.down"){return d;}})).enter()
-      .append("rect").attr("class", "bar")
-      .attr("x", function(d){return x(d.GeneSet);})
-      .attr("width", x.rangeBand())
-      .attr("y", function(d){return ydown(d.logP)})
-      .attr("height", function(d){return currentHeight+span-ydown(d.logP);})
-      .style("fill", function(d){
-        // if(d.FDR>0.05){return "url(#gradient2)";}
-        // else{return "url(#gradient1)";}
-        if(d.FDR>0.05){return "#5668f4";}
-        else{return "#c00";}
-      })
-      .style("stroke", "grey")
-      .style("stroke-width", 0.3);
-    svg.append('g').attr("class", "y axis")
-      .call(yAxisdown)
-      .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-    svg.append('g').attr("class", "x axis")
-      .attr("transform", "translate(0, "+(currentHeight+span)+")")
-      .call(xAxis)
-      .selectAll('text').remove();
-    svg.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-      .text("Down-regulated DEG");
-    currentHeight += span+10;
-    //twoside
-    var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
-    var yAxis = d3.svg.axis().scale(y).orient("left");
-    y.domain([0, d3.max(data, function(d){return d.logP})]);
+      svg.selectAll('rect.down').data(data.filter(function(d){if(d.Category=="DEG.down"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return x(d.GeneSet);})
+        .attr("width", x.rangeBand())
+        .attr("y", function(d){return ydown(d.logP)})
+        .attr("height", function(d){return currentHeight+span-ydown(d.logP);})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d.FDR>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append('g').attr("class", "y axis")
+        .call(yAxisdown)
+        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0, "+(currentHeight+span)+")")
+        .call(xAxis)
+        .selectAll('text').remove();
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("Down-regulated DEG");
+      currentHeight += span+10;
+      //twoside
+      var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxis = d3.svg.axis().scale(y).orient("left");
+      y.domain([0, d3.max(data, function(d){return d.logP})]);
 
-    svg.selectAll('rect.two').data(data.filter(function(d){if(d.Category=="DEG.twoside"){return d;}})).enter()
-      .append("rect").attr("class", "bar")
-      .attr("x", function(d){return x(d.GeneSet);})
-      .attr("width", x.rangeBand())
-      .attr("y", function(d){return y(d.logP)})
-      .attr("height", function(d){return currentHeight+span-y(d.logP);})
-      .style("fill", function(d){
-        // if(d.FDR>0.05){return "url(#gradient2)";}
-        // else{return "url(#gradient1)";}
-        if(d.FDR>0.05){return "#5668f4";}
-        else{return "#c00";}
-      })
-      .style("stroke", "grey")
-      .style("stroke-width", 0.3);
-    svg.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-      .text("DEG (both side)");
+      svg.selectAll('rect.two').data(data.filter(function(d){if(d.Category=="DEG.twoside"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return x(d.GeneSet);})
+        .attr("width", x.rangeBand())
+        .attr("y", function(d){return y(d.logP)})
+        .attr("height", function(d){return currentHeight+span-y(d.logP);})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d.FDR>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("DEG (both side)");
 
-    svg.append('g').attr("class", "x axis")
-      .attr("transform", "translate(0,"+(currentHeight+span)+")")
-      .call(xAxis)
-      .selectAll('text')
-      .attr("transform", function (d) {return "translate(-12,5)rotate(-70)";})
-      // .attr("dy", "-.45em")
-      // .attr("dx", "-.65em")
-      .style("text-anchor", "end")
-      .style('font-size', '11px');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+(currentHeight+span)+")")
+        .call(xAxis)
+        .selectAll('text')
+        .attr("transform", function (d) {return "translate(-12,5)rotate(-70)";})
+        // .attr("dy", "-.45em")
+        // .attr("dx", "-.65em")
+        .style("text-anchor", "end")
+        .style('font-size', '11px');
 
-    svg.append('g').attr("class", "y axis")
-      .call(yAxis)
-      .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-    svg.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
-      .text("-log 10 P-value");
-    svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-    svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-    svg.selectAll('text').style('font-family', 'sans-serif');
+      svg.append('g').attr("class", "y axis")
+        .call(yAxis)
+        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .text("-log 10 P-value");
+      svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('text').style('font-family', 'sans-serif');
+    }
   });
 }
 
@@ -723,142 +704,121 @@ function tsGeneralEnrich(id){
             .attr("height", height+margin.top+margin.bottom)
             .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
 
-  // var gradient1 = svg.append("defs").append("linearGradient")
-  //                   .attr("id", 'gradient1')
-  //                   .attr("x1", "0%")
-  //                   .attr("y1", "0%")
-  //                   .attr("x2", "100%")
-  //                   .attr("y2", "100%")
-  //                   .attr("spreadMethod", "pad");
-  // gradient1.append("stop").attr("offset", "0%")
-  //         .attr("stop-color", "#c00")
-  //         .attr("stop-ocupacity", 1);
-  // gradient1.append("stop").attr("offset", "100%")
-  //         .attr("stop-color", "#3c2c2c")
-  //         .attr("stop-ocupacity", 1);
-  //
-  // var gradient2 = svg.append("defs").append("linearGradient")
-  //                   .attr("id", 'gradient2')
-  //                   .attr("x1", "0%")
-  //                   .attr("y1", "0%")
-  //                   .attr("x2", "100%")
-  //                   .attr("y2", "100%")
-  //                   .attr("spreadMethod", "pad");
-  // gradient2.append("stop").attr("offset", "0%")
-  //         .attr("stop-color", "#5668f4")
-  //         .attr("stop-ocupacity", 1);
-  // gradient2.append("stop").attr("offset", "100%")
-  //         .attr("stop-color", "#606060")
-  //         .attr("stop-ocupacity", 1);
-
   d3.json("d3text/"+id+"/DEGgeneral.txt", function(data){
-    data.forEach(function(d){
-      d.logFDR = +d.logFDR;
-      d.logP = +d.logP;
-      d.FDR = +d.FDR;
-    });
-    x.domain(data.map(function(d){return d.GeneSet;}));
+    if(data==null || data==undefined){
+      $('#tsGeneralEnrichBar').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in the selected background genes was 0 or 1.</span></br>'
+      +'Enrichment of differentially expressed genes in different tissue types require at least 2 gene to test.<br/>'
+      +'This might be because of the mismatch of input gene ID or symbol.<br/></div>');
+      $('#DEGgdown').prop("disabled", true);
+    }else{
+      data.forEach(function(d){
+        d.logFDR = +d.logFDR;
+        d.logP = +d.logP;
+        d.FDR = +d.FDR;
+      });
+      x.domain(data.map(function(d){return d.GeneSet;}));
 
-    //up-regulated
-    var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
-    var yAxisup = d3.svg.axis().scale(yup).orient("left");
-    yup.domain([0, d3.max(data, function(d){return d.logP})]);
+      //up-regulated
+      var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxisup = d3.svg.axis().scale(yup).orient("left");
+      yup.domain([0, d3.max(data, function(d){return d.logP})]);
 
-    svg.selectAll('rect.up').data(data.filter(function(d){if(d.Category=="DEG.up"){return d;}})).enter()
-      .append("rect").attr("class", "bar")
-      .attr("x", function(d){return x(d.GeneSet);})
-      .attr("width", x.rangeBand())
-      .attr("y", function(d){return yup(d.logP)})
-      .attr("height", function(d){return currentHeight+span-yup(d.logP);})
-      .style("fill", function(d){
-        // if(d.FDR>0.05){return "url(#gradient2)";}
-        // else{return "url(#gradient1)";}
-        if(d.FDR>0.05){return "#5668f4";}
-        else{return "#c00";}
-      })
-      .style("stroke", "grey")
-      .style("stroke-width", 0.3);
-    svg.append('g').attr("class", "y axis")
-      .call(yAxisup)
-      .selectAll('test').style('font-size', '11px');
-    svg.append('g').attr("class", "x axis")
-      .attr("transform", "translate(0,"+(currentHeight+span)+")")
-      .call(xAxis).selectAll('text').remove();
-    svg.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-      .text("Up-regulated DEG");
-    currentHeight += span+10;
+      svg.selectAll('rect.up').data(data.filter(function(d){if(d.Category=="DEG.up"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return x(d.GeneSet);})
+        .attr("width", x.rangeBand())
+        .attr("y", function(d){return yup(d.logP)})
+        .attr("height", function(d){return currentHeight+span-yup(d.logP);})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d.FDR>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append('g').attr("class", "y axis")
+        .call(yAxisup)
+        .selectAll('test').style('font-size', '11px');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+(currentHeight+span)+")")
+        .call(xAxis).selectAll('text').remove();
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("Up-regulated DEG");
+      currentHeight += span+10;
 
-    //down regulated
-    var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
-    var yAxisdown = d3.svg.axis().scale(ydown).orient("left");
-    ydown.domain([0, d3.max(data, function(d){return d.logP})]);
+      //down regulated
+      var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxisdown = d3.svg.axis().scale(ydown).orient("left");
+      ydown.domain([0, d3.max(data, function(d){return d.logP})]);
 
-    svg.selectAll('rect.down').data(data.filter(function(d){if(d.Category=="DEG.down"){return d;}})).enter()
-      .append("rect").attr("class", "bar")
-      .attr("x", function(d){return x(d.GeneSet);})
-      .attr("width", x.rangeBand())
-      .attr("y", function(d){return ydown(d.logP)})
-      .attr("height", function(d){return currentHeight+span-ydown(d.logP);})
-      .style("fill", function(d){
-        // if(d.FDR>0.05){return "url(#gradient2)";}
-        // else{return "url(#gradient1)";}
-        if(d.FDR>0.05){return "#5668f4";}
-        else{return "#c00";}
-      })
-      .style("stroke", "grey")
-      .style("stroke-width", 0.3);
-    svg.append('g').attr("class", "y axis")
-      .call(yAxisdown)
-      .selectAll('test').style('font-size', '11px');
-    svg.append('g').attr("class", "x axis")
-      .attr("transform", "translate(0, "+(currentHeight+span)+")")
-      .call(xAxis).selectAll('text').remove();
-    svg.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-      .text("Down-regulated DEG");
-    currentHeight += span+10;
-    //twoside
-    var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
-    var yAxis = d3.svg.axis().scale(y).orient("left");
-    y.domain([0, d3.max(data, function(d){return d.logP})]);
+      svg.selectAll('rect.down').data(data.filter(function(d){if(d.Category=="DEG.down"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return x(d.GeneSet);})
+        .attr("width", x.rangeBand())
+        .attr("y", function(d){return ydown(d.logP)})
+        .attr("height", function(d){return currentHeight+span-ydown(d.logP);})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d.FDR>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append('g').attr("class", "y axis")
+        .call(yAxisdown)
+        .selectAll('test').style('font-size', '11px');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0, "+(currentHeight+span)+")")
+        .call(xAxis).selectAll('text').remove();
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("Down-regulated DEG");
+      currentHeight += span+10;
+      //twoside
+      var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxis = d3.svg.axis().scale(y).orient("left");
+      y.domain([0, d3.max(data, function(d){return d.logP})]);
 
-    svg.selectAll('rect.two').data(data.filter(function(d){if(d.Category=="DEG.twoside"){return d;}})).enter()
-      .append("rect").attr("class", "bar")
-      .attr("x", function(d){return x(d.GeneSet);})
-      .attr("width", x.rangeBand())
-      .attr("y", function(d){return y(d.logP)})
-      .attr("height", function(d){return height-y(d.logP);})
-      .style("fill", function(d){
-        // if(d.FDR>0.05){return "url(#gradient2)";}
-        // else{return "url(#gradient1)";}
-        if(d.FDR>0.05){return "#5668f4";}
-        else{return "#c00";}
-      })
-      .style("stroke", "grey")
-      .style("stroke-width", 0.3);
-    svg.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-      .text("DEG (both side)");
+      svg.selectAll('rect.two').data(data.filter(function(d){if(d.Category=="DEG.twoside"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return x(d.GeneSet);})
+        .attr("width", x.rangeBand())
+        .attr("y", function(d){return y(d.logP)})
+        .attr("height", function(d){return height-y(d.logP);})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d.FDR>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("DEG (both side)");
 
-    svg.append('g').attr("class", "x axis")
-      .attr("transform", "translate(0,"+height+")")
-      .call(xAxis).selectAll('text')
-      .attr("transform", function (d) {return "translate(-12,5)rotate(-65)";})
-      // .attr("dy", "-.45em")
-      // .attr("dx", "-.65em")
-      .style("text-anchor", "end")
-      .style('font-size', '11px');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+height+")")
+        .call(xAxis).selectAll('text')
+        .attr("transform", function (d) {return "translate(-12,5)rotate(-65)";})
+        // .attr("dy", "-.45em")
+        // .attr("dx", "-.65em")
+        .style("text-anchor", "end")
+        .style('font-size', '11px');
 
-    svg.append('g').attr("class", "y axis")
-      .call(yAxis)
-      .selectAll('test').style('font-size', '11px');
-    svg.append("text").attr("text-anchor", "middle")
-      .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
-      .text("-log 10 P-value");
-    svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-    svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-    svg.selectAll('text').style('font-family', 'sans-serif');
+      svg.append('g').attr("class", "y axis")
+        .call(yAxis)
+        .selectAll('test').style('font-size', '11px');
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .text("-log 10 P-value");
+      svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('text').style('font-family', 'sans-serif');
+    }
   });
 }
 
@@ -894,8 +854,9 @@ function GeneSet(id){
                 };
   d3.json("d3text/"+id+"/GS.txt", function(data){
     if(data == undefined || data == null){
-      $('#GeneSet').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in selected background genes were 0 or 1.</span></br>'
+      $('#GeneSet').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in selected background genes was 0 or 1.</span></br>'
       +'The hypergeometric test is only performed if more than 2 genes are available.</div>');
+      $('#GSdown').attr("disabled", true);
     }else{
       for(var i=0; i<category.length; i++){
         // extract data

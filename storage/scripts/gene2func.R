@@ -139,6 +139,10 @@ if(length(which(rownames(gtex.avg.ts) %in% genes))>1){
 }
 rm(hc, gtex.exp, gtex.exp.log2, gtex.exp.norm)
 
+if(length(which(genes %in% bkgenes))<=1){
+  stop("The number of input genes is less than 1")
+}
+
 source(paste(config$data$scripts, "/GeneSet.R", sep=""))
 
 DEG <- DEGtest(genes, allgenes=bkgenes, MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
