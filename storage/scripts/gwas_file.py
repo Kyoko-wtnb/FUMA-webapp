@@ -341,7 +341,7 @@ elif chrcol is not None and poscol is not None:
 
 elif chrcol is None or poscol is None:
     print "Either chr or pos is not provided"
-    gwas = pd.read_table(gwas, comment="#", delim_whitespace=True)
+    gwas = pd.read_table(gwas, comment="#", sep="\t|\s*")
     gwas = gwas.as_matrix()
     gwas = gwas[gwas[:,rsIDcol].argsort()]
     # gwas = gwas[0:1000000]
