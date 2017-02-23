@@ -41,6 +41,10 @@ fin = pd.read_table(filedir+f, sep="\t")
 header = list(fin.columns.values)
 fin = fin.as_matrix()
 
+if len(fin)==0:
+	print '{"data":[]}'
+	sys.exit()
+
 hind = []
 for i in range(0, len(cols)):
 	hind.append(header.index(cols[i]))
