@@ -590,7 +590,9 @@ class JobController extends Controller
         if(File::exists($filedir."magma.sets.out")){
           $files[] = "magma.genes.raw";
           $files[] = "magma.sets.out";
-          $files[] = "magma.setgenes.out";
+          if(File::exists($filedir."magma.setgenes.out")){
+            $files[] = "magma.setgenes.out";
+          }
         }
       }
 
