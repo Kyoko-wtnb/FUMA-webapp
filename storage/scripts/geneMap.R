@@ -70,7 +70,11 @@ if(posMap==1){
     annov <- annov[annov$uniqID %in% annot$uniqID[annot$RDB>=posMapRDBth],]
   }
   if(posMapChr15!="NA"){
-    posMapChr15 <- unique(unlist(strsplit(posMapChr15, ":")))
+    if(grepl("all", posMapChr15)){
+      posMapChr15 <- colnames(annot)[4:ncol(annot)]
+    }else{
+      posMapChr15 <- unique(unlist(strsplit(posMapChr15, ":")))
+    }
     epi <- data.frame(uniqID=snps$uniqID, epi=NA)
     temp <- subset(annot, select=c("uniqID", posMapChr15))
     if(posMapChr15Meth=="any"){
@@ -118,7 +122,11 @@ if(eqtlMap==1){
       eqtl <- eqtl[eqtl$uniqID %in% eqtl$uniqID[annot$RDB>=eqtlMapRDBth],]
     }
     if(eqtlMapChr15!="NA"){
-      eqtlMapChr15 <- unique(unlist(strsplit(eqtlMapChr15, ":")))
+      if(grepl("all", eqtlMapChr15)){
+        eqtlMapChr15 <- colnames(annot)[4:ncol(annot)]
+      }else{
+        eqtlMapChr15 <- unique(unlist(strsplit(eqtlMapChr15, ":")))
+      }
       epi <- data.frame(uniqID=snps$uniqID, epi=NA)
       temp <- subset(annot, select=c("uniqID", eqtlMapChr15))
       if(eqtlMapChr15Meth=="any"){
