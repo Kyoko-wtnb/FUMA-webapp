@@ -295,6 +295,9 @@ elif chrcol is not None and poscol is not None:
         out.close()
 
     tempfile = filedir + "temp.txt"
+    os.system("head -1 "+gwas+">"+tempfile)
+    os.system("awk 'NR>=2' "+gwas+" | sed 's/chr//' >>"+tempfile)
+    os.system("mv "+tempfile+" "+gwas)
     os.system("sort -k "+str(chrcol+1)+"n -k "+str(poscol+1)+"n "+gwas+" > "+tempfile)
     os.system("mv "+tempfile+" "+gwas)
 
