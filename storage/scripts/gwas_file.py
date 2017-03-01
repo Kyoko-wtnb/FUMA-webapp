@@ -41,6 +41,22 @@ param = ConfigParser.RawConfigParser()
 param.optionxform = str
 param.read(filedir+'params.config')
 
+leadfile = param.get('inputfiles', 'leadSNPsfile')
+regionfile = param.get('inputfiles', 'regionsfile')
+if leadfile != "NA":
+	leadfile = filedir+"input.lead"
+	tmp = pd.read_table(leadfile, sep="\t|\s+")
+	tmp = tmp.as_matrix()
+	if len(tmp)==0 or len(tmp[0])<3:
+		sys.exit("Input lead SNPs file does not have enought columns.")
+
+if regionfile != "NA":
+	regionfile = filedir+"input.regions"
+	tmp = pd.read_table(regionfile, sep="\t|\s+")
+	tmp = tmp.as_matrix()
+	if len(tmp)==0 or len(tmp[0])<3:
+		sys.exit("Input genomic region file does not have enought columns.")
+
 gwas = filedir+cfg.get('inputfiles', 'gwas')
 outSNPs = filedir+"input.snps"
 outMAGMA = filedir+"magma.in"
