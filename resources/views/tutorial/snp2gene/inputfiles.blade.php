@@ -5,7 +5,7 @@
     FUMA accept various types of format. For example, PLINK, SNPTEST and METAL output formats can be used as it is.
     For other formats, column names can be provided.
     Input files should be prepared in asci txt or (preferably) gzipped or zipped.
-    Every row should contain information on one SNP. 
+    Every row should contain information on one SNP.ï¿½
     An input GWAS summary statistics file could contain only subset of SNPs (e.g. SNPs of interest for your study to annotate them),
     but in this case, results of MAGMA will not be relevant anymore.
     Please note that in the current version indels and variants which do not exists in the 1000 genomes reference panel (Phase3) will not be included in any analyses.
@@ -49,7 +49,7 @@
     For example, when the column name is "SNP" but the actual element is an id such as "chr:position" rather than rsID will cause an error.<br/>
     Extra columns will be ignored.<br/>
     Rows that start with "#" will be ignored.<br/>
-    <span class="info"><i class="fa fa-info"></i> Column  "N"is described in the <a href="{{ Config::get('app.subdir') }}/tutorial#parameters">Parameters</a> section.</span><br/>
+    <span class="info"><i class="fa fa-info"></i> Column  "N" is described in the <a href="{{ Config::get('app.subdir') }}/tutorial#parameters">Parameters</a> section.</span><br/>
     <span class="info"><i class="fa fa-info"></i> Be carefull with the alleles header in which A1 and Allele1 are the effect allele while alleleA is non-effect allele, as based on PLINK, SNPTEST and METAL output files.<br/>
       If wrong labels are proveded for alleles, it does not affect any annotation and prioritization results. It does however affect eQTLs results. Be aware of that when you interpret results.
     </span><br/>
