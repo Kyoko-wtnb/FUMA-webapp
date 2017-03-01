@@ -20,12 +20,13 @@
                             <i class="fa fa-question-circle-o fa-lg"></i>
                           </a>
                         </th>
+                        <th>Jump to GENE2FUNC</th>
                         <th>Select</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td colspan="5" style="text-align:center;">Retrieving data</td>
+                        <td colspan="6" style="text-align:center;">Retrieving data</td>
                     </tr>
                 </tbody>
             </table>
@@ -60,13 +61,21 @@
             if(data.length){
                 items = '';
                 $.each( data, function( key, val ) {
+                    var g2fbutton = 'Not available';
                     if(val.status == 'OK'){
                       val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">Go to results</a>';
+                      g2fbutton = '<form action="/gene2func/geneSubmit" method="post">'
+                        +'<input type="hidden" name="_token" value="{{ csrf_token() }}">'
+                        +'<input type="hidden" name="jobID" value="'+val.jobID+'"/>'
+                        +'<span class="form-inline">'
+                          +'<input type="submit" class="btn btn-xs" id="geneQuerySubmit" name="geneQuerySubmit" value="GENE2FUNC">'
+                        +'</span>'
+                      +'</form>';
                     }else if(val.status == 'ERROR:005'){
                       val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">ERROR:005</a>';
                     }
                     items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title
-                      +"</td><td>"+val.created_at+"</td><td>"+val.status
+                      +"</td><td>"+val.created_at+"</td><td>"+val.status+"</td><td>"+g2fbutton
                       +'</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
                       +val.jobID+'"/></td></tr>';
                 });
