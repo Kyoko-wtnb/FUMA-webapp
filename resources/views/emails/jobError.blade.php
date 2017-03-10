@@ -1,9 +1,9 @@
 <html>
-<head><h3>FUMA an error occured</h3></head>
+<head><h3>FUMA an error occurred</h3></head>
 <body>
 
 <p>
-  This is unfortunate! An error occured during the process of your job (job title: {{ $jobtitle }}).<br/>
+  This is unfortunate! An error occurred during the process of your job (job ID: {{ $jobID }}, job title: {{ $jobtitle }}).<br/>
   ERROR: {{ $status }}
 
   <?php
