@@ -57,9 +57,23 @@ while(<IN>){
 			$start = $end;
 		}
 	}else{
+		my @temp = split(/\n/, `tabix $gwascat $chr:$start-$end`);
+		foreach my $l (@temp){
+			my @l = split(/\t/, $l);
+			if(exists $SNP{$l[2]}{"GenomicLocus"}){
+				print OUT join("\t", ($SNP{$l[2]}{"GenomicLocus"}, $SNP{$l[2]}{"leadSNP"}, @l)), "\n";
+			}
+		}
 		$chr=$line[2];
 		$start = 0;
 		$end = 0;
+	}
+}
+my @temp = split(/\n/, `tabix $gwascat $chr:$start-$end`);
+foreach my $l (@temp){
+	my @l = split(/\t/, $l);
+	if(exists $SNP{$l[2]}{"GenomicLocus"}){
+		print OUT join("\t", ($SNP{$l[2]}{"GenomicLocus"}, $SNP{$l[2]}{"leadSNP"}, @l)), "\n";
 	}
 }
 close IN;
