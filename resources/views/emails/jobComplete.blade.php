@@ -2,7 +2,7 @@
 <head><h3>FUMA job has been completed!!</h3></head>
 <body>
 <p>
-  Your job (job ID: {{ $jobID }},job title: {{ $jobtitle }}) has been completed.<br/>
+  Your job (job ID: {{ $jobID }}, job title: {{ $jobtitle }}) has been completed.<br/>
   Pleas follow the link to go to the results page.<br/>
   <a href="http://fuma.ctglab.nl/snp2gene/{{ $jobID }}">SNP2GENE job query</a><br/>
   <br/>
