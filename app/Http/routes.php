@@ -59,6 +59,8 @@ Route::get('snp2gene/manhattan/{type}/{jobID}/{file}', 'D3jsController@manhattan
 
 Route::get('snp2gene/QQplot/{type}/{jobID}/{plot}', 'D3jsController@QQplot');
 
+Route::get('snp2gene/MAGMAtsplot/{type}/{jobID}', 'D3jsController@MAGMAtsplot');
+
 Route::post('snp2gene/paramTable', 'JsController@paramTable');
 
 Route::post('snp2gene/sumTable', 'JsController@sumTable');

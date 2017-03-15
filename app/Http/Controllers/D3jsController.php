@@ -154,4 +154,33 @@ class D3jsController extends Controller
       }
     }
 
+    public function MAGMAtsplot($type, $jobID){
+      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      $file = "";
+      if($type=="general"){
+        $file = $filedir."magma_exp_general.gcov.out";
+      }else{
+        $file = $filedir."magma_exp.gcov.out";
+      }
+      if(file_exists($file)){
+        $f = fopen($file, 'r');
+        $rows = [];
+        while($row=fgetcsv($f)){
+          $row = preg_split('/\s+/', $row[0]);
+          if($row[0]=="#" || $row[0]=="COVAR"){
+            continue;
+          }else{
+            $rows[$row[0]] =$row[5];
+          }
+        }
+        asort($rows);
+        $all_rows = [];
+        foreach ($rows as $key => $value) {
+          $all_rows[] = [$key, $value];
+        }
+        return json_encode($all_rows);
+      }else{
+        return;
+      }
+    }
 }

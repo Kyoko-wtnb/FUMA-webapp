@@ -66,6 +66,10 @@ system "mv ".$filedir."temp.txt ".$filedir."magma.genes.out";
 
 # MAGMA gene set
 system "$magma/magma --gene-results $filedir"."magma.genes.raw --set-annot $magmafiles/magma_GS.txt --out $filedir"."magma";
+# MAGMA gene expression
+system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/gtex.normRPKM.txt onesided=greater condition=Average --out $filedir"."magma_exp";
+system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/gtex.normRPKM.general.txt onesided=greater condition=Average --out $filedir"."magma_exp_general";
+#remove extra magma log files
 system "rm $filedir"."magma*.log";
 
 system "Rscript $dir/magma_gene.R $filedir";

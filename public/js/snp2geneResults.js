@@ -102,6 +102,7 @@ $(document).ready(function(){
             // jobInfo(jobid);
             GWplot(jobid);
             QQplot(jobid);
+            MAGMAtsplot(jobid);
             showResultTables(filedir, jobid, posMap, eqtlMap, orcol, becol, secol);
             $('#GWplotSide').show();
             $('#results').show();
@@ -113,6 +114,7 @@ $(document).ready(function(){
     function error5(){
       GWplot(jobid);
       QQplot(jobid);
+      MAGMAtsplot(jobid);
       $.ajax({
         url: subdir+'/snp2gene/Error5',
         type: 'POST',
@@ -539,6 +541,130 @@ function QQplot(jobID){
     qqGene.selectAll('path').style('fill', 'none').style('stroke', 'grey');
     qqGene.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
     qqGene.selectAll("text").style("font-family", "sans-serif");
+  });
+}
+
+function MAGMAtsplot(jobID){
+  d3.json(subdir+'/snp2gene/MAGMAtsplot/general/'+jobID, function(data){
+    if(data==null || data==undefined || data.lenght==0){
+      $('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+      +' MAGMA tissue expression analyses is only available for FUMA v1.1.0 or later.</span><br/>'
+      +'If your job has been submitted to older version, please contact Kyoko Watanabe (k.watanabe@vu.nl) or resubmit the job to obtain the MAGMA tisue expression results.</div>');
+    }else{
+      var margin = {top:30, right: 30, bottom:100, left:50},
+          width = 600,
+          height = 250;
+      var svg = d3.select("#magma_exp_general").append("svg")
+                  .attr("width", width+margin.left+margin.right)
+                  .attr("height", height+margin.top+margin.bottom)
+                  .append("g")
+                  .attr("transform", "translate("+margin.left+","+margin.top+")");
+      data.forEach(function(d){
+        d[1] = +d[1]; // P-value
+      });
+      var x = d3.scale.ordinal().rangeBands([0,width]);
+      var xAxis = d3.svg.axis().scale(x).orient("bottom");
+      x.domain(data.map(function(d){return d[0];}));
+      var y = d3.scale.linear().range([height, 0]);
+      var yAxis = d3.svg.axis().scale(y).orient("left");
+      y.domain([0, d3.max(data, function(d){return -Math.log10(d[1]);})]);
+
+      var Pbon = 0.05/data.length;
+
+      svg.selectAll("rect.expgeneral").data(data).enter()
+        .append("rect")
+        .attr("x", function(d){return x(d[0]);})
+        .attr("y", function(d){return y(-Math.log10(d[1]));})
+        .attr("width", x.rangeBand())
+        .attr("height", function(d){return height - y(-Math.log10(d[1]));})
+        .style("fill", function(d){
+          if(d[1] < Pbon){return "#c00";}
+          else{return "#5668f4";}
+        })
+        .style("stroke", "grey");
+
+      svg.append("line")
+    	 .attr("x1", 0).attr("x2", width)
+      	.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
+      	.style("stroke", "black")
+      	.style("stroke-dasharray", ("3,3"));
+
+      svg.append('g').attr("class", "y axis")
+        .call(yAxis)
+        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+(height)+")")
+        .call(xAxis).selectAll('text')
+        .attr("transform", function (d) {return "translate(-12,5)rotate(-70)";})
+        .style("text-anchor", "end")
+        .style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .text("-log 10 P-value");
+      svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('text').style('font-family', 'sans-serif');
+    }
+  });
+
+  d3.json(subdir+'/snp2gene/MAGMAtsplot/specific/'+jobID, function(data){
+    if(data==null || data==undefined || data.lenght==0){
+    }else{
+      var margin = {top:30, right: 30, bottom:220, left:50},
+          width = 800,
+          height = 250;
+      var svg = d3.select("#magma_exp").append("svg")
+                  .attr("width", width+margin.left+margin.right)
+                  .attr("height", height+margin.top+margin.bottom)
+                  .append("g")
+                  .attr("transform", "translate("+margin.left+","+margin.top+")");
+      data.forEach(function(d){
+        d[1] = +d[1]; // P-value
+      });
+      var x = d3.scale.ordinal().rangeBands([0,width]);
+      var xAxis = d3.svg.axis().scale(x).orient("bottom");
+      x.domain(data.map(function(d){return d[0];}));
+      var y = d3.scale.linear().range([height, 0]);
+      var yAxis = d3.svg.axis().scale(y).orient("left");
+      y.domain([0, d3.max(data, function(d){return -Math.log10(d[1]);})]);
+
+      var Pbon = 0.05/data.length;
+
+      svg.selectAll("rect.expgeneral").data(data).enter()
+        .append("rect")
+        .attr("x", function(d){return x(d[0]);})
+        .attr("y", function(d){return y(-Math.log10(d[1]));})
+        .attr("width", x.rangeBand())
+        .attr("height", function(d){return height - y(-Math.log10(d[1]));})
+        .style("fill", function(d){
+          if(d[1] < Pbon){return "#c00";}
+          else{return "#5668f4";}
+        })
+        .style("stroke", "grey");
+
+      svg.append("line")
+    	 .attr("x1", 0).attr("x2", width)
+      	.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
+      	.style("stroke", "black")
+      	.style("stroke-dasharray", ("3,3"));
+
+      svg.append('g').attr("class", "y axis")
+        .call(yAxis)
+        .selectAll('text')
+        .style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+(height)+")")
+        .call(xAxis).selectAll('text')
+        .attr("transform", function (d) {return "translate(-12,5)rotate(-70)";})
+        .style("text-anchor", "end")
+        .style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .text("-log 10 P-value");
+      svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('text').style('font-family', 'sans-serif');
+    }
   });
 }
 
