@@ -23,8 +23,8 @@ Route::get('links', function(){
   return view('pages.links');
 });
 
-Route::get('contact', function(){
-  return view('pages.contact');
+Route::get('updates', function(){
+  return view('pages.updates');
 });
 
 // Set up the auth routes
