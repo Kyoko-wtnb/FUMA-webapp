@@ -5,10 +5,10 @@
     FUMA accept various types of format. For example, PLINK, SNPTEST and METAL output formats can be used as it is.
     For other formats, column names can be provided.
     Input files should be prepared in asci txt or (preferably) gzipped or zipped.
-    Every row should contain information on one SNP.�
+    Every row should contain information on one SNP.
     An input GWAS summary statistics file could contain only subset of SNPs (e.g. SNPs of interest for your study to annotate them),
     but in this case, results of MAGMA will not be relevant anymore.
-    Please note that in the current version indels and variants which do not exists in the 1000 genomes reference panel (Phase3) will not be included in any analyses.
+    Please note that in the current version indels and variants which do not exists in the 1000 genomes reference panel (Phase3) will not be included in any analyses.<br/>
     <span class="info"><i class="fa fa-info"></i>
       Indels and variants which do no exists in 1000 genomes reference panle (Phase3) will be removed from any analyses.
     </span>
