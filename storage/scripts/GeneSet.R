@@ -22,7 +22,7 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir, filedi
   file = paste(filedir, "/gtex.v6.DEG.gmt", sep="")
   data <- fread(file, head=F)
   colnames(data) <- c("GeneSet", "n", "genes")
-  results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "FDR", "genes"))))
+  results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "adjP", "genes"))))
   N <- length(allgenes)
   for(i in 1:nrow(data)){
     tempg <- unlist(strsplit(data$genes[i], ":"))
@@ -31,7 +31,7 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir, filedi
     data$genes[i] <- paste(tempg, collapse = ":")
   }
 
-  temp <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes"))))
+  temp <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adjP", "genes"))))
   m <- length(genes)
   for(j in 1:nrow(data)){
     temp[j,1] <- data$GeneSet[j]
@@ -49,7 +49,7 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir, filedi
   ct <- c("DEG.up", "DEG.down", "DEG.twoside")
   for(i in ct){
     tr <- temp[grepl(paste("\\", sub(".+(\\..+)", "\\1", i),sep=""), temp$GeneSet),]
-    tr$FDR <- p.adjust(tr$p, method=adjP.method)
+    tr$adjP <- p.adjust(tr$p, method=adjP.method)
     tr$GeneSet <- sub("(.+)\\..+", "\\1", tr$GeneSet)
     tr <- tr[order(tr$GeneSet),]
     results <- rbind(results, data.frame(Category=rep(i, nrow(tr)), tr))
@@ -73,7 +73,7 @@ DEGgeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir 
   file = paste(filedir, "/gtex.v6.DEG.general.gmt", sep="")
   data <- fread(file, head=F)
   colnames(data) <- c("GeneSet", "n", "genes")
-  results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "FDR", "genes"))))
+  results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "adjP", "genes"))))
   N <- length(allgenes)
   for(i in 1:nrow(data)){
     tempg <- unlist(strsplit(data$genes[i], ":"))
@@ -82,7 +82,7 @@ DEGgeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir 
     data$genes[i] <- paste(tempg, collapse = ":")
   }
 
-  temp <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes"))))
+  temp <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adjP", "genes"))))
   m <- length(genes)
   for(j in 1:nrow(data)){
     temp[j,1] <- data$GeneSet[j]
@@ -100,7 +100,7 @@ DEGgeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir 
   ct <- c("DEG.up", "DEG.down", "DEG.twoside")
   for(i in ct){
     tr <- temp[grepl(paste("\\", sub(".+(\\..+)", "\\1", i),sep=""), temp$GeneSet),]
-    tr$FDR <- p.adjust(tr$p, method=adjP.method)
+    tr$adjP <- p.adjust(tr$p, method=adjP.method)
     tr$GeneSet <- sub("(.+)\\..+", "\\1", tr$GeneSet)
     tr <- tr[order(tr$GeneSet),]
     results <- rbind(results, data.frame(Category=rep(i, nrow(tr)), tr))
@@ -131,7 +131,7 @@ ExpTstest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir ,file
     data$n[i] <- length(tempg)
     data$genes[i] <- paste(tempg, collapse = ":")
   }
-  results <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adj.p", "genes"))))
+  results <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adjP", "genes"))))
   m <- length(genes)
   for(j in 1:nrow(data)){
     results[j,1] <- data$GeneSet[j]
@@ -171,7 +171,7 @@ ExpTsGeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdi
     data$n[i] <- length(tempg)
     data$genes[i] <- paste(tempg, collapse = ":")
   }
-  results <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adj.p", "genes"))))
+  results <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adjP", "genes"))))
   m <- length(genes)
   for(j in 1:nrow(data)){
     results[j,1] <- data$GeneSet[j]

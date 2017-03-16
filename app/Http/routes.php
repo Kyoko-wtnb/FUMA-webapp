@@ -107,6 +107,8 @@ Route::post('gene2func/geneTable', 'JsController@geneTable');
 
 Route::get('gene2func/d3text/{jobID}/{file}', 'G2FController@d3js_textfile');
 
+Route::get('gene2func/DEGPlot/{type}/{jobID}', 'G2FController@DEGPlot');
+
 Route::get('gene2func/ExpTsPlot/{type}/{jobID}', 'G2FController@ExpTsPlot');
 
 Route::get('gene2func/{jobID}', function($jobID){

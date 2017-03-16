@@ -53,7 +53,6 @@ else:
 	lines = np.array(lines)
 	genes = list(lines[:,0])
 genes = [s.upper() for s in genes]
-print genes
 
 ENSG = pd.read_table(ensgdir+"/ENSG.all.genes.txt", header=None, delim_whitespace=True)
 ENSG = np.array(ENSG)

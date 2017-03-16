@@ -558,7 +558,7 @@ function tsEnrich(id){
   d3.select('#tsEnrichBar').select('svg').remove();
   var span = 150;
   var currentHeight = 0;
-  var margin = {top: 20, right: 20, bottom: 230, left: 50},
+  var margin = {top: 20, right: 20, bottom: 230, left: 80},
       width = 900,
       height = span*3+20;
 
@@ -569,7 +569,7 @@ function tsEnrich(id){
             .attr("height", height+margin.top+margin.bottom)
             .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
 
-  d3.json("d3text/"+id+"/DEG.txt", function(data){
+  d3.json(subdir+"/gene2func/DEGPlot/specific/"+id, function(data){
     if(data==null || data==undefined){
       $('#tsEnrichBar').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in the selected background genes was 0 or 1.</span></br>'
       +'Enrichment of differentially expressed genes in different tissue types require at least 2 gene to test.<br/>'
@@ -577,164 +577,38 @@ function tsEnrich(id){
       $('#DEGdown').prop("disabled", true);
       $('#tsEnrichBarPanel').children('.ImgDown').each(function(){$(this).prop("disabled", true)});
     }else{
-      data.forEach(function(d){
-        d.logFDR = +d.logFDR;
-        d.logP = +d.logP;
-        d.FDR = +d.FDR;
+      data.data.forEach(function(d){
+        d[2] = +d[2]; //p
+        d[3] = +d[3]; //adj.p
       });
-      x.domain(data.map(function(d){return d.GeneSet;}));
-
+      var ts = d3.set(data.data.map(function(d){return d[1]})).values();
+      x.domain(ts);
+      var cellsize = width/ts.length;
       //up-regulated
       var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
-      var yAxisup = d3.svg.axis().scale(yup).orient("left");
-      yup.domain([currentHeight, d3.max(data, function(d){return d.logP})]);
+      var yAxisup = d3.svg.axis().scale(yup).orient("left").ticks(4);
+      yup.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
 
-      svg.selectAll('rect.up').data(data.filter(function(d){if(d.Category=="DEG.up"){return d;}})).enter()
+      var xLabels = svg.append("g").selectAll(".xLabel")
+          .data(ts).enter().append("text")
+          .text(function(d){return d;})
+          .style("text-anchor", "end")
+          .style("font-size", "11px")
+          .style("font-family", "sans-serif")
+          .attr("transform", function(d){
+            return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+
+      var barup = svg.selectAll('rect.up').data(data.data.filter(function(d){if(d[0]=="DEG.up"){return d;}})).enter()
         .append("rect").attr("class", "bar")
-        .attr("x", function(d){return x(d.GeneSet);})
-        .attr("width", x.rangeBand())
-        .attr("y", function(d){return yup(d.logP)})
-        .attr("height", function(d){return currentHeight+span-yup(d.logP);})
+        .attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+        .attr("width", cellsize-1)
+        .attr("y", function(d){return yup(-Math.log10(d[2]))})
+        .attr("height", function(d){return currentHeight+span-yup(-Math.log10(d[2]));})
         .style("fill", function(d){
           // if(d.FDR>0.05){return "url(#gradient2)";}
           // else{return "url(#gradient1)";}
-          if(d.FDR>0.05){return "#5668f4";}
-          else{return "#c00";}
-        })
-        .style("stroke", "grey")
-        .style("stroke-width", 0.3);
-      svg.append('g').attr("class", "y axis")
-        .call(yAxisup)
-        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-      svg.append('g').attr("class", "x axis")
-        .attr("transform", "translate(0,"+(currentHeight+span)+")")
-        .call(xAxis)
-        .selectAll('text').remove();
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-        .text("Up-regulated DEG");
-      currentHeight += span+10;
-
-      //down regulated
-      var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
-      var yAxisdown = d3.svg.axis().scale(ydown).orient("left");
-      ydown.domain([0, d3.max(data, function(d){return d.logP})]);
-
-      svg.selectAll('rect.down').data(data.filter(function(d){if(d.Category=="DEG.down"){return d;}})).enter()
-        .append("rect").attr("class", "bar")
-        .attr("x", function(d){return x(d.GeneSet);})
-        .attr("width", x.rangeBand())
-        .attr("y", function(d){return ydown(d.logP)})
-        .attr("height", function(d){return currentHeight+span-ydown(d.logP);})
-        .style("fill", function(d){
-          // if(d.FDR>0.05){return "url(#gradient2)";}
-          // else{return "url(#gradient1)";}
-          if(d.FDR>0.05){return "#5668f4";}
-          else{return "#c00";}
-        })
-        .style("stroke", "grey")
-        .style("stroke-width", 0.3);
-      svg.append('g').attr("class", "y axis")
-        .call(yAxisdown)
-        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-      svg.append('g').attr("class", "x axis")
-        .attr("transform", "translate(0, "+(currentHeight+span)+")")
-        .call(xAxis)
-        .selectAll('text').remove();
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-        .text("Down-regulated DEG");
-      currentHeight += span+10;
-      //twoside
-      var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
-      var yAxis = d3.svg.axis().scale(y).orient("left");
-      y.domain([0, d3.max(data, function(d){return d.logP})]);
-
-      svg.selectAll('rect.two').data(data.filter(function(d){if(d.Category=="DEG.twoside"){return d;}})).enter()
-        .append("rect").attr("class", "bar")
-        .attr("x", function(d){return x(d.GeneSet);})
-        .attr("width", x.rangeBand())
-        .attr("y", function(d){return y(d.logP)})
-        .attr("height", function(d){return currentHeight+span-y(d.logP);})
-        .style("fill", function(d){
-          // if(d.FDR>0.05){return "url(#gradient2)";}
-          // else{return "url(#gradient1)";}
-          if(d.FDR>0.05){return "#5668f4";}
-          else{return "#c00";}
-        })
-        .style("stroke", "grey")
-        .style("stroke-width", 0.3);
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-        .text("DEG (both side)");
-
-      svg.append('g').attr("class", "x axis")
-        .attr("transform", "translate(0,"+(currentHeight+span)+")")
-        .call(xAxis)
-        .selectAll('text')
-        .attr("transform", function (d) {return "translate(-12,5)rotate(-70)";})
-        // .attr("dy", "-.45em")
-        // .attr("dx", "-.65em")
-        .style("text-anchor", "end")
-        .style('font-size', '11px');
-
-      svg.append('g').attr("class", "y axis")
-        .call(yAxis)
-        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-      svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
-        .text("-log 10 P-value");
-      svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-      svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-      svg.selectAll('text').style('font-family', 'sans-serif');
-    }
-  });
-}
-
-function tsGeneralEnrich(id){
-  d3.select('#tsGeneralEnrichBar').select('svg').remove();
-  var span = 150;
-  var currentHeight = 0;
-  var margin = {top: 20, right: 20, bottom: 80, left: 50},
-      width = 600,
-      height = span*3+20;
-
-  var x = d3.scale.ordinal().rangeBands([0,width]);
-  var xAxis = d3.svg.axis().scale(x).orient("bottom");
-  var svg = d3.select('#tsGeneralEnrichBar').append('svg')
-            .attr("width", width+margin.left+margin.right)
-            .attr("height", height+margin.top+margin.bottom)
-            .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
-
-  d3.json("d3text/"+id+"/DEGgeneral.txt", function(data){
-    if(data==null || data==undefined){
-      $('#tsGeneralEnrichBar').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in the selected background genes was 0 or 1.</span></br>'
-      +'Enrichment of differentially expressed genes in different tissue types require at least 2 gene to test.<br/>'
-      +'This might be because of the mismatch of input gene ID or symbol.<br/></div>');
-      $('#DEGgdown').prop("disabled", true);
-    }else{
-      data.forEach(function(d){
-        d.logFDR = +d.logFDR;
-        d.logP = +d.logP;
-        d.FDR = +d.FDR;
-      });
-      x.domain(data.map(function(d){return d.GeneSet;}));
-
-      //up-regulated
-      var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
-      var yAxisup = d3.svg.axis().scale(yup).orient("left");
-      yup.domain([0, d3.max(data, function(d){return d.logP})]);
-
-      svg.selectAll('rect.up').data(data.filter(function(d){if(d.Category=="DEG.up"){return d;}})).enter()
-        .append("rect").attr("class", "bar")
-        .attr("x", function(d){return x(d.GeneSet);})
-        .attr("width", x.rangeBand())
-        .attr("y", function(d){return yup(d.logP)})
-        .attr("height", function(d){return currentHeight+span-yup(d.logP);})
-        .style("fill", function(d){
-          // if(d.FDR>0.05){return "url(#gradient2)";}
-          // else{return "url(#gradient1)";}
-          if(d.FDR>0.05){return "#5668f4";}
+          if(d[3]>0.05){return "#5668f4";}
           else{return "#c00";}
         })
         .style("stroke", "grey")
@@ -752,19 +626,19 @@ function tsGeneralEnrich(id){
 
       //down regulated
       var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
-      var yAxisdown = d3.svg.axis().scale(ydown).orient("left");
-      ydown.domain([0, d3.max(data, function(d){return d.logP})]);
+      var yAxisdown = d3.svg.axis().scale(ydown).orient("left").ticks(4);
+      ydown.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
 
-      svg.selectAll('rect.down').data(data.filter(function(d){if(d.Category=="DEG.down"){return d;}})).enter()
+      var bardown = svg.selectAll('rect.down').data(data.data.filter(function(d){if(d[0]=="DEG.down"){return d;}})).enter()
         .append("rect").attr("class", "bar")
-        .attr("x", function(d){return x(d.GeneSet);})
-        .attr("width", x.rangeBand())
-        .attr("y", function(d){return ydown(d.logP)})
-        .attr("height", function(d){return currentHeight+span-ydown(d.logP);})
+        .attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+        .attr("width", cellsize-1)
+        .attr("y", function(d){return ydown(-Math.log10(d[2]))})
+        .attr("height", function(d){return currentHeight+span-ydown(-Math.log10(d[2]));})
         .style("fill", function(d){
           // if(d.FDR>0.05){return "url(#gradient2)";}
           // else{return "url(#gradient1)";}
-          if(d.FDR>0.05){return "#5668f4";}
+          if(d[3]>0.05){return "#5668f4";}
           else{return "#c00";}
         })
         .style("stroke", "grey")
@@ -781,19 +655,19 @@ function tsGeneralEnrich(id){
       currentHeight += span+10;
       //twoside
       var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
-      var yAxis = d3.svg.axis().scale(y).orient("left");
-      y.domain([0, d3.max(data, function(d){return d.logP})]);
+      var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
+      y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
 
-      svg.selectAll('rect.two').data(data.filter(function(d){if(d.Category=="DEG.twoside"){return d;}})).enter()
+      var bartwo = svg.selectAll('rect.two').data(data.data.filter(function(d){if(d[0]=="DEG.twoside"){return d;}})).enter()
         .append("rect").attr("class", "bar")
-        .attr("x", function(d){return x(d.GeneSet);})
-        .attr("width", x.rangeBand())
-        .attr("y", function(d){return y(d.logP)})
-        .attr("height", function(d){return height-y(d.logP);})
+        .attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+        .attr("width", cellsize-1)
+        .attr("y", function(d){return y(-Math.log10(d[2]))})
+        .attr("height", function(d){return height-y(-Math.log10(d[2]));})
         .style("fill", function(d){
           // if(d.FDR>0.05){return "url(#gradient2)";}
           // else{return "url(#gradient1)";}
-          if(d.FDR>0.05){return "#5668f4";}
+          if(d[3]>0.05){return "#5668f4";}
           else{return "#c00";}
         })
         .style("stroke", "grey")
@@ -804,22 +678,259 @@ function tsGeneralEnrich(id){
 
       svg.append('g').attr("class", "x axis")
         .attr("transform", "translate(0,"+height+")")
-        .call(xAxis).selectAll('text')
-        .attr("transform", function (d) {return "translate(-12,5)rotate(-65)";})
-        // .attr("dy", "-.45em")
-        // .attr("dx", "-.65em")
-        .style("text-anchor", "end")
-        .style('font-size', '11px');
+        .call(xAxis).selectAll('text').remove();
 
       svg.append('g').attr("class", "y axis")
         .call(yAxis)
         .selectAll('test').style('font-size', '11px');
       svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .attr("transform", "translate("+(-margin.left/2+5)+","+height/2+")rotate(-90)")
         .text("-log 10 P-value");
       svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('text').style('font-family', 'sans-serif');
+
+      function sortOptions(type){
+        if(type=="alph"){
+          barup.transition().duration(1000)
+            .attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+          bardown.transition().duration(1000)
+            .attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+          bartwo.transition().duration(1000)
+            .attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.alph[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+        }else if(type=="up"){
+          barup.transition().duration(1000)
+            .attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+          bardown.transition().duration(1000)
+            .attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+          bartwo.transition().duration(1000)
+            .attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.up[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+        }else if(type=="down"){
+          barup.transition().duration(1000)
+            .attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+          bardown.transition().duration(1000)
+            .attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+          bartwo.transition().duration(1000)
+            .attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.down[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+        }else if(type=="two"){
+          barup.transition().duration(1000)
+            .attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+          bardown.transition().duration(1000)
+            .attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+          bartwo.transition().duration(1000)
+            .attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+        }
+      }
+      d3.select('#DEGorder').on("change", function(){
+        var type = $('#DEGorder').val();
+        sortOptions(type);
+      });
+    }
+  });
+}
+
+function tsGeneralEnrich(id){
+  d3.select('#tsGeneralEnrichBar').select('svg').remove();
+  var span = 150;
+  var currentHeight = 0;
+  var margin = {top: 20, right: 20, bottom: 80, left: 80},
+      width = 600,
+      height = span*3+20;
+
+  var x = d3.scale.ordinal().rangeBands([0,width]);
+  var xAxis = d3.svg.axis().scale(x).orient("bottom");
+  var svg = d3.select('#tsGeneralEnrichBar').append('svg')
+            .attr("width", width+margin.left+margin.right)
+            .attr("height", height+margin.top+margin.bottom)
+            .append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
+
+  d3.json(subdir+"/gene2func/DEGPlot/general/"+id, function(data){
+    if(data==null || data==undefined){
+      $('#tsGeneralEnrichBar').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in the selected background genes was 0 or 1.</span></br>'
+      +'Enrichment of differentially expressed genes in different tissue types require at least 2 gene to test.<br/>'
+      +'This might be because of the mismatch of input gene ID or symbol.<br/></div>');
+      $('#DEGgdown').prop("disabled", true);
+    }else{
+      data.data.forEach(function(d){
+        d[2] = +d[2]; //p
+        d[3] = +d[3]; //adj.p
+      });
+      var ts = d3.set(data.data.map(function(d){return d[1]})).values();
+      x.domain(ts);
+      var cellsize = width/ts.length;
+      //up-regulated
+      var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxisup = d3.svg.axis().scale(yup).orient("left").ticks(4);
+      yup.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+
+      var xLabels = svg.append("g").selectAll(".xLabel")
+          .data(ts).enter().append("text")
+          .text(function(d){return d;})
+          .style("text-anchor", "end")
+          .style("font-size", "11px")
+          .style("font-family", "sans-serif")
+          .attr("transform", function(d){
+            return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+
+      var barup = svg.selectAll('rect.up').data(data.data.filter(function(d){if(d[0]=="DEG.up"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+        .attr("width", cellsize-1)
+        .attr("y", function(d){return yup(-Math.log10(d[2]))})
+        .attr("height", function(d){return currentHeight+span-yup(-Math.log10(d[2]));})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d[3]>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append('g').attr("class", "y axis")
+        .call(yAxisup)
+        .selectAll('test').style('font-size', '11px');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+(currentHeight+span)+")")
+        .call(xAxis).selectAll('text').remove();
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("Up-regulated DEG");
+      currentHeight += span+10;
+
+      //down regulated
+      var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxisdown = d3.svg.axis().scale(ydown).orient("left").ticks(4);
+      ydown.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+
+      var bardown = svg.selectAll('rect.down').data(data.data.filter(function(d){if(d[0]=="DEG.down"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+        .attr("width", cellsize-1)
+        .attr("y", function(d){return ydown(-Math.log10(d[2]))})
+        .attr("height", function(d){return currentHeight+span-ydown(-Math.log10(d[2]));})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d[3]>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append('g').attr("class", "y axis")
+        .call(yAxisdown)
+        .selectAll('test').style('font-size', '11px');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0, "+(currentHeight+span)+")")
+        .call(xAxis).selectAll('text').remove();
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("Down-regulated DEG");
+      currentHeight += span+10;
+      //twoside
+      var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
+      var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
+      y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+
+      var bartwo = svg.selectAll('rect.two').data(data.data.filter(function(d){if(d[0]=="DEG.twoside"){return d;}})).enter()
+        .append("rect").attr("class", "bar")
+        .attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+        .attr("width", cellsize-1)
+        .attr("y", function(d){return y(-Math.log10(d[2]))})
+        .attr("height", function(d){return height-y(-Math.log10(d[2]));})
+        .style("fill", function(d){
+          // if(d.FDR>0.05){return "url(#gradient2)";}
+          // else{return "url(#gradient1)";}
+          if(d[3]>0.05){return "#5668f4";}
+          else{return "#c00";}
+        })
+        .style("stroke", "grey")
+        .style("stroke-width", 0.3);
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+        .text("DEG (both side)");
+
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+height+")")
+        .call(xAxis).selectAll('text').remove();
+
+      svg.append('g').attr("class", "y axis")
+        .call(yAxis)
+        .selectAll('test').style('font-size', '11px');
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(-margin.left/2+5)+","+height/2+")rotate(-90)")
+        .text("-log 10 P-value");
+      svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('text').style('font-family', 'sans-serif');
+
+      function sortOptions(type){
+        if(type=="alph"){
+          barup.transition().duration(1000)
+            .attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+          bardown.transition().duration(1000)
+            .attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+          bartwo.transition().duration(1000)
+            .attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.alph[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+        }else if(type=="up"){
+          barup.transition().duration(1000)
+            .attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+          bardown.transition().duration(1000)
+            .attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+          bartwo.transition().duration(1000)
+            .attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.up[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+        }else if(type=="down"){
+          barup.transition().duration(1000)
+            .attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+          bardown.transition().duration(1000)
+            .attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+          bartwo.transition().duration(1000)
+            .attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.down[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+        }else if(type=="two"){
+          barup.transition().duration(1000)
+            .attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+          bardown.transition().duration(1000)
+            .attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+          bartwo.transition().duration(1000)
+            .attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+          });
+        }
+      }
+      d3.select('#DEGGorder').on("change", function(){
+        var type = $('#DEGGorder').val();
+        sortOptions(type);
+      });
     }
   });
 }
@@ -832,7 +943,7 @@ function ExpTsGeneralEnrich(id){
       +' Enrichment of tissue expressed gene is only available for FUMA v1.1.0 or later.</span><br/>'
       +'If your job has been submitted to older version, please contact Kyoko Watanabe (k.watanabe@vu.nl) or resubmit the job to obtain the MAGMA tisue expression results.</div>');
     }else{
-      var margin = {top:30, right: 30, bottom:100, left:50},
+      var margin = {top:30, right: 30, bottom:100, left:80},
           width = 600,
           height = 250;
       var svg = d3.select("#ExpTsGeneralEnrichBar").append("svg")
@@ -888,7 +999,7 @@ function ExpTsGeneralEnrich(id){
         .attr("transform", "translate(0,"+(height)+")")
         .call(xAxis).selectAll('text').remove();
       svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .attr("transform", "translate("+(-margin.left/2+5)+","+height/2+")rotate(-90)")
         .text("-log 10 P-value");
       svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
@@ -927,7 +1038,7 @@ function ExpTsEnrich(id){
       +' Enrichment of tissue expressed gene is only available for FUMA v1.1.0 or later.</span><br/>'
       +'If your job has been submitted to older version, please contact Kyoko Watanabe (k.watanabe@vu.nl) or resubmit the job to obtain the MAGMA tisue expression results.</div>');
     }else{
-      var margin = {top:30, right: 30, bottom:230, left:50},
+      var margin = {top:30, right: 30, bottom:230, left:80},
           width = 800,
           height = 250;
       var svg = d3.select("#ExpTsEnrichBar").append("svg")
@@ -983,7 +1094,7 @@ function ExpTsEnrich(id){
         .attr("transform", "translate(0,"+(height)+")")
         .call(xAxis).selectAll('text').remove();
       svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .attr("transform", "translate("+(-margin.left/2+5)+","+height/2+")rotate(-90)")
         .text("-log 10 P-value");
       svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
