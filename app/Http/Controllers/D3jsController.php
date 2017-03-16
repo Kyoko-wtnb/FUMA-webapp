@@ -164,21 +164,33 @@ class D3jsController extends Controller
       }
       if(file_exists($file)){
         $f = fopen($file, 'r');
-        $rows = [];
+        $data = [];
+        $p = [];
         while($row=fgetcsv($f)){
           $row = preg_split('/\s+/', $row[0]);
           if($row[0]=="#" || $row[0]=="COVAR"){
             continue;
           }else{
-            $rows[$row[0]] =$row[5];
+            $data[] = [$row[0], $row[5]];
+            $p[$row[0]] =$row[5];
           }
         }
-        asort($rows);
-        $all_rows = [];
-        foreach ($rows as $key => $value) {
-          $all_rows[] = [$key, $value];
+        asort($p);
+        $order_p = [];
+        $i = 0;
+        foreach($p as $key => $val){
+          $order_p[$key] = [$i];
+          $i++;
         }
-        return json_encode($all_rows);
+        ksort($p);
+        $order_alph = [];
+        $i = 0;
+        foreach($p as $key => $val){
+          $order_alph[$key] = $i;
+          $i++;
+        }
+        $r = ["data"=>$data, "order"=>["p"=>$order_p, "alph"=>$order_alph]];
+        return json_encode($r);
       }else{
         return;
       }

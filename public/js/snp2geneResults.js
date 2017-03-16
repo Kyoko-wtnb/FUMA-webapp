@@ -559,29 +559,38 @@ function MAGMAtsplot(jobID){
                   .attr("height", height+margin.top+margin.bottom)
                   .append("g")
                   .attr("transform", "translate("+margin.left+","+margin.top+")");
-      data.forEach(function(d){
+      data.data.forEach(function(d){
         d[1] = +d[1]; // P-value
       });
       var x = d3.scale.ordinal().rangeBands([0,width]);
       var xAxis = d3.svg.axis().scale(x).orient("bottom");
-      x.domain(data.map(function(d){return d[0];}));
+      x.domain(data.data.map(function(d){return d[0];}));
       var y = d3.scale.linear().range([height, 0]);
       var yAxis = d3.svg.axis().scale(y).orient("left");
-      y.domain([0, d3.max(data, function(d){return -Math.log10(d[1]);})]);
+      y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[1]);})]);
 
-      var Pbon = 0.05/data.length;
+      var cellsize = width/data.data.length;
+      var Pbon = 0.05/data.data.length;
 
-      svg.selectAll("rect.expgeneral").data(data).enter()
+      var bar = svg.selectAll("rect.expgeneral").data(data.data).enter()
         .append("rect")
-        .attr("x", function(d){return x(d[0]);})
+        .attr("x", function(d){return data.order.p[d[0]]*cellsize;})
         .attr("y", function(d){return y(-Math.log10(d[1]));})
-        .attr("width", x.rangeBand())
+        .attr("width", cellsize-1)
         .attr("height", function(d){return height - y(-Math.log10(d[1]));})
         .style("fill", function(d){
           if(d[1] < Pbon){return "#c00";}
           else{return "#5668f4";}
         })
         .style("stroke", "grey");
+      var xLabels = svg.append("g").selectAll(".xLabel")
+          .data(data.data).enter().append("text")
+          .text(function(d){return d[0];})
+          .style("text-anchor", "end")
+          .style("font-size", "11px")
+          .attr("transform", function(d){
+            return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+          });
 
       svg.append("line")
     	 .attr("x1", 0).attr("x2", width)
@@ -594,16 +603,35 @@ function MAGMAtsplot(jobID){
         .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
       svg.append('g').attr("class", "x axis")
         .attr("transform", "translate(0,"+(height)+")")
-        .call(xAxis).selectAll('text')
-        .attr("transform", function (d) {return "translate(-12,5)rotate(-70)";})
-        .style("text-anchor", "end")
-        .style('font-size', '11px').style('font-family', 'sans-serif');
+        .call(xAxis).selectAll('text').remove();
       svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
         .text("-log 10 P-value");
       svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('text').style('font-family', 'sans-serif');
+
+      function sortOptions(type){
+        if(type=="alph"){
+          bar.transition().duration(1000)
+            .attr("x", function(d){return data.order.alph[d[0]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.alph[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+          });
+        }else if(type=="p"){
+          bar.transition().duration(1000)
+            .attr("x", function(d){return data.order.p[d[0]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+          });
+        }
+      }
+      d3.select('#magmaTsGorder').on("change", function(){
+        var type = $('#magmaTsGorder').val();
+        sortOptions(type);
+      });
     }
   });
 
@@ -618,29 +646,38 @@ function MAGMAtsplot(jobID){
                   .attr("height", height+margin.top+margin.bottom)
                   .append("g")
                   .attr("transform", "translate("+margin.left+","+margin.top+")");
-      data.forEach(function(d){
+      data.data.forEach(function(d){
         d[1] = +d[1]; // P-value
       });
       var x = d3.scale.ordinal().rangeBands([0,width]);
       var xAxis = d3.svg.axis().scale(x).orient("bottom");
-      x.domain(data.map(function(d){return d[0];}));
+      x.domain(data.data.map(function(d){return d[0];}));
       var y = d3.scale.linear().range([height, 0]);
       var yAxis = d3.svg.axis().scale(y).orient("left");
-      y.domain([0, d3.max(data, function(d){return -Math.log10(d[1]);})]);
+      y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[1]);})]);
 
-      var Pbon = 0.05/data.length;
+      var cellsize = width/data.data.length;
+      var Pbon = 0.05/data.data.length;
 
-      svg.selectAll("rect.expgeneral").data(data).enter()
+      var bar = svg.selectAll("rect.expgeneral").data(data.data).enter()
         .append("rect")
-        .attr("x", function(d){return x(d[0]);})
+        .attr("x", function(d){return data.order.p[d[0]]*cellsize;})
         .attr("y", function(d){return y(-Math.log10(d[1]));})
-        .attr("width", x.rangeBand())
+        .attr("width", cellsize-1)
         .attr("height", function(d){return height - y(-Math.log10(d[1]));})
         .style("fill", function(d){
           if(d[1] < Pbon){return "#c00";}
           else{return "#5668f4";}
         })
         .style("stroke", "grey");
+      var xLabels = svg.append("g").selectAll(".xLabel")
+          .data(data.data).enter().append("text")
+          .text(function(d){return d[0];})
+          .style("text-anchor", "end")
+          .style("font-size", "11px")
+          .attr("transform", function(d){
+            return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+          });
 
       svg.append("line")
     	 .attr("x1", 0).attr("x2", width)
@@ -650,20 +687,38 @@ function MAGMAtsplot(jobID){
 
       svg.append('g').attr("class", "y axis")
         .call(yAxis)
-        .selectAll('text')
-        .style('font-size', '11px').style('font-family', 'sans-serif');
+        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
       svg.append('g').attr("class", "x axis")
         .attr("transform", "translate(0,"+(height)+")")
-        .call(xAxis).selectAll('text')
-        .attr("transform", function (d) {return "translate(-12,5)rotate(-70)";})
-        .style("text-anchor", "end")
-        .style('font-size', '11px').style('font-family', 'sans-serif');
+        .call(xAxis).selectAll('text').remove();
       svg.append("text").attr("text-anchor", "middle")
         .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
         .text("-log 10 P-value");
       svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('text').style('font-family', 'sans-serif');
+
+      function sortOptions(type){
+        if(type=="alph"){
+          bar.transition().duration(1000)
+            .attr("x", function(d){return data.order.alph[d[0]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.alph[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+          });
+        }else if(type=="p"){
+          bar.transition().duration(1000)
+            .attr("x", function(d){return data.order.p[d[0]]*cellsize;});
+          xLabels.transition().duration(1000)
+          .attr("transform", function(d){
+            return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+          });
+        }
+      }
+      d3.select('#magmaTsorder').on("change", function(){
+        var type = $('#magmaTsorder').val();
+        sortOptions(type);
+      });
     }
   });
 }

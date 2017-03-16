@@ -220,6 +220,14 @@
               <input type="hidden" name="fileName" id="magma_exp_generalFileName" val=""/>
               <input type="submit" id="magma_exp_generalSubmit" class="ImgDownSubmit"/>
             </form>
+            <br/>
+            <span class="form-inline">
+              Order tissue by :
+              <select id="magmaTsGorder" class="form-control" style="width: auto;">
+                <option value="alph">Alphabetical</option>
+                <option value="p" selected>P-value</option>
+              </select>
+            </span>
             <div id="magma_exp_general"></div>
 
             Specific 53 tissue types<br/>
@@ -238,6 +246,14 @@
               <input type="hidden" name="fileName" id="magma_expFileName" val=""/>
               <input type="submit" id="magma_expSubmit" class="ImgDownSubmit"/>
             </form>
+            <br/>
+            <span class="form-inline">
+              Order tissue by :
+              <select id="magmaTsorder" class="form-control" style="width: auto;">
+                <option value="alph">Alphabetical</option>
+                <option value="p" selected>P-value</option>
+              </select>
+            </span>
             <div id="magma_exp"></div>
           </div>
         </div>
