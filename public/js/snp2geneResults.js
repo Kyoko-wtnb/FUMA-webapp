@@ -610,7 +610,7 @@ function MAGMAtsplot(jobID){
   d3.json(subdir+'/snp2gene/MAGMAtsplot/specific/'+jobID, function(data){
     if(data==null || data==undefined || data.lenght==0){
     }else{
-      var margin = {top:30, right: 30, bottom:220, left:50},
+      var margin = {top:30, right: 30, bottom:230, left:50},
           width = 800,
           height = 250;
       var svg = d3.select("#magma_exp").append("svg")

@@ -29,4 +29,42 @@ class G2FController extends Controller
       echo json_encode($all_rows);
     }
   }
+
+  public function ExpTsPlot($type, $jobID){
+    $filedir = config('app.jobdir').'/gene2func/'.$jobID.'/';
+    $file = "";
+    if($type=="general"){
+      $file = $filedir."ExpTsGeneral.txt";
+    }else{
+      $file = $filedir."ExpTs.txt";
+    }
+    if(file_exists($file)){
+      $f = fopen($file, 'r');
+      fgetcsv($f, 0, "\t");
+      $data = [];
+      $p = [];
+      while($row=fgetcsv($f, 0, "\t")){
+        $p[$row[0]] = $row[3];
+        $data[] = [$row[0], $row[3], $row[4]];
+      }
+      asort($p);
+      $order_p = [];
+      $i = 0;
+      foreach ($p as $key => $value) {
+        $order_p[$key] = $i;
+        $i++;
+      }
+      ksort($p);
+      $order_alph = [];
+      $i = 0;
+      foreach ($p as $key => $value) {
+        $order_alph[$key] = $i;
+        $i++;
+      }
+      $r = ["data"=>$data, "order"=>["p"=>$order_p, "alph"=>$order_alph]];
+      return json_encode($r);
+    }else{
+      return;
+    }
+  }
 }

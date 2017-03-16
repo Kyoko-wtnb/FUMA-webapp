@@ -1,77 +1,10 @@
 ##### GeneSet enrichment analyses #####
-# All MsigDB and humna brain gene set
+# DEG enrichment test
 #
 # 21 aug 2016
+# 15 Mar 2017 added ExpTs test
 # Kyoko Watanabe
 #######################################
-
-GeneSetTest <- function(genes, allgenes, adjP.method="BH", adjP.cutoff=0.05, MHC=TRUE, MHCextend=NULL, testCategory="all", minOverlap=2, ensgdir, filedir){
-  require(data.table)
-  #require(ggplot2)
-  if(MHC==FALSE){
-    load(paste(ensgdir, "/ENSG.all.genes.RData", sep=""))
-
-    if(is.null(MHCextend)){
-      start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
-      end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
-    }else{
-      start <- MHCextend[1]
-      end <- MHCextend[2]
-    }
-    MHCgenes <- ENSG.all.genes$entrezID[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
-    allgenes <- allgenes[!(allgenes %in% MHCgenes)]
-    genes <- genes[genes %in% allgenes]
-    cat("Excluding genes in MHC region\n")
-  }
-  genes <- genes[genes%in%allgenes]
-  if(testCategory[1]=="all"){files = list.files(paste(filedir, '/', sep=""), ".+\\.txt")}
-  else{files = testCategory}
-  files <- files[!grepl("Human_Adult_Brain", files)]
-  results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "FDR", "genes"))))
-  N <- length(allgenes)
-  for(i in 1:length(files)){
-#local     data <- fread(paste("/media/sf_Documents/VU/Data/GeneSet/", files[i], sep=""), head=F) #local
-    data <- fread(paste("/data/GeneSet/", files[i], sep=""), head=F) #webserver
-
-    colnames(data)[1:3] <- c("GeneSet", "n", "genes")
-
-    for(j in 1:nrow(data)){
-      tempg <- unlist(strsplit(data$genes[j], ":"))
-      tempg <- tempg[tempg %in% allgenes]
-      data$n[j] <- length(tempg)
-      data$genes[j] <- paste(tempg, collapse = ":")
-    }
-
-    temp <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes"))))
-    m <- length(genes)
-    for(j in 1:nrow(data)){
-      temp[j,1] <- data$GeneSet[j]
-      n <- data$n[j]
-      temp[j,2] <- data$n[j]
-      GSgenes <- unlist(strsplit(data$genes[j], ":"))
-      x <- length(which(genes %in% GSgenes))
-      temp[j,3] <- x
-      temp[j,6] <- paste(genes[which(genes %in% GSgenes)], collapse=":")
-      if(x==0){temp[j,4]<-1}
-      else{temp$p[j] <- phyper(x, n, N-n, m, lower.tail = F)}
-    }
-    temp[,5] <- p.adjust(temp$p, method=adjP.method)
-    temp <- temp[temp$FDR <= adjP.cutoff,]
-    temp <- temp[temp$N_overlap>=minOverlap,]
-    temp <- temp[order(temp$p),]
-    ct <- sub("(.+)\\.txt", "\\1", files[i])
-    if(nrow(temp)>0){
-      results <- rbind(results, data.frame(Category = rep(ct, nrow(temp)), temp))
-    }
-    cat(ct, ": enriched gene set #", nrow(temp), "\n")
-  }
-  cat("Tested genes #", length(genes), "\n")
-  cat("Total genes #", length(allgenes), "\n")
-  #if(nrow(results)>0){
-  #  print(ggplot(results, aes(x=reorder(GeneSet, adj.p), y=-log10(adj.p)))+geom_bar(stat="identity", aes(fill=Category))+facet_grid(~Category, space = "free_x", scales = "free_x")+theme(axis.text.x=element_text(angle=60, hjust=1, size=8), legend.position="none"))
-  #}
-  return(results)
-}
 
 DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir, filedir){
   require(data.table)
@@ -121,11 +54,6 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir, filedi
     tr <- tr[order(tr$GeneSet),]
     results <- rbind(results, data.frame(Category=rep(i, nrow(tr)), tr))
   }
-  cat("Tested genes #", length(genes),"\n")
-  cat("Total genes #", length(allgenes), "\n")
-  #if(MHC){title=paste("DEG with MHC: ", name, sep="")}
-  #else{title=paste("DEG wo MHC: ", name, sep="")}
-  #print(ggplot(results, aes(x=GeneSet, y=-log10(adj.p)))+geom_bar(stat="identity")+geom_hline(yintercept = -log10(0.05), linetype="dashed", color="pink")+facet_grid(Category~.)+theme(axis.text.x=element_text(angle=60, hjust=1, size=8))+ggtitle(title))
   return(results)
 }
 
@@ -177,30 +105,25 @@ DEGgeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir 
     tr <- tr[order(tr$GeneSet),]
     results <- rbind(results, data.frame(Category=rep(i, nrow(tr)), tr))
   }
-  cat("Tested genes #", length(genes),"\n")
-  cat("Total genes #", length(allgenes), "\n")
-  #if(MHC){title=paste("DEG with MHC: ", name, sep="")}
-  #else{title=paste("DEG wo MHC: ", name, sep="")}
-  #print(ggplot(results, aes(x=GeneSet, y=-log10(adj.p)))+geom_bar(stat="identity")+geom_hline(yintercept = -log10(0.05), linetype="dashed", color="pink")+facet_grid(Category~.)+theme(axis.text.x=element_text(angle=60, hjust=1, size=8))+ggtitle(title))
   return(results)
 }
 
-BSDEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, name){
+ExpTstest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir ,filedir){
   require(data.table)
-  #require(ggplot2)
+  load(paste(filedir, "/gtex.avg.RPKM.genes.RData", sep=""))
   if(MHC==FALSE){
-    load("~/Documents/VU/Data/ENSG.all.genes.RData")
+    load(paste(ensgdir, "/ENSG.all.genes.RData", sep=""))
     start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
     end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
-    MHCgenes <- ENSG.all.genes$external_gene_name[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
+    MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
     allgenes <- allgenes[!(allgenes %in% MHCgenes)]
     cat("Excluding genes in MHC region\n")
   }
+  allgenes <- allgenes[allgenes %in% gtex.avg.RPKM.genes]
   genes <- genes[genes %in% allgenes]
-  file = "/media/sf_Documents/VU/Data/BrainSpan/BS.DEG.gmt"
+  file = paste(filedir, "/ExpTs.txt", sep="")
   data <- fread(file, head=F)
   colnames(data) <- c("GeneSet", "n", "genes")
-  results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "adj.p", "genes"))))
   N <- length(allgenes)
   for(i in 1:nrow(data)){
     tempg <- unlist(strsplit(data$genes[i], ":"))
@@ -208,69 +131,59 @@ BSDEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, name){
     data$n[i] <- length(tempg)
     data$genes[i] <- paste(tempg, collapse = ":")
   }
-
-  temp <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adj.p", "genes"))))
+  results <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adj.p", "genes"))))
   m <- length(genes)
   for(j in 1:nrow(data)){
-    temp[j,1] <- data$GeneSet[j]
+    results[j,1] <- data$GeneSet[j]
     n <- data$n[j]
-    temp[j,2] <- data$n[j]
+    results[j,2] <- data$n[j]
     GSgenes <- unlist(strsplit(data$genes[j], ":"))
     x <- length(which(genes %in% GSgenes))
-    temp[j,3] <- x
-    temp[j,6] <- paste(genes[which(genes %in% GSgenes)], collapse=":")
-    if(x==0){temp[j,4]<-1}
-    else{temp$p[j] <- phyper(x, n, N-n, m, lower.tail = F)}
+    results[j,3] <- x
+    results[j,6] <- paste(genes[which(genes %in% GSgenes)], collapse=":")
+    if(x==0){results[j,4]<-1}
+    else{results$p[j] <- phyper(x, n, N-n, m, lower.tail = F)}
   }
-  temp[,5] <- p.adjust(temp$p, method=adjP.method)
-
-  ct <- c("DEG.up", "DEG.down", "DEG.twoside")
-  for(i in ct){
-    tr <- temp[grepl(paste("\\", sub(".+(\\..+)", "\\1", i),sep=""), temp$GeneSet),]
-    tr$adj.p <- p.adjust(tr$p, method=adjP.method)
-    tr$GeneSet <- sub("(.+)\\..+", "\\1", tr$GeneSet)
-    tr <- tr[order(tr$GeneSet),]
-    results <- rbind(results, data.frame(Category=rep(i, nrow(tr)), tr))
-  }
-  cat("Tested genes #", length(genes),"\n")
-  cat("Total genes #", length(allgenes), "\n")
-  #if(MHC){title=paste("DEG with MHC: ", name, sep="")}
-  #else{title=paste("DEG wo MHC: ", name, sep="")}
-  #print(ggplot(results, aes(x=GeneSet, y=-log10(adj.p)))+geom_bar(stat="identity")+geom_hline(yintercept = -log10(0.05), linetype="dashed", color="pink")+facet_grid(Category~.)+theme(axis.text.x=element_text(angle=60, hjust=1, size=8))+ggtitle(title))
+  results[,5] <- p.adjust(results$p, method=adjP.method)
   return(results)
 }
 
-entrez2symbol <- function(data){
-#local   load("/media/sf_Documents/VU/Data/ENSG.all.genes.RData") #local
-  load("/data/ENSG/ENSG.all.genes.RData") #webserver
+ExpTsGeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir ,filedir){
+  require(data.table)
+  load(paste(filedir, "/gtex.avg.RPKM.genes.RData", sep=""))
+  if(MHC==FALSE){
+    load(paste(ensgdir, "/ENSG.all.genes.RData", sep=""))
+    start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
+    end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
+    MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
+    allgenes <- allgenes[!(allgenes %in% MHCgenes)]
+    cat("Excluding genes in MHC region\n")
+  }
+  allgenes <- allgenes[allgenes %in% gtex.avg.RPKM.genes]
+  genes <- genes[genes %in% allgenes]
+  file = paste(filedir, "/ExpTsGeneral.txt", sep="")
+  data <- fread(file, head=F)
+  colnames(data) <- c("GeneSet", "n", "genes")
+  N <- length(allgenes)
   for(i in 1:nrow(data)){
-    data$genes[i] <- paste(ENSG.all.genes$external_gene_name[ENSG.all.genes$entrezID %in% unlist(strsplit(data$genes[i], ":"))], collapse = ":")
+    tempg <- unlist(strsplit(data$genes[i], ":"))
+    tempg <- tempg[tempg %in% allgenes]
+    data$n[i] <- length(tempg)
+    data$genes[i] <- paste(tempg, collapse = ":")
   }
-  return(data)
-}
-
-PrerankedTest <- function(data, geneset, nPerm=1000000){
-  colnames(data) <- c("gene", "score")
-  N <- length(which(geneset %in% data$gene))
-  genes <- data
-  genes$ES <- 0
-  genes$ES[which(genes$gene %in% geneset)] <- 1/length(which(genes$gene %in% geneset))
-  genes$ES[which(!(genes$gene %in% geneset))] <- -1/length(which(!(genes$gene %in% geneset)))
-  genes$csum <- cumsum(genes$ES)
-  ES <- max(genes$csum)
-  data$ES <- genes$csum
-  permES <- vector()
-
-  pb = txtProgressBar(min=0, max=100, initial=0, style=3)
-  for(i in 1:nPerm){
-    g <- sample(genes$gene, N)
-    genes$tempES <- 0
-    genes$tempES[which(genes$gene %in% g)] <- 1/length(which(genes$gene %in% g))
-    genes$tempES[which(!(genes$gene %in% g))] <- -1/length(which(!(genes$gene %in% g)))
-    genes$csum <- cumsum(genes$tempES)
-    permES <- c(permES, max(genes$tempES))
-    setTxtProgressBar(pb, i*100/nPerm)
+  results <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adj.p", "genes"))))
+  m <- length(genes)
+  for(j in 1:nrow(data)){
+    results[j,1] <- data$GeneSet[j]
+    n <- data$n[j]
+    results[j,2] <- data$n[j]
+    GSgenes <- unlist(strsplit(data$genes[j], ":"))
+    x <- length(which(genes %in% GSgenes))
+    results[j,3] <- x
+    results[j,6] <- paste(genes[which(genes %in% GSgenes)], collapse=":")
+    if(x==0){results[j,4]<-1}
+    else{results$p[j] <- phyper(x, n, N-n, m, lower.tail = F)}
   }
-  pval = length(which(permES>=ES))/nPerm
-  return(list(overlappedGene=N, ES=data, P=pval))
+  results[,5] <- p.adjust(results$p, method=adjP.method)
+  return(results)
 }

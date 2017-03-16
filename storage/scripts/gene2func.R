@@ -152,6 +152,10 @@ if(length(which(genes %in% bkgenes))>1){
   DEGgeneral$logFDR <- -log10(DEGgeneral$FDR)
   write.table(DEGgeneral, paste(filedir, "DEGgeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
   rm(DEGgeneral)
+  ExpTs <- ExpTstest(genes, allgenes=bkgenes, adjP.method="bonferroni", MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
+  write.table(ExpTs, paste(filedir, "ExpTs.txt", sep=""), quote=F, row.names=F, sep="\t")
+  ExpTsG <- ExpTsGeneraltest(genes, allgenes=bkgenes, adjP.method="bonferroni", MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
+  write.table(ExpTsG, paste(filedir, "ExpTsGeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
 }
 
 geneTable <- ENSG.all.genes[toupper(ENSG.all.genes$ensembl_gene_id) %in% toupper(genes),]

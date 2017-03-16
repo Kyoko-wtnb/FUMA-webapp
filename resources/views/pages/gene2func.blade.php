@@ -329,6 +329,93 @@
             <input type="submit" class="btn btn-xs" id="DEGdown" name="DEGdown" value="Download text file">
           </form>
           <div id="tsEnrichBar"></div>
+
+          <h4>Expressed genes across 30 general tissue types (GTEx)
+            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for the 30 general GTEx tissue types.
+            DEG sets are defined by a two-sided t-tests per tissue versus all remaining, and Bonferroni correction.
+            Genes with a adjusted p-value ≤ 0.05 and absolute log fold change ≥ 0.58 are selected.
+            For the signed DEG, the direction of expression was taken intoc account (i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in that tissue compared to other tissues).
+            The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </h4>
+          <span class="info"><i class="fa fa-info"></i>
+            Significantly enriched tissue expressed gene sets (P<sub>bon</sub> at 0.05) are highlighted in red.
+          </span><br/><br/>
+          Download the plot as
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("ExpTsGeneralEnrichBar","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("ExpTsGeneralEnrichBar","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("ExpTsGeneralEnrichBar","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("ExpTsGeneralEnrichBar","pdf");'>PDF</button>
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="ExpTsGeneralEnrichBarDir" val=""/>
+            <input type="hidden" name="id" id="ExpTsGeneralEnrichBarJobID" val=""/>
+            <input type="hidden" name="data" id="ExpTsGeneralEnrichBarData" val=""/>
+            <input type="hidden" name="type" id="ExpTsGeneralEnrichBarType" val=""/>
+            <input type="hidden" name="fileName" id="ExpTsGeneralEnrichBarFileName" val=""/>
+            <input type="submit" id="ExpTsGeneralEnrichBarSubmit" class="ImgDownSubmit"/>
+          </form>
+
+          <form class="form-inline" action="fileDown" method="post" target="_blank">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="id" value="{{$id}}"/>
+            <input type="hidden" name="file" value="ExpTs.txt"/>
+            <input type="submit" class="btn btn-xs" id="ExpTsdown" name="ExpTsdown" value="Download text file">
+          </form>
+          <br/>
+          <span class="form-inline">
+            Order tissue by :
+            <select id="ExpTsGorder" class="form-control" style="width: auto;">
+              <option value="alph">Alphabetical</option>
+              <option value="p" selected>P-value</option>
+            </select>
+          </span>
+          <div id="ExpTsGeneralEnrichBar"></div>
+          <br/><br/>
+
+          <h4>Expressed genes across 53 tissue types (GTEx)
+            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for the 30 general GTEx tissue types.
+            DEG sets are defined by a two-sided t-tests per tissue versus all remaining, and Bonferroni correction.
+            Genes with a adjusted p-value ≤ 0.05 and absolute log fold change ≥ 0.58 are selected.
+            For the signed DEG, the direction of expression was taken intoc account (i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in that tissue compared to other tissues).
+            The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
+              <i class="fa fa-question-circle-o fa-lg"></i>
+            </a>
+          </h4>
+          <span class="info"><i class="fa fa-info"></i>
+            Significantly enriched tissue expressed gene sets (P<sub>bon</sub> at 0.05) are highlighted in red.
+          </span><br/><br/>
+          Download the plot as
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("ExpTsEnrichBar","png");'>PNG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("ExpTsEnrichBar","jpeg");'>JPG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("ExpTsEnrichBar","svg");'>SVG</button>
+          <button class="btn btn-xs ImgDown" onclick='ImgDown("ExpTsEnrichBar","pdf");'>PDF</button>
+          <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="dir" id="ExpTsEnrichBarDir" val=""/>
+            <input type="hidden" name="id" id="ExpTsEnrichBarJobID" val=""/>
+            <input type="hidden" name="data" id="ExpTsEnrichBarData" val=""/>
+            <input type="hidden" name="type" id="ExpTsEnrichBarType" val=""/>
+            <input type="hidden" name="fileName" id="ExpTsEnrichBarFileName" val=""/>
+            <input type="submit" id="ExpTsEnrichBarSubmit" class="ImgDownSubmit"/>
+          </form>
+
+          <form class="form-inline" action="fileDown" method="post" target="_blank">
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="id" value="{{$id}}"/>
+            <input type="hidden" name="file" value="ExpTs.txt"/>
+            <input type="submit" class="btn btn-xs" id="ExpTsdown" name="ExpTsdown" value="Download text file">
+          </form>
+          <br/>
+          <span class="form-inline">
+            Order tissue by :
+            <select id="ExpTsorder" class="form-control" style="width: auto;">
+              <option value="alph">Alphabetical</option>
+              <option value="p" selected>P-value</option>
+            </select>
+          </span>
+          <div id="ExpTsEnrichBar"></div>
         </div>
         <!-- GeneSet enrichment -->
         <div id="GeneSetPanel"  class="sidePanel container" style="padding-top:50px;">

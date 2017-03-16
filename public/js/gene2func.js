@@ -63,6 +63,8 @@ $(document).ready(function(){
     expHeatMap(id);
     tsEnrich(id);
     tsGeneralEnrich(id);
+    ExpTsGeneralEnrich(id);
+    ExpTsEnrich(id);
     GeneSet(id);
     GeneTable(id);
   }else if(status=="query"){
@@ -694,7 +696,7 @@ function tsGeneralEnrich(id){
   var span = 150;
   var currentHeight = 0;
   var margin = {top: 20, right: 20, bottom: 80, left: 50},
-      width = 900,
+      width = 600,
       height = span*3+20;
 
   var x = d3.scale.ordinal().rangeBands([0,width]);
@@ -819,6 +821,196 @@ function tsGeneralEnrich(id){
       svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('text').style('font-family', 'sans-serif');
     }
+  });
+}
+
+function ExpTsGeneralEnrich(id){
+  d3.select('#ExpTsGeneralEnrichBar').select('svg').remove();
+  d3.json(subdir+'/gene2func/ExpTsPlot/general/'+jobID, function(data){
+    if(data==null || data==undefined || data.lenght==0){
+      $('#ExpTsGeneralEnrichBar').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+      +' Enrichment of tissue expressed gene is only available for FUMA v1.1.0 or later.</span><br/>'
+      +'If your job has been submitted to older version, please contact Kyoko Watanabe (k.watanabe@vu.nl) or resubmit the job to obtain the MAGMA tisue expression results.</div>');
+    }else{
+      var margin = {top:30, right: 30, bottom:100, left:50},
+          width = 600,
+          height = 250;
+      var svg = d3.select("#ExpTsGeneralEnrichBar").append("svg")
+                  .attr("width", width+margin.left+margin.right)
+                  .attr("height", height+margin.top+margin.bottom)
+                  .append("g")
+                  .attr("transform", "translate("+margin.left+","+margin.top+")");
+      data.data.forEach(function(d){
+        d[1] = +d[1]; //p
+        d[2] = +d[2]; //adj.p
+      });
+
+      var cellsize = width/data.data.length;
+      var Pbon = 0.05/data.data.length;
+
+      var x = d3.scale.ordinal().rangeBands([0,width]);
+      var xAxis = d3.svg.axis().scale(x).orient("bottom");
+      x.domain(data.data.map(function(d){return d[0];}));
+      var y = d3.scale.linear().range([height, 0]);
+      var yAxis = d3.svg.axis().scale(y).orient("left");
+      y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[1]);})]);
+
+      var bar = svg.selectAll("rect.expgeneral").data(data.data).enter()
+        .append("rect")
+        .attr("x", function(d){return data.order.p[d[0]]*cellsize;})
+        .attr("y", function(d){return y(-Math.log10(d[1]));})
+        .attr("width", cellsize-1)
+        .attr("height", function(d){return height - y(-Math.log10(d[1]));})
+        .style("fill", function(d){
+          if(d[2] < 0.05){return "#c00";}
+          else{return "#5668f4";}
+        })
+        .style("stroke", "grey");
+      var xLabels = svg.append("g").selectAll(".xLabel")
+          .data(data.data).enter().append("text")
+          .text(function(d){return d[0];})
+          .style("text-anchor", "end")
+          .style("font-size", "11px")
+          .attr("transform", function(d){
+            return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+          });
+
+      svg.append("line")
+    	 .attr("x1", 0).attr("x2", width)
+      	.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
+      	.style("stroke", "black")
+      	.style("stroke-dasharray", ("3,3"));
+
+      svg.append('g').attr("class", "y axis")
+        .call(yAxis)
+        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+(height)+")")
+        .call(xAxis).selectAll('text').remove();
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .text("-log 10 P-value");
+      svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('text').style('font-family', 'sans-serif');
+    }
+
+    function sortOptions(type){
+      if(type=="alph"){
+        bar.transition().duration(1000)
+          .attr("x", function(d){return data.order.alph[d[0]]*cellsize;});
+        xLabels.transition().duration(1000)
+        .attr("transform", function(d){
+          return "translate("+(data.order.alph[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+        });
+      }else if(type=="p"){
+        bar.transition().duration(1000)
+          .attr("x", function(d){return data.order.p[d[0]]*cellsize;});
+        xLabels.transition().duration(1000)
+        .attr("transform", function(d){
+          return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+        });
+      }
+    }
+    d3.select('#ExpTsGorder').on("change", function(){
+      var type = $('#ExpTsGorder').val();
+      sortOptions(type);
+    });
+  });
+}
+
+function ExpTsEnrich(id){
+  d3.select('#ExpTsEnrichBar').select('svg').remove();
+  d3.json(subdir+'/gene2func/ExpTsPlot/specific/'+jobID, function(data){
+    if(data==null || data==undefined || data.lenght==0){
+      $('#ExpTsEnrichBar').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+      +' Enrichment of tissue expressed gene is only available for FUMA v1.1.0 or later.</span><br/>'
+      +'If your job has been submitted to older version, please contact Kyoko Watanabe (k.watanabe@vu.nl) or resubmit the job to obtain the MAGMA tisue expression results.</div>');
+    }else{
+      var margin = {top:30, right: 30, bottom:230, left:50},
+          width = 800,
+          height = 250;
+      var svg = d3.select("#ExpTsEnrichBar").append("svg")
+                  .attr("width", width+margin.left+margin.right)
+                  .attr("height", height+margin.top+margin.bottom)
+                  .append("g")
+                  .attr("transform", "translate("+margin.left+","+margin.top+")");
+      data.data.forEach(function(d){
+        d[1] = +d[1]; //p
+        d[2] = +d[2]; //adj.p
+      });
+
+      var cellsize = width/data.data.length;
+      var Pbon = 0.05/data.data.length;
+
+      var x = d3.scale.ordinal().rangeBands([0,width]);
+      var xAxis = d3.svg.axis().scale(x).orient("bottom");
+      x.domain(data.data.map(function(d){return d[0];}));
+      var y = d3.scale.linear().range([height, 0]);
+      var yAxis = d3.svg.axis().scale(y).orient("left");
+      y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[1]);})]);
+
+      var bar = svg.selectAll("rect.expgeneral").data(data.data).enter()
+        .append("rect")
+        .attr("x", function(d){return data.order.p[d[0]]*cellsize;})
+        .attr("y", function(d){return y(-Math.log10(d[1]));})
+        .attr("width", cellsize-1)
+        .attr("height", function(d){return height - y(-Math.log10(d[1]));})
+        .style("fill", function(d){
+          if(d[2] < 0.05){return "#c00";}
+          else{return "#5668f4";}
+        })
+        .style("stroke", "grey");
+      var xLabels = svg.append("g").selectAll(".xLabel")
+          .data(data.data).enter().append("text")
+          .text(function(d){return d[0];})
+          .style("text-anchor", "end")
+          .style("font-size", "11px")
+          .attr("transform", function(d){
+            return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+          });
+
+      svg.append("line")
+    	 .attr("x1", 0).attr("x2", width)
+      	.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
+      	.style("stroke", "black")
+      	.style("stroke-dasharray", ("3,3"));
+
+      svg.append('g').attr("class", "y axis")
+        .call(yAxis)
+        .selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
+      svg.append('g').attr("class", "x axis")
+        .attr("transform", "translate(0,"+(height)+")")
+        .call(xAxis).selectAll('text').remove();
+      svg.append("text").attr("text-anchor", "middle")
+        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .text("-log 10 P-value");
+      svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+      svg.selectAll('text').style('font-family', 'sans-serif');
+    }
+
+    function sortOptions(type){
+      if(type=="alph"){
+        bar.transition().duration(1000)
+          .attr("x", function(d){return data.order.alph[d[0]]*cellsize;});
+        xLabels.transition().duration(1000)
+        .attr("transform", function(d){
+          return "translate("+(data.order.alph[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+        });
+      }else if(type=="p"){
+        bar.transition().duration(1000)
+          .attr("x", function(d){return data.order.p[d[0]]*cellsize;});
+        xLabels.transition().duration(1000)
+        .attr("transform", function(d){
+          return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
+        });
+      }
+    }
+    d3.select('#ExpTsorder').on("change", function(){
+      var type = $('#ExpTsorder').val();
+      sortOptions(type);
+    });
   });
 }
 

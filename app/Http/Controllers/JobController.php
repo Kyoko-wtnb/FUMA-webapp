@@ -594,6 +594,10 @@ class JobController extends Controller
             $files[] = "magma.setgenes.out";
           }
         }
+        if(File::exists($filedir."magma_exp.gcov.out")){
+          $file[] = "magma_exp.gcov.out";
+          $file[] = "magma_exp_general.gcov.out";
+        }
       }
 
       $zip = new \ZipArchive();
@@ -847,9 +851,9 @@ class JobController extends Controller
       $fileName = $request->input('fileName');
       $svgfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/temp.svg';
       $outfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/';
-      if($fileName=="expHeat"){
-        $svg = preg_replace("/\),rotate/", ")rotate", $svg);
-      }
+
+      $svg = preg_replace("/\),rotate/", ")rotate", $svg);
+      $svg = preg_replace("/,skewX\(.+?\),scale\(.+?\)/", "", $svg);
       $fileName .= "_FUMAjob".$jobID;
       if($type=="svg"){
         file_put_contents($svgfile, $svg);
