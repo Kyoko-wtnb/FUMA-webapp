@@ -331,10 +331,7 @@
           <div id="tsEnrichBar"></div>
 
           <h4>Expressed genes across 30 general tissue types (GTEx)
-            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for the 30 general GTEx tissue types.
-            DEG sets are defined by a two-sided t-tests per tissue versus all remaining, and Bonferroni correction.
-            Genes with a adjusted p-value ≤ 0.05 and absolute log fold change ≥ 0.58 are selected.
-            For the signed DEG, the direction of expression was taken intoc account (i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in that tissue compared to other tissues).
+            <a class="infoPop" data-toggle="popover" title="Expressed genes of 30 general tissue types" data-content="Expressed genes sets were pre-defined for each of 30 general tissue types if genes have average RPKM > 1 per tissue.
             The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
@@ -375,10 +372,7 @@
           <br/><br/>
 
           <h4>Expressed genes across 53 tissue types (GTEx)
-            <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for the 30 general GTEx tissue types.
-            DEG sets are defined by a two-sided t-tests per tissue versus all remaining, and Bonferroni correction.
-            Genes with a adjusted p-value ≤ 0.05 and absolute log fold change ≥ 0.58 are selected.
-            For the signed DEG, the direction of expression was taken intoc account (i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in that tissue compared to other tissues).
+            <a class="infoPop" data-toggle="popover" title="Expressed genes of 53 specific tissue types" data-content="Expressed genes sets were pre-defined for each of 53 specific tissue types if genes have average RPKM > 1 per tissue.
             The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>

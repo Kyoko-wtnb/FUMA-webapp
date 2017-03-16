@@ -197,11 +197,11 @@
           <br/><br/>
           <h4 style="color: #00004d">MAGMA Tissue Expression Analysis</h4>
           <span class="info"><i class="fa fa-info"></i>
-            MAGMA gene-property analysis is performed for average gene expression per tissue baed on GTEx RNA-seq data.<br/>
-            Expression value (RPKM) was normalized across samples per gene (zero-mean normalization following to log2 transformation with pseudocount 1), and average per tissue was used.
+            MAGMA gene-property analysis is performed for gene expression per tissue baed on GTEx RNA-seq data.<br/>
+            Expression values (RPKM) were log2 transformed with pseudocount 1 after winsorization at 50 and average was taked per tissue.
             MAGMA was performed for average expression of 30 general tissue types and 53 specific tissue types separately.
             Full results are downloadable from "Download" tab. <br/>
-            Note that MAGMA gene-property analyses uses the full distribution of SNP p-values and is different from a enrichment test of DEG (differentially expressed genes) as implemented in GENE2FUNC that only tests for enrichment of prioritized genes.
+            Note that MAGMA gene-property analyses uses the full distribution of SNP p-values and is different from a enrichment test of DEG (differentially expressed genes) and tissue expressed genes as implemented in GENE2FUNC that only tests for enrichment of prioritized genes.
           </span><br/><br/>
           <div id="magmaPlot">
             General 30 tissue types<br/>
