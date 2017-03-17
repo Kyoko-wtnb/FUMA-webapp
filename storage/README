@@ -250,6 +250,9 @@ eqtlMapChr15Meth : The method of chromatin state filtering
 # MAGMA outputs
 ######################
 MAGMA gene analysis and gene-set analysis were performed with MAGMA v1.6.
+Reference genome is 1000 genomes phase 3.
+The MAGMA output from FUMA is based on summary statistics.
+When genotype data is available, we recommend to re-run MAGMA locally with genotype data.
 1. Gene analysis
   SNPs are mapped to 19436 protein coding genes (with unique ensembl ID) if SNPs are located within gene body.
   All parameters were set as default (SNP-wise model for gene test).
@@ -261,5 +264,11 @@ MAGMA gene analysis and gene-set analysis were performed with MAGMA v1.6.
   GO terms consists of three categories, biological processes (bp), cellular components (cc) and molecular functions (mf).
   All parameters were set as default (competitive test).
   magma.sets.out: output of gene-set analysis containing P-value per gene set
-  magma.setgenes.out: output of gene-set analysis containing all genes in each gene set
+  magma.setgenes.out: output of gene-set analysis containing all genes in each significant gene sets. This file is only available when there is significant gene sets after bonferroni correction.
+3. Tissue expression analysis
+  Gene expression was obtained from GTEx v6.
+  Average gene-expression per tissue type were used as gene covariate to test positive relationship between gene expression in a specific tissue type and genetic associations.
+  MAGMA gene-property test was performed for average expression (log2 transformed RPKM with pseudocount 1 after winsorization at 50) of 30 general tissue types and 53 specific tissue types conditioning on average expression across all tissue types.
+  magma_exp_general.gcov.out: output of tissue expression analysis for 30 general tissue types.
+  magma_exp.gcov.out: output of tissue expression analysis for 53 specific tissue types.
 Please refer the manual of MAGMA from https://ctg.cncr.nl/software/magma for more details.
