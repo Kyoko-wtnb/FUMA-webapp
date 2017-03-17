@@ -176,10 +176,12 @@ class JobController extends Controller
           $zf = $zip->getNameIndex(0);
           $zip->extractTo($filedir);
           File::move($filedir.'/'.$zf, $filedir.'/'.$GWAS);
+          system("rm $filedir/temp.zip");
         }else{
           $f = $_FILES["GWASsummary"]["name"];
           $request -> file('GWASsummary')->move($filedir, $f);
           system("gzip -cd $filedir/$f > $filedir/$GWAS");
+          system("rm $filedir/$f");
         }
         $GWASfileup = 1;
       }else if($request -> has('egGWAS')){

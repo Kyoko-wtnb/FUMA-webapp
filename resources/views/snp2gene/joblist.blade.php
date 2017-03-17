@@ -54,7 +54,7 @@
       function getJobList(){
         $('#joblist-panel table tbody')
             .empty()
-            .append('<tr><td colspan="4" style="text-align:center;">Retrieving data</td></tr>');
+            .append('<tr><td colspan="6" style="text-align:center;">Retrieving data</td></tr>');
 
         $.getJSON( subdir + "/snp2gene/getJobList", function( data ) {
             var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
