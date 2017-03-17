@@ -39,7 +39,7 @@
     </span><br/><br/>
     Results and images are downloadable as text files and in several image file formats.
   </p>
-  <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:60%"/>
+  <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:80%"/>
   <br/><br/>
 
   <h4><strong>3. Gene Sets</strong></h4>

@@ -749,7 +749,7 @@ class JobController extends Controller
       $script = storage_path()."/scripts/GeneSet.py";
       exec("$script $filedir", $output2, $error2);
       if($error != 0 || $error2 != 0){
-        echo "ERROR:".$output.":".$output2;
+        echo "ERROR:".$output[0].":".$output2[0];
       }else{
         echo "OK";
       }

@@ -43,7 +43,7 @@
   MAGMA was performed using the result of gene analysis (gene-based P-value) and tested for oneside (greater) with conditioning on average expression across all tissue types.
 </p>
 <br/>
-<img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="width:55%"/><br/><br/>
+<img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="width:80%"/><br/><br/>
 <br/>
 
 <h4><strong>2. Summary of results</strong></h4>
