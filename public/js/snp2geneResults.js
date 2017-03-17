@@ -153,6 +153,7 @@ $(document).ready(function(){
     $('#paramfile').prop('checked', true);
     $('#leadfile').prop('checked', true);
     $('#locifile').prop('checked', true);
+    $('#indSNPfile').prop('checked', true);
     $('#snpsfile').prop('checked', true);
     $('#annovfile').prop('checked', true);
     $('#annotfile').prop('checked', true);
@@ -167,6 +168,7 @@ $(document).ready(function(){
     $('#paramfile').prop('checked', false);
     $('#leadfile').prop('checked', false);
     $('#locifile').prop('checked', false);
+    $('#indSNPfile').prop('checked', false);
     $('#snpsfile').prop('checked', false);
     $('#annovfile').prop('checked', false);
     $('#annotfile').prop('checked', false);

@@ -595,8 +595,8 @@ class JobController extends Controller
           }
         }
         if(File::exists($filedir."magma_exp.gcov.out")){
-          $file[] = "magma_exp.gcov.out";
-          $file[] = "magma_exp_general.gcov.out";
+          $files[] = "magma_exp.gcov.out";
+          $files[] = "magma_exp_general.gcov.out";
         }
       }
 
