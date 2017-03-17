@@ -1,4 +1,4 @@
-<h3 id="gene2funcOutputs">Results and Outputs</h3>
+<h3 id="g2fOutputs">Outputs of GENE2FUNC</h3>
 <div style="padding-left: 40px;">
   <h4><strong>1. Gene Expression Heatmap</strong></h4>
   <p>
@@ -19,14 +19,24 @@
 
   <h4><strong>2. Tissue specificity</strong></h4>
   <p>
-     Differentially expressed gene (DEG) sets for 53 tissue types from GTEx were pre-calculated by performing two-sided t-test for any one of tissues against all others.
-     For this, expresstion values were normalized (zero-mean) following to a log 2 transformation of RPKM.
-     Genes which with P-value &le; 0.05 after Bonferroni correction and absolute log fold change &ge; 0.58 were defined as differentially expressed genes in a given tissue compared to others.
-     On top of DEG, up-regrated DEG and down-regulated DEG were also pre-calculated by taking sign of t-statistics into account.
-     The same process was performed for 30 general tissue types.<br/>
+    Tissue specificity is tested using the followinf two different types of gene sets based on GTEx gene expression data.<br/>
+    <br/>
+    <strong>1) Differentially Expressed Gene (DEG) Sets</strong><br/>
+    DEG sets were pre-calculated by performing two-sided t-test for any one of tissues against all others.
+    For this, expresstion values were normalized (zero-mean) following to a log 2 transformation of RPKM.
+    Genes which with P-value &le; 0.05 after Bonferroni correction and absolute log fold change &ge; 0.58 were defined as differentially expressed genes in a given tissue compared to others.
+    On top of DEG, up-regrated DEG and down-regulated DEG were also pre-calculated by taking sign of t-statistics into account.
+    This process was performed for 30 general tissue types and 53 specific tissue types, separately.<br/><br/>
+    <strong>2) Tissue Expressed Gene (TEG) Sets (<span style="color:blue;">FUMA v1.1.0</span>)</strong><br/>
+    TEG sets were pre-defined by genes which have average RPKM > 1 in each tissue type (30 general tissue types and 53 specific tissue types).
   </p>
-  <p>Input genes were tested against each of the DEG sets.
-    Significant enrichment at FDR &le; 0.05 are coloured in red.<br/>
+  <p>
+    Input genes were tested against each of the DEG and TEG sets using the hypergeometric test.
+    The background genes are genes that have average RPKM > 1 in at least one of the 53 tissue types and exist in the user selected background genes.
+    Significant enrichment at Bonferroni corrected P-value &le; 0.05 are coloured in red.<br/>
+    <span class="info"><i class="fa fa-info"></i>
+      Note that for DEG sets, Bonferroni correction is performed for each of up-regulated, down-regulated and both-sided DEG sets separately.
+    </span><br/><br/>
     Results and images are downloadable as text files and in several image file formats.
   </p>
   <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:60%"/>

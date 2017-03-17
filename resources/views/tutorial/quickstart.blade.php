@@ -72,7 +72,7 @@
         Unless an error occurred during the process, the email includes the link to the result page (this again requires login).
         You can also access to the results page from My Jobs page. <br/>
         The result page displays 4 additional side bars.<br/>
-        <strong>Genome-wide plots</strong>: Manhattan plots and Q-Q plots for GWAS summary statistics and gene-based test by MAGMA, and a table of MAGMA gene-set results.<br/>
+        <strong>Genome-wide plots</strong>: Manhattan plots and Q-Q plots for GWAS summary statistics and gene-based test by MAGMA, results of MAGMA gene-set analysis and tissue expression analysis.<br/>
         <strong>Summary of results</strong>: Summary of results such as the number of lead and LD-related SNPs, and mapped genes for overall and per identified genomic risk locus.<br/>
         <strong>Results</strong>: Tables of lead SNPs, genomic risk loci, candidate SNPs with annotations, eQTLs (only when eQTL mapping is performed), mapped genes and GWAS-catalog reported SNPs matched with candidate SNPs.
         You can also create interactive regional plots with functional annotations from this tab.<br/>
@@ -99,10 +99,10 @@
       <p><h4><strong>2. Results</strong></h4>
         Once genes are submitted, four extra side bars are shown.<br/>
         <strong>Gene Expression</strong>: An interactive heatmap of gene expression in 53 tissue types from GTEx v6.<br/>
-        <strong>Tissue Specificity</strong>: Bar plots of enrichment of differentially expressed genes across different tissue types.<br/>
+        <strong>Tissue Specificity</strong>: Bar plots for enrichment test of differentially expressed genes and tissue expressed genes. Two different hypotheses are tested here. See <a href="{{ Config::get('app.subdir') }}/tutorial#g2fOutputs">GENE2FUNC Outputs</a> section for details.<br/>
         <strong>Gene Sets</strong>: Plots and tables of enriched gene sets.<br/>
         <strong>Gene Table</strong>: Table of input genes with links to external databases; OMIM, Drugbank and GeneCards.<br/>
-        Further details are provided in the <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#gene2funcOutputs">GENE2FUNC Outputs</a> section of  this tutorial.<br/><br/>
+        Further details are provided in the <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#g2fOutputs">GENE2FUNC Outputs</a> section of  this tutorial.<br/><br/>
       </p>
     </div>
   </div>

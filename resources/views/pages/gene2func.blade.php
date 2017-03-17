@@ -361,7 +361,7 @@
             </div>
             <div class="panel-body">
               <h4>Expressed genes across 30 general tissue types (GTEx)
-                <a class="infoPop" data-toggle="popover" title="Expressed genes of 30 general tissue types" data-content="Expressed genes sets were pre-defined for each of 30 general tissue types if genes have average RPKM > 1 per tissue.
+                <a class="infoPop" data-toggle="popover" title="Expressed genes of 30 general tissue types" data-content="Tissue expressed genes sets were pre-defined for each of 30 general tissue types by genes which have average RPKM > 1 per tissue.
                 The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
                   <i class="fa fa-question-circle-o fa-lg"></i>
                 </a>
@@ -402,7 +402,7 @@
               <br/><br/>
 
               <h4>Expressed genes across 53 tissue types (GTEx)
-                <a class="infoPop" data-toggle="popover" title="Expressed genes of 53 specific tissue types" data-content="Expressed genes sets were pre-defined for each of 53 specific tissue types if genes have average RPKM > 1 per tissue.
+                <a class="infoPop" data-toggle="popover" title="Expressed genes of 53 specific tissue types" data-content="Tissue expressed genes sets were pre-defined for each of 53 specific tissue types by genes which have average RPKM > 1 per tissue.
                 The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
                   <i class="fa fa-question-circle-o fa-lg"></i>
                 </a>

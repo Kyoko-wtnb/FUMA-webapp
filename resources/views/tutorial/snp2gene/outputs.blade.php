@@ -1,4 +1,4 @@
-<h3 id="results">Result page</h3>
+<h3 id="outputs">Outputs of SNP2GENE</h3>
 <p>Once your job is completed, you will receive an email.
   Unless an error occured during the process, the email includes the link to results page (this again requires login).
   You can also access to the results page from My Job list.
@@ -33,9 +33,14 @@
   The number of genes to label can be controled by typing the number at the left uppser side of the plot.
   MAGMA results are available from the download panel.
 </p>
-<p><strong>MAGMA gene-set analysis</strong><br/>
-  Using the result of gene analysis (gene level p-value), (sompetitive) gene-set analysis is performed with default parameters with MAGMA v1.6.
+<p><strong>MAGMA Gene-Set Analysis</strong><br/>
+  Using the result of gene analysis (gene level p-value), (competitive) gene-set analysis is performed with default parameters with MAGMA v1.6.
   Gene sets were obtained from Msigdb v5.2 for "Curated gene sets" and "GO terms".
+</p>
+<p><strong>MAGMA Tissue Expression Analysis (<span style="color: blue;">FUMA v1.1.0</span>)</strong><br/>
+  To test the (positive) relationship between highly expresesd genes in a specific tissue and genetic associations, gene-property analysis is performed using average expression of genes per tissue type as a gene covariate.
+  Gene expression values are log2 transformed average RPKM per tissue type after winsorized at 50 based on GTEx RNA-seq data. Tissue expression analysis is performed for 30 general tissue types and 53 specific tissue types separatly.
+  MAGMA was performed using the result of gene analysis (gene-based P-value) and tested for oneside (greater) with conditioning on average expression across all tissue types.
 </p>
 <br/>
 <img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="width:55%"/><br/><br/>

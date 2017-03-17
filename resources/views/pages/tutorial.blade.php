@@ -77,7 +77,7 @@
       <div class="subside" id="snp2genesub">
         <a href="#prepare-input-files">Input files</a>
         <a href="#parameters">Parameters</a>
-        <a href="#results">Result page</a>
+        <a href="#outputs">Outputs</a>
         <a href="#table-columns">Table columns</a>
         <a href="#riskloci">Risk loci and lead SNPs</a>
         <a href="#eQTLs">eQTLs</a>
@@ -86,7 +86,7 @@
     <li><a href="#gene2func">GENE2FUNC<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
       <div class="subside" id="gene2funcsub">
         <a href="#submit-genes">Submit genes</a>
-        <a href="#gene2funcOutputs">Outputs</a>
+        <a href="#g2fOutputs">Outputs</a>
       </div>
   </ul>
 </div>
@@ -119,7 +119,7 @@
         <br/>
         @include('tutorial.snp2gene.parameters')
         <br/>
-        @include('tutorial.snp2gene.results')
+        @include('tutorial.snp2gene.outputs')
         <br/>
         @include('tutorial.snp2gene.tables')
         <br/>

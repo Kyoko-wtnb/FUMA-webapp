@@ -57,14 +57,14 @@
             .append('<tr><td colspan="4" style="text-align:center;">Retrieving data</td></tr>');
 
         $.getJSON( subdir + "/snp2gene/getJobList", function( data ) {
-            var items = '<tr><td colspan="4">No Jobs Found</td></tr>';
+            var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
             if(data.length){
                 items = '';
                 $.each( data, function( key, val ) {
                     var g2fbutton = 'Not available';
                     if(val.status == 'OK'){
                       val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">Go to results</a>';
-                      g2fbutton = '<form action="/gene2func/geneSubmit" method="post">'
+                      g2fbutton = '<form action="'+subdir+'/gene2func/geneSubmit" method="post">'
                         +'<input type="hidden" name="_token" value="{{ csrf_token() }}">'
                         +'<input type="hidden" name="jobID" value="'+val.jobID+'"/>'
                         +'<span class="form-inline">'
