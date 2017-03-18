@@ -13,7 +13,8 @@
 <script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
 
 <script type="text/javascript">
-var jobID;
+  var jobID;
+  var loggedin = "{{ Auth::check() }}";
 $(document).ready(function(){
   $('.ImgDownSubmit').hide();
 
@@ -337,6 +338,8 @@ $(document).ready(function(){
             d.r2 = +d.r2;
             d.ld = +d.ld;
             d.CADD = +d.CADD;
+            d.posMapFilt = +d.posMapFilt;
+            d.eqtlMapFilt = +d.eqtlMapFilt;
           });
           if(GWASplot==1){
             data4.forEach(function(d){
@@ -538,14 +541,21 @@ $(document).ready(function(){
             svg.append("text").attr("x", width+30).attr("y", caddTop+73)
               .text("other SNPs").style("font-size", "10px");
 
-            svg.selectAll("dot").data(data1.filter(function(d){if(d.ld!=0 && d.func!="exonic"){return d;}})).enter()
+            svg.selectAll("dot").data(data1.filter(function(d){if(d.ld!=0){return d;}})).enter()
               .append("circle")
               .attr("class", "CADDdot")
               .attr("r", 3.5)
               .attr("cx", function(d){return x(d.pos);})
               .attr("cy", function(d){return y(d.CADD);})
               // .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
-              .style("fill", "skyblue")
+              .style("fill", function(d){
+                if(d.posMapFilt==0 && d.eqtlMapFilt==0){
+                  return "grey";
+                }else{
+                  if(d.func=="exonic"){return "blue";}
+                  else{return "skyblue";}
+                }
+              })
               .on("click", function(d){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
@@ -570,38 +580,38 @@ $(document).ready(function(){
                 table += '</table>'
                 $('#annotTable').html(table);
               });
-            svg.selectAll("dot").data(data1.filter(function(d){if(d.ld!=0 && d.func=="exonic"){return d;}})).enter()
-              .append("circle")
-              .attr("class", "CADDdot")
-              .attr("r", 3.5)
-              .attr("cx", function(d){return x(d.pos);})
-              .attr("cy", function(d){return y(d.CADD);})
-              // .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
-              .style("fill", "blue")
-              .on("click", function(d){
-                table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
-                        +'<tr><td>Selected SNP</td><td>'+d.rsID
-                        +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
-                        +'</td></tr><tr><td>Ind. Sig. SNPs</td><td>'+d.IndSigSNP
-                        +'</td></tr><tr><td>GWAS P-value</td><td>'+d.gwasP
-                        +'</td></tr><tr><td>Annotation</td><td>'+d.func
-                        +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
-                        +'</td></tr><tr><td>CADD</td><td>'+d.CADD
-                        +'</td></tr><tr><td>RDB</td><td>'+d.RDB
-                        +'</td></tr>';
-                if(Chr15==1){
-                  cells = Chr15cells.split(":");
-                  if(cells[0]=="all"){cells=Chr15eid;}
-                  for(var i=0; i<cells.length; i++){
-                    table += '<tr><td>'+cells[i]+'</td><td>'+d[cells[i]]+'</td></tr>';
-                  }
-                }
-                if(eqtl==1 & eqtlplot==1){
-                  table += '<tr><td>eQTLs</td><td>'+d.eqtl+'</td></tr>';
-                }
-                table += '</table>'
-                $('#annotTable').html(table);
-              });
+            // svg.selectAll("dot").data(data1.filter(function(d){if(d.ld!=0 && d.func=="exonic"){return d;}})).enter()
+            //   .append("circle")
+            //   .attr("class", "CADDdot")
+            //   .attr("r", 3.5)
+            //   .attr("cx", function(d){return x(d.pos);})
+            //   .attr("cy", function(d){return y(d.CADD);})
+            //   // .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
+            //   .style("fill", "blue")
+            //   .on("click", function(d){
+            //     table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
+            //             +'<tr><td>Selected SNP</td><td>'+d.rsID
+            //             +'</td></tr><tr><td>bp</td><td>'+d.pos+'</td></tr><tr><td>r<sup>2</sup></td><td>'+d.r2
+            //             +'</td></tr><tr><td>Ind. Sig. SNPs</td><td>'+d.IndSigSNP
+            //             +'</td></tr><tr><td>GWAS P-value</td><td>'+d.gwasP
+            //             +'</td></tr><tr><td>Annotation</td><td>'+d.func
+            //             +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
+            //             +'</td></tr><tr><td>CADD</td><td>'+d.CADD
+            //             +'</td></tr><tr><td>RDB</td><td>'+d.RDB
+            //             +'</td></tr>';
+            //     if(Chr15==1){
+            //       cells = Chr15cells.split(":");
+            //       if(cells[0]=="all"){cells=Chr15eid;}
+            //       for(var i=0; i<cells.length; i++){
+            //         table += '<tr><td>'+cells[i]+'</td><td>'+d[cells[i]]+'</td></tr>';
+            //       }
+            //     }
+            //     if(eqtl==1 & eqtlplot==1){
+            //       table += '<tr><td>eQTLs</td><td>'+d.eqtl+'</td></tr>';
+            //     }
+            //     table += '</table>'
+            //     $('#annotTable').html(table);
+            //   });
             svg.append("text").attr("text-anchor", "middle")
               .attr("transform", "translate("+(-10-margin.left/2)+","+(caddTop+caddHeight/2)+")rotate(-90)")
               .text("CADD score");
@@ -635,7 +645,10 @@ $(document).ready(function(){
               .attr("cx", function(d){return x(d.pos);})
               .attr("cy", function(d){return y(d.RDB);})
               // .style("fill", function(d){if(d.ld==0){return "grey"}else{return "MediumAquaMarine"}})
-              .style("fill", "MediumAquaMarine")
+              .style("fill", function(d){
+                if(d.posMapFilt==0 && d.eqtlMapFilt==0){return "grey";}
+                else{return "MediumAquaMarine";}
+              })
               .on("click", function(d){
                 table = '<table class="table table-sm" style="font-size: 10px;" cellpadding="1">'
                         +'<tr><td>Selected SNP</td><td>'+d.rsID
@@ -797,6 +810,7 @@ $(document).ready(function(){
                 d.pos = +d.pos;
                 d.p = +d.p;
                 d.ld = +d.ld;
+                d.eqtlMapFilt = +d.eqtlMapFilt;
               });
               var genes = d3.set(data2.map(function(d){return d.symbol;})).values();
               var tissue = d3.set(data2.map(function(d){return d.tissue;})).values();
@@ -840,7 +854,13 @@ $(document).ready(function(){
                   .attr("r", 3.5)
                   .attr("cx", function(d){return x(d.pos);})
                   .attr("cy", function(d){return y(-Math.log10(d.p));})
-                  .style("fill", function(d){return eQTLcolors[d.tissue]})
+                  .style("fill", function(d){
+                    if(d.eqtlMapFilt==0){
+                      return "grey";
+                    }else{
+                      return eQTLcolors[d.tissue]
+                    }
+                  })
                   .on("click", function(d){
 
                   });
@@ -1007,6 +1027,7 @@ $(document).ready(function(){
                   d.pos = +d.pos;
                   d.p = +d.p;
                   d.ld = +d.ld;
+                  d.eqtlMapFilt = +d.eqtlMapFilt;
                 });
                 var genes = d3.set(data.map(function(d){return d.symbol;})).values();
                 var tissue = d3.set(data.map(function(d){return d.tissue;})).values();
@@ -1051,7 +1072,13 @@ $(document).ready(function(){
                     .attr("r", 3.5)
                     .attr("cx", function(d){return x(d.pos);})
                     .attr("cy", function(d){return y(-Math.log10(d.p));})
-                    .style("fill", function(d){return eQTLcolors[d.tissue]});
+                    .style("fill", function(d){
+                      if(d.eqtlMapFilt==0){
+                        return "grey";
+                      }else{
+                        return eQTLcolors[d.tissue]
+                      }
+                    });
                   svg.append("text").attr("text-anchor", "middle")
                     .attr("transform", "translate("+(-margin.left/2)+","+(eqtlTop+i*55+25)+")rotate(-90)")
                     .text(genes[i])
@@ -1135,9 +1162,18 @@ $(document).ready(function(){
       })
       .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black"}});
     svg.selectAll(".CADDdot").attr("cx", function(d){return x(d.pos);})
-      .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey"}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue"}});
+      .style("fill", function(d){
+        if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}
+        else if(d.ld==0){return "grey"}
+        else if(d.posMapFilt==0 && d.eqtlMapFilt==0){return "grey"}
+        else if(d.func=="exonic"){return "blue"}
+        else{return "skyblue"}});
     svg.selectAll(".RDBdot").attr("cx", function(d){return x(d.pos);})
-      .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey"}else{return "MediumAquaMarine"}});
+      .style("fill", function(d){
+        if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}
+        else if(d.ld==0){return "grey"}
+        else if(d.posMapFilt==0 && d.eqtlMapFilt==0){return "grey"}
+        else{return "MediumAquaMarine"}});
     svg.selectAll(".genesrect").attr("x", function(d){
         if(x(d.start_position)<0 || x(d.end_position)<0){return 0;}
         else{return x(d.start_position);}
@@ -1198,7 +1234,12 @@ $(document).ready(function(){
         else{return Chr15colors[d.state*1-1];}
       });
     svg.selectAll(".eqtldot").attr("cx", function(d){return x(d.pos)})
-      .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey"}else{return eQTLcolors[d.tissue]}});
+      .style("fill", function(d){
+        if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}
+        else if(d.ld==0){return "grey"}
+        else if(d.eqtlMapFilt==0){return "grey"}
+        else{return eQTLcolors[d.tissue]}
+      });
   }
 
   // Plot Clear button

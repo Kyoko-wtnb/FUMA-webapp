@@ -57,6 +57,7 @@ if(exMHC==1){
   ENSG.all.genes <- ENSG.all.genes[!(ENSG.all.genes$ensembl_gene_id%in%MHCgenes),]
 }
 snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
+snps$posMapFilt <- 0
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
 genes <- vector()
@@ -67,7 +68,7 @@ if(posMap==1){
     annov <- annov[annov$uniqID %in% annot$uniqID[annot$CADD>=posMapCADDth],]
   }
   if(posMapRDBth!="NA"){
-    annov <- annov[annov$uniqID %in% annot$uniqID[annot$RDB>=posMapRDBth],]
+    annov <- annov[annov$uniqID %in% annot$uniqID[annot$RDB<=posMapRDBth],]
   }
   if(posMapChr15!="NA"){
     if(grepl("all", posMapChr15)){
@@ -105,9 +106,11 @@ if(posMap==1){
     posMapAnnot <- unique(unlist(strsplit(posMapAnnot, ":")))
     annov <- annov[grepl(paste(posMapAnnot, collapse="|"), annov$annot),]
     genes <- c(genes, unique(annov$gene))
+    snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
   }else{
     annov <- annov[annov$dist <= posMapWindowSize,]
     genes <- c(genes, unique(annov$gene))
+    snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
   }
 }
 
@@ -115,11 +118,16 @@ if(eqtlMap==1){
   eqtl <- fread(paste(filedir, "eqtl.txt", sep=""), data.table=F)
   if(nrow(eqtl)>0){
   	eqtl <- eqtl[eqtl$gene %in% ENSG.all.genes$ensembl_gene_id,]
+    eqtl$chr <- snps$chr[match(eqtl$uniqID, snps$uniqID)]
+    eqtl$pos <- snps$pos[match(eqtl$uniqID, snps$uniqID)]
+    eqtl$symbol <- ENSG.all.genes$external_gene_name[match(eqtl$gene, ENSG.all.genes$ensembl_gene_id)]
+    eqtlall <- eqtl
+    eqtlall$eqtlMapFilt <- 0
     if(eqtlMapCADDth>0){
       eqtl <- eqtl[eqtl$uniqID %in% annot$uniqID[annot$CADD>=eqtlMapCADDth],]
     }
     if(eqtlMapRDBth!="NA"){
-      eqtl <- eqtl[eqtl$uniqID %in% eqtl$uniqID[annot$RDB>=eqtlMapRDBth],]
+      eqtl <- eqtl[eqtl$uniqID %in% eqtl$uniqID[annot$RDB<=eqtlMapRDBth],]
     }
     if(eqtlMapChr15!="NA"){
       if(grepl("all", eqtlMapChr15)){
@@ -154,12 +162,12 @@ if(eqtlMap==1){
       rm(epi, temp)
     }
     genes <- c(genes, unique(eqtl$gene))
-    eqtl$chr <- snps$chr[match(eqtl$uniqID, snps$uniqID)]
-    eqtl$pos <- snps$pos[match(eqtl$uniqID, snps$uniqID)]
-    eqtl$symbol <- ENSG.all.genes$external_gene_name[match(eqtl$gene, ENSG.all.genes$ensembl_gene_id)]
-    write.table(eqtl, paste(filedir, "eqtl.txt", sep=""), quote=F, row.names=F, sep="\t")
+    eqtlall$eqtlMapFilt[eqtlall$uniqID %in% eqtl$uniqID] <- 1
+    write.table(eqtlall, paste(filedir, "eqtl.txt", sep=""), quote=F, row.names=F, sep="\t")
+    snps$eqtlMapFilt <- sapply(snps$uniqID, function(x){if(x %in% eqtlall$uniqID){max(eqtlall$eqtlMapFilt[eqtlall$uniqID==x])}else{0}})
   }
 }
+write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
 
 geneTable <- ENSG.all.genes[ENSG.all.genes$ensembl_gene_id %in% genes,]
 colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "status", "type", "entrezID","HUGO")
