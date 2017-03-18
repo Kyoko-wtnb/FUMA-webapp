@@ -58,6 +58,7 @@ if(exMHC==1){
 }
 snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
 snps$posMapFilt <- 0
+snps$eqtlMapFilt <- 0
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
 genes <- vector()

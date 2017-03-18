@@ -82,6 +82,8 @@ CADD : CADD score which is computed based on 63 annotations. The higher score, t
 RDB : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.
 minChrState : The minimum 15-core chromatin state across 127 tissue/cell type.
 commonChrState : The most common 15-core chromatin state across 127 tissue/cell types.
+posMapFilt : Whether the SNP was used for positional mapping or not. 1 is used, otherwise 0. When positiona mapping is not performed, all SNPs have 0.
+eqtlMapFilt : Whether the SNP was used for eqtl mapping or not. 1 is used, otherwise 0. When eqtl mapping is not performed, all SNPs have 0.
 
 ######################
 # ld.txt

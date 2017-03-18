@@ -92,6 +92,7 @@
     <li><strong>RDB</strong> : RegulomeDB score which is a categorical score (from 1a to 7). 1a is the highest score for SNPs with the most biological evidence to be a regulatory element.</li>
     <li><strong>minChrState</strong> : The minimum 15-core chromatin state across 127 tissue/cell type.</li>
     <li><strong>commonChrState</strong> : The most common 15-core chromatin state across 127 tissue/cell types.</li>
+    <li><strong>posMapFilt</strong> : Whether the SNP was used for eqtl mapping or not. 1 is used, otherwise 0. When eqtl mapping is not performed, all SNPs have 0.</li>
   </ul>
   </li>
   <span class="info"><i class="fa fa-info"></i>

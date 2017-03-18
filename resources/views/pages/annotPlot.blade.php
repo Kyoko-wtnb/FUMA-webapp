@@ -1470,6 +1470,9 @@ function ImgDown(id, type){
 <div class="row">
   <div class="col-md-9">
     <div id='title' style="text-align: center;"><h4>Regional plot</h4></div>
+    <span class="info"><i class="fa fa-info"></i>
+      For SNPs colored grey in the plots of GWAS P-value, CADD, RegulomeDB score and eQTLs, please refer the legend at the bottom of the plot.
+    </span><br/>
     <a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
     Download the plot as
     <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","png");'>PNG</button>
@@ -1490,6 +1493,17 @@ function ImgDown(id, type){
     <div id="RDBlegend"></div>
     <br/>
     <div id="EIDlegend"></div>
+    <br/>
+    <div id="SNPlegend">
+      <h4>SNPs colored grey in the plots</h4>
+      <strong>GWAS P-value</strong>: SNPs which are not in LD of any of significant independent lead SNPs in the selected region are colored grey.<br/>
+      <strong>CADD score</strong>: Only SNPs which are in LD of any of significant independet lead SNPs are displayed in the plot.
+      Of those SNPs, SNPs which did not used for mapping (SNPs that were filtered by user defined parameters) are colored grey.
+      When both positional and eQTL mappings were performed, only SNPs which were not used either of them are colored grey.<br/>
+      <strong>RegulomeDB score</strong>: Same as CADD score.<br/>
+      <strong>eQTLs</strong>: When eQTL mapping was performed and eQTLs exist in the selected region, all eQTLs with user defined P-value threshold and tissue types are displayed.
+      Of those eQTLs, eQTLs which did not used for eQTL mapping (eQTLs that were filtered by user defined parameters) are colored grey.<br/>
+    </div>
   </div>
   <div class="col-md-3" style="text-align: center;">
     <h4>SNP annotations</h4>
