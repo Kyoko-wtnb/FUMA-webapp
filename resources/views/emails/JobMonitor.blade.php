@@ -4,6 +4,7 @@
 </head>
 <body>
 <p>
+  Total user: {{ $totalUsers }}<br/>
   Total job submitted: {{ $totalNjobs }}<br/>
   Currently runnning jobs: {{ $running }}<br/>
   Currently queued jobs: {{ $queued }}<br/>
