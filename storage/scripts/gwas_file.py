@@ -392,7 +392,7 @@ elif chrcol is not None and poscol is not None:
 	tmp = pd.read_table(gwas, comment="#", sep=delim, dtype=str)
 	head = list(tmp.columns.values)
 	tmp = np.array(tmp)
-	tmp = tmp[np.lexsort((tmp[:,chrcol].astype(int), tmp[:,poscol].astype(int)))]
+	tmp = tmp[np.lexsort((tmp[:,poscol].astype(int), tmp[:,chrcol].astype(int)))]
 	with open(gwas, 'w') as o:
 		o.write("\t".join(head)+"\n")
 	with open(gwas, 'a+') as o:
