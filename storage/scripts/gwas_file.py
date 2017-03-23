@@ -9,6 +9,7 @@ import ConfigParser
 import time
 from bisect import bisect_left
 import tabix
+import csv
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -23,6 +24,12 @@ def ArrayNotIn(a1, a2):
         if i not in temp:
             results.append(i)
     return results
+
+##### detect file delimiter from the header #####
+def DetectDelim(header):
+	sniffer = csv.Sniffer()
+	dialect = sniffer.sniff(header)
+	return dialect.delimiter
 
 if len(sys.argv)<2:
 	sys.exit('ERROR: not enough arguments\nUSAGE ./gwas_file.py <filedir>')
@@ -45,14 +52,14 @@ leadfile = param.get('inputfiles', 'leadSNPsfile')
 regionfile = param.get('inputfiles', 'regionsfile')
 if leadfile != "NA":
 	leadfile = filedir+"input.lead"
-	tmp = pd.read_table(leadfile, sep="\t|\s+")
+	tmp = pd.read_table(leadfile, sep=delim)
 	tmp = tmp.as_matrix()
 	if len(tmp)==0 or len(tmp[0])<3:
 		sys.exit("Input lead SNPs file does not have enought columns.")
 
 if regionfile != "NA":
 	regionfile = filedir+"input.regions"
-	tmp = pd.read_table(regionfile, sep="\t|\s+")
+	tmp = pd.read_table(regionfile, sep=delim)
 	tmp = tmp.as_matrix()
 	if len(tmp)==0 or len(tmp[0])<3:
 		sys.exit("Input genomic region file does not have enought columns.")
@@ -77,16 +84,17 @@ header = fin.readline()
 while re.match("^#", header):
     header = fin.readline()
 fin.close()
-header = header.strip()
-header = header.split()
+delim = DetectDelim(header)
+header = header.strip().split(delim)
+nheader = len(header)
 
 # Header detection
 # prioritize user defined colum name
 checkedheader = []
 for i in range(0,len(header)):
     if chrcol == header[i].upper():
-		chrcol = i
-		checkedheader.append(chrcol)
+	chrcol = i
+	checkedheader.append(chrcol)
     elif rsIDcol == header[i].upper():
         rsIDcol = i
         checkedheader.append(rsIDcol)
@@ -203,8 +211,8 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and altcol 
     for l in gwasIn:
         if re.match("^#", l):
             next
-        l = l.strip().split()
-        if len(l) < pcol+1:
+        l = l.strip().split(delim)
+        if len(l) < nheader:
 			continue
         if l[pcol]=="":
 			continue
@@ -237,69 +245,108 @@ elif chrcol is not None and poscol is not None:
     dbSNPfile = cfg.get('data', 'dbSNP')
 
     def Tabix (chrom, start ,end, snps):
-        snps = np.array(snps)
+		snps = np.array(snps)
 
-        poss = set(snps[:, poscol].astype(int))
-        pos = snps[:, poscol].astype(int)
+		poss = set(snps[:, poscol].astype(int))
+		pos = snps[:, poscol].astype(int)
 
-        tbfile = dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz"
-        tb = tabix.open(tbfile)
-        temp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
+		tbfile = dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz"
+		tb = tabix.open(tbfile)
+		temp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
 
-        out = open(outSNPs, 'a+')
-        for l in temp:
-            if int(l[1]) in poss:
-                j = bisect_left(pos, int(l[1]))
-                if snps[j,pcol] is None:
-					continue
-                if refcol is not None and altcol is not None:
-                    if (snps[j,refcol].upper()==l[3] and snps[j,altcol].upper()==l[4]) or (snps[j,refcol].upper()==l[4] and snps[j,altcol].upper()==l[3]):
-                        out.write("\t".join([l[0],l[1], snps[j,refcol].upper(), snps[j,altcol].upper(), l[2], snps[j,pcol]]))
-                        if orcol is not None:
-                            out.write("\t"+snps[j,orcol])
-                        if becol is not None:
-                            out.write("\t"+snps[j,becol])
-                        if secol is not None:
-                            out.write("\t"+snps[j,secol])
-                        if Ncol is not None:
-                            out.write("\t"+snps[j,Ncol])
-                        out.write("\n")
-                elif altcol is not None:
-                    if snps[j,altcol].upper()==l[3] or snps[j,altcol].upper()==l[4]:
-                        a = "NA"
-                        if snps[j,altcol]==l[3]:
-                            a = l[4]
-                        else:
-                            a = l[3]
-                        out.write("\t".join([l[0],l[1], a, snps[j,altcol].upper(), l[2], snps[j,pcol]]))
-                        if orcol is not None:
-                            out.write("\t"+snps[j,orcol])
-                        if becol is not None:
-                            out.write("\t"+snps[j,becol])
-                        if secol is not None:
-                            out.write("\t"+snps[j,secol])
-                        if Ncol is not None:
-                            out.write("\t"+snps[j,Ncol])
-                        out.write("\n")
-                else:
-                    out.write("\t".join([l[0],l[1], l[3], l[4], l[2], snps[j,pcol]]))
-                    if orcol is not None:
-                        out.write("\t"+snps[j,orcol])
-                    if becol is not None:
-                        out.write("\t"+snps[j,becol])
-                    if secol is not None:
-                        out.write("\t"+snps[j,secol])
-                    if Ncol is not None:
-                        out.write("\t"+snps[j,Ncol])
-                    out.write("\n")
-        out.close()
+		out = open(outSNPs, 'a+')
 
-    tempfile = filedir + "temp.txt"
-    os.system("head -1 "+gwas+">"+tempfile)
-    os.system("awk 'NR>=2' "+gwas+" | sed 's/chr//' >>"+tempfile)
-    os.system("mv "+tempfile+" "+gwas)
-    os.system("sort -k "+str(chrcol+1)+"n -k "+str(poscol+1)+"n "+gwas+" > "+tempfile)
-    os.system("mv "+tempfile+" "+gwas)
+		if refcol is not None and altcol is not None:
+			dbSNP = []
+			for l in temp:
+				dbSNP.append(l)
+			dbSNP = np.array(dbSNP)
+			poss = set(dbSNP[:,1].astype(int))
+			pos = dbSNP[:,1].astype(int)
+			for l in snps:
+				if int(l[poscol]) in poss:
+					j = bisect_left(pos, int(l[poscol]))
+					if (l[refcol].upper()==dbSNP[j,3] and l[altcol].upper()==dbSNP[j,4]) or (l[refcol].upper()==dbSNP[j,4] and l[altcol].upper()==dbSNP[j,3]):
+						out.write("\t".join([dbSNP[j,0],dbSNP[j,1], l[refcol].upper(), l[altcol].upper(), dbSNP[j,2], l[pcol]]))
+						if orcol is not None:
+						    out.write("\t"+l[orcol])
+						if becol is not None:
+						    out.write("\t"+l[becol])
+						if secol is not None:
+						    out.write("\t"+l[secol])
+						if Ncol is not None:
+						    out.write("\t"+l[Ncol])
+						out.write("\n")
+					else:
+						a = [l[refcol], l[altcol]]
+						a.sort()
+						out.write("\t".join([l[chrcol],l[poscol], l[refcol].upper(), l[altcol].upper(), ":".join([l[chrcol], l[poscol]]+a), l[pcol]]))
+						if orcol is not None:
+						    out.write("\t"+l[orcol])
+						if becol is not None:
+						    out.write("\t"+l[becol])
+						if secol is not None:
+						    out.write("\t"+l[secol])
+						if Ncol is not None:
+						    out.write("\t"+l[Ncol])
+						out.write("\n")
+				else:
+					a = [l[refcol], l[altcol]]
+					a.sort()
+					out.write("\t".join([l[chrcol],l[poscol], l[refcol].upper(), l[altcol].upper(), ":".join([l[chrcol], l[poscol]]+a), l[pcol]]))
+					if orcol is not None:
+					    out.write("\t"+l[orcol])
+					if becol is not None:
+					    out.write("\t"+l[becol])
+					if secol is not None:
+					    out.write("\t"+l[secol])
+					if Ncol is not None:
+					    out.write("\t"+l[Ncol])
+					out.write("\n")
+		else:
+			for l in temp:
+			    if int(l[1]) in poss:
+			        j = bisect_left(pos, int(l[1]))
+			        if snps[j,pcol] is None:
+						continue
+			        if altcol is not None:
+			            if snps[j,altcol].upper()==l[3] or snps[j,altcol].upper()==l[4]:
+			                a = "NA"
+			                if snps[j,altcol]==l[3]:
+			                    a = l[4]
+			                else:
+			                    a = l[3]
+			                out.write("\t".join([l[0],l[1], a, snps[j,altcol].upper(), l[2], snps[j,pcol]]))
+			                if orcol is not None:
+			                    out.write("\t"+snps[j,orcol])
+			                if becol is not None:
+			                    out.write("\t"+snps[j,becol])
+			                if secol is not None:
+			                    out.write("\t"+snps[j,secol])
+			                if Ncol is not None:
+			                    out.write("\t"+snps[j,Ncol])
+			                out.write("\n")
+			        else:
+			            out.write("\t".join([l[0],l[1], l[3], l[4], l[2], snps[j,pcol]]))
+			            if orcol is not None:
+			                out.write("\t"+snps[j,orcol])
+			            if becol is not None:
+			                out.write("\t"+snps[j,becol])
+			            if secol is not None:
+			                out.write("\t"+snps[j,secol])
+			            if Ncol is not None:
+			                out.write("\t"+snps[j,Ncol])
+			            out.write("\n")
+		out.close()
+
+    tmp = pd.read_table(gwas, comment="#", sep=delim, dtype=str)
+    head = list(tmp.columns.values)
+    tmp = np.array(tmp)
+    tmp = tmp[np.lexsort((tmp[:,chrcol].astype(int), tmp[:,poscol].astype(int)))]
+    with open(gwas, 'w') as o:
+		o.write("\t".join(head)+"\n")
+    with open(gwas, 'a+') as o:
+		np.savetxt(o, tmp, delimiter='\t', fmt='%s')
 
     cur_chr = 1
     minpos = 0
@@ -325,8 +372,9 @@ elif chrcol is not None and poscol is not None:
     for l in gwasIn:
         if re.match("^#", l):
             next
-        l = l.strip().split()
-        if len(l) < pcol+1:
+        l = l.replace("nan", "")
+        l = l.strip('\n').split(delim)
+        if len(l) < nheader:
 			continue
         if l[pcol]=="":
 			continue
@@ -360,7 +408,7 @@ elif chrcol is not None and poscol is not None:
 
 elif chrcol is None or poscol is None:
     print "Either chr or pos is not provided"
-    gwas = pd.read_table(gwas, comment="#", sep="\t|\s*")
+    gwas = pd.read_table(gwas, comment="#", sep=delim)
     gwas = gwas.as_matrix()
     gwas = gwas[gwas[:,rsIDcol].argsort()]
     # gwas = gwas[0:1000000]
