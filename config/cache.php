@@ -78,4 +78,6 @@ return [
 
     'prefix' => 'laravel',
 
+    'cache' => false
+
 ];

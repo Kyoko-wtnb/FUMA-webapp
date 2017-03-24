@@ -44,6 +44,7 @@ class Kernel extends ConsoleKernel
             $dateNext = date("Y-m-d", $dateNext);
           }
           $totalNjobs = DB::table('SubmitJobs')->count();
+          $totalUsers = DB::table('users')->count();
           $submittedjobs = DB::table('SubmitJobs')->whereColumn([["created_at", ">", $date], ["created_at", "<", $dateNext]])->count();
           $running = DB::table("SubmitJobs")->where("status", "RUNNING")->get();
           $runTable = "";
@@ -117,6 +118,7 @@ class Kernel extends ConsoleKernel
           $data = [
             'date'=>$date,
             'totalNjobs'=>$totalNjobs,
+            'totalUsers'=>$totalUsers,
             'running'=>count($running),
             'queued'=>count($queued),
             'dateavg'=>$dateavg

@@ -118,3 +118,6 @@ Route::get('gene2func/{jobID}', function($jobID){
 Route::post('gene2func/deleteJob', 'JobController@G2FdeleteJob');
 
 Route::post('gene2func/imgdown', 'JobController@imgdown')->middleware('auth');
+
+// ********************** JobReport ************************
+Route::get('JobReport/usersPlot', 'D3jsController@usersPlot');
