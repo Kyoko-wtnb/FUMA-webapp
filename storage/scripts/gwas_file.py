@@ -27,6 +27,8 @@ def ArrayNotIn(a1, a2):
 
 ##### detect file delimiter from the header #####
 def DetectDelim(header):
+	if re.match(r'.*\s\s.*', header) is not None:
+		return '\s+'
 	sniffer = csv.Sniffer()
 	dialect = sniffer.sniff(header)
 	return dialect.delimiter
@@ -56,14 +58,14 @@ leadfile = param.get('inputfiles', 'leadSNPsfile')
 regionfile = param.get('inputfiles', 'regionsfile')
 if leadfile != "NA":
 	leadfile = filedir+"input.lead"
-	tmp = pd.read_table(leadfile, sep=delim)
+	tmp = pd.read_table(leadfile, sep="\t|\s+")
 	tmp = tmp.as_matrix()
 	if len(tmp)==0 or len(tmp[0])<3:
 		sys.exit("Input lead SNPs file does not have enought columns.")
 
 if regionfile != "NA":
 	regionfile = filedir+"input.regions"
-	tmp = pd.read_table(regionfile, sep=delim)
+	tmp = pd.read_table(regionfile, sep="\t|\s+")
 	tmp = tmp.as_matrix()
 	if len(tmp)==0 or len(tmp[0])<3:
 		sys.exit("Input genomic region file does not have enought columns.")
@@ -91,7 +93,7 @@ while re.match("^#", header):
     header = fin.readline()
 fin.close()
 delim = DetectDelim(header)
-header = header.strip().split(delim)
+header = re.split(delim, header.strip())
 nheader = len(header)
 
 ##### detect column index #####
@@ -253,7 +255,7 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and altcol 
     for l in gwasIn:
         if re.match("^#", l):
             next
-        l = l.strip().split(delim)
+        l = re.split(delim, l.strip())
         if len(l) < nheader:
 			continue
         if l[pcol]=="":
@@ -392,11 +394,12 @@ elif chrcol is not None and poscol is not None:
 	tmp = pd.read_table(gwas, comment="#", sep=delim, dtype=str)
 	head = list(tmp.columns.values)
 	tmp = np.array(tmp)
+	tmp[:,chrcol] = [x.replace("chr", "") for x in tmp[:,chrcol]]
 	tmp = tmp[np.lexsort((tmp[:,poscol].astype(int), tmp[:,chrcol].astype(int)))]
 	with open(gwas, 'w') as o:
-		o.write("\t".join(head)+"\n")
+		o.write(" ".join(head)+"\n")
 	with open(gwas, 'a+') as o:
-		np.savetxt(o, tmp, delimiter='\t', fmt='%s')
+		np.savetxt(o, tmp, delimiter=' ', fmt='%s')
 
 	##### init variables #####
 	cur_chr = 1
@@ -425,7 +428,7 @@ elif chrcol is not None and poscol is not None:
 		if re.match("^#", l):
 		    next
 		l = l.replace("nan", "")
-		l = l.strip('\n').split(delim)
+		l = l.strip('\n').split(' ')
 		if len(l) < nheader:
 			continue
 		if l[pcol]=="":
@@ -451,9 +454,9 @@ elif chrcol is not None and poscol is not None:
 		else:
 			if minpos!=0 and maxpos!=0:
 				Tabix(cur_chr, minpos, maxpos, temp)
-				cur_chr = int(l[chrcol])
-				minpos = int(float(l[poscol]))
-				maxpos = int(float(l[poscol]))
+			cur_chr = int(l[chrcol])
+			minpos = int(float(l[poscol]))
+			maxpos = int(float(l[poscol]))
 			temp = []
 			temp.append(l)
 	Tabix(cur_chr, minpos, maxpos, temp)
@@ -484,8 +487,7 @@ elif chrcol is None or poscol is None:
     dbSNPfile = cfg.get('data', 'dbSNP')
     rsID146 = open(dbSNPfile+"/RsMerge146.txt", 'r')
     for l in rsID146:
-        l = l.strip()
-        l = l.split()
+        l = l.strip().split()
         if l[0] in rsIDs:
             j = bisect_left(rsID, l[0])
             gwas[j,rsIDcol] = l[1]
@@ -503,13 +505,14 @@ elif chrcol is None or poscol is None:
         fin = gzip.open(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", 'rb')
         for l in fin:
 			l = l.decode('ascii')
-			l = l.strip()
-			l = l.split()
+			l = l.strip().split()
 			alt = l[4].split(",")
 
 			if l[2] in rsIDs:
 				checked.append(l[2])
 				j = bisect_left(rsID, l[2])
+				if np.isnan(gwas[j,pcol]):
+					continue
 				if(gwas[j,pcol]<1e-308):
 				    gwas[j,pcol]=1e-308
 				if altcol is not None and refcol is not None:
