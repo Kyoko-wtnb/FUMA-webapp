@@ -51,7 +51,7 @@ if(defined $N){
 	}else{
 		system "awk 'NR>=2' $outSNPs | cut -f 5,6 | sort -u -k 1,1 > $magmain";
 	}
-	#system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
+	system "$magma/magma --bfile $ref --pval $magmain N=$N --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
 }else{
 	open(TMP, $outSNPs);
 	my $head = <TMP>;
@@ -73,22 +73,22 @@ if(defined $N){
 	close OUT;
 	close IN;
 	system "mv $temp $magmain";
-	#system "$magma/magma --bfile $ref --pval $magmain ncol=3 --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
+	system "$magma/magma --bfile $ref --pval $magmain ncol=3 --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
 }
 
 unless(-e $filedir."magma.genes.out"){
 	die "MAGMA ERROR";
 }
 
-#system "sed 's/ \\+/\\t/g' ".$filedir."magma.genes.out > $filedir"."temp.txt";
-#system "mv ".$filedir."temp.txt ".$filedir."magma.genes.out";
+system "sed 's/ \\+/\\t/g' ".$filedir."magma.genes.out > $filedir"."temp.txt";
+system "mv ".$filedir."temp.txt ".$filedir."magma.genes.out";
 
 # MAGMA gene set
-#system "$magma/magma --gene-results $filedir"."magma.genes.raw --set-annot $magmafiles/magma_GS.txt --out $filedir"."magma";
+system "$magma/magma --gene-results $filedir"."magma.genes.raw --set-annot $magmafiles/magma_GS.txt --out $filedir"."magma";
 # MAGMA gene expression
-#system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/gtex.avg.log2RPKM.ts.txt onesided=greater condition=Average --out $filedir"."magma_exp";
-#system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/gtex.avg.log2RPKM.ts.general.txt onesided=greater condition=Average --out $filedir"."magma_exp_general";
+system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/gtex.avg.log2RPKM.ts.txt onesided=greater condition=Average --out $filedir"."magma_exp";
+system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/gtex.avg.log2RPKM.ts.general.txt onesided=greater condition=Average --out $filedir"."magma_exp_general";
 #remove extra magma log files
-#system "rm $filedir"."magma*.log";
+system "rm $filedir"."magma*.log";
 
-#system "Rscript $dir/magma_gene.R $filedir";
+system "Rscript $dir/magma_gene.R $filedir";

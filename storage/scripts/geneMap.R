@@ -87,7 +87,7 @@ if(posMap==1){
       }
     }else if(posMapChr15Meth=="majority"){
       if(length(posMapChr15)>1){
-        temp$epi <- apply(temp[,2:ncol(temp)], 1, function(x){as.numeric(names(sort(table(x)), decreasing=T)[1])})
+        temp$epi <- apply(temp[,2:ncol(temp)], 1, function(x){as.numeric(names(sort(table(x), decreasing=T))[1])})
       }else{
         temp$epi <- temp[,2]
       }
@@ -146,7 +146,7 @@ if(eqtlMap==1){
         }
       }else if(eqtlMapChr15Meth=="majority"){
         if(length(eqtlMapChr15)>1){
-          temp$epi <- apply(temp[,2:ncol(temp)], 1, function(x){as.numeric(names(sort(table(x)), decreasing=T)[1])})
+          temp$epi <- apply(temp[,2:ncol(temp)], 1, function(x){as.numeric(names(sort(table(x), decreasing=T))[1])})
         }else{
           temp$epi <- temp[,2]
         }
