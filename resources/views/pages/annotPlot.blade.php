@@ -393,7 +393,8 @@ $(document).ready(function(){
               .attr("x", width+30).attr("y", 163)
               .text("Independent significant SNPs").style("font-size", "10px");
 
-            y.domain([0, d3.max(data1, function(d){return -Math.log10(d.gwasP)})+1]);
+			var maxY = Math.max(d3.max(data1, function(d){return -Math.log10(d.gwasP)}), d3.max(data4, function(d){return -Math.log10(d.gwasP)}))
+            y.domain([0, maxY+1]);
             svg.selectAll("dot").data(data4).enter()
               .append("circle")
               .attr("class", "GWASnonLD")

@@ -27,7 +27,7 @@ if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 i = int(sys.argv[2])
 i = i
-type = sys.argv[3]
+Type = sys.argv[3]
 
 snps = pd.read_table(filedir+"snps.txt", sep="\t")
 snpshead = list(snps.columns.values)
@@ -42,7 +42,7 @@ lead = lead.as_matrix()
 loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
 loci = loci.as_matrix()
 
-if type=="IndSigSNP":
+if Type=="IndSigSNP":
 	ls = str(ind[i, 2])
 	l = int(ind[i, 1])
 	ld = ld[ld[:,0]==ls]
@@ -52,7 +52,7 @@ if type=="IndSigSNP":
 	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
 	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 
-elif type=="leadSNP":
+elif Type=="leadSNP":
 	ls = np.array(lead[i,8].split(":"))
 	ls = snps[ArrayIn(snps[:,1], ls),0]
 	ld = ld[ArrayIn(ld[:,0], ls)]
