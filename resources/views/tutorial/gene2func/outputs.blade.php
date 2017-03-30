@@ -19,19 +19,19 @@
 
   <h4><strong>2. Tissue specificity</strong></h4>
   <p>
-    Tissue specificity is tested using the followinf two different types of gene sets based on GTEx gene expression data.<br/>
+    Tissue specificity is tested using the following gene sets based on GTEx gene expression data.<br/>
     <br/>
-    <strong>1) Differentially Expressed Gene (DEG) Sets</strong><br/>
+    <strong>Differentially Expressed Gene (DEG) Sets</strong><br/>
     DEG sets were pre-calculated by performing two-sided t-test for any one of tissues against all others.
     For this, expresstion values were normalized (zero-mean) following to a log 2 transformation of RPKM.
     Genes which with P-value &le; 0.05 after Bonferroni correction and absolute log fold change &ge; 0.58 were defined as differentially expressed genes in a given tissue compared to others.
     On top of DEG, up-regrated DEG and down-regulated DEG were also pre-calculated by taking sign of t-statistics into account.
     This process was performed for 30 general tissue types and 53 specific tissue types, separately.<br/><br/>
-    <strong>2) Tissue Expressed Gene (TEG) Sets (<span style="color:blue;">FUMA v1.1.0</span>)</strong><br/>
-    TEG sets were pre-defined by genes which have average RPKM > 1 in each tissue type (30 general tissue types and 53 specific tissue types).
+    <!-- <strong>2) Tissue Expressed Gene (TEG) Sets (<span style="color:blue;">FUMA v1.1.0</span>)</strong><br/>
+    TEG sets were pre-defined by genes which have average RPKM > 1 in each tissue type (30 general tissue types and 53 specific tissue types). -->
   </p>
   <p>
-    Input genes were tested against each of the DEG and TEG sets using the hypergeometric test.
+    Input genes were tested against each of the DEG sets using the hypergeometric test.
     The background genes are genes that have average RPKM > 1 in at least one of the 53 tissue types and exist in the user selected background genes.
     Significant enrichment at Bonferroni corrected P-value &le; 0.05 are coloured in red.<br/>
     <span class="info"><i class="fa fa-info"></i>
@@ -39,7 +39,7 @@
     </span><br/><br/>
     Results and images are downloadable as text files and in several image file formats.
   </p>
-  <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:80%"/>
+  <img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:60%"/>
   <br/><br/>
 
   <h4><strong>3. Gene Sets</strong></h4>

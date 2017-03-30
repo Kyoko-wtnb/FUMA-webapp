@@ -262,11 +262,11 @@
         </div>
         <!-- Tissue specificity bar chart -->
         <div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50px;">
-          <div class="panel panel-default">
+          <!-- <div class="panel panel-default">
             <div class="panel-heading">
               <h4>Enrichment of Differentially Expressed Gene Sets</h4>
             </div>
-            <div class="panel-body">
+            <div class="panel-body"> -->
               <h4>Differrentially expressed genes across 30 general tissue types (GTEx)
                 <a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for the 30 general GTEx tissue types.
                 DEG sets are defined by a two-sided t-tests per tissue versus all remaining, and Bonferroni correction.
@@ -352,10 +352,10 @@
                 </select>
               </span>
               <div id="tsEnrichBar"></div>
-            </div>
-          </div>
+            <!-- </div>
+          </div> -->
 
-          <div class="panel panel-default">
+          <!-- <div class="panel panel-default">
             <div class="panel-heading">
               <h4>Enrichment of Tissue Expressed Gene Sets</h4>
             </div>
@@ -441,7 +441,7 @@
               </span>
               <div id="ExpTsEnrichBar"></div>
             </div>
-          </div>
+          </div> -->
         </div>
         <!-- GeneSet enrichment -->
         <div id="GeneSetPanel"  class="sidePanel container" style="padding-top:50px;">

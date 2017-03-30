@@ -23,13 +23,13 @@
 			  Details are described at the bottom of the page of regional plot with annotations.
 		  </td>
 	    </tr>
-		<tr>
+		<!-- <tr>
 			<td>17 Mar 2017</td>
 			<td>v1.1.0</td>
 			<td>In GENE2FUNC, in addition to enrichment test of differentialy expressed genes, enrichment of genes expressed in each tissue is also tested.
 			  Details are in the <a href="{{ Config::get('app.subdir') }}/tutorial#g2fOutputs">GENE2FUNC Outputs</a> section of the tutorial.
 			</td>
-		</tr>
+		</tr> -->
 		<tr>
 			<td>17 Mar 2017</td>
 			<td>v1.1.0</td>

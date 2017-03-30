@@ -63,8 +63,8 @@ $(document).ready(function(){
     expHeatMap(id);
     tsEnrich(id);
     tsGeneralEnrich(id);
-    ExpTsGeneralEnrich(id);
-    ExpTsEnrich(id);
+    // ExpTsGeneralEnrich(id);
+    // ExpTsEnrich(id);
     GeneSet(id);
     GeneTable(id);
   }else if(status=="query"){
