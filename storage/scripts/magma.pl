@@ -45,7 +45,8 @@ if(defined $N){
 	$Ncol = $#head+1;
 	system "awk 'NR>=2' $outSNPs | cut -f 5,6,$Ncol | sort -u -k 1,1 > $magmain";
 	open(IN, "$magmain");
-	open(OUT, ">temp.txt");
+	my $tmpfile = $filedir."temp.txt";
+	open(OUT, ">$tmpfile");
 	while(<IN>){
 		my @line = split(/\s/, $_);
 		$line[2] = int($line[2]);
@@ -53,7 +54,7 @@ if(defined $N){
 	}
 	close OUT;
 	close IN;
-	system "mv temp.txt $magmain";
+	system "mv $tmpfile $magmain";
 	system "$magma/magma --bfile $ref --pval $magmain ncol=3 --gene-annot $magmafiles/ENSG.w0.$pop.genes.annot --out $filedir"."magma";
 }
 
