@@ -749,12 +749,12 @@ class JobController extends Controller
       exec("Rscript $script $filedir", $output, $error);
 
       $script = storage_path()."/scripts/GeneSet.py";
-      exec("$script $filedir", $output2, $error2);
-      if($error != 0 || $error2 != 0){
-        echo "ERROR:".$output[0].":".$output2[0];
-      }else{
-        echo "OK";
-      }
+      exec("python $script $filedir", $output2, $error2);
+    //   if($error != 0 || $error2 != 0){
+    //     echo "ERROR:".$output[0].":".$output2[0];
+    //   }else{
+    //     echo "OK";
+    //   }
     }
 
     public function snp2geneGeneQuery(Request $request){
