@@ -1259,33 +1259,47 @@ $(document).ready(function(){
 
 function geneOver(genes, x, width){
   var tg = genes;
-  // genes.forEach(function(d){
-  //   if(x(d.end_position)>0 && x(d.start_position)<width){tg.push(d);}
-  // })
 
-  for(var i=0; i<tg.length; i++){
+  for(var i=1; i<tg.length; i++){
     var temp = tg.filter(function(d2){
-      if((d2.end_position>=tg[i].start_position && d2.end_position<=tg[i].end_position)
+      if((d2.start_position<=tg[i].start_position && d2.end_position >= tg[i].start_position && d2.end_position<=tg[i].end_position)
         // || (d2.start_position>=d.start_position && d2.start_position<=d.end_position)
         || (d2.start_position<=tg[i].start_position && d2.end_position>=tg[i].end_position)
       ){return d2;}
-      else if(x((d2.end_position+d2.start_position+d2.external_gene_name.length*9)/2)>=x((tg[i].end_position+tg[i].start_position)/2)-((tg[i].external_gene_name.length*9)/2)
-          && x((d2.end_position+d2.start_position+d2.external_gene_name.length*9)/2)<=x((tg[i].end_position+tg[i].start_position)/2)+((tg[i].external_gene_name.length*9)/2)
+      else if(x((d2.end_position+d2.start_position+d2.external_gene_name.length*12)/2)>=x((tg[i].end_position+tg[i].start_position)/2)-((tg[i].external_gene_name.length*12)/2)
+          && x((d2.end_position+d2.start_position+d2.external_gene_name.length*12)/2)<=x((tg[i].end_position+tg[i].start_position)/2)+((tg[i].external_gene_name.length*12)/2)
         ){return d2}
     })
     if(temp.length>1){
-      var ymin = d3.min(temp, function(d){return d.y});
-      if(ymin>1){
-        tg[i].y = 1;
-      }else{
-        tg[i].y = d3.max(temp, function(d){return d.y})+1;
-      }
+		var yall = [];
+		for(var j=0; j<temp.length; j++){
+			if(temp[j].external_gene_name != tg[i].external_gene_name){
+				yall.push(temp[j].y);
+			}
+		}
+		tg[i].y = getMinY(yall);
     }else{
-      tg[i].y = 1;
+    	tg[i].y = 1;
     }
   }
 
   return tg;
+}
+
+function getMinY(y){
+	y.sort(function(a,b){return a-b});
+	var miny = 1;
+	if(Math.min.apply(null, y) > 1){return 1;}
+	if(y.length==1){return y[0]+1;}
+	for(var l=1; l<y.length; l++){
+		if(y[l]-y[l-1] > 1){
+			miny = y[l-1]+1;
+			break;
+		}else{
+			miny = y[l]+1;
+		}
+	}
+	return miny;
 }
 
 function RDBlegend(){
