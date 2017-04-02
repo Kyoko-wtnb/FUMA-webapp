@@ -47,8 +47,7 @@ unless($extMHC eq "NA"){
 my $outSNPs = $filedir."input.snps";
 my $magmain = $filedir."magma.input";
 my $magmafiles = $cfg->param('magma.magmafiles');
-#my $ref = "$magmafiles/g1000_".lc($pop)."_146";
-my $ref = "$magmafiles/g1000_".lc($pop);
+my $ref = "$magmafiles/g1000_".lc($pop)."_146";
 my $magma = $cfg->param('magma.magmadir');
 
 if(defined $N){
