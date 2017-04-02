@@ -29,9 +29,15 @@ $pop = lc($pop);
 print "Population: $pop\n";
 
 my $MHC = $params->param('params.exMHC'); # 1 to exclude, 0 to not
+my $MHCopt = $params->param('params.MHCopt');
+if($MHC eq "1"){
+	if($MHCopt eq "annot"){
+		$MHC = "0";
+	}
+}
 my $extMHC = $params->param('params.extMHC');
-my $MHCstart = 29624758;
-my $MHCend = 33160276;
+my $MHCstart = 29614758;
+my $MHCend = 33170276;
 unless($extMHC eq "NA"){
 	my @temp = split(/-/, $extMHC);
 	$MHCstart = $temp[0];
@@ -41,7 +47,8 @@ unless($extMHC eq "NA"){
 my $outSNPs = $filedir."input.snps";
 my $magmain = $filedir."magma.input";
 my $magmafiles = $cfg->param('magma.magmafiles');
-my $ref = "$magmafiles/g1000_".lc($pop)."_146";
+#my $ref = "$magmafiles/g1000_".lc($pop)."_146";
+my $ref = "$magmafiles/g1000_".lc($pop);
 my $magma = $cfg->param('magma.magmadir');
 my $temp = $filedir."temp.txt";
 
