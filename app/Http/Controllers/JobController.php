@@ -257,8 +257,13 @@ class JobController extends Controller
       if($request -> has('secol')){$secol = $request->input('secol');}
       // if($request -> has('mafcol')){$chrcol = $request->input('mafcol');}
       // MHC region
-      if($request -> has('MHCregion')){$exMHC=1;}
-      else{$exMHC=0;}
+      if($request -> has('MHCregion')){
+		  $exMHC=1;
+		  $MHCopt = $request->input('MHCopt');
+	  }else{
+		  $exMHC=0;
+		  $MHCopt = "NA";
+	  }
       $extMHC = $request -> input('extMHCregion');
       if($extMHC==null){$extMHC="NA";}
       // gene type
@@ -413,6 +418,7 @@ class JobController extends Controller
       File::append($paramfile, "N=$N\n");
       File::append($paramfile, "Ncol=$Ncol\n");
       File::append($paramfile, "exMHC=$exMHC\n");
+	  File::append($paramfile, "MHCopt=$MHCopt\n");
       File::append($paramfile, "extMHC=$extMHC\n");
       // File::append($paramfile, "include chromosome X\t$Xchr\n");
       File::append($paramfile, "genetype=$genetype\n");

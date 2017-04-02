@@ -43,9 +43,15 @@ if($regions eq "NA"){$regions=0}
 else{$regions=1}
 my $mergeDist = $params->param('params.mergeDist');
 my $MHC = $params->param('params.exMHC'); # 1 to exclude, 0 to not
+my $MHCopt = $params->param('params.MHCopt');
+if($MHC eq "1"){
+	if($MHCopt eq "annot"){
+		$MHC = "0";
+	}
+}
 my $extMHC = $params->param('params.extMHC');
-my $MHCstart = 29624758;
-my $MHCend = 33160276;
+my $MHCstart = 29614758;
+my $MHCend = 33170276;
 unless($extMHC eq "NA"){
 	my @temp = split(/-/, $extMHC);
 	$MHCstart = $temp[0];

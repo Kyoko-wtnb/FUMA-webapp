@@ -969,7 +969,16 @@
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </td>
-          <td><input type="checkbox" class="form-check-input" name="MHCregion" id="MHCregion" value="exMHC" checked onchange="CheckAll();"></td>
+          <td>
+			  <span class="form-inline">
+				  <input type="checkbox" class="form-check-input" name="MHCregion" id="MHCregion" value="exMHC" checked onchange="CheckAll();">
+				  <select class="form-control" id="MHCopt" name="MHCopt" onchange="CheckAll();">
+					  <option value="all">from all (annotations and MAGMA)</option>
+					  <option selected value="annot">from only annotations</option>
+					  <option value="magma">from only MAGMA</option>
+				  </select>
+			  </span>
+		  </td>
           <td></td>
         </tr>
         <tr>

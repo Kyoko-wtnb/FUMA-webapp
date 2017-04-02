@@ -608,8 +608,9 @@ function CheckAll(){
   tablecheck=true;
   table = $('#NewJobMHC')[0];
   if($('#MHCregion').is(':checked')==true){
+	$('#MHCopt').show();
     $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-      +'<i class="fa fa-check"></i> OK. Normal MHC region will be excluded.</div></td>');
+      +'<i class="fa fa-check"></i> OK. Normal MHC region will be excluded '+$('#MHCopt option:selected').text()+'.</div></td>');
     if($('#extMHCregion').val().length==0){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
@@ -621,6 +622,7 @@ function CheckAll(){
 
     }
   }else{
+	$('#MHCopt').hide();
     $(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
     $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
