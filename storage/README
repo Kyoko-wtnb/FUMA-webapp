@@ -218,6 +218,7 @@ regionsfile : File name of pre-defined genetic regions if provided.
 [params]
 N : Sample size of GWAS
 exMHC : 1 to exclude MHC region, 0 otherwise
+MHCopt : "annot" to exclude MHC region only from SNP2GENE annotation, "magma" to exclude MHC from MAGMA gene analysis, or "all" to exclude MHC from both.
 extMHC : user defined MHC region if provided, NA otherwise
 genetype : All selected gene type.
 leadP : the maximum threshold of P-value to be lead SNP

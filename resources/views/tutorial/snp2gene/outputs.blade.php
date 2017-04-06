@@ -24,6 +24,9 @@
       This filtering was only performed for SNPs with P-value ≥ 1e-5.
     </li>
   </ul>
+  <span class="info"><i class="fa fa-info"></i>
+	  MHC region is shown in this manhattan plot even if option is set to exclude MHC region from annotaitons.
+  </span><br/>
 </p>
 <p><strong>Plots for gene-based test (MAGMA)</strong><br/>
   Gene analysis was performed by using MAGMA (v1.6) with default setting.
@@ -31,7 +34,10 @@
   Genome-wide significance (red dashed line) was set at 0.05 / (the number of tested genes).
   Genes whose P-value reached the genome-wide significance can be labeled in the manhattan plot.
   The number of genes to label can be controled by typing the number at the left uppser side of the plot.
-  MAGMA results are available from the download panel.
+  MAGMA results are available from the download panel. <br/>
+  <span class="info"><i class="fa fa-info"></i>
+	  When the option is selected  to exclude MHC region from MAGMA gene analysis, the results of MAGMA does not include MHC region, there fore manhattan plot also does not display genes in MHC region.
+  </span><br/>
 </p>
 <p><strong>MAGMA Gene-Set Analysis</strong><br/>
   Using the result of gene analysis (gene level p-value), (competitive) gene-set analysis is performed with default parameters with MAGMA v1.6.

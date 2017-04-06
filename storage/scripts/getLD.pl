@@ -45,7 +45,7 @@ my $mergeDist = $params->param('params.mergeDist');
 my $MHC = $params->param('params.exMHC'); # 1 to exclude, 0 to not
 my $MHCopt = $params->param('params.MHCopt');
 if($MHC eq "1"){
-	if($MHCopt eq "annot"){
+	if($MHCopt eq "magma"){
 		$MHC = "0";
 	}
 }

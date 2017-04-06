@@ -490,6 +490,13 @@
         <td>Check</td>
         <td>Checked</td>
       </tr>
+	  <tr>
+        <td>Options for excluding MHC region</td>
+        <td>Optional</td>
+        <td>MHC region can be excluded only from either anotations or MAGMA gene analysis, or from both by selecting this option.</td>
+        <td>Select</td>
+        <td>Only from annotations</td>
+      </tr>
       <tr>
         <td>Extended MHC region</td>
         <td>Optional</td>
