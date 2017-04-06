@@ -282,11 +282,11 @@
       <!-- Summary panel -->
       <div class="sidePanel container" style="padding-top:50px;" id="summaryTable">
         <div class="row">
-          <div class="col-md-5" id="sumTable" style="text-align:center;">
+          <div class="col-md-5 col-xs-5 col-sm-5" id="sumTable" style="text-align:center;">
             <h4 style="color: #00004d">Summary of SNPs and mapped genes</h4>
           </div>
 
-          <div class="col-md-7" style="text-align:center;">
+          <div class="col-md-7 col-xs-7 col-sm-7" style="text-align:center;">
             <h4><span style="color: #00004d">Functional consequences of SNPs on genes</span>
               <a class="infoPop" data-toggle="popover" data-content="The histogram displays the number of SNPs (all SNPs in LD of lead SNPs) which have corresponding functional annotaiton assigned by ANNOVAR.
                 SNPs which have more than one dirrent annotations are counted for each annotation.">
@@ -506,12 +506,12 @@
               The top lead SNPs in genomic risk loci, lead SNPs and ind. sig. SNPs are circled in black and colored in dark-purple, purple and red, respectively.
             </span>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-md-9 col-xs-9 col-sm-9">
                 <div id="locusPlot" style="text-align: center;">
                   <a id="plotClear" style="position: absolute;right: 30px;">Clear</a>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-3 col-xs-3 col-sm-3">
                 <div id="selectedLeadSNP"></div>
               </div>
             </div>

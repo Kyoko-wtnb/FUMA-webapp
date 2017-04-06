@@ -1483,7 +1483,7 @@ function ImgDown(id, type){
 <br/><br/>
 <div class="container">
 <div class="row">
-  <div class="col-md-9">
+  <div class="col-md-9 col-xs-9 col-sm-9">
     <div id='title' style="text-align: center;"><h4>Regional plot</h4></div>
     <span class="info"><i class="fa fa-info"></i>
       For SNPs colored grey in the plots of GWAS P-value, CADD, RegulomeDB score and eQTLs, please refer the legend at the bottom of the plot.
@@ -1520,7 +1520,7 @@ function ImgDown(id, type){
       Of those eQTLs, eQTLs which did not used for eQTL mapping (eQTLs that were filtered by user defined parameters) are colored grey.<br/>
     </div>
   </div>
-  <div class="col-md-3" style="text-align: center;">
+  <div class="col-md-3 col-xs-3 col-sm-3" style="text-align: center;">
     <h4>SNP annotations</h4>
     <div id="annotTable">
       click any SNP on the plot</br>
