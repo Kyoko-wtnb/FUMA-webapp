@@ -553,7 +553,7 @@ function MAGMAtsplot(jobID){
       +' MAGMA tissue expression analyses is only available for FUMA v1.1.0 or later.</span><br/>'
       +'If your job has been submitted to older version, please contact Kyoko Watanabe (k.watanabe@vu.nl) or resubmit the job to obtain the MAGMA tisue expression results.</div>');
     }else{
-      var margin = {top:30, right: 30, bottom:100, left:50},
+      var margin = {top:30, right: 30, bottom:100, left:80},
           width = 600,
           height = 250;
       var svg = d3.select("#magma_exp_general").append("svg")
@@ -607,7 +607,7 @@ function MAGMAtsplot(jobID){
         .attr("transform", "translate(0,"+(height)+")")
         .call(xAxis).selectAll('text').remove();
       svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .attr("transform", "translate("+(-margin.left/2-30)+","+height/2+")rotate(-90)")
         .text("-log 10 P-value");
       svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
@@ -640,7 +640,7 @@ function MAGMAtsplot(jobID){
   d3.json(subdir+'/snp2gene/MAGMAtsplot/specific/'+jobID, function(data){
     if(data==null || data==undefined || data.lenght==0){
     }else{
-      var margin = {top:30, right: 30, bottom:230, left:50},
+      var margin = {top:30, right: 30, bottom:230, left:80},
           width = 800,
           height = 250;
       var svg = d3.select("#magma_exp").append("svg")
@@ -694,7 +694,7 @@ function MAGMAtsplot(jobID){
         .attr("transform", "translate(0,"+(height)+")")
         .call(xAxis).selectAll('text').remove();
       svg.append("text").attr("text-anchor", "middle")
-        .attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
+        .attr("transform", "translate("+(-margin.left/2-30)+","+height/2+")rotate(-90)")
         .text("-log 10 P-value");
       svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
       svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');

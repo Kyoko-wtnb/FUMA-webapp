@@ -383,11 +383,10 @@ function expHeatMap(id){
                       .attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
                     rowLabels.transition().duration(2000)
                       .attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol;});
-                    colLabels.transition().duration(2000)
-                      .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
-                      .attr("transform", function(d){
-                        return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height+3)+")rotate(-90)";
-                      });
+					  colLabels.transition().duration(2000)
+                        .attr("transform", function(d){
+                          return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
+                        });
                   }else if(gsort=="clst" && tssort=="alph"){
                     heatMap.transition().duration(2000)
                       .attr("fill", function(d){return col(d.log2)})
@@ -395,11 +394,10 @@ function expHeatMap(id){
                       .attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
                     rowLabels.transition().duration(2000)
                       .attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol;});
-                    colLabels.transition().duration(2000)
-                      .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
-                      .attr("transform", function(d){
-                        return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height+3)+")rotate(-90)";
-                      });
+					  colLabels.transition().duration(2000)
+                        .attr("transform", function(d){
+                          return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
+                        });
                   }else if(gsort=="alph" && tssort=="clst"){
                     heatMap.transition().duration(2000)
                       .attr("fill", function(d){return col(d.log2)})
@@ -407,11 +405,10 @@ function expHeatMap(id){
                       .attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
                     rowLabels.transition().duration(2000)
                       .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
-                    colLabels.transition().duration(2000)
-                      .attr("y", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeCol;})
-                      .attr("transform", function(d){
-                        return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height+3)+")rotate(-90)";
-                      });
+					  colLabels.transition().duration(2000)
+                        .attr("transform", function(d){
+                          return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
+                        });
                   }else if(gsort=="alph" && tssort=="alph"){
                     heatMap.transition().duration(2000)
                       .attr("fill", function(d){return col(d.log2)})
@@ -419,11 +416,10 @@ function expHeatMap(id){
                       .attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
                     rowLabels.transition().duration(2000)
                       .attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
-                    colLabels.transition().duration(2000)
-                      .attr("y", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeCol;})
-                      .attr("transform", function(d){
-                        return "translate("+(tsalph[tss.indexOf(d.ts)]*(itemSizeCol/2)-itemSizeCol/2)+","+(2*height+3)+")rotate(-90)";
-                      });
+					  colLabels.transition().duration(2000)
+                        .attr("transform", function(d){
+                          return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
+                        });
                   }
                 }else{
                   var normMax = d3.max(exp,function(d){return d.norm});
