@@ -14,3 +14,4 @@
 <script type="text/javascript" src="{!! URL::asset('js/sweetalert.min.js') !!}"></script>
 <link rel="stylesheet" href="{!! URL::asset('css/sweetalert.css') !!}">
 <script type="text/javascript" src="{!! URL::asset('js/fuma.js') !!}"></script>
+<script src="{!! URL::asset('js/google_analytics.js') !!}"></script>
