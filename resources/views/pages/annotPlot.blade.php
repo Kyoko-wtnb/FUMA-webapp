@@ -419,8 +419,8 @@ $(document).ready(function(){
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
                         +'</td></tr><tr><td>CADD</td><td>'+d.CADD
-                        +'</td></tr><tr><td>RDB</td><td>'+d.RDB
-                        +'</td></tr>';
+                        +'</td></tr><tr><td>RDB</td><td><a target="_blank" href="http://regulomedb.org/snp/chr'+chr+'/'+(d.pos-1)+'">'+d.RDB
+                        +' (external link)*</a></td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
                   if(cells[0]=="all"){cells=Chr15eid;}
@@ -451,8 +451,8 @@ $(document).ready(function(){
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
                         +'</td></tr><tr><td>CADD</td><td>'+d.CADD
-                        +'</td></tr><tr><td>RDB</td><td>'+d.RDB
-                        +'</td></tr>';
+						+'</td></tr><tr><td>RDB</td><td><a target="_blank" href="http://regulomedb.org/snp/chr'+chr+'/'+(d.pos-1)+'">'+d.RDB
+                        +' (external link)*</a></td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
                   if(cells[0]=="all"){cells=Chr15eid;}
@@ -492,8 +492,8 @@ $(document).ready(function(){
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
                         +'</td></tr><tr><td>CADD</td><td>'+d.CADD
-                        +'</td></tr><tr><td>RDB</td><td>'+d.RDB
-                        +'</td></tr>';
+						+'</td></tr><tr><td>RDB</td><td><a target="_blank" href="http://regulomedb.org/snp/chr'+chr+'/'+(d.pos-1)+'">'+d.RDB
+                        +' (external link)*</a></td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
                   if(cells[0]=="all"){cells=Chr15eid;}
@@ -566,8 +566,8 @@ $(document).ready(function(){
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
                         +'</td></tr><tr><td>CADD</td><td>'+d.CADD
-                        +'</td></tr><tr><td>RDB</td><td>'+d.RDB
-                        +'</td></tr>';
+						+'</td></tr><tr><td>RDB</td><td><a target="_blank" href="http://regulomedb.org/snp/chr'+chr+'/'+(d.pos-1)+'">'+d.RDB
+                        +' (external link)*</a></td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
                   if(cells[0]=="all"){cells=Chr15eid;}
@@ -659,8 +659,8 @@ $(document).ready(function(){
                         +'</td></tr><tr><td>Annotation</td><td>'+d.func
                         +'</td></tr><tr><td>Nearest Gene</td><td>'+d.nearestGene
                         +'</td></tr><tr><td>CADD</td><td>'+d.CADD
-                        +'</td></tr><tr><td>RDB</td><td>'+d.RDB
-                        +'</td></tr>';
+						+'</td></tr><tr><td>RDB</td><td><a target="_blank" href="http://regulomedb.org/snp/chr'+chr+'/'+(d.pos-1)+'">'+d.RDB
+                        +' (external link)*</a></td></tr>';
                 if(Chr15==1){
                   cells = Chr15cells.split(":");
                   if(cells[0]=="all"){cells=Chr15eid;}
@@ -1268,7 +1268,7 @@ function geneOver(genes, x, width){
       ){return d2;}
       else if(x((d2.end_position+d2.start_position+d2.external_gene_name.length*12)/2)>=x((tg[i].end_position+tg[i].start_position)/2)-((tg[i].external_gene_name.length*12)/2)
           && x((d2.end_position+d2.start_position+d2.external_gene_name.length*12)/2)<=x((tg[i].end_position+tg[i].start_position)/2)+((tg[i].external_gene_name.length*12)/2)
-        ){return d2}
+      ){return d2}
     })
     if(temp.length>1){
 		var yall = [];
@@ -1506,6 +1506,9 @@ function ImgDown(id, type){
     </form>    <div id="annotPlot"></div>
     <br/>
     <div id="RDBlegend"></div>
+	*External link to RegulomeDB from SNP table (when one of the SNPs is clicked) will open a new tab.
+	rsID does not always match since RegulomeDB used dbSNP build 141 (the rsID in FUMA is dbSNP build 146).
+	Genomic position (bp on hg19) shown in the link of RegulomeDB is the position shown in the SNP table - 1, since RegulomeDB used 0 based corrdinate.
     <br/>
     <div id="EIDlegend"></div>
     <br/>
