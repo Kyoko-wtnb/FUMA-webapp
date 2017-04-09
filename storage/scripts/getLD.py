@@ -131,7 +131,7 @@ if becol:
 	ohead += "\tbeta"
 if secol:
 	ohead += "\tse"
-ohead += "\tr2\tIndSigSNP\tGenomicLocus\tnearestGene\tdist\tfunc\tCADD\tRDB\tminChrState\tcommonChrState"
+ohead += "\tr2\tIndSigSNP\tGenomicLocus"
 ohead += "\n"
 with open(snpsout, 'w') as o:
 	o.write(ohead)
@@ -184,18 +184,20 @@ if leadSNPs:
 ###################
 gwasfile_chr = []
 chr_cur = 0
+cur_i = 0
 row = 0
 gwasf = open(gwas, 'r')
 gwasf.readline()
 for l in gwasf:
 	row += 1
-	l = re.match(r"(\d+)\t.+", l)
+	l = re.match(r"^(\d+)\t.+", l)
 	chr_tmp = int(l.group(1))
 	if chr_tmp == chr_cur:
-		gwasfile_chr[chr_cur-1][2] += 1
+		gwasfile_chr[cur_i-1][2] += 1
 	else:
 		chr_cur = chr_tmp
 		gwasfile_chr.append([chr_cur, row, 1])
+		cur_i += 1
 gwasf.close()
 
 gwasfile_chr = np.array(gwasfile_chr)
@@ -627,7 +629,7 @@ for i in range(0,len(leadSNPs)):
 	addcol.append([str(i+1), str(uid2gl[leadSNPs[i,0]])])
 leadSNPs = np.c_[addcol, leadSNPs]
 
-with open(leadout, 'w') as o:
+with open(indsigout, 'w') as o:
 	o.write("\t".join(["No", "GenomicLocus", "uniqID", "rsID", "chr", "pos", "p","nSNPs", "nGWASSNPs"])+"\n")
 with open(indsigout, 'a') as o:
 	np.savetxt(o, IndSigSNPs, delimiter="\t", fmt="%s")
@@ -652,18 +654,22 @@ os.system(annov+"/annotate_variation.pl -out "+annovout+" -build hg19 "+annovin+
 annov1 = filedir+"annov.variant_function"
 annov2 = filedir+"annov.txt"
 os.system(os.path.dirname(os.path.realpath(__file__))+"/annov_geneSNPs.pl "+annov1+" "+annov2)
-annov = pd.read_table(annov2, sep="\t")
-annov = annov.as_matrix()
+os.system("rm "+filedir+"annov.input "+filedir+"annov.*function "+filedir+"annov.log")
 
 ###################
 # snps annotation
 ###################
 addcol = [] #r2, IndSigSNP, GenomicLocus, nearestGene, dist, func, CADD, RDB, minChrState, commonChrState
 for l in snps:
-	tmp = list(ld[ld[:,1]==l[0] & float(ld[:,2])==max(ld[ld[:,1]==l[0],2].astype(float))])
+	tmp = ld[ld[:,1]==l[0]]
+	tmp = tmp[tmp[:,2]==max(tmp[:,2])][0]
 	r2 = tmp[2]
-	IndSigSNP = snps[snps[:,0]==tmp[0],1]
-	GenomicLocus = IndSigSNPs[IndSigSNPs[:,2]==temp[0],1]
-	tmp = annov[annov[:,0]==l[0] & annov[]]
+	rsID = snps[snps[:,0]==tmp[0],1][0]
+	GenomicLocus = IndSigSNPs[IndSigSNPs[:,2]==tmp[0],1][0]
+	addcol.append([r2, rsID, GenomicLocus])
+snps = np.c_[snps, addcol]
+with open(snpsout, 'a') as o:
+	np.savetxt(o, snps, delimiter="\t", fmt="%s")
+
 
 print time.time() - starttime
