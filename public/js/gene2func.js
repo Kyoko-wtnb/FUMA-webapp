@@ -1212,7 +1212,7 @@ function GeneSet(id){
           var ngs = gs.length;
           var barplotwidth = 150;
 
-          var margin = {top: 40, right: 10, bottom: 80, left: Math.max(gs_max*6, 60)},
+          var margin = {top: 40, right: 10, bottom: 80, left: Math.max(gs_max*6, 80)},
               width = barplotwidth*2+10+(Math.max(genes.length,6)*15),
               height = 15*ngs;
           // $('#test').append("<p>"+category[i]+" width: "+width+"</p>")
@@ -1294,27 +1294,93 @@ function GeneSet(id){
           // bar plot (enrichment P-value)
           var xbar = d3.scale.linear().range([barplotwidth, barplotwidth*2]);
           var xbarAxis = d3.svg.axis().scale(xbar).orient("bottom");
-          xbar.domain([0, d3.max(tdata, function(d){return -Math.log10(d.adjP)})]);
-          // var y = d3.scale.ordinal().rangeBands([0,height]);
-          // var yAxis = d3.svg.axis().scale(y).orient("left");
-          // y.domain(tdata.map(function(d){return d.GeneSet;}));
-          svg.selectAll('rect.p').data(tdata).enter()
-            .append("rect").attr("class", "bar")
-            .attr("x", xbar(0))
-            .attr("width", function(d){return xbar(-Math.log10(d.adjP))-barplotwidth})
-            .attr("y", function(d){return y(d.GeneSet)})
-            .attr("height", 15)
-            .style("fill", "#4d4dff")
-            .style("stroke", "grey")
-            .style("stroke-width", 0.3);
-          svg.append('g').attr("class", "y axis")
-            .call(yAxis).selectAll('text').style('font-size', '11px');
-          svg.append('g').attr("class", "x axis")
-            .attr("transform", "translate(0,"+height+")")
-            .call(xbarAxis).selectAll('text').attr('font-weight', 'normal')
-            .style("text-anchor", "end").attr("transform", function (d) {return "translate(-10,3)rotate(-65)";})
-            .style('font-size', '11px');
-            // .attr("dx","-.75em").attr("dy", "-.15em");
+		  if(d3.min(tdata, function(d){return d.adjP})==0){
+			  if(tdata.length==1){
+				  xbar.domain([0, 1]);
+				  svg.selectAll('rect.p').data(tdata).enter()
+		            .append("rect").attr("class", "bar")
+		            .attr("x", xbar(0))
+		            .attr("width", function(d){return xbar(1)-barplotwidth})
+		            .attr("y", function(d){return y(d.GeneSet)})
+		            .attr("height", 15)
+		            .style("fill", "#4d4dff")
+		            .style("stroke", "grey")
+		            .style("stroke-width", 0.3);
+				  svg.append('g').attr("class", "x axis")
+				    .attr("transform", "translate(0,"+height+")")
+				    .call(xbarAxis).selectAll('text').remove();
+				  svg.append('text').attr('font-weight', 'normal')
+				    .style("text-anchor", "end")
+					// .attr("y", height).attr("x", xbar(1))
+					.attr("transform", "translate("+(xbar(1)+3)+","+(height+12)+")rotate(-65)")
+					.text("Inf")
+				    .style('font-size', '11px');
+				  svg.append('text').attr('font-weight', 'normal')
+				    .style("text-anchor", "end")
+				    .attr("transform", "translate("+(xbar(0)+3)+","+(height+12)+")rotate(-65)")
+				    .text("0.0")
+				    .style('font-size', '11px');
+			  }else{
+				  var tmp_max = d3.max(tdata, function(d){if(d.adjP!=0){return -Math.log10(d.adjP)}})
+				  xbar.domain([0, tmp_max*1.5]);
+				  svg.selectAll('rect.p').data(tdata).enter()
+		            .append("rect").attr("class", "bar")
+		            .attr("x", xbar(0))
+		            .attr("width", function(d){
+						if(d.adjP==0){
+							return xbar(tmp_max*1.5)-barplotwidth
+						}else{
+							return xbar(-Math.log10(d.adjP))-barplotwidth
+						}
+					})
+		            .attr("y", function(d){return y(d.GeneSet)})
+		            .attr("height", 15)
+		            .style("fill", "#4d4dff")
+		            .style("stroke", "grey")
+		            .style("stroke-width", 0.3);
+				  svg.append('g').attr("class", "x axis")
+	  	            .attr("transform", "translate(0,"+height+")")
+	  	            .call(xbarAxis)
+					.selectAll(".tick")
+		            .each(function (d) {
+		                if ( d >= tmp_max ) {
+		                    this.remove();
+		                }
+		            })
+					.selectAll('text').attr('font-weight', 'normal')
+	  	            .style("text-anchor", "end").attr("transform", function (d) {return "translate(-10,3)rotate(-65)";})
+	  	            .style('font-size', '11px');
+				  svg.append('text').attr('font-weight', 'normal')
+  				    .style("text-anchor", "end")
+  					// .attr("y", height).attr("x", xbar(1))
+  					.attr("transform", "translate("+(xbar(tmp_max*1.5)+3)+","+(height+12)+")rotate(-65)")
+  					.text("Inf")
+  				    .style('font-size', '11px');
+			  }
+		  }else{
+			  xbar.domain([0, d3.max(tdata, function(d){return -Math.log10(d.adjP)})]);
+	          // var y = d3.scale.ordinal().rangeBands([0,height]);
+	          // var yAxis = d3.svg.axis().scale(y).orient("left");
+	          // y.domain(tdata.map(function(d){return d.GeneSet;}));
+	          svg.selectAll('rect.p').data(tdata).enter()
+	            .append("rect").attr("class", "bar")
+	            .attr("x", xbar(0))
+	            .attr("width", function(d){return xbar(-Math.log10(d.adjP))-barplotwidth})
+	            .attr("y", function(d){return y(d.GeneSet)})
+	            .attr("height", 15)
+	            .style("fill", "#4d4dff")
+	            .style("stroke", "grey")
+	            .style("stroke-width", 0.3);
+
+	          svg.append('g').attr("class", "x axis")
+	            .attr("transform", "translate(0,"+height+")")
+	            .call(xbarAxis).selectAll('text').attr('font-weight', 'normal')
+	            .style("text-anchor", "end").attr("transform", function (d) {return "translate(-10,3)rotate(-65)";})
+	            .style('font-size', '11px');
+	            // .attr("dx","-.75em").attr("dy", "-.15em");
+		  }
+		  svg.append('g').attr("class", "y axis")
+			.call(yAxis).selectAll('text').style('font-size', '11px');
 
           // gene plot
           var xgenes = d3.scale.ordinal().rangeBands([barplotwidth*2+10,barplotwidth*2+10+15*genes.length]);
