@@ -23,10 +23,11 @@ class JsController extends Controller
 
 
     public function DTfile(Request $request){
-      $filedir = $request -> input('filedir');
+      $jobID = $request -> input('jobID');
       $fin = $request -> input('infile');
       $cols = $request -> input('header');
       $cols = explode(":", $cols);
+	  $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $f = $filedir.$fin;
       if(file_exists($f)){
         $file = fopen($f, 'r');

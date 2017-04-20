@@ -103,7 +103,7 @@ $(document).ready(function(){
             GWplot(jobid);
             QQplot(jobid);
             MAGMAtsplot(jobid);
-            showResultTables(filedir, jobid, posMap, eqtlMap, orcol, becol, secol);
+            showResultTables(jobid, posMap, eqtlMap, orcol, becol, secol);
             $('#GWplotSide').show();
             $('#results').show();
             $('#resultsSide').show();
@@ -547,6 +547,28 @@ function QQplot(jobID){
 }
 
 function MAGMAtsplot(jobID){
+  var file = "magma.sets.top";
+  $('#MAGMAtable').DataTable({
+	  "processing": true,
+	  serverSide: false,
+	  select: true,
+	  "ajax" : {
+	    url: "DTfile",
+	    type: "POST",
+	    data: {
+	      jobID: jobID,
+	      infile: file,
+	      header: "FULL_NAME:NGENES:BETA:BETA_STD:SE:P:Pbon"
+	    }
+	  },
+	  error: function(){
+	    alert("leadSNPs table error");
+	  },
+	  "order": [[6, 'asc']],
+	  "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+	  "iDisplayLength": 10
+  });
+
   d3.json(subdir+'/snp2gene/MAGMAtsplot/general/'+jobID, function(data){
     if(data==null || data==undefined || data.lenght==0){
       $('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
@@ -725,7 +747,7 @@ function MAGMAtsplot(jobID){
   });
 }
 
-function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
+function showResultTables(jobID, posMap, eqtlMap, orcol, becol, secol){
   $('#plotClear').hide();
   $('#download').attr('disabled', false);
   if(eqtlMap==0){
@@ -765,29 +787,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
     }
   });
 
-  var file = "magma.sets.top";
-  $('#MAGMAtable').DataTable({
-    "processing": true,
-    serverSide: false,
-    select: true,
-    "ajax" : {
-      url: "DTfile",
-      type: "POST",
-      data: {
-        filedir: filedir,
-        infile: file,
-        header: "FULL_NAME:NGENES:BETA:BETA_STD:SE:P:Pbon"
-      }
-    },
-    error: function(){
-      alert("leadSNPs table error");
-    },
-    "order": [[6, 'asc']],
-    "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-    "iDisplayLength": 10
-  });
-
-  file = "GenomicRiskLoci.txt";
+  var file = "GenomicRiskLoci.txt";
   var lociTable = $('#lociTable').DataTable({
       "processing": true,
       serverSide: false,
@@ -796,7 +796,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         url: "DTfile",
         type: "POST",
         data: {
-          filedir: filedir,
+          jobID: jobID,
           infile: file,
           header: "GenomicLocus:uniqID:rsID:chr:pos:p:start:end:nSNPs:nGWASSNPs:nIndSigSNPs:IndSigSNPs:nLeadSNPs:LeadSNPs"
         }
@@ -817,7 +817,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         url: "DTfile",
         type: "POST",
         data: {
-          filedir: filedir,
+          jobID: jobID,
           infile: file,
           header: "No:GenomicLocus:uniqID:rsID:chr:pos:p:nIndSigSNPs:IndSigSNPs"
         }
@@ -838,7 +838,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         url: "DTfile",
         type: "POST",
         data: {
-          filedir: filedir,
+          jobID: jobID,
           infile: file,
           header: "No:GenomicLocus:uniqID:rsID:chr:pos:p:nSNPs:nGWASSNPs"
         }
@@ -880,7 +880,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
       url: 'DTfile',
       type: "POST",
       data: {
-        filedir: filedir,
+        jobID: jobID,
         infile: file,
         header: cols
       }
@@ -902,7 +902,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
       url: 'DTfile',
       type: "POST",
       data: {
-        filedir: filedir,
+        jobID: jobID,
         infile: file,
         header: "uniqID:chr:pos:gene:symbol:dist:annot:exonic_func:exon"
       }
@@ -935,7 +935,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
       url: 'DTfile',
       type: "POST",
       data: {
-        filedir: filedir,
+        jobID: jobID,
         infile: file,
         header: col
       }
@@ -955,7 +955,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         url: 'DTfileServerSide',
         type: "POST",
         data: {
-          filedir: filedir,
+          jobID: jobID,
           infile: file,
           header: "uniqID:chr:pos:db:tissue:gene:symbol:p:FDR:tz"
         }
@@ -974,7 +974,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
         url: 'DTfile',
         type: "POST",
         data: {
-          filedir: filedir,
+          jobID: jobID,
           infile: file,
           header: "GenomicLocus:leadSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
         }
@@ -991,7 +991,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
   //     url: 'DTfile',
   //     type: "POST",
   //     data: {
-  //       filedir: filedir,
+  //       jobID: jobID,
   //       infile: file,
   //     }
   //   },
