@@ -629,6 +629,21 @@ function CheckAll(){
       +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
   }
 
+  table = $('#NewJobPaintor')[0];
+  $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+  if($('#paintor').is(':checked')==true){
+	  $('#paintorAnnot').show();
+	  $('#paintorOpt').prop('disabled', false);
+	  $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        +'<i class="fa fa-check"></i> PAINTOR will be performed for identified genomic risk loci.<br/>Optional annotations can be selected from the select box.<br/>Please refer the tutorial for the complete list of annotations.</div></td>');
+  }else{
+	  $('#paintorAnnot').hide();
+	  $('#paintorOpt').prop('disabled', true);
+	  $(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+  }
+
   if(submit){$('#SubmitNewJob').attr("disabled", false)}
   else{$('#SubmitNewJob').attr("disabled", true)}
 }

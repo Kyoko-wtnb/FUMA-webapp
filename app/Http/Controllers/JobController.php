@@ -89,7 +89,13 @@ class JobController extends Controller
       $orcol = $params['orcol'];
       $becol = $params['becol'];
       $secol = $params['secol'];
-      echo "$filedir:$posMap:$eqtlMap:$orcol:$becol:$secol";
+	  if(array_key_exists("paintor", $params)){
+		  $paintor = $params['paintor'];
+	  }else{
+		  $paintor = 0;
+	  }
+
+      echo "$filedir:$posMap:$eqtlMap:$orcol:$becol:$secol:$paintor";
     }
 
     public function Error5(Request $request){
@@ -245,6 +251,7 @@ class JobController extends Controller
       $orcol = "NA";
       $becol = "NA";
       $secol = "NA";
+	  $zcol = "NA";
       // $mafcol = "NA";
       if($request -> has('chrcol')){$chrcol = $request->input('chrcol');}
       if($request -> has('poscol')){$poscol = $request->input('poscol');}
@@ -255,6 +262,7 @@ class JobController extends Controller
       if($request -> has('orcol')){$orcol = $request->input('orcol');}
       if($request -> has('becol')){$orcol = $request->input('becol');}
       if($request -> has('secol')){$secol = $request->input('secol');}
+	  if($request -> has('zcol')){$secol = $request->input('zcol');}
       // if($request -> has('mafcol')){$chrcol = $request->input('mafcol');}
       // MHC region
       if($request -> has('MHCregion')){
@@ -385,6 +393,33 @@ class JobController extends Controller
         $eqtlMapChr15Max = "NA";
         $eqtlMapChr15Meth = "NA";
       }
+
+	  // PAINTOR options
+	  $paintor = 0;
+	  if($request->has('paintor')){
+		  $paintor = 1;
+		  $paintorAnnot = [];
+		  $temp = $request -> input("paintorAnnot");
+		  foreach($temp as $a){
+			  if($a != "null"){
+				  $paintorAnnot[] = $a;
+			  }
+		  }
+		  if(count($paintorAnnot)==0){
+			  $paintorAnnot = "NA";
+		  }else{
+			  $paintorAnnot = implode(":", $paintorAnnot);
+		  }
+		  $paintorOpt = $request->input("paintorOpt");
+		  if(strlen($paintorOpt)==0){
+			  $paintorOpt = "NA";
+		  }
+	  }else{
+		  $paintorAnnot = "NA";
+		  $paintorOpt = "NA";
+	  }
+
+
       // write parameter into a file
       $paramfile = $filedir.'/params.config';
       File::put($paramfile, "[jobinfo]\n");
@@ -406,6 +441,7 @@ class JobController extends Controller
       File::append($paramfile, "orcol=$orcol\n");
       File::append($paramfile, "becol=$becol\n");
       File::append($paramfile, "secol=$secol\n");
+	  File::append($paramfile, "zcol=$zcol\n");
       // File::append($paramfile, "mafcol=$mafcol\n");
 
       if($leadSNPsfileup==1){File::append($paramfile, "leadSNPsfile=".$_FILES["leadSNPs"]["name"]."\n");}
@@ -451,6 +487,11 @@ class JobController extends Controller
       File::append($paramfile, "eqtlMapChr15=$eqtlMapChr15\n");
       File::append($paramfile, "eqtlMapChr15Max=$eqtlMapChr15Max\n");
       File::append($paramfile, "eqtlMapChr15Meth=$eqtlMapChr15Meth\n");
+
+	  File::append($paramfile, "\n[paintor]\n");
+	  File::append($paramfile, "paintor=$paintor\n");
+	  File::append($paramfile, "annot=$paintorAnnot\n");
+	  File::append($paramfile, "options=$paintorOpt\n");
 
       // $user = DB::table('users')->where('email', $email)->first();
       // $this->dispatch(new snp2geneProcess($user, $jobID));

@@ -79,6 +79,7 @@ $(document).ready(function(){
       var orcol;
       var becol;
       var secol;
+	  var paintor;
       $.ajax({
           url: subdir+'/snp2gene/getParams',
           type: 'POST',
@@ -97,12 +98,16 @@ $(document).ready(function(){
             orcol = tmp[3];
             becol = tmp[4];
             secol = tmp[5];
+			paintor = tmp[6];
           },
           complete: function(){
             // jobInfo(jobid);
             GWplot(jobid);
             QQplot(jobid);
             MAGMAtsplot(jobid);
+			if(paintor==1){
+				Paintor(jobid);
+			}
             showResultTables(filedir, jobid, posMap, eqtlMap, orcol, becol, secol);
             $('#GWplotSide').show();
             $('#results').show();
@@ -723,6 +728,10 @@ function MAGMAtsplot(jobID){
       });
     }
   });
+}
+
+function Paintor(jobID){
+	
 }
 
 function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){

@@ -145,10 +145,12 @@ def Get_Annot(paintor_annot, paintor_annotdir):
 		annot = [re.match(r'.*\/(.+)', x).group(1) for x in paintor_annot]
 		return annot
 
-def Run_PAINTOR(filedir, paintor, annot):
+def Run_PAINTOR(filedir, paintor, annot, options):
 	command = paintor+"/PAINTOR -input "+filedir+"PAINTOR/input/input.files -in "+filedir+"PAINTOR/input/ -out "+filedir+"PAINTOR/output/ -Zhead Zscore -LDname ld"
 	if annot[0] != "NA":
 		command += " -annotations "+",".join(annot)
+	if options != "NA":
+		command += " "+options
 	os.system(command)
 
 def main():
@@ -183,6 +185,7 @@ def main():
 		paintor_annot = paintor_annot.split(":")
 		if "all" in paintor_annot:
 			paintor_annot = ["all"]
+	paintor_opt = param.get("paintor", "options")
 	zcol = param.get("inputfiles", "zcol")
 	becol = param.get("inputfiles", "becol")
 	orcol = param.get("inputfiles", "orcol")
@@ -203,7 +206,7 @@ def main():
 		Prepare_Input_Files(filedir, snps[snps[:,0]==i], i, chrom, refgenome, pop, paintor, paintor_annotdir, paintor_annot)
 
 	annot = Get_Annot(paintor_annot, paintor_annotdir)
-	Run_PAINTOR(filedir, paintor, annot)
+	Run_PAINTOR(filedir, paintor, annot, paintor_opt)
 
 	print time.time() - start
 

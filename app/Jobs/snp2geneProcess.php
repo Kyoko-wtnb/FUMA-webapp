@@ -254,6 +254,13 @@ class snp2geneProcess extends Job implements ShouldQueue
         }
       }
 
+	  if($params['paintor']==1){
+		  file_put_contents($logfile, "\n----- paintor.py -----\n", FILE_APPEND);
+          file_put_contents($errorfile, "\n----- paintor.py -----\n", FILE_APPEND);
+		  $script = storage_path().'/scripts/paintor.py';
+		  exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+	  }
+
       $this->rmFiles($filedir);
 
       DB::table('SubmitJobs') -> where('jobID', $jobID)
