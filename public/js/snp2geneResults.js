@@ -106,6 +106,7 @@ $(document).ready(function(){
             QQplot(jobid);
             MAGMAtsplot(jobid);
 			if(paintor==1){
+				$('#PaintorSide').show();
 				Paintor(jobid);
 			}
             showResultTables(filedir, jobid, posMap, eqtlMap, orcol, becol, secol);
@@ -731,7 +732,264 @@ function MAGMAtsplot(jobID){
 }
 
 function Paintor(jobID){
-	
+	$.ajax({
+		url: subdir+'/snp2gene/PaintorCheck',
+		type: 'POST',
+		data:{
+		  jobID: jobID
+	  	},
+	  	success: function(data){
+			console.log(data);
+			if(data == 1){
+				ShowPaintorResults(jobID);
+			}else{
+				PaintorError(jobID, data);
+			}
+		}
+	});
+}
+
+function ShowPaintorResults(jobID){
+	var loci = [];
+	$.ajax({
+		url: subdir+'/snp2gene/PaintorLocus',
+		type: 'POST',
+		data:{
+		  jobID: jobID
+	  	},
+	  	success: function(data){
+			loci = data.split(":");
+		},
+		complete: function(){
+			loci.forEach(function(i){
+				$('#PaintorLocusSelect').append('<option value="'+i+'">'+i+'</option>');
+			});
+			var thead = "<thead><tr>";
+			thead += "<th>chr</th><th>bp</th><th>rsID</th><th>ref</th><th>alt</th><th>Zscore</th><th>Posterior Prob.</th>";
+			$.ajax({
+				url: subdir+'/snp2gene/PaintorTableHeader',
+				type: 'POST',
+				data:{
+				  jobID: jobID
+			  	},
+			  	success: function(data){
+					data = JSON.parse(data);
+					if(data.length>0){
+						data.forEach(function(d){
+							thead += "<th>"+d+"</th>";
+						})
+					}
+				},
+				complete: function(){
+					thead += "</tr></thead>";
+					$('#PaintorTable').append(thead);
+					LoadPaintor(loci[0]);
+				}
+			});
+		}
+	});
+
+	function PaintorPlot(data){
+		d3.select('#PaintorPlot').selectAll("svg").remove();
+		data = JSON.parse(data);
+		data.data.forEach(function(d){
+			d[0] = +d[0]; //pos
+			d[1] = +d[1]; //Prob
+			d[2] = +d[2]; //P
+			d[3] = +d[3]; //r2
+			d[4] = +d[4]; //IndSigSNPs
+		});
+		var annot = data["annot"];
+		var margin = {top:50, right:250, left:60, bottom:80},
+	        height = 350 + 30*annot.length,
+	        width = 450;
+		var plotHeight = 150;
+		var PTop = 0;
+		var ProbTop = plotHeight+25;
+		var side = (d3.max(data.data, function(d){return d[0]})-d3.min(data.data, function(d){return d[0]}))*0.05;
+		if(side==0){side=500;}
+		var colorScale = d3.scale.linear().domain([0.0,0.5,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+
+		var svg = d3.select('#PaintorPlot').append('svg')
+				  .attr("width", width+margin.left+margin.right)
+				  .attr("height", height+margin.top+margin.bottom)
+				  .append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
+		var x = d3.scale.linear().range([0, width]);
+		var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
+		x.domain([d3.min(data.data, function(d){return d[0]})-side, d3.max(data.data, function(d){return d[0]})+side]);
+
+		// r2 legend
+		var legData = [];
+		for(i=10; i>0; i--){
+		  legData.push(i*0.1);
+		}
+		var legendGwas = svg.selectAll(".legendGWAS")
+		  .data(legData)
+		  .enter()
+		  .append("g").attr("class", "legend")
+		legendGwas.append("rect")
+		  .attr("x", width+20)
+		  .attr("y", function(d){return 10+(10-d*10)*10})
+		  .attr("width", 20)
+		  .attr("height", 10)
+		  .style("fill", function(d){return colorScale(d)});
+		legendGwas.append("text")
+		  .attr("text-anchor", "start")
+		  .attr("x", width+42)
+		  .attr("y", function(d){return 20+(10-d*10)*10})
+		  .text(function(d){return Math.round(d*100)/100})
+		  .style("font-size", "10px");
+		svg.append("text").attr("text-anchor", "middle")
+		  .attr("transform", "translate("+(width+30)+",5)")
+		  .text("r2").style("font-size", "10px");
+
+		svg.append("circle")
+			.attr("cx", width+25).attr("cy", 120)
+			.attr("r", 3.5)
+			.style("fill", "red").style("stroke", "black").style("stroke-width", "1");
+		svg.append("text").attr("text-anchor", "start")
+			.attr("transform", "translate("+(width+32)+",123)")
+			.text("Independent Significnat SNPs").style("font-size", "10px");
+
+		svg.append("circle")
+			.attr("cx", width+25).attr("cy", 180)
+			.attr("r", 3.5)
+			.style("fill", "red");
+		svg.append("text").attr("text-anchor", "start")
+			.attr("transform", "translate("+(width+32)+",183)")
+			.text("Credible SNPs (99%)").style("font-size", "10px");
+
+		// GWAS P-value
+		var yP = d3.scale.linear().range([plotHeight, 0]);
+		var yPAxis = d3.svg.axis().scale(yP).orient("left").ticks(5);
+		yP.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+		svg.selectAll("dot").data(data.data.filter(function(d){if(d[4]==0){return d;}})).enter()
+			.append("circle").attr("r", 3)
+			.attr("cx", function(d){return x(d[0])})
+			.attr("cy", function(d){return yP(-Math.log10(d[2]))})
+			.style("fill", function(d){return colorScale(d[3])});
+		svg.selectAll("dot").data(data.data.filter(function(d){if(d[4]==1){return d;}})).enter()
+			.append("circle").attr("r", 3.5)
+			.attr("cx", function(d){return x(d[0])})
+			.attr("cy", function(d){return yP(-Math.log10(d[2]))})
+			.style("fill", "red").style("stroke", "black").style("stroke-width", "1");
+		svg.append("g").attr("class", "x axis")
+			.attr("transform", "translate(0,"+(PTop+plotHeight)+")")
+			.call(xAxis).selectAll("text").remove();
+		svg.append("g").attr("class", "y axis").call(yPAxis)
+			.selectAll('text').style('font-size', '11px');
+		svg.append("text").attr("text-anchor", "middle")
+		  .attr("transform", "translate("+(-10-margin.left/2)+","+(plotHeight/2)+")rotate(-90)")
+		  .text("-log10 P-value");
+
+		// Posterior Prob plot
+		var yProb = d3.scale.linear().range([plotHeight+ProbTop, ProbTop]);
+		var yProbAxis = d3.svg.axis().scale(yProb).orient("left").ticks(5);
+		yProb.domain([0,1]);
+		svg.selectAll("dot").data(data.data).enter()
+			.append("circle").attr("r", 3.5)
+			.attr("cx", function(d){return x(d[0])})
+			.attr("cy", function(d){return yProb(d[1])})
+			.style("fill", function(d){
+				if(d[1]>=0.99){return "red"}
+				else{return "steelblue"}
+			});
+		svg.append("g").attr("class", "x axis")
+			.attr("transform", "translate(0,"+(ProbTop+plotHeight)+")")
+			.call(xAxis)
+			.selectAll('text').style('font-size', '11px');
+		svg.append("g").attr("class", "y axis").call(yProbAxis)
+			.selectAll('text').style('font-size', '11px');
+		svg.append("text").attr("text-anchor", "middle")
+		  .attr("transform", "translate("+(-10-margin.left/2)+","+((plotHeight*2+ProbTop)/2)+")rotate(-90)")
+		  .text("Posterior Probability");
+
+		// Annotations
+		if(annot.length > 0){
+			var curHeight = 350;
+			for(var i = 0; i < annot.length; i++){
+				tdata = data.annot_bed[i];
+				svg.append("rect")
+					.attr("x", 0).attr("y", curHeight)
+					.attr("width", width).attr("height", 10)
+					.style("stroke", "grey").style("strole-width", "1")
+					.style("fill", "transparent");
+				if(tdata.length>0){
+					tdata.forEach(function(d){
+						d[0] = +d[0];
+						d[1] = +d[1];
+					});
+					svg.selectAll("rect.annot").data(tdata).enter()
+						.append("rect")
+						.attr("x", function(d){return x(d[0])})
+						.attr("y", curHeight)
+						.attr("width", function(d){return x(d[1])-x(d[0])})
+						.attr("height", 10)
+						.style("fill", "MediumAquaMarine");
+				}
+				svg.append("text").attr("text-anchor", "middle")
+					.attr("transform", "translate("+width/2+","+(curHeight+20)+")")
+					.text(annot[i]).style("font-size", "11px");
+				curHeight += 30;
+			}
+		}
+
+		// label
+		svg.append("text").attr("text-anchor", "middle")
+			.attr("transform", "translate("+width/2+","+(-20)+")")
+			.text("Chromosome "+data["chr"]);
+		svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+		svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+		svg.selectAll('text').style('font-family', 'sans-serif');
+	}
+
+	function LoadPaintor(locus){
+		$('#PaintorTable').DataTable().destroy();
+		$('#PaintorTable').DataTable({
+	        "processing": true,
+	        serverSide: false,
+	        select: false,
+	        "ajax" : {
+	          url: subdir+"/snp2gene/PaintorTable",
+	          type: "POST",
+	          data: {
+	            jobID: jobID,
+				locus: locus
+	          }
+	        },
+	        error: function(){
+	          alert("PAINTOR table error");
+	        },
+	        "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+	        "iDisplayLength": 10
+	    });
+
+		$.ajax({
+			url: subdir+'/snp2gene/PaintorPlot',
+			type: 'POST',
+			data:{
+			  jobID: jobID,
+			  locus: locus
+		  	},
+		  	success: function(data){
+				PaintorPlot(data);
+			}
+		});
+	}
+
+	$('#PaintorLocusSelect').on("change", function(){
+		var locus = $('#PaintorLocusSelect').val();
+		LoadPaintor(locus);
+	});
+}
+
+function PaintorError(jobID, data){
+	$('#PaintorLocus').hide();
+	$('#PaintorTable').hide();
+	$('#PaintorImgDown').hide();
+	$('#PaintorPlot').hide();
+	$('#PaintorMsg').html('<div style="height:500px; padding-top:50px; text-align:center;"><span style="font-size:22px; color: red;"><i class="fa fa-ban"></i> There was an error reported from PAINTOR <br/>('+data+').<br/>'
+		+'PAINTOR require either Z-score or signed effect size such as beta or OR.</span><br/></div>');
 }
 
 function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){

@@ -3,6 +3,7 @@ $(document).ready(function(){
   $("#newJob").show();
   $("#GWplotSide").hide();
   $("#Error5Side").hide();
+  $("#PaintorSide").hide();
   $("#resultsSide").hide();
   $('#SubmitNewJob').attr('disabled',true);
   $('#go2job').attr('disabled',true);

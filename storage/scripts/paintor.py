@@ -13,7 +13,7 @@ from bisect import bisect_left
 def Check_Column(zcol, becol, orcol):
 	##### parameter check #####
 	if zcol=="NA" and becol=="NA" and orcol=="NA":
-		sys.exit("Neither Z score nor signed effect size is not given")
+		sys.exit("ERROR: Neither Z score nor signed effect size is not given")
 	zscore = False
 	if zcol != "NA":
 		zscore = True
@@ -158,10 +158,10 @@ def Run_PAINTOR(filedir, paintor, annot, options):
 		command += " "+options
 	os.system(command)
 
-def Run_CANVIS(filedir, locus, paintor, annot):
-	command = "python "+paintor+"/CANVIS/CANVIS.py -l "+filedir+"PAINTOR/output/Locus"+str(locus)+" -z Zscore -r "+filedir+"PAINTOR/input/Locus"+str(locus)+".ld -a "+filedir+"PAINTOR/input/Locus"+str(locus)+".annotations -s "+" ".join(annot)+" -t 99 -o"+filedir+"PAINTOR/plots/Locus"+str(locus)
-	os.system(command)
-	os.rm(filedir+"PAINTOR/plots/*.html")
+# def Run_CANVIS(filedir, locus, paintor, annot):
+# 	command = "python "+paintor+"/CANVIS/CANVIS.py -l "+filedir+"PAINTOR/output/Locus"+str(locus)+".results -z Zscore -r "+filedir+"PAINTOR/input/Locus"+str(locus)+".ld -a "+filedir+"PAINTOR/input/Locus"+str(locus)+".annotations -s "+" ".join(annot)+" -t 99 -L n -o"+filedir+"PAINTOR/plots/Locus"+str(locus)
+# 	os.system(command)
+#	#os.remove(filedir+"PAINTOR/plots/*.html")
 
 def main():
 	##### check argument #####
@@ -207,8 +207,9 @@ def main():
 	if not os.path.isdir(filedir+"PAINTOR/input"):
 		os.mkdir(filedir+"PAINTOR/input")
 		os.mkdir(filedir+"PAINTOR/output")
-		os.mkdir(filedir+"PAINTOR/plots")
+		# os.mkdir(filedir+"PAINTOR/plots")
 
+	open(filedir+"PAINTOR/input/input.files", 'w').close()
 	zscore = Check_Column(zcol, becol, orcol)
 	snps = Get_Zscore(filedir, zscore)
 	loci = np.unique(snps[:,0])
@@ -219,11 +220,14 @@ def main():
 		if checkLoci:
 			checkedLoci.append(i)
 
-	annot = Get_Annot(paintor_annot, paintor_annotdir)
-	Run_PAINTOR(filedir, paintor, annot, paintor_opt)
+	if len(checkedLoci)==0:
+		sys.exit("ERROR: There was no locus containing more than one SNP after filtering. To perform PAINTOR, it require at least more than one locus with at least 2 SNPs.")
 
-	for i in checkedLoci:
-		Run_CANVIS(filedir, i, paintor, annot)
+	annot = Get_Annot(paintor_annot, paintor_annotdir)
+	#Run_PAINTOR(filedir, paintor, annot, paintor_opt)
+
+	# for i in checkedLoci:
+	# 	Run_CANVIS(filedir, i, paintor, annot)
 
 	print time.time() - start
 

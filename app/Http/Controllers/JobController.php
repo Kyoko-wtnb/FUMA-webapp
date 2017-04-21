@@ -76,6 +76,7 @@ class JobController extends Controller
         return $job->status;
     }
 
+
     public function getParams(Request $request){
       $jobID = $request->input('jobID');
       $date = date('Y-m-d H:i:s');
@@ -399,10 +400,12 @@ class JobController extends Controller
 	  if($request->has('paintor')){
 		  $paintor = 1;
 		  $paintorAnnot = [];
-		  $temp = $request -> input("paintorAnnot");
-		  foreach($temp as $a){
-			  if($a != "null"){
-				  $paintorAnnot[] = $a;
+		  if($request -> has("paintorAnnot")){
+			  $temp = $request -> input("paintorAnnot");
+			  foreach($temp as $a){
+				  if($a != "null"){
+					  $paintorAnnot[] = $a;
+				  }
 			  }
 		  }
 		  if(count($paintorAnnot)==0){

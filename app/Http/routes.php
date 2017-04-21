@@ -61,6 +61,16 @@ Route::get('snp2gene/QQplot/{type}/{jobID}/{plot}', 'D3jsController@QQplot');
 
 Route::get('snp2gene/MAGMAtsplot/{type}/{jobID}', 'D3jsController@MAGMAtsplot');
 
+Route::post('snp2gene/PaintorCheck', 'PaintorController@PaintorCheck');
+
+Route::post('snp2gene/PaintorLocus', 'PaintorController@PaintorLocus');
+
+Route::post('snp2gene/PaintorTableHeader', 'PaintorController@PaintorTableHeader');
+
+Route::post('snp2gene/PaintorTable', 'PaintorController@PaintorTable');
+
+Route::post('snp2gene/PaintorPlot', 'PaintorController@PaintorPlot');
+
 Route::post('snp2gene/paramTable', 'JsController@paramTable');
 
 Route::post('snp2gene/sumTable', 'JsController@sumTable');

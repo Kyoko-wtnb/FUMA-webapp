@@ -55,6 +55,9 @@
       <div id="Error5Side">
         <li><a href="#error5">ERROR:005<i class="sub_icon fa fa-exclamation-triangle"></i></a></li>
       </div>
+	  <div id="PaintorSide">
+        <li><a href="#paintorPanel">PAINTOR<i class="sub_icon fa fa-bar-chart"></i></a></li>
+      </div>
       <div id="resultsSide">
         <li><a href="#summaryTable">Summary of results<i class="sub_icon fa fa-bar-chart"></i></a></li>
         <li><a href="#tables">Results<i class="sub_icon fa fa-table"></i></a></li>
@@ -277,6 +280,39 @@
         </span>
         <br/>
         <table class="table table-bordered" id="topSNPs"></table>
+      </div>
+
+	  <!-- PAINTOR -->
+      <div class="sidePanel container" style="padding-top:50px;" id="paintorPanel">
+        <h4 style="color: #00004d">PAINTOR results</h4>
+		<span class="form-inline" id="PaintorLocus">Select a locus:
+			<select class="form-contorl" id="PaintorLocusSelect">
+			</select>
+		</span>
+        <div id="PaintorMsg">
+        </div>
+		<br/>
+		<table id="PaintorTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+		</table>
+		<div id="PaintorImgDown">
+			Download the plot as
+			<button class="btn btn-xs ImgDown" onclick='ImgDown("PaintorPlot","png");'>PNG</button>
+			<button class="btn btn-xs ImgDown" onclick='ImgDown("PaintorPlot","jpeg");'>JPG</button>
+			<button class="btn btn-xs ImgDown" onclick='ImgDown("PaintorPlot","svg");'>SVG</button>
+			<button class="btn btn-xs ImgDown" onclick='ImgDown("PaintorPlot","pdf");'>PDF</button>
+
+			<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
+			  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+			  <input type="hidden" name="dir" id="PaintorPlotDir" val=""/>
+			  <input type="hidden" name="id" id="PaintorPlotJobID" val=""/>
+			  <input type="hidden" name="data" id="PaintorPlotData" val=""/>
+			  <input type="hidden" name="type" id="PaintorPlotType" val=""/>
+			  <input type="hidden" name="fileName" id="PaintorPlotFileName" val=""/>
+			  <input type="submit" id="PaintorPlotSubmit" class="ImgDownSubmit"/>
+			</form>
+		</div>
+		<div id="PaintorPlot" style="text-align: center;">
+		</div>
       </div>
 
       <!-- Summary panel -->
