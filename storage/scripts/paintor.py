@@ -94,6 +94,8 @@ def Create_LDmatrix(filedir, snps, chrom, locus, refgenome, pop):
 		np.savetxt(fout, tmpvcf, fmt='%s', delimiter='')
 
 	fout = filedir+"PAINTOR/input/Locus"+str(locus)
+	snps_out = np.array(snps_out)
+	snps_out[:,0] = ["chr"+str(x) for x in snps_out[:,0].astype(int)]
 	with open(fout, 'w') as o:
 		o.write(" ".join(["chr", "pos", "rsid", "ref", "alt", "Zscore"])+"\n")
 	with open(fout, 'a') as o:
@@ -131,6 +133,9 @@ def Prepare_Input_Files(filedir, snps, locus, chrom, refgenome, pop, paintor, pa
 		Create_Annotfile(filedir, locus, paintor, paintor_annotdir, paintor_annot)
 		with open(filedir+"PAINTOR/input/input.files", 'a') as fout:
 			fout.write("Locus"+str(locus)+"\n")
+		return True
+	else:
+		return False
 
 def Get_Annot(paintor_annot, paintor_annotdir):
 	if paintor_annot[0] == "NA":
@@ -152,6 +157,11 @@ def Run_PAINTOR(filedir, paintor, annot, options):
 	if options != "NA":
 		command += " "+options
 	os.system(command)
+
+def Run_CANVIS(filedir, locus, paintor, annot):
+	command = "python "+paintor+"/CANVIS/CANVIS.py -l "+filedir+"PAINTOR/output/Locus"+str(locus)+" -z Zscore -r "+filedir+"PAINTOR/input/Locus"+str(locus)+".ld -a "+filedir+"PAINTOR/input/Locus"+str(locus)+".annotations -s "+" ".join(annot)+" -t 99 -o"+filedir+"PAINTOR/plots/Locus"+str(locus)
+	os.system(command)
+	os.rm(filedir+"PAINTOR/plots/*.html")
 
 def main():
 	##### check argument #####
@@ -197,16 +207,23 @@ def main():
 	if not os.path.isdir(filedir+"PAINTOR/input"):
 		os.mkdir(filedir+"PAINTOR/input")
 		os.mkdir(filedir+"PAINTOR/output")
+		os.mkdir(filedir+"PAINTOR/plots")
 
 	zscore = Check_Column(zcol, becol, orcol)
 	snps = Get_Zscore(filedir, zscore)
 	loci = np.unique(snps[:,0])
+	checkedLoci = []
 	for i in loci:
 		chrom = snps[snps[:,0]==i,1][0]
-		Prepare_Input_Files(filedir, snps[snps[:,0]==i], i, chrom, refgenome, pop, paintor, paintor_annotdir, paintor_annot)
+		checkLoci = Prepare_Input_Files(filedir, snps[snps[:,0]==i], i, chrom, refgenome, pop, paintor, paintor_annotdir, paintor_annot)
+		if checkLoci:
+			checkedLoci.append(i)
 
 	annot = Get_Annot(paintor_annot, paintor_annotdir)
 	Run_PAINTOR(filedir, paintor, annot, paintor_opt)
+
+	for i in checkedLoci:
+		Run_CANVIS(filedir, i, paintor, annot)
 
 	print time.time() - start
 

@@ -1012,7 +1012,7 @@
           <td>
 			  <span class="form-inline">
 				  <input type="checkbox" class="form-check-input" name="paintor" id="paintor" onchange="CheckAll();">
-				  <select multiple class="form-control" id="paintorAnnot" name="paintorAnnot" size="15" style="width:500px; overflow:auto;" onchange="CheckAll();">
+				  <select multiple class="form-control" id="paintorAnnot" name="paintorAnnot[]" size="15" style="width:500px; overflow:auto;" onchange="CheckAll();">
 					<option value="all">All</option>
 					<option class="level1" value="null">FANTOM5</option>
 					<option class="level2" value="FANTOM5/acinar_cell_differentially_expressed_enhancers.bed">acinar_cell_differentially_expressed_enhancers</option>
