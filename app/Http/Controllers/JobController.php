@@ -634,7 +634,11 @@ class JobController extends Controller
       if($request -> has('annovfile')){$files[] = "annov.txt";}
       if($request -> has('annotfile')){$files[] = "annot.txt";}
       if($request -> has('genefile')){$files[] = "genes.txt";}
-      if($request -> has('eqtlfile')){$files[] = "eqtl.txt";}
+      if($request -> has('eqtlfile')){
+		  if(File::exists($filedir."eqtl.txt")){
+			  $files[] = "eqtl.txt";
+		  }
+	  }
       // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
       if($request -> has('gwascatfile')){$files[] = "gwascatalog.txt";}
       if($request -> has('magmafile')){
@@ -651,6 +655,11 @@ class JobController extends Controller
           $files[] = "magma_exp_general.gcov.out";
         }
       }
+	  if($request -> has('paintorfile')){
+		  if(File::exists($filedir."PAINTOR.zip")){
+			  $files[] = "PAINTOR.zip";
+		  }
+	  }
 
       $zip = new \ZipArchive();
       $zipfile = $filedir."FUMA_job".$jobID.".zip";

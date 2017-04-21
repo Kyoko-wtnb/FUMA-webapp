@@ -229,6 +229,9 @@ def main():
 	# for i in checkedLoci:
 	# 	Run_CANVIS(filedir, i, paintor, annot)
 
+	##### zip files #####
+	os.system("zip -r "+filedir+"PAINTOR.zip "+filedir+"PAINTOR")
+
 	print time.time() - start
 
 if __name__ == "__main__" : main()

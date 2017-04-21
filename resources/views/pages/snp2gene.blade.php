@@ -772,6 +772,7 @@
           <!-- <input type="checkbox" name="exacfile" id="exacfile" checked onchange="DownloadFiles();">ExAC variants (rare variants from ExAC within genomic risk locis)<br/> -->
           <input type="checkbox" name="gwascatfile" id="gwascatfile" checked onchange="DownloadFiles();">SNPs in GWAS catalog (full features)<br/>
           <input type="checkbox" name="magmafile" id="magmafile" checked onchange="DownloadFiles();">MAGMA (full) results<br/>
+		  <div id="paintorfiledown"><input type="checkbox" name="paintorfile" id="paintorfile" checked onchange="DownloadFiles();">PAINTOR input files and results<br/></div>
           <a id="allfiles"> Select All </a><tab><a id="clearfiles"> Clear</a><br/>
           <br/>
           <input class="btn" type="submit" name="download" id="download" value="Download files"/>

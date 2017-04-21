@@ -108,6 +108,9 @@ $(document).ready(function(){
 			if(paintor==1){
 				$('#PaintorSide').show();
 				Paintor(jobid);
+			}else{
+				$('#paintorfiledown').hide();
+				$('paintorfile').prop("checked", false);
 			}
             showResultTables(filedir, jobid, posMap, eqtlMap, orcol, becol, secol);
             $('#GWplotSide').show();
@@ -168,6 +171,7 @@ $(document).ready(function(){
     $('#gwascatfile').prop('checked', true);
     // $('#exacfile').prop('checked', true);
     $('#magmafile').prop('checked', true);
+	$('#paintorfile').prop('checked', true);
     $('#download').attr('disabled',false);
   });
   $('#clearfiles').on('click', function(){
@@ -183,6 +187,7 @@ $(document).ready(function(){
     // $('#exacfile').prop('checked', false);
     $('#gwascatfile').prop('checked', false);
     $('#magmafile').prop('checked', false);
+	$('#paintorfile').prop('checked', false);
     $('#download').attr('disabled',true);
   });
 
@@ -739,7 +744,6 @@ function Paintor(jobID){
 		  jobID: jobID
 	  	},
 	  	success: function(data){
-			console.log(data);
 			if(data == 1){
 				ShowPaintorResults(jobID);
 			}else{
@@ -1867,8 +1871,10 @@ function DownloadFiles(){
   var genefile = document.getElementById('genefile').checked;
   var eqtlfile = document.getElementById('eqtlfile').checked;
   // var exacfile = document.getElementById('exacfile').checked;
+  var gwascatfile = document.getElementById('gwascatfile').checked;
   var magmafile = document.getElementById('magmafile').checked;
-  if(paramfile || leadfile || locifile || snpsfile || annovfile || annotfile || genefile || eqtlfile || magmafile){
+  var paintorfile = document.getElementById('paintorfile').checked;
+  if(paramfile || leadfile || locifile || snpsfile || annovfile || annotfile || genefile || eqtlfile || gwascatfile || magmafile || paintorfile){
     document.getElementById('download').disabled=false;
   }
 }
