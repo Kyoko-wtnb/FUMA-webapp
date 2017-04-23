@@ -13,7 +13,7 @@
       <span style="color:blue;">When users delete jobs, all results including the job submission recodes will be completely removed from the server.</span>
       Therefore, it is no longer possible to recover jobs which are accidentally removed.
       We recomend to download results (text files) and images as much as possible before deleting the job.
-      <span style="color:red;">Even though, FUMA resuls are only accessible from the logged in users, we strongly recommend to remove jobs whose results need to be hightly secured.</span>
+      <span style="color:red;">Even though, FUMA results are only accessible from the logged in users, we strongly recommend to remove jobs whose results need to be hightly secured.</span>
     </span>
   </div>
 </div>

@@ -2,7 +2,6 @@
 <p>Once your job is completed, you will receive an email.
   Unless an error occured during the process, the email includes the link to results page (this again requires login).
   You can also access to the results page from My Job list.
-  The result page displays 4 results panels.
 </p><br/>
 <img src="{!! URL::asset('/image/result.png') !!}" style="width:55%"/><br/><br/>
 
