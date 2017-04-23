@@ -80,6 +80,7 @@
         <a href="#outputs">Outputs</a>
         <a href="#table-columns">Table columns</a>
         <a href="#riskloci">Risk loci and lead SNPs</a>
+		<a href="#paintor">PAINTOR</a>
         <a href="#eQTLs">eQTLs</a>
         <!-- <a href="#examples">Example senarios</a> -->
       </div>
@@ -126,6 +127,8 @@
         <br/>
         @include('tutorial.snp2gene.riskloci')
         <br/>
+        @include('tutorial.snp2gene.paintor')
+		<br/>
         @include('tutorial.snp2gene.eqtl')
       </div>
     </div>

@@ -19,6 +19,10 @@ Route::get('tutorial', function(){
   return view('pages.tutorial');
 });
 
+Route::get('tutorial/paintor/annotations', function(){
+  return view('tutorial.paintor_annot');
+});
+
 Route::get('links', function(){
   return view('pages.links');
 });
