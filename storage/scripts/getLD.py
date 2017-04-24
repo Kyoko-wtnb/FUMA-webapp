@@ -210,6 +210,7 @@ gwasfile_chr = np.array(gwasfile_chr)
 refgenome = cfg.get('data', 'refgenome')
 
 def chr_process(ichrom):
+	count = 0
 	chrom = gwasfile_chr[ichrom][0]
 	print "Start chromosome "+str(chrom)+" ..."
 	regions_tmp = None
@@ -250,6 +251,8 @@ def chr_process(ichrom):
 	annot = []
 	IndSigSNPs = []
 	nlead = 0
+	pos_set = set(gwas_in[:,poscol])
+	posall = gwas_in[:,poscol]
 
 	ldfile = refgenome+"/"+pop+"ld/"+pop+".chr"+str(chrom)+".ld.gz"
 	annotfile = refgenome+"/"+pop+"/"+"chr"+str(chrom)+".data.txt.gz"
@@ -279,6 +282,8 @@ def chr_process(ichrom):
 			if lead_id == False:
 				continue
 			nlead += 1
+			count += 1
+			print count
 			tb = tabix.open(ldfile)
 			ld_tb = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 			ld_tmp = []
@@ -302,8 +307,9 @@ def chr_process(ichrom):
 					continue
 				if m[4] in ld_tmp[:,1]:
 					ild = np.where(ld_tmp[:,1]==m[4])[0][0]
-					if int(m[1]) in gwas_in[:, poscol]:
-						jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
+					if int(m[1]) in pos_set:
+						# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
+						jgwas = bisect_left(posall, int(m[1]))
 						if float(gwas_in[jgwas, pcol])>gwasP:
 							continue
 						allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
@@ -380,9 +386,10 @@ def chr_process(ichrom):
 		else:
 			return [], [], [], []
 
-	gwas_in = gwas_in[gwas_in[:,pcol].argsort()]
+	p_order = gwas_in[:,pcol].argsort()
 	if leadSNPs is None or addleadSNPs == 1:
-		for l in gwas_in:
+		for pi in p_order:
+			l = gwas_in[pi]
 			if float(l[pcol])>leadP:
 				break
 			allele = [l[refcol], l[altcol]]
@@ -402,6 +409,8 @@ def chr_process(ichrom):
 					continue
 				nlead += 1
 				tb = tabix.open(ldfile)
+				count += 1
+				print count
 				ld_tb = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 				ld_tmp = []
 				ld_tmp.append([l[poscol], l[rsIDcol], 1])
@@ -424,8 +433,9 @@ def chr_process(ichrom):
 						continue
 					if m[4] in ld_tmp[:,1]:
 						ild = np.where(ld_tmp[:,1]==m[4])[0][0]
-						if int(m[1]) in gwas_in[:, poscol]:
-							jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
+						if int(m[1]) in pos_set:
+							# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
+							jgwas = bisect_left(posall, int(m[1]))
 							if float(gwas_in[jgwas, pcol])>gwasP:
 								continue
 							allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
@@ -633,6 +643,9 @@ for i in range(0, len(leadSNPs)):
 loci = np.array(loci)
 
 addcol = []
+print len(IndSigSNPs)
+print len(uid2gl)
+print IndSigSNPs[0:5]
 for i in range(0,len(IndSigSNPs)):
 	addcol.append([str(i+1), str(uid2gl[IndSigSNPs[i,0]])])
 IndSigSNPs = np.c_[addcol, IndSigSNPs]
