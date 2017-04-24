@@ -397,6 +397,7 @@ class JobController extends Controller
 
 	  // PAINTOR options
 	  $paintor = 0;
+	  $paintorAmbAllele = 0;
 	  if($request->has('paintor')){
 		  $paintor = 1;
 		  $paintorAnnot = [];
@@ -412,6 +413,9 @@ class JobController extends Controller
 			  $paintorAnnot = "NA";
 		  }else{
 			  $paintorAnnot = implode(":", $paintorAnnot);
+		  }
+		  if($request -> has('paintorAmbAllele')){
+			  $paintorAmbAllele = 1;
 		  }
 		  $paintorOpt = $request->input("paintorOpt");
 		  if(strlen($paintorOpt)==0){
@@ -494,6 +498,7 @@ class JobController extends Controller
 	  File::append($paramfile, "\n[paintor]\n");
 	  File::append($paramfile, "paintor=$paintor\n");
 	  File::append($paramfile, "annot=$paintorAnnot\n");
+	  File::append($paramfile, "ambiguous_allele=$paintorAmbAllele\n");
 	  File::append($paramfile, "options=$paintorOpt\n");
 
       // $user = DB::table('users')->where('email', $email)->first();

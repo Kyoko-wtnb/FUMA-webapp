@@ -631,6 +631,8 @@ function CheckAll(){
   }
 
   table = $('#NewJobPaintor')[0];
+  $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
   $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 	+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
   if($('#paintor').is(':checked')==true){

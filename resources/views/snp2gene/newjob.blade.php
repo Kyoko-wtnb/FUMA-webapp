@@ -9169,6 +9169,17 @@
           <td></td>
         </tr>
 		<tr>
+			<td>Exclude ambiguous alleles
+				<a class="infoPop" data-toggle="popover" title="Ambiguous alleles" data-content="Since PAINTOR uses LD correlation (r), matching allele with reference panel is important to obtain relevant results. Therefore, ambiguous alleles (A/T or G/C allels) can be optionally excluded (highly recomended).">
+	              <i class="fa fa-question-circle-o fa-lg"></i>
+	            </a>
+			</td>
+			<td>
+				<input type="checkbox" class="form-check-input" name="paintorAmbAllele" id="paintorAmbAllele" onchange="CheckAll();">
+			</td>
+			<td></td>
+		</tr>
+		<tr>
 			<td>PAINTOR options
 				<a class="infoPop" data-toggle="popover" title="PAINTOR options" data-content="Command line options for PAINTOR can be specified here. If it is not given, default parameters will be used. Please refer the tutorial for details.">
 	              <i class="fa fa-question-circle-o fa-lg"></i>

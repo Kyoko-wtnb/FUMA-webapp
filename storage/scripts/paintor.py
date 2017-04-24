@@ -10,6 +10,13 @@ import time
 import tabix
 from bisect import bisect_left
 
+def shift(array, n):
+	if len(array) <= n:
+		return []
+	else:
+		array = array[n:len(array)]
+		return array
+
 def Check_Column(zcol, becol, orcol):
 	##### parameter check #####
 	if zcol=="NA" and becol=="NA" and orcol=="NA":
@@ -18,6 +25,28 @@ def Check_Column(zcol, becol, orcol):
 	if zcol != "NA":
 		zscore = True
 	return zscore
+
+def Check_Options(options):
+	allowed = ["-enumerate", "-MI", "-GAMinitial", "-variance", "-num_samples", "-set_seed", "-max_causal"]
+	not_allowed = ["-input", "-Zhead", "-LDname", "-annotations", "-in", "-out", "-Gname", "-Lname", "-RSEname", "-ANNname"]
+	options = options.split()
+	out = []
+	while len(options)>0:
+		if re.match(r'^-.*', options[0]):
+			opt = options[0]
+			value = options[1]
+			if opt in allowed and not re.match(r'^-.*', value):
+				out.append(opt)
+				out.append(value)
+				options = shift(options, 2)
+			elif not re.match(r'^-.*', value):
+				options = shift(options, 2)
+			else:
+				options = shift(options, 1)
+		else:
+			options = shift(options, 1)
+	out = " ".join(out)
+	return out
 
 def Get_Zscore(filedir, zscore):
 	##### read snps file #####
@@ -53,7 +82,7 @@ def Get_Zscore(filedir, zscore):
 
 	return snps
 
-def Create_LDmatrix(filedir, snps, chrom, locus, refgenome, pop):
+def Create_LDmatrix(filedir, snps, chrom, locus, refgenome, pop, paintor_allele):
 	"""
 	1. extract subset of vcf in a given Population
 	2. check allele and flip z if neccesarry
@@ -78,6 +107,11 @@ def Create_LDmatrix(filedir, snps, chrom, locus, refgenome, pop):
 					continue
 				if "rs" not in line[2]:
 					continue
+				if int(paintor_allele) == 1:
+					if line[3] in ["A", "T"] and line[4] in ["A", "T"]:
+						continue
+					elif line[3] in ["C", "G"] and line[4] in ["C", "G"]:
+						continue
 				if int(line[1]) in pos_set:
 					l = l.strip()
 					tmpvcf.append(l)
@@ -125,10 +159,10 @@ def Create_Annotfile(filedir, locus, paintor, paintor_annotdir, paintor_annot):
 						fout.write(paintor_annotdir+"/"+l+"\n")
 		os.system("python "+paintor+"/PAINTOR_Utilities/AnnotateLocus.py --input "+filedir+"PAINTOR/annotation_paths --locus "+filedir+"PAINTOR/input/Locus"+str(locus)+" --out "+filedir+"PAINTOR/input/Locus"+str(locus)+".annotations --chr chr --pos pos")
 
-def Prepare_Input_Files(filedir, snps, locus, chrom, refgenome, pop, paintor, paintor_annotdir, paintor_annot):
+def Prepare_Input_Files(filedir, snps, locus, chrom, refgenome, pop, paintor, paintor_annotdir, paintor_annot, paintor_allele):
 	snps = snps[np.argsort(snps[:,2].astype(int))]
 
-	checkSNPs = Create_LDmatrix(filedir, snps, chrom, locus, refgenome, pop)
+	checkSNPs = Create_LDmatrix(filedir, snps, chrom, locus, refgenome, pop, paintor_allele)
 	if checkSNPs:
 		Create_Annotfile(filedir, locus, paintor, paintor_annotdir, paintor_annot)
 		with open(filedir+"PAINTOR/input/input.files", 'a') as fout:
@@ -195,6 +229,7 @@ def main():
 		paintor_annot = paintor_annot.split(":")
 		if "all" in paintor_annot:
 			paintor_annot = ["all"]
+	paintor_allele = param.get("paintor", "ambiguous_allele")
 	paintor_opt = param.get("paintor", "options")
 	zcol = param.get("inputfiles", "zcol")
 	becol = param.get("inputfiles", "becol")
@@ -216,7 +251,7 @@ def main():
 	checkedLoci = []
 	for i in loci:
 		chrom = snps[snps[:,0]==i,1][0]
-		checkLoci = Prepare_Input_Files(filedir, snps[snps[:,0]==i], i, chrom, refgenome, pop, paintor, paintor_annotdir, paintor_annot)
+		checkLoci = Prepare_Input_Files(filedir, snps[snps[:,0]==i], i, chrom, refgenome, pop, paintor, paintor_annotdir, paintor_annot, paintor_allele)
 		if checkLoci:
 			checkedLoci.append(i)
 
@@ -224,7 +259,8 @@ def main():
 		sys.exit("ERROR: There was no locus containing more than one SNP after filtering. To perform PAINTOR, it require at least more than one locus with at least 2 SNPs.")
 
 	annot = Get_Annot(paintor_annot, paintor_annotdir)
-	#Run_PAINTOR(filedir, paintor, annot, paintor_opt)
+	paintor_opt = Check_Options(paintor_opt)
+	Run_PAINTOR(filedir, paintor, annot, paintor_opt)
 
 	# for i in checkedLoci:
 	# 	Run_CANVIS(filedir, i, paintor, annot)
