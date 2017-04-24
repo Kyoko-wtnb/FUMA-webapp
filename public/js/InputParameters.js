@@ -638,8 +638,31 @@ function CheckAll(){
   if($('#paintor').is(':checked')==true){
 	  $('#paintorAnnot').show();
 	  $('#paintorOpt').prop('disabled', false);
-	  $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-check"></i> PAINTOR will be performed for identified genomic risk loci.<br/>Optional annotations can be selected from the select box.<br/>Please refer the tutorial for the complete list of annotations.</div></td>');
+	  var pannot=0;
+	  $('#paintorAnnot option').each(function(){
+	    if($(this).is(":selected")){
+			if($(this).hasClass('level1')){
+				cur = $(this);
+				while(true){
+					cur = cur.next();
+					if(cur.hasClass('level2')){
+						pannot++;
+					}else{
+						break;
+					}
+				}
+			}else if($(this).hasClass('level2')){
+				pannot++;
+			}
+		}
+	  });
+	  if(pannot>10){
+		  $(table.rows[0].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-exclamation-triangle"></i> PAINTOR will be performed for identified genomic risk loci.<br/>More than 10 annotations are selected. This might take long time to perform PAINTOR. We recommend to carefully select less number of annotations.</div></td>');
+	  }else{
+		  $(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-check"></i> PAINTOR will be performed for identified genomic risk loci.<br/>Optional annotations can be selected from the select box.<br/>Please refer the tutorial for the complete list of annotations.</div></td>');
+	  }
   }else{
 	  $('#paintorAnnot').hide();
 	  $('#paintorOpt').prop('disabled', true);

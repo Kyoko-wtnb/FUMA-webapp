@@ -1,38 +1,53 @@
 <h3 id="paintor">PAINTOR</h3>
-PAINTOR is a statistical fina-mapping method that integrates functional genomic
-data given genetic associations from GWAS to prioritize SNPs.
-The later version of software (PAINTOR V3.0) is implemented in FUMA which can be
-optionally performed for genomic risk loci identified by FUMA.
-Preparation of input files for PAINTOR is automated in FUMA, therefore users do not need to provide additional files for PAINTOR.
-Each process to perform PAINTO is described in this section.<br/>
-Please refer <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/25357204">Kichaev et al. (2014)</a>
-for detail methods. The software is available from <a target="_blank", href="https://github.com/gkichaev/PAINTOR_V3.0">https://github.com/gkichaev/PAINTOR_V3.0</a>.
+<p>
+	PAINTOR is a statistical fina-mapping method that integrates functional genomic
+	data given genetic associations from GWAS to prioritize SNPs.
+	The later version of software (PAINTOR V3.0) is implemented in FUMA which can be
+	optionally performed for genomic risk loci identified by FUMA.
+	Preparation of input files for PAINTOR is automated in FUMA, therefore users do not need to provide additional files for PAINTOR.
+	Each process to perform PAINTO is described in this section.<br/>
+	Please refer <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/25357204">Kichaev et al. (2014)</a>
+	for detail methods. The software is available from <a target="_blank", href="https://github.com/gkichaev/PAINTOR_V3.0">https://github.com/gkichaev/PAINTOR_V3.0</a>.
+</p>
 <div style="padding-left: 40px;">
 	<h4><strong>1. Locus and SNPs</strong></h4>
-	Loci used in PAINTOR are the same as the gnomic risk loci identified by FUMA.
-	PAINTOR is only performed for loci with at least two SNPs after filtering (see 3. LD matrix for details).
-	Note that only SNPs which exist in the user input file (SNPs with GWAS summary statistics) are used in PAINTOR.
-	If there is no locus with more than two SNPs, PAINTOR is not performed (and returns error message in the result page).
+	<p>
+		Loci used in PAINTOR are the same as the gnomic risk loci identified by FUMA.
+		PAINTOR is only performed for loci with at least two SNPs after filtering (see 3. LD matrix for details).
+		Note that only SNPs which exist in the user input file (SNPs with GWAS summary statistics) are used in PAINTOR.
+		If there is no locus with more than two SNPs, PAINTOR is not performed (and returns error message in the result page).
+	</p>
 	<h4><strong>2. Z scores</strong></h4>
-	PAINTOR requires Z score of genetic associaitons to compute posterior probability to be causal.
-	When Z score is provided in the user input GWAS summary statistics, FUMA uses it as an input for PAINTOR.
-	If not, Z score is computed from the P-value and direction is assigned based on signed summary statistics such as Beta or OR.
-	Therefore, unless Z score is provided in the input GWAS summary statistics, P-value and signed summary statistics are necessary to run PAINTOR.
-	Otherwise, PAINTOR is not performed (and returns error message in the result page).
+	<p>
+		PAINTOR requires Z score of genetic associaitons to compute posterior probability to be causal.
+		When Z score is provided in the user input GWAS summary statistics, FUMA uses it as an input for PAINTOR.
+		If not, Z score is computed from the P-value and direction is assigned based on signed summary statistics such as Beta or OR.
+		Therefore, unless Z score is provided in the input GWAS summary statistics, P-value and signed summary statistics are necessary to run PAINTOR.
+		Otherwise, PAINTOR is not performed (and returns error message in the result page).
+	</p>
 	<h4><strong>3. LD matrix</strong></h4>
-	LD matrix is pairwise correlation (r) of SNPs in a locus computed based on 1000 genomes project phase 3 of user defined population.
-	During this process, SNPs which do not exist in reference panel will be removed from PAINTOR input.
-	Since the LD matrix consists of correlation r, it is assumed that effect allele is alternative allele in the reference panel.
-	Therefore Z-score is polarized so that non-effect/effect alleles match with major/minor alleles in reference panel.
-	SNPs whose one of the allele does not match with reference panel are excluded from PAINTOR.
-	Optionally, A/T and C/G SNPs can be excluded due to ambiguous alleles.
+	<p>
+		LD matrix is pairwise correlation (r) of SNPs in a locus computed based on 1000 genomes project phase 3 of user defined population.
+		During this process, SNPs which do not exist in reference panel will be removed from PAINTOR input.
+		Since the LD matrix consists of correlation r, it is assumed that effect allele is alternative allele in the reference panel.
+		Therefore Z-score is polarized so that non-effect/effect alleles match with major/minor alleles in reference panel.
+		SNPs whose one of the allele does not match with reference panel are excluded from PAINTOR.
+		Optionally, A/T and C/G SNPs can be excluded due to ambiguous alleles.
+	</p>
 	<h4><strong>4. Functional annotations</strong></h4>
-	One of the advantages of PAINTOR compared to oather fine-mapping methods is the integration with functional annotations.
-	Fairly comprehensive annotations are provided at <a target="_blank", href="https://github.com/gkichaev/PAINTOR_V3.0">https://github.com/gkichaev/PAINTOR_V3.0</a>.
-	All of those annotations are available in FUMA and
-	user can optionally select multiple of them to include into the model.
-	By default, PAINTOR is performed without any functional annotation. <br/>
-	The complete list of available annotations can be accessed from <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial/paintor/annotations">here</a>.<br/>
+	<p>
+		One of the advantages of PAINTOR compared to oather fine-mapping methods is the integration with functional annotations.
+		Fairly comprehensive annotations are provided at <a target="_blank", href="https://github.com/gkichaev/PAINTOR_V3.0">https://github.com/gkichaev/PAINTOR_V3.0</a>.
+		All of those annotations are available in FUMA and
+		user can optionally select multiple of them to include into the model.
+		By default, PAINTOR is performed without any functional annotation. <br/>
+		The complete list of available annotations can be accessed from <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial/paintor/annotations">here</a>.<br/>
+		<span class="info"><i class="fa fa-info"></i>
+			Selecting more than 10 annotations might take very long time to perform PAINTOR.
+			FYI, PINTOR with < 10 annotations for 10 locus roughly takes 1-5 minutes.
+			We strongly recommend to select functional annotations as less as possible.
+		</span>
+	</p>
 	<br/>
 	<div class="panel panel-default">
       <div class="panel-heading">
@@ -88,9 +103,12 @@ for detail methods. The software is available from <a target="_blank", href="htt
   	</div>
 
 	<h4><strong>5. Commandline options</strong></h4>
-	Commandline options for PAINTOR can be specified in the text box when a job is submited on SNP2GENE.
-	Input of this option should be <span style="color:red;">one line</span> of text with all parameters to be set.
-	The following parameters can be provided by users.<br/><br/>
+	<p>
+		Commandline options for PAINTOR can be specified in the text box when a job is submited on SNP2GENE.
+		Input of this option should be <span style="color:red;">one line</span> of text with all parameters to be set.
+		The following parameters can be provided by users.
+	</p>
+	<br/><br/>
 
 	<code>-enumerate</code> specify this flag if you want to enumerate all possible configurations followed by the max number of causal SNPs (eg. -enumerate 3 considers up to 3 causals at each locus) [Default: not specified]<br/>
 	<code>-MI</code> Maximum iterations for algorithm to run [Default: 10]<br/>
@@ -105,10 +123,12 @@ for detail methods. The software is available from <a target="_blank", href="htt
 	</span>
 
 	<h4><strong>6. Output</strong></h4>
-	When PAINTOR is performed, all input and output files are downloadable from SNP2GENE page.
-	Please refer <a href="{{ Config::get('app.subdir') }}/tutorial#table-columns">Table columns</a> and/or README file for details.
-	The zip file (PAINTOR.zip) contains two folders; "input" and "output".
-	There are three input files and one output file for every locus.
-	For example, locus 1 has "Locus1", "Locus1.ld" and "Locus1.annotations" in the input folder and "Locus1.results" in the output folder.
-	When any annotation is not selected by user, "Locus1.anntation" contains one fake column since annotation file needs to be exist to perform PAINTOR but it is not used.
+	<p>
+		When PAINTOR is performed, all input and output files are downloadable from SNP2GENE page.
+		Please refer <a href="{{ Config::get('app.subdir') }}/tutorial#table-columns">Table columns</a> and/or README file for details.
+		The zip file (PAINTOR.zip) contains two folders; "input" and "output".
+		There are three input files and one output file for every locus.
+		For example, locus 1 has "Locus1", "Locus1.ld" and "Locus1.annotations" in the input folder and "Locus1.results" in the output folder.
+		When any annotation is not selected by user, "Locus1.anntation" contains one fake column since annotation file needs to be exist to perform PAINTOR but it is not used.
+	</p>
 </div>

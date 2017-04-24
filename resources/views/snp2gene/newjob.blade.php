@@ -1005,7 +1005,7 @@
       <table class="table table-bordered inputTable" id="NewJobPaintor" style="width: auto;">
         <tr>
           <td>Perform PAINTOR
-            <a class="infoPop" data-toggle="popover" title="PAINTOR" data-content="PAINTOR is a statistical model that integrates functional genomic data with genetic associations to prioritize variants. Please referthe tutorial for details.">
+            <a class="infoPop" data-toggle="popover" title="PAINTOR" data-content="PAINTOR is a statistical model that integrates functional genomic data with genetic associations to prioritize variants. Please refer the tutorial for details.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </td>
