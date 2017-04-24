@@ -73,8 +73,8 @@ r2 = float(param.get('params', 'r2'))
 mergeDist = int(param.get('params', 'mergeDist'))*1000
 MHC = int(param.get('params', 'exMHC')) # 1 to exclude, 0 to not
 extMHC = param.get('params', 'extMHC')
-MHCstart = 29624758 # hg19
-MHCend = 33160276 # hg19
+MHCstart = 29614758 # hg19
+MHCend = 33170276 # hg19
 if extMHC != "NA":
     mhc = extMHC.split("-")
     MHCstart = int(mhc[0])
@@ -317,7 +317,18 @@ def chr_process(ichrom):
 						uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 
 						if uid != m[6]:
-							continue
+							checkall = False
+							jgwas += 1
+							while int(m[1]) == gwas_in[jgwas, poscol]:
+								allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+								allele.sort()
+								uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
+								if uid == m[6]:
+									checkall = True
+									break
+								jgwas += 1
+							if not checkall:
+								continue
 
 						ld.append([l_uid, m[6], ld_tmp[ild, 2]])
 
@@ -442,7 +453,18 @@ def chr_process(ichrom):
 							allele.sort()
 							uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 							if uid != m[6]:
-								continue
+								checkall = False
+								jgwas += 1
+								while int(m[1]) == gwas_in[jgwas, poscol]:
+									allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+									allele.sort()
+									uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
+									if uid == m[6]:
+										checkall = True
+										break
+									jgwas += 1
+								if not checkall:
+									continue
 							ld.append([l_uid, m[6], ld_tmp[ild, 2]])
 							if m[6] in checkeduid:
 								continue
@@ -643,9 +665,6 @@ for i in range(0, len(leadSNPs)):
 loci = np.array(loci)
 
 addcol = []
-print len(IndSigSNPs)
-print len(uid2gl)
-print IndSigSNPs[0:5]
 for i in range(0,len(IndSigSNPs)):
 	addcol.append([str(i+1), str(uid2gl[IndSigSNPs[i,0]])])
 IndSigSNPs = np.c_[addcol, IndSigSNPs]
