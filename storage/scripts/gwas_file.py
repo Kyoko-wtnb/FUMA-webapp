@@ -84,6 +84,7 @@ altcol = param.get('inputfiles', 'altcol').upper()
 orcol = param.get('inputfiles', 'orcol').upper()
 becol = param.get('inputfiles', 'becol').upper()
 secol = param.get('inputfiles', 'secol').upper()
+zcol = param.get('inputfiles', 'zcol').upper()
 Ncol = param.get('params', 'Ncol').upper()
 
 ##### get header of sum stats #####
@@ -101,36 +102,39 @@ nheader = len(header)
 # then automatic detection
 checkedheader = []
 for i in range(0,len(header)):
-    if chrcol == header[i].upper():
-	chrcol = i
-	checkedheader.append(chrcol)
-    elif rsIDcol == header[i].upper():
-        rsIDcol = i
-        checkedheader.append(rsIDcol)
-    elif poscol == header[i].upper():
-        poscol = i
-        checkedheader.append(poscol)
-    elif altcol == header[i].upper():
-        altcol = i
-        checkedheader.append(altcol)
-    elif refcol == header[i].upper():
-        refcol = i
-        checkedheader.append(refcol)
-    elif pcol == header[i].upper():
-        pcol = i
-        checkedheader.append(pcol)
-    elif orcol == header[i].upper():
-        orcol = i
-        checkedheader.append(orcol)
-    elif becol == header[i].upper():
-        becol = i
-        checkedheader.append(becol)
-    elif secol == header[i].upper():
-        secol = i
-        checkedheader.append(becol)
-    elif Ncol == header[i].upper():
-        Ncol = i
-        checkedheader.append(Ncol)
+	if chrcol == header[i].upper():
+		chrcol = i
+		checkedheader.append(chrcol)
+	elif rsIDcol == header[i].upper():
+	    rsIDcol = i
+	    checkedheader.append(rsIDcol)
+	elif poscol == header[i].upper():
+	    poscol = i
+	    checkedheader.append(poscol)
+	elif altcol == header[i].upper():
+	    altcol = i
+	    checkedheader.append(altcol)
+	elif refcol == header[i].upper():
+	    refcol = i
+	    checkedheader.append(refcol)
+	elif pcol == header[i].upper():
+	    pcol = i
+	    checkedheader.append(pcol)
+	elif orcol == header[i].upper():
+	    orcol = i
+	    checkedheader.append(orcol)
+	elif becol == header[i].upper():
+	    becol = i
+	    checkedheader.append(becol)
+	elif secol == header[i].upper():
+		secol = i
+		checkedheader.append(secol)
+	elif zcol == header[i].upper():
+	    zcol = i
+	    checkedheader.append(zcol)
+	elif Ncol == header[i].upper():
+	    Ncol = i
+	    checkedheader.append(Ncol)
 for i in range(0, len(header)):
 	if i in checkedheader:
 		continue
@@ -152,6 +156,8 @@ for i in range(0, len(header)):
 		becol = i
 	elif re.match("^se$", header[i], re.IGNORECASE):
 		secol = i
+	elif re.match("^z$|^Zscore$", header[i], re.IGNORECASE):
+		zcol = i
 	elif re.match("^N$", header[i], re.IGNORECASE):
 		Ncol = i
 
@@ -192,6 +198,10 @@ if becol=="NA":
     becol = None
 else:
 	user_header.append(becol)
+if zcol=="NA":
+    zcol = None
+else:
+	user_header.append(zcol)
 if Ncol=="NA":
     Ncol = None
 else:
@@ -223,6 +233,8 @@ if param.get('inputfiles', 'becol')=="NA" and becol is not None:
     param.set('inputfiles', 'becol', 'beta')
 if param.get('inputfiles', 'secol')=="NA" and secol is not None:
     param.set('inputfiles', 'secol', 'se')
+if param.get('inputfiles', 'zcol')=="NA" and zcol is not None:
+    param.set('inputfiles', 'zcol', 'z')
 
 paramout = open(filedir+"params.config", 'w+')
 param.write(paramout)
@@ -232,57 +244,61 @@ paramout.close()
 # when all columns are provided
 # In this case, if the rsID columns is wrongly labeled, it will be problem later (not checked here)
 if chrcol is not None and poscol is not None and rsIDcol is not None and altcol is not None and refcol is not None:
-    dbSNPfile = cfg.get('data', 'dbSNP')
-    rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
-    rsID = np.array(rsID)
-    rsIDs = set(rsID[:,0])
-    rsID = rsID[rsID[:,0].argsort()]
+	dbSNPfile = cfg.get('data', 'dbSNP')
+	rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
+	rsID = np.array(rsID)
+	rsIDs = set(rsID[:,0])
+	rsID = rsID[rsID[:,0].argsort()]
 
-    out = open(outSNPs, 'w')
-    out.write("chr\tbp\tref\talt\trsID\tp")
-    if orcol is not None:
-        out.write("\tor")
-    if becol is not None:
-        out.write("\tbeta")
-    if secol is not None:
-        out.write("\tse")
-    if Ncol is not None:
-        out.write("\tN")
-    out.write("\n")
+	out = open(outSNPs, 'w')
+	out.write("chr\tbp\tref\talt\trsID\tp")
+	if orcol is not None:
+	    out.write("\tor")
+	if becol is not None:
+	    out.write("\tbeta")
+	if secol is not None:
+	    out.write("\tse")
+	if zcol is not None:
+	    out.write("\tz")
+	if Ncol is not None:
+	    out.write("\tN")
+	out.write("\n")
 
-    gwasIn = open(gwas, 'r')
-    gwasIn.readline()
-    for l in gwasIn:
-        if re.match("^#", l):
-            next
-        l = re.split(delim, l.strip())
-        if len(l) < nheader:
+	gwasIn = open(gwas, 'r')
+	gwasIn.readline()
+	for l in gwasIn:
+		if re.match("^#", l):
+		    next
+		l = re.split(delim, l.strip())
+		if len(l) < nheader:
 			continue
-        if l[pcol]=="":
+		if l[pcol]=="":
 			continue
-        if l[rsIDcol] in rsIDs:
-            j = bisect_left(rsID[:,0], l[rsIDcol])
-            l[rsIDcol] = rsID[j,1]
-        l[chrcol] = l[chrcol].replace("chr", "")
-        if re.match("x", l[chrcol], re.IGNORECASE):
-            l[chrcol] = '23'
-        if float(l[pcol]) < 1e-308:
-            l[pcol] = str(1e-308)
-        out.write("\t".join([l[chrcol], l[poscol], l[refcol].upper(), l[altcol].upper(), l[rsIDcol], l[pcol]]))
-        if orcol is not None:
-            out.write("\t"+l[orcol])
-        if becol is not None:
-            out.write("\t"+l[becol])
-        if secol is not None:
-            out.write("\t"+l[secol])
-        if Ncol is not None:
-            out.write("\t"+l[Ncol])
-        out.write("\n")
-    gwasIn.close()
-    out.close()
-    tempfile = filedir+"temp.txt"
-    os.system("sort -k 1n -k 2n "+outSNPs+" > "+tempfile)
-    os.system("mv "+tempfile+" "+outSNPs)
+		if l[rsIDcol] in rsIDs:
+		    j = bisect_left(rsID[:,0], l[rsIDcol])
+		    l[rsIDcol] = rsID[j,1]
+		l[chrcol] = l[chrcol].replace("chr", "")
+		if re.match("x", l[chrcol], re.IGNORECASE):
+		    l[chrcol] = '23'
+		if float(l[pcol]) < 1e-308:
+		    l[pcol] = str(1e-308)
+		out.write("\t".join([l[chrcol], l[poscol], l[refcol].upper(), l[altcol].upper(), l[rsIDcol], l[pcol]]))
+		if orcol is not None:
+		    out.write("\t"+l[orcol])
+		if becol is not None:
+		    out.write("\t"+l[becol])
+		if secol is not None:
+		    out.write("\t"+l[secol])
+		if zcol is not None:
+		    out.write("\t"+l[zcol])
+		if Ncol is not None:
+		    out.write("\t"+l[Ncol])
+		out.write("\n")
+	gwasIn.close()
+	out.close()
+	tempfile = filedir+"temp.txt"
+	os.system("sort -k 1n -k 2n "+outSNPs+" > "+tempfile)
+	os.system("mv "+tempfile+" "+outSNPs)
 
 # if both chr and pos are provided
 elif chrcol is not None and poscol is not None:
@@ -321,6 +337,8 @@ elif chrcol is not None and poscol is not None:
 							out.write("\t"+l[becol])
 						if secol is not None:
 							out.write("\t"+l[secol])
+						if zcol is not None:
+							out.write("\t"+l[zcol])
 						if Ncol is not None:
 							out.write("\t"+l[Ncol])
 						out.write("\n")
@@ -334,6 +352,8 @@ elif chrcol is not None and poscol is not None:
 							out.write("\t"+l[becol])
 						if secol is not None:
 							out.write("\t"+l[secol])
+						if zcol is not None:
+							out.write("\t"+l[zcol])
 						if Ncol is not None:
 							out.write("\t"+l[Ncol])
 						out.write("\n")
@@ -347,11 +367,13 @@ elif chrcol is not None and poscol is not None:
 						out.write("\t"+l[becol])
 					if secol is not None:
 						out.write("\t"+l[secol])
+					if zcol is not None:
+						out.write("\t"+l[zcol])
 					if Ncol is not None:
 						out.write("\t"+l[Ncol])
 					out.write("\n")
 
-		# when one of the alleles need to be extracted, only SNPs exist in dbSNP will be recoded in the output
+				# when one of the alleles need to be extracted, only SNPs exist in dbSNP will be recoded in the output
 		else:
 			for l in temp:
 				if int(l[1]) in poss:
@@ -359,33 +381,37 @@ elif chrcol is not None and poscol is not None:
 				    if snps[j,pcol] is None:
 						continue
 				    if altcol is not None:
-				        if snps[j,altcol].upper()==l[3] or snps[j,altcol].upper()==l[4]:
-				            a = "NA"
-				            if snps[j,altcol]==l[3]:
-				                a = l[4]
-				            else:
-				                a = l[3]
-				            out.write("\t".join([l[0],l[1], a, snps[j,altcol].upper(), l[2], snps[j,pcol]]))
-				            if orcol is not None:
-				                out.write("\t"+snps[j,orcol])
-				            if becol is not None:
-				                out.write("\t"+snps[j,becol])
-				            if secol is not None:
-				                out.write("\t"+snps[j,secol])
-				            if Ncol is not None:
-				                out.write("\t"+snps[j,Ncol])
-				            out.write("\n")
+						if snps[j,altcol].upper()==l[3] or snps[j,altcol].upper()==l[4]:
+						    a = "NA"
+						    if snps[j,altcol]==l[3]:
+						        a = l[4]
+						    else:
+						        a = l[3]
+						    out.write("\t".join([l[0],l[1], a, snps[j,altcol].upper(), l[2], snps[j,pcol]]))
+						    if orcol is not None:
+						        out.write("\t"+snps[j,orcol])
+						    if becol is not None:
+						        out.write("\t"+snps[j,becol])
+						    if secol is not None:
+						        out.write("\t"+snps[j,secol])
+							if zcol is not None:
+								out.write("\t"+snps[j,zcol])
+						    if Ncol is not None:
+						        out.write("\t"+snps[j,Ncol])
+						    out.write("\n")
 				    else:
-				        out.write("\t".join([l[0],l[1], l[3], l[4], l[2], snps[j,pcol]]))
-				        if orcol is not None:
-				            out.write("\t"+snps[j,orcol])
-				        if becol is not None:
-				            out.write("\t"+snps[j,becol])
-				        if secol is not None:
-				            out.write("\t"+snps[j,secol])
-				        if Ncol is not None:
-				            out.write("\t"+snps[j,Ncol])
-				        out.write("\n")
+						out.write("\t".join([l[0],l[1], l[3], l[4], l[2], snps[j,pcol]]))
+						if orcol is not None:
+						    out.write("\t"+snps[j,orcol])
+						if becol is not None:
+						    out.write("\t"+snps[j,becol])
+						if secol is not None:
+						    out.write("\t"+snps[j,secol])
+						if zcol is not None:
+						    out.write("\t"+snps[j,zcol])
+						if Ncol is not None:
+						    out.write("\t"+snps[j,Ncol])
+						out.write("\n")
 		out.close()
 		##### end def Tabix() #####
 
@@ -416,6 +442,8 @@ elif chrcol is not None and poscol is not None:
 		out.write("\tbeta")
 	if secol is not None:
 		out.write("\tse")
+	if zcol is not None:
+		out.write("\tz")
 	if Ncol is not None:
 		out.write("\tN")
 	out.write("\n")
@@ -462,48 +490,50 @@ elif chrcol is not None and poscol is not None:
 	Tabix(cur_chr, minpos, maxpos, temp)
 # if either chr or pos is not procided, use rsID to extract position
 elif chrcol is None or poscol is None:
-    print "Either chr or pos is not provided"
+	print "Either chr or pos is not provided"
 	##### read input file #####
-    gwas = pd.read_table(gwas, comment="#", sep=delim)
-    gwas = gwas.as_matrix()
-    gwas = gwas[gwas[:,rsIDcol].argsort()]
+	gwas = pd.read_table(gwas, comment="#", sep=delim)
+	gwas = gwas.as_matrix()
+	gwas = gwas[gwas[:,rsIDcol].argsort()]
 
 	##### write header of input.snps #####
-    out = open(outSNPs, 'w')
-    out.write("chr\tbp\tref\talt\trsID\tp")
-    if orcol is not None:
-        out.write("\tor")
-    if becol is not None:
-        out.write("\tbeta")
-    if secol is not None:
-        out.write("\tse")
-    if Ncol is not None:
-        out.write("\tN")
-    out.write("\n")
+	out = open(outSNPs, 'w')
+	out.write("chr\tbp\tref\talt\trsID\tp")
+	if orcol is not None:
+	    out.write("\tor")
+	if becol is not None:
+	    out.write("\tbeta")
+	if secol is not None:
+	    out.write("\tse")
+	if zcol is not None:
+	    out.write("\tz")
+	if Ncol is not None:
+	    out.write("\tN")
+	out.write("\n")
 
 	##### update rsID to dbSNP 146 #####
-    rsIDs = set(list(gwas[:, rsIDcol]))
-    rsID = list(gwas[:, rsIDcol])
-    dbSNPfile = cfg.get('data', 'dbSNP')
-    rsID146 = open(dbSNPfile+"/RsMerge146.txt", 'r')
-    for l in rsID146:
-        l = l.strip().split()
-        if l[0] in rsIDs:
-            j = bisect_left(rsID, l[0])
-            gwas[j,rsIDcol] = l[1]
-    rsID146.close()
+	rsIDs = set(list(gwas[:, rsIDcol]))
+	rsID = list(gwas[:, rsIDcol])
+	dbSNPfile = cfg.get('data', 'dbSNP')
+	rsID146 = open(dbSNPfile+"/RsMerge146.txt", 'r')
+	for l in rsID146:
+	    l = l.strip().split()
+	    if l[0] in rsIDs:
+	        j = bisect_left(rsID, l[0])
+	        gwas[j,rsIDcol] = l[1]
+	rsID146.close()
 
 	##### sort input snps by rsID for bisect_left #####
-    gwas = gwas[gwas[:,rsIDcol].argsort()]
-    rsIDs = set(list(gwas[:, rsIDcol]))
-    rsID = list(gwas[:, rsIDcol])
-    checked = []
+	gwas = gwas[gwas[:,rsIDcol].argsort()]
+	rsIDs = set(list(gwas[:, rsIDcol]))
+	rsID = list(gwas[:, rsIDcol])
+	checked = []
 
 	##### process per chromosome #####
-    for chrom in range(1,24):
-        print "start chr"+str(chrom)
-        fin = gzip.open(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", 'rb')
-        for l in fin:
+	for chrom in range(1,24):
+	    print "start chr"+str(chrom)
+	    fin = gzip.open(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", 'rb')
+	    for l in fin:
 			l = l.decode('ascii')
 			l = l.strip().split()
 			alt = l[4].split(",")
@@ -517,16 +547,18 @@ elif chrcol is None or poscol is None:
 				    gwas[j,pcol]=1e-308
 				if altcol is not None and refcol is not None:
 				    if (gwas[j,altcol].upper()==l[3] and gwas[j,refcol].upper() in alt) or gwas[j,altcol].upper() in alt and gwas[j,refcol].upper()==l[3]:
-				        out.write("\t".join([str(chrom), str(l[1]), gwas[j,refcol].upper(), gwas[j,altcol].upper(), l[2], str(gwas[j,pcol])]))
-				        if orcol is not None:
-				            out.write("\t"+str(gwas[j,orcol]))
-				        if becol is not None:
-				            out.write("\t"+str(gwas[j,becol]))
-				        if secol is not None:
-				            out.write("\t"+str(gwas[j,secol]))
-				        if Ncol is not None:
-				            out.write("\t"+str(gwas[j,Ncol]))
-				        out.write("\n")
+						out.write("\t".join([str(chrom), str(l[1]), gwas[j,refcol].upper(), gwas[j,altcol].upper(), l[2], str(gwas[j,pcol])]))
+						if orcol is not None:
+						    out.write("\t"+str(gwas[j,orcol]))
+						if becol is not None:
+						    out.write("\t"+str(gwas[j,becol]))
+						if secol is not None:
+						    out.write("\t"+str(gwas[j,secol]))
+						if zcol is not None:
+						    out.write("\t"+str(gwas[j,zcol]))
+						if Ncol is not None:
+						    out.write("\t"+str(gwas[j,Ncol]))
+						out.write("\n")
 				elif altcol is not None:
 				    if gwas[j,altcol].upper()==l[3] or gwas[j,altcol].upper() in alt:
 						if len(alt)>1 :
@@ -545,6 +577,8 @@ elif chrcol is None or poscol is None:
 						    out.write("\t"+str(gwas[j,becol]))
 						if secol is not None:
 						    out.write("\t"+str(gwas[j,secol]))
+						if zcol is not None:
+						    out.write("\t"+str(gwas[j,zcol]))
 						if Ncol is not None:
 						    out.write("\t"+str(gwas[j,Ncol]))
 						out.write("\n")
@@ -559,17 +593,19 @@ elif chrcol is None or poscol is None:
 					    out.write("\t"+str(gwas[j,becol]))
 					if secol is not None:
 					    out.write("\t"+str(gwas[j,secol]))
+					if zcol is not None:
+					    out.write("\t"+str(gwas[j,zcol]))
 					if Ncol is not None:
 					    out.write("\t"+str(gwas[j,Ncol]))
 					out.write("\n")
-        gwas = np.delete(gwas, np.where(np.in1d(gwas[:,rsIDcol], checked)), 0)
-        # gwas = np.delete(gwas, ArrayIn(gwas[:,rsIDcol], checked), 0)
-        # print time.time() - temptime
-        rsID = list(gwas[:, rsIDcol])
-        checked = []
-        if len(gwas)==0:
-            break
-    out.close()
+	    gwas = np.delete(gwas, np.where(np.in1d(gwas[:,rsIDcol], checked)), 0)
+	    # gwas = np.delete(gwas, ArrayIn(gwas[:,rsIDcol], checked), 0)
+	    # print time.time() - temptime
+	    rsID = list(gwas[:, rsIDcol])
+	    checked = []
+	    if len(gwas)==0:
+	        break
+	out.close()
 
 ##### total time #####
 print time.time()-start

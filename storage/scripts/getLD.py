@@ -97,6 +97,7 @@ pcol = 5
 orcol = None
 becol = None
 secol = None
+zcol = None
 
 f = open(gwas, 'r')
 head = f.readline()
@@ -109,6 +110,8 @@ for i in range(0,len(head)):
 		becol = i
 	elif head[i] == "se":
 		secol = i
+	elif head[i] == "z":
+		zcol = i
 
 ###################
 # output files
@@ -131,6 +134,8 @@ if becol:
 	ohead += "\tbeta"
 if secol:
 	ohead += "\tse"
+if zcol:
+	ohead += "\tz"
 ohead += "\tr2\tIndSigSNP\tGenomicLocus"
 ohead += "\n"
 with open(snpsout, 'w') as o:
@@ -322,6 +327,8 @@ def chr_process(ichrom):
 							snp.append(str(gwas_in[jgwas, becol]))
 						if secol:
 							snp.append(str(gwas_in[jgwas, secol]))
+						if zcol:
+							snp.append(str(gwas_in[jgwas, zcol]))
 						canSNPs.append(snp)
 						annot.append([m[6], m[7], m[8]]+m[53:len(m)])
 						GWASSNPs += 1
@@ -336,6 +343,8 @@ def chr_process(ichrom):
 						if becol:
 							snp.append("NA")
 						if secol:
+							snp.append("NA")
+						if zcol:
 							snp.append("NA")
 						canSNPs.append(snp)
 						annot.append([m[6], m[7], m[8]]+m[53:len(m)])
@@ -436,6 +445,8 @@ def chr_process(ichrom):
 								snp.append(str(gwas_in[jgwas, becol]))
 							if secol:
 								snp.append(str(gwas_in[jgwas, secol]))
+							if zcol:
+								snp.append(str(gwas_in[jgwas, zcol]))
 							canSNPs.append(snp)
 							annot.append([m[6], m[7], m[8]]+m[53:len(m)])
 							GWASSNPs += 1
@@ -450,6 +461,8 @@ def chr_process(ichrom):
 							if becol:
 								snp.append("NA")
 							if secol:
+								snp.append("NA")
+							if zcol:
 								snp.append("NA")
 							canSNPs.append(snp)
 							annot.append([m[6], m[7], m[8]]+m[53:len(m)])
