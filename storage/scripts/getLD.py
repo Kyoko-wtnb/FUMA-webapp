@@ -274,16 +274,17 @@ def chr_process(ichrom):
 			#check uniq ID
 			tb = tabix.open(annotfile)
 			lead_id = False
+			lead_maf = False
 			check_id = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 			for m in check_id:
 				if m[6] == l_uid:
 					lead_id = True
+					if float(m[5]) >= maf:
+						lead_maf = True
 					break
-			if lead_id == False:
+			if not lead_id or not lead_maf:
 				continue
 			nlead += 1
-			count += 1
-			print count
 			tb = tabix.open(ldfile)
 			ld_tb = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 			ld_tmp = []
@@ -337,7 +338,7 @@ def chr_process(ichrom):
 
 						checkeduid.append(m[6])
 						p = str(gwas_in[jgwas, pcol])
-						snp = [m[6], m[4], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
+						snp = [m[6], gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
 						if orcol:
 							snp.append(str(gwas_in[jgwas, orcol]))
 						if becol:
@@ -411,17 +412,18 @@ def chr_process(ichrom):
 				#check uniq ID
 				tb = tabix.open(annotfile)
 				lead_id = False
+				lead_maf = False
 				check_id = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 				for m in check_id:
 					if m[6] == l_uid:
 						lead_id = True
+						if float(m[5]) >= maf:
+							lead_maf = True
 						break
-				if lead_id == False:
+				if not lead_id or not lead_maf:
 					continue
 				nlead += 1
 				tb = tabix.open(ldfile)
-				count += 1
-				print count
 				ld_tb = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 				ld_tmp = []
 				ld_tmp.append([l[poscol], l[rsIDcol], 1])
@@ -442,8 +444,8 @@ def chr_process(ichrom):
 						continue
 					if float(m[5]) < maf:
 						continue
-					if m[4] in ld_tmp[:,1]:
-						ild = np.where(ld_tmp[:,1]==m[4])[0][0]
+					if m[1] in ld_tmp[:,0]:
+						ild = np.where(ld_tmp[:,0]==m[1])[0][0]
 						if int(m[1]) in pos_set:
 							# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
 							jgwas = bisect_left(posall, int(m[1]))
@@ -470,7 +472,7 @@ def chr_process(ichrom):
 								continue
 							checkeduid.append(m[6])
 							p = str(gwas_in[jgwas, pcol])
-							snp = [m[6], m[4], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
+							snp = [m[6], gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
 							if orcol:
 								snp.append(str(gwas_in[jgwas, orcol]))
 							if becol:
