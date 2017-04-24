@@ -103,7 +103,7 @@ $(document).ready(function(){
             GWplot(jobid);
             QQplot(jobid);
             MAGMAtsplot(jobid);
-            showResultTables(jobid, posMap, eqtlMap, orcol, becol, secol);
+            showResultTables(filedir, jobid, posMap, eqtlMap, orcol, becol, secol);
             $('#GWplotSide').show();
             $('#results').show();
             $('#resultsSide').show();
@@ -747,7 +747,7 @@ function MAGMAtsplot(jobID){
   });
 }
 
-function showResultTables(jobID, posMap, eqtlMap, orcol, becol, secol){
+function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
   $('#plotClear').hide();
   $('#download').attr('disabled', false);
   if(eqtlMap==0){

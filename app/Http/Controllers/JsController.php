@@ -61,9 +61,10 @@ class JsController extends Controller
     }
 
     public function DTfileServerSide(Request $request){
-      $filedir = $request -> input('filedir');
+	  $jobID = $request->input('jobID');
       $fin = $request -> input('infile');
       $cols = $request -> input('header');
+	  $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
 
       $draw = $request -> input('draw');
     	$order = $request -> input('order');
