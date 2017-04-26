@@ -149,13 +149,13 @@ class snp2geneProcess extends Job implements ShouldQueue
         }
       }
 
-      file_put_contents($logfile, "\n----- getLD.pl -----\n", FILE_APPEND);
-      file_put_contents($errorfile, "\n----- getLD.pl -----\n", FILE_APPEND);
-      $script = storage_path().'/scripts/getLD.pl';
+      file_put_contents($logfile, "\n----- getLD.py -----\n", FILE_APPEND);
+      file_put_contents($errorfile, "\n----- getLD.py -----\n", FILE_APPEND);
+      $script = storage_path().'/scripts/getLD.py';
       // $process = new Proces("/usr/bin/perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC");
       // $process -> start();
       // echo "perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC";
-      exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+      exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
       if($error != 0){
         $NoCandidates = false;
         $errorout = file_get_contents($errorfile);
