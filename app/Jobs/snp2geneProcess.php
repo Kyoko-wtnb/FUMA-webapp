@@ -151,7 +151,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       // $process = new Proces("/usr/bin/perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC");
       // $process -> start();
       // echo "perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC";
-      exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+      exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
       if($error != 0){
         $NoCandidates = false;
         $errorout = file_get_contents($errorfile);
