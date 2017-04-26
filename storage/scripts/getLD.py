@@ -73,8 +73,8 @@ r2 = float(param.get('params', 'r2'))
 mergeDist = int(param.get('params', 'mergeDist'))*1000
 MHC = int(param.get('params', 'exMHC')) # 1 to exclude, 0 to not
 extMHC = param.get('params', 'extMHC')
-MHCstart = 29624758 # hg19
-MHCend = 33160276 # hg19
+MHCstart = 29614758 # hg19
+MHCend = 33170276 # hg19
 if extMHC != "NA":
     mhc = extMHC.split("-")
     MHCstart = int(mhc[0])
@@ -245,6 +245,8 @@ def chr_process(ichrom):
 	annot = []
 	IndSigSNPs = []
 	nlead = 0
+	pos_set = set(gwas_in[:,poscol])
+	posall = gwas_in[:,poscol]
 
 	ldfile = refgenome+"/"+pop+"ld/"+pop+".chr"+str(chrom)+".ld.gz"
 	annotfile = refgenome+"/"+pop+"/"+"chr"+str(chrom)+".data.txt.gz"
@@ -266,12 +268,15 @@ def chr_process(ichrom):
 			#check uniq ID
 			tb = tabix.open(annotfile)
 			lead_id = False
+			lead_maf = False
 			check_id = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 			for m in check_id:
 				if m[6] == l_uid:
 					lead_id = True
+					if float(m[5]) >= maf:
+						lead_maf = True
 					break
-			if lead_id == False:
+			if not lead_id or not lead_maf:
 				continue
 			nlead += 1
 			tb = tabix.open(ldfile)
@@ -297,8 +302,9 @@ def chr_process(ichrom):
 					continue
 				if m[4] in ld_tmp[:,1]:
 					ild = np.where(ld_tmp[:,1]==m[4])[0][0]
-					if int(m[1]) in gwas_in[:, poscol]:
-						jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
+					if int(m[1]) in pos_set:
+						# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
+						jgwas = bisect_left(posall, int(m[1]))
 						if float(gwas_in[jgwas, pcol])>gwasP:
 							continue
 						allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
@@ -306,7 +312,18 @@ def chr_process(ichrom):
 						uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 
 						if uid != m[6]:
-							continue
+							checkall = False
+							jgwas += 1
+							while int(m[1]) == gwas_in[jgwas, poscol]:
+								allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+								allele.sort()
+								uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
+								if uid == m[6]:
+									checkall = True
+									break
+								jgwas += 1
+							if not checkall:
+								continue
 
 						ld.append([l_uid, m[6], ld_tmp[ild, 2]])
 
@@ -315,7 +332,7 @@ def chr_process(ichrom):
 
 						checkeduid.append(m[6])
 						p = str(gwas_in[jgwas, pcol])
-						snp = [m[6], m[4], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
+						snp = [m[6], gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
 						if orcol:
 							snp.append(str(gwas_in[jgwas, orcol]))
 						if becol:
@@ -371,9 +388,10 @@ def chr_process(ichrom):
 		else:
 			return [], [], [], []
 
-	gwas_in = gwas_in[gwas_in[:,pcol].argsort()]
+	p_order = gwas_in[:,pcol].argsort()
 	if leadSNPs is None or addleadSNPs == 1:
-		for l in gwas_in:
+		for pi in p_order:
+			l = gwas_in[pi]
 			if float(l[pcol])>leadP:
 				break
 			allele = [l[refcol], l[altcol]]
@@ -384,12 +402,15 @@ def chr_process(ichrom):
 				#check uniq ID
 				tb = tabix.open(annotfile)
 				lead_id = False
+				lead_maf = False
 				check_id = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 				for m in check_id:
 					if m[6] == l_uid:
 						lead_id = True
+						if float(m[5]) >= maf:
+							lead_maf = True
 						break
-				if lead_id == False:
+				if not lead_id or not lead_maf:
 					continue
 				nlead += 1
 				tb = tabix.open(ldfile)
@@ -413,23 +434,35 @@ def chr_process(ichrom):
 						continue
 					if float(m[5]) < maf:
 						continue
-					if m[4] in ld_tmp[:,1]:
-						ild = np.where(ld_tmp[:,1]==m[4])[0][0]
-						if int(m[1]) in gwas_in[:, poscol]:
-							jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
+					if m[1] in ld_tmp[:,0]:
+						ild = np.where(ld_tmp[:,0]==m[1])[0][0]
+						if int(m[1]) in pos_set:
+							# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
+							jgwas = bisect_left(posall, int(m[1]))
 							if float(gwas_in[jgwas, pcol])>gwasP:
 								continue
 							allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
 							allele.sort()
 							uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 							if uid != m[6]:
-								continue
+								checkall = False
+								jgwas += 1
+								while int(m[1]) == gwas_in[jgwas, poscol]:
+									allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+									allele.sort()
+									uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
+									if uid == m[6]:
+										checkall = True
+										break
+									jgwas += 1
+								if not checkall:
+									continue
 							ld.append([l_uid, m[6], ld_tmp[ild, 2]])
 							if m[6] in checkeduid:
 								continue
 							checkeduid.append(m[6])
 							p = str(gwas_in[jgwas, pcol])
-							snp = [m[6], m[4], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
+							snp = [m[6], gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
 							if orcol:
 								snp.append(str(gwas_in[jgwas, orcol]))
 							if becol:
