@@ -590,7 +590,12 @@ class JobController extends Controller
       if($request -> has('annovfile')){$files[] = "annov.txt";}
       if($request -> has('annotfile')){$files[] = "annot.txt";}
       if($request -> has('genefile')){$files[] = "genes.txt";}
-      if($request -> has('eqtlfile')){$files[] = "eqtl.txt";}
+	  if($request -> has('eqtlfile')){$files[] = "eqtl.txt";}
+      if($request -> has('eqtlfile')){
+		  if(File::exists($filedir."eqtl.txt")){
+			  $files[] = "eqtl.txt";
+		  }
+	  }
       // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
       if($request -> has('gwascatfile')){$files[] = "gwascatalog.txt";}
       if($request -> has('magmafile')){

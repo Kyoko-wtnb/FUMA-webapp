@@ -1600,8 +1600,9 @@ function DownloadFiles(){
   var genefile = document.getElementById('genefile').checked;
   var eqtlfile = document.getElementById('eqtlfile').checked;
   // var exacfile = document.getElementById('exacfile').checked;
+  var gwascatfile = document.getElementById('gwascatfile').checked;
   var magmafile = document.getElementById('magmafile').checked;
-  if(paramfile || leadfile || locifile || snpsfile || annovfile || annotfile || genefile || eqtlfile || magmafile){
+  if(paramfile || leadfile || locifile || snpsfile || annovfile || annotfile || genefile || eqtlfile || gwascatfile || magmafile){
     document.getElementById('download').disabled=false;
   }
 }
