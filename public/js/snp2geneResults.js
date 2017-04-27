@@ -913,8 +913,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
 
   file = "genes.txt";
   var table = "<thead><tr><th>Gene</th><th>Symbol</th><th>HUGO</th><th>entrezID</th><th>chr</th><th>start</th><th>end</th>";
-  table += "<th>strand</th><th>status</th><th>type</th><th>pLI</th>";
-  var col = "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI";
+  table += "<th>strand</th><th>status</th><th>type</th><th>pLI</th><th>ncRVIS</th>";
+  var col = "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI:ncRVIS";
   if(posMap==1){
     table += "<th>posMapSNPs</th><th>posMapMaxCADD</th>";
     col += ":posMapSNPs:posMapMaxCADD";

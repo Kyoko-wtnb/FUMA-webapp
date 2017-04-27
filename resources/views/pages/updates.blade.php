@@ -17,6 +17,18 @@
     </thead>
     <tbody>
 		<tr>
+	      <td>27 Apr 2017</td>
+	      <td>v1.1.2</td>
+	      <td>Two gene scores (pLI and ncRVIS) are added to the gene table. See <a href="{{ Config::get('app.subdir') }}/links">links</a> for detail information of each score.
+		  </td>
+	    </tr>
+		<tr>
+	      <td>27 Apr 2017</td>
+	      <td>v1.1.2</td>
+	      <td>The speed of SNP2GENE process is improved.
+		  </td>
+	    </tr>
+		<tr>
 	      <td>24 Mar 2017</td>
 	      <td>v1.1.1</td>
 	      <td>SNPs filtering with functional annotation for gene mapping is now reflected in the regional plot with annotations.

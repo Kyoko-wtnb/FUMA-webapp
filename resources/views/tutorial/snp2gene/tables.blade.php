@@ -133,7 +133,8 @@
     <li><strong>status</strong> : Status of gene from Ensembl</li>
     <li><strong>type</strong> : Gene biotype from Ensembl</li>
     <li><strong>HUGO</strong> : HUGO (HGNC) gene symbol</li>
-    <li><strong>pLI</strong> : pLI score from ExAC database. The probability of being loss-of-function intolerant.</li>
+    <li><strong>pLI</strong> : pLI score from ExAC database. The probability of being loss-of-function intolerant. The higher the score is, the more intolerant to loss-of-function mutations the gene is.</li>
+	<li><strong>ncRVIS</strong> : Non-coding residual variation intolerance score. The higher the score is, the more intolerant to noncoding variants the gene is.</li>
     <li><strong>posMapSNPs</strong> (posMap): The number of SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).</li>
     <li><strong>posMapMaxCADD</strong> (posMap): The maximum CADD score of mapped SNPs by positional mapping.</li>
     <li><strong>eqtlMapSNPs</strong> (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.</li>

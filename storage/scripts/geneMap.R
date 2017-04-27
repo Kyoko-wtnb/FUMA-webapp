@@ -175,8 +175,9 @@ colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "sta
 if(nrow(geneTable)>0){
   geneTable$chr <- as.numeric(geneTable$chr)
 
-  pli <- fread(paste(config$data$geneIDs, "/pLI_exac.txt", sep=""), data.table=F)
-  geneTable$pLI <- pli$pLI[match(geneTable$ensg, pli$ensg)]
+  ### gene scores
+  gene_scores <- fread(paste(config$data$geneScores, "/gene_scores.txt", sep=""), data.table=F)
+  geneTable <- cbind(geneTable, gene_scores[match(geneTable$ensg, gene_scores$ensg), 5:ncol(gene_scores)])
 
   if(posMap==1){
     geneTable$posMapSNPs <- sapply(geneTable$ensg, function(x){length(which(annov$gene==x))})

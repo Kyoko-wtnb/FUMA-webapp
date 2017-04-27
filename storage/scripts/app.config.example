@@ -18,6 +18,7 @@ GWAScat=/data/GWAScatalog
 GTExExp=/data/GeneExp/GTEx
 scripts=/var/www/IPGAP/storage/scripts
 geneIDs=/data/genes
+geneScores=/data/geneScores
 
 [magma]
 magmadir=/home/kyoko/bin/MAGMA

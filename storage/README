@@ -1,7 +1,8 @@
 README file of FUMA web application
 
 Author: Kyoko Watanabe (k.watanabe@vu.nl)
-Version: 1.0 (2 Feb 2017)
+Version: 1.0.0 (2 Feb 2017)
+Version: 1.1.2 (27 Apr 2017)
 
 This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
@@ -132,7 +133,8 @@ strand : Strand of the gene
 status : Status of the gene from Ensembl
 type : Gene biotype from Ensembl
 HUGO : HUGO (HGNC) gene symbol
-pLI : pLI score from ExAC database. The probability of being loss-of-function intolerant.
+pLI : pLI score from ExAC database. The probability of being loss-of-function intolerant. The higher the score is, the more intolerant to loss-of-function mutations the gene is.
+ncRVIS : Non-coding residual variation intolerance score. The higher the score is, the more intolerant to non-coding variation the gene is.
 posMapSNPs (posMap): The number of SNPs mapped to gene based on positional mapping (after functional filtering if parameters are given).
 posMapMaxCADD (posMap): The maximum CADD score of mapped SNPs by positional mapping.
 eqtlMapSNPs (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.

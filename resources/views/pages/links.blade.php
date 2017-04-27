@@ -10,10 +10,10 @@
     <thead>
       <tr>
         <th>Data source/tool</th>
-        <th>Used for</th>
-        <th>Links</th>
+        <th style="width: 25%;">Used for</th>
+        <th style="width: 35%;">Links</th>
         <th>Last update</th>
-        <th style="width: 30%;">Reference</th>
+        <th style="width: 25%;">Reference</th>
       </tr>
     </thead>
     <tbody>
@@ -196,6 +196,34 @@
           <a href="https://www.ncbi.nlm.nih.gov/pubmed/18048412" target="_blank">PMID:18048412</a>
         </td>
       </tr>
+	  <tr>
+		  <td>pLI</td>
+		  <td>A gene score annotated to prioritized genes. The score is the probability of being loss-of-function intolerance.
+		  </td>
+		  <td>
+			  Info: <a href="http://exac.broadinstitute.org/" target="_blank">http://exac.broadinstitute.org/</a>
+			  Data: <a href="ftp://ftp.broadinstitute.org/pub/ExAC_release/release0.3.1/functional_gene_constraint" target="_blank">ftp://ftp.broadinstitute.org/pub/ExAC_release/release0.3.1/functional_gene_constraint</a>
+		  </td>
+		  <td>27 April 2017</td>
+		  <td>
+			  Lek, M. et al. 2016. Analyses of protein-coding genetic variation in 60,706 humans. <i>Nature.</i> <b>536</b>, 285-291.<br/>
+			  <a href="https://www.ncbi.nlm.nih.gov/pubmed/27535533" target="_blank">PMID:27535533</a>
+		  </td>
+	  </tr>
+	  <tr>
+		  <td>ncRVIS</td>
+		  <td>A gene score annotated to prioritized genes. The score is the non-coding residual variation intolerance score.
+		  </td>
+		  <td>
+			  Info: <a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005492" target="_blank">http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005492</a>
+			  Data: <a href="http://journals.plos.org/plosgenetics/article/file?type=supplementary&id=info:doi/10.1371/journal.pgen.1005492.s011" target="_blank">http://journals.plos.org/plosgenetics/article/file?type=supplementary&id=info:doi/10.1371/journal.pgen.1005492.s011</a>
+		  </td>
+		  <td>27 April 2017</td>
+		  <td>
+			  Petrovski, S. et al. 2015. The intolerance of regulatory sequence to genetic variation predict gene dosage sensitivity. <i>PLOS Genet.</i> <b>11</b>, e1005492.<br/>
+			  <a href="https://www.ncbi.nlm.nih.gov/pubmed/26332131" target="_blank">PMID:26332131</a>
+		  </td>
+	  </tr>
     </tbody>
   </table>
 </div>
