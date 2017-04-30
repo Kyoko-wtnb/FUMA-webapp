@@ -354,6 +354,7 @@
               <li role="presentation"><a href="#annovTablePane" aria-controls="annovTablePane" rolw="tab" data-toggle="tab">ANNOVAR</a></li>
               <li role="presentation"><a href="#geneTablePane" aria-controls="geneTablePane" rolw="tab" data-toggle="tab">Mapped Genes</a></li>
               <li role="presentation" id="eqtlTableTab"><a href="#eqtlTablePane" aria-controls="eqtlTablePane" rolw="tab" data-toggle="tab">eQTL</a></li>
+			  <li role="presentation" id="ciTableTab"><a href="#ciTablePane" aria-controls="ciTablePane" rolw="tab" data-toggle="tab">Chromatin interactions</a></li>
               <li role="presentation" id="gwascatTableTab"><a href="#gwascatTablePane" aria-controls="gwascatTablePane" rolw="tab" data-toggle="tab">GWAScatalog</a></li>
               <!-- <li role="presentation"><a href="#exacTablePane" aria-controls="exacTablePane" rolw="tab" data-toggle="tab">ExAC</a></li> -->
               <li role="presentation"><a href="#paramsPane" aria-controls="paramsPane" rolw="tab" data-toggle="tab">Parameters</a></li>
@@ -458,6 +459,36 @@
                   </thead>
                 </table>
               </div>
+
+			  <div role="tabpanel" class="tab-pane" id="ciTablePane">
+				  <br/>
+				  <h4>Chromatin interaction</h4>
+				  <table id="ciTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                    <thead>
+                      <tr>
+                        <th>GenomicLocus</th><th>region1</th><th>region2</th><th>FDR</th><th>type</th><th>DB</th><th>name</th><th>inter/intra</th><th>SNPs</th>
+                      </tr>
+                    </thead>
+                  </table>
+				  <br/>
+				  <h4>SNPs and overlapped regulatory elements in region 1</h4>
+				  <table id="ciSNPsTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                    <thead>
+                      <tr>
+                        <th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>regulatory region</th><th>type</th><th>name</th>
+                      </tr>
+                    </thead>
+                  </table>
+				  <br/>
+				  <h4>Regulatory elements and genes in regions 2</h4>
+				  <table id="ciGenesTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
+                    <thead>
+                      <tr>
+                        <th>region2</th><th>regulatory region</th><th>type</th><th>name</th><th>genes</th><th>distance</th>
+                      </tr>
+                    </thead>
+                  </table>
+			  </div>
 
               <div role="tabpanel" class="tab-pane" id="gwascatTablePane">
                 <br/>
@@ -705,6 +736,7 @@
                   </div>
                   <br/>
                 <div id="check_eqtl_annotPlot"><tab><input type="checkbox" name="annotPlot_eqtl" id="annotPlot_eqtl" checked/>eQTL<br/></div>
+				<div id="check_ci_annotPlot"><tab><input type="checkbox" name="annotPlot_ci" id="annotPlot_ci" checked/>Chromatin interaction<br/></div>
                 <br/>
                 <span class="form-inline">
                   <input class="btn" type="submit" name="submit" id= "annotPlotSubmit" value="Plot">
@@ -733,6 +765,7 @@
           <input type="checkbox" name="annotfile" id="annotfile" checked onchange="DownloadFiles();">Annotations (CADD, RDB and Chromatin state of 127 tissue/cell types)<br/>
           <input type="checkbox" name="genefile" id="genefile" checked onchange="DownloadFiles();">Gene table (mapped genes)<br/>
           <div id="eqtlfiledown"><input type="checkbox" name="eqtlfile" id="eqtlfile" checked onchange="DownloadFiles();">eQTL table (eQTL of selected tissue types)<br/></div>
+		  <div id="cifiledown"><input type="checkbox" name="cifile" id="cifile" checked onchange="DownloadFiles();">Chromatin interaction tables (chromatin interactions overlap with candidate SNPs and regulatory elements)<br/></div>
           <!-- <input type="checkbox" name="exacfile" id="exacfile" checked onchange="DownloadFiles();">ExAC variants (rare variants from ExAC within genomic risk locis)<br/> -->
           <input type="checkbox" name="gwascatfile" id="gwascatfile" checked onchange="DownloadFiles();">SNPs in GWAS catalog (full features)<br/>
           <input type="checkbox" name="magmafile" id="magmafile" checked onchange="DownloadFiles();">MAGMA (full) results<br/>
@@ -741,8 +774,6 @@
           <input class="btn" type="submit" name="download" id="download" value="Download files"/>
         </form>
       </div>
-
-
     </div>
   </div>
 </div>

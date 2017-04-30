@@ -89,7 +89,11 @@ class JobController extends Controller
       $orcol = $params['orcol'];
       $becol = $params['becol'];
       $secol = $params['secol'];
-      echo "$filedir:$posMap:$eqtlMap:$orcol:$becol:$secol";
+	  $ciMap = 0;
+	  if(array_key_exists('ciMap', $params)){
+		  $ciMap = $params['ciMap'];
+	  }
+      echo "$filedir:$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol";
     }
 
     public function Error5(Request $request){
@@ -482,6 +486,7 @@ class JobController extends Controller
       $RDB=0;
       $Chr15=0;
       $eqtl=0;
+	  $ci=0;
       if($request -> has('annotPlot_GWASp')){$GWAS=1;}
       if($request -> has('annotPlot_CADD')){$CADD=1;}
       if($request -> has('annotPlot_RDB')){$RDB=1;}
@@ -499,82 +504,86 @@ class JobController extends Controller
         $Chr15cells="NA";
       }
       if($request -> has('annotPlot_eqtl')){$eqtl=1;}
+	  if($request -> has('annotPlot_ci')){$ci=1;}
 
-      $script = storage_path()."/scripts/annotPlot.py";
-      exec("python $script $filedir $type $rowI $GWAS $CADD $RDB $eqtl $Chr15 $Chr15cells");
-      $script = storage_path()."/scripts/annotPlot.R";
-      exec("Rscript $script $filedir $type $rowI $GWAS $CADD $RDB $eqtl $Chr15 $Chr15cells");
+    //   $script = storage_path()."/scripts/annotPlot.py";
+    //   $data = shell_exec("python $script $filedir $type $rowI $GWAS $CADD $RDB $eqtl $ci $Chr15 $Chr15cells");
+    //   $script = storage_path()."/scripts/annotPlot.R";
+    //   exec("Rscript $script $filedir $type $rowI $GWAS $CADD $RDB $eqtl $Chr15 $Chr15cells");
 
-      if($Chr15==1){
-        $script = storage_path()."/scripts/getChr15.pl";
-        exec("$script $filedir $Chr15cells");
-      }
+    //   if($Chr15==1){
+    //     $script = storage_path()."/scripts/getChr15.pl";
+    //     exec("$script $filedir $Chr15cells");
+    //   }
 
-      $eqtlplot = 0;
-      $eqtlNgenes = 0;
-      if($eqtl==1){
-        $eqtlfile = fopen($filedir."eqtlplot.txt", 'r');
-        $eqtlcheck = 0;
-        fgetcsv($eqtlfile, 0, "\t");
-        $eqtlgenes = array();
-        while($row = fgetcsv($eqtlfile, 0, "\t")){
-          $eqtlgenes[] = $row[3];
-        }
-        if(empty($eqtlgenes)){$eqtplot=0;}
-        else{$eqtlplot=1;}
-        $eqtlgenes = array_unique($eqtlgenes);
-        $eqtlNgenes = count($eqtlgenes);
-      }
+    //   $eqtlplot = 0;
+    //   $eqtlNgenes = 0;
+    //   if($eqtl==1){
+    //     $eqtlfile = fopen($filedir."eqtlplot.txt", 'r');
+    //     $eqtlcheck = 0;
+    //     fgetcsv($eqtlfile, 0, "\t");
+    //     $eqtlgenes = array();
+    //     while($row = fgetcsv($eqtlfile, 0, "\t")){
+    //       $eqtlgenes[] = $row[3];
+    //     }
+    //     if(empty($eqtlgenes)){$eqtplot=0;}
+    //     else{$eqtlplot=1;}
+    //     $eqtlgenes = array_unique($eqtlgenes);
+    //     $eqtlNgenes = count($eqtlgenes);
+    //   }
+	  //
+    //   $xmin=null;
+    //   $xmax=null;
+    //   $chr=null;
+    //   $f = $filedir."annotPlot.txt";
+    //   $file = fopen($f, 'r');
+    //   fgetcsv($file, 0, "\t");
+    //   while($row=fgetcsv($file, 0, "\t")){
+    //     if($chr==null){$chr=$row[1];}
+    //     if($xmin==null){
+    //       $xmin=$row[2];
+    //       $xmax=$row[2];
+    //     }
+    //     if($row[2]>$xmax){$xmax=$row[2];}
+    //   }
+    //   fclose($file);
+    //   $xmin_init=$xmin;
+    //   $xmax_init=$xmax;
+	  //
+    //   $f = $filedir."genesplot.txt";
+    //   $file = fopen($f, 'r');
+    //   fgetcsv($file, 0, "\t");
+    //   while($row=fgetcsv($file, 0, "\t")){
+    //     if($xmin>$row[2]){
+    //       $xmin=$row[2];
+    //     }
+    //     if($row[3]>$xmax){$xmax=$row[3];}
+    //   }
+    //   fclose($file);
 
-      $xmin=null;
-      $xmax=null;
-      $chr=null;
-      $f = $filedir."annotPlot.txt";
-      $file = fopen($f, 'r');
-      fgetcsv($file, 0, "\t");
-      while($row=fgetcsv($file, 0, "\t")){
-        if($chr==null){$chr=$row[1];}
-        if($xmin==null){
-          $xmin=$row[2];
-          $xmax=$row[2];
-        }
-        if($row[2]>$xmax){$xmax=$row[2];}
-      }
-      fclose($file);
-      $xmin_init=$xmin;
-      $xmax_init=$xmax;
-
-      $f = $filedir."genesplot.txt";
-      $file = fopen($f, 'r');
-      fgetcsv($file, 0, "\t");
-      while($row=fgetcsv($file, 0, "\t")){
-        if($xmin>$row[2]){
-          $xmin=$row[2];
-        }
-        if($row[3]>$xmax){$xmax=$row[3];}
-      }
-      fclose($file);
-
-      JavaScript::put([
-        'jobID'=>$jobID,
-        'filedir'=>$filedir,
-        'type'=>$type,
-        'rowI'=>$rowI,
-        'chr'=>$chr,
-        'GWASplot'=>$GWAS,
-        'CADDplot'=>$CADD,
-        'RDBplot'=>$RDB,
-        'Chr15'=>$Chr15,
-        'Chr15cells'=>$Chr15cells,
-        'eqtl'=>$eqtl,
-        'eqtlplot'=>$eqtlplot,
-        'eqtlNgenes'=>$eqtlNgenes,
-        'xMin'=>$xmin,
-        'xMax'=>$xmax,
-        'xMin_init'=>$xmin_init,
-        'xMax_init'=>$xmax_init
-      ]);
-      return view('pages.annotPlot', ['jobID'=>$jobID]);
+    //   JavaScript::put([
+    //     'jobID'=>$jobID,
+    //     'filedir'=>$filedir,
+    //     'type'=>$type,
+    //     'rowI'=>$rowI,
+    //     'chr'=>$chr,
+    //     'GWASplot'=>$GWAS,
+    //     'CADDplot'=>$CADD,
+    //     'RDBplot'=>$RDB,
+    //     'Chr15'=>$Chr15,
+    //     'Chr15cells'=>$Chr15cells,
+    //     'eqtl'=>$eqtl,
+    //     'eqtlplot'=>$eqtlplot,
+    //     'eqtlNgenes'=>$eqtlNgenes,
+    //     'xMin'=>$xmin,
+    //     'xMax'=>$xmax,
+    //     'xMin_init'=>$xmin_init,
+    //     'xMax_init'=>$xmax_init,
+	// 	'testdata'=>json_decode($data, true)
+    //   ]);
+      return view('pages.annotPlot', ['jobID'=>$jobID, 'type'=>$type, 'rowI'=>$rowI,
+	  	'GWASplot'=>$GWAS, 'CADDplot'=>$CADD, 'RDBplot'=>$RDB, 'eqtlplot'=>$eqtl,
+		'ciplot'=>$ci, 'Chr15'=>$Chr15, 'Chr15cells'=>$Chr15cells]);
     }
 
     public function filedown(Request $request){
@@ -591,6 +600,13 @@ class JobController extends Controller
       if($request -> has('annotfile')){$files[] = "annot.txt";}
       if($request -> has('genefile')){$files[] = "genes.txt";}
       if($request -> has('eqtlfile')){$files[] = "eqtl.txt";}
+	  if($request -> has('cifile')){
+		  if(File::exists($filedir."ci.txt")){
+			  $files[] = "ci.txt";
+			  $files[] = "ciSNPs.txt";
+			  $files[] = "ciGenes.txt";
+		  }
+	  }
       // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
       if($request -> has('gwascatfile')){$files[] = "gwascatalog.txt";}
       if($request -> has('magmafile')){

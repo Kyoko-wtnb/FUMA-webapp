@@ -25,8 +25,9 @@ def ArrayIn(a1, a2):
 
 def getSNPs(filedir):
 	snps = pd.read_table(filedir+"snps.txt", sep="\t")
+	snpshead = list(snps.columns.values)
 	snps = np.array(snps)
-	snps = snps[:,0:4]
+	snps = snps[:,[0,1,2,3,snpshead.index("GenomicLocus")]]
 	snps = snps[np.lexsort((snps[:,3].astype(int), snps[:,2].astype(int)))]
 	return snps
 
@@ -34,7 +35,7 @@ def getRow(dat, chrom, pos):
 	n = np.where((dat[:,0].astype(int)==chrom) & (dat[:,1].astype(int)<=pos) & (dat[:,2].astype(int)>=pos))[0]
 	return n
 
-def mapTo3DC(snps, f, minScore, dt, DB, name):
+def mapToCI(snps, f, minScore, dt, DB, name):
 	mapdat = pd.read_table(f, comment="#", delim_whitespace=True)
 	mapdat = np.array(mapdat)
 	mapdat = mapdat[mapdat[:,6].astype(float)<minScore]
@@ -65,7 +66,7 @@ def mapTo3DC(snps, f, minScore, dt, DB, name):
 	for i in range(0,len(snps)):
 		if int(snps[i,2]) == cur_chr and int(snps[i,3]) <= cur_max:
 			for j in last_n:
-				out[j][7] = ":".join([str(out[j][7]), str(snps[i,1])])
+				out[j][8] = ":".join([str(out[j][8]), str(snps[i,1])])
 		else:
 			cur_chr = int(snps[i,2])
 			last_n=[]
@@ -77,10 +78,10 @@ def mapTo3DC(snps, f, minScore, dt, DB, name):
 					r1 = str(int(tmpdat[j,0]))+":"+str(int(tmpdat[j,1]))+"-"+str(int(tmpdat[j,2]))
 					r2 = str(int(tmpdat[j,3]))+":"+str(int(tmpdat[j,4]))+"-"+str(int(tmpdat[j,5]))
 					if int(tmpdat[j,0]) == int(tmpdat[j,3]):
-						interaction = "inter"
-					else:
 						interaction = "intra"
-					out.append([r1, r2, tmpdat[j,6], dt, DB, name, interaction, snps[i,1]])
+					else:
+						interaction = "inter"
+					out.append([snps[i,4], r1, r2, tmpdat[j,6], dt, DB, name, interaction, snps[i,1]])
 					last_n.append(len(out)-1)
 
 			tmpdat = chrdat2[int(snps[i,2])]
@@ -91,10 +92,10 @@ def mapTo3DC(snps, f, minScore, dt, DB, name):
 					r1 = str(int(tmpdat[j,3]))+":"+str(int(tmpdat[j,4]))+"-"+str(int(tmpdat[j,5]))
 					r2 = str(int(tmpdat[j,0]))+":"+str(int(tmpdat[j,1]))+"-"+str(int(tmpdat[j,2]))
 					if int(tmpdat[j,0]) == int(tmpdat[j,3]):
-						interaction = "inter"
-					else:
 						interaction = "intra"
-					out.append([r1, r2, tmpdat[j,6], dt, DB, name, interaction, snps[i,1]])
+					else:
+						interaction = "inter"
+					out.append([snps[i,4], r1, r2, tmpdat[j,6], dt, DB, name, interaction, snps[i,1]])
 					last_n.append(len(out)-1)
 	return np.array(out)
 
@@ -120,7 +121,7 @@ def mapToRegElements(snps, f, dt, name):
 		n = getRow(tmpdat, int(snps[i,2]), int(snps[i,3]))
 		for j in n:
 			r = str(int(tmpdat[j,0]))+":"+str(int(tmpdat[j,1]))+"-"+str(int(tmpdat[j,2]))
-			out.append(list(snps[i])+[r, dt, name])
+			out.append(list(snps[i, 0:4])+[r, dt, name])
 	return np.array(out)
 
 def GeneToPromoter(genes, promoter):
@@ -189,7 +190,7 @@ def RegionToGenes(regions, f, dt, name, promoter, genes):
 def main():
 	##### check argument #####
 	if len(sys.argv)<2:
-		sys.exit('ERROR: not enough arguments\nUSAGE ./paintor.py <filedir>')
+		sys.exit('ERROR: not enough arguments\nUSAGE ./getCI.py <filedir>')
 
 	##### start time #####
 	start = time.time()
@@ -209,14 +210,14 @@ def main():
 
 	##### get parameters #####
 	ENSG = cfg.get("data", "ENSG")
-	datadir = cfg.get("3DC", "3DCdata")
-	reg_datadir = cfg.get("3DC", "reg_elements")
+	datadir = cfg.get("CI", "CIdata")
+	reg_datadir = cfg.get("CI", "open_chromatin")
 	buildin_data = param.get("ciMap", "buildin_data")
 	buildin_data = buildin_data.split(":")
 	if "all" in buildin_data:
 		tmp = glob.glob(datadir+"/HiC/GSE87112/*.txt.gz")
 		buildin_data = [x.replace(datadir+"/", "") for x in tmp]
-	reg_elements = param.get("ciMap", "reg_elements")
+	reg_elements = param.get("ciMap", "open_chromatin")
 	reg_elements = reg_elements.split(":")
 	if "all" in reg_elements:
 		tmp = glob.glob(reg_datadir+"/*/*.bed.gz")
@@ -233,22 +234,22 @@ def main():
 	snps3dc = []
 	snpsreg = []
 	reggenes = []
-	out3dc = filedir+"3dc.txt"
-	outsnps = filedir+"snps_reg.txt"
-	outgenes = filedir+"3dc_genes.txt"
+	outci = filedir+"ci.txt"
+	outsnps = filedir+"ciSNPs.txt"
+	outgenes = filedir+"ciGenes.txt"
 
 	##### Map SNPs to 3DC data #####
 	for f in buildin_data:
 		print f
 		c = re.match(r"(.+?)\/(.+?)\/(.+?)\.txt.gz", f)
-		tmp_snps3DC = mapTo3DC(snps, datadir+"/"+f, minScore, c.group(1), c.group(2), c.group(3))
+		tmp_snps3DC = mapToCI(snps, datadir+"/"+f, minScore, c.group(1), c.group(2), c.group(3))
 		if len(tmp_snps3DC)>0:
 			if len(snps3dc) == 0:
 				snps3dc = tmp_snps3DC
 			else:
 				snps3dc = np.r_[snps3dc, tmp_snps3DC]
 	insnps = []
-	for x in snps3dc[:,7]:
+	for x in snps3dc[:,8]:
 		insnps += x.split(":")
 	insnps = unique(insnps)
 	snps = snps[ArrayIn(snps[:,1], insnps)]
@@ -273,7 +274,7 @@ def main():
 	genes = genes[ArrayIn(genes[:,5], genetype)]
 	genes = GeneToPromoter(genes, promoter)
 
-	##### Map 3DC regions to reguratory elements #####
+	##### Map CI regions to reguratory elements #####
 	regions = unique(snps3dc[:,1])
 	for f in reg_elements:
 		c = re.match(r"(.+?)\/.+_(E\d{3})\.bed\.gz", f)
@@ -290,9 +291,9 @@ def main():
 				reggenes = np.r_[reggenes, tmp_reggenes]
 
 	##### write outputs #####
-	with open(out3dc, 'w') as o:
-		o.write("\t".join(["region1", "region2", "FDR", "type", "DB", "name", "SNPs"])+"\n")
-	with open(out3dc, 'a') as o:
+	with open(outci, 'w') as o:
+		o.write("\t".join(["GenomicLocus", "region1", "region2", "FDR", "type", "DB", "name", "inter/intra", "SNPs"])+"\n")
+	with open(outci, 'a') as o:
 		np.savetxt(o, snps3dc, delimiter="\t", fmt="%s")
 
 	with open(outsnps, 'w') as o:
@@ -301,7 +302,7 @@ def main():
 		np.savetxt(o, snpsreg, delimiter="\t", fmt="%s")
 
 	with open(outgenes, 'w') as o:
-		o.write("\t".join(["region", "reg_region", "type", "name", "genes", "distance"])+"\n")
+		o.write("\t".join(["region2", "reg_region", "type", "name", "genes", "distance"])+"\n")
 	with open(outgenes, 'a') as o:
 		np.savetxt(o, reggenes, delimiter="\t", fmt="%s")
 

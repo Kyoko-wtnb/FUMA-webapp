@@ -47,6 +47,42 @@ class D3jsController extends Controller
       }
     }
 
+	public function annotPlotGetData(Request $request){
+		$jobID = $request->input("jobID");
+		$type = $request->input("type");
+		$rowI = $request->input("rowI");
+		$GWASplot = $request->input("GWASplot");
+		$CADDplot = $request->input("CADDplot");
+		$RDBplot = $request->input("RDBplot");
+		$eqtlplot = $request->input("eqtlplot");
+		$ciplot = $request->input("ciplot");
+		$Chr15 = $request->input("Chr15");
+		$Chr15cells = $request->input("Chr15cells");
+
+		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+
+		$script = storage_path()."/scripts/annotPlot.py";
+	    $data = shell_exec("python $script $filedir $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells");
+		file_put_contents("/media/sf_Documents/VU/Data/WebApp/tmp.txt", $data);
+		return $data;
+	}
+
+	public function annotPlotGetGenes(Request $request){
+		$jobID = $request->input("jobID");
+		$chrom = $request->input("chrom");
+		$xMin = $request->input("xMin");
+		$xMax = $request->input("xMax");
+		$eqtlgenes = $request->input("eqtlgenes");
+
+		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+
+		$script = storage_path()."/scripts/annotPlot.R";
+		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes");
+		$data = explode("\n", $data);
+		$data = $data[count($data)-1];
+		return $data;
+	}
+
     public function getPrioGenes($jobID){
       $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
       $genes = [];

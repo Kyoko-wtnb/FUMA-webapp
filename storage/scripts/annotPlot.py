@@ -6,6 +6,8 @@ import pandas as pd
 import numpy as np
 import math
 import ConfigParser
+import json
+import tabix
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -21,156 +23,248 @@ def ArrayNotIn(a1, a2):
             results.append(i)
     return results
 
-filedir = sys.argv[1]
-if re.match(".+\/$", filedir) is None:
-	filedir += '/'
+##### return unique element in list #####
+def unique(a):
+	unique = []
+	[unique.append(s) for s in a if s not in unique]
+	return unique
 
-filedir = sys.argv[1]
-Type = sys.argv[2]
-i = int(sys.argv[3])
-GWAS = int(sys.argv[4])
-CADD = int(sys.argv[5])
-RDB = int(sys.argv[6])
-eqtlplot = int(sys.argv[7])
-Chr15 = int(sys.argv[8])
-Chr15ts = sys.argv[9]
-Chr15all = 0
+def getSNPs(filedir, i, Type):
+	snps = pd.read_table(filedir+"snps.txt", sep="\t")
+	snpshead = list(snps.columns.values)
+	snps = snps.as_matrix()
+	ld = pd.read_table(filedir+"ld.txt", sep="\t")
+	ld = ld.as_matrix()
+	ind = pd.read_table(filedir+"IndSigSNPs.txt", sep="\t")
+	ind = ind.as_matrix()
+	lead = pd.read_table(filedir+"leadSNPs.txt", sep="\t")
+	lead = lead.as_matrix()
+	loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
+	loci = loci.as_matrix()
 
-if Chr15==1:
-    Chr15ts = Chr15ts.split(":")
-    for c in Chr15ts:
-        if c=="all":
-            Chr15all = 1
-            break
+	if Type=="IndSigSNP":
+		ls = str(ind[i, 2])
+		l = int(ind[i, 1])
+		ld = ld[ld[:,0]==ls]
+		snps = snps[ArrayIn(snps[:,0], ld[:,1])]
+		snps = np.c_[snps, [1]*len(snps)]
+		snps[snps[:,0]==ls,len(snps[0])-1] = 2
+		snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
+		snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 
-param = ConfigParser.ConfigParser()
-param.read(filedir+'params.config')
-posMapAnnot = param.get('posMap', 'posMapAnnot')
-posMapCADDth = param.get('posMap', 'posMapCADDth')
-posMapRDBth = param.get('posMap', 'posMapRDBth')
-posMapChr15 = param.get('posMap', 'posMapChr15')
-posMapChr15Max = param.get('posMap', 'posMapChr15Max')
-posMapChr15Meth = param.get('posMap', 'posMapChr15Meth')
+	elif Type=="leadSNP":
+		ls = np.array(lead[i,8].split(":"))
+		ls = snps[ArrayIn(snps[:,1], ls),0]
+		ld = ld[ArrayIn(ld[:,0], ls)]
+		snps = snps[ArrayIn(snps[:,0], ld[:,1])]
+		snps = np.c_[snps, [1]*len(snps)]
+		snps[ArrayIn(snps[:,0], ind[:,2]),len(snps[0])-1] = 2
+		snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
+		snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
+	else:
+		ls = np.array(loci[i,11].split(":"))
+		ls = snps[ArrayIn(snps[:,1], ls), 0]
+		ld = ld[ArrayIn(ld[:,0], ls)]
+		snps = snps[snps[:,snpshead.index("GenomicLocus")]==i+1]
+		snps = snps[ArrayIn(snps[:,0], ld[:,1])]
+		snps = np.c_[snps, [1]*len(snps)]
+		snps[ArrayIn(snps[:,0], ind[:,2]),len(snps[0])-1] = 2
+		snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
+		snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 
-eqtlMapCADDth = param.get('eqtlMap', 'eqtlMapCADDth')
-eqtlMapRDBth = param.get('eqtlMap', 'eqtlMapRDBth')
-eqtlMapChr15 = param.get('eqtlMap', 'eqtlMapChr15')
-eqtlMapChr15Max = param.get('eqtlMap', 'eqtlMapChr15Max')
-eqtlMapChr15Meth = param.get('eqtlMap', 'eqtlMapChr15Meth')
+	gl = int(snps[0, snpshead.index("GenomicLocus")])
+	snps_headi = [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("posMapFilt"), snpshead.index("eqtlMapFilt")]
+	snpshead_tmp = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "posMapFilt", "eqtlMapFilt"]
+	if "or" in snpshead:
+		snps_headi.append(snpshead.index("or"))
+		snpshead_tmp.append("or")
+	if "beta" in snpshead:
+		snps_headi.append(snpshead.index("beta"))
+		snpshead_tmp.append("beta")
+	if "se" in snpshead:
+		snps_headi.append(snpshead.index("se"))
+		snpshead_tmp.append("se")
 
-snps = pd.read_table(filedir+"snps.txt", sep="\t")
-snpshead = list(snps.columns.values)
-snps = snps.as_matrix()
-ld = pd.read_table(filedir+"ld.txt", sep="\t")
-ld = ld.as_matrix()
-ind = pd.read_table(filedir+"IndSigSNPs.txt", sep="\t")
-ind = ind.as_matrix()
-lead = pd.read_table(filedir+"leadSNPs.txt", sep="\t")
-lead = lead.as_matrix()
-loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
-loci = loci.as_matrix()
+	snpshead = snpshead_tmp
+	snps = snps[:, snps_headi]
+	snps[:, snpshead.index("RDB")] = snps[:, snpshead.index("RDB")].astype(str)
+	snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]
+	return [snps, gl]
 
-if Type=="IndSigSNP":
-	ls = str(ind[i, 2])
-	l = int(ind[i, 1])
-	ld = ld[ld[:,0]==ls]
-	snps = snps[ArrayIn(snps[:,0], ld[:,1])]
-	snps = np.c_[snps, [1]*len(snps)]
-	snps[snps[:,0]==ls,len(snps[0])-1] = 2
-	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
-	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
+def getCI(filedir, snps, ci, gl):
+	min_pos = min(snps[:,2])
+	max_pos = max(snps[:,2])
+	chrom = int(snps[0,1])
+	if ci==1:
+		ci = pd.read_table(filedir+"ci.txt", sep="\t")
+		ci = np.array(ci)
+		ci = ci[ci[:,0].astype(int)==gl]
+		ci = ci[ci[:,7]=="intra"]
+		tmp = []
+		chr1 = [int(x.split(":")[0]) for x in ci[:,1]]
+		chr2 = [int(x.split(":")[0]) for x in ci[:,2]]
+		tmp = np.c_[chr1, chr2]
+		if len(tmp) == 0:
+			return [min_pos, max_pos, []]
+		ci = ci[np.where((tmp[:,0]==chrom) & (tmp[:,1]==chrom))]
+		pos1min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,1]]
+		pos1max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,1]]
+		pos2min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,2]]
+		pos2max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,2]]
+		min_pos = min(min_pos, min(min(pos1min), min(pos2min)))
+		max_pos = max(max_pos, max(max(pos1max), max(pos2max)))
+		tmp = np.c_[pos1min, pos1max, pos2min, pos2max, ci[:,3:7]]
+		citypes = unique([":".join([l[5], l[6], l[7]]) for l in tmp])
+		return [min_pos, max_pos, tmp, citypes]
+	else:
+		return [min_pos, max_pos, [], []]
 
-elif Type=="leadSNP":
-	ls = np.array(lead[i,8].split(":"))
-	ls = snps[ArrayIn(snps[:,1], ls),0]
-	ld = ld[ArrayIn(ld[:,0], ls)]
-	snps = snps[ArrayIn(snps[:,0], ld[:,1])]
-	snps = np.c_[snps, [1]*len(snps)]
-	snps[ArrayIn(snps[:,0], ind[:,2]),len(snps[0])-1] = 2
-	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
-	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
-else:
-	ls = np.array(loci[i,11].split(":"))
-	ls = snps[ArrayIn(snps[:,1], ls), 0]
-	ld = ld[ArrayIn(ld[:,0], ls)]
-	snps = snps[snps[:,snpshead.index("GenomicLocus")]==i+1]
-	snps = snps[ArrayIn(snps[:,0], ld[:,1])]
-	snps = np.c_[snps, [1]*len(snps)]
-	snps[ArrayIn(snps[:,0], ind[:,2]),len(snps[0])-1] = 2
-	snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
-	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
+def getNonCandidateSNPs(filedir, snps, min_pos, max_pos):
+	chrom = int(snps[0,1])
+	chrcol = 0
+	poscol = 1
 
-chrom = int(snps[0,2])
-xMin = min(snps[:,3])
-xMax = max(snps[:,3])
+	tmp = pd.read_table(filedir+"all.txt", sep="\t")
+	tmp = tmp.as_matrix()
+	tmp = tmp[np.where((tmp[:,chrcol]==chrom) & (tmp[:,poscol]>=min_pos-500000) & (tmp[:,poscol]<=max_pos+500000))]
+	tmp = tmp[ArrayNotIn(tmp[:,poscol], snps[:,3])]
+	out = []
+	for l in tmp:
+		out.append([int(l[0]), int(l[1]), l[2]])
+	return out
 
-snps_headi = [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("posMapFilt"), snpshead.index("eqtlMapFilt")]
-snpshead_tmp = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "posMapFilt", "eqtlMapFilt"]
-if "or" in snpshead:
-	snps_headi.append(snpshead.index("or"))
-	snpshead_tmp.append("or")
-if "beta" in snpshead:
-	snps_headi.append(snpshead.index("beta"))
-	snpshead_tmp.append("beta")
-if "se" in snpshead:
-	snps_headi.append(snpshead.index("se"))
-	snpshead_tmp.append("se")
+def getChr15(filedir, snps, Chr15, Chr15cells, chr15dir):
+	if int(Chr15)==1:
+		annot = pd.read_table(filedir+"annot.txt", sep="\t")
+		annothead = list(annot.columns.values)
+		annot = annot.as_matrix()
+		annot = annot[ArrayIn(annot[:,0], snps[:,0])]
+		if Chr15cells[0]=="all":
+		    Chr15cells = list(annothead[3:len(annothead)])
+		for c in Chr15cells:
+			snps = np.c_[snps, annot[:,annothead.index(c)]]
+		Chr15data = []
+		chrom = int(snps[0,1])
+		start = min(snps[:,2])
+		end = max(snps[:,2])
+		if end-start == 0:
+			end += 500
+			start -= 500
+		for i in Chr15cells:
+			tb = tabix.open(chr15dir+"/"+str(i)+"_core15.bed.gz")
+			tmp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
+			for l in tmp:
+				if int(l[1]<start):
+					l[1] = str(start)
+				if int(l[2] > str(end)):
+					l[2] = str(end)
+				Chr15data.append([i, int(l[1]), int(l[2]), int(l[3])])
+		# Chr15data = np.array(Chr15data)
+		return [snps, Chr15data]
+	else:
+		return [snps, []]
 
-snpshead = snpshead_tmp
-snps = snps[:, snps_headi]
+def geteQTLs(filedir, snps, eqtlplot):
+	if eqtlplot==1:
+	    eqtl = pd.read_table(filedir+"eqtl.txt", sep="\t")
+	    eqtlhead = list(eqtl.columns.values)
+	    eqtl = eqtl.as_matrix()
+	    eqtl = eqtl[ArrayIn(eqtl[:,0], snps[:,0])]
+	    snps = np.c_[snps, ["NA"]*len(snps)]
 
-snps[:, snpshead.index("RDB")] = snps[:, snpshead.index("RDB")].astype(str)
-snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]
+	    for l in range(0,len(snps)):
+	        if snps[l,0] in eqtl[:,0]:
+	            temp = eqtl[eqtl[:,0]==snps[l,0]]
+	            out = []
+	            for e in temp:
+	                out.append(":".join(e.astype(str)[[1,2,10,5,7]]))
+	            snps[l, len(snps[0])-1] = "</br>".join(out)
+		return [snps, eqtl]
+	else:
+		return [snps, []]
 
-chrcol = 0
-poscol = 1
+def main():
+	##### check argument #####
+	if len(sys.argv)<11:
+		sys.exit("ERROR: not enough arguments\nUSAGE ./annotPlot.py <filedir> <type> <row index> <GWAS> <CADD> <RDB> <eqtl> <ci> <Chr15> <Chr15cells>")
 
-temp = pd.read_table(filedir+"all.txt", sep="\t")
-temp = temp.as_matrix()
-temp = temp[temp[:,chrcol]==chrom]
-temp = temp[temp[:,poscol]>=xMin-500000]
-temp = temp[temp[:,poscol]<=xMax+500000]
+	##### get command line arguments #####
+	filedir = sys.argv[1]
+	Type = sys.argv[2]
+	rowI = int(sys.argv[3])
+	GWAS = int(sys.argv[4])
+	CADD = int(sys.argv[5])
+	RDB = int(sys.argv[6])
+	eqtlplot = int(sys.argv[7])
+	ciplot = int(sys.argv[8])
+	Chr15 = int(sys.argv[9])
+	Chr15cells = sys.argv[10]
+	if Chr15cells=="NA":
+		Chr15cells = ["NA"]
+	else:
+		Chr15cells = Chr15cells.split(":")
+		if "all" in Chr15cells:
+			Chr15cells = ["all"]
 
-temp = temp[ArrayNotIn(temp[:,poscol], snps[:,3])]
+	##### add '/' to the filedir #####
+	filedir = sys.argv[1]
+	if re.match(".+\/$", filedir) is None:
+		filedir += '/'
 
-outfile = open(filedir+"temp.txt", 'w')
-outfile.write("chr\tpos\tgwasP\n")
-for l in temp:
-    outfile.write(str(int(l[0]))+"\t"+str(int(l[1]))+"\t"+str(l[2])+"\n")
+	##### get Parameters #####
+	cfg = ConfigParser.ConfigParser()
+	cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
+	chr15dir = cfg.get('data', 'chr15')
 
-if Chr15==1:
-    annot = pd.read_table(filedir+"annot.txt", sep="\t")
-    annothead = list(annot.columns.values)
-    annot = annot.as_matrix()
-    annot = annot[ArrayIn(annot[:,0], snps[:,0])]
-    if Chr15all==1:
-        Chr15ts = list(annothead[3:len(annothead)])
-    for c in Chr15ts:
-        snps = np.c_[snps, annot[:,annothead.index(c)]]
-        snpshead.append(c)
+	param = ConfigParser.RawConfigParser()
+	param.optionxform = str
+	param.read(filedir+'params.config')
+	posMapAnnot = param.get('posMap', 'posMapAnnot')
+	posMapCADDth = param.get('posMap', 'posMapCADDth')
+	posMapRDBth = param.get('posMap', 'posMapRDBth')
+	posMapChr15 = param.get('posMap', 'posMapChr15')
+	posMapChr15Max = param.get('posMap', 'posMapChr15Max')
+	posMapChr15Meth = param.get('posMap', 'posMapChr15Meth')
 
-if eqtlplot==1:
-    eqtl = pd.read_table(filedir+"eqtl.txt", sep="\t")
-    eqtlhead = list(eqtl.columns.values)
-    eqtl = eqtl.as_matrix()
-    eqtl = eqtl[ArrayIn(eqtl[:,0], snps[:,0])]
-    snps = np.c_[snps, ["NA"]*len(snps)]
-    snpshead.append("eqtl")
+	eqtlMapCADDth = param.get('eqtlMap', 'eqtlMapCADDth')
+	eqtlMapRDBth = param.get('eqtlMap', 'eqtlMapRDBth')
+	eqtlMapChr15 = param.get('eqtlMap', 'eqtlMapChr15')
+	eqtlMapChr15Max = param.get('eqtlMap', 'eqtlMapChr15Max')
+	eqtlMapChr15Meth = param.get('eqtlMap', 'eqtlMapChr15Meth')
 
-    for l in range(0,len(snps)):
-        if snps[l,0] in eqtl[:,0]:
-            temp = eqtl[eqtl[:,0]==snps[l,0]]
-            out = []
-            for e in temp:
-                out.append(":".join(e.astype(str)[[1,2,10,5,7]]))
-            snps[l, len(snps[0])-1] = "</br>".join(out)
-    outfile = open(filedir+"eqtlplot.txt", 'w')
-    outfile.write("\t".join(eqtlhead)+"\n")
-    for j in eqtl:
-        outfile.write("\t".join(j.astype(str))+"\n")
+	##### get SNPs data #####
+	[snps, gl] = getSNPs(filedir, rowI, Type)
+	##### get chromatin interaction #####
+	[min_pos, max_pos, cidata, citypes] = getCI(filedir, snps, ciplot, gl)
 
-outfile = open(filedir+"annotPlot.txt", 'w')
-outfile.write("\t".join(snpshead)+"\n")
-for l in snps:
-    outfile.write("\t".join(l.astype(str))+"\n")
-outfile.close()
+	##### get non candidate SNPs #####
+	osnps = getNonCandidateSNPs(filedir, snps, min_pos, max_pos)
+
+	##### get Chr15 #####
+	[snps, Chr15data] = getChr15(filedir, snps, Chr15, Chr15cells, chr15dir)
+	##### get eqtl #####
+	[snps, eqtldata] = geteQTLs(filedir, snps, eqtlplot)
+	if len(eqtldata) > 0:
+		eqtlgenes = unique(eqtldata[:,3])
+	else:
+		eqtlgenes = ["NA"]
+
+	##### output #####
+	out = {}
+	out["chrom"] = int(snps[0,1])
+	out["snps"] = [list(l) for l in snps]
+	out["eqtl"] = [ list(l) for l in eqtldata]
+	out["eqtlNgenes"] = len(eqtlgenes)
+	out["eqtlgenes"] = ":".join(eqtlgenes)
+	out["ci"] = [list(l) for l in cidata]
+	out["citypes"] = citypes
+	out["Chr15"] = [list(l) for l in Chr15data]
+	out["osnps"] = [list(l) for l in osnps]
+	out["xMin"] = min_pos
+	out["xMax"] = max_pos
+	out["xMin_init"] = min(snps[:,2])
+	out["xMax_init"] = max(snps[:,2])
+	print json.dumps(out)
+	# print cidata[0:3]
+
+if __name__ == "__main__": main()
