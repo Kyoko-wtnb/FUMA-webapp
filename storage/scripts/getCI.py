@@ -1,4 +1,9 @@
 #!/usr/bin/python
+############################################
+# chromatin interactions (loops) file format
+# 0:chr1 (int), 1:start1 (int), 2:end1 (int), 3:chr2 (int), 4:start2 (int), 5:end2 (int), 6:FDR (float)
+# total 7 columns
+############################################
 import pandas as pd
 import numpy as np
 import sys
@@ -35,10 +40,29 @@ def getRow(dat, chrom, pos):
 	n = np.where((dat[:,0].astype(int)==chrom) & (dat[:,1].astype(int)<=pos) & (dat[:,2].astype(int)>=pos))[0]
 	return n
 
-def mapToCI(snps, f, minScore, dt, DB, name):
+def getGenes(genes, start, end):
+	'''
+	input genes need to be filtered by the chromosome
+	'''
+	n = np.where(((genes[:,3].astype(int)>=start) & (genes[:,3].astype(int)<=end)) | ((genes[:,4].astype(int)>=start) & (genes[:,4].astype(int)<=end)) | ((genes[:,3].astype(int)<=start) & (genes[:,4].astype(int)>=end)))[0]
+	if len(n) > 0:
+		genes = genes[n]
+		# dist = [str(min(abs(x-start), abs(x-end))) for x in genes[:,2].astype(int)]
+		# return [":".join(genes[:,0]), ":".join(dist)]
+		return ":".join(genes[:,0])
+	else:
+		# dist = [min(abs(x-start), abs(x-end)) for x in genes[:,2].astype(int)]
+		# i = dist.index(min(dist))
+		return "NA"
+
+def mapToCI(snps, f, ciMapFDR, dt, DB, ts, genes):
 	mapdat = pd.read_table(f, comment="#", delim_whitespace=True)
 	mapdat = np.array(mapdat)
-	mapdat = mapdat[mapdat[:,6].astype(float)<minScore]
+	if len(mapdat) < 7:
+		sys.exit("ERROR: a uploaded file of chromatin interactions does not contain enought columns.")
+	if not isinstance(mapdat[0,1], (int, long, float, complex)) or not isinstance(mapdat[0,2], (int, long, float, complex)) or not isinstance(mapdat[0,4], (int, long, float, complex)) or not isinstance(mapdat[0,5], (int, long, float, complex)) or not isinstance(mapdat[0,6], (int, long, float, complex)):
+		sys.exit("ERROR: the format of a uploaded file of chromatin interactions is wrong.")
+	mapdat = mapdat[mapdat[:,6].astype(float)<ciMapFDR]
 	if len(mapdat) == 0:
 		print "No interaction left after filtering for "+f
 		return []
@@ -81,7 +105,7 @@ def mapToCI(snps, f, minScore, dt, DB, name):
 						interaction = "intra"
 					else:
 						interaction = "inter"
-					out.append([snps[i,4], r1, r2, tmpdat[j,6], dt, DB, name, interaction, snps[i,1]])
+					out.append([snps[i,4], r1, r2, tmpdat[j,6], dt, DB, ts, interaction, snps[i,1]])
 					last_n.append(len(out)-1)
 
 			tmpdat = chrdat2[int(snps[i,2])]
@@ -95,11 +119,21 @@ def mapToCI(snps, f, minScore, dt, DB, name):
 						interaction = "intra"
 					else:
 						interaction = "inter"
-					out.append([snps[i,4], r1, r2, tmpdat[j,6], dt, DB, name, interaction, snps[i,1]])
+					out.append([snps[i,4], r1, r2, tmpdat[j,6], dt, DB, ts, interaction, snps[i,1]])
 					last_n.append(len(out)-1)
-	return np.array(out)
+	mappedGenes = []
+	for l in out:
+		c = re.match(r'(\d+):(\d+)-(\d+)', l[2])
+		chrom = int(c.group(1))
+		min_pos = int(c.group(2))
+		max_pos = int(c.group(3))
+		tmp = getGenes(genes[genes[:,1].astype(int)==chrom], min_pos, max_pos)
+		mappedGenes.append(tmp)
+	out = np.array(out)
+	out = np.c_[out, mappedGenes]
+	return out
 
-def mapToRegElements(snps, f, dt, name):
+def mapToRegElements(snps, f, dt, ts):
 	mapdat = pd.read_table(f, comment="#", delim_whitespace=True, header=None)
 	mapdat = np.array(mapdat)
 	mapdat = mapdat[:,0:3]
@@ -121,10 +155,13 @@ def mapToRegElements(snps, f, dt, name):
 		n = getRow(tmpdat, int(snps[i,2]), int(snps[i,3]))
 		for j in n:
 			r = str(int(tmpdat[j,0]))+":"+str(int(tmpdat[j,1]))+"-"+str(int(tmpdat[j,2]))
-			out.append(list(snps[i, 0:4])+[r, dt, name])
+			out.append(list(snps[i, 0:4])+[r, dt, ts])
 	return np.array(out)
 
 def GeneToPromoter(genes, promoter):
+	"""
+	return [ensg, chr, TSS, min, max]
+	"""
 	out = []
 	for l in genes:
 		if int(l[4]) == 1:
@@ -133,18 +170,7 @@ def GeneToPromoter(genes, promoter):
 			out.append([l[0], l[1], l[3], l[3]-promoter[1], l[3]+promoter[0]])
 	return np.array(out)
 
-def getGenes(genes, start, end):
-	n = np.where(((genes[:,3].astype(int)>=start) & (genes[:,3].astype(int)<=end)) | ((genes[:,4].astype(int)>=start) & (genes[:,4].astype(int)<=end)) | ((genes[:,3].astype(int)<=start) & (genes[:,4].astype(int)>=end)))[0]
-	if len(n) > 0:
-		genes = genes[n]
-		dist = [str(min(abs(x-start), abs(x-end))) for x in genes[:,2].astype(int)]
-		return [":".join(genes[:,0]), ":".join(dist)]
-	else:
-		dist = [min(abs(x-start), abs(x-end)) for x in genes[:,2].astype(int)]
-		i = dist.index(min(dist))
-		return [genes[i,0], str(dist[i])]
-
-def getRegGenes(dat, chrom, min_pos, max_pos, promoter, genes):
+def getciprom(dat, chrom, min_pos, max_pos, genes):
 	if len(dat) == 0:
 		return []
 	tmpdat = dat[np.where(((dat[:,1].astype(int)>=min_pos) & (dat[:,1].astype(int)<=max_pos)) | ((dat[:,2].astype(int)>=min_pos) & (dat[:,2].astype(int)<=max_pos)) | ((dat[:,1].astype(int)<=min_pos) & (dat[:,2].astype(int)>=max_pos)))]
@@ -154,10 +180,10 @@ def getRegGenes(dat, chrom, min_pos, max_pos, promoter, genes):
 	for l in tmpdat:
 		r = str(l[0])+":"+str(l[1])+"-"+str(l[2])
 		g = getGenes(genes, int(l[1]), int(l[2]))
-		out.append([r]+g)
+		out.append([r, g])
 	return np.array(out)
 
-def RegionToGenes(regions, f, dt, name, promoter, genes):
+def RegionToGenes(regions, f, dt, ts, genes):
 	mapdat = pd.read_table(f, comment="#", delim_whitespace=True, header=None)
 	mapdat = np.array(mapdat)
 	mapdat = mapdat[:,0:3]
@@ -178,9 +204,9 @@ def RegionToGenes(regions, f, dt, name, promoter, genes):
 		min_pos = int(c.group(2))
 		max_pos = int(c.group(3))
 		tmpdat = chrdat[chrom]
-		tmp_out = getRegGenes(tmpdat, chrom, min_pos, max_pos, promoter, genes[genes[:,1].astype(int)==chrom])
+		tmp_out = getciprom(tmpdat, chrom, min_pos, max_pos, genes[genes[:,1].astype(int)==chrom])
 		if len(tmp_out) > 0:
-			tmp_out = np.c_[[regions[i]]*len(tmp_out), tmp_out[:,0], [dt]*len(tmp_out), [name]*len(tmp_out), tmp_out[:,1], tmp_out[:,2]]
+			tmp_out = np.c_[[regions[i]]*len(tmp_out), tmp_out[:,0], [dt]*len(tmp_out), [ts]*len(tmp_out), tmp_out[:,1]]
 			if len(out) == 0:
 				out = tmp_out
 			else:
@@ -212,59 +238,32 @@ def main():
 	ENSG = cfg.get("data", "ENSG")
 	datadir = cfg.get("CI", "CIdata")
 	reg_datadir = cfg.get("CI", "open_chromatin")
-	buildin_data = param.get("ciMap", "buildin_data")
-	buildin_data = buildin_data.split(":")
-	if "all" in buildin_data:
+	ciMapBuildin = param.get("ciMap", "ciMapBuildin")
+	if ciMapBuildin=="NA":
+		ciMapBuildin = ["NA"]
+	else:
+		ciMapBuildin = ciMapBuildin.split(":")
+
+	if "all" in ciMapBuildin:
 		tmp = glob.glob(datadir+"/HiC/GSE87112/*.txt.gz")
-		buildin_data = [x.replace(datadir+"/", "") for x in tmp]
-	reg_elements = param.get("ciMap", "open_chromatin")
-	reg_elements = reg_elements.split(":")
-	if "all" in reg_elements:
-		tmp = glob.glob(reg_datadir+"/*/*.bed.gz")
-		reg_elements = [x.replace(reg_datadir+"/", "") for x in tmp]
-	minScore = float(param.get("ciMap", 'minScore'))
-	promoter = param.get("ciMap", "promoter")
+		ciMapBuildin = [x.replace(datadir+"/", "") for x in tmp]
+	ciMapFileN = int(param.get("ciMap", "ciMapFileN"))
+	if ciMapFileN > 0:
+		ciMapFiles = param.get("ciMap", "ciMapFiles")
+		ciMapFiles = ciMapFiles.split(":")
+	ciMapFDR = float(param.get("ciMap", 'ciMapFDR'))
+	ciMapRoadmap = param.get("ciMap", "ciMapRoadmap")
+	ciMapRoadmap = ciMapRoadmap.split(":")
+	if "all" in ciMapRoadmap:
+		tmp = glob.glob(reg_datadir+"/enh/*.bed.gz")
+		# ciMapRoadmap = [x.replace(reg_datadir+"/", "") for x in tmp]
+		ciMapRoadmap = [re.match(r'.+regions_enh_(E\d+)\.bed.gz', x).group(1) for x in tmp]
+	promoter = param.get("ciMap", "ciMapPromWindow")
 	promoter = [int(x) for x in promoter.split("-")]
 	genetype = param.get("params", "genetype")
 	genetype = list(genetype.split(":"))
 
 	snps = getSNPs(filedir)
-
-	##### outputs #####
-	snps3dc = []
-	snpsreg = []
-	reggenes = []
-	outci = filedir+"ci.txt"
-	outsnps = filedir+"ciSNPs.txt"
-	outgenes = filedir+"ciGenes.txt"
-
-	##### Map SNPs to 3DC data #####
-	for f in buildin_data:
-		print f
-		c = re.match(r"(.+?)\/(.+?)\/(.+?)\.txt.gz", f)
-		tmp_snps3DC = mapToCI(snps, datadir+"/"+f, minScore, c.group(1), c.group(2), c.group(3))
-		if len(tmp_snps3DC)>0:
-			if len(snps3dc) == 0:
-				snps3dc = tmp_snps3DC
-			else:
-				snps3dc = np.r_[snps3dc, tmp_snps3DC]
-	insnps = []
-	for x in snps3dc[:,8]:
-		insnps += x.split(":")
-	insnps = unique(insnps)
-	snps = snps[ArrayIn(snps[:,1], insnps)]
-	print len(snps)
-
-	##### Map SNPs to reguratory elements #####
-	for f in reg_elements:
-		print f
-		c = re.match(r"(.+?)\/.+_(E\d{3})\.bed\.gz", f)
-		tmp_snpsreg = mapToRegElements(snps, reg_datadir+"/"+f, c.group(1), c.group(2))
-		if len(tmp_snpsreg) > 0:
-			if len(snpsreg) == 0:
-				snpsreg = tmp_snpsreg
-			else:
-				snpsreg = np.r_[snpsreg, tmp_snpsreg]
 
 	##### get genes #####
 	genes = pd.read_table(ENSG+"/ENSG.all.genes.txt", sep="\t", header=None)
@@ -274,37 +273,100 @@ def main():
 	genes = genes[ArrayIn(genes[:,5], genetype)]
 	genes = GeneToPromoter(genes, promoter)
 
+	##### outputs #####
+	ci = []
+	cisnps = []
+	ciprom = []
+	outci = filedir+"ci.txt"
+	outsnps = filedir+"ciSNPs.txt"
+	outgenes = filedir+"ciProm.txt"
+
+	##### Map SNPs to 3DC data #####
+	if ciMapFileN > 0:
+		for f in ciMapFiles:
+			print f
+			c = re.match(r"(.+?)\/(.+?)\/(.+?)\.txt.gz", f)
+			tmp_ci = mapToCI(snps, filedir+c.group(3)+".txt.gz", ciMapFDR, c.group(1), c.group(2), c.group(3), genes)
+			if len(tmp_ci)>0:
+				if len(ci) == 0:
+					ci = tmp_ci
+				else:
+					ci = np.r_[ci, tmp_ci]
+
+	if ciMapBuildin[0] != "NA":
+		for f in ciMapBuildin:
+			print f
+			c = re.match(r"(.+?)\/(.+?)\/(.+?)\.txt.gz", f)
+			tmp_ci = mapToCI(snps, datadir+"/"+f, ciMapFDR, c.group(1), c.group(2), c.group(3), genes)
+			if len(tmp_ci)>0:
+				if len(ci) == 0:
+					ci = tmp_ci
+				else:
+					ci = np.r_[ci, tmp_ci]
+
+	insnps = []
+	for x in ci[:,8]:
+		insnps += x.split(":")
+	insnps = unique(insnps)
+	snps = snps[ArrayIn(snps[:,1], insnps)]
+	print len(snps)
+
+	##### Map SNPs to reguratory elements #####
+	if ciMapRoadmap[0] != "NA":
+		for eid in ciMapRoadmap:
+			f = "enh/regions_enh_"+eid+".bed.gz"
+			print f
+			tmp_cisnps = mapToRegElements(snps, reg_datadir+"/"+f, "enh", eid)
+			if len(tmp_cisnps) > 0:
+				if len(cisnps) == 0:
+					cisnps = tmp_cisnps
+				else:
+					cisnps = np.r_[cisnps, tmp_cisnps]
+			f = "dyadic/regions_dyadic_"+eid+".bed.gz"
+			print f
+			tmp_cisnps = mapToRegElements(snps, reg_datadir+"/"+f, "dyadic", eid)
+			if len(tmp_cisnps) > 0:
+				if len(cisnps) == 0:
+					cisnps = tmp_cisnps
+				else:
+					cisnps = np.r_[cisnps, tmp_cisnps]
+
 	##### Map CI regions to reguratory elements #####
-	regions = unique(snps3dc[:,1])
-	for f in reg_elements:
-		c = re.match(r"(.+?)\/.+_(E\d{3})\.bed\.gz", f)
-		if c.group(1) == "enh":
-			continue
-		print f
-		tmp_reggenes = RegionToGenes(regions, reg_datadir+"/"+f, c.group(1), c.group(2), promoter, genes)
-		print len(tmp_reggenes)
-		print tmp_reggenes[0:3]
-		if len(tmp_reggenes) > 0:
-			if len(reggenes) == 0:
-				reggenes = tmp_reggenes
-			else:
-				reggenes = np.r_[reggenes, tmp_reggenes]
+	regions = unique(ci[:,1])
+	if ciMapRoadmap[0] != "NA":
+		for eid in ciMapRoadmap:
+			f = "prom/regions_prom_"+eid+".bed.gz"
+			print f
+			tmp_ciprom = RegionToGenes(regions, reg_datadir+"/"+f, "prom", eid, genes)
+			if len(tmp_ciprom) > 0:
+				if len(ciprom) == 0:
+					ciprom = tmp_ciprom
+				else:
+					ciprom = np.r_[ciprom, tmp_ciprom]
+			f = "dyadic/regions_dyadic_"+eid+".bed.gz"
+			print f
+			tmp_ciprom = RegionToGenes(regions, reg_datadir+"/"+f, "dyadic", eid, genes)
+			if len(tmp_ciprom) > 0:
+				if len(ciprom) == 0:
+					ciprom = tmp_ciprom
+				else:
+					ciprom = np.r_[ciprom, tmp_ciprom]
 
 	##### write outputs #####
 	with open(outci, 'w') as o:
-		o.write("\t".join(["GenomicLocus", "region1", "region2", "FDR", "type", "DB", "name", "inter/intra", "SNPs"])+"\n")
+		o.write("\t".join(["GenomicLocus", "region1", "region2", "FDR", "type", "DB", "tissue/cell", "inter/intra", "SNPs", "genes"])+"\n")
 	with open(outci, 'a') as o:
-		np.savetxt(o, snps3dc, delimiter="\t", fmt="%s")
+		np.savetxt(o, ci, delimiter="\t", fmt="%s")
 
 	with open(outsnps, 'w') as o:
-		o.write("\t".join(["uniqID", "rsID", "chr", "pos", "reg_region", "type", "name"])+"\n")
+		o.write("\t".join(["uniqID", "rsID", "chr", "pos", "reg_region", "type", "tissue/cell"])+"\n")
 	with open(outsnps, 'a') as o:
-		np.savetxt(o, snpsreg, delimiter="\t", fmt="%s")
+		np.savetxt(o, cisnps, delimiter="\t", fmt="%s")
 
 	with open(outgenes, 'w') as o:
-		o.write("\t".join(["region2", "reg_region", "type", "name", "genes", "distance"])+"\n")
+		o.write("\t".join(["region2", "reg_region", "type", "tissue/cell", "genes"])+"\n")
 	with open(outgenes, 'a') as o:
-		np.savetxt(o, reggenes, delimiter="\t", fmt="%s")
+		np.savetxt(o, ciprom, delimiter="\t", fmt="%s")
 
 	print time.time() - start
 

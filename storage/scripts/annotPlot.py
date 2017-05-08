@@ -91,6 +91,15 @@ def getSNPs(filedir, i, Type):
 	snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]
 	return [snps, gl]
 
+def SortCI(ci):
+	# 0:start1, 1:end1, 2:start2, 3:end2, 4-7:else
+	for i in range(0, len(ci)):
+		l = ci[i]
+		if int(l[0]) > int(l[2]):
+			ci[i,0:4] = l[[2,3,0,1]]
+	ci = np.array(list(i for i in set(map(tuple, ci))))
+	return ci
+
 def getCI(filedir, snps, ci, gl):
 	min_pos = min(snps[:,2])
 	max_pos = max(snps[:,2])
@@ -100,24 +109,77 @@ def getCI(filedir, snps, ci, gl):
 		ci = np.array(ci)
 		ci = ci[ci[:,0].astype(int)==gl]
 		ci = ci[ci[:,7]=="intra"]
-		tmp = []
+		inSNPs = []
+		for l in ci[:,8]:
+			inSNPs += list(l.split(":"))
+		inSNPs = unique(inSNPs)
+		ciout = []
 		chr1 = [int(x.split(":")[0]) for x in ci[:,1]]
 		chr2 = [int(x.split(":")[0]) for x in ci[:,2]]
-		tmp = np.c_[chr1, chr2]
-		if len(tmp) == 0:
+		ciout = np.c_[chr1, chr2]
+		if len(ciout) == 0:
 			return [min_pos, max_pos, []]
-		ci = ci[np.where((tmp[:,0]==chrom) & (tmp[:,1]==chrom))]
+		ci = ci[np.where((ciout[:,0]==chrom) & (ciout[:,1]==chrom))]
 		pos1min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,1]]
 		pos1max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,1]]
 		pos2min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,2]]
 		pos2max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,2]]
 		min_pos = min(min_pos, min(min(pos1min), min(pos2min)))
 		max_pos = max(max_pos, max(max(pos1max), max(pos2max)))
-		tmp = np.c_[pos1min, pos1max, pos2min, pos2max, ci[:,3:7]]
-		citypes = unique([":".join([l[5], l[6], l[7]]) for l in tmp])
-		return [min_pos, max_pos, tmp, citypes]
+		ciout = np.c_[pos1min, pos1max, pos2min, pos2max, ci[:,3:7]]
+		ciout = SortCI(ciout)
+		ciout = ciout[np.lexsort((ciout[:,2], ciout[:,0]))]
+		ciout = ciout[np.lexsort((ciout[:,5], ciout[:,6], ciout[:,7]))]
+		citypes = []
+		ciheight = []
+		y = []
+		cur_type = ""
+		cur_height = 1
+		for l in ciout:
+			tmp = ":".join([l[5], l[6], l[7]])
+			if tmp != cur_type:
+				if len(citypes)>0:
+					ciheight.append(cur_height-1)
+				citypes.append(tmp)
+				cur_height = 1
+				y.append(cur_height)
+				cur_height += 1
+				cur_type = tmp
+			else:
+				y.append(cur_height)
+				cur_height += 1
+		ciheight.append(cur_height-1)
+		ciout = np.c_[ciout, y]
+		# citypes = unique([":".join([l[5], l[6], l[7]]) for l in ciout])
+
+		cireg = []
+		eid = []
+		cienh = pd.read_table(filedir+"ciSNPs.txt", sep="\t")
+		cienh = np.array(cienh)
+		if len(cienh)>0:
+			cienh = cienh[ArrayIn(cienh[:,1], inSNPs)]
+		if len(cienh)>0:
+			posmin = [int(x.split(":")[1].split("-")[0]) for x in cienh[:,4]]
+			posmax = [int(x.split(":")[1].split("-")[1]) for x in cienh[:,4]]
+			cireg = np.c_[posmin, posmax, cienh[:,5:7]]
+
+		ciprom = pd.read_table(filedir+"ciProm.txt", sep="\t")
+		ciprom = np.array(ciprom)
+		if len(ciprom)>0:
+			ciprom = ciprom[ArrayIn(ciprom[:,0], ci[:,2])]
+		if len(ciprom)>0:
+			posmin = [int(x.split(":")[1].split("-")[0]) for x in ciprom[:,1]]
+			posmax = [int(x.split(":")[1].split("-")[1]) for x in ciprom[:,1]]
+			if len(cireg) > 0:
+				cireg = np.r_[cireg, np.c_[posmin, posmax, ciprom[:,2:4]]]
+		if len(cireg) > 0:
+			cireg = np.array(cireg)
+			cireg = np.array(list(i for i in set(map(tuple, cireg))))
+			eid = unique(cireg[:,3])
+
+		return [min_pos, max_pos, ciout, cireg, citypes, ciheight, eid]
 	else:
-		return [min_pos, max_pos, [], []]
+		return [min_pos, max_pos, [], [], [], [], []]
 
 def getNonCandidateSNPs(filedir, snps, min_pos, max_pos):
 	chrom = int(snps[0,1])
@@ -235,7 +297,7 @@ def main():
 	##### get SNPs data #####
 	[snps, gl] = getSNPs(filedir, rowI, Type)
 	##### get chromatin interaction #####
-	[min_pos, max_pos, cidata, citypes] = getCI(filedir, snps, ciplot, gl)
+	[min_pos, max_pos, cidata, cireg, citypes, ciheight, cieid] = getCI(filedir, snps, ciplot, gl)
 
 	##### get non candidate SNPs #####
 	osnps = getNonCandidateSNPs(filedir, snps, min_pos, max_pos)
@@ -257,7 +319,10 @@ def main():
 	out["eqtlNgenes"] = len(eqtlgenes)
 	out["eqtlgenes"] = ":".join(eqtlgenes)
 	out["ci"] = [list(l) for l in cidata]
+	out["cireg"] = [list(l) for l in cireg]
 	out["citypes"] = citypes
+	out["ciheight"] = ciheight
+	out["cieid"] = cieid
 	out["Chr15"] = [list(l) for l in Chr15data]
 	out["osnps"] = [list(l) for l in osnps]
 	out["xMin"] = min_pos
@@ -266,5 +331,6 @@ def main():
 	out["xMax_init"] = max(snps[:,2])
 	print json.dumps(out)
 	# print cidata[0:3]
+	# print citypes
 
 if __name__ == "__main__": main()

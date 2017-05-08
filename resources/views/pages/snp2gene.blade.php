@@ -466,7 +466,7 @@
 				  <table id="ciTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                     <thead>
                       <tr>
-                        <th>GenomicLocus</th><th>region1</th><th>region2</th><th>FDR</th><th>type</th><th>DB</th><th>name</th><th>inter/intra</th><th>SNPs</th>
+                        <th>GenomicLocus</th><th>region1</th><th>region2</th><th>FDR</th><th>type</th><th>DB</th><th>tissue/cell</th><th>inter/intra</th><th>SNPs</th><th>Genes</th>
                       </tr>
                     </thead>
                   </table>
@@ -475,7 +475,7 @@
 				  <table id="ciSNPsTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                     <thead>
                       <tr>
-                        <th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>regulatory region</th><th>type</th><th>name</th>
+                        <th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>regulatory region</th><th>type</th><th>tissue/cell</th>
                       </tr>
                     </thead>
                   </table>
@@ -484,7 +484,7 @@
 				  <table id="ciGenesTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
                     <thead>
                       <tr>
-                        <th>region2</th><th>regulatory region</th><th>type</th><th>name</th><th>genes</th><th>distance</th>
+                        <th>region2</th><th>regulatory region</th><th>type</th><th>tissue/cell</th><th>genes</th>
                       </tr>
                     </thead>
                   </table>

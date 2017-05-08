@@ -1,4 +1,5 @@
 var gwasFileSize = 0;
+var ciFileSize = 0;
 $(document).ready(function(){
   $("#newJob").show();
   $("#GWplotSide").hide();
@@ -10,6 +11,8 @@ $(document).ready(function(){
   $('#posMapOptFilt').hide();
   $('.eqtlMapOptions').hide();
   $('#eqtlMapOptFilt').hide();
+  $('.ciMapOptions').hide();
+  $('#ciMapOptFilt').hide();
   CheckAll();
   $('#fileCheck').html("<br/><div class='alert alert-danger'>GWAS summary statistics is a mandatory input.</div>");
 
@@ -66,7 +69,40 @@ $(document).ready(function(){
     cur.prev().prop('selected', total);
   });
 
+  $('#ciFileAdd').on('click',function(){
+	  var n = 0;
+	  $('.ciFileID').each(function(){
+		if(parseInt($(this).val()) > n){
+			n = parseInt($(this).val());
+		}
+	  })
+	  n += 1;
+	  $('#ciFiles').append('<span class="form-inline ciFile"><br/>File '+n+': data type <input type="text" class="form-control" placeholder="e.g. HiC or ChIA-PET" name="ciMapType'+n+'" id="ciMapType'+n
+	  +'"><tab><button type="button" class="btn btn-xs ciFileDel" onclick="ciFileDel(this)">delete</button><tab><input type="file" class="form-control-file ciMapFile" name="ciMapFile'+n+'" id="ciMapFile'+n
+	  +'" onchange="ciFileCheck()"><input type="hidden" class="ciFileID" id="ciFileID'+n+'" name="ciFileID'+n+'" value="'+n+'"></span>');
+  })
 });
+
+function ciFileCheck(){
+	var maxSize = 0;
+	var nFiles = 0;
+	$('.ciMapFile').each(function(){
+		if($(this).val().length>0){
+			nFiles += 1;
+			if(this.files[0].size > maxSize){
+				maxSize = this.files[0].size;
+			}
+		}
+	})
+	ciFileSize = maxSize;
+	$('#ciFileN').val(nFiles);
+	CheckAll();
+}
+
+function ciFileDel(del){
+	$(del).parent().parent().remove();
+	ciFileCheck();
+}
 
 function CheckAll(){
   var submit = true;
@@ -216,18 +252,18 @@ function CheckAll(){
     }
   }
 
-  if($('#r2').val().length==0){
+  if($('#ciMapFDR').val().length==0){
     $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
       +'<i class="fa fa-ban"></i> Invalid input</div></td>');
     submit=false;
     tablecheck=false;
   }else{
-    if(isNaN($('#r2').val())){
+    if(isNaN($('#ciMapFDR').val())){
       $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-ban"></i> Invalid input</div></td>');
       submit=false;
       tablecheck=false;
-    }else if($('#r2').val()>=0 && $('#r2').val()<=1){
+    }else if($('#ciMapFDR').val()>=0 && $('#ciMapFDR').val()<=1){
       $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
     }else{
@@ -339,12 +375,12 @@ function CheckAll(){
   }else{
     $('.posMapOptions').hide();
     $('#posMapOptFilt').hide();
-    if($('#eqtlMap').is(":checked")==true){
+    if($('#eqtlMap').is(":checked")==true || $('#ciMap').is(':checked')==true){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-ban"></i> Please select either positional or eQTL mapping.</div></td>');
+        +'<i class="fa fa-ban"></i> Please select at least one of the positional, eQTL or chromatin interaction mapping.</div></td>');
       submit=false;
       tablecheck=false;
     }
@@ -457,15 +493,6 @@ function CheckAll(){
     $('#eqtlMapGts option').each(function(){
       if($(this).is(":checked")==true){ts++;}
     });
-    // console.log($('#eqtlMapTs').children('.level1').html())
-    // $('.level1').each(function(){
-    //   var cur = $(this);
-    //   while(cur.next().hasClass('level2')){
-    //     cur = cur.next();
-    //     console.log(cur.val());
-    //   }
-    //
-    // });
     if(ts>0){
       $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-check"></i> OK.</div></td>');
@@ -502,13 +529,14 @@ function CheckAll(){
   }else{
     $('.eqtlMapOptions').hide();
     $('#eqtlMapOptFilt').hide();
-    if($('#posMap').is(":checked")==true){
+    if($('#posMap').is(":checked")==true || $('#ciMap').is(':checked')==true){
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
         +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
     }else{
       $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-        +'<i class="fa fa-ban"></i> Please select either positional or eQTL mapping.</div></td>');
-      submit-false;
+        +'<i class="fa fa-ban"></i> Please select at least one of the positional, eQTL or chromatin interaction mapping.</div></td>');
+      submit=false;
+	  tablecheck=false;
     }
   }
 
@@ -603,6 +631,232 @@ function CheckAll(){
     $('#NewJobEqtlMapPanel').parent().attr("class", "panel panel-danger");
   }else{
     $('#NewJobEqtlMapPanel').parent().attr("class", "panel panel-default");
+  }
+
+  tablecheck=true;
+  table = $('#NewJobCiMap')[0];
+  if($('#ciMap').is(":checked")==true){
+	  $('.ciMapOptions').show();
+	  $('#ciMapOptFilt').show();
+	  var cidata = 0;
+	  $('#ciMapBuildin option').each(function(){
+		if($(this).is(":checked")==true){cidata++;}
+	  });
+	  if(cidata>0){
+		  $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-check"></i> OK.</div></td>');
+		  if($('#ciFiles .ciFile').length>0){
+			  if(ciFileSize>600000000){
+				  $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+					+'<i class="fa fa-ban"></i>  The size of the last selected file id above 600Mb. Please gzip or filter the file to upload.</div></td>');
+			  }else{
+				  var filecheck = false;
+				  $('.ciMapFile').each(function(){
+					  if($(this).val().length>0){filecheck=true; return false;}
+				  })
+				  if(filecheck){
+					  $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				        +'<i class="fa fa-check"></i> OK.</div></td>');
+				  }else{
+					  $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+						+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+				  }
+			  }
+		  }else{
+			  $(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+		  }
+	  }else if($('#ciFiles .ciFile').length>0){
+		  if(ciFileSize>600000000){
+			  $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+		        +'<i class="fa fa-ban"></i> Please select at least one build in data or upload interaction matrix.</div></td>');
+			  $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-ban"></i> The size of the last selected file id above 600Mb. Please gzip or filter the file to upload.</div></td>');
+			  submit=false;
+			  tablecheck=false;
+		  }else{
+			  var filecheck = false;
+			  $('.ciMapFile').each(function(){
+				  if($(this).val().length>0){filecheck=true; return false;}
+			  })
+			  if(filecheck){
+				  $(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			        +'<i class="fa fa-check"></i> OK.</div></td>');
+				  $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+  			        +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+			  }else{
+				  $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			        +'<i class="fa fa-ban"></i> Please select at least one build in data or upload interaction matrix.</div></td>');
+				  $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+					+'<i class="fa fa-ban"></i> Please select at least one build in data or upload interaction matrix.</div></td>');
+			      submit=false;
+			      tablecheck=false;
+			  }
+		  }
+	  }else{
+		  $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-ban"></i> Please select at least one build in data or upload interaction matrix.</div></td>');
+		  $(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-ban"></i> Please select at least one build in data or upload interaction matrix.</div></td>');
+	      submit=false;
+	      tablecheck=false;
+	  }
+	  if($('#ciMapFDR').val().length==0){
+	    $(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	      +'<i class="fa fa-ban"></i> Invalid input</div></td>');
+	    submit=false;
+	    tablecheck=false;
+	  }else{
+	    if(isNaN($('#ciMapFDR').val())){
+	      $(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-ban"></i> Invalid input</div></td>');
+	      submit=false;
+	      tablecheck=false;
+	    }else if($('#ciMapFDR').val()>=0 && $('#ciMapFDR').val()<=1){
+	      $(table.rows[3].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-check"></i> OK.</div></td>');
+	    }else{
+	      $(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-ban"></i> Invalid input</div></td>');
+	      submit=false;
+	      tablecheck=false;
+	    }
+	  }
+	  if($('#ciMapPromWindow').val().length==0){
+		  $(table.rows[4].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
+	  }else{
+		  $(table.rows[4].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-"check></i> OK.</div></td>');
+	  }
+	  cidata = 0;
+	  $('#ciMapRoadmap option').each(function(){
+		if($(this).is(":checked")==true){cidata++;}
+	  });
+	  if(cidata==0){
+		  $('#ciMapEnhFilt').prop("disabled", true);
+		  $('#ciMapPromFilt').prop("disabled", true);
+		  $(table.rows[5].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+		  $(table.rows[6].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-exclamation-triangle"></i> Select at least one epigenome to eable tis option.</div></td>');
+		  $(table.rows[7].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-exclamation-triangle"></i> Select at least one epigenome to eable tis option.</div></td>');
+	  }else{
+		  $('#ciMapEnhFilt').prop("disabled", false);
+		  $('#ciMapPromFilt').prop("disabled", false);
+		  $(table.rows[5].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-"check></i> OK.</div></td>');
+		  $(table.rows[6].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+  	        +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+		  $(table.rows[7].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+	  }
+  }else{
+	  $('.ciMapOptions').hide();
+	  $('#ciMapOptFilt').hide();
+	  if($('#posMap').is(':checked')==true || $('#eqtlMap').is(':checked')==true){
+		  $(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+	  }else{
+		  $(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+	        +'<i class="fa fa-ban"></i> Please select at least one of the positional, eQTL or chromatin interaction mapping.</div></td>');
+		  tablecheck=false;
+		  submit=false;
+	  }
+  }
+
+  table = $('#ciMapOptFiltTable')[0];
+  if($('#ciMapCADDcheck').is(":checked")==true){
+    $(table.rows[0].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-check"></i> OK.</div></td>');
+    if($('#ciMapCADDth').val().length==0){
+      $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        +'<i class="fa fa-ban"></i> Mandatory input.</div></td>');
+      submit=false;
+      tablecheck=false;
+    }else{
+      if(isNaN($('#ciMapCADDth').val())){
+        $(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+          +'<i class="fa fa-ban"></i> Invalid input.</div></td>');
+        submit=false;
+        tablecheck=false;
+      }else{
+        $(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+          +'<i class="fa fa-check"></i> OK.</div></td>');
+      }
+    }
+  }else{
+    $(table.rows[0].cells[3]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+    $(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+  }
+
+  if($('#ciMapRDBcheck').is(":checked")){
+    $(table.rows[2].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-check"></i> OK.</div></td>');
+    $(table.rows[3].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-check"></i> OK.</div></td>');
+  }else{
+    $(table.rows[2].cells[3]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+    $(table.rows[3].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+  }
+
+  if($('#ciMapChr15check').is(":checked")){
+    $(table.rows[4].cells[3]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-check"></i> OK.</div></td>');
+    var ts = 0;
+    $('#ciMapChr15Ts option').each(function(){
+      if($(this).is(":selected")){ts++;}
+    });
+    $('#ciMapChr15Gts option').each(function(){
+      if($(this).is(":selected")){ts++;}
+    });
+    if(ts==0){
+      $(table.rows[5].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        +'<i class="fa fa-ban"></i> Please select at least one tissue/cell type.</div></td>');
+      submit=false;
+      tablecheck=false;
+    }else{
+      $(table.rows[5].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        +'<i class="fa fa-check"></i> OK.</div></td>');
+    }
+    if(isNaN($('#ciMapChr15Max').val())){
+      $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+        +'<i class="fa fa-ban"></i> Invalid input. Please choose between 1 to 15.</div></td>');
+      submit=false;
+      tablecheck=false;
+    }else{
+      if($('#ciMapChr15Max').val()>=1 && $('#ciMapChr15Max').val()<=15){
+        $(table.rows[6].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+          +'<i class="fa fa-check"></i> OK.</div></td>');
+      }else{
+        $(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+          +'<i class="fa fa-ban"></i> Invalid input. Please choose between 1 to 15.</div></td>');
+        submit=false;
+        tablecheck=false;
+      }
+    }
+    $(table.rows[7].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-check"></i> OK.</div></td>');
+  }else{
+    $(table.rows[4].cells[3]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+    $(table.rows[5].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+    $(table.rows[6].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+    $(table.rows[7].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+      +'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+  }
+
+  if(tablecheck==false){
+    $('#NewJobCiMapPanel').parent().attr("class", "panel panel-danger");
+  }else{
+    $('#NewJobCiMapPanel').parent().attr("class", "panel panel-default");
   }
 
   tablecheck=true;

@@ -124,7 +124,7 @@ E001~E129 : Chromatin state predicted by ChrHMM.
 Gene : ENSG ID
 Symbol : Gene Symbol
 entrezID : entrez ID
-Genomic locus : Index of genomic loci where mapped SNPs are from. This could contain more than one interval in the case that eQTLs are mapped to genes from distinct genomic risk loci.
+GenomicLocus : Index of genomic loci where mapped SNPs are from. This could contain more than one interval in the case that eQTLs are mapped to genes from distinct genomic risk loci.
 chr : chromosome
 start : Starting position of the gene
 end : Ending position of the gene
@@ -141,6 +141,7 @@ eqtlMapmin! (eqtlMap): The minimum eQTL FDR of mapped SNPs.
 eqtlMapts (eqtlMap): Tissue types of mapped eQTL SNPs.
 eqtlDirection (eqtlMap): consecutive direction of mapped eQTL SNPs.
 minGwasP : The minimum P-value of mapped SNPs.
+ciMap : If the gene is mapped by chromatin interaction "Yes", otherwise "No".
 IndSigSNPs : rsID of the all independent significant SNPs of mapped SNPs.
 
 ######################
@@ -156,8 +157,50 @@ tissue : Tissue type
 Gene : ENSG ID
 Symbol : Gene symbol
 P-value : P-value of eQTLs
-FDR : FDR of eQTLs. Note that method to compute FDR differs between data sources. Please refer &quot;External Data sources&quot; for details.
+FDR : FDR of eQTLs. Note that method to compute FDR differs between data sources.
 tz : T-statistics or z score depends on data source.
+
+######################
+# ci.txt
+# This file is only available when chromatin interaction mapping is performed.
+# The file contains significant interactions of user defined data or user uploaded data filtered.
+######################
+GenomicLocus : Index of genomic loci where the significant interaction is overlapped.
+region1 : One end of significant interaction which overlap with at least one candidate SNPs in one of the genomic risk loci.
+region2 : The other end of significant interaction. This region could be located outside the risk loci.
+FDR : FDR of interaction.
+type : Type of chromatin interaction data, e.g. Hi-C or ChIA-PET
+DB : The name of data source.
+tissue/cell : Tissue or cell type of the interaction.
+intra/inter : Intra- or Inter-chromosomal iteraction.
+SNPs : rsID of candidate SNPs which are overlapped with the region 1.
+genes : ENSG ID of genes whose promoter regions are overlapped with region 2.
+
+######################
+# ciSNPs.txt
+# This file is only available when chromatin interaction mapping is performed.
+# The file contains candidate SNPs which overlap with one end (region 1) of significant chromatin interaction and enhancer regions of user selected epigenomes.
+# If any epigenome was selected, this file is empty.
+######################
+uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
+rsID : rsID based on dbSNP build 146
+chr : chromosome
+pos : position on hg19
+reg_region : Predicted enhancer or dyadic regions
+type : enh for enhancer and dyadic for dyadic enhancer/promoter regions
+tissue/cell : EID of 111 Roadmap epigenomes
+
+######################
+# ciProm.txt
+# This file is only available when chromatin interaction mapping is performed.
+# The file contains promoter regions of user selected epigenomes (if selected any) and genes whose promoter regions are overlapped.
+# If any epigenome was selected, this file is empty.
+######################
+region2 : region 2 in "ci.txt" file
+reg_region : Predicted promoter or dyadic regions
+type : prom for promoter and dyadic for dyadic enhancer/promoter regions
+tissue/cell : EID of 111 Roadmap epigenomes
+genes : genes whose promoter regions are overlapped with region2
 
 ######################
 # gwascatalog.txt
@@ -258,7 +301,7 @@ The MAGMA output from FUMA is based on summary statistics.
 When genotype data is available, we recommend to re-run MAGMA locally with genotype data.
 1. Gene analysis
   SNPs are mapped to 19436 protein coding genes (with unique ensembl ID) if SNPs are located within gene body.
-  All parameters were set as default (SNP-wise model for gene test).
+  All parameters were set as default (SNP-wise (mean) model for gene test).
   magma.genes.out: output of gene analysis containing gene P-value
   magma.genes.raw: output of gene analysis which is used for gene-set analysis
 2. Gene-set analysis

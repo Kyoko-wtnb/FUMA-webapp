@@ -975,6 +975,20 @@
             <td></td>
           </tr>
 		  <tr class="ciMapOptions">
+			  <td>Custome chromatin interaction matrices
+				  <a class="infoPop" data-toggle="popover" title="Custome chromatin interaction matrices"
+				  data-content="Please upload files of custome chromatin interaction matrices (significant loops). The input files have to follow the specific format. Please refer the tutorial for details. THe file name should be '(Name_of_the_data).txt.gz' in which (Name_of_the_data) will be used in the results table.">
+	                <i class="fa fa-question-circle-o fa-lg"></i>
+	              </a>
+			  </td>
+			  <td>
+				  <span id="ciFiles"></span><br/>
+				  <button type="button" class="btn btn-xs" id="ciFileAdd">add file</button>
+				  <input type="hidden" value="0" id="ciFileN" name="ciFileN">
+			  </td>
+			  <td></td>
+		  </tr>
+		  <tr class="ciMapOptions">
             <td>FDR threshold
               <a class="infoPop" data-toggle="popover" title="FDR threshold for significant interaction" data-content="Significane of interaction for buildin Hi-C datasets are computed by Fit-Hi-C (see tutorial for details). The default threshold is FDR &le; 1e-6 as suggested by Schmit et al. (2016).">
                 <i class="fa fa-question-circle-o fa-lg"></i>
@@ -986,550 +1000,203 @@
             <td></td>
           </tr>
 		  <tr class="ciMapOptions">
-			 <td>Enhancers
-				  <a class="infoPop" data-toggle="popover" title="Enhancers" data-content="Candidate SNPs which have significant interactions are mapped to enhancer of selected tissue/cell types. 111 epigenomes from Roadmap Epigenetics are available. The list also include dyadic enhancer/promoter regions.">
+			  <td>Gene promoter region window
+				  <a class="infoPop" data-toggle="popover" title="Gene promoter region window" data-content="The window of promoter regions are used to overlap TSS of genes with significantly interacted regions with risk loci.
+				  By default, promoter region is defined as 250bp upstream and 500bp downsteram of TSS. Genes whoes promoter regions are overlapped with the interacted region are used for gene mapping.">
 	                <i class="fa fa-question-circle-o fa-lg"></i>
 	              </a>
 			  </td>
-			  <td>
-				  <span class="multiselect">
-					  <a style="float:right; padding-right:20px;">clear</a><br/>
-					  <select multiple class="form-control" id="ciMapEnhancers" name="ciMapEnhancers[]" size="10" onchange="CheckAll();">
-						<option value="all">All</option>
-						<option class="level1" value="null">Adrenal (1)</option>
-						<option class="level2" value="enh_E080">Enhancer E080 (Other) Fetal Adrenal Gland</option>
-						<option class="level2" value="dyadic_E080">Dyadic E080 (Other) Fetal Adrenal Gland</option>
-						<option class="level1" value="null">Blood (27)</option>
-						<option class="level2" value="enh_E029">Enhancer E029 (HSC & B-cell) Primary monocytes from peripheral blood</option>
-						<option class="level2" value="dyadic_E029">Dyadic E029 (HSC & B-cell) Primary monocytes from peripheral blood</option>
-						<option class="level2" value="enh_E030">Enhancer E030 (HSC & B-cell) Primary neutrophils from peripheral blood</option>
-						<option class="level2" value="dyadic_E030">Dyadic E030 (HSC & B-cell) Primary neutrophils from peripheral blood</option>
-						<option class="level2" value="enh_E031">Enhancer E031 (HSC & B-cell) Primary B cells from cord blood</option>
-						<option class="level2" value="dyadic_E031">Dyadic E031 (HSC & B-cell) Primary B cells from cord blood</option>
-						<option class="level2" value="enh_E032">Enhancer E032 (HSC & B-cell) Primary B cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E032">Dyadic E032 (HSC & B-cell) Primary B cells from peripheral blood</option>
-						<option class="level2" value="enh_E033">Enhancer E033 (Blood & T-cell) Primary T cells from cord blood</option>
-						<option class="level2" value="dyadic_E033">Dyadic E033 (Blood & T-cell) Primary T cells from cord blood</option>
-						<option class="level2" value="enh_E034">Enhancer E034 (Blood & T-cell) Primary T cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E034">Dyadic E034 (Blood & T-cell) Primary T cells from peripheral blood</option>
-						<option class="level2" value="enh_E035">Enhancer E035 (HSC & B-cell) Primary hematopoietic stem cells</option>
-						<option class="level2" value="dyadic_E035">Dyadic E035 (HSC & B-cell) Primary hematopoietic stem cells</option>
-						<option class="level2" value="enh_E036">Enhancer E036 (HSC & B-cell) Primary hematopoietic stem cells short term culture</option>
-						<option class="level2" value="dyadic_E036">Dyadic E036 (HSC & B-cell) Primary hematopoietic stem cells short term culture</option>
-						<option class="level2" value="enh_E037">Enhancer E037 (Blood & T-cell) Primary T helper memory cells from peripheral blood 2</option>
-						<option class="level2" value="dyadic_E037">Dyadic E037 (Blood & T-cell) Primary T helper memory cells from peripheral blood 2</option>
-						<option class="level2" value="enh_E038">Enhancer E038 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E038">Dyadic E038 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
-						<option class="level2" value="enh_E039">Enhancer E039 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E039">Dyadic E039 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
-						<option class="level2" value="enh_E040">Enhancer E040 (Blood & T-cell) Primary T helper memory cells from peripheral blood 1</option>
-						<option class="level2" value="dyadic_E040">Dyadic E040 (Blood & T-cell) Primary T helper memory cells from peripheral blood 1</option>
-						<option class="level2" value="enh_E041">Enhancer E041 (Blood & T-cell) Primary T helper cells PMA-I stimulated</option>
-						<option class="level2" value="dyadic_E041">Dyadic E041 (Blood & T-cell) Primary T helper cells PMA-I stimulated</option>
-						<option class="level2" value="enh_E042">Enhancer E042 (Blood & T-cell) Primary T helper 17 cells PMA-I stimulated</option>
-						<option class="level2" value="dyadic_E042">Dyadic E042 (Blood & T-cell) Primary T helper 17 cells PMA-I stimulated</option>
-						<option class="level2" value="enh_E043">Enhancer E043 (Blood & T-cell) Primary T helper cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E043">Dyadic E043 (Blood & T-cell) Primary T helper cells from peripheral blood</option>
-						<option class="level2" value="enh_E044">Enhancer E044 (Blood & T-cell) Primary T regulatory cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E044">Dyadic E044 (Blood & T-cell) Primary T regulatory cells from peripheral blood</option>
-						<option class="level2" value="enh_E045">Enhancer E045 (Blood & T-cell) Primary T cells effector/memory enriched from peripheral blood</option>
-						<option class="level2" value="dyadic_E045">Dyadic E045 (Blood & T-cell) Primary T cells effector/memory enriched from peripheral blood</option>
-						<option class="level2" value="enh_E046">Enhancer E046 (HSC & B-cell) Primary Natural Killer cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E046">Dyadic E046 (HSC & B-cell) Primary Natural Killer cells from peripheral blood</option>
-						<option class="level2" value="enh_E047">Enhancer E047 (Blood & T-cell) Primary T CD8+ naive cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E047">Dyadic E047 (Blood & T-cell) Primary T CD8+ naive cells from peripheral blood</option>
-						<option class="level2" value="enh_E048">Enhancer E048 (Blood & T-cell) Primary T CD8+ memory cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E048">Dyadic E048 (Blood & T-cell) Primary T CD8+ memory cells from peripheral blood</option>
-						<option class="level2" value="enh_E050">Enhancer E050 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
-						<option class="level2" value="dyadic_E050">Dyadic E050 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
-						<option class="level2" value="enh_E051">Enhancer E051 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
-						<option class="level2" value="dyadic_E051">Dyadic E051 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
-						<option class="level2" value="enh_E062">Enhancer E062 (Blood & T-cell) Primary mononuclear cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E062">Dyadic E062 (Blood & T-cell) Primary mononuclear cells from peripheral blood</option>
-						<option class="level1" value="null">Bone (1)</option>
-						<option class="level1" value="null">Brain (13)</option>
-						<option class="level2" value="enh_E053">Enhancer E053 (Neurosph) Cortex derived primary cultured neurospheres</option>
-						<option class="level2" value="dyadic_E053">Dyadic E053 (Neurosph) Cortex derived primary cultured neurospheres</option>
-						<option class="level2" value="enh_E054">Enhancer E054 (Neurosph) Ganglion Eminence derived primary cultured neurospheres</option>
-						<option class="level2" value="dyadic_E054">Dyadic E054 (Neurosph) Ganglion Eminence derived primary cultured neurospheres</option>
-						<option class="level2" value="enh_E067">Enhancer E067 (Brain) Brain Angular Gyrus</option>
-						<option class="level2" value="dyadic_E067">Dyadic E067 (Brain) Brain Angular Gyrus</option>
-						<option class="level2" value="enh_E068">Enhancer E068 (Brain) Brain Anterior Caudate</option>
-						<option class="level2" value="dyadic_E068">Dyadic E068 (Brain) Brain Anterior Caudate</option>
-						<option class="level2" value="enh_E069">Enhancer E069 (Brain) Brain Cingulate Gyrus</option>
-						<option class="level2" value="dyadic_E069">Dyadic E069 (Brain) Brain Cingulate Gyrus</option>
-						<option class="level2" value="enh_E070">Enhancer E070 (Brain) Brain Germinal Matrix</option>
-						<option class="level2" value="dyadic_E070">Dyadic E070 (Brain) Brain Germinal Matrix</option>
-						<option class="level2" value="enh_E071">Enhancer E071 (Brain) Brain Hippocampus Middle</option>
-						<option class="level2" value="dyadic_E071">Dyadic E071 (Brain) Brain Hippocampus Middle</option>
-						<option class="level2" value="enh_E072">Enhancer E072 (Brain) Brain Inferior Temporal Lobe</option>
-						<option class="level2" value="dyadic_E072">Dyadic E072 (Brain) Brain Inferior Temporal Lobe</option>
-						<option class="level2" value="enh_E073">Enhancer E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
-						<option class="level2" value="dyadic_E073">Dyadic E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
-						<option class="level2" value="enh_E074">Enhancer E074 (Brain) Brain Substantia Nigra</option>
-						<option class="level2" value="dyadic_E074">Dyadic E074 (Brain) Brain Substantia Nigra</option>
-						<option class="level2" value="enh_E081">Enhancer E081 (Brain) Fetal Brain Male</option>
-						<option class="level2" value="dyadic_E081">Dyadic E081 (Brain) Fetal Brain Male</option>
-						<option class="level2" value="enh_E082">Enhancer E082 (Brain) Fetal Brain Female</option>
-						<option class="level2" value="dyadic_E082">Dyadic E082 (Brain) Fetal Brain Female</option>
-						<option class="level1" value="null">Breast (3)</option>
-						<option class="level2" value="enh_E027">Enhancer E027 (Epithelial) Breast Myoepithelial Primary Cells</option>
-						<option class="level2" value="dyadic_E027">Dyadic E027 (Epithelial) Breast Myoepithelial Primary Cells</option>
-						<option class="level2" value="enh_E028">Enhancer E028 (Epithelial) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
-						<option class="level2" value="dyadic_E028">Dyadic E028 (Epithelial) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
-						<option class="level1" value="null">Cervix (1)</option>
-						<option class="level1" value="null">ESC (8)</option>
-						<option class="level2" value="enh_E001">Enhancer E001 (ESC) ES-I3 Cells</option>
-						<option class="level2" value="dyadic_E001">Dyadic E001 (ESC) ES-I3 Cells</option>
-						<option class="level2" value="enh_E002">Enhancer E002 (ESC) ES-WA7 Cells</option>
-						<option class="level2" value="dyadic_E002">Dyadic E002 (ESC) ES-WA7 Cells</option>
-						<option class="level2" value="enh_E003">Enhancer E003 (ESC) H1 Cells</option>
-						<option class="level2" value="dyadic_E003">Dyadic E003 (ESC) H1 Cells</option>
-						<option class="level2" value="enh_E008">Enhancer E008 (ESC) H9 Cells</option>
-						<option class="level2" value="dyadic_E008">Dyadic E008 (ESC) H9 Cells</option>
-						<option class="level2" value="enh_E014">Enhancer E014 (ESC) HUES48 Cells</option>
-						<option class="level2" value="dyadic_E014">Dyadic E014 (ESC) HUES48 Cells</option>
-						<option class="level2" value="enh_E015">Enhancer E015 (ESC) HUES6 Cells</option>
-						<option class="level2" value="dyadic_E015">Dyadic E015 (ESC) HUES6 Cells</option>
-						<option class="level2" value="enh_E016">Enhancer E016 (ESC) HUES64 Cells</option>
-						<option class="level2" value="dyadic_E016">Dyadic E016 (ESC) HUES64 Cells</option>
-						<option class="level2" value="enh_E024">Enhancer E024 (ESC) ES-UCSF4  Cells</option>
-						<option class="level2" value="dyadic_E024">Dyadic E024 (ESC) ES-UCSF4  Cells</option>
-						<option class="level1" value="null">ESC Derived (9)</option>
-						<option class="level2" value="enh_E004">Enhancer E004 (ES-deriv) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
-						<option class="level2" value="dyadic_E004">Dyadic E004 (ES-deriv) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
-						<option class="level2" value="enh_E005">Enhancer E005 (ES-deriv) H1 BMP4 Derived Trophoblast Cultured Cells</option>
-						<option class="level2" value="dyadic_E005">Dyadic E005 (ES-deriv) H1 BMP4 Derived Trophoblast Cultured Cells</option>
-						<option class="level2" value="enh_E006">Enhancer E006 (ES-deriv) H1 Derived Mesenchymal Stem Cells</option>
-						<option class="level2" value="dyadic_E006">Dyadic E006 (ES-deriv) H1 Derived Mesenchymal Stem Cells</option>
-						<option class="level2" value="enh_E007">Enhancer E007 (ES-deriv) H1 Derived Neuronal Progenitor Cultured Cells</option>
-						<option class="level2" value="dyadic_E007">Dyadic E007 (ES-deriv) H1 Derived Neuronal Progenitor Cultured Cells</option>
-						<option class="level2" value="enh_E009">Enhancer E009 (ES-deriv) H9 Derived Neuronal Progenitor Cultured Cells</option>
-						<option class="level2" value="dyadic_E009">Dyadic E009 (ES-deriv) H9 Derived Neuronal Progenitor Cultured Cells</option>
-						<option class="level2" value="enh_E010">Enhancer E010 (ES-deriv) H9 Derived Neuron Cultured Cells</option>
-						<option class="level2" value="dyadic_E010">Dyadic E010 (ES-deriv) H9 Derived Neuron Cultured Cells</option>
-						<option class="level2" value="enh_E011">Enhancer E011 (ES-deriv) hESC Derived CD184+ Endoderm Cultured Cells</option>
-						<option class="level2" value="dyadic_E011">Dyadic E011 (ES-deriv) hESC Derived CD184+ Endoderm Cultured Cells</option>
-						<option class="level2" value="enh_E012">Enhancer E012 (ES-deriv) hESC Derived CD56+ Ectoderm Cultured Cells</option>
-						<option class="level2" value="dyadic_E012">Dyadic E012 (ES-deriv) hESC Derived CD56+ Ectoderm Cultured Cells</option>
-						<option class="level2" value="enh_E013">Enhancer E013 (ES-deriv) hESC Derived CD56+ Mesoderm Cultured Cells</option>
-						<option class="level2" value="dyadic_E013">Dyadic E013 (ES-deriv) hESC Derived CD56+ Mesoderm Cultured Cells</option>
-						<option class="level1" value="null">Fat (3)</option>
-						<option class="level2" value="enh_E023">Enhancer E023 (Mesench) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
-						<option class="level2" value="dyadic_E023">Dyadic E023 (Mesench) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
-						<option class="level2" value="enh_E025">Enhancer E025 (Mesench) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
-						<option class="level2" value="dyadic_E025">Dyadic E025 (Mesench) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
-						<option class="level2" value="enh_E063">Enhancer E063 (Adipose) Adipose Nuclei</option>
-						<option class="level2" value="dyadic_E063">Dyadic E063 (Adipose) Adipose Nuclei</option>
-						<option class="level1" value="null">GI Colon (3)</option>
-						<option class="level2" value="enh_E075">Enhancer E075 (Digestive) Colonic Mucosa</option>
-						<option class="level2" value="dyadic_E075">Dyadic E075 (Digestive) Colonic Mucosa</option>
-						<option class="level2" value="enh_E076">Enhancer E076 (Sm. Muscle) Colon Smooth Muscle</option>
-						<option class="level2" value="dyadic_E076">Dyadic E076 (Sm. Muscle) Colon Smooth Muscle</option>
-						<option class="level2" value="enh_E106">Enhancer E106 (Digestive) Sigmoid Colon</option>
-						<option class="level2" value="dyadic_E106">Dyadic E106 (Digestive) Sigmoid Colon</option>
-						<option class="level1" value="null">GI Duodenum (2)</option>
-						<option class="level2" value="enh_E077">Enhancer E077 (Digestive) Duodenum Mucosa</option>
-						<option class="level2" value="dyadic_E077">Dyadic E077 (Digestive) Duodenum Mucosa</option>
-						<option class="level2" value="enh_E078">Enhancer E078 (Sm. Muscle) Duodenum Smooth Muscle</option>
-						<option class="level2" value="dyadic_E078">Dyadic E078 (Sm. Muscle) Duodenum Smooth Muscle</option>
-						<option class="level1" value="null">GI Esophagus (1)</option>
-						<option class="level2" value="enh_E079">Enhancer E079 (Digestive) Esophagus</option>
-						<option class="level2" value="dyadic_E079">Dyadic E079 (Digestive) Esophagus</option>
-						<option class="level1" value="null">GI Intestine (3)</option>
-						<option class="level2" value="enh_E084">Enhancer E084 (Digestive) Fetal Intestine Large</option>
-						<option class="level2" value="dyadic_E084">Dyadic E084 (Digestive) Fetal Intestine Large</option>
-						<option class="level2" value="enh_E085">Enhancer E085 (Digestive) Fetal Intestine Small</option>
-						<option class="level2" value="dyadic_E085">Dyadic E085 (Digestive) Fetal Intestine Small</option>
-						<option class="level2" value="enh_E109">Enhancer E109 (Digestive) Small Intestine</option>
-						<option class="level2" value="dyadic_E109">Dyadic E109 (Digestive) Small Intestine</option>
-						<option class="level1" value="null">GI Rectum (3)</option>
-						<option class="level2" value="enh_E101">Enhancer E101 (Digestive) Rectal Mucosa Donor 29</option>
-						<option class="level2" value="dyadic_E101">Dyadic E101 (Digestive) Rectal Mucosa Donor 29</option>
-						<option class="level2" value="enh_E102">Enhancer E102 (Digestive) Rectal Mucosa Donor 31</option>
-						<option class="level2" value="dyadic_E102">Dyadic E102 (Digestive) Rectal Mucosa Donor 31</option>
-						<option class="level2" value="enh_E103">Enhancer E103 (Sm. Muscle) Rectal Smooth Muscle</option>
-						<option class="level2" value="dyadic_E103">Dyadic E103 (Sm. Muscle) Rectal Smooth Muscle</option>
-						<option class="level1" value="null">GI Stomach (4)</option>
-						<option class="level2" value="enh_E092">Enhancer E092 (Digestive) Fetal Stomach</option>
-						<option class="level2" value="dyadic_E092">Dyadic E092 (Digestive) Fetal Stomach</option>
-						<option class="level2" value="enh_E094">Enhancer E094 (Digestive) Gastric</option>
-						<option class="level2" value="dyadic_E094">Dyadic E094 (Digestive) Gastric</option>
-						<option class="level2" value="enh_E110">Enhancer E110 (Digestive) Stomach Mucosa</option>
-						<option class="level2" value="dyadic_E110">Dyadic E110 (Digestive) Stomach Mucosa</option>
-						<option class="level2" value="enh_E111">Enhancer E111 (Sm. Muscle) Stomach Smooth Muscle</option>
-						<option class="level2" value="dyadic_E111">Dyadic E111 (Sm. Muscle) Stomach Smooth Muscle</option>
-						<option class="level1" value="null">Heart (4)</option>
-						<option class="level2" value="enh_E083">Enhancer E083 (Heart) Fetal Heart</option>
-						<option class="level2" value="dyadic_E083">Dyadic E083 (Heart) Fetal Heart</option>
-						<option class="level2" value="enh_E095">Enhancer E095 (Heart) Left Ventricle</option>
-						<option class="level2" value="dyadic_E095">Dyadic E095 (Heart) Left Ventricle</option>
-						<option class="level2" value="enh_E104">Enhancer E104 (Heart) Right Atrium</option>
-						<option class="level2" value="dyadic_E104">Dyadic E104 (Heart) Right Atrium</option>
-						<option class="level2" value="enh_E105">Enhancer E105 (Heart) Right Ventricle</option>
-						<option class="level2" value="dyadic_E105">Dyadic E105 (Heart) Right Ventricle</option>
-						<option class="level1" value="null">Kidney (1)</option>
-						<option class="level2" value="enh_E086">Enhancer E086 (Other) Fetal Kidney</option>
-						<option class="level2" value="dyadic_E086">Dyadic E086 (Other) Fetal Kidney</option>
-						<option class="level1" value="null">Liver (2)</option>
-						<option class="level2" value="enh_E066">Enhancer E066 (Other) Liver</option>
-						<option class="level2" value="dyadic_E066">Dyadic E066 (Other) Liver</option>
-						<option class="level1" value="null">Lung (5)</option>
-						<option class="level2" value="enh_E017">Enhancer E017 (IMR90) IMR90 fetal lung fibroblasts Cell Line</option>
-						<option class="level2" value="dyadic_E017">Dyadic E017 (IMR90) IMR90 fetal lung fibroblasts Cell Line</option>
-						<option class="level2" value="enh_E088">Enhancer E088 (Other) Fetal Lung</option>
-						<option class="level2" value="dyadic_E088">Dyadic E088 (Other) Fetal Lung</option>
-						<option class="level2" value="enh_E096">Enhancer E096 (Other) Lung</option>
-						<option class="level2" value="dyadic_E096">Dyadic E096 (Other) Lung</option>
-						<option class="level1" value="null">Muscle (7)</option>
-						<option class="level2" value="enh_E052">Enhancer E052 (Myosat) Muscle Satellite Cultured Cells</option>
-						<option class="level2" value="dyadic_E052">Dyadic E052 (Myosat) Muscle Satellite Cultured Cells</option>
-						<option class="level2" value="enh_E089">Enhancer E089 (Muscle) Fetal Muscle Trunk</option>
-						<option class="level2" value="dyadic_E089">Dyadic E089 (Muscle) Fetal Muscle Trunk</option>
-						<option class="level2" value="enh_E100">Enhancer E100 (Muscle) Psoas Muscle</option>
-						<option class="level2" value="dyadic_E100">Dyadic E100 (Muscle) Psoas Muscle</option>
-						<option class="level2" value="enh_E107">Enhancer E107 (Muscle) Skeletal Muscle Male</option>
-						<option class="level2" value="dyadic_E107">Dyadic E107 (Muscle) Skeletal Muscle Male</option>
-						<option class="level2" value="enh_E108">Enhancer E108 (Muscle) Skeletal Muscle Female</option>
-						<option class="level2" value="dyadic_E108">Dyadic E108 (Muscle) Skeletal Muscle Female</option>
-						<option class="level1" value="null">Muscle Leg (1)</option>
-						<option class="level2" value="enh_E090">Enhancer E090 (Muscle) Fetal Muscle Leg</option>
-						<option class="level2" value="dyadic_E090">Dyadic E090 (Muscle) Fetal Muscle Leg</option>
-						<option class="level1" value="null">Ovary (1)</option>
-						<option class="level2" value="enh_E097">Enhancer E097 (Other) Ovary</option>
-						<option class="level2" value="dyadic_E097">Dyadic E097 (Other) Ovary</option>
-						<option class="level1" value="null">Pancreas (2)</option>
-						<option class="level2" value="enh_E087">Enhancer E087 (Other) Pancreatic Islets</option>
-						<option class="level2" value="dyadic_E087">Dyadic E087 (Other) Pancreatic Islets</option>
-						<option class="level2" value="enh_E098">Enhancer E098 (Other) Pancreas</option>
-						<option class="level2" value="dyadic_E098">Dyadic E098 (Other) Pancreas</option>
-						<option class="level1" value="null">Placenta (2)</option>
-						<option class="level2" value="enh_E091">Enhancer E091 (Other) Placenta</option>
-						<option class="level2" value="dyadic_E091">Dyadic E091 (Other) Placenta</option>
-						<option class="level2" value="enh_E099">Enhancer E099 (Other) Placenta Amnion</option>
-						<option class="level2" value="dyadic_E099">Dyadic E099 (Other) Placenta Amnion</option>
-						<option class="level1" value="null">Skin (8)</option>
-						<option class="level2" value="enh_E055">Enhancer E055 (Epithelial) Foreskin Fibroblast Primary Cells skin01</option>
-						<option class="level2" value="dyadic_E055">Dyadic E055 (Epithelial) Foreskin Fibroblast Primary Cells skin01</option>
-						<option class="level2" value="enh_E056">Enhancer E056 (Epithelial) Foreskin Fibroblast Primary Cells skin02</option>
-						<option class="level2" value="dyadic_E056">Dyadic E056 (Epithelial) Foreskin Fibroblast Primary Cells skin02</option>
-						<option class="level2" value="enh_E057">Enhancer E057 (Epithelial) Foreskin Keratinocyte Primary Cells skin02</option>
-						<option class="level2" value="dyadic_E057">Dyadic E057 (Epithelial) Foreskin Keratinocyte Primary Cells skin02</option>
-						<option class="level2" value="enh_E058">Enhancer E058 (Epithelial) Foreskin Keratinocyte Primary Cells skin03</option>
-						<option class="level2" value="dyadic_E058">Dyadic E058 (Epithelial) Foreskin Keratinocyte Primary Cells skin03</option>
-						<option class="level2" value="enh_E059">Enhancer E059 (Epithelial) Foreskin Melanocyte Primary Cells skin01</option>
-						<option class="level2" value="dyadic_E059">Dyadic E059 (Epithelial) Foreskin Melanocyte Primary Cells skin01</option>
-						<option class="level2" value="enh_E061">Enhancer E061 (Epithelial) Foreskin Melanocyte Primary Cells skin03</option>
-						<option class="level2" value="dyadic_E061">Dyadic E061 (Epithelial) Foreskin Melanocyte Primary Cells skin03</option>
-						<option class="level1" value="null">Spleen (1)</option>
-						<option class="level2" value="enh_E113">Enhancer E113 (Other) Spleen</option>
-						<option class="level2" value="dyadic_E113">Dyadic E113 (Other) Spleen</option>
-						<option class="level1" value="null">Stromal Connective (2)</option>
-						<option class="level2" value="enh_E026">Enhancer E026 (Mesench) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
-						<option class="level2" value="dyadic_E026">Dyadic E026 (Mesench) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
-						<option class="level2" value="enh_E049">Enhancer E049 (Mesench) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
-						<option class="level2" value="dyadic_E049">Dyadic E049 (Mesench) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
-						<option class="level1" value="null">Thymus (2)</option>
-						<option class="level2" value="enh_E093">Enhancer E093 (Thymus) Fetal Thymus</option>
-						<option class="level2" value="dyadic_E093">Dyadic E093 (Thymus) Fetal Thymus</option>
-						<option class="level2" value="enh_E112">Enhancer E112 (Thymus) Thymus</option>
-						<option class="level2" value="dyadic_E112">Dyadic E112 (Thymus) Thymus</option>
-						<option class="level1" value="null">Vascular (2)</option>
-						<option class="level2" value="enh_E065">Enhancer E065 (Heart) Aorta</option>
-						<option class="level2" value="dyadic_E065">Dyadic E065 (Heart) Aorta</option>
-						<option class="level1" value="null">iPSC (5)</option>
-						<option class="level2" value="enh_E018">Enhancer E018 (iPSC) iPS-15b Cells</option>
-						<option class="level2" value="dyadic_E018">Dyadic E018 (iPSC) iPS-15b Cells</option>
-						<option class="level2" value="enh_E019">Enhancer E019 (iPSC) iPS-18 Cells</option>
-						<option class="level2" value="dyadic_E019">Dyadic E019 (iPSC) iPS-18 Cells</option>
-						<option class="level2" value="enh_E020">Enhancer E020 (iPSC) iPS-20b Cells</option>
-						<option class="level2" value="dyadic_E020">Dyadic E020 (iPSC) iPS-20b Cells</option>
-						<option class="level2" value="enh_E021">Enhancer E021 (iPSC) iPS DF 6.9 Cells</option>
-						<option class="level2" value="dyadic_E021">Dyadic E021 (iPSC) iPS DF 6.9 Cells</option>
-						<option class="level2" value="enh_E022">Enhancer E022 (iPSC) iPS DF 19.11 Cells</option>
-						<option class="level2" value="dyadic_E022">Dyadic E022 (iPSC) iPS DF 19.11 Cells</option>
-					  </select>
+			  <td><input type="text" class="form-control" name="ciMapPromWindow" id="ciMapPromWindow" value="250-500" onchange="CheckAll();">
+				  <span class="info"><i class="fa fa-info"></i>
+					  Please specify both upstream and downstream from TSS. For example, "250-500" means 250bp upstream and 500bp downstream from TSS.
 				  </span>
 			  </td>
-			  <td>
-			  </td>
+			  <td></td>
 		  </tr>
 		  <tr class="ciMapOptions">
-			  <td>Promoters
-				  <a class="infoPop" data-toggle="popover" title="Promoters" data-content="Genomic regions which have sinificant interactions with candidate SNPs  are mapped to promoters of selected tissue/cell types. 111 epigenomes from Roadmap Epigenetics are available. The list also include dyadic enhancer/promoter regions.">
+			 <td>Annotate enhancer/promoter regions (Roadmap 111 epigenomes)
+				  <a class="infoPop" data-toggle="popover" title="Enhancer/promoter regions" data-content="Enhancers are annotated to overlapped candidate SNPs which are also overlapped with significant chromatin interactions (region 1).
+				  Promoters are annotated to regions which are significantly ineracted with risk loci (region 2). Dyadic enhancer/promoter regions are annotated for both. Please refer the tutorial for detils.">
 	                <i class="fa fa-question-circle-o fa-lg"></i>
 	              </a>
 			  </td>
 			  <td>
-				  <span class="multiselect">
+				  <span class="multiSelect">
 					  <a style="float:right; padding-right:20px;">clear</a><br/>
-					  <select multiple class="form-control" id="ciMapPromoters" name="ciMapPromoters[]" size="10" onchange="CheckAll();">
+					  <select multiple class="form-control" id="ciMapRoadmap" name="ciMapRoadmap[]" size="10" onchange="CheckAll();">
 						<option value="all">All</option>
 						<option class="level1" value="null">Adrenal (1)</option>
-						<option class="level2" value="prom_E080">Promoter E080 (Other) Fetal Adrenal Gland</option>
-						<option class="level2" value="dyadic_E080"> Dyadic E080 (Other) Fetal Adrenal Gland</option>
+						<option class="level2" value="E080">E080 (Other) Fetal Adrenal Gland</option>
 						<option class="level1" value="null">Blood (27)</option>
-						<option class="level2" value="prom_E029">Promoter E029 (HSC & B-cell) Primary monocytes from peripheral blood</option>
-						<option class="level2" value="dyadic_E029"> Dyadic E029 (HSC & B-cell) Primary monocytes from peripheral blood</option>
-						<option class="level2" value="prom_E030">Promoter E030 (HSC & B-cell) Primary neutrophils from peripheral blood</option>
-						<option class="level2" value="dyadic_E030"> Dyadic E030 (HSC & B-cell) Primary neutrophils from peripheral blood</option>
-						<option class="level2" value="prom_E031">Promoter E031 (HSC & B-cell) Primary B cells from cord blood</option>
-						<option class="level2" value="dyadic_E031"> Dyadic E031 (HSC & B-cell) Primary B cells from cord blood</option>
-						<option class="level2" value="prom_E032">Promoter E032 (HSC & B-cell) Primary B cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E032"> Dyadic E032 (HSC & B-cell) Primary B cells from peripheral blood</option>
-						<option class="level2" value="prom_E033">Promoter E033 (Blood & T-cell) Primary T cells from cord blood</option>
-						<option class="level2" value="dyadic_E033"> Dyadic E033 (Blood & T-cell) Primary T cells from cord blood</option>
-						<option class="level2" value="prom_E034">Promoter E034 (Blood & T-cell) Primary T cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E034"> Dyadic E034 (Blood & T-cell) Primary T cells from peripheral blood</option>
-						<option class="level2" value="prom_E035">Promoter E035 (HSC & B-cell) Primary hematopoietic stem cells</option>
-						<option class="level2" value="dyadic_E035"> Dyadic E035 (HSC & B-cell) Primary hematopoietic stem cells</option>
-						<option class="level2" value="prom_E036">Promoter E036 (HSC & B-cell) Primary hematopoietic stem cells short term culture</option>
-						<option class="level2" value="dyadic_E036"> Dyadic E036 (HSC & B-cell) Primary hematopoietic stem cells short term culture</option>
-						<option class="level2" value="prom_E037">Promoter E037 (Blood & T-cell) Primary T helper memory cells from peripheral blood 2</option>
-						<option class="level2" value="dyadic_E037"> Dyadic E037 (Blood & T-cell) Primary T helper memory cells from peripheral blood 2</option>
-						<option class="level2" value="prom_E038">Promoter E038 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E038"> Dyadic E038 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
-						<option class="level2" value="prom_E039">Promoter E039 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E039"> Dyadic E039 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
-						<option class="level2" value="prom_E040">Promoter E040 (Blood & T-cell) Primary T helper memory cells from peripheral blood 1</option>
-						<option class="level2" value="dyadic_E040"> Dyadic E040 (Blood & T-cell) Primary T helper memory cells from peripheral blood 1</option>
-						<option class="level2" value="prom_E041">Promoter E041 (Blood & T-cell) Primary T helper cells PMA-I stimulated</option>
-						<option class="level2" value="dyadic_E041"> Dyadic E041 (Blood & T-cell) Primary T helper cells PMA-I stimulated</option>
-						<option class="level2" value="prom_E042">Promoter E042 (Blood & T-cell) Primary T helper 17 cells PMA-I stimulated</option>
-						<option class="level2" value="dyadic_E042"> Dyadic E042 (Blood & T-cell) Primary T helper 17 cells PMA-I stimulated</option>
-						<option class="level2" value="prom_E043">Promoter E043 (Blood & T-cell) Primary T helper cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E043"> Dyadic E043 (Blood & T-cell) Primary T helper cells from peripheral blood</option>
-						<option class="level2" value="prom_E044">Promoter E044 (Blood & T-cell) Primary T regulatory cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E044"> Dyadic E044 (Blood & T-cell) Primary T regulatory cells from peripheral blood</option>
-						<option class="level2" value="prom_E045">Promoter E045 (Blood & T-cell) Primary T cells effector/memory enriched from peripheral blood</option>
-						<option class="level2" value="dyadic_E045"> Dyadic E045 (Blood & T-cell) Primary T cells effector/memory enriched from peripheral blood</option>
-						<option class="level2" value="prom_E046">Promoter E046 (HSC & B-cell) Primary Natural Killer cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E046"> Dyadic E046 (HSC & B-cell) Primary Natural Killer cells from peripheral blood</option>
-						<option class="level2" value="prom_E047">Promoter E047 (Blood & T-cell) Primary T CD8+ naive cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E047"> Dyadic E047 (Blood & T-cell) Primary T CD8+ naive cells from peripheral blood</option>
-						<option class="level2" value="prom_E048">Promoter E048 (Blood & T-cell) Primary T CD8+ memory cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E048"> Dyadic E048 (Blood & T-cell) Primary T CD8+ memory cells from peripheral blood</option>
-						<option class="level2" value="prom_E050">Promoter E050 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
-						<option class="level2" value="dyadic_E050"> Dyadic E050 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
-						<option class="level2" value="prom_E051">Promoter E051 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
-						<option class="level2" value="dyadic_E051"> Dyadic E051 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
-						<option class="level2" value="prom_E062">Promoter E062 (Blood & T-cell) Primary mononuclear cells from peripheral blood</option>
-						<option class="level2" value="dyadic_E062"> Dyadic E062 (Blood & T-cell) Primary mononuclear cells from peripheral blood</option>
+						<option class="level2" value="E029">E029 (HSC & B-cell) Primary monocytes from peripheral blood</option>
+						<option class="level2" value="E030">E030 (HSC & B-cell) Primary neutrophils from peripheral blood</option>
+						<option class="level2" value="E031">E031 (HSC & B-cell) Primary B cells from cord blood</option>
+						<option class="level2" value="E032">E032 (HSC & B-cell) Primary B cells from peripheral blood</option>
+						<option class="level2" value="E033">E033 (Blood & T-cell) Primary T cells from cord blood</option>
+						<option class="level2" value="E034">E034 (Blood & T-cell) Primary T cells from peripheral blood</option>
+						<option class="level2" value="E035">E035 (HSC & B-cell) Primary hematopoietic stem cells</option>
+						<option class="level2" value="E036">E036 (HSC & B-cell) Primary hematopoietic stem cells short term culture</option>
+						<option class="level2" value="E037">E037 (Blood & T-cell) Primary T helper memory cells from peripheral blood 2</option>
+						<option class="level2" value="E038">E038 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
+						<option class="level2" value="E039">E039 (Blood & T-cell) Primary T helper naive cells from peripheral blood</option>
+						<option class="level2" value="E040">E040 (Blood & T-cell) Primary T helper memory cells from peripheral blood 1</option>
+						<option class="level2" value="E041">E041 (Blood & T-cell) Primary T helper cells PMA-I stimulated</option>
+						<option class="level2" value="E042">E042 (Blood & T-cell) Primary T helper 17 cells PMA-I stimulated</option>
+						<option class="level2" value="E043">E043 (Blood & T-cell) Primary T helper cells from peripheral blood</option>
+						<option class="level2" value="E044">E044 (Blood & T-cell) Primary T regulatory cells from peripheral blood</option>
+						<option class="level2" value="E045">E045 (Blood & T-cell) Primary T cells effector/memory enriched from peripheral blood</option>
+						<option class="level2" value="E046">E046 (HSC & B-cell) Primary Natural Killer cells from peripheral blood</option>
+						<option class="level2" value="E047">E047 (Blood & T-cell) Primary T CD8+ naive cells from peripheral blood</option>
+						<option class="level2" value="E048">E048 (Blood & T-cell) Primary T CD8+ memory cells from peripheral blood</option>
+						<option class="level2" value="E050">E050 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
+						<option class="level2" value="E051">E051 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
+						<option class="level2" value="E062">E062 (Blood & T-cell) Primary mononuclear cells from peripheral blood</option>
 						<option class="level1" value="null">Bone (1)</option>
 						<option class="level1" value="null">Brain (13)</option>
-						<option class="level2" value="prom_E053">Promoter E053 (Neurosph) Cortex derived primary cultured neurospheres</option>
-						<option class="level2" value="dyadic_E053"> Dyadic E053 (Neurosph) Cortex derived primary cultured neurospheres</option>
-						<option class="level2" value="prom_E054">Promoter E054 (Neurosph) Ganglion Eminence derived primary cultured neurospheres</option>
-						<option class="level2" value="dyadic_E054"> Dyadic E054 (Neurosph) Ganglion Eminence derived primary cultured neurospheres</option>
-						<option class="level2" value="prom_E067">Promoter E067 (Brain) Brain Angular Gyrus</option>
-						<option class="level2" value="dyadic_E067"> Dyadic E067 (Brain) Brain Angular Gyrus</option>
-						<option class="level2" value="prom_E068">Promoter E068 (Brain) Brain Anterior Caudate</option>
-						<option class="level2" value="dyadic_E068"> Dyadic E068 (Brain) Brain Anterior Caudate</option>
-						<option class="level2" value="prom_E069">Promoter E069 (Brain) Brain Cingulate Gyrus</option>
-						<option class="level2" value="dyadic_E069"> Dyadic E069 (Brain) Brain Cingulate Gyrus</option>
-						<option class="level2" value="prom_E070">Promoter E070 (Brain) Brain Germinal Matrix</option>
-						<option class="level2" value="dyadic_E070"> Dyadic E070 (Brain) Brain Germinal Matrix</option>
-						<option class="level2" value="prom_E071">Promoter E071 (Brain) Brain Hippocampus Middle</option>
-						<option class="level2" value="dyadic_E071"> Dyadic E071 (Brain) Brain Hippocampus Middle</option>
-						<option class="level2" value="prom_E072">Promoter E072 (Brain) Brain Inferior Temporal Lobe</option>
-						<option class="level2" value="dyadic_E072"> Dyadic E072 (Brain) Brain Inferior Temporal Lobe</option>
-						<option class="level2" value="prom_E073">Promoter E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
-						<option class="level2" value="dyadic_E073"> Dyadic E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
-						<option class="level2" value="prom_E074">Promoter E074 (Brain) Brain Substantia Nigra</option>
-						<option class="level2" value="dyadic_E074"> Dyadic E074 (Brain) Brain Substantia Nigra</option>
-						<option class="level2" value="prom_E081">Promoter E081 (Brain) Fetal Brain Male</option>
-						<option class="level2" value="dyadic_E081"> Dyadic E081 (Brain) Fetal Brain Male</option>
-						<option class="level2" value="prom_E082">Promoter E082 (Brain) Fetal Brain Female</option>
-						<option class="level2" value="dyadic_E082"> Dyadic E082 (Brain) Fetal Brain Female</option>
+						<option class="level2" value="E053">E053 (Neurosph) Cortex derived primary cultured neurospheres</option>
+						<option class="level2" value="E054">E054 (Neurosph) Ganglion Eminence derived primary cultured neurospheres</option>
+						<option class="level2" value="E067">E067 (Brain) Brain Angular Gyrus</option>
+						<option class="level2" value="E068">E068 (Brain) Brain Anterior Caudate</option>
+						<option class="level2" value="E069">E069 (Brain) Brain Cingulate Gyrus</option>
+						<option class="level2" value="E070">E070 (Brain) Brain Germinal Matrix</option>
+						<option class="level2" value="E071">E071 (Brain) Brain Hippocampus Middle</option>
+						<option class="level2" value="E072">E072 (Brain) Brain Inferior Temporal Lobe</option>
+						<option class="level2" value="E073">E073 (Brain) Brain Dorsolateral Prefrontal Cortex</option>
+						<option class="level2" value="E074">E074 (Brain) Brain Substantia Nigra</option>
+						<option class="level2" value="E081">E081 (Brain) Fetal Brain Male</option>
+						<option class="level2" value="E082">E082 (Brain) Fetal Brain Female</option>
 						<option class="level1" value="null">Breast (3)</option>
-						<option class="level2" value="prom_E027">Promoter E027 (Epithelial) Breast Myoepithelial Primary Cells</option>
-						<option class="level2" value="dyadic_E027"> Dyadic E027 (Epithelial) Breast Myoepithelial Primary Cells</option>
-						<option class="level2" value="prom_E028">Promoter E028 (Epithelial) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
-						<option class="level2" value="dyadic_E028"> Dyadic E028 (Epithelial) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
+						<option class="level2" value="E027">E027 (Epithelial) Breast Myoepithelial Primary Cells</option>
+						<option class="level2" value="E028">E028 (Epithelial) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
 						<option class="level1" value="null">Cervix (1)</option>
 						<option class="level1" value="null">ESC (8)</option>
-						<option class="level2" value="prom_E001">Promoter E001 (ESC) ES-I3 Cells</option>
-						<option class="level2" value="dyadic_E001"> Dyadic E001 (ESC) ES-I3 Cells</option>
-						<option class="level2" value="prom_E002">Promoter E002 (ESC) ES-WA7 Cells</option>
-						<option class="level2" value="dyadic_E002"> Dyadic E002 (ESC) ES-WA7 Cells</option>
-						<option class="level2" value="prom_E003">Promoter E003 (ESC) H1 Cells</option>
-						<option class="level2" value="dyadic_E003"> Dyadic E003 (ESC) H1 Cells</option>
-						<option class="level2" value="prom_E008">Promoter E008 (ESC) H9 Cells</option>
-						<option class="level2" value="dyadic_E008"> Dyadic E008 (ESC) H9 Cells</option>
-						<option class="level2" value="prom_E014">Promoter E014 (ESC) HUES48 Cells</option>
-						<option class="level2" value="dyadic_E014"> Dyadic E014 (ESC) HUES48 Cells</option>
-						<option class="level2" value="prom_E015">Promoter E015 (ESC) HUES6 Cells</option>
-						<option class="level2" value="dyadic_E015"> Dyadic E015 (ESC) HUES6 Cells</option>
-						<option class="level2" value="prom_E016">Promoter E016 (ESC) HUES64 Cells</option>
-						<option class="level2" value="dyadic_E016"> Dyadic E016 (ESC) HUES64 Cells</option>
-						<option class="level2" value="prom_E024">Promoter E024 (ESC) ES-UCSF4  Cells</option>
-						<option class="level2" value="dyadic_E024"> Dyadic E024 (ESC) ES-UCSF4  Cells</option>
+						<option class="level2" value="E001">E001 (ESC) ES-I3 Cells</option>
+						<option class="level2" value="E002">E002 (ESC) ES-WA7 Cells</option>
+						<option class="level2" value="E003">E003 (ESC) H1 Cells</option>
+						<option class="level2" value="E008">E008 (ESC) H9 Cells</option>
+						<option class="level2" value="E014">E014 (ESC) HUES48 Cells</option>
+						<option class="level2" value="E015">E015 (ESC) HUES6 Cells</option>
+						<option class="level2" value="E016">E016 (ESC) HUES64 Cells</option>
+						<option class="level2" value="E024">E024 (ESC) ES-UCSF4  Cells</option>
 						<option class="level1" value="null">ESC Derived (9)</option>
-						<option class="level2" value="prom_E004">Promoter E004 (ES-deriv) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
-						<option class="level2" value="dyadic_E004"> Dyadic E004 (ES-deriv) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
-						<option class="level2" value="prom_E005">Promoter E005 (ES-deriv) H1 BMP4 Derived Trophoblast Cultured Cells</option>
-						<option class="level2" value="dyadic_E005"> Dyadic E005 (ES-deriv) H1 BMP4 Derived Trophoblast Cultured Cells</option>
-						<option class="level2" value="prom_E006">Promoter E006 (ES-deriv) H1 Derived Mesenchymal Stem Cells</option>
-						<option class="level2" value="dyadic_E006"> Dyadic E006 (ES-deriv) H1 Derived Mesenchymal Stem Cells</option>
-						<option class="level2" value="prom_E007">Promoter E007 (ES-deriv) H1 Derived Neuronal Progenitor Cultured Cells</option>
-						<option class="level2" value="dyadic_E007"> Dyadic E007 (ES-deriv) H1 Derived Neuronal Progenitor Cultured Cells</option>
-						<option class="level2" value="prom_E009">Promoter E009 (ES-deriv) H9 Derived Neuronal Progenitor Cultured Cells</option>
-						<option class="level2" value="dyadic_E009"> Dyadic E009 (ES-deriv) H9 Derived Neuronal Progenitor Cultured Cells</option>
-						<option class="level2" value="prom_E010">Promoter E010 (ES-deriv) H9 Derived Neuron Cultured Cells</option>
-						<option class="level2" value="dyadic_E010"> Dyadic E010 (ES-deriv) H9 Derived Neuron Cultured Cells</option>
-						<option class="level2" value="prom_E011">Promoter E011 (ES-deriv) hESC Derived CD184+ Endoderm Cultured Cells</option>
-						<option class="level2" value="dyadic_E011"> Dyadic E011 (ES-deriv) hESC Derived CD184+ Endoderm Cultured Cells</option>
-						<option class="level2" value="prom_E012">Promoter E012 (ES-deriv) hESC Derived CD56+ Ectoderm Cultured Cells</option>
-						<option class="level2" value="dyadic_E012"> Dyadic E012 (ES-deriv) hESC Derived CD56+ Ectoderm Cultured Cells</option>
-						<option class="level2" value="prom_E013">Promoter E013 (ES-deriv) hESC Derived CD56+ Mesoderm Cultured Cells</option>
-						<option class="level2" value="dyadic_E013"> Dyadic E013 (ES-deriv) hESC Derived CD56+ Mesoderm Cultured Cells</option>
+						<option class="level2" value="E004">E004 (ES-deriv) H1 BMP4 Derived Mesendoderm Cultured Cells</option>
+						<option class="level2" value="E005">E005 (ES-deriv) H1 BMP4 Derived Trophoblast Cultured Cells</option>
+						<option class="level2" value="E006">E006 (ES-deriv) H1 Derived Mesenchymal Stem Cells</option>
+						<option class="level2" value="E007">E007 (ES-deriv) H1 Derived Neuronal Progenitor Cultured Cells</option>
+						<option class="level2" value="E009">E009 (ES-deriv) H9 Derived Neuronal Progenitor Cultured Cells</option>
+						<option class="level2" value="E010">E010 (ES-deriv) H9 Derived Neuron Cultured Cells</option>
+						<option class="level2" value="E011">E011 (ES-deriv) hESC Derived CD184+ Endoderm Cultured Cells</option>
+						<option class="level2" value="E012">E012 (ES-deriv) hESC Derived CD56+ Ectoderm Cultured Cells</option>
+						<option class="level2" value="E013">E013 (ES-deriv) hESC Derived CD56+ Mesoderm Cultured Cells</option>
 						<option class="level1" value="null">Fat (3)</option>
-						<option class="level2" value="prom_E023">Promoter E023 (Mesench) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
-						<option class="level2" value="dyadic_E023"> Dyadic E023 (Mesench) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
-						<option class="level2" value="prom_E025">Promoter E025 (Mesench) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
-						<option class="level2" value="dyadic_E025"> Dyadic E025 (Mesench) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
-						<option class="level2" value="prom_E063">Promoter E063 (Adipose) Adipose Nuclei</option>
-						<option class="level2" value="dyadic_E063"> Dyadic E063 (Adipose) Adipose Nuclei</option>
+						<option class="level2" value="E023">E023 (Mesench) Mesenchymal Stem Cell Derived Adipocyte Cultured Cells</option>
+						<option class="level2" value="E025">E025 (Mesench) Adipose Derived Mesenchymal Stem Cell Cultured Cells</option>
+						<option class="level2" value="E063">E063 (Adipose) Adipose Nuclei</option>
 						<option class="level1" value="null">GI Colon (3)</option>
-						<option class="level2" value="prom_E075">Promoter E075 (Digestive) Colonic Mucosa</option>
-						<option class="level2" value="dyadic_E075"> Dyadic E075 (Digestive) Colonic Mucosa</option>
-						<option class="level2" value="prom_E076">Promoter E076 (Sm. Muscle) Colon Smooth Muscle</option>
-						<option class="level2" value="dyadic_E076"> Dyadic E076 (Sm. Muscle) Colon Smooth Muscle</option>
-						<option class="level2" value="prom_E106">Promoter E106 (Digestive) Sigmoid Colon</option>
-						<option class="level2" value="dyadic_E106"> Dyadic E106 (Digestive) Sigmoid Colon</option>
+						<option class="level2" value="E075">E075 (Digestive) Colonic Mucosa</option>
+						<option class="level2" value="E076">E076 (Sm. Muscle) Colon Smooth Muscle</option>
+						<option class="level2" value="E106">E106 (Digestive) Sigmoid Colon</option>
 						<option class="level1" value="null">GI Duodenum (2)</option>
-						<option class="level2" value="prom_E077">Promoter E077 (Digestive) Duodenum Mucosa</option>
-						<option class="level2" value="dyadic_E077"> Dyadic E077 (Digestive) Duodenum Mucosa</option>
-						<option class="level2" value="prom_E078">Promoter E078 (Sm. Muscle) Duodenum Smooth Muscle</option>
-						<option class="level2" value="dyadic_E078"> Dyadic E078 (Sm. Muscle) Duodenum Smooth Muscle</option>
+						<option class="level2" value="E077">E077 (Digestive) Duodenum Mucosa</option>
+						<option class="level2" value="E078">E078 (Sm. Muscle) Duodenum Smooth Muscle</option>
 						<option class="level1" value="null">GI Esophagus (1)</option>
-						<option class="level2" value="prom_E079">Promoter E079 (Digestive) Esophagus</option>
-						<option class="level2" value="dyadic_E079"> Dyadic E079 (Digestive) Esophagus</option>
+						<option class="level2" value="E079">E079 (Digestive) Esophagus</option>
 						<option class="level1" value="null">GI Intestine (3)</option>
-						<option class="level2" value="prom_E084">Promoter E084 (Digestive) Fetal Intestine Large</option>
-						<option class="level2" value="dyadic_E084"> Dyadic E084 (Digestive) Fetal Intestine Large</option>
-						<option class="level2" value="prom_E085">Promoter E085 (Digestive) Fetal Intestine Small</option>
-						<option class="level2" value="dyadic_E085"> Dyadic E085 (Digestive) Fetal Intestine Small</option>
-						<option class="level2" value="prom_E109">Promoter E109 (Digestive) Small Intestine</option>
-						<option class="level2" value="dyadic_E109"> Dyadic E109 (Digestive) Small Intestine</option>
+						<option class="level2" value="E084">E084 (Digestive) Fetal Intestine Large</option>
+						<option class="level2" value="E085">E085 (Digestive) Fetal Intestine Small</option>
+						<option class="level2" value="E109">E109 (Digestive) Small Intestine</option>
 						<option class="level1" value="null">GI Rectum (3)</option>
-						<option class="level2" value="prom_E101">Promoter E101 (Digestive) Rectal Mucosa Donor 29</option>
-						<option class="level2" value="dyadic_E101"> Dyadic E101 (Digestive) Rectal Mucosa Donor 29</option>
-						<option class="level2" value="prom_E102">Promoter E102 (Digestive) Rectal Mucosa Donor 31</option>
-						<option class="level2" value="dyadic_E102"> Dyadic E102 (Digestive) Rectal Mucosa Donor 31</option>
-						<option class="level2" value="prom_E103">Promoter E103 (Sm. Muscle) Rectal Smooth Muscle</option>
-						<option class="level2" value="dyadic_E103"> Dyadic E103 (Sm. Muscle) Rectal Smooth Muscle</option>
+						<option class="level2" value="E101">E101 (Digestive) Rectal Mucosa Donor 29</option>
+						<option class="level2" value="E102">E102 (Digestive) Rectal Mucosa Donor 31</option>
+						<option class="level2" value="E103">E103 (Sm. Muscle) Rectal Smooth Muscle</option>
 						<option class="level1" value="null">GI Stomach (4)</option>
-						<option class="level2" value="prom_E092">Promoter E092 (Digestive) Fetal Stomach</option>
-						<option class="level2" value="dyadic_E092"> Dyadic E092 (Digestive) Fetal Stomach</option>
-						<option class="level2" value="prom_E094">Promoter E094 (Digestive) Gastric</option>
-						<option class="level2" value="dyadic_E094"> Dyadic E094 (Digestive) Gastric</option>
-						<option class="level2" value="prom_E110">Promoter E110 (Digestive) Stomach Mucosa</option>
-						<option class="level2" value="dyadic_E110"> Dyadic E110 (Digestive) Stomach Mucosa</option>
-						<option class="level2" value="prom_E111">Promoter E111 (Sm. Muscle) Stomach Smooth Muscle</option>
-						<option class="level2" value="dyadic_E111"> Dyadic E111 (Sm. Muscle) Stomach Smooth Muscle</option>
+						<option class="level2" value="E092">E092 (Digestive) Fetal Stomach</option>
+						<option class="level2" value="E094">E094 (Digestive) Gastric</option>
+						<option class="level2" value="E110">E110 (Digestive) Stomach Mucosa</option>
+						<option class="level2" value="E111">E111 (Sm. Muscle) Stomach Smooth Muscle</option>
 						<option class="level1" value="null">Heart (4)</option>
-						<option class="level2" value="prom_E083">Promoter E083 (Heart) Fetal Heart</option>
-						<option class="level2" value="dyadic_E083"> Dyadic E083 (Heart) Fetal Heart</option>
-						<option class="level2" value="prom_E095">Promoter E095 (Heart) Left Ventricle</option>
-						<option class="level2" value="dyadic_E095"> Dyadic E095 (Heart) Left Ventricle</option>
-						<option class="level2" value="prom_E104">Promoter E104 (Heart) Right Atrium</option>
-						<option class="level2" value="dyadic_E104"> Dyadic E104 (Heart) Right Atrium</option>
-						<option class="level2" value="prom_E105">Promoter E105 (Heart) Right Ventricle</option>
-						<option class="level2" value="dyadic_E105"> Dyadic E105 (Heart) Right Ventricle</option>
+						<option class="level2" value="E083">E083 (Heart) Fetal Heart</option>
+						<option class="level2" value="E095">E095 (Heart) Left Ventricle</option>
+						<option class="level2" value="E104">E104 (Heart) Right Atrium</option>
+						<option class="level2" value="E105">E105 (Heart) Right Ventricle</option>
 						<option class="level1" value="null">Kidney (1)</option>
-						<option class="level2" value="prom_E086">Promoter E086 (Other) Fetal Kidney</option>
-						<option class="level2" value="dyadic_E086"> Dyadic E086 (Other) Fetal Kidney</option>
+						<option class="level2" value="E086">E086 (Other) Fetal Kidney</option>
 						<option class="level1" value="null">Liver (2)</option>
-						<option class="level2" value="prom_E066">Promoter E066 (Other) Liver</option>
-						<option class="level2" value="dyadic_E066"> Dyadic E066 (Other) Liver</option>
+						<option class="level2" value="E066">E066 (Other) Liver</option>
 						<option class="level1" value="null">Lung (5)</option>
-						<option class="level2" value="prom_E017">Promoter E017 (IMR90) IMR90 fetal lung fibroblasts Cell Line</option>
-						<option class="level2" value="dyadic_E017"> Dyadic E017 (IMR90) IMR90 fetal lung fibroblasts Cell Line</option>
-						<option class="level2" value="prom_E088">Promoter E088 (Other) Fetal Lung</option>
-						<option class="level2" value="dyadic_E088"> Dyadic E088 (Other) Fetal Lung</option>
-						<option class="level2" value="prom_E096">Promoter E096 (Other) Lung</option>
-						<option class="level2" value="dyadic_E096"> Dyadic E096 (Other) Lung</option>
+						<option class="level2" value="E017">E017 (IMR90) IMR90 fetal lung fibroblasts Cell Line</option>
+						<option class="level2" value="E088">E088 (Other) Fetal Lung</option>
+						<option class="level2" value="E096">E096 (Other) Lung</option>
 						<option class="level1" value="null">Muscle (7)</option>
-						<option class="level2" value="prom_E052">Promoter E052 (Myosat) Muscle Satellite Cultured Cells</option>
-						<option class="level2" value="dyadic_E052"> Dyadic E052 (Myosat) Muscle Satellite Cultured Cells</option>
-						<option class="level2" value="prom_E089">Promoter E089 (Muscle) Fetal Muscle Trunk</option>
-						<option class="level2" value="dyadic_E089"> Dyadic E089 (Muscle) Fetal Muscle Trunk</option>
-						<option class="level2" value="prom_E100">Promoter E100 (Muscle) Psoas Muscle</option>
-						<option class="level2" value="dyadic_E100"> Dyadic E100 (Muscle) Psoas Muscle</option>
-						<option class="level2" value="prom_E107">Promoter E107 (Muscle) Skeletal Muscle Male</option>
-						<option class="level2" value="dyadic_E107"> Dyadic E107 (Muscle) Skeletal Muscle Male</option>
-						<option class="level2" value="prom_E108">Promoter E108 (Muscle) Skeletal Muscle Female</option>
-						<option class="level2" value="dyadic_E108"> Dyadic E108 (Muscle) Skeletal Muscle Female</option>
+						<option class="level2" value="E052">E052 (Myosat) Muscle Satellite Cultured Cells</option>
+						<option class="level2" value="E089">E089 (Muscle) Fetal Muscle Trunk</option>
+						<option class="level2" value="E100">E100 (Muscle) Psoas Muscle</option>
+						<option class="level2" value="E107">E107 (Muscle) Skeletal Muscle Male</option>
+						<option class="level2" value="E108">E108 (Muscle) Skeletal Muscle Female</option>
 						<option class="level1" value="null">Muscle Leg (1)</option>
-						<option class="level2" value="prom_E090">Promoter E090 (Muscle) Fetal Muscle Leg</option>
-						<option class="level2" value="dyadic_E090"> Dyadic E090 (Muscle) Fetal Muscle Leg</option>
+						<option class="level2" value="E090">E090 (Muscle) Fetal Muscle Leg</option>
 						<option class="level1" value="null">Ovary (1)</option>
-						<option class="level2" value="prom_E097">Promoter E097 (Other) Ovary</option>
-						<option class="level2" value="dyadic_E097"> Dyadic E097 (Other) Ovary</option>
+						<option class="level2" value="E097">E097 (Other) Ovary</option>
 						<option class="level1" value="null">Pancreas (2)</option>
-						<option class="level2" value="prom_E087">Promoter E087 (Other) Pancreatic Islets</option>
-						<option class="level2" value="dyadic_E087"> Dyadic E087 (Other) Pancreatic Islets</option>
-						<option class="level2" value="prom_E098">Promoter E098 (Other) Pancreas</option>
-						<option class="level2" value="dyadic_E098"> Dyadic E098 (Other) Pancreas</option>
+						<option class="level2" value="E087">E087 (Other) Pancreatic Islets</option>
+						<option class="level2" value="E098">E098 (Other) Pancreas</option>
 						<option class="level1" value="null">Placenta (2)</option>
-						<option class="level2" value="prom_E091">Promoter E091 (Other) Placenta</option>
-						<option class="level2" value="dyadic_E091"> Dyadic E091 (Other) Placenta</option>
-						<option class="level2" value="prom_E099">Promoter E099 (Other) Placenta Amnion</option>
-						<option class="level2" value="dyadic_E099"> Dyadic E099 (Other) Placenta Amnion</option>
+						<option class="level2" value="E091">E091 (Other) Placenta</option>
+						<option class="level2" value="E099">E099 (Other) Placenta Amnion</option>
 						<option class="level1" value="null">Skin (8)</option>
-						<option class="level2" value="prom_E055">Promoter E055 (Epithelial) Foreskin Fibroblast Primary Cells skin01</option>
-						<option class="level2" value="dyadic_E055"> Dyadic E055 (Epithelial) Foreskin Fibroblast Primary Cells skin01</option>
-						<option class="level2" value="prom_E056">Promoter E056 (Epithelial) Foreskin Fibroblast Primary Cells skin02</option>
-						<option class="level2" value="dyadic_E056"> Dyadic E056 (Epithelial) Foreskin Fibroblast Primary Cells skin02</option>
-						<option class="level2" value="prom_E057">Promoter E057 (Epithelial) Foreskin Keratinocyte Primary Cells skin02</option>
-						<option class="level2" value="dyadic_E057"> Dyadic E057 (Epithelial) Foreskin Keratinocyte Primary Cells skin02</option>
-						<option class="level2" value="prom_E058">Promoter E058 (Epithelial) Foreskin Keratinocyte Primary Cells skin03</option>
-						<option class="level2" value="dyadic_E058"> Dyadic E058 (Epithelial) Foreskin Keratinocyte Primary Cells skin03</option>
-						<option class="level2" value="prom_E059">Promoter E059 (Epithelial) Foreskin Melanocyte Primary Cells skin01</option>
-						<option class="level2" value="dyadic_E059"> Dyadic E059 (Epithelial) Foreskin Melanocyte Primary Cells skin01</option>
-						<option class="level2" value="prom_E061">Promoter E061 (Epithelial) Foreskin Melanocyte Primary Cells skin03</option>
-						<option class="level2" value="dyadic_E061"> Dyadic E061 (Epithelial) Foreskin Melanocyte Primary Cells skin03</option>
+						<option class="level2" value="E055">E055 (Epithelial) Foreskin Fibroblast Primary Cells skin01</option>
+						<option class="level2" value="E056">E056 (Epithelial) Foreskin Fibroblast Primary Cells skin02</option>
+						<option class="level2" value="E057">E057 (Epithelial) Foreskin Keratinocyte Primary Cells skin02</option>
+						<option class="level2" value="E058">E058 (Epithelial) Foreskin Keratinocyte Primary Cells skin03</option>
+						<option class="level2" value="E059">E059 (Epithelial) Foreskin Melanocyte Primary Cells skin01</option>
+						<option class="level2" value="E061">E061 (Epithelial) Foreskin Melanocyte Primary Cells skin03</option>
 						<option class="level1" value="null">Spleen (1)</option>
-						<option class="level2" value="prom_E113">Promoter E113 (Other) Spleen</option>
-						<option class="level2" value="dyadic_E113"> Dyadic E113 (Other) Spleen</option>
+						<option class="level2" value="E113">E113 (Other) Spleen</option>
 						<option class="level1" value="null">Stromal Connective (2)</option>
-						<option class="level2" value="prom_E026">Promoter E026 (Mesench) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
-						<option class="level2" value="dyadic_E026"> Dyadic E026 (Mesench) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
-						<option class="level2" value="prom_E049">Promoter E049 (Mesench) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
-						<option class="level2" value="dyadic_E049"> Dyadic E049 (Mesench) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
+						<option class="level2" value="E026">E026 (Mesench) Bone Marrow Derived Cultured Mesenchymal Stem Cells</option>
+						<option class="level2" value="E049">E049 (Mesench) Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells</option>
 						<option class="level1" value="null">Thymus (2)</option>
-						<option class="level2" value="prom_E093">Promoter E093 (Thymus) Fetal Thymus</option>
-						<option class="level2" value="dyadic_E093"> Dyadic E093 (Thymus) Fetal Thymus</option>
-						<option class="level2" value="prom_E112">Promoter E112 (Thymus) Thymus</option>
-						<option class="level2" value="dyadic_E112"> Dyadic E112 (Thymus) Thymus</option>
+						<option class="level2" value="E093">E093 (Thymus) Fetal Thymus</option>
+						<option class="level2" value="E112">E112 (Thymus) Thymus</option>
 						<option class="level1" value="null">Vascular (2)</option>
-						<option class="level2" value="prom_E065">Promoter E065 (Heart) Aorta</option>
-						<option class="level2" value="dyadic_E065"> Dyadic E065 (Heart) Aorta</option>
+						<option class="level2" value="E065">E065 (Heart) Aorta</option>
 						<option class="level1" value="null">iPSC (5)</option>
-						<option class="level2" value="prom_E018">Promoter E018 (iPSC) iPS-15b Cells</option>
-						<option class="level2" value="dyadic_E018"> Dyadic E018 (iPSC) iPS-15b Cells</option>
-						<option class="level2" value="prom_E019">Promoter E019 (iPSC) iPS-18 Cells</option>
-						<option class="level2" value="dyadic_E019"> Dyadic E019 (iPSC) iPS-18 Cells</option>
-						<option class="level2" value="prom_E020">Promoter E020 (iPSC) iPS-20b Cells</option>
-						<option class="level2" value="dyadic_E020"> Dyadic E020 (iPSC) iPS-20b Cells</option>
-						<option class="level2" value="prom_E021">Promoter E021 (iPSC) iPS DF 6.9 Cells</option>
-						<option class="level2" value="dyadic_E021"> Dyadic E021 (iPSC) iPS DF 6.9 Cells</option>
-						<option class="level2" value="prom_E022">Promoter E022 (iPSC) iPS DF 19.11 Cells</option>
-						<option class="level2" value="dyadic_E022"> Dyadic E022 (iPSC) iPS DF 19.11 Cells</option>
+						<option class="level2" value="E018">E018 (iPSC) iPS-15b Cells</option>
+						<option class="level2" value="E019">E019 (iPSC) iPS-18 Cells</option>
+						<option class="level2" value="E020">E020 (iPSC) iPS-20b Cells</option>
+						<option class="level2" value="E021">E021 (iPSC) iPS DF 6.9 Cells</option>
+						<option class="level2" value="E022">E022 (iPSC) iPS DF 19.11 Cells</option>
 					  </select>
 				  </span>
 			  </td>
-			  <td>
-			  </td>
+			  <td></td>
 		  </tr>
-
+		  <tr class="ciMapOptions">
+			  <td>Filter on SNPs that are overlap with enhancers
+				  <a class="infoPop" data-toggle="popover" title="Filtering of SNPs by enhancers" data-content="Only map SNPs which are overlapped with enhancers of selected epigenomes. Please select at least one epigenome to enable this option.
+				  If this option is not checked, all SNPs overlapped with chromatin interaction are used for mapping.">
+	                <i class="fa fa-question-circle-o fa-lg"></i>
+	              </a>
+			  </td>
+			  <td><input type="checkbox" calss="form-control" name="ciMapEnhFilt", id="ciMapEnhFilt" onchange="CheckAll();"></td>
+			  <td></td>
+		  </tr>
+		  <tr class="ciMapOptions">
+			  <td>Map to genes whose promoter regions overlap with annotated promoters
+				  <a class="infoPop" data-toggle="popover" title="Filtering of genes by promoters" data-content="Only map to genes whoes promoter regions are overlap with promoters of selected epigenomes. Please select at least one epigenome to enable this option.
+				  If this option is not checked, all genes whose promoter reions are overlapped with the interacted regions are mapped.">
+	                <i class="fa fa-question-circle-o fa-lg"></i>
+	              </a>
+			  </td>
+			  <td><input type="checkbox" calss="form-control" name="ciMapPromFilt", id="ciMapPromFilt" onchange="CheckAll();"></td>
+			  <td></td>
+		  </tr>
         <!-- </div> -->
       </table>
 
       <div id="ciMapOptFilt">
-        Optional SNP filtering by functional annotation for eQTL mapping<br/>
-        <span class="info"><i class="fa fa-info"></i> This filtering only applies to SNPs mapped by eQTL mapping criterion.<br/>
+        Optional SNP filtering by functional annotation for chromatin interaction mapping<br/>
+        <span class="info"><i class="fa fa-info"></i> This filtering only applies to SNPs mapped by chromatin interaction mapping criterion.<br/>
           All these annotations will be available for all SNPs within LD of identified lead SNPs in the result tables, but this filtering affect gene prioritization.
         </span>
         <table class="table table-bordered inputTable" id="ciMapOptFiltTable">
@@ -1798,7 +1465,8 @@
           </tr>
         </table>
       </div>
-    </div>
+
+	</div>
   </div>
 
 

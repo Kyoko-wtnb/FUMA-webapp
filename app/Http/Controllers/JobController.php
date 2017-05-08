@@ -389,6 +389,104 @@ class JobController extends Controller
         $eqtlMapChr15Max = "NA";
         $eqtlMapChr15Meth = "NA";
       }
+
+	  $ciMap = 0;
+	  if($request->has('ciMap')){
+		  $ciMap = 1;
+		  if($request->has('ciMapBuildin')){
+			  $temp = $request->input('ciMapBuildin');
+	          // $eqtlMapGts = $request -> input('eqtlMapGts');
+	          $ciMapBuildin = [];
+	          foreach($temp as $dat){
+	            if($dat != "null"){
+	              $ciMapBuildin[] = $dat;
+	            }
+	          }
+	          $ciMapBuildin = implode(":", $ciMapBuildin);
+		  }else{
+			  $ciMapBuildin = "NA";
+		  }
+
+		  $ciMapFileN = (int)$request->input("ciFileN");
+		  if($ciMapFileN>0){
+			  $ciMapFiles = [];
+			  $n = 1;
+			  while(count($ciMapFiles)<$ciMapFileN){
+				  $id = (string) $n;
+				  if($request->hasFile("ciMapFile".$id)){
+					  $tmp_filename = $_FILES["ciMapFile".$id]["name"];
+			          $request -> file("ciMapFile".$id)->move($filedir, $tmp_filename);
+					  $tmp_datatype="undefined";
+					  if($request->has("ciMapType".$id)){
+						  $tmp_datatype = $request->input("ciMapType".$id);
+					  }
+					  $ciMapFiles[] = $tmp_datatype."/user_upload/".$tmp_filename;
+				  }
+				  $n++;
+			  }
+			  $ciMapFiles = implode(":", $ciMapFiles);
+		  }else{
+			  $ciMapFiles = "NA";
+		  }
+
+		  $ciMapFDR = $request->input('ciMapFDR');
+		  if($request->has('ciMapPromWindow')){
+			  $ciMapPromWindow = $request->input('ciMapPromWindow');
+		  }else{
+			  $ciMapPromWindow = "250-500";
+		  }
+		  if($request->has('ciMapRoadmap')){
+			  $temp = $request->input('ciMapRoadmap');
+			  $ciMapRoadmap = [];
+			  foreach($temp as $dat){
+				  if($dat != "null"){
+	                $ciMapRoadmap[] = $dat;
+	              }
+			  }
+			  $ciMapRoadmap = implode(":", $ciMapRoadmap);
+		  }else{
+			  $ciMapRoadmap="NA";
+		  }
+		  if($request->has('ciMapEnhFilt')){$ciMapEnhFilt = 1;}
+		  else{$ciMapEnhFilt=0;}
+		  if($request->has('ciMapPromFilt')){$ciMapPromFilt = 1;}
+		  else{$ciMapPromFilt=0;}
+	  }else{
+		  $ciMapBuildin = "NA";
+		  $ciMapFDR = "NA";
+		  $ciMapPromWindow="NA";
+		  $ciMapRoadmap="NA";
+		  $ciMapEnhFilt=0;
+		  $ciMapPromFilt=0;
+	  }
+
+
+	  if($request -> has('ciMapCADDcheck')){
+        $ciMapCADDth = $request -> input('ciMapCADDth');
+      }else{
+        $ciMapCADDth = 0;
+      }
+      if($request -> has('ciMapRDBcheck')){
+        $ciMapRDBth = $request -> input('ciMapRDBth');
+      }else{
+        $ciMapRDBth = "NA";
+      }
+      if($request -> has('ciMapChr15check')){
+        $temp = $request -> input('ciMapChr15Ts');
+        $ciMapChr15 = [];
+        foreach($temp as $ts){
+          if($ts != "null"){
+            $ciMapChr15[] = $ts;
+          }
+        }
+        $ciMapChr15 = implode(":", $ciMapChr15);
+        $ciMapChr15Max = $request -> input('ciMapChr15Max');
+        $ciMapChr15Meth = $request -> input('ciMapChr15Meth');
+      }else{
+        $ciMapChr15 = "NA";
+        $ciMapChr15Max = "NA";
+        $ciMapChr15Meth = "NA";
+      }
       // write parameter into a file
       $paramfile = $filedir.'/params.config';
       File::put($paramfile, "[jobinfo]\n");
@@ -456,6 +554,21 @@ class JobController extends Controller
       File::append($paramfile, "eqtlMapChr15Max=$eqtlMapChr15Max\n");
       File::append($paramfile, "eqtlMapChr15Meth=$eqtlMapChr15Meth\n");
 
+	  File::append($paramfile, "\n[ciMap]\n");
+	  File::append($paramfile, "ciMap=$ciMap\n");
+	  File::append($paramfile, "ciMapBuildin=$ciMapBuildin\n");
+	  File::append($paramfile, "ciMapFileN=$ciMapFileN\n");
+	  File::append($paramfile, "ciMapFiles=$ciMapFiles\n");
+	  File::append($paramfile, "ciMapFDR=$ciMapFDR\n");
+	  File::append($paramfile, "ciMapPromWindow=$ciMapPromWindow\n");
+	  File::append($paramfile, "ciMapRoadmap=$ciMapRoadmap\n");
+	  File::append($paramfile, "ciMapEnhFilt=$ciMapEnhFilt\n");
+	  File::append($paramfile, "ciMapPromFilt=$ciMapPromFilt\n");
+	  File::append($paramfile, "ciMapCADDth=$ciMapCADDth\n");
+      File::append($paramfile, "ciMapRDBth=$ciMapRDBth\n");
+      File::append($paramfile, "ciMapChr15=$ciMapChr15\n");
+      File::append($paramfile, "ciMapChr15Max=$ciMapChr15Max\n");
+      File::append($paramfile, "ciMapChr15Meth=$ciMapChr15Meth\n");
       // $user = DB::table('users')->where('email', $email)->first();
       // $this->dispatch(new snp2geneProcess($user, $jobID));
       return redirect("/snp2gene#joblist-panel");
@@ -506,81 +619,6 @@ class JobController extends Controller
       if($request -> has('annotPlot_eqtl')){$eqtl=1;}
 	  if($request -> has('annotPlot_ci')){$ci=1;}
 
-    //   $script = storage_path()."/scripts/annotPlot.py";
-    //   $data = shell_exec("python $script $filedir $type $rowI $GWAS $CADD $RDB $eqtl $ci $Chr15 $Chr15cells");
-    //   $script = storage_path()."/scripts/annotPlot.R";
-    //   exec("Rscript $script $filedir $type $rowI $GWAS $CADD $RDB $eqtl $Chr15 $Chr15cells");
-
-    //   if($Chr15==1){
-    //     $script = storage_path()."/scripts/getChr15.pl";
-    //     exec("$script $filedir $Chr15cells");
-    //   }
-
-    //   $eqtlplot = 0;
-    //   $eqtlNgenes = 0;
-    //   if($eqtl==1){
-    //     $eqtlfile = fopen($filedir."eqtlplot.txt", 'r');
-    //     $eqtlcheck = 0;
-    //     fgetcsv($eqtlfile, 0, "\t");
-    //     $eqtlgenes = array();
-    //     while($row = fgetcsv($eqtlfile, 0, "\t")){
-    //       $eqtlgenes[] = $row[3];
-    //     }
-    //     if(empty($eqtlgenes)){$eqtplot=0;}
-    //     else{$eqtlplot=1;}
-    //     $eqtlgenes = array_unique($eqtlgenes);
-    //     $eqtlNgenes = count($eqtlgenes);
-    //   }
-	  //
-    //   $xmin=null;
-    //   $xmax=null;
-    //   $chr=null;
-    //   $f = $filedir."annotPlot.txt";
-    //   $file = fopen($f, 'r');
-    //   fgetcsv($file, 0, "\t");
-    //   while($row=fgetcsv($file, 0, "\t")){
-    //     if($chr==null){$chr=$row[1];}
-    //     if($xmin==null){
-    //       $xmin=$row[2];
-    //       $xmax=$row[2];
-    //     }
-    //     if($row[2]>$xmax){$xmax=$row[2];}
-    //   }
-    //   fclose($file);
-    //   $xmin_init=$xmin;
-    //   $xmax_init=$xmax;
-	  //
-    //   $f = $filedir."genesplot.txt";
-    //   $file = fopen($f, 'r');
-    //   fgetcsv($file, 0, "\t");
-    //   while($row=fgetcsv($file, 0, "\t")){
-    //     if($xmin>$row[2]){
-    //       $xmin=$row[2];
-    //     }
-    //     if($row[3]>$xmax){$xmax=$row[3];}
-    //   }
-    //   fclose($file);
-
-    //   JavaScript::put([
-    //     'jobID'=>$jobID,
-    //     'filedir'=>$filedir,
-    //     'type'=>$type,
-    //     'rowI'=>$rowI,
-    //     'chr'=>$chr,
-    //     'GWASplot'=>$GWAS,
-    //     'CADDplot'=>$CADD,
-    //     'RDBplot'=>$RDB,
-    //     'Chr15'=>$Chr15,
-    //     'Chr15cells'=>$Chr15cells,
-    //     'eqtl'=>$eqtl,
-    //     'eqtlplot'=>$eqtlplot,
-    //     'eqtlNgenes'=>$eqtlNgenes,
-    //     'xMin'=>$xmin,
-    //     'xMax'=>$xmax,
-    //     'xMin_init'=>$xmin_init,
-    //     'xMax_init'=>$xmax_init,
-	// 	'testdata'=>json_decode($data, true)
-    //   ]);
       return view('pages.annotPlot', ['jobID'=>$jobID, 'type'=>$type, 'rowI'=>$rowI,
 	  	'GWASplot'=>$GWAS, 'CADDplot'=>$CADD, 'RDBplot'=>$RDB, 'eqtlplot'=>$eqtl,
 		'ciplot'=>$ci, 'Chr15'=>$Chr15, 'Chr15cells'=>$Chr15cells]);

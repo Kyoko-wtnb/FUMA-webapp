@@ -104,6 +104,7 @@ $(document).ready(function(){
 	    var chrHeight;
 	    var eqtlHeight;
 		var ciHeight;
+		var ciregHeight;
 	    // min Y for each plot
 	    var gwasTop = 0;
 	    var genesTop = (gwasHeight+gwasTop+10)*GWASplot;
@@ -112,6 +113,9 @@ $(document).ready(function(){
 	    var chrTop;
 	    var eqtlTop;
 		var ciTop;
+		var ciregTop;
+
+		var ci_cellsize = 5;
 
 	    var x = d3.scale.linear().range([0, width]);
 	    var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
@@ -192,18 +196,23 @@ $(document).ready(function(){
 	              "Skin_Not_Sun_Exposed_Suprapubic", "Skin_Sun_Exposed_Lower_leg", "Small_Intestine_Terminal_Ileum", "Spleen",
 	              "Stomach", "Testis", "Thyroid", "Uterus", "Vagina", "BloodeQTL", "BIOS_eQTL_geneLevel"];
 	    var eQTLcolors = {};
+		var eid = [];
+		var cilinks = [];
 
-		// gene data
+		// // gene data
 		genes.genes.forEach(function(d){
 	      d[2] = +d[2]; //start position
 	      d[3] = +d[3]; //end position
 	      // d.strand = +d.strand;
 	      d[6] = 1;
 	    });
+		x.domain([(xMin), (xMax)]);
 		genes.genes = geneOver(genes.genes, x, width);
+		x.domain([(xMin_init*1-side), (xMax_init*1+side)]);
 
 		// height define
 	    genesHeight = 20*(d3.max(genes.genes, function(d){return d[6];})+1);
+		// genesHeight = 20;
 	    caddTop = (genesTop+genesHeight+10);
 	    rdbTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot;
 	    chrTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot;
@@ -217,10 +226,20 @@ $(document).ready(function(){
 	    eqtlTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15;
 	    eqtlHeight = eqtlplot*(eqtlNgenes*55);
 
-		ciHeight = plotData["citypes"].length * 30;
-		ciTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15+eqtlHeight;
-
-	    height = genesHeight+gwasHeight*GWASplot+caddHeight*CADDplot+rdbHeight*RDBplot+chrHeight*Chr15+eqtlHeight+ciHeight+10*(GWASplot*1+CADDplot*1+RDBplot*1+Chr15*1+eqtlplot*1+ciplot*1);
+		ciHeight = 0;
+		plotData.ciheight.forEach(function(d){
+			if(d*ci_cellsize+10<30){
+				ciHeight += 30;
+			}else{
+				ciHeight += d*ci_cellsize+10;
+			}
+			ciHeight += 5;
+		});
+		// ciHeight = plotData["citypes"].length * 60;
+		ciTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15+eqtlHeight+10;
+		ciregHeight = plotData["cieid"].length * 10;
+		ciregTop = genesHeight+gwasHeight*GWASplot+caddHeight*CADDplot+rdbHeight*RDBplot+chrHeight*Chr15+eqtlHeight+ciHeight+10*(GWASplot*1+CADDplot*1+RDBplot*1+Chr15*1+eqtlplot*1+ciplot*1);
+	    height = genesHeight+gwasHeight*GWASplot+caddHeight*CADDplot+rdbHeight*RDBplot+chrHeight*Chr15+eqtlHeight+ciHeight+ciregHeight+10*(GWASplot*1+CADDplot*1+RDBplot*1+Chr15*1+eqtlplot*1+ciplot*1);
 
 		// Prepare svg
 	    svg = d3.select('#annotPlot').append('svg')
@@ -259,9 +278,9 @@ $(document).ready(function(){
 
 		// genes plot
 		var y = d3.scale.linear().range([genesTop+genesHeight, genesTop]);
-		// y.domain([-2.5,2.5]);
 		y.domain([d3.max(genes.genes, function(d){return d[6];})+1, 0]);
 
+		// genes legend
 		svg.append("rect").attr("x", width+20).attr("y", genesTop+10)
 		  .attr("width", 20).attr("height", 5).attr("fill", "red");
 		svg.append("text").attr("x", width+45).attr("y", genesTop+15)
@@ -334,8 +353,6 @@ $(document).ready(function(){
 			  .attr("transform", "translate("+width/2+","+(height+30)+")")
 			  .text("Chromosome "+chrom);
 		}
-		// svg.append("g").attr("class", "y axis").call(yAxis)
-		//   .selectAll("text").remove();
 
 		//exon plot
 	    genes.exons.forEach(function(d){
@@ -370,7 +387,8 @@ $(document).ready(function(){
 	      if(Chr15==0 && eqtlplot==1 && plotData["eqtl"].length==0){
 	        svg.append("text").attr("text-anchor", "middle")
 	            .attr("transform", "translate("+(width/2)+","+(height+margin.bottom-30)+")")
-	            .text("No eQTL of selected tissues exists in this region.");
+	            .text("No eQTL of selected tissues exists in this region.")
+				.style('font-family', 'sans-serif');
 	      }
 
 		//  snps data
@@ -735,7 +753,8 @@ $(document).ready(function(){
 			// var colors = ["#FF0000", "#FF4500", "#32CD32", "#008000", "#006400", "#C2E105", "#FFFF00", "#66CDAA", "#8A91D0", "#CD5C5C", "#E9967A", "#BDB76B", "#808080", "#C0C0C0", "white"];
 
 			var cells = d3.set(plotData.Chr15.map(function(d){return d[0];})).values();
-			EIDlegend(cells);
+			// EIDlegend(cells);
+			cells.forEach(function(d){eid.push(d)});
 			var chr15gcol = [];
 			var y_element = [];
 			for(var i=0; i<Chr15eid.length; i++){
@@ -796,7 +815,9 @@ $(document).ready(function(){
 				.insert('rect').attr('class', 'cell').attr("class", "Chr15rect")
 				.attr("width", function(d){return x(d[2])-x(d[1]);})
 				.attr("height", tileHeight)
-				.attr('x', function(d){return x(d[1]);})
+				.attr('x', function(d){
+					if(x(d[1])<0){return 0;}else{return x(d[1]);}
+				})
 				.attr('y', function(d){return yChr15(d[0])})
 				.attr("fill", function(d){return Chr15colors[d[3]*1-1];})
 				.on("mousemove", function(){
@@ -918,6 +939,11 @@ $(document).ready(function(){
 						svg.append("text").attr("text-anchor", "middle")
 						  .attr("transform", "translate("+width/2+","+(height+30)+")")
 						  .text("Chromosome "+chrom);
+					}else if(i==eqtlgenes.length-1){
+						svg.append("g").attr("class", "x axis eqtlend")
+						  .attr("transform", "translate(0,"+(eqtlTop+55*i+50)+")")
+						  .call(xAxis)
+						  .selectAll('text').remove();
 					}else{
 						svg.append("rect")
 						  .attr("x", 0).attr("y", y(0))
@@ -925,7 +951,9 @@ $(document).ready(function(){
 						  .style("fill", "grey");
 					}
 					svg.append("g").attr("class", "y axis").call(yAxis)
-						.selectAll('text').attr("transform", "translate(-5,0)").style('font-size', '11px');
+						.selectAll('text')
+						// .attr("transform", "translate(-5,0)")
+						.style('font-size', '11px');
 					// currentHeight2 = currentHeight2+55;
 				}
 
@@ -933,9 +961,6 @@ $(document).ready(function(){
 					.attr("transform", "translate("+(-margin.left/2-15)+","+(eqtlTop+eqtlHeight/2)+")rotate(-90)")
 					.text("eQTL -log10 P-value")
 					.style("font-size", "10px");
-				svg.append("text").attr("text-anchor", "middle")
-				  .attr("transform", "translate("+width/2+","+(height+30)+")")
-				  .text("Chromosome "+chrom);
 			}
 		}
 
@@ -951,15 +976,30 @@ $(document).ready(function(){
 					d[2] = +d[2]; //start2
 					d[3] = +d[3]; //end2
 					d[4] = +d[4]; //FDR
+					d[8] = +d[8]; //y
 				});
-				var cicolor = d3.scale.linear().domain([0, d3.max(plotData.ci, function(d){return -Math.log10(d[4])})]).range(["#cccccc", "red"]);
-
+				var minFDR = d3.min(plotData.ci, function(d){if(d[4]>0){return d[4];}});
+				plotData.ci.forEach(function(d){
+						if(d[4]==0){
+							d[4] = minFDR;
+						}
+				});
+				var cicolor = d3.scale.linear().domain([0, -Math.log10(minFDR)]).range(["#cccccc", "red"]);
+				var cur_height = 0;
 				for(var i =0; i<plotData["citypes"].length; i++){
-					types = plotData.citypes[i];
+					var types = plotData.citypes[i];
 					types = types.split(":");
-					var y = d3.scale.linear().range([ciTop+30*i+25, ciTop+30*i]);
+					var max_y = plotData.ciheight[i];
+					var tmp_height = 0;
+					if(max_y*ci_cellsize+10<30){
+						tmp_height = 30;
+					}else{
+						tmp_height = max_y*ci_cellsize+10;
+					}
+
+					var y = d3.scale.linear().range([ciTop+5*i+cur_height+tmp_height, ciTop+5*i+cur_height]);
 					var yAxis = d3.svg.axis().scale(y).orient("left").ticks(0);
-					y.domain([0, 4]);
+					y.domain([max_y+1, 0]);
 					var test = plotData.ci.filter(function(d){if(d[5]==types[0] && d[6]==types[1] && d[7]==types[2]){return d;}});
 
 					svg.selectAll("rect.ci1").data(plotData.ci.filter(function(d){if(d[5]==types[0] && d[6]==types[1] && d[7]==types[2]){return d;}})).enter()
@@ -969,7 +1009,7 @@ $(document).ready(function(){
 							else if(x(d[0])>width){return width}
 							else{return x(d[0])}
 						})
-						.attr("y", y(2))
+						.attr("y", function(d){return y(d[8])})
 						.attr("width", function(d){
 							if(x(d[1])<0 || x(d[0])>width){return 0}
 							else if(x(d[0])<0 && x(d[1])>width){return width}
@@ -977,7 +1017,7 @@ $(document).ready(function(){
 							else if(x(d[0])<0){return x(d[1])}
 							else{return x(d[1])-x(d[0])}
 						})
-						.attr("height", 8)
+						.attr("height", ci_cellsize)
 						.attr("fill", function(d){
 							if(x(d[0])>width || x(d[1])<0){return "transparent"}
 							else{return cicolor(-Math.log10(d[4]))}
@@ -986,7 +1026,7 @@ $(document).ready(function(){
 							if(x(d[0])>width){return "transparent"}
 							else{return "grey"}
 						})
-						.attr("stroke-width", 1.5);
+						.attr("stroke-width", 0.5);
 					svg.selectAll("rect.ci2").data(plotData.ci.filter(function(d){if(d[5]==types[0] && d[6]==types[1] && d[7]==types[2]){return d;}})).enter()
 						.append("rect").attr("class", "cirect2")
 						.attr("x", function(d){
@@ -994,7 +1034,7 @@ $(document).ready(function(){
 							else if(x(d[2])>width){return width}
 							else{return x(d[2])}
 						})
-						.attr("y", y(2))
+						.attr("y", function(d){return y(d[8])})
 						.attr("width", function(d){
 							if(x(d[3])<0 || x(d[2])>width){return 0}
 							else if(x(d[2])<0 && x(d[3])>width){return width}
@@ -1002,7 +1042,7 @@ $(document).ready(function(){
 							else if(x(d[2])<0){return x(d[3])}
 							else{return x(d[3])-x(d[2])}
 						})
-						.attr("height", 8)
+						.attr("height", ci_cellsize)
 						.attr("fill", function(d){
 							if(x(d[2])>width){return "transparent"}
 							else{return cicolor(-Math.log10(d[4]))}
@@ -1011,57 +1051,133 @@ $(document).ready(function(){
 							if(x(d[2])>width || x(d[3])<0){return "transparent"}
 							else{return "grey"}
 						})
-						.attr("stroke-width", 1.5);
+						.attr("stroke-width", 0.5);
 
-					svg.selectAll("rect.ci").data(plotData.ci.filter(function(d){if(Math.abs(d[2]-d[1])>1){return d;}})).enter()
+					svg.selectAll("rect.ci").data(plotData.ci.filter(function(d){if(d[5]==types[0] && d[6]==types[1] && d[7]==types[2] && Math.abs(d[2]-d[1])>1){return d;}})).enter()
 						.append("rect").attr("class", "cirect")
 						.attr("x", function(d){
-							var pos = [d[0], d[1], d[2], d[3]];
-							pos.sort();
-							var xmin = Math.min(pos[1], pos[2]);
-							var xmax = Math.max(pos[1], pos[2]);
-							if(x(xmin)<0){return 0}
-							else if(x(xmin)>width){return width}
-							else{return x(xmin)}
+							if(x(d[1])<0){return 0}
+							else if(x(d[1])>width){return width}
+							else{return x(d[1])}
 						})
-						.attr("y", y(2)+4)
+						.attr("y", function(d){return y(d[8])+ci_cellsize*0.5})
 						.attr("width", function(d){
-							var pos = [d[0], d[1], d[2], d[3]];
-							pos.sort();
-							var xmin = Math.min(pos[1], pos[2]);
-							var xmax = Math.max(pos[1], pos[2]);
-							if(x(xmax)<0 || x(xmin)>width){return 0}
-							else if(x(xmax)>width && x(xmin)<0){return width}
-							else if(x(xmin)<0){return x(xmax)}
-							else if(x(xmax)>width){return width - x(xmin)}
-							else{return x(xmax)-x(xmin)}
+							if(x(d[2])<0 || x(d[1])>width){return 0}
+							else if(x(d[2])>width && x(d[1])<0){return width}
+							else if(x(d[1])<0){return x(d[2])}
+							else if(x(d[2])>width){return width - x(d[1])}
+							else{return x(d[2])-x(d[1])}
 						})
-						.attr("height", 1)
+						.attr("height", 0.8)
 						.attr("fill", "grey");
 
 					svg.append("text").attr("text-anchor", "start")
-						.attr("transform", "translate(10,"+(ciTop+30*i+10)+")")
+						.attr("transform", "translate(10,"+(ciTop+cur_height+6)+")")
 						.text(types.join(" "))
 						.style("font-size", "10px").style("font-family", "sans-serif");
 					svg.append("g").attr("class", "y axis").call(yAxis)
 						.selectAll('text').attr("transform", "translate(-5,0)").style('font-size', '11px');
-					if(i==plotData.citypes.length-1){
+					if(i==plotData.citypes.length-1 && plotData["cieid"].length==0){
 						svg.append("g").attr("class", "x axis ci")
-							.attr("transform", "translate(0,"+(ciTop+30*i+25)+")")
+							.attr("transform", "translate(0,"+(ciTop+cur_height+5*i+tmp_height)+")")
 							.call(xAxis);
 						svg.append("text").attr("text-anchor", "middle")
-						  .attr("transform", "translate("+width/2+","+(height+30)+")")
+						  .attr("transform", "translate("+width/2+","+(height+60)+")")
 						  .text("Chromosome "+chrom);
+					}else if(i==plotData.citypes.length-1){
+						svg.append("g").attr("class", "x axis ci")
+							.attr("transform", "translate(0,"+(ciTop+cur_height+5*i+tmp_height)+")")
+							.call(xAxis).selectAll("text").remove();
 					}else{
 						svg.append("rect")
-						  .attr("x", 0).attr("y", y(0))
+						  .attr("x", 0).attr("y", y(max_y+1))
 						  .attr("width", width).attr("height", 0.3)
 						  .style("fill", "grey");
 					}
+					cur_height += tmp_height+5;
+				}
+				// svg.append("text").attr("text-anchor", "middle")
+				// 	.attr("transform", "translate("+(-margin.left/2)+","+(ciTop+ciHeight/2)+")rotate(-90)")
+				// 	.text("Chromatin interaction")
+				// 	.style("font-size", "10");
 
+				if(plotData["cieid"].length>0){
+					xAxisLabel="cireg";
+					plotData.cireg.forEach(function(d){
+						d[0] = +d[0]; //start
+						d[1] = +d[1]; //end
+					});
+					var cieid = plotData["cieid"];
+					cieid.forEach(function(d){
+						if(eid.indexOf(d)<0){eid.push(d)}
+					});
+					var chr15gcol = [];
+					for(var i=0; i<Chr15eid.length; i++){
+						if(cieid.indexOf(Chr15eid[i])>=0){
+							chr15gcol.push(Chr15GroupCols[i]);
+						}
+					}
+
+					// legend
+					svg.append("rect").attr("x", width+20).attr("y", ciregTop+5)
+					  .attr("width", 20).attr("height", 5).attr("fill", "orange");
+					svg.append("text").attr("x", width+45).attr("y", ciregTop+10)
+					  .text("Enhancers").style("font-size", "10px");
+					svg.append("rect").attr("x", width+20).attr("y", ciregTop+15)
+  					  .attr("width", 20).attr("height", 5).attr("fill", "green");
+  					svg.append("text").attr("x", width+45).attr("y", ciregTop+20)
+  					  .text("Promoters").style("font-size", "10px");
+					svg.append("rect").attr("x", width+20).attr("y", ciregTop+25)
+  					  .attr("width", 20).attr("height", 5).attr("fill", "blue");
+  					svg.append("text").attr("x", width+45).attr("y", ciregTop+30)
+  					  .text("Dyadic").style("font-size", "10px");
+
+					var yCireg = d3.scale.ordinal().domain(cieid).rangeBands([ciregTop, ciregTop+ciregHeight]);
+					var yAxisCireg = d3.svg.axis().scale(yCireg).tickFormat(function(d){return d;}).orient("left");
+					svg.selectAll("rect.cireg").data(plotData.cireg).enter().append("g")
+						.append('rect').attr("class", "ciregrect")
+						.attr('x', function(d){
+							if(x(d[0])<0){return 0;}
+							else{return x(d[0]);}
+						})
+						.attr('y', function(d){return yCireg(d[3])})
+						.attr("width", function(d){
+							return x(d[1])-x(d[0]);
+							if(x(d[1])<0 || x(d[0])>width){return 0}
+							else if(x(d[0])<0 && x(d[1])>width){return width}
+							else if(x(d[1])>width){return width-x(d[0])}
+							else if(x(d[0])<0){return x(d[1])}
+							else{return x(d[1])-x(d[0])}
+						})
+						.attr("height", 10)
+						.attr("fill", function(d){
+							if(x(d[1])<0 || x(d[0])>width){return "transparent"}
+							else if(d[2]=="enh"){return "orange"}
+							else if(d[2]=="prom"){return "green"}
+							else{return "blue"}
+						});
+					if(cieid.length>30){
+						svg.append("g").attr("class", "y axis").call(yAxisCireg)
+							.selectAll('text').remove();
+					}else{
+						svg.append("g").attr("class", "y axis").call(yAxisCireg)
+							.selectAll('text').attr("transform", "translate(-5,0)").style('font-size', '11px');
+					}
+					for(var i=0; i<cieid.length; i++){
+						svg.append("rect").attr("x", -10).attr("y", yCireg(cieid[i]))
+							.attr("width", 10).attr("height",10)
+							.attr("fill", chr15gcol[i]);
+					}
+					svg.append("g").attr("class", "y axis").call(yAxisCireg)
+						.selectAll('text').attr("transform", "translate(-5,0)").style('font-size', '11px');
+					svg.append("g").attr("class", "x axis cireg")
+						.attr("transform", "translate(0,"+(ciregTop+ciregHeight)+")")
+						.call(xAxis);
 				}
 			}
 		}
+
+		if(eid.length>0){EIDlegend(eid);}
 
 		svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
 		svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
@@ -1093,7 +1209,7 @@ $(document).ready(function(){
 	        svg.select(".x.axis.RDB").call(xAxis).selectAll("text").remove();
 	        svg.select(".x.axis.Chr15").call(xAxis).selectAll("text").remove();
 	        svg.select(".x.axis.eqtlend").call(xAxis);
-		}else if (xAxisLabel=="ci"){
+		  }else if (xAxisLabel=="ci"){
 			svg.select(".x.axis.GWAS").call(xAxis).selectAll("text").remove();
 	        svg.select(".x.axis.genes").call(xAxis).selectAll("text").remove();
 	        svg.select(".x.axis.CADD").call(xAxis).selectAll("text").remove();
@@ -1101,7 +1217,16 @@ $(document).ready(function(){
 	        svg.select(".x.axis.Chr15").call(xAxis).selectAll("text").remove();
 	        svg.select(".x.axis.eqtlend").call(xAxis).selectAll("text").remove();
 			svg.select(".x.axis.ci").call(xAxis);
-		}
+		  }else if (xAxisLabel=="cireg"){
+			svg.select(".x.axis.GWAS").call(xAxis).selectAll("text").remove();
+	        svg.select(".x.axis.genes").call(xAxis).selectAll("text").remove();
+	        svg.select(".x.axis.CADD").call(xAxis).selectAll("text").remove();
+	        svg.select(".x.axis.RDB").call(xAxis).selectAll("text").remove();
+	        svg.select(".x.axis.Chr15").call(xAxis).selectAll("text").remove();
+	        svg.select(".x.axis.eqtlend").call(xAxis).selectAll("text").remove();
+			svg.select(".x.axis.ci").call(xAxis).selectAll("text").remove();
+			svg.select(".x.axis.cireg").call(xAxis);
+		  }
 
 	      svg.selectAll(".GWASdot").attr("cx", function(d){return x(d[2]);})
 	        .style("fill", function(d){if(x(d[2])<0 || x(d[2])>width){return "transparent";}else if(d[5]==0){return "grey";}else{return colorScale(d[6])}});
@@ -1153,10 +1278,10 @@ $(document).ready(function(){
 		        else if(x(d[3])>width){return x(d[2])+(width-x(d[2]))/2;}
 		        else{return x(((d[3]-d[2])/2)+d[2]);}
 		      })
-	      .style("fill", function(d){
-	        if(x(d[3])<0 || x(d[2])>width){return "transparent";}
-	        else{return "black";}
-	      });
+		      .style("fill", function(d){
+		        if(x(d[3])<0 || x(d[2])>width){return "transparent";}
+		        else{return "black";}
+		      });
 	      svg.selectAll(".exons").attr("x", function(d){
 	          if(x(d[6])<0 || x(d[7])<0){return 0;}
 	          else{return x(d[6]);}
@@ -1238,26 +1363,38 @@ $(document).ready(function(){
 				  else{return "grey"}
 			  });
 		  svg.selectAll(".cirect")
-		  .attr("x", function(d){
-			  var pos = [d[0], d[1], d[2], d[3]];
-			  pos.sort();
-			  var xmin = Math.min(pos[1], pos[2]);
-			  var xmax = Math.max(pos[1], pos[2]);
-			  if(x(xmin)<0){return 0}
-			  else if(x(xmin)>width){return width}
-			  else{return x(xmin)}
-		  })
-		  .attr("width", function(d){
-			  var pos = [d[0], d[1], d[2], d[3]];
-			  pos.sort();
-			  var xmin = Math.min(pos[1], pos[2]);
-			  var xmax = Math.max(pos[1], pos[2]);
-			  if(x(xmax)<0 || x(xmin)>width){return 0}
-			  else if(x(xmax)>width && x(xmin)<0){return width}
-			  else if(x(xmin)<0){return x(xmax)}
-			  else if(x(xmax)>width){return width - x(xmin)}
-			  else{return x(xmax)-x(xmin)}
-		  })
+			  .attr("x", function(d){
+				  if(x(d[1])<0){return 0}
+				  else if(x(d[1])>width){return width}
+				  else{return x(d[1])}
+			  })
+			  .attr("width", function(d){
+				  if(x(d[2])<0 || x(d[1])>width){return 0}
+				  else if(x(d[2])>width && x(d[1])<0){return width}
+				  else if(x(d[1])<0){return x(d[2])}
+				  else if(x(d[2])>width){return width - x(d[1])}
+				  else{return x(d[2])-x(d[1])}
+			  });
+
+		  svg.selectAll(".ciregrect")
+			  .attr("x", function(d){
+				  if(x(d[0])<0){return 0;}
+				  else{return x(d[0]);}
+			  })
+			  .attr("width", function(d){
+				  return x(d[1])-x(d[0]);
+				  if(x(d[1])<0 || x(d[0])>width){return 0}
+				  else if(x(d[0])<0 && x(d[1])>width){return width}
+				  else if(x(d[1])>width){return width-x(d[0])}
+				  else if(x(d[0])<0){return x(d[1])}
+				  else{return x(d[1])-x(d[0])}
+			  })
+			  .attr("fill", function(d){
+				  if(x(d[1])<0 || x(d[0])>width){return "transparent"}
+				  else if(d[2]=="enh"){return "orange"}
+				  else if(d[2]=="prom"){return "green"}
+				  else{return "blue"}
+			  });
 	    }
 
 		// Plot Clear button
@@ -1497,7 +1634,6 @@ function ImgDown(id, type){
 @section('content')
 <canvas id="canvas" style="display:none;"></canvas>
 
-<div id="test"></div>
 <!-- <h3>Annotplot head</h3> -->
 <br/><br/>
 <div class="container">
@@ -1522,13 +1658,15 @@ function ImgDown(id, type){
       <input type="hidden" name="type" id="annotPlotType" val=""/>
       <input type="hidden" name="fileName" id="annotPlotFileName" val=""/>
       <input type="submit" id="annotPlotSubmit" class="ImgDownSubmit"/>
-    </form>    <div id="annotPlot"></div>
+    </form>
+	<div id="loading"></div>
+	<div id="annotPlot"></div>
     <br/>
     <div id="RDBlegend"></div>
-	*External link to RegulomeDB from SNP table (when one of the SNPs is clicked) will open a new tab.
+	*External link to RegulomeDB from SNP table (which will be shown when one of the SNPs is clicked) will open a new tab.
 	rsID does not always match since RegulomeDB used dbSNP build 141 (the rsID in FUMA is dbSNP build 146).
 	Genomic position (bp on hg19) shown in the link of RegulomeDB is the position shown in the SNP table - 1, since RegulomeDB used 0 based corrdinate.
-    <br/>
+    <br/><br/>
     <div id="EIDlegend"></div>
     <br/>
     <div id="SNPlegend">

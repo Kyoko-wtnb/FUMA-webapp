@@ -239,6 +239,26 @@ class snp2geneProcess extends Job implements ShouldQueue
         }
       }
 
+	  if($params['ciMap']==1){
+		  file_put_contents($logfile, "\n----- getCI.py -----\n", FILE_APPEND);
+          file_put_contents($errorfile, "\n----- getCI.py -----\n", FILE_APPEND);
+		  $script = storage_path().'/scripts/getCI.py';
+		  exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+		  if($error != 0){
+            $this->rmFiles($filedir);
+            DB::table('SubmitJobs') -> where('jobID', $jobID)
+                              -> update(['status'=>'ERROR:010']);
+            $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+			$errorout = file_get_contents($errorfile);
+	        $errorout = explode("\n", $errorout);
+	        $msg = $errorout[count($errorout)-2];
+            if($email!=null){
+              $this->sendJobCompMail($email, $jobtitle, $jobID, 10, $msg);
+              return;
+            }
+          }
+	  }
+
       file_put_contents($logfile, "\n----- geneMap.R -----\n", FILE_APPEND);
       file_put_contents($errorfile, "\n----- geneMap.R -----\n", FILE_APPEND);
       $script = storage_path().'/scripts/geneMap.R';
@@ -246,10 +266,10 @@ class snp2geneProcess extends Job implements ShouldQueue
       if($error != 0){
         $this->rmFiles($filedir);
         DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:010']);
+                          -> update(['status'=>'ERROR:011']);
         $this->JobMonitorUpdate($jobID, $created_at, $started_at);
         if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 10, $msg);
+          $this->sendJobCompMail($email, $jobtitle, $jobID, 11, $msg);
           return;
         }
       }

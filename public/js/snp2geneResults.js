@@ -161,6 +161,7 @@ $(document).ready(function(){
     $('#annotfile').prop('checked', true);
     $('#genefile').prop('checked', true);
     $('#eqtlfile').prop('checked', true);
+	$('#cifile').prop('checked', true);
     $('#gwascatfile').prop('checked', true);
     // $('#exacfile').prop('checked', true);
     $('#magmafile').prop('checked', true);
@@ -176,6 +177,7 @@ $(document).ready(function(){
     $('#annotfile').prop('checked', false);
     $('#genefile').prop('checked', false);
     $('#eqtlfile').prop('checked', false);
+	$('#cifile').prop('checked', false);
     // $('#exacfile').prop('checked', false);
     $('#gwascatfile').prop('checked', false);
     $('#magmafile').prop('checked', false);
@@ -988,7 +990,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
           data: {
             jobID: jobID,
             infile: file,
-            header: "GenomicLocus:region1:region2:FDR:type:DB:name:inter/intra:SNPs"
+            header: "GenomicLocus:region1:region2:FDR:type:DB:tissue/cell:inter/intra:SNPs:genes"
           }
         },
         "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
@@ -1007,14 +1009,14 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
           data: {
             jobID: jobID,
             infile: file,
-            header: "uniqID:rsID:chr:pos:reg_region:type:name"
+            header: "uniqID:rsID:chr:pos:reg_region:type:tissue/cell"
           }
         },
         "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "iDisplayLength": 10
       });
 
-	  file = "ciGenes.txt";
+	  file = "ciProm.txt";
 	  var ciGenesTable = $('#ciGenesTable').DataTable({
         processing: true,
         serverSide: true,
@@ -1026,7 +1028,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
           data: {
             jobID: jobID,
             infile: file,
-            header: "region2:reg_region:type:name:genes:distance"
+            header: "region2:reg_region:type:tissue/cell:genes"
           }
         },
         "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
