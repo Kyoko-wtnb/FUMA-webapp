@@ -55,6 +55,9 @@ $(document).ready(function(){
 		  Chr15: Chr15,
 		  Chr15cells: Chr15cells
 	  },
+	  beforeSend: function(){
+		  $("#loading").html('<span style="height:auto; color:grey;"><i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i><br/>Loading...</span>');
+	  },
 	  success: function(data){
 		  plotData = JSON.parse(data.replace(/NaN/g, "-1"));
 		  chrom = plotData["chrom"];
@@ -77,6 +80,7 @@ $(document).ready(function(){
 			  },
 			  success: function(data){
 				  genes = JSON.parse(data);
+				  $('#loading').html("");
 			  },
 			  complete: function(){
 				Plot();
@@ -1638,7 +1642,6 @@ function ImgDown(id, type){
 @section('content')
 <canvas id="canvas" style="display:none;"></canvas>
 
-<div id="test"></div>
 <!-- <h3>Annotplot head</h3> -->
 <br/><br/>
 <div class="container">
@@ -1663,7 +1666,9 @@ function ImgDown(id, type){
       <input type="hidden" name="type" id="annotPlotType" val=""/>
       <input type="hidden" name="fileName" id="annotPlotFileName" val=""/>
       <input type="submit" id="annotPlotSubmit" class="ImgDownSubmit"/>
-    </form>    <div id="annotPlot"></div>
+    </form>
+	<div id="loading"></div>
+	<div id="annotPlot"></div>
     <br/>
     <div id="RDBlegend"></div>
 	*External link to RegulomeDB from SNP table (when one of the SNPs is clicked) will open a new tab.
