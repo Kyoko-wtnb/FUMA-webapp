@@ -118,7 +118,7 @@ def getCI(filedir, snps, ci, gl):
 		chr2 = [int(x.split(":")[0]) for x in ci[:,2]]
 		ciout = np.c_[chr1, chr2]
 		if len(ciout) == 0:
-			return [min_pos, max_pos, []]
+			return [min_pos, max_pos, [], [] ,[] ,[] ,[]]
 		ci = ci[np.where((ciout[:,0]==chrom) & (ciout[:,1]==chrom))]
 		pos1min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,1]]
 		pos1max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,1]]
@@ -162,7 +162,6 @@ def getCI(filedir, snps, ci, gl):
 			posmin = [int(x.split(":")[1].split("-")[0]) for x in cienh[:,4]]
 			posmax = [int(x.split(":")[1].split("-")[1]) for x in cienh[:,4]]
 			cireg = np.c_[posmin, posmax, cienh[:,5:7]]
-
 		ciprom = pd.read_table(filedir+"ciProm.txt", sep="\t")
 		ciprom = np.array(ciprom)
 		if len(ciprom)>0:
@@ -307,7 +306,7 @@ def main():
 	##### get eqtl #####
 	[snps, eqtldata] = geteQTLs(filedir, snps, eqtlplot)
 	if len(eqtldata) > 0:
-		eqtlgenes = unique(eqtldata[:,3])
+		eqtlgenes = unique(eqtldata[:,10])
 	else:
 		eqtlgenes = ["NA"]
 
@@ -330,7 +329,5 @@ def main():
 	out["xMin_init"] = min(snps[:,2])
 	out["xMax_init"] = max(snps[:,2])
 	print json.dumps(out)
-	# print cidata[0:3]
-	# print citypes
 
 if __name__ == "__main__": main()

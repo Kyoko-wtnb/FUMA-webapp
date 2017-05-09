@@ -30,7 +30,7 @@ if(length(g)==0){
   g <- c(g, ENSG.all.genes$ensembl_gene_id[which(abs(ENSG.all.genes$start_position-xmax)==start)])
 }
 
-g <- unique(c(g, eqtlgenes[eqtlgenes %in% ENSG.all.genes$ensembl_gene_id]))
+g <- unique(c(g, eqtlgenes[eqtlgenes %in% ENSG.all.genes$external_gene_name]))
 
 gmin <- min(ENSG.all.genes$start_position[ENSG.all.genes$ensembl_gene_id %in% g])
 gmax <- max(ENSG.all.genes$end_position[ENSG.all.genes$ensembl_gene_id %in% g])

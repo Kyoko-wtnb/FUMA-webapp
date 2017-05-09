@@ -81,6 +81,7 @@
         <a href="#table-columns">Table columns</a>
         <a href="#riskloci">Risk loci and lead SNPs</a>
         <a href="#eQTLs">eQTLs</a>
+		<a href="#chromatin-interactions">Chromatin interactions</a>
         <!-- <a href="#examples">Example senarios</a> -->
       </div>
     <li><a href="#gene2func">GENE2FUNC<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
@@ -127,6 +128,8 @@
         @include('tutorial.snp2gene.riskloci')
         <br/>
         @include('tutorial.snp2gene.eqtl')
+		<br/>
+		@include('tutorial.snp2gene.ci')
       </div>
     </div>
 

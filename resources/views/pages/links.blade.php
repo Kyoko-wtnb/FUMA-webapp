@@ -147,7 +147,31 @@
           <a href="https://www.ncbi.nlm.nih.gov/pubmed/25174004" target="_blank">PMID:27918533</a>
         </td>
       </tr>
-      <tr>
+	  <tr>
+        <td>GSE87112 (Hi-C)</td>
+        <td>Hi-C data (significant loops) of 21 tissue/cell types. Pre-processed data (output of Fit-Hi-C) is used in FUMA.</td>
+        <td>Info and data: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112</a></td>
+        <td>9 May 2017</td>
+        <td>
+          Schmitt, A.D. et al. 2016. A compendium of chromatin contact maps reveals spatially active regions in the human genome. <i>Cell Rep.</i> <b>17</b>, 2042-2059.<br/>
+          <a href="https://www.ncbi.nlm.nih.gov/pubmed/27851967" target="_blank">PMID:27851967</a>
+        </td>
+      </tr>
+	  <tr>
+        <td>Enhancer and promoter regions</td>
+        <td>Predicted enhancer and promoter regions (including dyadic) from Roadmap Epigenomics Projects. 111 epigenomes are available.</td>
+        <td>Info: <a href="http://egg2.wustl.edu/roadmap/web_portal/DNase_reg.html" target="_blank">http://egg2.wustl.edu/roadmap/web_portal/DNase_reg.html</a><br/>
+			Data: <a href="http://egg2.wustl.edu/roadmap/data/byDataType/dnase/" target="_blank">http://egg2.wustl.edu/roadmap/data/byDataType/dnase/</a>
+		</td>
+        <td>9 May 2017</td>
+        <td>
+			Roadmap Epigenomics Consortium, et al. 2015. Integrative analysis of 111 reference human epigenomes. <i>Nature.</i> <b>518</b>, 317-330.<br/>
+            <a href="https://www.ncbi.nlm.nih.gov/pubmed/25693563" target="_blank">PMID:25693563</a><br/>
+            Ernst, J. and Kellis, M. 2012. ChromHMM: automating chromatin-state discovery and characterization. <i>Nat. Methods.</i> <b>28</b>, 215-6.<br/>
+            <a href="https://www.ncbi.nlm.nih.gov/pubmed/22373907" target="_blank">PMID:22373907</a>
+        </td>
+      </tr>
+	  <tr>
         <td>MsigDB v5.2</td>
         <td>Collection of publicly available gene sets. Data sets include e.g. KEGG, Reactome, BioCarta, GO terms and so on.</td>
         <td>Info and data: <a href="http://software.broadinstitute.org/gsea/msigdb" target="_blank">http://software.broadinstitute.org/gsea/msigdb</a></td>

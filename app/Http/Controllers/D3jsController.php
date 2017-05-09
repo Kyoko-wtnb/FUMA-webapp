@@ -63,7 +63,6 @@ class D3jsController extends Controller
 
 		$script = storage_path()."/scripts/annotPlot.py";
 	    $data = shell_exec("python $script $filedir $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells");
-		file_put_contents("/media/sf_Documents/VU/Data/WebApp/tmp.txt", $data);
 		return $data;
 	}
 

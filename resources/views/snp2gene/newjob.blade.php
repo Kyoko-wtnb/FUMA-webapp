@@ -925,10 +925,10 @@
       <h4>3-3. Gene Mapping (3D Chromatin Interaction mapping)<a href="#NewJobCiMapPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
     </div>
     <div class="panel-body collapse" id="NewJobCiMapPanel">
-      <h4>3D chromatin interaction mapping</h4>
+      <h4>chromatin interaction mapping</h4>
       <table class="table table-bordered inputTable" id="NewJobCiMap" style="width: auto;">
         <tr>
-          <td>Perform 3D chromatin interaction mapping
+          <td>Perform chromatin interaction mapping
             <a class="infoPop" data-toggle="popover" title="3D chromatin interaction mapping" data-content="3D chromatin interaction mapping maps SNPs to genes based on chromatin interactions such as Hi-C and ChIA-PET. Please check to perform this mapping.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
@@ -938,7 +938,7 @@
         </tr>
         <!-- <div id="eqtlMapOptions"> -->
           <tr class="ciMapOptions">
-            <td>Buildin Hi-C data (GSE87112)
+            <td>Buildin chromatin interaction data
               <a class="infoPop" data-toggle="popover" title="Buildin Hi-C data" data-content="Hi-C datasets of 21 tissue and cell types from GSE87112 are selectabe as buildin data. Multiple tissue and cell types can be selected.">
                 <i class="fa fa-question-circle-o fa-lg"></i>
               </a>
@@ -956,7 +956,6 @@
 					<option value="HiC/GSE87112/Left_Ventricle.txt.gz">HiC(GSE87112) Left_Ventricle</option>
 					<option value="HiC/GSE87112/Liver.txt.gz">HiC(GSE87112) Liver</option>
 					<option value="HiC/GSE87112/Lung.txt.gz">HiC(GSE87112) Lung</option>
-					<option value="HiC/GSE87112/Neural_Progenitor_Cell.txt.gz">HiC(GSE87112) Neural_Progenitor_Cell</option>
 					<option value="HiC/GSE87112/Ovary.txt.gz">HiC(GSE87112) Ovary</option>
 					<option value="HiC/GSE87112/Pancreas.txt.gz">HiC(GSE87112) Pancreas</option>
 					<option value="HiC/GSE87112/Psoas.txt.gz">HiC(GSE87112) Psoas</option>
@@ -967,6 +966,7 @@
 					<option value="HiC/GSE87112/IMR90.txt.gz">HiC(GSE87112) IMR90</option>
 					<option value="HiC/GSE87112/Mesenchymal_Stem_Cell.txt.gz">HiC(GSE87112) Mesenchymal_Stem_Cell</option>
 					<option value="HiC/GSE87112/Mesendoderm.txt.gz">HiC(GSE87112) Mesendoderm</option>
+					<option value="HiC/GSE87112/Neural_Progenitor_Cell.txt.gz">HiC(GSE87112) Neural_Progenitor_Cell</option>
 					<option value="HiC/GSE87112/Trophoblast-like_Cell.txt.gz">HiC(GSE87112) Trophoblast-like_Cell</option>
 					<option value="HiC/GSE87112/hESC.txt.gz">HiC(GSE87112) hESC</option>
                 </select>
@@ -975,7 +975,7 @@
             <td></td>
           </tr>
 		  <tr class="ciMapOptions">
-			  <td>Custome chromatin interaction matrices
+			  <td>Custom chromatin interaction matrices
 				  <a class="infoPop" data-toggle="popover" title="Custome chromatin interaction matrices"
 				  data-content="Please upload files of custome chromatin interaction matrices (significant loops). The input files have to follow the specific format. Please refer the tutorial for details. THe file name should be '(Name_of_the_data).txt.gz' in which (Name_of_the_data) will be used in the results table.">
 	                <i class="fa fa-question-circle-o fa-lg"></i>
@@ -1000,8 +1000,8 @@
             <td></td>
           </tr>
 		  <tr class="ciMapOptions">
-			  <td>Gene promoter region window
-				  <a class="infoPop" data-toggle="popover" title="Gene promoter region window" data-content="The window of promoter regions are used to overlap TSS of genes with significantly interacted regions with risk loci.
+			  <td>Promoter region window
+				  <a class="infoPop" data-toggle="popover" title="Promoter region window" data-content="The window of promoter regions are used to overlap TSS of genes with significantly interacted regions with risk loci.
 				  By default, promoter region is defined as 250bp upstream and 500bp downsteram of TSS. Genes whoes promoter regions are overlapped with the interacted region are used for gene mapping.">
 	                <i class="fa fa-question-circle-o fa-lg"></i>
 	              </a>
@@ -1172,7 +1172,7 @@
 			  <td></td>
 		  </tr>
 		  <tr class="ciMapOptions">
-			  <td>Filter on SNPs that are overlap with enhancers
+			  <td>Filter SNPs on which are overlap with enhancers
 				  <a class="infoPop" data-toggle="popover" title="Filtering of SNPs by enhancers" data-content="Only map SNPs which are overlapped with enhancers of selected epigenomes. Please select at least one epigenome to enable this option.
 				  If this option is not checked, all SNPs overlapped with chromatin interaction are used for mapping.">
 	                <i class="fa fa-question-circle-o fa-lg"></i>
@@ -1182,7 +1182,7 @@
 			  <td></td>
 		  </tr>
 		  <tr class="ciMapOptions">
-			  <td>Map to genes whose promoter regions overlap with annotated promoters
+			  <td>Filter genes on whose promoter regions overlap with annotated promoters
 				  <a class="infoPop" data-toggle="popover" title="Filtering of genes by promoters" data-content="Only map to genes whoes promoter regions are overlap with promoters of selected epigenomes. Please select at least one epigenome to enable this option.
 				  If this option is not checked, all genes whose promoter reions are overlapped with the interacted regions are mapped.">
 	                <i class="fa fa-question-circle-o fa-lg"></i>
