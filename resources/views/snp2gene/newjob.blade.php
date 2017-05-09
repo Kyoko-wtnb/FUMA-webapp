@@ -1172,8 +1172,8 @@
 			  <td></td>
 		  </tr>
 		  <tr class="ciMapOptions">
-			  <td>Filter SNPs on which are overlap with enhancers
-				  <a class="infoPop" data-toggle="popover" title="Filtering of SNPs by enhancers" data-content="Only map SNPs which are overlapped with enhancers of selected epigenomes. Please select at least one epigenome to enable this option.
+			  <td>Filter SNPs by enhancers
+				  <a class="infoPop" data-toggle="popover" title="Filter SNPs by enhancers" data-content="Only map SNPs which are overlapped with enhancers of selected epigenomes. Please select at least one epigenome to enable this option.
 				  If this option is not checked, all SNPs overlapped with chromatin interaction are used for mapping.">
 	                <i class="fa fa-question-circle-o fa-lg"></i>
 	              </a>
@@ -1182,8 +1182,8 @@
 			  <td></td>
 		  </tr>
 		  <tr class="ciMapOptions">
-			  <td>Filter genes on whose promoter regions overlap with annotated promoters
-				  <a class="infoPop" data-toggle="popover" title="Filtering of genes by promoters" data-content="Only map to genes whoes promoter regions are overlap with promoters of selected epigenomes. Please select at least one epigenome to enable this option.
+			  <td>Filter genes by promoters
+				  <a class="infoPop" data-toggle="popover" title="Filter genes by promoters" data-content="Only map to genes whoes promoter regions are overlap with promoters of selected epigenomes. Please select at least one epigenome to enable this option.
 				  If this option is not checked, all genes whose promoter reions are overlapped with the interacted regions are mapped.">
 	                <i class="fa fa-question-circle-o fa-lg"></i>
 	              </a>

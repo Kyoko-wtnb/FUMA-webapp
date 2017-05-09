@@ -1,15 +1,15 @@
 <h3 id="chromatin-interactions">Chromatin interaction data and mapping</h3>
 In this section, build in chromatin interaction data, file format of custom chromatin interaction matrices and
 details of chromatin interaction mapping are described.
-Since chromatin interaction mapping is more complecated than other two mapping (positional and eQTL), please read this section carefully.
+Since chromatin interaction mapping is more complecated than other two mappings (positional and eQTL), please read this section carefully.
 <div style="padding-left: 40px;">
 	<h4><strong>Terminology</strong></h4>
 	<p>
 		<strong style="color:red">Region 1</strong><br/>
-		One end of signifincat interaction which overlap with one of the candidate SNPs (independent significant SNPs and SNPs whic hare in LD of them).
-		This region is always overlap with genomic risk loci identified by FUMA.<br/>
+		One end of a signifincat interaction which overlap with one of the candidate SNPs (independent significant SNPs and SNPs which are in LD of them).
+		This region is always overlap with one of the genomic risk loci identified by FUMA.<br/>
 		<strong style="color:red">Region 2</strong><br>
-		Another end of significant interaction.
+		Another end of the significant interaction.
 		This region is used to map to genes.
 		Region 2 could also be overlapped with one of the genomic risk loci.<br/>
 		<img src="{{ URL::asset('/image/ciMapTerm.png') }}" style="width: 70%; align: middle;">
@@ -18,7 +18,7 @@ Since chromatin interaction mapping is more complecated than other two mapping (
 	<p><strong>1. Hi-C of 21 tissue/cell types from <a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112">GSE87112</a>.</strong><br/>
 		Pre-processed significant loops computed by Fit-Hi-C were obtained from GSE87112.
 		Loops were filtered at FDR 0.05. For mapping, loops can be further filter by the user defined FDR threshold.
-		Available tissue/cell types are below.<br/>
+		Available tissue/cell types are listed below.<br/>
 		<ul>
 			<li>Adrenal</li>
 			<li>Aorta</li>
@@ -68,7 +68,7 @@ Since chromatin interaction mapping is more complecated than other two mapping (
 		</span>
 		<br/>
 		<span class="info"><i class="fa fa-info"></i>
-			Chromosome can be coded as storing like "chr1" and "chrX" which will be converted into integer.
+			Chromosome can be coded as string like "chr1" and "chrX" which will be converted into integer.
 		</span><br/>
 		<span class="info"><i class="fa fa-info"></i>
 			Order of region 1 and region 2 does not matter. Inter-chromosomal interactions can be encoded in the same file by specifying chromosome of region 1 and region 2.
@@ -81,21 +81,21 @@ Since chromatin interaction mapping is more complecated than other two mapping (
 		</span><br/>
 		<br/>
 		<strong>2. Data types</strong><br/>
-		In the input table of SNP2GENE, users can specify the type of data such as Hi-C or ChIA-PET.
-		Specifying type is not mandatory since it is only used to encode in the result table for convinience.
+		When uploading custom chromatin interaction matrices, users can specify the type of data such as Hi-C or ChIA-PET.
+		Specifying the data type is not mandatory since it is only used to specify in the result table and regional plot for convenience.
 		<br/><br/>
 		<strong>3. Filtering of chromatin interactions</strong><br/>
 		The 7th column (FDR) will be used to filter interactions.
-		To prevent from this filtering, either set filtering threfhold to 1 or assign 0 to FDR column.
-		Technically, the 7th column does not have to be FDR but any other score.
-		When one prefer to use any other score or nominal P-value, that is also possible by setting opropoer filtering threhold.
-		Note that, interactions will be filtered on such with score less than or equal to the threhold.
+		To prevent from this filtering, either set filtering threfhold to 1 or assign 0 to the FDR column.
+		Technically, the 7th column does not have to be FDR but any other scores.
+		When one prefers to use different score or nominal P-value, that is also possible by setting propoer filtering threhold.
+		Note that, interactions will be filtered on which have score less than or equal to the threhold.
 		<br/>
 	</p>
 	<h4><strong>Enhancer and promoter regions</strong></h4>
 	<p>
 		Enhancer and promoter regions were obtained from Roadmap Epigenomics Projects for 111 epigenomes.
-		Those regions were predicted useind DNase peaks and core 15-state chromatin state model.
+		Those regions were predicted using DNase peaks and core 15-state chromatin state model.
 		Please refer <a target="_blank" href="http://egg2.wustl.edu/roadmap/web_portal/DNase_reg.html#delieation">here</a> for details. <br/>
 		For selected epigenomes, enhancer regions are annotated to region 1 and promoter regions are annotated to region 2.
 		Dyadic enhancer/promoter reions are annoated for both. <br/>
@@ -103,14 +103,14 @@ Since chromatin interaction mapping is more complecated than other two mapping (
 	</p>
 	<h4><strong>Chromatin interaction mapping</strong></h4>
 	<p><strong>1. Basic mapping (without filtering)</strong><br/>
-		Chromatin interaction mapping is performed with significant interaction at the user defined threshold.
-		Regions 2 is mapped to genes whoes promoter regions (250bp up- and 50bp down-stream of the TSS).
+		Chromatin interaction mapping is performed with significant chromatin interactions at the user defined threshold.
+		Regions 2 is mapped to genes whoes promoter regions (250bp up- and 50bp down-stream of the TSS by default) are overlapped with the region 2.
 		Those genes were considered as mapped by candidate SNPs which are overlapped with region 1.<br/>
 		In the case there is not genes in region 2, those interactions are not mapped to any genes.<br/>
 		<img src="{{ URL::asset('/image/ciMap1.png') }}" style="width: 60%; align: middle;">
 		<br/><br/>
 		<strong>2. Enhancer filtering</strong><br/>
-		When enhancers are annotated to region 1, user can select the option to filter candidate SNPs on such that are overlapped with enhancer regions of selected epigenomes for mapping.
+		When enhancers are annotated to region 1, user can select the option to filter candidate SNPs on such that are overlapped with enhancer regions of selected epigenomes.
 		Note that, in the result table, all significant interactions are included but not all are necessary used for mapping.<br/>
 		<img src="{{ URL::asset('/image/ciMap2.png') }}" style="width: 60%; align: middle;">
 		<br/><br/>

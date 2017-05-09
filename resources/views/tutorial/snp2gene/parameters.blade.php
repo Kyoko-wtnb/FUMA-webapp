@@ -411,7 +411,7 @@
   	  <td>-</td>
   	</tr>
 	<tr>
-  	  <td>Filter SNPs on which are overlap with enhancers</td>
+  	  <td>Filter SNPs by enhancers</td>
   	  <td>Optional</td>
   	  <td>This option is only available when at least one epigenome is selected in the previous option to annotate enhancer/promoter regions.
 		  When this option is checked, SNPs are filtered on such that overlap with one of the annotated enhancer regions for chromatin interaction mapping.
@@ -422,7 +422,7 @@
   	  <td>-</td>
   	</tr>
 	<tr>
-  	  <td>Filter genes on whose promoter regions overlap with promoters</td>
+  	  <td>Filter genes by promoters</td>
   	  <td>Optional</td>
   	  <td>This option is only available when at least one epigenome is selected in the previous option to annotate enhancer/promoter regions.
 		  When this option is checked, chromatin interaction mapping is only performed for genes whoes promoter regions are overlap with one of the annotated promoter regions.
