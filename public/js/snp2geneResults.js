@@ -76,6 +76,7 @@ $(document).ready(function(){
       var filedir;
       var posMap;
       var eqtlMap;
+	  var ciMap;
       var orcol;
       var becol;
       var secol;
@@ -94,16 +95,17 @@ $(document).ready(function(){
             filedir = tmp[0];
             posMap = parseInt(tmp[1]);
             eqtlMap = parseInt(tmp[2]);
-            orcol = tmp[3];
-            becol = tmp[4];
-            secol = tmp[5];
+			ciMap = parseInt(tmp[3])
+            orcol = tmp[4];
+            becol = tmp[5];
+            secol = tmp[6];
           },
           complete: function(){
             // jobInfo(jobid);
             GWplot(jobid);
             QQplot(jobid);
             MAGMAtsplot(jobid);
-            showResultTables(filedir, jobid, posMap, eqtlMap, orcol, becol, secol);
+            showResultTables(filedir, jobid, posMap, eqtlMap, ciMap, orcol, becol, secol);
             $('#GWplotSide').show();
             $('#results').show();
             $('#resultsSide').show();
@@ -159,6 +161,7 @@ $(document).ready(function(){
     $('#annotfile').prop('checked', true);
     $('#genefile').prop('checked', true);
     $('#eqtlfile').prop('checked', true);
+	$('#cifile').prop('checked', true);
     $('#gwascatfile').prop('checked', true);
     // $('#exacfile').prop('checked', true);
     $('#magmafile').prop('checked', true);
@@ -174,6 +177,7 @@ $(document).ready(function(){
     $('#annotfile').prop('checked', false);
     $('#genefile').prop('checked', false);
     $('#eqtlfile').prop('checked', false);
+	$('#cifile').prop('checked', false);
     // $('#exacfile').prop('checked', false);
     $('#gwascatfile').prop('checked', false);
     $('#magmafile').prop('checked', false);
@@ -747,7 +751,7 @@ function MAGMAtsplot(jobID){
   });
 }
 
-function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
+function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, secol){
   $('#plotClear').hide();
   $('#download').attr('disabled', false);
   if(eqtlMap==0){
@@ -756,6 +760,14 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
     $('#annotPlot_eqtl').prop('checked', false);
     $('#eqtlfiledown').hide();
     $('#eqtlfile').prop('checked',false);
+  }
+
+  if(ciMap==0){
+	  $('#ciTableTab').hide();
+	  $('#check_ci_annotPlot').hide();
+      $('#annotPlot_ci').prop('checked', false);
+	  $('#cifiledown').hide();
+      $('#cifile').prop('checked',false);
   }
 
   $.ajax({
@@ -963,6 +975,65 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, orcol, becol, secol){
       "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
       "iDisplayLength": 10
     });
+  }
+
+  if(ciMap==1){
+	  file = "ci.txt";
+	  var ciTable = $('#ciTable').DataTable({
+        processing: true,
+        serverSide: true,
+        searchDelay: 3000,
+        select: false,
+        ajax:{
+          url: 'DTfileServerSide',
+          type: "POST",
+          data: {
+            jobID: jobID,
+            infile: file,
+            header: "GenomicLocus:region1:region2:FDR:type:DB:tissue/cell:inter/intra:SNPs:genes"
+          }
+        },
+        "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "iDisplayLength": 10
+      });
+
+	  file = "ciSNPs.txt";
+	  var ciSNPsTable = $('#ciSNPsTable').DataTable({
+        processing: true,
+        serverSide: true,
+        searchDelay: 3000,
+        select: false,
+        ajax:{
+          url: 'DTfileServerSide',
+          type: "POST",
+          data: {
+            jobID: jobID,
+            infile: file,
+            header: "uniqID:rsID:chr:pos:reg_region:type:tissue/cell"
+          }
+        },
+        "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "iDisplayLength": 10
+      });
+
+	  file = "ciProm.txt";
+	  var ciGenesTable = $('#ciGenesTable').DataTable({
+        processing: true,
+        serverSide: true,
+        searchDelay: 3000,
+        select: false,
+        ajax:{
+          url: 'DTfileServerSide',
+          type: "POST",
+          data: {
+            jobID: jobID,
+            infile: file,
+            header: "region2:reg_region:type:tissue/cell:genes"
+          }
+        },
+        "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "iDisplayLength": 10
+      });
   }
 
   file = "gwascatalog.txt";
@@ -1599,10 +1670,12 @@ function DownloadFiles(){
   var annotfile = document.getElementById('annotfile').checked;
   var genefile = document.getElementById('genefile').checked;
   var eqtlfile = document.getElementById('eqtlfile').checked;
+  var cifile = document.getElementById('cifile').checked;
   // var exacfile = document.getElementById('exacfile').checked;
   var gwascatfile = document.getElementById('gwascatfile').checked;
   var magmafile = document.getElementById('magmafile').checked;
-  if(paramfile || leadfile || locifile || snpsfile || annovfile || annotfile || genefile || eqtlfile || gwascatfile || magmafile){
+
+  if(paramfile || leadfile || locifile || snpsfile || annovfile || annotfile || genefile || eqtlfile || cifile || gwascatfile || magmafile){
     document.getElementById('download').disabled=false;
   }
 }

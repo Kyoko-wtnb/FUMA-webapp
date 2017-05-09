@@ -51,6 +51,10 @@
     Please make sure your input file has the correct column names.
     Please refer <a href="http://fuma.ctglab.nl/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
   }else if($status==10){
+    echo ' (Error fron chromatin interaction mapping / <span style="color:blue;"><strong>'.$msg.'</strong></span>)<br/>
+    This error might be because one of the uploaded chroamtin interaction files did not follow the correct format.
+    Please refer <a href="http://fuma.ctglab.nl/tutorial#ciMap">Tutorial<a/> for detilas.<br/>';
+  }else if($status==11){
     echo ' (Error during gene mapping)<br/>
     This error can occur because  1. invalid input parameters or 2. columns are mistakenly labeled wrong.
     Please make sure your input file has the correct column names.

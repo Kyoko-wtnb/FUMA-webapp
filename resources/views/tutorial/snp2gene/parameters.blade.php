@@ -213,7 +213,7 @@
       <tr>
         <td>Positional mapping</td>
         <td>Optional</td>
-        <td>Check this if you want to perform positional mapping.
+        <td>Check this option to perform positional mapping.
           Positional mapping is based on ANNOVAR annotations by specifying the maximum distance between SNPs and genes or based on functional consequences of SNPs on genes.
           These parameters can be specified in the option below.
         </td>
@@ -284,7 +284,7 @@
       <tr>
         <td>eQTL mapping</td>
         <td>Optional</td>
-        <td>Check this if you want to perform eQTL mapping.
+        <td>Check this option to perform eQTL mapping.
           eQTL mapping will map SNPs to genes which likely affect expression of thoses genes up to 1 Mb (cis-eQTL).
           eQTLs are highly tissue specific and tissue types can be selected in the following option.
           eQTL mapping can be used together with positional mapping.
@@ -317,14 +317,126 @@
         </td>
         <td>Check / Numeric</td>
         <td>Checked / 1e-3</td>
-        <td><span style="color:red;">higher</span>: increase #eQTLs and #mapped genes.<br/>
-           <span style="color: blue;">lower</span>: decrease #eQTLs and #mapped genes.</td>
+        <td><span style="color: blue;">lower</span>: increase #eQTLs and #mapped genes.<br/>
+           <span style="color: red;">higher</span>: decrease #eQTLs and #mapped genes.</td>
       </tr>
     </tbody>
   </table>
 
-  <h4><strong>3.3 Functional annotation filtering</strong></h4>
-  <p>Both positional and eQTL mappings have the following options separately for the filtering of SNPs based on functional annotation.
+  <h4><strong>3.3 Chromatin interaction mapping</strong></h4>
+  <table class="table table-bordered">
+    <thead>
+  	<tr>
+  	  <th>Parameter</th>
+  	  <th>Mandatory</th>
+  	  <th style="width:40%;">Description</th>
+  	  <th>Type</th>
+  	  <th>Default</th>
+  	  <th style="width:20%;">Direction</th>
+  	</tr>
+    </thead>
+    <tbody>
+  	<tr>
+  	  <td>chromatin interaction mapping</td>
+  	  <td>Optional</td>
+  	  <td>Check this option to perform chromatin interaction mapping.
+  	  </td>
+  	  <td>Check</td>
+  	  <td>Unchecked</td>
+  	  <td>-</td>
+  	</tr>
+  	<tr>
+  	  <td>Buildin chromatin interaction data</td>
+  	  <td>Optional</td>
+  	  <td>Build in chromatin interaction data can be selected in this option.
+		  Details of available build in data are available in the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial.
+  	  </td>
+  	  <td>Multiple selection</td>
+  	  <td>none</td>
+  	  <td>-</td>
+  	</tr>
+	<tr>
+  	  <td>Custom chromatin interaction matrices</td>
+  	  <td>Optional</td>
+  	  <td>In addition to build in chroatin interaction data, user can upload custome data.
+		  The data should be pre-computed chromatin loops with significance (ideally FDR but another score can be used, see the Chromatin interactions section for details).
+		  The file should be gzipped and named as "(name-of-data).txt.gz". Multiple files can be uploaded.
+		  For each data, user can also provide data type, such as Hi-C, ChIA-PET or C5 which is not mandatory but will be used in the result table and regional plot.
+		  The file format is described in the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial.<br/>
+		  <span class="info"><i class="fa fa-info"></i>
+    		  Please avoid uploading more than one file with identical file names. In that case, the files are overwited by the last uploaded one.
+    	  </span>
+  	  </td>
+  	  <td>File upload (multiple)</td>
+  	  <td>none</td>
+  	  <td>-</td>
+  	</tr>
+  	<tr>
+  	  <td>FDR threshold (&le;)</td>
+  	  <td>Mandatory if <code>chromatin iteraction mapping</code> is CHECKED</td>
+  	  <td>FDR threshold for signficant loops.
+		  The default value is set at 1e-6 which is suggested by <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/27851967">Schmitt et al. (2016)</a><br/>
+  		<span class="info"><i class="fa fa-info"></i>
+  		  This threshold will be applied both build in and user uploaded chroamtin loops.
+  		</span>
+  	  </td>
+  	  <td>Numeric</td>
+  	  <td>1e-6</td>
+  	  <td><span style="color: blue;">lower</span>: increase #chromatin interactions and #mapped genes.<br/>
+  		 <span style="color: red;">higher</span>: decrease #chromatin interactions and #mapped genes.</td>
+  	</tr>
+	<tr>
+  	  <td>Promoter region window</td>
+  	  <td>Mandatory if <code>chromatin iteraction mapping</code> is CHECKED</td>
+  	  <td>Promoter regions of genes to map in significantly interacting regions.
+		  The input format should be "(upstream bp)-(donwstream bp)" from transcription start site (TSS).
+		  For example, the default "250-500" means that promoter regions are defined as 250bp upstream and 500bp downstream of the TSS.
+		  By the chromatin interaction mapping, genes whoes user defined promoter regions are overlapped with the singificantly interacting regions will be mapped.
+		  Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial for details.
+  	  </td>
+  	  <td>text</td>
+  	  <td>250-500</td>
+  	  <td><span style="color: blue;">lower</span>: increase #mapped genes.<br/>
+  		 <span style="color: red;">smaller</span>: decrease #mapped genes.</td>
+  	</tr>
+	<tr>
+  	  <td>Annotate enhancer/promoter regions (Roadmap 111 epigenomes)</td>
+  	  <td>Optional</td>
+  	  <td>Predicted enhancer and promoter regions from Roadmap epigenomics project for 111 epigenomes can be annotated to significantly interactin regions.
+		  If any epigenome is not selected, enhancer and promoter regions are not annotated.
+		  Annoated enhancer/promoter regions can be used to filter SNPs and mapped genes in the next two options.
+  	  </td>
+  	  <td>Multiple selection</td>
+  	  <td>none</td>
+  	  <td>-</td>
+  	</tr>
+	<tr>
+  	  <td>Filter SNPs by enhancers</td>
+  	  <td>Optional</td>
+  	  <td>This option is only available when at least one epigenome is selected in the previous option to annotate enhancer/promoter regions.
+		  When this option is checked, SNPs are filtered on such that overlap with one of the annotated enhancer regions for chromatin interaction mapping.
+		  Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial for details.
+  	  </td>
+	  <td>Check</td>
+  	  <td>Unchecked</td>
+  	  <td>-</td>
+  	</tr>
+	<tr>
+  	  <td>Filter genes by promoters</td>
+  	  <td>Optional</td>
+  	  <td>This option is only available when at least one epigenome is selected in the previous option to annotate enhancer/promoter regions.
+		  When this option is checked, chromatin interaction mapping is only performed for genes whoes promoter regions are overlap with one of the annotated promoter regions.
+		  Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial for details.
+  	  </td>
+	  <td>Check</td>
+  	  <td>Unchecked</td>
+  	  <td>-</td>
+  	</tr>
+    </tbody>
+  </table>
+
+  <h4><strong>3.4 Functional annotation filtering</strong></h4>
+  <p>Positional, eQTL and chromatin interaction mappings have the following options separately, for the filtering of SNPs based on functional annotation.
     All filters below apply to selected SNPs in LD with independent significant SNPs that are used to prioritize genes and influence the number of SNPs that are mapped to genes, and consequently influence the number of prioritized genes.
   </p>
   <table class="table table-bordered">

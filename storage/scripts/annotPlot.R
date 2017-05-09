@@ -1,31 +1,22 @@
 library(data.table)
 library(kimisc)
+library(rjson)
 args <- commandArgs(TRUE)
 filedir <- args[1]
-type <- args[2]
-rowI <- as.numeric(args[3])
-rowI <- rowI+1
-GWAS <- as.numeric(args[4])
-CADD <- as.numeric(args[5])
-RDB <- as.numeric(args[6])
-eqtlplot <- as.numeric(args[7])
-Chr15 <- as.numeric(args[8])
-Chr15ts <- args[9]
+chr <- args[2]
+xmin <- as.numeric(args[3])-500000
+xmax <- as.numeric(args[4])+500000
+eqtlgenes <- args[5]
+eqtlgenes = unlist(strsplit(eqtlgenes, ":"))
+
 
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
-snps <- fread(paste(filedir, "annotPlot.txt", sep=""), data.table=F)
-if(eqtlplot==1){
-  eqtl <- fread(paste(filedir, "eqtlplot.txt", sep=""), data.table=F)
-}
-
 load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 
-xmin <- min(snps$pos)-500000
-xmax <- max(snps$pos)+500000
-ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name==snps$chr[1],]
+ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name==chr,]
 g <- ENSG.all.genes$ensembl_gene_id[(ENSG.all.genes$start_position <= xmin & ENSG.all.genes$end_position>=xmax)
   | (ENSG.all.genes$start_position>=xmin & ENSG.all.genes$start_position<=xmax)
   | (ENSG.all.genes$end_position>=xmin & ENSG.all.genes$end_position<=xmax)
@@ -39,9 +30,7 @@ if(length(g)==0){
   g <- c(g, ENSG.all.genes$ensembl_gene_id[which(abs(ENSG.all.genes$start_position-xmax)==start)])
 }
 
-if(eqtlplot==1){
-  g <- unique(c(g, eqtl$gene))
-}
+g <- unique(c(g, eqtlgenes[eqtlgenes %in% ENSG.all.genes$external_gene_name]))
 
 gmin <- min(ENSG.all.genes$start_position[ENSG.all.genes$ensembl_gene_id %in% g])
 gmax <- max(ENSG.all.genes$end_position[ENSG.all.genes$ensembl_gene_id %in% g])
@@ -58,5 +47,17 @@ exons <- getBM(attributes = c("ensembl_gene_id", "external_gene_name", "start_po
 genes <- unique(exons[,1:6])
 genes <- genes[order(genes$start_position),]
 
-write.table(exons, paste(filedir, "exons.txt", sep=""), quote=F, row.names=F, sep="\t")
-write.table(genes, paste(filedir, "genesplot.txt", sep=""), quote=F, row.names=F, sep="\t")
+mappedGenes <- fread(paste(filedir, "genes.txt", sep=""), data.table=F)
+mappedGenes <- mappedGenes$symbol[mappedGenes$ensg %in% genes$ensembl_gene_id]
+
+#write.table(exons, paste(filedir, "exons.txt", sep=""), quote=F, row.names=F, sep="\t")
+#write.table(genes, paste(filedir, "genesplot.txt", sep=""), quote=F, row.names=F, sep="\t")
+
+colnames(genes) <- NULL
+colnames(exons) <- NULL
+genes <- unname(split(genes, 1:nrow(genes)))
+exons <- unname(split(exons, 1:nrow(exons)))
+
+out <- list(genes, exons, mappedGenes)
+names(out) <- c("genes", "exons", "mappedGenes")
+cat(toJSON(out))

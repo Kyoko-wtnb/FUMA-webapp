@@ -166,6 +166,57 @@
   </li>
 </ul>
 <ul>
+	<li><p>Chromatin interaction (Chromaint interactions tab)</p>
+		<p>This file is only available when chromatin interaction mapping is performed.
+		The file contains significant interactions of user defined data or user uploaded data filtered.
+		</p>
+		<ul>
+			<li><strong>GenomicLocus</strong> : Index of genomic loci where the significant interaction is overlapped.</li>
+			<li><strong>region1</strong> : One end of significant interaction which overlap with at least one candidate SNPs in one of the genomic risk loci.</li>
+			<li><strong>region2</strong> : The other end of significant interaction. This region could be located outside the risk loci.</li>
+			<li><strong>FDR</strong> : FDR of interaction.</li>
+			<li><strong>type</strong> : Type of chromatin interaction data, e.g. Hi-C or ChIA-PET</li>
+			<li><strong>DB</strong> : The name of data source.</li>
+			<li><strong>tissue/cell</strong> : Tissue or cell type of the interaction.</li>
+			<li><strong>intra/inter</strong> : Intra- or Inter-chromosomal iteraction.</li>
+			<li><strong>SNPs</strong> : rsID of candidate SNPs which are overlapped with the region 1.</li>
+			<li><strong>genes</strong> : ENSG ID of genes whose promoter regions are overlapped with region 2.</li>
+		</ul>
+	</li>
+</ul>
+<ul>
+	<li><p>SNPs and overlapped regulatory elements in region 1 (Chromatin interaction tab)</p>
+		<p>This file is only available when chromatin interaction mapping is performed.
+		The file contains candidate SNPs which overlap with one end (region 1) of significant chromatin interaction and enhancer regions of user selected epigenomes.
+		If any epigenome was selected, this file is empty.
+		</p>
+		<ul>
+			<li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
+			<li><strong>rsID</strong> : rsID based on dbSNP build 146</li>
+			<li><strong>chr</strong> : chromosome</li>
+			<li><strong>pos</strong> : position on hg19</li>
+			<li><strong>reg_region</strong> : Predicted enhancer or dyadic regions</li>
+			<li><strong>type</strong> : enh for enhancer and dyadic for dyadic enhancer/promoter regions</li>
+			<li><strong>tissue/cell</strong> : EID of 111 Roadmap epigenomes</li>
+		</ul>
+	</li>
+</ul>
+<ul>
+	<li><p>Regulatory elements and genes in region 2 (Chromatin interaction tab)</p>
+		<p>This file is only available when chromatin interaction mapping is performed.
+		The file contains promoter regions of user selected epigenomes (if selected any) and genes whose promoter regions are overlapped.
+		If any epigenome was selected, this file is empty.
+		</p>
+		<ul>
+			<li><strong>region2</strong> : region 2 in the chromatin interaction table</li>
+			<li><strong>reg_region</strong> : Predicted promoter or dyadic regions</li>
+			<li><strong>type</strong> : prom for promoter and dyadic for dyadic enhancer/promoter regions</li>
+			<li><strong>tissue/cell</strong> : EID of 111 Roadmap epigenomes</li>
+			<li><strong>genes</strong> : genes whose promoter regions are overlapped with region2</li>
+		</ul>
+	</li>
+</ul>
+<ul>
   <li><p>GWAScatalog</p>
     <p>List of SNPs reported in GWAScatalog which are candidate SNPs of your GWAS summary statistics. <br/>
       <span class="info"><i class="fa fa-info"></i>

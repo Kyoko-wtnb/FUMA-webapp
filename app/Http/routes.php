@@ -73,6 +73,10 @@ Route::get('snp2gene/legendText/{file}', 'D3jsController@legendText');
 
 Route::post('snp2gene/annotPlot', 'JobController@annotPlot');
 
+Route::post('snp2gene/annotPlot/getData', 'D3jsController@annotPlotGetData');
+
+Route::post('snp2gene/annotPlot/getGenes', 'D3jsController@annotPlotGetGenes');
+
 Route::post('snp2gene/filedown', 'JobController@filedown');
 
 Route::post('snp2gene/geneTable', 'JsController@geneTable');
