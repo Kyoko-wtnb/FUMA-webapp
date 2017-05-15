@@ -209,13 +209,13 @@ $(document).ready(function(){
 	      // d.strand = +d.strand;
 	      d[6] = 1;
 	    });
-		var genexMax = d3.max(genes.genes.filter(function(d){if(genes["mappedGenes"].indexOf(d[1])>=0){return d;}}), function(d){return d[3]});
-		var genexMin = d3.min(genes.genes.filter(function(d){if(genes["mappedGenes"].indexOf(d[1])>=0){return d;}}), function(d){return d[2]});
-		genexMax = Math.max(genexMax, xMax_init);
-		genexMin = Math.min(genexMin, xMin_init);
-		x.domain([genexMin, genexMax]);
+		// var genexMax = d3.max(genes.genes.filter(function(d){if(genes["mappedGenes"].indexOf(d[1])>=0){return d;}}), function(d){return d[3]});
+		// var genexMin = d3.min(genes.genes.filter(function(d){if(genes["mappedGenes"].indexOf(d[1])>=0){return d;}}), function(d){return d[2]});
+		// genexMax = Math.max(genexMax, xMax_init);
+		// genexMin = Math.min(genexMin, xMin_init);
+		// x.domain([genexMin, genexMax]);
 		genes.genes = geneOver(genes.genes, x, width);
-		x.domain([(xMin_init*1-side), (xMax_init*1+side)]);
+		// x.domain([(xMin_init*1-side), (xMax_init*1+side)]);
 
 		// height define
 	    genesHeight = 20*(d3.max(genes.genes, function(d){return d[6];})+1);
@@ -236,8 +236,10 @@ $(document).ready(function(){
 		plotData.ciheight.forEach(function(d){
 			if(d*ci_cellsize+10<30){
 				ciHeight += 30;
-			}else{
+			}else if(d*ci_cellsize+10<150){
 				ciHeight += d*ci_cellsize+10;
+			}else{
+				ciHeight += 150;
 			}
 			ciHeight += 5;
 		});
@@ -1000,8 +1002,11 @@ $(document).ready(function(){
 					var tmp_height = 0;
 					if(max_y*ci_cellsize+10<30){
 						tmp_height = 30;
-					}else{
+					}else if(max_y*ci_cellsize+10<150){
 						tmp_height = max_y*ci_cellsize+10;
+					}else{
+						tmp_height = 150;
+						ci_cellsize = 140/max_y;
 					}
 
 					var y = d3.scale.linear().range([ciTop+5*i+cur_height+tmp_height, ciTop+5*i+cur_height]);
