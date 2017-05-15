@@ -63,7 +63,8 @@
   ?>
 </p>
 <p>
-  Please do not hesitate to contact me if you have any questions/suggestions regarding FUMA.<br/><br/>
+  Please do not hesitate to contact me if you have any questions/suggestions regarding FUMA.<br/>
+  You can also post questions, suggestions and bug reports on Google Forum: <a href="https://groups.google.com/forum/#!forum/fuma-gwas-users">FUMA GWAS users</a><br/><br/>
   Kyoko Watanabe<br/>
   VU University Amsterdam<br/>
   Dept. Complex Trait Genetics<br/>

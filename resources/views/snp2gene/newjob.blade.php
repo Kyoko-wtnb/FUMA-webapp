@@ -1497,7 +1497,7 @@
       <table class="table table-bordered inputTable" id="NewJobMHC" style="width: auto;">
         <tr>
           <td>Exclude MHC region
-            <a class="infoPop" data-toggle="popover" title="Exclude MHC region" data-content="Please cehck to EXCLUDE MHC region.">
+            <a class="infoPop" data-toggle="popover" title="Exclude MHC region" data-content="Please cehck to EXCLUDE MHC region; default MHC region is the genomic region between MOG and COL11A2 genes.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a>
           </td>
@@ -1515,7 +1515,7 @@
         </tr>
         <tr>
           <td>Extended MHC region
-            <a class="infoPop" data-toggle="popover" title="Extended MHC region" data-content="In case you would like to exclude an extended MHC region, please specify here. If this option is not given, the default MHC region (between MOG and COL11A2 genes) will be used.">
+            <a class="infoPop" data-toggle="popover" title="Extended MHC region" data-content="User defined MHC region. When this option is not given, the default MHC region will be used.">
               <i class="fa fa-question-circle-o fa-lg"></i>
             </a><br/>
             <span class="info"><i class="fa fa-info"></i>e.g. 25000000-33000000<br/>
