@@ -488,6 +488,22 @@
                       </tr>
                     </thead>
                   </table>
+				  <br/>
+				  <h4>Circos plots of chromatin interactions and eQTLs</h4>
+				  Download circos plots (all displayed chromosomes) as
+	              <button class="btn btn-xs circosDown" onclick='circosDown("png");'>PNG</button>
+	              <button class="btn btn-xs circosDown" onclick='circosDown("svg");'>SVG</button>
+	              <button class="btn btn-xs circosDown" onclick='circosDown("conf");'>Circos config files</button>
+
+	              <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/circosDown">
+	                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+	                <input type="hidden" name="id" id="circosPlotJobID" val=""/>
+	                <input type="hidden" name="type" id="circosPlotType" val=""/>
+	                <input type="submit" id="circosPlotSubmit" class="ImgDownSubmit"/>
+	              </form>
+
+				  <br/><br/>
+				  <div id="ciMapCircosPlot" style="text-align:center;"></div>
 			  </div>
 
               <div role="tabpanel" class="tab-pane" id="gwascatTablePane">
@@ -747,7 +763,7 @@
           </div>
         </div></div>
       </div>
-    </div>
+      </div>
 
       <!-- Downloads -->
       <div class="sidePanel container" style="padding-top:50px; height: 100vh;" id="downloads">

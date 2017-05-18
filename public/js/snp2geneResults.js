@@ -105,6 +105,7 @@ $(document).ready(function(){
             GWplot(jobid);
             QQplot(jobid);
             MAGMAtsplot(jobid);
+			ciMapCircosPlot(jobid, ciMap);
             showResultTables(filedir, jobid, posMap, eqtlMap, ciMap, orcol, becol, secol);
             $('#GWplotSide').show();
             $('#results').show();
@@ -1396,6 +1397,56 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
   }
 }
 
+function ciMapCircosPlot(jobID, ciMap){
+	if(ciMap==1){
+		var chr = [];
+		$.ajax({
+			url: subdir+"/snp2gene/circos_chr",
+			type: 'POST',
+	        data: {
+	          jobID: jobID
+	        },
+			success: function(data){
+				chr = data.split(":");
+				for(var i=0; i<chr.length; i++){
+					chr[i] = parseInt(chr[i]);
+				}
+				chr.sort(function(a,b){return a-b;});
+			},
+			complete: function(){
+				var images = "";
+				var j = 0;
+				for(var i=0; i<chr.length; i++){
+					j++;
+					if(i==0){
+						images += '<div class="row"><div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/snp2gene/circos_image/'+jobID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/snp2gene/circos_image/'+jobID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div>';
+					}else if(i==chr.length-1){
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/snp2gene/circos_image/'+jobID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/snp2gene/circos_image/'+jobID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div></div>';
+					}else if(j==3){
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/snp2gene/circos_image/'+jobID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/snp2gene/circos_image/'+jobID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div></div>';
+						j=0;
+					}else{
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/snp2gene/circos_image/'+jobID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/snp2gene/circos_image/'+jobID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div>';
+					}
+				}
+				$('#ciMapCircosPlot').html(images);
+			}
+		});
+	}
+}
+
 function PlotSNPAnnot(jobID){
   var file = "snpsannot.txt";
   // filedir = filedir.replace("../", "");
@@ -1687,4 +1738,10 @@ function ImgDown(id, type){
   $('#'+id+'FileName').val(id);
   $('#'+id+'Dir').val("jobs");
   $('#'+id+'Submit').trigger('click');
+}
+
+function circosDown(type){
+	$('#circosPlotJobID').val(jobid);
+	$('#circosPlotType').val(type);
+	$('#circosPlotSubmit').trigger('click');
 }

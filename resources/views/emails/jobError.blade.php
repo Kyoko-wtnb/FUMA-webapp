@@ -59,6 +59,9 @@
     This error can occur because  1. invalid input parameters or 2. columns are mistakenly labeled wrong.
     Please make sure your input file has the correct column names.
     Please refer <a href="http://fuma.ctglab.nl/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
+  }else if($status==12){
+	echo ' (Error from circos / <span style="color:blue;"><strong>'.$msg.'</strong></span>)<br/>
+	This error is most likely due to serverside error. Please contact the developper for details.<br/>';
   }
   ?>
 </p>

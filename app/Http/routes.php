@@ -91,6 +91,12 @@ Route::post('snp2gene/deleteJob', 'JobController@deleteJob');
 
 Route::post('snp2gene/imgdown', 'JobController@imgdown')->middleware('auth');
 
+Route::post('snp2gene/circos_chr', 'JobController@circos_chr');
+
+Route::get('snp2gene/circos_image/{jobID}/{file}', 'JobController@circos_image');
+
+Route::post('snp2gene/circosDown', 'JobController@circosDown')->middleware('auth');
+
 // ********************** GENE2FUNC ************************
 
 Route::get('gene2func', function(){

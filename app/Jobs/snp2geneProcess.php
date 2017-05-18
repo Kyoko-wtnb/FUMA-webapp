@@ -274,6 +274,26 @@ class snp2geneProcess extends Job implements ShouldQueue
         }
       }
 
+	  if($params['ciMap']==1){
+		  file_put_contents($logfile, "\n----- createCircosPlot.py -----\n", FILE_APPEND);
+          file_put_contents($errorfile, "\n----- createCircosPlot.py -----\n", FILE_APPEND);
+		  $script = storage_path().'/scripts/createCircosPlot.py';
+		  exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+		  if($error != 0){
+            $this->rmFiles($filedir);
+            DB::table('SubmitJobs') -> where('jobID', $jobID)
+                              -> update(['status'=>'ERROR:012']);
+            $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+			$errorout = file_get_contents($errorfile);
+	        $errorout = explode("\n", $errorout);
+	        $msg = $errorout[count($errorout)-2];
+            if($email!=null){
+              $this->sendJobCompMail($email, $jobtitle, $jobID, 12, $msg);
+              return;
+            }
+          }
+	  }
+
       $this->rmFiles($filedir);
 
       DB::table('SubmitJobs') -> where('jobID', $jobID)
