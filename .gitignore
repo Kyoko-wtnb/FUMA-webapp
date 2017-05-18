@@ -5,6 +5,7 @@
 Homestead.yaml
 Homestead.json
 .env
+.DS_Store
 /database/jobs.table
 storage/scripts/app.config
 storage/example/
