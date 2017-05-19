@@ -1,5 +1,15 @@
 <div id="GwasList" class="sidePanel container" style="min-height:100vh;">
-    <h3>GWAS list</h3>
+    <h3>Browse Example FUMA Results</h3>
+	<div style="padding:50px;">
+		<p>
+			A few example GWAS results can be browsed without registoratioin/login in this page.
+			Please select one of the listed GWAS below to display results. 
+			Both SNP2GENE and GENE2FUNC results are displayed in the same page, althoug they will be separted when you submit your own jobs.
+			All features, such as interactive plots, downloading results and images are available.
+			However, submission of a new job is disabled. Parameters are also not changeable.
+			Please register/login to submit your own job.
+		</p>
+	</div>
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="panel-title">List of available GWAS <tab></div>
@@ -25,34 +35,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    $(document).ready(function() {
-      // Get Joblist
-      function getGwasList(){
-        $('#GwasList table tbody')
-            .empty()
-            .append('<tr><td colspan="6" style="text-align:center;">Retrieving data</td></tr>');
-
-        $.getJSON( subdir + "/browse/getGwasList", function( data ) {
-            var items = '<tr><td colspan="6" style="text-align: center;">No Available GWAS Found</td></tr>';
-            if(data.length){
-                items = '';
-                $.each( data, function( key, val ) {
-                    val.title = '<a href="'+subdir+'/browse/'+val.gwasID+'">Go to results</a>';
-                    items = items + "<tr><td>"+val.gwasID+"</td><td>"+val.title+"</td><td>"+val.PMID+"</td><td>"+val.year+"</td><td>"
-                      +"</td><td>"+val.created_at+"</td><td>"+val.updated_at+"</td></tr>";
-                });
-            }
-
-            // Put list in table
-            $('#GwasList table tbody')
-                .empty()
-                .append(items);
-        });
-      }
-
-      getGwasList();
-
-    });
-</script>

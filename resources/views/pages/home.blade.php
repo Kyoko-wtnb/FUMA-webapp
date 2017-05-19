@@ -13,11 +13,6 @@
       window.location.href="{{ Config::get('app.subdir') }}/gene2func";
     });
 
-    // function blinker() {
-    //   $('.blinking').fadeOut(500);
-    //   $('.blinking').fadeIn(500);
-    // }
-    // setInterval(blinker, 2000);
   });
 </script>
 @stop
@@ -36,9 +31,12 @@
     The <a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a> function takes a list of geneids (as identified by SNP2GENE or as provided manually)
     and annotates genes in biological context
     <br/>
-    Please log in to use FUMA.
+    To submit your own GWAS, logis is required for security reason.
     If you have't registered yet, you can do from <a href="{{ url('/register') }}">here</a>.
     <br/>
+	You can browse example results of FUMA for a few GWAS from <a href="{{ Config::get('app.subdir') }}/browse">Browse Examples</a> without registoration or login.
+  </p>
+  <p>
     When using FUMA, please cite the following.<br/>
     K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma, <i>FUMA: Functional mapping and annotation of genetic associations.</i> In preparation.
   </p>

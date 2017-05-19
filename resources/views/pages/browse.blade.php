@@ -40,16 +40,16 @@ var loggedin = "{{ Auth::check() }}";
 			<li class="sidebar-brand"><a id="menu-toggle"><tab><i id="main_icon" class="fa fa-chevron-left"></i></a></li>
 		</ul>
 		<ul class="sidebar-nav" id="sidebar">
-			<span style="padding-left:10px;font-size:14px;">Example input page</span>
-			<li class="active"><a href="#newJob">New Job<i class="sub_icon fa fa-upload"></i></a></li>
 			<li><a href="#GwasList">GWAS list<i class="sub_icon fa fa-search"></i></a></li>
+			<span style="padding-left:10px;font-size:14px;"><b>Example input page</b></span>
+			<li class="active"><a href="#newJob">New Job<i class="sub_icon fa fa-upload"></i></a></li>
 			<div id="resultsSide">
-				<span style="padding-left:10px;font-size:14px;">SNP2GENE</span>
+				<span style="padding-left:10px;font-size:14px;"><b>SNP2GENE</b></span>
 				<li><a href="#genomePlots">Genome-wide plots<i class="sub_icon fa fa-bar-chart"></i></a></li>
 				<li><a href="#summaryTable">Summary of results<i class="sub_icon fa fa-bar-chart"></i></a></li>
 				<li><a href="#tables">Results<i class="sub_icon fa fa-table"></i></a></li>
 				<li><a href="#downloads">Download<i class="sub_icon fa fa-download"></i></a></li>
-				<span style="padding-left:10px;font-size:14px;">GENE2FUNC</span>
+				<span style="padding-left:10px;font-size:14px;"><b>GENE2FUNC</b></span>
 				<li><a href="#expPanel">Heatmap<i class="sub_icon fa fa-th"></i></a></li>
 		        <li><a href="#tsEnrichBarPanel">Tissue specificity<i class="sub_icon fa fa-bar-chart"></i></a></li>
 		        <li><a href="#GeneSetPanel">Gene sets<i class="sub_icon fa fa-bar-chart"></i></a></li>
@@ -62,8 +62,8 @@ var loggedin = "{{ Auth::check() }}";
 
 	<div id="page-content-wrapper">
 		<div class="page-content inset">
-			@include('browse.newjob')
 			@include('browse.gwaslist')
+			@include('browse.newjob')
 
 			<!-- SNP2GENE result page -->
 			<!-- genome wide plots -->

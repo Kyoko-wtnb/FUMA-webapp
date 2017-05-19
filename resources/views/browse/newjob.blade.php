@@ -1,5 +1,8 @@
 <div id="newJob" class="sidePanel container" style="padding-top:50px;">
-  <h4 style="color: #00004d">This is an example page of SNP2GENE job submission. Please register to submit your own job.</h4>
+  <h4 style="color: #00004d">This is an example page of SNP2GENE job submission.
+	  All input options are disabled in this page. 
+	  Please register to submit your own job.
+  </h4>
   <br/>
   <!-- Input files upload -->
   <div class="panel panel-danger" style="padding-top: 0px;">

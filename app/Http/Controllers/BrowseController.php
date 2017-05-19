@@ -18,7 +18,7 @@ use JavaScript;
 class BrowseController extends Controller
 {
     public function getGwasList(){
-		$results = DB::table('BrowseGwas');
+		$results = DB::table('BrowseGwas')->get();
 		return response()->json($results);
 	}
 

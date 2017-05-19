@@ -7,12 +7,15 @@ $(document).ready(function(){
 	// side bar and hash id
 	var hashid = window.location.hash;
     if(hashid=="" && gwasID.length==0){
-      $('a[href="#newJob"]').trigger('click');
+      $('a[href="#GwasList"]').trigger('click');
     }else if(hashid==""){
       $('a[href="#genomePlots"]').trigger('click');
     }else{
       $('a[href="'+hashid+'"]').trigger('click');
     }
+
+	// get list of gwas
+	getGwasList();
 
 	// hide side and panels
 	$('#resultsSide').hide();
@@ -123,6 +126,30 @@ $(document).ready(function(){
       $('#download').attr('disabled',true);
     });
 });
+
+function getGwasList(){
+  $('#GwasList table tbody')
+	  .empty()
+	  .append('<tr><td colspan="6" style="text-align:center;">Retrieving data</td></tr>');
+
+  $.getJSON( subdir + "/browse/getGwasList", function( data ) {
+	  var items = '<tr><td colspan="6" style="text-align: center;">No Available GWAS Found</td></tr>';
+	  if(data.length){
+		  items = '';
+		  $.each( data, function( key, val ) {
+			  val.title = '<a href="'+subdir+'/browse/'+val.gwasID+'">'+val.title+'</a>';
+			  items = items + "<tr><td>"+val.gwasID+"</td><td>"+val.title+"</td><td>"+val.PMID+"</td><td>"+val.year
+				+"</td><td>"+val.created_at+"</td><td>"+val.updated_at+"</td></tr>";
+		  });
+	  }
+
+	  // Put list in table
+	  $('#GwasList table tbody')
+		  .empty()
+		  .append(items);
+  });
+}
+
 function GWplot(gwasID){
   var chromSize = [249250621, 243199373, 198022430, 191154276, 180915260, 171115067,
     159138663, 146364022, 141213431, 135534747, 135006516, 133851895, 115169878, 107349540,
