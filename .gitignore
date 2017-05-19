@@ -2,6 +2,7 @@
 /node_modules
 /storage/jobs/
 /storage/data/
+/storage/gwas/
 Homestead.yaml
 Homestead.json
 .env
