@@ -14,7 +14,6 @@ use Auth;
 use Storage;
 use File;
 use JavaScript;
-// use Zipper;
 use Mail;
 use IPGAP\User;
 use IPGAP\Jobs\snp2geneProcess;
@@ -589,10 +588,11 @@ class JobController extends Controller
     }
 
     public function annotPlot(Request $request){
-      $jobID = $request -> input('jobID');
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      $type = $request->input('annotPlotSelect');
-      $rowI = $request->input('annotPlotRow');
+      $id = $request->input('id');
+	  $prefix = $request->input('prefix');
+      $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
+      $type = $request -> input('annotPlotSelect');
+      $rowI = $request -> input('annotPlotRow');
 
       $GWAS=0;
       $CADD=0;
@@ -619,14 +619,15 @@ class JobController extends Controller
       if($request -> has('annotPlot_eqtl')){$eqtl=1;}
 	  if($request -> has('annotPlot_ci')){$ci=1;}
 
-      return view('pages.annotPlot', ['jobID'=>$jobID, 'type'=>$type, 'rowI'=>$rowI,
+      return view('pages.annotPlot', ['id'=>$id, 'prefix'=>$prefix, 'type'=>$type, 'rowI'=>$rowI,
 	  	'GWASplot'=>$GWAS, 'CADDplot'=>$CADD, 'RDBplot'=>$RDB, 'eqtlplot'=>$eqtl,
 		'ciplot'=>$ci, 'Chr15'=>$Chr15, 'Chr15cells'=>$Chr15cells]);
     }
 
     public function filedown(Request $request){
-      $jobID = $request -> input('jobID');
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      $id = $request->input('id');
+	  $prefix = $request->input('prefix');
+      $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
       // $zip = new ZipArchive();
       $files = array();
       if($request -> has('paramfile')){ $files[] = "params.config";}
@@ -667,7 +668,11 @@ class JobController extends Controller
       }
 
       $zip = new \ZipArchive();
-      $zipfile = $filedir."FUMA_job".$jobID.".zip";
+	  if($prefix=="gwas"){
+		  $zipfile = $filedir."FUMA_gwas".$id.".zip";
+	  }else{
+		  $zipfile = $filedir."FUMA_job".$id.".zip";
+	  }
 
       if(File::exists($zipfile)){
         File::delete($zipfile);
@@ -911,16 +916,20 @@ class JobController extends Controller
 
     public function imgdown(Request $request){
       $svg = $request->input('data');
-      $dir = $request->input('dir');
-      $jobID = $request -> input('id');
+      $prefix= $request->input('dir');
+      $id = $request -> input('id');
       $type = $request->input('type');
       $fileName = $request->input('fileName');
-      $svgfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/temp.svg';
-      $outfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/';
+      $svgfile = config('app.jobdir').'/'.$prefix.'/'.$id.'/temp.svg';
+      $outfile = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
       $svg = preg_replace("/\),rotate/", ")rotate", $svg);
       $svg = preg_replace("/,skewX\(.+?\),scale\(.+?\)/", "", $svg);
-      $fileName .= "_FUMAjob".$jobID;
+	  if($prefix=="gwas"){
+      	  $fileName .= "_FUMAgwas".$id;
+	  }else{
+	      $fileName .= "_FUMAjob".$id;
+	  }
       if($type=="svg"){
         file_put_contents($svgfile, $svg);
         $outfile .= $fileName.'.svg';

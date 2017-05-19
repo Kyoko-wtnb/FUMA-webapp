@@ -89,7 +89,7 @@
           <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="dir" id="manhattanDir" val=""/>
-            <input type="hidden" name="id" id="manhattanJobID" val=""/>
+            <input type="hidden" name="id" id="manhattanID" val=""/>
             <input type="hidden" name="data" id="manhattanData" val=""/>
             <input type="hidden" name="type" id="manhattanType" val=""/>
             <input type="hidden" name="fileName" id="manhattanFileName" val=""/>
@@ -114,7 +114,7 @@
           <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="dir" id="geneManhattanDir" val=""/>
-            <input type="hidden" name="id" id="geneManhattanJobID" val=""/>
+            <input type="hidden" name="id" id="geneManhattanID" val=""/>
             <input type="hidden" name="data" id="geneManhattanData" val=""/>
             <input type="hidden" name="type" id="geneManhattanType" val=""/>
             <input type="hidden" name="fileName" id="geneManhattanFileName" val=""/>
@@ -145,7 +145,7 @@
                 <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
                   <input type="hidden" name="_token" value="{{ csrf_token() }}">
                   <input type="hidden" name="dir" id="QQplotDir" val=""/>
-                  <input type="hidden" name="id" id="QQplotJobID" val=""/>
+                  <input type="hidden" name="id" id="QQplotID" val=""/>
                   <input type="hidden" name="data" id="QQplotData" val=""/>
                   <input type="hidden" name="type" id="QQplotType" val=""/>
                   <input type="hidden" name="fileName" id="QQplotFileName" val=""/>
@@ -170,7 +170,7 @@
                 <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
                   <input type="hidden" name="_token" value="{{ csrf_token() }}">
                   <input type="hidden" name="dir" id="geneQQplotDir" val=""/>
-                  <input type="hidden" name="id" id="geneQQplotJobID" val=""/>
+                  <input type="hidden" name="id" id="geneQQplotID" val=""/>
                   <input type="hidden" name="data" id="geneQQplotData" val=""/>
                   <input type="hidden" name="type" id="geneQQplotType" val=""/>
                   <input type="hidden" name="fileName" id="geneQQplotFileName" val=""/>
@@ -214,7 +214,7 @@
             <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
               <input type="hidden" name="_token" value="{{ csrf_token() }}">
               <input type="hidden" name="dir" id="magma_exp_generalDir" val=""/>
-              <input type="hidden" name="id" id="magma_exp_generalJobID" val=""/>
+              <input type="hidden" name="id" id="magma_exp_generalID" val=""/>
               <input type="hidden" name="data" id="magma_exp_generalData" val=""/>
               <input type="hidden" name="type" id="magma_exp_generalType" val=""/>
               <input type="hidden" name="fileName" id="magma_exp_generalFileName" val=""/>
@@ -240,7 +240,7 @@
             <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
               <input type="hidden" name="_token" value="{{ csrf_token() }}">
               <input type="hidden" name="dir" id="magma_expDir" val=""/>
-              <input type="hidden" name="id" id="magma_expJobID" val=""/>
+              <input type="hidden" name="id" id="magma_expID" val=""/>
               <input type="hidden" name="data" id="magma_expData" val=""/>
               <input type="hidden" name="type" id="magma_expType" val=""/>
               <input type="hidden" name="fileName" id="magma_expFileName" val=""/>
@@ -302,7 +302,7 @@
             <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
               <input type="hidden" name="_token" value="{{ csrf_token() }}">
               <input type="hidden" name="dir" id="snpAnnotPlotDir" val=""/>
-              <input type="hidden" name="id" id="snpAnnotPlotJobID" val=""/>
+              <input type="hidden" name="id" id="snpAnnotPlotID" val=""/>
               <input type="hidden" name="data" id="snpAnnotPlotData" val=""/>
               <input type="hidden" name="type" id="snpAnnotPlotType" val=""/>
               <input type="hidden" name="fileName" id="snpAnnotPlotFileName" val=""/>
@@ -328,7 +328,7 @@
           <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <input type="hidden" name="dir" id="lociPlotDir" val=""/>
-            <input type="hidden" name="id" id="lociPlotJobID" val=""/>
+            <input type="hidden" name="id" id="lociPlotID" val=""/>
             <input type="hidden" name="data" id="lociPlotData" val=""/>
             <input type="hidden" name="type" id="lociPlotType" val=""/>
             <input type="hidden" name="fileName" id="lociPlotFileName" val=""/>
@@ -562,7 +562,8 @@
               <form action="annotPlot" method="post" target="_blank">
                 <!-- Select region to plot: <span style="color:red">Mandatory</span><br/> -->
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
+                <input type="hidden" name="id" value="<?php echo $jobID;?>"/>
+				<input type="hidden" name="prefix" value="jobs"/>
                 <input type="hidden" name="annotPlotSelect" id="annotPlotSelect" value="null"/>
                 <input type="hidden" name="annotPlotRow" id="annotPlotRow" value="null"/>
                 Select annotation(s) to plot:<br/>
@@ -754,8 +755,8 @@
         <h4 style="color: #00004d">Download files</h4>
         <form action="filedown" method="post" target="_blank">
           <input type="hidden" name="_token" value="{{ csrf_token() }}">
-          <input type="hidden" name="jobID" value="<?php echo $jobID;?>"/>
-          <!-- <input type="checkbox" name="allfiles" id="allfiles" checked onchange="DownloadFiles();">All files</br> -->
+          <input type="hidden" name="id" value="<?php echo $jobID;?>"/>
+		  <input type="hidden" name="prefix" value="jobs"/>
           <input type="checkbox" name="paramfile" id="paramfile" checked onchange="DownloadFiles();">Parameter settings</br>
           <input type="checkbox" name="locifile" id="locifile" checked onchange="DownloadFiles();">Genomic risk loci table <br/>
           <input type="checkbox" name="leadfile" id="leadfile" checked onchange="DownloadFiles();">lead SNP table (independent lead SNPs at r2 0.1) </br>

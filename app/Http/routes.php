@@ -30,98 +30,152 @@ Route::get('updates', function(){
 // Set up the auth routes
 Route::auth();
 
-// ********************** SNP2GENE ************************
+// ********************** Browse ************************
 
-Route::get('snp2gene', function(){
-  $jobID = null;
-  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]);
-})->middleware('auth');
+Route::get('browse', function(){
+	$gwasID = null;
+	return view('pages.browse', ['gwasID' => $gwasID]);
+});
 
-Route::get('snp2gene/getJobList/{email?}/{limit?}', 'JobController@getJobList');
+Route::get('browse/getGwasList', 'BrowseController@getGwasList');
 
-Route::post('snp2gene/newJob', 'JobController@newJob');
+Route::post('browse/getParams', 'BrowseController@getParams');
 
-Route::get('snp2gene/checkJobStatus/{jobid}', 'JobController@checkJobStatus');
+Route::get('browse/manhattan/{type}/{id}/{file}', 'BrowseController@manhattan');
 
-Route::post('snp2gene/getParams', 'JobController@getParams');
+Route::get('browse/QQplot/{type}/{id}/{plot}', 'BrowseController@QQplot');
 
-Route::post('snp2gene/Error5', 'JobController@Error5');
+Route::get('browse/MAGMAtsplot/{type}/{prefix}/{id}', 'BrowseController@MAGMAtsplot');
 
-Route::post('snp2gene/CandidateSelection', 'JobController@CandidateSelection');
+Route::post('browse/DTfile', 'BrowseController@DTfile');
 
-Route::post('snp2gene/DTfile', 'JsController@DTfile');
+Route::post('browse/paramTable', 'BrowseController@paramTable');
 
-Route::post('snp2gene/DTfileServerSide', 'JsController@DTfileServerSide');
+Route::post('browse/sumTable', 'BrowseController@sumTable');
 
-Route::post('snp2gene/jobInfo', 'JsController@jobInfo');
+Route::post('browse/DTfileServerSide', 'BrowseController@DTfileServerSide');
 
-Route::get('snp2gene/manhattan/{type}/{jobID}/{file}', 'D3jsController@manhattan');
+Route::get('browse/d3text/{prefix}/{id}/{file}', 'BrowseController@d3js_textfile');
 
-Route::get('snp2gene/QQplot/{type}/{jobID}/{plot}', 'D3jsController@QQplot');
+Route::post('browse/locusPlot', "BrowseController@locusPlot");
 
-Route::get('snp2gene/MAGMAtsplot/{type}/{jobID}', 'D3jsController@MAGMAtsplot');
+Route::post('browse/filedown', 'BrowseController@filedown');
 
-Route::post('snp2gene/paramTable', 'JsController@paramTable');
+Route::post('browse/g2fFileDown', 'BrowseController@g2fFileDown');
 
-Route::post('snp2gene/sumTable', 'JsController@sumTable');
+Route::post('browse/imgdown', 'BrowseController@imgdown');
 
-Route::post('snp2gene/locusPlot', "D3jsController@locusPlot");
+Route::post('browse/annotPlot', 'BrowseController@annotPlot');
 
-Route::get('snp2gene/d3text/{jobID}/{file}', 'D3jsController@d3js_textfile');
+Route::post('browse/annotPlot/getData', 'BrowseController@annotPlotGetData');
 
-Route::get('snp2gene/legendText/{file}', 'D3jsController@legendText');
+Route::post('browse/annotPlot/getGenes', 'BrowseController@annotPlotGetGenes');
 
-Route::post('snp2gene/annotPlot', 'JobController@annotPlot');
+Route::get('browse/legendText/{file}', 'BrowseController@legendText');
 
-Route::post('snp2gene/annotPlot/getData', 'D3jsController@annotPlotGetData');
+Route::get('browse/DEGPlot/{type}/{jobID}', 'BrowseController@DEGPlot');
 
-Route::post('snp2gene/annotPlot/getGenes', 'D3jsController@annotPlotGetGenes');
+Route::post('browse/geneTable', 'BrowseController@geneTable');
 
-Route::post('snp2gene/filedown', 'JobController@filedown');
+Route::get('browse/{gwasID}', function($gwasID){
+	return view('pages.browse', ['gwasID' => $gwasID]);
+});
 
-Route::post('snp2gene/geneTable', 'JsController@geneTable');
+// ********************** Middleware auth group************************
+Route::group(['middleware'=>'auth'], function(){
+	// ********************** SNP2GENE ************************
+	Route::get('snp2gene', function(){
+	  $jobID = null;
+	  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]);
+	});
 
-Route::get('snp2gene/getPrioGenes/{jobID}', 'D3jsController@getPrioGenes');
+	Route::get('snp2gene/getJobList/{email?}/{limit?}', 'JobController@getJobList');
 
-Route::get('snp2gene/{jobID}', function($jobID){
-  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
-})->middleware('auth');
+	Route::post('snp2gene/newJob', 'JobController@newJob');
 
-Route::post('snp2gene/deleteJob', 'JobController@deleteJob');
+	Route::get('snp2gene/checkJobStatus/{jobid}', 'JobController@checkJobStatus');
 
-Route::post('snp2gene/imgdown', 'JobController@imgdown')->middleware('auth');
+	Route::post('snp2gene/getParams', 'JobController@getParams');
 
-// ********************** GENE2FUNC ************************
+	Route::post('snp2gene/Error5', 'JobController@Error5');
 
-Route::get('gene2func', function(){
-  return view('pages.gene2func', ['status'=>'new', 'id'=>'none']);
-})->middleware('auth');
+	Route::post('snp2gene/CandidateSelection', 'JobController@CandidateSelection');
 
-Route::get('gene2func/getG2FJobList', 'JobController@getG2FJobList');
+	Route::post('snp2gene/DTfile', 'JsController@DTfile');
 
-Route::post('gene2func/submit', 'JobController@gene2funcSubmit')->middleware('auth');
+	Route::post('snp2gene/DTfileServerSide', 'JsController@DTfileServerSide');
 
-Route::post('gene2func/geneQuery', 'JobController@geneQuery');
+	Route::post('snp2gene/jobInfo', 'JsController@jobInfo');
 
-Route::post('gene2func/geneSubmit', 'JobController@snp2geneGeneQuery')->middleware('auth');
+	Route::get('snp2gene/manhattan/{prefix}/{id}/{file}', 'D3jsController@manhattan');
 
-Route::post('gene2func/fileDown', 'JobController@gene2funcFileDown');
+	Route::get('snp2gene/QQplot/{prefix}/{id}/{plot}', 'D3jsController@QQplot');
 
-Route::post('gene2func/geneTable', 'JsController@geneTable');
+	Route::get('snp2gene/MAGMAtsplot/{type}/{prefix}/{id}', 'D3jsController@MAGMAtsplot');
 
-Route::get('gene2func/d3text/{jobID}/{file}', 'G2FController@d3js_textfile');
+	Route::post('snp2gene/paramTable', 'JsController@paramTable');
 
-Route::get('gene2func/DEGPlot/{type}/{jobID}', 'G2FController@DEGPlot');
+	Route::post('snp2gene/sumTable', 'JsController@sumTable');
 
-Route::get('gene2func/ExpTsPlot/{type}/{jobID}', 'G2FController@ExpTsPlot');
+	Route::post('snp2gene/locusPlot', "D3jsController@locusPlot");
 
-Route::get('gene2func/{jobID}', function($jobID){
-  return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID]);
-})->middleware('auth');
+	Route::get('snp2gene/d3text/{prefix}/{id}/{file}', 'D3jsController@d3js_textfile');
 
-Route::post('gene2func/deleteJob', 'JobController@G2FdeleteJob');
+	Route::get('snp2gene/legendText/{file}', 'D3jsController@legendText');
 
-Route::post('gene2func/imgdown', 'JobController@imgdown')->middleware('auth');
+	Route::post('snp2gene/annotPlot', 'JobController@annotPlot');
+
+	Route::post('snp2gene/annotPlot/getData', 'D3jsController@annotPlotGetData');
+
+	Route::post('snp2gene/annotPlot/getGenes', 'D3jsController@annotPlotGetGenes');
+
+	Route::post('snp2gene/filedown', 'JobController@filedown');
+
+	Route::post('snp2gene/geneTable', 'JsController@geneTable');
+
+	Route::get('snp2gene/getPrioGenes/{jobID}', 'D3jsController@getPrioGenes');
+
+	Route::post('snp2gene/deleteJob', 'JobController@deleteJob');
+
+	Route::post('snp2gene/imgdown', 'JobController@imgdown');
+
+	Route::get('snp2gene/{jobID}', function($jobID){
+	  return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
+	});
+
+	// ********************** GENE2FUNC ************************
+	Route::get('gene2func', function(){
+	  return view('pages.gene2func', ['status'=>'new', 'id'=>'none']);
+	});
+
+	Route::get('gene2func/getG2FJobList', 'JobController@getG2FJobList');
+
+	Route::post('gene2func/submit', 'JobController@gene2funcSubmit');
+
+	Route::post('gene2func/geneQuery', 'JobController@geneQuery');
+
+	Route::post('gene2func/geneSubmit', 'JobController@snp2geneGeneQuery');
+
+	Route::post('gene2func/fileDown', 'JobController@gene2funcFileDown');
+
+	Route::post('gene2func/geneTable', 'JsController@geneTable');
+
+	Route::get('gene2func/d3text/{jobID}/{file}', 'G2FController@d3js_textfile');
+
+	Route::get('gene2func/DEGPlot/{type}/{jobID}', 'G2FController@DEGPlot');
+
+	Route::get('gene2func/ExpTsPlot/{type}/{jobID}', 'G2FController@ExpTsPlot');
+
+	Route::get('gene2func/{jobID}', function($jobID){
+	  return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID]);
+	});
+
+	Route::post('gene2func/deleteJob', 'JobController@G2FdeleteJob');
+
+	Route::post('gene2func/imgdown', 'JobController@imgdown');
+
+});
+
 
 // ********************** JobReport ************************
 Route::get('JobReport/usersPlot', 'D3jsController@usersPlot');

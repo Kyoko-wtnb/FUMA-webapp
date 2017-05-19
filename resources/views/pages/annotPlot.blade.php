@@ -14,29 +14,30 @@
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 
 <script type="text/javascript">
-  $.ajaxSetup({
-    headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
-  });
-  var jobID = "{{$jobID}}";
-  var type = "{{$type}}";
-  var rowI = parseInt("{{$rowI}}");
-  var GWASplot = parseInt("{{$GWASplot}}");
-  var CADDplot = parseInt("{{$CADDplot}}");
-  var RDBplot = parseInt("{{$RDBplot}}");
-  var eqtlplot = parseInt("{{$eqtlplot}}");
-  var ciplot = parseInt("{{$ciplot}}");
-  var Chr15 = parseInt("{{$Chr15}}");
-  var Chr15cells = "{{$Chr15cells}}";
-  var plotData;
-  var genes;
-  var chrom;
-  var xMin;
-  var xMax;
-  var xMin_init;
-  var xMax_init;
-  var eqtlgenes;
-  var loggedin = "{{ Auth::check() }}";
-  // console.log(testdata["min"])
+$.ajaxSetup({
+	headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
+});
+var id = "{{$id}}";
+var prefix = "{{$prefix}}";
+var type = "{{$type}}";
+var rowI = parseInt("{{$rowI}}");
+var GWASplot = parseInt("{{$GWASplot}}");
+var CADDplot = parseInt("{{$CADDplot}}");
+var RDBplot = parseInt("{{$RDBplot}}");
+var eqtlplot = parseInt("{{$eqtlplot}}");
+var ciplot = parseInt("{{$ciplot}}");
+var Chr15 = parseInt("{{$Chr15}}");
+var Chr15cells = "{{$Chr15cells}}";
+var plotData;
+var genes;
+var chrom;
+var xMin;
+var xMax;
+var xMin_init;
+var xMax_init;
+var eqtlgenes;
+var loggedin = "{{ Auth::check() }}";
+
 $(document).ready(function(){
   $('.ImgDownSubmit').hide();
 
@@ -44,7 +45,8 @@ $(document).ready(function(){
 	  url: 'annotPlot/getData',
 	  type: 'POST',
 	  data:{
-		  jobID: jobID,
+		  id: id,
+		  prefix: prefix,
 		  type: type,
 		  rowI: rowI,
 		  GWASplot: GWASplot,
@@ -72,7 +74,8 @@ $(document).ready(function(){
 			  url: 'annotPlot/getGenes',
 			  type: 'POST',
 			  data:{
-				  jobID: jobID,
+				  id: id,
+				  prefix: prefix,
 				  chrom: chrom,
 				  xMin: xMin,
 				  xMax: xMax,
@@ -171,12 +174,7 @@ $(document).ready(function(){
 	                          "#C58DAA", "#999999", "#999999", "#999999", "#999999", "#999999", "#999999", "#999999", "#999999",
 	                          "#999999", "#999999", "#999999", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000",
 	                          "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000",
-	                          "#000000"]
-	    //  var Chr15EidTs = {};
-	    //  for(i=0; i<Chr15eid.length; i++){
-	    //    Chr15EidTs[Chr15eid[i]] = Chr15ts[i];
-	    //  }
-
+	                          "#000000"];
 
 	    var eqtlcols = ['rgb(0,10,255)', 'rgb(0,38,255)', 'rgb(0,67,255)', 'rgb(0,96,255)', 'rgb(0,125,255)', 'rgb(0,154,255)', 'rgb(0,183,255)',
 	                'rgb(0,212,255)', 'rgb(0,241,255)', 'rgb(0,255,10)', 'rgb(0,255,38)', 'rgb(0,255,67)', 'rgb(0,255,96)', 'rgb(0,255,125)',
@@ -209,13 +207,7 @@ $(document).ready(function(){
 	      // d.strand = +d.strand;
 	      d[6] = 1;
 	    });
-		// var genexMax = d3.max(genes.genes.filter(function(d){if(genes["mappedGenes"].indexOf(d[1])>=0){return d;}}), function(d){return d[3]});
-		// var genexMin = d3.min(genes.genes.filter(function(d){if(genes["mappedGenes"].indexOf(d[1])>=0){return d;}}), function(d){return d[2]});
-		// genexMax = Math.max(genexMax, xMax_init);
-		// genexMin = Math.min(genexMin, xMin_init);
-		// x.domain([genexMin, genexMax]);
 		genes.genes = geneOver(genes.genes, x, width);
-		// x.domain([(xMin_init*1-side), (xMax_init*1+side)]);
 
 		// height define
 	    genesHeight = 20*(d3.max(genes.genes, function(d){return d[6];})+1);
@@ -1633,13 +1625,13 @@ function EIDlegend(cells){
   });
 }
 
-function ImgDown(id, type){
-  $('#'+id+'Data').val($('#'+id).html());
-  $('#'+id+'Type').val(type);
-  $('#'+id+'JobID').val(jobID);
-  $('#'+id+'FileName').val(id);
-  $('#'+id+'Dir').val("jobs");
-  $('#'+id+'Submit').trigger('click');
+function ImgDown(name, type){
+  $('#'+name+'Data').val($('#'+name).html());
+  $('#'+name+'Type').val(type);
+  $('#'+name+'ID').val(id);
+  $('#'+name+'FileName').val(name);
+  $('#'+name+'Dir').val(prefix);
+  $('#'+name+'Submit').trigger('click');
 }
 
 </script>
@@ -1664,10 +1656,10 @@ function ImgDown(id, type){
 	    <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","svg");'>SVG</button>
 	    <button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","pdf");'>PDF</button>
 
-	    <form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
+	    <form method="post" target="_blank" action="imgdown">
 	      <input type="hidden" name="_token" value="{{ csrf_token() }}">
 	      <input type="hidden" name="dir" id="annotPlotDir" val=""/>
-	      <input type="hidden" name="id" id="annotPlotJobID" val=""/>
+	      <input type="hidden" name="id" id="annotPlotID" val=""/>
 	      <input type="hidden" name="data" id="annotPlotData" val=""/>
 	      <input type="hidden" name="type" id="annotPlotType" val=""/>
 	      <input type="hidden" name="fileName" id="annotPlotFileName" val=""/>
