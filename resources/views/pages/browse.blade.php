@@ -465,6 +465,23 @@ var loggedin = "{{ Auth::check() }}";
 										</tr>
 									</thead>
 								</table>
+								<br/>
+								<h4>Circos plots of chromatin interactions and eQTLs</h4>
+								Download circos plots (all displayed chromosomes) as
+								<button class="btn btn-xs circosDown" onclick='circosDown("png");'>PNG</button>
+								<button class="btn btn-xs circosDown" onclick='circosDown("svg");'>SVG</button>
+								<button class="btn btn-xs circosDown" onclick='circosDown("conf");'>Circos config files</button>
+
+								<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/browse/circosDown">
+									<input type="hidden" name="_token" value="{{ csrf_token() }}">
+									<input type="hidden" name="id" id="circosPlotID" val=""/>
+									<input type="hidden" name="prefix" id="circosPlotDir" val=""/>
+									<input type="hidden" name="type" id="circosPlotType" val=""/>
+									<input type="submit" id="circosPlotSubmit" class="ImgDownSubmit"/>
+								</form>
+
+								<br/><br/>
+								<div id="ciMapCircosPlot" style="text-align:center;"></div>
 							</div>
 
 							<div role="tabpanel" class="tab-pane" id="gwascatTablePane">

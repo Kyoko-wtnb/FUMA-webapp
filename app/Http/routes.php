@@ -59,6 +59,12 @@ Route::get('browse/d3text/{prefix}/{id}/{file}', 'BrowseController@d3js_textfile
 
 Route::post('browse/locusPlot', "BrowseController@locusPlot");
 
+Route::post('browse/circos_chr', 'BrowseController@circos_chr');
+
+Route::get('browse/circos_image/{prefix}/{id}/{file}', 'BrowseController@circos_image');
+
+Route::post('browse/circosDown', 'BrowseController@circosDown');
+
 Route::post('browse/filedown', 'BrowseController@filedown');
 
 Route::post('browse/g2fFileDown', 'BrowseController@g2fFileDown');
@@ -137,7 +143,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::get('snp2gene/circos_image/{prefix}/{id}/{file}', 'JobController@circos_image');
 
-	Route::post('snp2gene/circosDown', 'JobController@circosDown')->middleware('auth');
+	Route::post('snp2gene/circosDown', 'JobController@circosDown');
 
 	Route::post('snp2gene/deleteJob', 'JobController@deleteJob');
 

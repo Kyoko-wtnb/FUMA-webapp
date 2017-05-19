@@ -109,8 +109,9 @@ class JobController extends Controller
     }
 
 	public function circos_chr(Request $request){
-		$jobID = $request->input("jobID");
-		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/circos/';
+		$id = $request->input("id");
+		$prefix = $request->input("prefix");
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
 		$files = File::glob($filedir."circos_chr*.png");
 		for($i=0; $i<count($files); $i++){
 			$files[$i] = preg_replace('/.+\/circos_chr(\d+)\.png/', '$1', $files[$i]);
@@ -128,11 +129,16 @@ class JobController extends Controller
 	}
 
 	public function circosDown(Request $request){
-		$jobID = $request->input('id');
-		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/circos/';
+		$id = $request->input('id');
+		$prefix = $request->input('prefix');
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
 		$type = $request->input('type');
 		$zip = new \ZipArchive();
-        $zipfile = $filedir."FUMA_job".$jobID."_circos_".$type.".zip";
+		if($prefix=="gwas"){
+			$zipfile = $filedir."FUMA_gwas".$id."_circos_".$type.".zip";
+		}else{
+			$zipfile = $filedir."FUMA_job".$id."_circos_".$type.".zip";
+		}
 
 		$files = File::glob($filedir."*.".$type);
 		for($i=0; $i<count($files); $i++){

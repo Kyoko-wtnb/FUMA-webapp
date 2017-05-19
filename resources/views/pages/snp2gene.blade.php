@@ -498,6 +498,7 @@
 					<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/circosDown">
 						<input type="hidden" name="_token" value="{{ csrf_token() }}">
 						<input type="hidden" name="id" id="circosPlotID" val=""/>
+						<input type="hidden" name="prefix" id="circosPlotDir" val=""/>
 						<input type="hidden" name="type" id="circosPlotType" val=""/>
 						<input type="submit" id="circosPlotSubmit" class="ImgDownSubmit"/>
 					</form>

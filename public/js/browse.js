@@ -77,6 +77,7 @@ $(document).ready(function(){
 			  GWplot(gwasID);
 	  	  	  QQplot(gwasID);
 	  		  MAGMAresults(gwasID);
+			  ciMapCircosPlot(gwasID, ciMap);
               showResultTables(filedir, gwasID, posMap, eqtlMap, ciMap, orcol, becol, secol);
 			  expHeatMap(gwasID);
 			  tsEnrich(gwasID);
@@ -600,6 +601,57 @@ function MAGMAresults(gwasID){
       });
     }
   });
+}
+
+function ciMapCircosPlot(gwasID, ciMap){
+	if(ciMap==1){
+		var chr = [];
+		$.ajax({
+			url: subdir+"/browse/circos_chr",
+			type: 'POST',
+	        data: {
+	          id: gwasID,
+			  prefix: prefix
+	        },
+			success: function(data){
+				chr = data.split(":");
+				for(var i=0; i<chr.length; i++){
+					chr[i] = parseInt(chr[i]);
+				}
+				chr.sort(function(a,b){return a-b;});
+			},
+			complete: function(){
+				var images = "";
+				var j = 0;
+				for(var i=0; i<chr.length; i++){
+					j++;
+					if(i==0){
+						images += '<div class="row"><div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/browse/circos_image/'+prefix+'/'+gwasID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/browse/circos_image/'+prefix+'/'+gwasID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div>';
+					}else if(i==chr.length-1){
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/browse/circos_image/'+prefix+'/'+gwasID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/browse/circos_image/'+prefix+'/'+gwasID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div></div>';
+					}else if(j==3){
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/browse/circos_image/'+prefix+'/'+gwasID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/browse/circos_image/'+prefix+'/'+gwasID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div></div>';
+						j=0;
+					}else{
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/browse/circos_image/'+prefix+'/'+gwasID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/browse/circos_image/'+prefix+'/'+gwasID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div>';
+					}
+				}
+				$('#ciMapCircosPlot').html(images);
+			}
+		});
+	}
 }
 
 function showResultTables(filedir, gwasID, posMap, eqtlMap, ciMap, orcol, becol, secol){
@@ -2565,4 +2617,11 @@ function ImgDown(name, type){
   $('#'+name+'FileName').val(name);
   $('#'+name+'Dir').val("gwas");
   $('#'+name+'Submit').trigger('click');
+}
+
+function circosDown(type){
+	$('#circosPlotID').val(gwasID);
+	$('#circosPlotDir').val(prefix);
+	$('#circosPlotType').val(type);
+	$('#circosPlotSubmit').trigger('click');
 }
