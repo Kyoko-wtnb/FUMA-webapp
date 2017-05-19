@@ -133,7 +133,11 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('snp2gene/geneTable', 'JsController@geneTable');
 
-	Route::get('snp2gene/getPrioGenes/{jobID}', 'D3jsController@getPrioGenes');
+	Route::post('snp2gene/circos_chr', 'JobController@circos_chr');
+
+	Route::get('snp2gene/circos_image/{prefix}/{id}/{file}', 'JobController@circos_image');
+
+	Route::post('snp2gene/circosDown', 'JobController@circosDown')->middleware('auth');
 
 	Route::post('snp2gene/deleteJob', 'JobController@deleteJob');
 

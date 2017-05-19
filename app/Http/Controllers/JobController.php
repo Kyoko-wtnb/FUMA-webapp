@@ -108,6 +108,45 @@ class JobController extends Controller
       return json_encode($rows);
     }
 
+	public function circos_chr(Request $request){
+		$jobID = $request->input("jobID");
+		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/circos/';
+		$files = File::glob($filedir."circos_chr*.png");
+		for($i=0; $i<count($files); $i++){
+			$files[$i] = preg_replace('/.+\/circos_chr(\d+)\.png/', '$1', $files[$i]);
+		}
+		$files = implode(":", $files);
+		return $files;
+	}
+
+	public function circos_image($prefix, $id, $file){
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
+		$f = File::get($filedir.$file);
+		$type = File::mimeType($filedir.$file);
+
+		return response($f)->header("Content-Type", $type);
+	}
+
+	public function circosDown(Request $request){
+		$jobID = $request->input('id');
+		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/circos/';
+		$type = $request->input('type');
+		$zip = new \ZipArchive();
+        $zipfile = $filedir."FUMA_job".$jobID."_circos_".$type.".zip";
+
+		$files = File::glob($filedir."*.".$type);
+		for($i=0; $i<count($files); $i++){
+			$files[$i] = preg_replace("/.+\/(\w+\.$type)/", '$1', $files[$i]);
+		}
+
+		$zip -> open($zipfile, \ZipArchive::CREATE);
+        foreach($files as $f){
+          $zip->addFile($filedir.$f, $f);
+        }
+        $zip -> close();
+        return response() -> download($zipfile);
+	}
+
     public function newJob(Request $request){
       // check file type
       if($request -> hasFile('GWASsummary')){
@@ -819,11 +858,6 @@ class JobController extends Controller
 
       $script = storage_path()."/scripts/GeneSet.py";
       exec("python $script $filedir", $output2, $error2);
-    //   if($error != 0 || $error2 != 0){
-    //     echo "ERROR:".$output[0].":".$output2[0];
-    //   }else{
-    //     echo "OK";
-    //   }
     }
 
     public function snp2geneGeneQuery(Request $request){

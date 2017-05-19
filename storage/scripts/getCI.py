@@ -237,7 +237,7 @@ def main():
 	##### get parameters #####
 	ENSG = cfg.get("data", "ENSG")
 	datadir = cfg.get("CI", "CIdata")
-	reg_datadir = cfg.get("CI", "open_chromatin")
+	reg_datadir = cfg.get("CI", "RoadmapData")
 	ciMapBuildin = param.get("ciMap", "ciMapBuildin")
 	if ciMapBuildin=="NA":
 		ciMapBuildin = ["NA"]
