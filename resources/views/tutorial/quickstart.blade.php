@@ -37,7 +37,7 @@
       <p><h4><strong>1. Registration/Login</strong></h4>
         If you haven't registered yet, please do so from <a href="{{ url('/register') }}">Register</a>.<br/>
         Before you submit your GWAS summary statistics, please log in to your account.
-        You can login from either <a href="{{ url('/login') }}">login</a> page or <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a> page directry.<br/><br/>
+        You can login from either <a href="{{ url('/login') }}">login</a> page or <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a> page directory.<br/><br/>
         <img src="{!! URL::asset('/image/homereg.png') !!}" style="width:80%"/><br/>
       </p><br/>
 
@@ -47,7 +47,7 @@
         If your input file is an output from PLINK, SNPTEST or METAL, you can directly submit the file without specifying column names.<br/>
         The input GWAS summary statistics file could be a subset of SNPs (e.g. only SNPs which are interesting in your study), but in this case, MAGMA results are not relevant anymore.<br/>
         Optionally, if you would like to pre-specify lead SNPs, you can upload a file with 3 columns; rsID, chromosome and position.
-        FUMA will then use these SNPs to select LD-related SNPs for annotation and mapping, instead of using lead SNPs identified by FUMA (it requires to disable a option for "identify additional lead SNPs").<br/>
+        FUMA will then use these SNPs to select LD-related SNPs for annotation and mapping, instead of using lead SNPs identified by FUMA (it requires to disable an option for "identify additional lead SNPs").<br/>
         In addition, if you are interested in specific genomic regions, you can also provide them by uploading a file with 3 columns; chromosome, start and end position.
         FUMA will then use these genomic regions to select LD-related SNPs for annotation and mapping, instead of determining the regions itself.<br/>
         <br/>
@@ -55,10 +55,10 @@
       </p><br/>
 
       <p><h4><strong>3. Set parameters</strong></h4>
-        On the same page as where you specify the input files, there are a variety of optional parameters that control the prioritization of genes.
+        At the same page as where you specify the input files, there are a variety of optional parameters that control the prioritization of genes.
         Please check your parameters carefully.
         The default settings are to perform identification of independent genome-wide significant SNPs at r<sup>2</sup> 0.6 and lead SNPs at r<sup>2</sup> 0.1, to maps SNPs to genes up to 10kb apart.<br/>
-        To filter SNPs by specific functional annotations and to use eQTL mapping, please change parmeters (please refer the parameter section of this tutorial from <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#parameters">here</a>).<br/>
+        To filter SNPs by specific functional annotations and to use eQTL mapping, please change parameters (please refer the parameter section of this tutorial from <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#parameters">here</a>).<br/>
         If all inputs are valid, 'Submit Job' button will be activated. Once you submit a job, this will be listed in My Jobs.<br/>
         Please do not navigate away from the page while your file is uploading (this may take up to couple of minutes depending on the file size and your internet speed).<br/>
         <br/>
