@@ -51,14 +51,14 @@
       <tr>
         <td>Pre-defined lead SNPs</td>
         <td>Optional</td>
-        <td>Optional pre-defined lead SNPs. The file should have 3 coulmns, rsID, chromsome and position.</td>
+        <td>Optional pre-defined lead SNPs. The file should have 3 columns, rsID, chromsome and position.</td>
         <td>File upload</td>
         <td>none</td>
       </tr>
       <tr>
         <td>Identify additional lead SNPs</td>
         <td>Optional only when predefined lead SNPs are provided</td>
-        <td>If this option is CHECKED, FUMA will identify additional independent lead SNPs after defininig the LD block for pre-defined lead SNPs.
+        <td>If this option is CHECKED, FUMA will identify additional independent lead SNPs after defining the LD block for pre-defined lead SNPs.
           Otherwise, only given lead SNPs and SNPs in LD of them will be used for further annotations.
         </td>
         <td>Check</td>
@@ -98,9 +98,9 @@
         <td>The total number of individuals in the GWAS or the number of individuals per SNP.
           This is only used for MAGMA to compute the gene-based P-values.
           For total sample size, input should be an integer.
-          When the input file of GWAS summary statistics contains a column of sample size per SNP, the colum nname can be provided in the second text box.<br/>
+          When the input file of GWAS summary statistics contains a column of sample size per SNP, the column name can be provided in the second text box.<br/>
           <span class="info"><i class="fa fa-info"></i> When column name is provided, please make sure that the column only contains integers (no float or scientific notation).
-            If there are any float values, they will be rouded up by FUMA.
+            Float values are rounded.
           </span>
         </td>
         <td>Integer or text</td>
