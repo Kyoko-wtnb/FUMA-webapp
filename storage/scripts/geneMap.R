@@ -187,60 +187,67 @@ if(eqtlMap==1){
 
 if(ciMap==1){
 	ci <- fread(paste(filedir, "ci.txt", sep=""), data.table=F)
-	cisnps <- unique(unlist(strsplit(ci$SNPs, ":")))
-	cisnps <- snps[snps$rsID %in% cisnps,]
-	if(ciMapEnhFilt==1){
-		cienh <- fread(paste(filedir, "ciSNPs.txt", sep=""), data.table=F)
-		cisnps <- cisnps[cisnps$uniqID %in% cienh$uniqID,]
+	cisnps <- c()
+	if(nrow(ci)>0){
+		cisnps <- unique(unlist(strsplit(ci$SNPs, ":")))
+		cisnps <- snps[snps$rsID %in% cisnps,]
+
+		if(ciMapEnhFilt==1){
+			cienh <- fread(paste(filedir, "ciSNPs.txt", sep=""), data.table=F)
+			cisnps <- cisnps[cisnps$uniqID %in% cienh$uniqID,]
+		}
+		if(ciMapCADDth>0){
+			cisnps <- cisnps[cisnps$uniqID %in% annot$uniqID[annot$CADD >= ciMapCADDth],]
+		}
+		if(ciMapRDBth!="NA"){
+			cisnps <- cisnps[cisnps$uniqID %in% annot$uniqID[annot$RDB <= ciMapRDBth],]
+		}
+		if(ciMapChr15!="NA"){
+	      if(grepl("all", ciMapChr15)){
+	        ciMapChr15 <- colnames(annot)[4:ncol(annot)]
+	      }else{
+	        ciMapChr15 <- unique(unlist(strsplit(ciMapChr15, ":")))
+	      }
+	      epi <- data.frame(uniqID=snps$uniqID, epi=NA)
+	      temp <- subset(annot, select=c("uniqID", ciMapChr15))
+	      if(ciMapChr15Meth=="any"){
+	        if(length(ciMapChr15)>1){
+	          temp$epi <- apply(temp[,2:ncol(temp)], 1, min)
+	        }else{
+	          temp$epi <- temp[,2]
+	        }
+	      }else if(ciMapChr15Meth=="majority"){
+	        if(length(ciMapChr15)>1){
+	          temp$epi <- apply(temp[,2:ncol(temp)], 1, function(x){as.numeric(names(sort(table(x), decreasing=T))[1])})
+	        }else{
+	          temp$epi <- temp[,2]
+	        }
+	      }else{
+	        if(length(ciMapChr15)>1){
+	          temp$epi <- apply(temp[,2:ncol(temp)], 1, max)
+	        }else{
+	          temp$epi <- temp[,2]
+	        }
+	      }
+	      epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
+	      epi <- epi[epi$epi<=ciMapChr15Max,]
+	      cisnps <- cisnps[cisnps$uniqID %in% epi$uniqID,]
+	      rm(epi, temp)
+	    }
+		cicheck <- sapply(ci$SNPs, function(x){if(length(which(unlist(strsplit(x, ":")) %in% cisnps$rsID))>0){1}else{0}})
+		if(ciMapPromFilt==1){
+			ciprom <- fread(paste(filedir, "ciProm.txt", sep=""), data.table=F)
+			ci <- ci[ci$region2 %in% ciprom$region2,]
+			ciprom <- ciprom[ciprom$region2 %in% ci$region2,]
+
+			ci$genes <- sapply(ci$region2, function(x){paste(unique(ciprom$genes[!is.na(ciprom$genes) & ciprom$region2==x]), collapse=":")})
+			ci$genes[ci$genes==""] <- NA
+		}
+		ci <- ci[!is.na(ci$genes),]
+		genes <- c(genes, unique(unlist(strsplit(ci$genes, ":"))))
+		cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ":"))),]
+		snps$ciMapFilt[snps$uniqID %in% cisnps$uniqID] <- 1
 	}
-	if(ciMapCADDth>0){
-		cisnps <- cisnps[cisnps$uniqID %in% annot$uniqID[annot$CADD >= ciMapCADDth],]
-	}
-	if(ciMapRDBth!="NA"){
-		cisnps <- cisnps[cisnps$uniqID %in% annot$uniqID[annot$RDB <= ciMapRDBth],]
-	}
-	if(ciMapChr15!="NA"){
-      if(grepl("all", ciMapChr15)){
-        ciMapChr15 <- colnames(annot)[4:ncol(annot)]
-      }else{
-        ciMapChr15 <- unique(unlist(strsplit(ciMapChr15, ":")))
-      }
-      epi <- data.frame(uniqID=snps$uniqID, epi=NA)
-      temp <- subset(annot, select=c("uniqID", ciMapChr15))
-      if(ciMapChr15Meth=="any"){
-        if(length(ciMapChr15)>1){
-          temp$epi <- apply(temp[,2:ncol(temp)], 1, min)
-        }else{
-          temp$epi <- temp[,2]
-        }
-      }else if(ciMapChr15Meth=="majority"){
-        if(length(ciMapChr15)>1){
-          temp$epi <- apply(temp[,2:ncol(temp)], 1, function(x){as.numeric(names(sort(table(x), decreasing=T))[1])})
-        }else{
-          temp$epi <- temp[,2]
-        }
-      }else{
-        if(length(ciMapChr15)>1){
-          temp$epi <- apply(temp[,2:ncol(temp)], 1, max)
-        }else{
-          temp$epi <- temp[,2]
-        }
-      }
-      epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
-      epi <- epi[epi$epi<=ciMapChr15Max,]
-      cisnps <- cisnps[cisnps$uniqID %in% epi$uniqID,]
-      rm(epi, temp)
-    }
-	cicheck <- sapply(ci$SNPs, function(x){if(length(which(unlist(strsplit(x, ":")) %in% cisnps$rsID))>0){1}else{0}})
-	ci <- ci[cicheck==1,]
-	if(ciMapPromFilt==1){
-		ciprom <- fread(paste(filedir, "ciProm.txt", sep=""), data.table=F)
-		ci <- ci[ci$region2 %in% ciprom$region2,]
-	}
-	ci <- ci[!is.na(ci$genes),]
-	genes <- c(genes, unique(unlist(strsplit(ci$genes, ":"))))
-	cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ":"))),]
-	snps$ciMapFilt[snps$uniqID %in% cisnps$uniqID] <- 1
 }
 
 write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
@@ -268,7 +275,9 @@ if(nrow(geneTable)>0){
   }
   if(ciMap==1){
   	geneTable$ciMap <- "No"
-	geneTable$ciMap[geneTable$ensg %in% unlist(strsplit(ci$genes,":"))] <- "Yes"
+	if(nrow(ci)>0){	geneTable$ciMap[geneTable$ensg %in% unlist(strsplit(ci$genes,":"))] <- "Yes"}
+	geneTable$ciMapts <- NA
+	if(nrow(ci)>0){geneTable$ciMapts[geneTable$ciMap=="Yes"] <- sapply(geneTable$ensg[geneTable$ciMap=="Yes"], function(x){paste(unique(ci$`tissue/cell`[x %in% unlist(strsplit(ci$genes,":"))]), collapse=":")})}
   }
   geneTable$minGwasP <- NA
   geneTable$IndSigSNPs <- NA
@@ -302,13 +311,15 @@ if(nrow(geneTable)>0){
   }
   if(ciMap==1){
   	geneTable$minGwasP <- sapply(geneTable$ensg, function(x){
-		tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ":")))
+		if(nrow(ci)>0){tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ":")))}
+		else{tmp <- c()}
 		if(length(which(!is.na(cisnps$gwasP[cisnps$rsID %in% tmp])))>0){
 			min(c(cisnps$gwasP[!is.na(cisnps$gwasP) & cisnps$rsID %in% tmp], geneTable$minGwasP[geneTable$ensg==x]), na.rm=T)
 		}else{geneTable$minGwasP[geneTable$ensg==x]}
 	})
 	geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){
-		tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ":")))
+		if(nrow(ci)>0){tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ":")))}
+		else{tmp <- c()}
 		if(length(tmp)==0){
 			geneTable$IndSigSNPs[geneTable$ensg==x]
 		}else if(is.na(geneTable$IndSigSNPs[geneTable$ensg==x])){
