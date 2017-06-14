@@ -137,47 +137,49 @@ if(eqtlMap==1){
     eqtl$pos <- snps$pos[match(eqtl$uniqID, snps$uniqID)]
     eqtl$symbol <- ENSG.all.genes$external_gene_name[match(eqtl$gene, ENSG.all.genes$ensembl_gene_id)]
     eqtlall <- eqtl
-    eqtlall$eqtlMapFilt <- 0
-    if(eqtlMapCADDth>0){
-      eqtl <- eqtl[eqtl$uniqID %in% annot$uniqID[annot$CADD>=eqtlMapCADDth],]
-    }
-    if(eqtlMapRDBth!="NA"){
-      eqtl <- eqtl[eqtl$uniqID %in% eqtl$uniqID[annot$RDB<=eqtlMapRDBth],]
-    }
-    if(eqtlMapChr15!="NA"){
-      if(grepl("all", eqtlMapChr15)){
-        eqtlMapChr15 <- colnames(annot)[4:ncol(annot)]
-      }else{
-        eqtlMapChr15 <- unique(unlist(strsplit(eqtlMapChr15, ":")))
-      }
-      epi <- data.frame(uniqID=snps$uniqID, epi=NA)
-      temp <- subset(annot, select=c("uniqID", eqtlMapChr15))
-      if(eqtlMapChr15Meth=="any"){
-        if(length(eqtlMapChr15)>1){
-          temp$epi <- apply(temp[,2:ncol(temp)], 1, min)
-        }else{
-          temp$epi <- temp[,2]
-        }
-      }else if(eqtlMapChr15Meth=="majority"){
-        if(length(eqtlMapChr15)>1){
-          temp$epi <- apply(temp[,2:ncol(temp)], 1, function(x){as.numeric(names(sort(table(x), decreasing=T))[1])})
-        }else{
-          temp$epi <- temp[,2]
-        }
-      }else{
-        if(length(eqtlMapChr15)>1){
-          temp$epi <- apply(temp[,2:ncol(temp)], 1, max)
-        }else{
-          temp$epi <- temp[,2]
-        }
-      }
-      epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
-      epi <- epi[epi$epi<=eqtlMapChr15Max,]
-      eqtl <- eqtl[eqtl$uniqID %in% epi$uniqID,]
-      rm(epi, temp)
-    }
-    genes <- c(genes, unique(eqtl$gene))
-    eqtlall$eqtlMapFilt[eqtlall$uniqID %in% eqtl$uniqID] <- 1
+	if(nrow(eqtlall)>0){
+	    eqtlall$eqtlMapFilt <- 0
+	    if(eqtlMapCADDth>0){
+	      eqtl <- eqtl[eqtl$uniqID %in% annot$uniqID[annot$CADD>=eqtlMapCADDth],]
+	    }
+	    if(eqtlMapRDBth!="NA"){
+	      eqtl <- eqtl[eqtl$uniqID %in% eqtl$uniqID[annot$RDB<=eqtlMapRDBth],]
+	    }
+	    if(eqtlMapChr15!="NA"){
+	      if(grepl("all", eqtlMapChr15)){
+	        eqtlMapChr15 <- colnames(annot)[4:ncol(annot)]
+	      }else{
+	        eqtlMapChr15 <- unique(unlist(strsplit(eqtlMapChr15, ":")))
+	      }
+	      epi <- data.frame(uniqID=snps$uniqID, epi=NA)
+	      temp <- subset(annot, select=c("uniqID", eqtlMapChr15))
+	      if(eqtlMapChr15Meth=="any"){
+	        if(length(eqtlMapChr15)>1){
+	          temp$epi <- apply(temp[,2:ncol(temp)], 1, min)
+	        }else{
+	          temp$epi <- temp[,2]
+	        }
+	      }else if(eqtlMapChr15Meth=="majority"){
+	        if(length(eqtlMapChr15)>1){
+	          temp$epi <- apply(temp[,2:ncol(temp)], 1, function(x){as.numeric(names(sort(table(x), decreasing=T))[1])})
+	        }else{
+	          temp$epi <- temp[,2]
+	        }
+	      }else{
+	        if(length(eqtlMapChr15)>1){
+	          temp$epi <- apply(temp[,2:ncol(temp)], 1, max)
+	        }else{
+	          temp$epi <- temp[,2]
+	        }
+	      }
+	      epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
+	      epi <- epi[epi$epi<=eqtlMapChr15Max,]
+	      eqtl <- eqtl[eqtl$uniqID %in% epi$uniqID,]
+	      rm(epi, temp)
+	    }
+	    genes <- c(genes, unique(eqtl$gene))
+	    eqtlall$eqtlMapFilt[eqtlall$uniqID %in% eqtl$uniqID] <- 1
+	}
     write.table(eqtlall, paste(filedir, "eqtl.txt", sep=""), quote=F, row.names=F, sep="\t")
     snps$eqtlMapFilt <- sapply(snps$uniqID, function(x){if(x %in% eqtlall$uniqID){max(eqtlall$eqtlMapFilt[eqtlall$uniqID==x])}else{0}})
   }
