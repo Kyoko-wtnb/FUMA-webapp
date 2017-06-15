@@ -1,11 +1,15 @@
+##### load libraries #####
 library(data.table)
 library(kimisc)
+
+##### get commnad line arguments #####
 args <- commandArgs(TRUE)
 filedir <- args[1]
 if(grepl("\\/$", filedir)==F){
   filedir <- paste(filedir, '/', sep="")
 }
 
+##### get config parameters #####
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
@@ -52,6 +56,7 @@ if(posMapWindowSize=="NA"){
   posMapWindowSize <- as.numeric(posMapWindowSize)*1000
 }
 
+##### load ENSG genes #####
 load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
 
 if(genetype!="all"){
@@ -69,6 +74,8 @@ if(exMHC==1){
   MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
   ENSG.all.genes <- ENSG.all.genes[!(ENSG.all.genes$ensembl_gene_id%in%MHCgenes),]
 }
+
+##### read files #####
 snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
 snps$posMapFilt <- 0
 snps$eqtlMapFilt <- 0
@@ -76,6 +83,8 @@ snps$ciMapFilt <- 0
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
 genes <- vector()
+
+##### positional mapping #####
 if(posMap==1){
   annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
   annov <- annov[annov$gene %in% ENSG.all.genes$ensembl_gene_id,]
@@ -129,6 +138,7 @@ if(posMap==1){
   }
 }
 
+##### eqtl Mapping #####
 if(eqtlMap==1){
   eqtl <- fread(paste(filedir, "eqtl.txt", sep=""), data.table=F)
   if(nrow(eqtl)>0){
@@ -185,6 +195,7 @@ if(eqtlMap==1){
   }
 }
 
+##### chromatin itneraction mapipng #####
 if(ciMap==1){
 	ci <- fread(paste(filedir, "ci.txt", sep=""), data.table=F)
 	cisnps <- c()
@@ -252,6 +263,7 @@ if(ciMap==1){
 
 write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
 
+##### create gene table #####
 geneTable <- ENSG.all.genes[ENSG.all.genes$ensembl_gene_id %in% genes,]
 colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "status", "type", "entrezID","HUGO")
 if(nrow(geneTable)>0){
@@ -338,8 +350,11 @@ if(nrow(geneTable)>0){
   }
 }
 
+geneTable <- geneTable[order(geneTable$start),]
+geneTable <- geneTable[order(geneTable$chr),]
 write.table(geneTable, paste(filedir, "genes.txt", sep=""), quote=F, row.names=F, sep="\t")
 
+##### output summary results #####
 summary <- data.frame(matrix(nrow=6, ncol=2))
 summary[,1] <- c("#Genomic risk loci", "#lead SNPs", "#Ind. Sig. SNPs",  "#candidate SNPs", "#candidate GWAS tagged SNPs", "#mapped genes")
 indS <- fread(paste(filedir, "IndSigSNPs.txt", sep=""), data.table=F)
