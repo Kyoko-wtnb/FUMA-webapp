@@ -10,12 +10,12 @@
     but in this case, results of MAGMA will not be relevant anymore.
     Please note that in the current version indels and variants which do not exists in the 1000 genomes reference panel (Phase3) will not be included in any analyses.<br/>
     <span class="info"><i class="fa fa-info"></i>
-      Indels and variants which do no exists in 1000 genomes reference panle (Phase3) will be removed from any analyses.
+      Indels and variants which do no exists in 1000 genomes reference panel (Phase3) will be removed from any analyses.
     </span>
   </p>
   <p><strong>Mandatory columns</strong><br/>
     The input file must include a P-value and either an rsID or chromosome index + genetic position on hg19 reference genome.
-    Whenevr rsID is provided, it is updated to dbSNP build 146.
+    Whenever rsID is provided, it is updated to dbSNP build 146.
     When either chromosome or position is missing, they are extracted from dbSNP build 146 based on rsID.
     When rsID is missing, it is extracted from dbSNP build 146 based on chromosome and position.
     When all of them (rsID, chromosome and position) are provided, they are kept as input except rsID which is updated to dbSNP build 146.<br/>

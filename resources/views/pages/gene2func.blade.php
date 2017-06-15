@@ -77,7 +77,7 @@
                   <i class="fa fa-question-circle-o fa-lg"></i>
                 </a>
                 <br/>
-                <textarea id="genes" name="genes" rows="12" cols="50" placeholder="Please enter each gene per line here." onkeyup="checkInput()" oninput="checkInput()"></textarea><br/>
+                <textarea id="genes" name="genes" rows="12" cols="50" placeholder="One gene per line" onkeyup="checkInput()" oninput="checkInput()"></textarea><br/>
                 <br/>
                 2. Upload file
                 <a class="infoPop" data-toggle="popover" data-content="The first column should be the genes without header. Extra columns will be ignored. ENSG ID, entrez ID or gene symbols are accepted.">
