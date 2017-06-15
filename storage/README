@@ -142,6 +142,8 @@ eqtlMapminP (eqtlMap): The minimum eQTL P-value of mapped SNPs.
 eqtlMapmin! (eqtlMap): The minimum eQTL FDR of mapped SNPs.
 eqtlMapts (eqtlMap): Tissue types of mapped eQTL SNPs.
 eqtlDirection (eqtlMap): consecutive direction of mapped eQTL SNPs.
+ciMap (ciMap): "Yes" if the gene is mapped by chromatin interaction mapping, "No" otherwise.
+ciMapts (ciMap): Tissue/cell types of mapped chromatin interactions.
 minGwasP : The minimum P-value of mapped SNPs.
 ciMap : If the gene is mapped by chromatin interaction "Yes", otherwise "No".
 IndSigSNPs : rsID of the all independent significant SNPs of mapped SNPs.
