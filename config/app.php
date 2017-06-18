@@ -46,6 +46,17 @@ return [
 
     'gwasDBdir' => env('APP_GWASDBDIR', ''),
 
+	/*
+    |--------------------------------------------------------------------------
+    | Developper's email address
+    |--------------------------------------------------------------------------
+    |
+    | Specify developper's email for job filed mail
+    |
+    */
+
+    'devemail' => env('APP_DEVEMAIL', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

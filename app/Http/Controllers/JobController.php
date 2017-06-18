@@ -391,6 +391,8 @@ class JobController extends Controller
       }
 
 	  $ciMap = 0;
+	  $ciMapFileN = 0;
+	  $ciMapFiles = "NA";
 	  if($request->has('ciMap')){
 		  $ciMap = 1;
 		  if($request->has('ciMapBuildin')){
@@ -425,8 +427,6 @@ class JobController extends Controller
 				  $n++;
 			  }
 			  $ciMapFiles = implode(":", $ciMapFiles);
-		  }else{
-			  $ciMapFiles = "NA";
 		  }
 
 		  $ciMapFDR = $request->input('ciMapFDR');
