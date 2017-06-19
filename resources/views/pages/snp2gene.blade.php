@@ -34,7 +34,7 @@ var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/InputParameters.js') !!}"></script>
-<script type="text/javascript" src="{!! URL::asset('js/snp2geneResults.js') !!}"></script>
+<script type="text/javascript" src="{!! URL::asset('js/snp2gene.js') !!}"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">
