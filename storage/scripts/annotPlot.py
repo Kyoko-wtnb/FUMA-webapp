@@ -72,21 +72,28 @@ def getSNPs(filedir, i, Type):
 		snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
 		snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 
+	if "ciMapFilt" in snpshead:
+		tmp = snps[:,[snpshead.index("posMapFilt"), snpshead.index("eqtlMapFilt"), snpshead.index("ciMapFilt")]]
+	else:
+		tmp = snps[:,[snpshead.index("posMapFilt"), snpshead.index("eqtlMapFilt")]]
+	mapFilt = [max(l) for l in tmp]
 	gl = int(snps[0, snpshead.index("GenomicLocus")])
-	snps_headi = [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("posMapFilt"), snpshead.index("eqtlMapFilt")]
-	snpshead_tmp = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "posMapFilt", "eqtlMapFilt"]
-	if "or" in snpshead:
-		snps_headi.append(snpshead.index("or"))
-		snpshead_tmp.append("or")
-	if "beta" in snpshead:
-		snps_headi.append(snpshead.index("beta"))
-		snpshead_tmp.append("beta")
-	if "se" in snpshead:
-		snps_headi.append(snpshead.index("se"))
-		snpshead_tmp.append("se")
+	snps_headi = [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func")]
+	snpshead_tmp = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "MapFilt"]
+
+	# if "or" in snpshead:
+	# 	snps_headi.append(snpshead.index("or"))
+	# 	snpshead_tmp.append("or")
+	# if "beta" in snpshead:
+	# 	snps_headi.append(snpshead.index("beta"))
+	# 	snpshead_tmp.append("beta")
+	# if "se" in snpshead:
+	# 	snps_headi.append(snpshead.index("se"))
+	# 	snpshead_tmp.append("se")
 
 	snpshead = snpshead_tmp
 	snps = snps[:, snps_headi]
+	snps = np.c_[snps, mapFilt]
 	snps[:, snpshead.index("RDB")] = snps[:, snpshead.index("RDB")].astype(str)
 	snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]
 	return [snps, gl]

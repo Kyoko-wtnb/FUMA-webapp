@@ -119,7 +119,7 @@
 <ul>
   <li><p>Mapped genes</p>
   <p>The genes which are mapped by SNPs in the SNPs table based on user-defined mapping parameters.
-    Columns with posMap or eqtlMap in the parentheses are only available when positional or eQTL mapping is performed, respectively.
+    Columns with posMap or eqtlMap in the parentheses are only available when positional, eQTL or chromatin interaction mapping is performed, respectively.
   </p>
   <ul>
     <li><strong>Gene</strong> : ENSG ID</li>
@@ -142,6 +142,8 @@
     <li><strong>eqtlMapmin!</strong> (eqtlMap): The minimum eQTL FDR of mapped SNPs.</li>
     <li><strong>eqtlMapts</strong> (eqtlMap): Tissue types of mapped eQTL SNPs.</li>
     <li><strong>eqtlDirection</strong> (eqtlMap): consecutive direction of mapped eQTL SNPs.</li>
+	<li><strong>ciMap</strong> (ciMap): "Yes" if the gene is mapped by chromatin interaction mapping.</li>
+	<li><strong>ciMapts</strong> (ciMap): Tissue/cell types of mapped chromatin interactions.</li>
     <li><strong>minGwasP</strong> : The minimum P-value of mapped SNPs.</li>
     <li><strong>IndSigSNPs</strong> : rsID of the all independent significant SNPs of mapped SNPs.</li>
   </ul>

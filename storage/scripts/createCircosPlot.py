@@ -245,6 +245,6 @@ def main():
 
 	### execute circos ###
 	for i in chrom:
-		os.system("circos -conf "+filedir+"circos/circos_chr"+str(i)+".conf -outputfile "+filedir+"circos/circos_chr"+str(i))
+		os.system("circos -conf "+filedir+"circos/circos_chr"+str(i)+".conf -outputdir "+filedir+"circos -outputfile circos_chr"+str(i))
 
 if __name__=="__main__": main()

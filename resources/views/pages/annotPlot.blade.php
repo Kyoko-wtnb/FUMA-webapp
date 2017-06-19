@@ -122,7 +122,7 @@ $(document).ready(function(){
 		var ciTop;
 		var ciregTop;
 
-		var ci_cellsize = 5;
+		var ci_cellsize = 3;
 
 	    var x = d3.scale.linear().range([0, width]);
 	    var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
@@ -228,16 +228,15 @@ $(document).ready(function(){
 		plotData.ciheight.forEach(function(d){
 			if(d*ci_cellsize+10<30){
 				ciHeight += 30;
-			}else if(d*ci_cellsize+10<150){
-				ciHeight += d*ci_cellsize+10;
 			}else{
-				ciHeight += 150;
+				ciHeight += d*ci_cellsize+10;
 			}
 			ciHeight += 5;
 		});
 		// ciHeight = plotData["citypes"].length * 60;
 		ciTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15+eqtlHeight;
 		ciregHeight = plotData["cieid"].length * 10;
+		if(ciregHeight > 250){ciregHeight=250}
 		ciregTop = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15+eqtlHeight+ciHeight;
 		height = (gwasHeight+10)*GWASplot+genesHeight+10+(caddHeight+10)*CADDplot+(rdbHeight+10)*RDBplot+(chrHeight+10)*Chr15+eqtlHeight+ciHeight+ciregHeight;
 		if(plotData["eqtl"].length>0){
@@ -401,8 +400,8 @@ $(document).ready(function(){
 			d[5] = +d[5]; //ld
 			d[6] = +d[6]; //r2
 			d[9] = +d[9]; //CADD
-			d[13] = +d[13]; //posMapFilt
-			d[14] = +d[14]; //eqtlMapFilt
+			d[13] = +d[13]; //MapFilt
+			// d[14] = +d[14]; //eqtlMapFilt
 	    });
 
 		// GWAS plot
@@ -623,7 +622,7 @@ $(document).ready(function(){
 				.attr("cy", function(d){return y(d[9]);})
 				// .style("fill", function(d){if(d.ld==0){return "grey";}else if(d.func=="exonic" || d.func=="splicing"){return "blue"}else{return "skyblue";}})
 				.style("fill", function(d){
-				  if(d[13]==0 && d[14]==0){
+				  if(d[13]==0){
 				    return "grey";
 				  }else{
 				    if(d[12]=="exonic"){return "blue";}
@@ -692,7 +691,7 @@ $(document).ready(function(){
 				.attr("cy", function(d){return y(d[10]);})
 				// .style("fill", function(d){if(d.ld==0){return "grey"}else{return "MediumAquaMarine"}})
 				.style("fill", function(d){
-				  if(d[13]==0 && d[14]==0){return "grey";}
+				  if(d[13]==0){return "grey";}
 				  else{return "MediumAquaMarine";}
 				})
 				.on("click", function(d){
@@ -985,7 +984,7 @@ $(document).ready(function(){
 							d[4] = minFDR;
 						}
 				});
-				var cicolor = d3.scale.linear().domain([0, d3.max(plotData.ci, function(d){return -Math.log10(d[4])})]).range(["#cccccc", "red"]);
+				var cicolor = d3.scale.linear().domain([0, d3.max(plotData.ci, function(d){return -Math.log10(d[4])})]).range(["pink", "red"]);
 				var cur_height = 0;
 				for(var i =0; i<plotData["citypes"].length; i++){
 					var types = plotData.citypes[i];
@@ -994,11 +993,8 @@ $(document).ready(function(){
 					var tmp_height = 0;
 					if(max_y*ci_cellsize+10<30){
 						tmp_height = 30;
-					}else if(max_y*ci_cellsize+10<150){
-						tmp_height = max_y*ci_cellsize+10;
 					}else{
-						tmp_height = 150;
-						ci_cellsize = 140/max_y;
+						tmp_height = max_y*ci_cellsize+10;
 					}
 
 					var y = d3.scale.linear().range([ciTop+5*i+cur_height+tmp_height, ciTop+5*i+cur_height]);
@@ -1029,7 +1025,7 @@ $(document).ready(function(){
 							if(x(d[0])>width){return "none"}
 							else{return "grey"}
 						})
-						.attr("stroke-width", 0.5);
+						.attr("stroke-width", 0.1);
 					svg.selectAll("rect.ci2").data(plotData.ci.filter(function(d){if(d[5]==types[0] && d[6]==types[1] && d[7]==types[2]){return d;}})).enter()
 						.insert("rect").attr("class", "cirect2")
 						.attr("x", function(d){
@@ -1054,7 +1050,7 @@ $(document).ready(function(){
 							if(x(d[2])>width || x(d[3])<0){return "none"}
 							else{return "grey"}
 						})
-						.attr("stroke-width", 0.5);
+						.attr("stroke-width", 0.1);
 
 					svg.selectAll("rect.ci").data(plotData.ci.filter(function(d){if(d[5]==types[0] && d[6]==types[1] && d[7]==types[2] && Math.abs(d[2]-d[1])>1){return d;}})).enter()
 						.insert("rect").attr("class", "cirect")
@@ -1116,6 +1112,7 @@ $(document).ready(function(){
 							chr15gcol.push(Chr15GroupCols[i]);
 						}
 					}
+					var tileHeight = ciregHeight/cieid.length;
 
 					// legend
 					svg.append("rect").attr("x", width+20).attr("y", ciregTop+5)
@@ -1148,7 +1145,7 @@ $(document).ready(function(){
 							else if(x(d[0])<0){return x(d[1])}
 							else{return x(d[1])-x(d[0])}
 						})
-						.attr("height", 10)
+						.attr("height", tileHeight)
 						.attr("fill", function(d){
 							if(x(d[1])<0 || x(d[0])>width){return "none"}
 							else if(d[2]=="enh"){return "orange"}
@@ -1164,14 +1161,15 @@ $(document).ready(function(){
 					}
 					for(var i=0; i<cieid.length; i++){
 						svg.append("rect").attr("x", -10).attr("y", yCireg(cieid[i]))
-							.attr("width", 10).attr("height",10)
+							.attr("width", 10).attr("height",tileHeight)
 							.attr("fill", chr15gcol[i]);
 					}
-					svg.append("g").attr("class", "y axis").call(yAxisCireg)
-						.selectAll('text').attr("transform", "translate(-5,0)").style('font-size', '11px');
 					svg.append("g").attr("class", "x axis cireg")
 						.attr("transform", "translate(0,"+(ciregTop+ciregHeight)+")")
 						.call(xAxis);
+					svg.append("text").attr("text-anchor", "middle")
+						.attr("transform", "translate("+(-margin.left/2-15)+","+(ciregTop+ciregHeight/2)+")rotate(-90)")
+						.text("Regulatory elements");
 					svg.append("text").attr("text-anchor", "middle")
 					  .attr("transform", "translate("+width/2+","+(height+35)+")")
 					  .text("Chromosome "+chrom);
@@ -1248,14 +1246,14 @@ $(document).ready(function(){
 	        .style("fill", function(d){
 	          if(x(d[2])<0 || x(d[2])>width){return "none";}
 	          else if(d[5]==0){return "grey"}
-	          else if(d[13]==0 && d[14]==0){return "grey"}
+	          else if(d[13]==0){return "grey"}
 	          else if(d[12]=="exonic"){return "blue"}
 	          else{return "skyblue"}});
 	      svg.selectAll(".RDBdot").attr("cx", function(d){return x(d[2]);})
 	        .style("fill", function(d){
 	          if(x(d[2])<0 || x(d[2])>width){return "none";}
 	          else if(d[5]==0){return "grey"}
-	          else if(d[13]==0 && d[14]==0){return "grey"}
+	          else if(d[13]==0){return "grey"}
 	          else{return "MediumAquaMarine"}});
 	      svg.selectAll(".genesrect").attr("x", function(d){
 	          if(x(d[2])<0 || x(d[3])<0){return 0;}
