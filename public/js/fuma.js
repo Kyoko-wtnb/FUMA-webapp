@@ -30,7 +30,7 @@ function InactivityTimer(path, delay){
 
   function start(){
     if(!timeout){
-      timeout = setTimeout(logout, delay || 3600000);
+      timeout = setTimeout(logout, delay || 7200000);
     }
   }
 

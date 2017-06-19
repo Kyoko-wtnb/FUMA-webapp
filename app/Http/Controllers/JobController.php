@@ -14,7 +14,6 @@ use Auth;
 use Storage;
 use File;
 use JavaScript;
-// use Zipper;
 use Mail;
 use IPGAP\User;
 use IPGAP\Jobs\snp2geneProcess;
@@ -108,6 +107,51 @@ class JobController extends Controller
 
       return json_encode($rows);
     }
+
+	public function circos_chr(Request $request){
+		$id = $request->input("id");
+		$prefix = $request->input("prefix");
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
+		$files = File::glob($filedir."circos_chr*.png");
+		for($i=0; $i<count($files); $i++){
+			$files[$i] = preg_replace('/.+\/circos_chr(\d+)\.png/', '$1', $files[$i]);
+		}
+		$files = implode(":", $files);
+		return $files;
+	}
+
+	public function circos_image($prefix, $id, $file){
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
+		$f = File::get($filedir.$file);
+		$type = File::mimeType($filedir.$file);
+
+		return response($f)->header("Content-Type", $type);
+	}
+
+	public function circosDown(Request $request){
+		$id = $request->input('id');
+		$prefix = $request->input('prefix');
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
+		$type = $request->input('type');
+		$zip = new \ZipArchive();
+		if($prefix=="gwas"){
+			$zipfile = $filedir."FUMA_gwas".$id."_circos_".$type.".zip";
+		}else{
+			$zipfile = $filedir."FUMA_job".$id."_circos_".$type.".zip";
+		}
+
+		$files = File::glob($filedir."*.".$type);
+		for($i=0; $i<count($files); $i++){
+			$files[$i] = preg_replace("/.+\/(\w+\.$type)/", '$1', $files[$i]);
+		}
+
+		$zip -> open($zipfile, \ZipArchive::CREATE);
+        foreach($files as $f){
+          $zip->addFile($filedir.$f, $f);
+        }
+        $zip -> close();
+        return response() -> download($zipfile);
+	}
 
     public function newJob(Request $request){
       // check file type
@@ -589,10 +633,11 @@ class JobController extends Controller
     }
 
     public function annotPlot(Request $request){
-      $jobID = $request -> input('jobID');
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      $type = $request->input('annotPlotSelect');
-      $rowI = $request->input('annotPlotRow');
+      $id = $request->input('id');
+	  $prefix = $request->input('prefix');
+      $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
+      $type = $request -> input('annotPlotSelect');
+      $rowI = $request -> input('annotPlotRow');
 
       $GWAS=0;
       $CADD=0;
@@ -619,14 +664,15 @@ class JobController extends Controller
       if($request -> has('annotPlot_eqtl')){$eqtl=1;}
 	  if($request -> has('annotPlot_ci')){$ci=1;}
 
-      return view('pages.annotPlot', ['jobID'=>$jobID, 'type'=>$type, 'rowI'=>$rowI,
+      return view('pages.annotPlot', ['id'=>$id, 'prefix'=>$prefix, 'type'=>$type, 'rowI'=>$rowI,
 	  	'GWASplot'=>$GWAS, 'CADDplot'=>$CADD, 'RDBplot'=>$RDB, 'eqtlplot'=>$eqtl,
 		'ciplot'=>$ci, 'Chr15'=>$Chr15, 'Chr15cells'=>$Chr15cells]);
     }
 
     public function filedown(Request $request){
-      $jobID = $request -> input('jobID');
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      $id = $request->input('id');
+	  $prefix = $request->input('prefix');
+      $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
       // $zip = new ZipArchive();
       $files = array();
       if($request -> has('paramfile')){ $files[] = "params.config";}
@@ -667,7 +713,11 @@ class JobController extends Controller
       }
 
       $zip = new \ZipArchive();
-      $zipfile = $filedir."FUMA_job".$jobID.".zip";
+	  if($prefix=="gwas"){
+		  $zipfile = $filedir."FUMA_gwas".$id.".zip";
+	  }else{
+		  $zipfile = $filedir."FUMA_job".$id.".zip";
+	  }
 
       if(File::exists($zipfile)){
         File::delete($zipfile);
@@ -814,11 +864,6 @@ class JobController extends Controller
 
       $script = storage_path()."/scripts/GeneSet.py";
       exec("python $script $filedir", $output2, $error2);
-    //   if($error != 0 || $error2 != 0){
-    //     echo "ERROR:".$output[0].":".$output2[0];
-    //   }else{
-    //     echo "OK";
-    //   }
     }
 
     public function snp2geneGeneQuery(Request $request){
@@ -911,16 +956,20 @@ class JobController extends Controller
 
     public function imgdown(Request $request){
       $svg = $request->input('data');
-      $dir = $request->input('dir');
-      $jobID = $request -> input('id');
+      $prefix= $request->input('dir');
+      $id = $request -> input('id');
       $type = $request->input('type');
       $fileName = $request->input('fileName');
-      $svgfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/temp.svg';
-      $outfile = config('app.jobdir').'/'.$dir.'/'.$jobID.'/';
+      $svgfile = config('app.jobdir').'/'.$prefix.'/'.$id.'/temp.svg';
+      $outfile = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
       $svg = preg_replace("/\),rotate/", ")rotate", $svg);
       $svg = preg_replace("/,skewX\(.+?\),scale\(.+?\)/", "", $svg);
-      $fileName .= "_FUMAjob".$jobID;
+	  if($prefix=="gwas"){
+      	  $fileName .= "_FUMAgwas".$id;
+	  }else{
+	      $fileName .= "_FUMAjob".$id;
+	  }
       if($type=="svg"){
         file_put_contents($svgfile, $svg);
         $outfile .= $fileName.'.svg';

@@ -4,6 +4,7 @@ import timeit
 import re
 import pandas as pd
 import numpy as np
+import json
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -89,27 +90,31 @@ else:
     snps = snps[:, [snpshead.index("pos"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("rsID"), snpshead.index("MAF")]]
     snpshead = ["pos", "gwasP", "ld", "r2", "IndSigSNP", "rsID", "MAF"]
 
-outfile = open(filedir+"locusPlot.txt", 'w')
-outfile.write("\t".join(snpshead)+"\n")
-for l in snps:
-    outfile.write("\t".join(l.astype(str))+"\n")
-outfile.close()
+# outfile = open(filedir+"locusPlot.txt", 'w')
+# outfile.write("\t".join(snpshead)+"\n")
+# for l in snps:
+#     outfile.write("\t".join(l.astype(str))+"\n")
+# outfile.close()
 
 chrcol = 0
 poscol = 1
 
-temp = pd.read_table(filedir+"all.txt", sep="\t")
-temp = temp.as_matrix()
-temp = temp[temp[:,chrcol]==chrom]
-temp = temp[temp[:,poscol]>=xMin-500000]
-temp = temp[temp[:,poscol]<=xMax+500000]
+allsnps = pd.read_table(filedir+"all.txt", sep="\t", dtype="str")
+allsnps = allsnps.as_matrix()
+allsnps = allsnps[np.where((allsnps[:,chrcol].astype(int)==chrom) & (allsnps[:,poscol].astype(int)>=xMin-500000) & (allsnps[:,poscol].astype(int)<=xMax+500000))]
 
-temp = temp[ArrayNotIn(temp[:,poscol], snps[:,3])]
+allsnps = allsnps[ArrayNotIn(allsnps[:,poscol].astype(int), snps[:,3])]
 
-outfile = open(filedir+"temp.txt", 'w')
-outfile.write("chr\tpos\tgwasP\n")
-for l in temp:
-    outfile.write(str(int(l[0]))+"\t"+str(int(l[1]))+"\t"+str(l[2])+"\n")
+# outfile = open(filedir+"temp.txt", 'w')
+# outfile.write("chr\tpos\tgwasP\n")
+# for l in temp:
+#     outfile.write(str(int(l[0]))+"\t"+str(int(l[1]))+"\t"+str(l[2])+"\n")
 
-stop = timeit.default_timer()
-print stop - start
+# stop = timeit.default_timer()
+# print stop - start
+
+out = {}
+out["snps"] = [dict(zip(snpshead, l)) for l in snps]
+out["allsnps"] = [[int(l[1]), float(l[2])] for l in allsnps]
+
+print json.dumps(out)

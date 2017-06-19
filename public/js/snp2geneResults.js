@@ -3,6 +3,7 @@ var leadSNPtable_selected=null;
 var lociTable_selected=null;
 // var SNPtable_selected=null;
 var annotPlotSelected;
+var prefix = "jobs";
 $(document).ready(function(){
   // hide submit buttons for imgDown
   $('.ImgDownSubmit').hide();
@@ -104,10 +105,10 @@ $(document).ready(function(){
             // jobInfo(jobid);
             GWplot(jobid);
             QQplot(jobid);
-            MAGMAtsplot(jobid);
+            MAGMAresults(jobid);
+			ciMapCircosPlot(jobid, ciMap);
             showResultTables(filedir, jobid, posMap, eqtlMap, ciMap, orcol, becol, secol);
             $('#GWplotSide').show();
-            $('#results').show();
             $('#resultsSide').show();
           }
       });
@@ -116,7 +117,7 @@ $(document).ready(function(){
     function error5(){
       GWplot(jobid);
       QQplot(jobid);
-      MAGMAtsplot(jobid);
+      MAGMAresults(jobid);
       $.ajax({
         url: subdir+'/snp2gene/Error5',
         type: 'POST',
@@ -233,7 +234,7 @@ function GWplot(jobID){
   //           	.attr("width", width)
   //           	.attr("height", height)
   //           	.node().getContext('2d');
-  d3.json("manhattan/jobs/"+jobID+"/manhattan.txt", function(data){
+  d3.json("manhattan/"+prefix+"/"+jobID+"/manhattan.txt", function(data){
   // d3.tsv("/../IPGAP/sotrage/jobs/"+jobID+"/manhattan.txt", function(error, data){
 
     data.forEach(function(d){
@@ -305,7 +306,7 @@ function GWplot(jobID){
     svg.selectAll('text').style("font-family", "sans-serif");
   });
 
-  d3.json("manhattan/jobs/"+jobID+"/magma.genes.out", function(data){
+  d3.json("manhattan/"+prefix+"/"+jobID+"/magma.genes.out", function(data){
     data.forEach(function(d){
       // d.CHR = +d.CHR;
   		// d.START = +d.START;
@@ -433,7 +434,7 @@ function QQplot(jobID){
   //                 	.attr("width", width+margin.right)
   //                 	.attr("height", height+margin.bottom)
   //                 	.node().getContext('2d');
-  d3.json('QQplot/jobs/'+jobID+'/SNP', function(data){
+  d3.json('QQplot/'+prefix+'/'+jobID+'/SNP', function(data){
   	data.forEach(function(d){
   		d.obs = +d.obs;
   		d.exp = +d.exp;
@@ -492,7 +493,7 @@ function QQplot(jobID){
     qqSNP.selectAll('text').style("font-family", "sans-serif");
   });
 
-  d3.json('QQplot/jobs/'+jobID+'/Gene', function(data){
+  d3.json('QQplot/'+prefix+'/'+jobID+'/Gene', function(data){
   	data.forEach(function(d){
   		d.obs = +d.obs;
   		d.exp = +d.exp;
@@ -550,7 +551,7 @@ function QQplot(jobID){
   });
 }
 
-function MAGMAtsplot(jobID){
+function MAGMAresults(jobID){
   var file = "magma.sets.top";
   $('#MAGMAtable').DataTable({
 	  "processing": true,
@@ -560,7 +561,8 @@ function MAGMAtsplot(jobID){
 	    url: "DTfile",
 	    type: "POST",
 	    data: {
-	      jobID: jobID,
+	      id: jobID,
+		  prefix: prefix,
 	      infile: file,
 	      header: "FULL_NAME:NGENES:BETA:BETA_STD:SE:P:Pbon"
 	    }
@@ -573,7 +575,7 @@ function MAGMAtsplot(jobID){
 	  "iDisplayLength": 10
   });
 
-  d3.json(subdir+'/snp2gene/MAGMAtsplot/general/'+jobID, function(data){
+  d3.json(subdir+'/snp2gene/MAGMAtsplot/general/'+prefix+"/"+jobID, function(data){
     if(data==null || data==undefined || data.lenght==0){
       $('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
       +' MAGMA tissue expression analyses is only available for FUMA v1.1.0 or later.</span><br/>'
@@ -663,7 +665,7 @@ function MAGMAtsplot(jobID){
     }
   });
 
-  d3.json(subdir+'/snp2gene/MAGMAtsplot/specific/'+jobID, function(data){
+  d3.json(subdir+'/snp2gene/MAGMAtsplot/specific/'+prefix+"/"+jobID, function(data){
     if(data==null || data==undefined || data.lenght==0){
     }else{
       var margin = {top:30, right: 30, bottom:230, left:80},
@@ -751,6 +753,57 @@ function MAGMAtsplot(jobID){
   });
 }
 
+function ciMapCircosPlot(jobID, ciMap){
+	if(ciMap==1){
+		var chr = [];
+		$.ajax({
+			url: subdir+"/snp2gene/circos_chr",
+			type: 'POST',
+	        data: {
+	          id: jobID,
+			  prefix: prefix
+	        },
+			success: function(data){
+				chr = data.split(":");
+				for(var i=0; i<chr.length; i++){
+					chr[i] = parseInt(chr[i]);
+				}
+				chr.sort(function(a,b){return a-b;});
+			},
+			complete: function(){
+				var images = "";
+				var j = 0;
+				for(var i=0; i<chr.length; i++){
+					j++;
+					if(i==0){
+						images += '<div class="row"><div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/snp2gene/circos_image/'+prefix+'/'+jobID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/snp2gene/circos_image/'+prefix+'/'+jobID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div>';
+					}else if(i==chr.length-1){
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/snp2gene/circos_image/'+prefix+'/'+jobID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/snp2gene/circos_image/'+prefix+'/'+jobID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div></div>';
+					}else if(j==3){
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/snp2gene/circos_image/'+prefix+'/'+jobID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/snp2gene/circos_image/'+prefix+'/'+jobID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div></div>';
+						j=0;
+					}else{
+						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/snp2gene/circos_image/'+prefix+'/'+jobID+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/snp2gene/circos_image/'+prefix+'/'+jobID+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div>';
+					}
+				}
+				$('#ciMapCircosPlot').html(images);
+			}
+		});
+	}
+}
+
 function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, secol){
   $('#plotClear').hide();
   $('#download').attr('disabled', false);
@@ -808,7 +861,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
         url: "DTfile",
         type: "POST",
         data: {
-          jobID: jobID,
+          id: jobID,
+		  prefix: prefix,
           infile: file,
           header: "GenomicLocus:uniqID:rsID:chr:pos:p:start:end:nSNPs:nGWASSNPs:nIndSigSNPs:IndSigSNPs:nLeadSNPs:LeadSNPs"
         }
@@ -829,7 +883,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
         url: "DTfile",
         type: "POST",
         data: {
-          jobID: jobID,
+		  id: jobID,
+  		  prefix: prefix,
           infile: file,
           header: "No:GenomicLocus:uniqID:rsID:chr:pos:p:nIndSigSNPs:IndSigSNPs"
         }
@@ -850,7 +905,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
         url: "DTfile",
         type: "POST",
         data: {
-          jobID: jobID,
+		  id: jobID,
+  		  prefix: prefix,
           infile: file,
           header: "No:GenomicLocus:uniqID:rsID:chr:pos:p:nSNPs:nGWASSNPs"
         }
@@ -892,7 +948,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
       url: 'DTfile',
       type: "POST",
       data: {
-        jobID: jobID,
+		id: jobID,
+  		prefix: prefix,
         infile: file,
         header: cols
       }
@@ -914,7 +971,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
       url: 'DTfile',
       type: "POST",
       data: {
-        jobID: jobID,
+		id: jobID,
+  		prefix: prefix,
         infile: file,
         header: "uniqID:chr:pos:gene:symbol:dist:annot:exonic_func:exon"
       }
@@ -951,7 +1009,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
       url: 'DTfile',
       type: "POST",
       data: {
-        jobID: jobID,
+		id: jobID,
+  		prefix: prefix,
         infile: file,
         header: col
       }
@@ -971,7 +1030,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
         url: 'DTfileServerSide',
         type: "POST",
         data: {
-          jobID: jobID,
+	      id: jobID,
+  		  prefix: prefix,
           infile: file,
           header: "uniqID:chr:pos:db:tissue:gene:symbol:p:FDR:tz"
         }
@@ -992,7 +1052,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
           url: 'DTfileServerSide',
           type: "POST",
           data: {
-            jobID: jobID,
+			id: jobID,
+    		prefix: prefix,
             infile: file,
             header: "GenomicLocus:region1:region2:FDR:type:DB:tissue/cell:inter/intra:SNPs:genes"
           }
@@ -1011,7 +1072,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
           url: 'DTfileServerSide',
           type: "POST",
           data: {
-            jobID: jobID,
+			id: jobID,
+    		prefix: prefix,
             infile: file,
             header: "uniqID:rsID:chr:pos:reg_region:type:tissue/cell"
           }
@@ -1030,7 +1092,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
           url: 'DTfileServerSide',
           type: "POST",
           data: {
-            jobID: jobID,
+			id: jobID,
+    		prefix: prefix,
             infile: file,
             header: "region2:reg_region:type:tissue/cell:genes"
           }
@@ -1049,7 +1112,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
         url: 'DTfile',
         type: "POST",
         data: {
-          jobID: jobID,
+	      id: jobID,
+  		  prefix: prefix,
           infile: file,
           header: "GenomicLocus:leadSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
         }
@@ -1066,7 +1130,8 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
   //     url: 'DTfile',
   //     type: "POST",
   //     data: {
-  //       jobID: jobID,
+  //       id: jobID,
+  // 	   prefix: prefix,
   //       infile: file,
   //     }
   //   },
@@ -1113,12 +1178,14 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
       type: "POST",
       data:{
         type: "IndSigSNP",
-        jobID: jobID,
+        id: jobID,
+		prefix: prefix,
         rowI: rowI
       },
-      complete: function(){
-        locusPlot(jobID, "InsSigSNP", chr);
-      }
+	  success: function(data){
+		  var plotData = JSON.parse(data.replace(/NaN/g, "-1"));
+		  locusPlot(plotData, "IndSigSNP", chr);
+	  }
     });
 
     $('#selectedLeadSNP').html("");
@@ -1146,12 +1213,14 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
       type: "POST",
       data:{
         type: "leadSNP",
-        jobID: jobID,
+        id: jobID,
+		prefix: prefix,
         rowI: rowI
       },
-      complete: function(){
-        locusPlot(jobID, "leadSNP", chr);
-      }
+	  success: function(data){
+		  var plotData = JSON.parse(data.replace(/NaN/g, "-1"));
+		  locusPlot(plotData, "leadSNP", chr);
+	  }
     });
 
     $('#selectedLeadSNP').html("");
@@ -1179,12 +1248,14 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
       type: "POST",
       data:{
         type: "loci",
-        jobID: jobID,
+        id: jobID,
+		prefix: prefix,
         rowI: rowI
       },
-      complete: function(){
-        locusPlot(jobID, "loci", chr);
-      }
+	  success: function(data){
+		  var plotData = JSON.parse(data.replace(/NaN/g, "-1"));
+		  locusPlot(plotData, "loci", chr);
+	  }
     });
 
     $('#selectedLeadSNP').html("");
@@ -1198,7 +1269,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
     $('#selectedLeadSNP').html(out);
   });
 
-  function locusPlot(jobID, type, chr){
+  function locusPlot(data, type, chr){
     // create plot space
     var colorScale = d3.scale.linear().domain([0.0,0.5,1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
     var margin = {top:50, right: 50, bottom:60, left:50},
@@ -1257,146 +1328,139 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
       .attr("x", 345).attr("y", height+50)
       .text("Independent significant SNPs");
 
-    queue().defer(d3.json, "d3text/"+jobID+"/locusPlot.txt")
-      .defer(d3.json, "d3text/"+jobID+"/temp.txt")
-      .awaitAll(function(error, data){
-        var data1 = data[0];
-        var data2 = data[1];
-
-        data1.forEach(function(d){
-          d.pos = +d.pos;
-          d.gwasP = +d.gwasP;
-          d.r2 = +d.r2;
-          d.ld = +d.ld;
-        });
-
-        data2.forEach(function(d){
-          d.pos = +d.pos;
-          d.p = +d.gwasP;
-        });
-
-        var side=(d3.max(data2, function(d){return d.pos})-d3.min(data2, function(d){return d.pos}))*0.05;
-        x.domain([d3.min(data2, function(d){return d.pos})-side, d3.max(data2, function(d){return d.pos})+side]);
-        y.domain([0, Math.max(d3.max(data1, function(d){return -Math.log10(d.gwasP)}), d3.max(data2, function(d){return -Math.log10(d.gwasP)}))]);
-        var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
-        var yAxis = d3.svg.axis().scale(y).orient("left");
-        // tip
-        var tip = d3.tip().attr("class", "d3-tip")
-          .offset([-10,0])
-          .html(function(d){
-            var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF
-                      +"<br/>r2: "+d.r2+"<br/>Ind. Sig. SNP: "+d.IndSigSNP;
-            if(orcol!="NA"){out += "<br/>OR: "+d.or;}
-            if(becol!="NA"){out += "<br/>Beta: "+d.beta;}
-            if(secol!="NA"){out += "<br/>SE: "+d.se;}
-            return out;
-          });
-        svg.call(tip);
-        // zoom
-        var zoom = d3.behavior.zoom().x(x).scaleExtent([1,10]).on("zoom", zoomed);
-        svg.call(zoom);
-        // add rect
-        svg.append("rect").attr("width", width).attr("height", height)
-          .style("fill", "transparent")
-          .style("shape-rendering", "crispEdges");
-
-        // dot plot for gwas tagged SNPs
-        // SNPs not in LD
-        svg.selectAll("dot").data(data2).enter()
-          .append("circle")
-          .attr("class", "nonLD")
-          .attr("r", 3).attr("cx", function(d){return x(d.pos);})
-          .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-          .style('fill', "grey");
-        // SNPs in LD
-        svg.selectAll("dot").data(data1.filter(function(d){if(!isNaN(d.gwasP) && d.ld==1){return d;}})).enter()
-          .append("circle")
-          .attr("class", "dot")
-          .attr("r", 3).attr("cx", function(d){return x(d.pos);})
-          .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-          .style('fill', function(d){return colorScale(d.r2);})
-          .on("mouseover", tip.show)
-          .on("mouseout", tip.hide);
-        // add rect for 1KG SNPs
-        svg.selectAll("rect.KGSNPs").data(data1.filter(function(d){if(isNaN(d.gwasP)){return d;}})).enter()
-          .append("rect")
-          .attr("class", "KGSNPs")
-          .attr("x", function(d){return x(d.pos)})
-          .attr("y", -20)
-          .attr("height", "10")
-          .attr("width", "3")
-          .style('fill', function(d){if(d.ld==0){return "grey";}else{return colorScale(d.r2);}})
-          .on("mouseover", tip.show)
-          .on("mouseout", tip.hide);
-
-        svg.selectAll("dot.leadSNPs").data(data1.filter(function(d){if(d.ld>1){return d;}})).enter()
-          .append("circle")
-          .attr("class", "leadSNPs")
-          .attr("cx", function(d){return x(d.pos)})
-          .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-          .attr("r", function(d){
-            if(d.ld==2){return 3.5;}
-            else if(d.ld==3){return 4;}
-            else if(d.ld==4){return 4.5;}
-          })
-          .style("fill", function(d){
-              if(d.ld==2){return colorScale(d.r2);}
-              else if(d.ld==3){return "#9933ff"}
-              else if(d.ld==4){return "#4d0099"}
-          })
-          .style("stroke", "black").style("stroke-width", "2")
-          .on("mouseover", tip.show)
-          .on("mouseout", tip.hide);
-        // axis labels
-        svg.append("g").attr("class", "x axis")
-          .attr("transform", "translate(0,"+height+")").call(xAxis);
-        svg.append("g").attr("class", "y axis").call(yAxis);
-        svg.append("text").attr("text-anchor", "middle")
-          .attr("transform", "translate("+(-margin.left/2-5)+","+(height/2)+")rotate(-90)")
-          .text("-log10 P-value");
-        svg.append("text").attr("text-anchor", "middle")
-          .attr("transform", "translate("+(width/2)+","+(height+32)+")")
-          .text("Chromosome "+chr);
-        svg.append("text").attr("text-anchor", "middle")
-          .attr("transform", "translate("+(-margin.left/2)+", -15)")
-          .style("font-size", "8px")
-          .text("1000G SNPs");
-
-        function zoomed() {
-          svg.select(".x.axis").call(xAxis);
-          svg.selectAll(".nonLD").attr("cx", function(d){return x(d.pos);})
-            .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-            .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return"grey";}});
-          svg.selectAll(".dot").attr("cx", function(d){return x(d.pos);})
-            .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-            .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return"grey";}else{return colorScale(d.r2);}});
-          svg.selectAll(".KGSNPs")
-            .attr("x", function(d){return x(d.pos)})
-            .attr("y", -20)
-            .style('fill', function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey";}else{return colorScale(d.r2);}});
-          svg.selectAll(".leadSNPs")
-            .attr("cx", function(d){return x(d.pos);})
-            .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
-            .style("fill", function(d){
-              if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}
-              else if(d.ld==2){return colorScale(d.r2);}
-              else if(d.ld==3){return "#9933ff"}
-              else if(d.ld==4){return "#4d0099"}
-            })
-            .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black";}});
-        }
-
-        d3.select('#plotClear').on('click', reset);
-        function reset(){
-          d3.transition().duration(750).tween("zoom", function(){
-            var ix = d3.interpolate(x.domain(), [d3.min(data2, function(d){return d.pos})-side, d3.max(data2, function(d){return d.pos})+side]);
-            return function(t){
-              zoom.x(x.domain(ix(t)));
-              zoomed();
-            }
-          });
-        }
+    data.snps.forEach(function(d){
+		d.pos = +d.pos;
+        d.gwasP = +d.gwasP;
+        d.r2 = +d.r2;
+        d.ld = +d.ld;
     });
+
+    data.allsnps.forEach(function(d){
+		d[0] = +d[0]; //pos
+		d[1] = +d[1]; //P
+    });
+
+    var side=(d3.max(data.allsnps, function(d){return d[0]})-d3.min(data.allsnps, function(d){return d[0]}))*0.05;
+    x.domain([d3.min(data.allsnps, function(d){return d[0]})-side, d3.max(data.allsnps, function(d){return d[0]})+side]);
+    y.domain([0, Math.max(d3.max(data.snps, function(d){return -Math.log10(d.gwasP)}), d3.max(data.allsnps, function(d){return -Math.log10(d[1])}))]);
+    var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
+    var yAxis = d3.svg.axis().scale(y).orient("left");
+    // tip
+    var tip = d3.tip().attr("class", "d3-tip")
+      .offset([-10,0])
+      .html(function(d){
+        var out = "rsID: "+d.rsID+"<br/>BP: "+d.pos+"<br/>P: "+d.gwasP+"<br/>MAF: "+d.MAF
+                  +"<br/>r2: "+d.r2+"<br/>Ind. Sig. SNP: "+d.IndSigSNP;
+        if(orcol!="NA"){out += "<br/>OR: "+d.or;}
+        if(becol!="NA"){out += "<br/>Beta: "+d.beta;}
+        if(secol!="NA"){out += "<br/>SE: "+d.se;}
+        return out;
+      });
+    svg.call(tip);
+    // zoom
+    var zoom = d3.behavior.zoom().x(x).scaleExtent([1,10]).on("zoom", zoomed);
+    svg.call(zoom);
+    // add rect
+    svg.append("rect").attr("width", width).attr("height", height)
+      .style("fill", "transparent")
+      .style("shape-rendering", "crispEdges");
+
+    // dot plot for gwas tagged SNPs
+    // SNPs not in LD
+    svg.selectAll("dot").data(data.allsnps).enter()
+      .append("circle")
+      .attr("class", "nonLD")
+      .attr("r", 3).attr("cx", function(d){return x(d[0]);})
+      .attr("cy", function(d){return y(-Math.log10(d[1]));})
+      .style('fill', "grey");
+    // SNPs in LD
+    svg.selectAll("dot").data(data.snps.filter(function(d){if(d.gwasP!=-1 && d.ld==1){return d;}})).enter()
+      .append("circle")
+      .attr("class", "dot")
+      .attr("r", 3).attr("cx", function(d){return x(d.pos);})
+      .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+      .style('fill', function(d){return colorScale(d.r2);})
+      .on("mouseover", tip.show)
+      .on("mouseout", tip.hide);
+    // add rect for 1KG SNPs
+    svg.selectAll("rect.KGSNPs").data(data.snps.filter(function(d){if(d.gwasP==-1){return d;}})).enter()
+      .append("rect")
+      .attr("class", "KGSNPs")
+      .attr("x", function(d){return x(d.pos)})
+      .attr("y", -20)
+      .attr("height", "10")
+      .attr("width", "3")
+      .style('fill', function(d){if(d.ld==0){return "grey";}else{return colorScale(d.r2);}})
+      .on("mouseover", tip.show)
+      .on("mouseout", tip.hide);
+
+    svg.selectAll("dot.leadSNPs").data(data.snps.filter(function(d){if(d.ld>1){return d;}})).enter()
+      .append("circle")
+      .attr("class", "leadSNPs")
+      .attr("cx", function(d){return x(d.pos)})
+      .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+      .attr("r", function(d){
+        if(d.ld==2){return 3.5;}
+        else if(d.ld==3){return 4;}
+        else if(d.ld==4){return 4.5;}
+      })
+      .style("fill", function(d){
+          if(d.ld==2){return colorScale(d.r2);}
+          else if(d.ld==3){return "#9933ff"}
+          else if(d.ld==4){return "#4d0099"}
+      })
+      .style("stroke", "black").style("stroke-width", "2")
+      .on("mouseover", tip.show)
+      .on("mouseout", tip.hide);
+    // axis labels
+    svg.append("g").attr("class", "x axis")
+      .attr("transform", "translate(0,"+height+")").call(xAxis);
+    svg.append("g").attr("class", "y axis").call(yAxis);
+    svg.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(-margin.left/2-5)+","+(height/2)+")rotate(-90)")
+      .text("-log10 P-value");
+    svg.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(width/2)+","+(height+32)+")")
+      .text("Chromosome "+chr);
+    svg.append("text").attr("text-anchor", "middle")
+      .attr("transform", "translate("+(-margin.left/2)+", -15)")
+      .style("font-size", "8px")
+      .text("1000G SNPs");
+
+    function zoomed() {
+      svg.select(".x.axis").call(xAxis);
+      svg.selectAll(".nonLD").attr("cx", function(d){return x(d[0]);})
+        .attr("cy", function(d){return y(-Math.log10(d[1]));})
+        .style("fill", function(d){if(x(d[0])<0 || x(d[0])>width){return "transparent";}else{return"grey";}});
+      svg.selectAll(".dot").attr("cx", function(d){return x(d.pos);})
+        .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+        .style("fill", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return"grey";}else{return colorScale(d.r2);}});
+      svg.selectAll(".KGSNPs")
+        .attr("x", function(d){return x(d.pos)})
+        .attr("y", -20)
+        .style('fill', function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else if(d.ld==0){return "grey";}else{return colorScale(d.r2);}});
+      svg.selectAll(".leadSNPs")
+        .attr("cx", function(d){return x(d.pos);})
+        .attr("cy", function(d){return y(-Math.log10(d.gwasP));})
+        .style("fill", function(d){
+          if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}
+          else if(d.ld==2){return colorScale(d.r2);}
+          else if(d.ld==3){return "#9933ff"}
+          else if(d.ld==4){return "#4d0099"}
+        })
+        .style("stroke", function(d){if(x(d.pos)<0 || x(d.pos)>width){return "transparent";}else{return "black";}});
+    }
+
+    d3.select('#plotClear').on('click', reset);
+    function reset(){
+      d3.transition().duration(750).tween("zoom", function(){
+        var ix = d3.interpolate(x.domain(), [d3.min(data.allsnps, function(d){return d[0]})-side, d3.max(data.allsnps, function(d){return d[0]})+side]);
+        return function(t){
+          zoom.x(x.domain(ix(t)));
+          zoomed();
+        }
+      });
+    }
   }
 }
 
@@ -1423,7 +1487,7 @@ function PlotSNPAnnot(jobID){
         return d.count;
       })
   svg.call(tip);
-  d3.json("d3text/"+jobID+"/"+file, function(data){
+  d3.json("d3text/"+prefix+"/"+jobID+"/"+file, function(data){
     data.forEach(function(d){
       d.count =+ d.count;
     });
@@ -1459,7 +1523,7 @@ function PlotSNPAnnot(jobID){
 function PlotLocuSum(jobID){
   var file="interval_sum.txt";
   // filedir = filedir.replace("../", "");
-  d3.json("d3text/"+jobID+"/"+file, function(data){
+  d3.json("d3text/"+prefix+"/"+jobID+"/"+file, function(data){
     data.forEach(function(d){
       d.nSNPs = +d.nSNPs;
       d.size = +(d.size/1000);
@@ -1684,11 +1748,18 @@ function DownloadFiles(){
   }
 }
 
-function ImgDown(id, type){
-  $('#'+id+'Data').val($('#'+id).html());
-  $('#'+id+'Type').val(type);
-  $('#'+id+'JobID').val(jobid);
-  $('#'+id+'FileName').val(id);
-  $('#'+id+'Dir').val("jobs");
-  $('#'+id+'Submit').trigger('click');
+function ImgDown(name, type){
+  $('#'+name+'Data').val($('#'+name).html());
+  $('#'+name+'Type').val(type);
+  $('#'+name+'ID').val(jobid);
+  $('#'+name+'FileName').val(name);
+  $('#'+name+'Dir').val("jobs");
+  $('#'+name+'Submit').trigger('click');
+}
+
+function circosDown(type){
+	$('#circosPlotID').val(jobid);
+	$('#circosPlotDir').val(prefix);
+	$('#circosPlotType').val(type);
+	$('#circosPlotSubmit').trigger('click');
 }

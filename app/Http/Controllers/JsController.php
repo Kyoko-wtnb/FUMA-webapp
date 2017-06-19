@@ -23,11 +23,12 @@ class JsController extends Controller
 
 
     public function DTfile(Request $request){
-      $jobID = $request -> input('jobID');
+      $id = $request -> input('id');
+	  $prefix = $request -> input('prefix');
       $fin = $request -> input('infile');
       $cols = $request -> input('header');
       $cols = explode(":", $cols);
-	  $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+	  $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
       $f = $filedir.$fin;
       if(file_exists($f)){
         $file = fopen($f, 'r');
@@ -61,19 +62,20 @@ class JsController extends Controller
     }
 
     public function DTfileServerSide(Request $request){
-	  $jobID = $request->input('jobID');
+	  $id = $request->input('id');
+	  $prefix = $request -> input('prefix');
       $fin = $request -> input('infile');
       $cols = $request -> input('header');
-	  $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+	  $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
       $draw = $request -> input('draw');
-    	$order = $request -> input('order');
-    	$order_column = $order[0]["column"];
-    	$order_dir = $order[0]["dir"];
-    	$start = $request -> input('start');
-    	$length = $request -> input('length');
-    	$search = $request -> input('search');
-    	$search = $search['value'];
+      $order = $request -> input('order');
+      $order_column = $order[0]["column"];
+      $order_dir = $order[0]["dir"];
+      $start = $request -> input('start');
+      $length = $request -> input('length');
+      $search = $request -> input('search');
+      $search = $search['value'];
 
       $script = storage_path().'/scripts/dt.py';
       $out = shell_exec("python $script $filedir $fin $draw $cols $order_column $order_dir $start $length $search");

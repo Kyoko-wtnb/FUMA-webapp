@@ -21,20 +21,19 @@ class D3jsController extends Controller
     }
 
     public function locusPlot(Request $request){
-      $jobID = $request->input('jobID');
+      $id = $request->input('id');
+	  $prefix = $request->input('prefix');
       $type = $request->input('type');
       $rowI = $request->input('rowI');
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+      $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
       $script = storage_path()."/scripts/locusPlot.py";
-      exec("python $script $filedir $rowI $type");
-      return;
+      $out = shell_exec("python $script $filedir $rowI $type");
+      return $out;
     }
 
-    public function d3js_textfile($jobID, $file){
-      // $filedir = $request -> input('filedir');
-      // $file = $request -> input('file');
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+    public function d3js_textfile($prefix, $id, $file){
+      $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
       $f = $filedir.$file;
       if(file_exists($f)){
         $file = fopen($f, 'r');
@@ -48,7 +47,8 @@ class D3jsController extends Controller
     }
 
 	public function annotPlotGetData(Request $request){
-		$jobID = $request->input("jobID");
+		$id = $request->input("id");
+		$prefix = $request->input("prefix");
 		$type = $request->input("type");
 		$rowI = $request->input("rowI");
 		$GWASplot = $request->input("GWASplot");
@@ -59,7 +59,7 @@ class D3jsController extends Controller
 		$Chr15 = $request->input("Chr15");
 		$Chr15cells = $request->input("Chr15cells");
 
-		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
 		$script = storage_path()."/scripts/annotPlot.py";
 	    $data = shell_exec("python $script $filedir $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells");
@@ -67,13 +67,14 @@ class D3jsController extends Controller
 	}
 
 	public function annotPlotGetGenes(Request $request){
-		$jobID = $request->input("jobID");
+		$id = $request->input("id");
+		$prefix = $request->input("prefix");
 		$chrom = $request->input("chrom");
 		$xMin = $request->input("xMin");
 		$xMax = $request->input("xMax");
 		$eqtlgenes = $request->input("eqtlgenes");
 
-		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
 		$script = storage_path()."/scripts/annotPlot.R";
 		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes");
@@ -106,12 +107,8 @@ class D3jsController extends Controller
       }
     }
 
-    public function manhattan($type, $jobID, $file){
-      if($type=="jobs"){
-        $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-      }else{
-        $filedir = config('app.gwasDBdir')."/gwasDB/".$jobID."/";
-      }
+    public function manhattan($prefix, $id, $file){
+	  $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
       $f = $filedir.$file;
       if($file == "manhattan.txt"){
@@ -150,12 +147,8 @@ class D3jsController extends Controller
 
     }
 
-    public function QQplot($type, $jobID, $plot){
-       if($type=="jobs"){
-         $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-       }else{
-         $filedir = config('app.gwasDBdir')."/gwasDB/".$jobID."/";
-       }
+    public function QQplot($prefix, $id, $plot){
+       $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
       if(strcmp($plot,"SNP")==0){
       	$file=$filedir."QQSNPs.txt";
@@ -189,8 +182,8 @@ class D3jsController extends Controller
       }
     }
 
-    public function MAGMAtsplot($type, $jobID){
-      $filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+    public function MAGMAtsplot($type, $prefix, $jobID){
+      $filedir = config('app.jobdir').'/'.$prefix.'/'.$jobID.'/';
       $file = "";
       if($type=="general"){
         $file = $filedir."magma_exp_general.gcov.out";

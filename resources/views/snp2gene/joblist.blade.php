@@ -33,19 +33,6 @@
         </div>
     </div>
 
-    <!-- <div>
-      <h4>Error types</h4>
-      ERROR:001 <br/>
-      ERROR:002 <br/>
-      ERROR:003 <br/>
-      ERROR:004 <br/>
-      ERROR:005 <br/>
-      ERROR:006 <br/>
-      ERROR:007 <br/>
-      ERROR:008 <br/>
-      ERROR:009 <br/>
-      ERROR:010 <br/>
-    </div> -->
 </div>
 
 <script>
@@ -55,7 +42,6 @@
         $('#joblist-panel table tbody')
             .empty()
             .append('<tr><td colspan="6" style="text-align:center;">Retrieving data</td></tr>');
-
         $.getJSON( subdir + "/snp2gene/getJobList", function( data ) {
             var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
             if(data.length){

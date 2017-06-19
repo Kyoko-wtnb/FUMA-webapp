@@ -81,7 +81,7 @@
 <br/>
 
 <h4><strong>3. Result tables</strong></h4>
-<p>This panel contains multiple tables of your results.
+<p>This panel contains multiple tables of the results.
   Each column is described in <a href="{{ Config::get('app.subdir') }}/tutorial#table-columns">Table columns</a>.
 </p>
 <p>By clicking one of the rows of tables of genomic risk loci, lead SNPs or independent significant SNPs, FUMA will create regional plots of candidate SNPs (GWAS P-value).
@@ -93,11 +93,34 @@ Regional plots can be created with the following optional annotations:<br/>
   <li>CADD score</li>
   <li>RegulomeDB score</li>
   <li>15-core chromatin state: tissue/cell types have to be selected.</li>
-  <li>eQTLs: This is only available when eQTL mapping is performed. eQTLs are plotted per gene and colored per tissue types.</li>
+  <li>eQTLs: This option is only available when eQTL mapping is performed. eQTLs are plotted per gene and colored per tissue types.</li>
+  <li>chromatin interactions: This option is only availalbe when chromatin mapping is performed. Interactions are plotted per data set.</li>
 </ul>
 <br/>
 <img src="{!! URL::asset('/image/snp2geneResults.png') !!}" style="width:60%"/><br/>
 <img src="{!! URL::asset('/image/snp2geneAnnotPlot.png') !!}" style="width:50%"/><br/><br/>
+<br/>
+<p>When chromatin interaction mapping is performed, circos plots are created per chromosome which contains at least one risk loci.
+	The circos plots are displayed in the same panel as chroamtin itneraction table.
+	Each plot is clickable which opens new tab with zoomed in plot.
+	PNG, SVG and circos config files are downloadable.
+</p>
+<p>
+	Each of layers, texts and links of the circos plot are described below.<br/>
+	<ul>
+		<li>Manhattan plot: The most outer layer. Only SNPs with P < 0.05 are displayed. Candidate SNPs are colored by the maximum r<sup>2</sup> to the one of the independent significant SNPs.<br/>
+			SNPs are colored in red (r<sup>2</sup> > 0.8), orange (r<sup>2</sup> > 0.6), green (r<sup>2</sup> > 0.4) and blue (r<sup>2</sup> > 0.2). SNPs wich are not in LD of any of independent significat SNPs and wih r<sup>2</sup> &le; 0.2 are colored grey.<br/>
+			rsID of the top SNPs in each risk locus are displayed the most outer layer.
+		</li>
+		<li>Chromosome ring: The second layer. Genomcin risk loci are highlighted in blue.</li>
+		<li>Mapped gene by chromatin interaction or eQTLs: Only mapped genes by either chroamtin interaction or eQTLs by user defined parameters are displayed. If the gene is mapped only by chroamtin interaction or eQTLs, it is colored orange or green, respectively. When the gene is mapped by both, it is colored red.</li>
+		<li>Chromosome ring: The third layer. This is the same as second layer but without corrdinates.</li>
+		<li>Chroamtin interaction links: Links colored orange are chroamtin interactions used in the mapping</li>
+		<li>eQTL lilnks: Links colored green are eQTLs used in the mapping</li>
+	</ul>
+</p>
+<br/>
+<img src="{!! URL::asset('/image/circosPlots.png') !!}" style="width:90%"/><br/><br/>
 <br/>
 <h4><strong>4. Downloads</strong></h4>
 <p>All results are downloadable as text file.
