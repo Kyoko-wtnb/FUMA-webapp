@@ -1,4 +1,5 @@
 var geneTable;
+var prefix = "gene2func";
 $(document).ready(function(){
   // hide submit buttons for imgDown
   $('.ImgDownSubmit').hide();
@@ -69,17 +70,17 @@ $(document).ready(function(){
     GeneTable(id);
   }else if(status=="query"){
     $('#geneSubmit').attr("disabled", true);
-    var id = IPGAPvar.id;
-    var filedir = IPGAPvar.filedir;
-    var gtype = IPGAPvar.gtype;
-    var gval = IPGAPvar.gval;
-    var bkgtype = IPGAPvar.bkgtype;
-    var bkgval = IPGAPvar.bkgval;
-    // var Xchr = IPGAPvar.Xchr;
-    var MHC = IPGAPvar.MHC;
-    var adjPmeth = IPGAPvar.adjPmeth;
-    var adjPcut = IPGAPvar.adjPcut;
-    var minOverlap = IPGAPvar.minOverlap;
+    var id = fumaJS.id;
+    var filedir = fumaJS.filedir;
+    var gtype = fumaJS.gtype;
+    var gval = fumaJS.gval;
+    var bkgtype = fumaJS.bkgtype;
+    var bkgval = fumaJS.bkgval;
+    // var Xchr = fumaJS.Xchr;
+    var MHC = fumaJS.MHC;
+    var adjPmeth = fumaJS.adjPmeth;
+    var adjPcut = fumaJS.adjPcut;
+    var minOverlap = fumaJS.minOverlap;
     // $('#test').html("adjPmeth: "+adjPmeth);
 
     if(gtype=="text"){
@@ -258,9 +259,9 @@ Array.prototype.unique = function(a){
 function expHeatMap(id){
   d3.select('#expHeat').select("svg").remove();
   var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=10;
-  queue().defer(d3.json, "d3text/"+id+"/exp.txt")
-        .defer(d3.json, "d3text/"+id+"/exp.row.txt")
-        .defer(d3.json, "d3text/"+id+"/exp.col.txt")
+  queue().defer(d3.json, "d3text/"+prefix+"/"+id+"/exp.txt")
+        .defer(d3.json, "d3text/"+prefix+"/"+id+"/exp.row.txt")
+        .defer(d3.json, "d3text/"+prefix+"/"+id+"/exp.col.txt")
         .awaitAll(function(error, data){
           if(data==null || data==undefined){
             $('#expHeat').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> None of your input genes exists in expression data.</span></br>'
@@ -1151,7 +1152,7 @@ function GeneSet(id){
                   'Wikipathways' : 'WikiPathways (Curated version 20161010)',
                   'GWAScatalog' : 'GWAS catalog (reported genes, ver. e85 20160927)'
                 };
-  d3.json("d3text/"+id+"/GS.txt", function(data){
+  d3.json("d3text/"+prefix+"/"+id+"/GS.txt", function(data){
     if(data == undefined || data == null){
       $('#GeneSet').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in selected background genes was 0 or 1.</span></br>'
       +'The hypergeometric test is only performed if more than 2 genes are available.</div>');

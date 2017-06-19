@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => IPGAP\User::class,
+            'model' => fuma\User::class,
         ],
 
         // 'users' => [

@@ -1,8 +1,8 @@
 <?php
 
-namespace IPGAP\Http\Controllers\Auth;
+namespace fuma\Http\Controllers\Auth;
 
-use IPGAP\Http\Controllers\Controller;
+use fuma\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class PasswordController extends Controller

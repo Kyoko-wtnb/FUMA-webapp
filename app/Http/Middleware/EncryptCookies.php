@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Http\Middleware;
+namespace fuma\Http\Middleware;
 
 use Illuminate\Cookie\Middleware\EncryptCookies as BaseEncrypter;
 

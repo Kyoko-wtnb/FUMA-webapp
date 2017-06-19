@@ -1,13 +1,13 @@
 <?php
 
-namespace IPGAP\Http\Controllers;
+namespace fuma\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use IPGAP\SubmitJob;
-use IPGAP\Http\Requests;
-use IPGAP\Http\Controllers\Controller;
+use fuma\SubmitJob;
+use fuma\Http\Requests;
+use fuma\Http\Controllers\Controller;
 use Symfony\Component\Process\Process;
 use View;
 use Auth;

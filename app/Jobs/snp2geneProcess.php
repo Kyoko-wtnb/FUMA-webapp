@@ -1,8 +1,8 @@
 <?php
 
-namespace IPGAP\Jobs;
+namespace fuma\Jobs;
 
-use IPGAP\Jobs\Job;
+use fuma\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Jobs;
+namespace fuma\Jobs;
 
 use Illuminate\Bus\Queueable;
 

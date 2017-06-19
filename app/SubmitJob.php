@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP;
+namespace fuma;
 
 use Illuminate\Database\Eloquent\Model;
 

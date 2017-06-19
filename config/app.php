@@ -206,10 +206,10 @@ return [
         /*
          * Application Service Providers...
          */
-        IPGAP\Providers\AppServiceProvider::class,
-        IPGAP\Providers\AuthServiceProvider::class,
-        IPGAP\Providers\EventServiceProvider::class,
-        IPGAP\Providers\RouteServiceProvider::class,
+        fuma\Providers\AppServiceProvider::class,
+        fuma\Providers\AuthServiceProvider::class,
+        fuma\Providers\EventServiceProvider::class,
+        fuma\Providers\RouteServiceProvider::class,
 
         'Collective\Html\HtmlServiceProvider',
         'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',

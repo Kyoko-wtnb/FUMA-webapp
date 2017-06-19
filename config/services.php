@@ -30,7 +30,7 @@ return [
     ],
 
     'stripe' => [
-        'model' => IPGAP\User::class,
+        'model' => fuma\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],

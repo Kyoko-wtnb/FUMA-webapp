@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Providers;
+namespace fuma\Providers;
 
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -13,8 +13,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'IPGAP\Events\SomeEvent' => [
-            'IPGAP\Listeners\EventListener',
+        'fuma\Events\SomeEvent' => [
+            'fuma\Listeners\EventListener',
         ],
     ];
 
