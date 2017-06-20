@@ -436,6 +436,7 @@ class BrowseController extends Controller
       $Chr15=0;
       $eqtl=0;
 	  $ci=0;
+	  $Chr15cells="NA";
       if($request -> has('annotPlot_GWASp')){$GWAS=1;}
       if($request -> has('annotPlot_CADD')){$CADD=1;}
       if($request -> has('annotPlot_RDB')){$RDB=1;}
@@ -449,8 +450,6 @@ class BrowseController extends Controller
           }
         }
         $Chr15cells = implode(":", $Chr15cells);
-      }else{
-        $Chr15cells="NA";
       }
       if($request -> has('annotPlot_eqtl')){$eqtl=1;}
 	  if($request -> has('annotPlot_ci')){$ci=1;}
@@ -484,6 +483,8 @@ class BrowseController extends Controller
 		$id = $request->input("id");
 		$prefix = $request->input("prefix");
 		$chrom = $request->input("chrom");
+		$eqtlplot = $request->input("eqtlplot");
+		$ciplot = $request->input("ciplot");
 		$xMin = $request->input("xMin");
 		$xMax = $request->input("xMax");
 		$eqtlgenes = $request->input("eqtlgenes");
@@ -491,7 +492,7 @@ class BrowseController extends Controller
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
 		$script = storage_path()."/scripts/annotPlot.R";
-		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes");
+		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot");
 		$data = explode("\n", $data);
 		$data = $data[count($data)-1];
 		return $data;

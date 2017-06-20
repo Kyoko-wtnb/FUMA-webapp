@@ -67,6 +67,33 @@ $(document).ready(function(){
 		// Canvas2Image.saveAsPNG(canvas);
 	});
 
+	$('.level1').on('click', function(){
+		var cur = $(this);
+		var selected = $(this).is(":selected");
+
+		while(cur.next().hasClass('level2')){
+			cur = cur.next();
+			cur.prop('selected', selected);
+		}
+	});
+
+	$('.level2').on('click', function(){
+		var cur = $(this);
+		var selected = $(this).is(":selected");
+
+		var total = true;
+		while(cur.next().hasClass('level2')){
+			cur = cur.next();
+			total = (total && cur.is(':selected'));
+		}
+		cur = $(this);
+		while(cur.prev().hasClass('level2')){
+			cur = cur.prev();
+			total = (total && cur.is(':selected'));
+		}
+		cur.prev().prop('selected', total);
+	});
+
 	if(status.length==0){
 	}else if(status=="fileFormatGWAS"){
 		$('a[href="#newJob"]').trigger('click');

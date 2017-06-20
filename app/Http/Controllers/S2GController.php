@@ -830,6 +830,8 @@ class S2GController extends Controller
 		$id = $request->input("id");
 		$prefix = $request->input("prefix");
 		$chrom = $request->input("chrom");
+		$eqtlplot = $request->input("eqtlplot");
+		$ciplot = $request->input("ciplot");
 		$xMin = $request->input("xMin");
 		$xMax = $request->input("xMax");
 		$eqtlgenes = $request->input("eqtlgenes");
@@ -837,7 +839,7 @@ class S2GController extends Controller
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
 		$script = storage_path()."/scripts/annotPlot.R";
-		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes");
+		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot");
 		$data = explode("\n", $data);
 		$data = $data[count($data)-1];
 		return $data;

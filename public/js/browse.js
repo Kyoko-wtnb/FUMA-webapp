@@ -44,6 +44,34 @@ $(document).ready(function(){
 		$(this).prop('disabled', true);
 	});
 
+	// annot Plot select
+	$('.level1').on('click', function(){
+		var cur = $(this);
+		var selected = $(this).is(":selected");
+
+		while(cur.next().hasClass('level2')){
+			cur = cur.next();
+			cur.prop('selected', selected);
+		}
+	});
+
+	$('.level2').on('click', function(){
+		var cur = $(this);
+		var selected = $(this).is(":selected");
+
+		var total = true;
+		while(cur.next().hasClass('level2')){
+			cur = cur.next();
+			total = (total && cur.is(':selected'));
+		}
+		cur = $(this);
+		while(cur.prev().hasClass('level2')){
+			cur = cur.prev();
+			total = (total && cur.is(':selected'));
+		}
+		cur.prev().prop('selected', total);
+	});
+
 	// load results
 	if(gwasID.length>0){
 		loadResults();

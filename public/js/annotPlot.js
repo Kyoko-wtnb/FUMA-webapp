@@ -46,6 +46,8 @@ $(document).ready(function(){
 				  id: id,
 				  prefix: prefix,
 				  chrom: chrom,
+				  eqtlplot: eqtlplot,
+				  ciplot: ciplot,
 				  xMin: xMin,
 				  xMax: xMax,
 				  eqtlgenes: eqtlgenes
@@ -306,7 +308,7 @@ $(document).ready(function(){
 		    })
 		    .attr("height", 1)
 		    .attr("fill", function(d){
-		      if(x(d[3])<0 || x(d[2])>width){return "transparent";}
+		      if(x(d[3])<0 || x(d[2])>width){return "none";}
 		      else if(genes["mappedGenes"].indexOf(d[1])>=0){return "red";}
 		      else if(d[5]=="protein_coding"){return "blue";}
 		      else{return "#383838"}
@@ -333,7 +335,7 @@ $(document).ready(function(){
 			.style("font-size", "9px")
 			.style("font-family", "sans-serif")
 			.style("fill", function(d){
-			  if(x(d[3])<0 || x(d[2])>width){return "transparent";}
+			  if(x(d[3])<0 || x(d[2])>width){return "none";}
 			  else{return "black";}
 			});
 		if(CADDplot==1 || RDBplot==1 || Chr15==1 || plotData["eqtl"].length>0 || plotData["ci"].length > 0){
@@ -375,7 +377,7 @@ $(document).ready(function(){
 	      })
 	      .attr("height", 9)
 	      .attr("fill", function(d){
-	        if(x(d[6])>width || x(d[7])<0){return "transparent";}
+	        if(x(d[6])>width || x(d[7])<0){return "none";}
 	        else if(genes["mappedGenes"].indexOf(d[1])>=0){return "red";}
 	        else if(d[5]=="protein_coding"){return "blue";}
 	        else{return "#383838"}
@@ -443,7 +445,7 @@ $(document).ready(function(){
 				.attr("r", 3.5)
 				.attr("cx", function(d){return x(d[1]);})
 				.attr("cy", function(d){return y(-Math.log10(d[2]));})
-				.style("fill", function(d){if(x(d[1])<0 || x(d[1])>width){return "transparent";}else{return "grey";}});
+				.style("fill", function(d){if(x(d[1])<0 || x(d[1])>width){return "none";}else{return "grey";}});
 
 			// plot SNPs which exist in the input GWAS file
 			svg.selectAll("dot").data(plotData.snps.filter(function(d){if(!isNaN(d[4]) && d[5]==1){return d;}})).enter()
@@ -472,7 +474,7 @@ $(document).ready(function(){
 				    cells = Chr15cells.split(":");
 				    if(cells[0]=="all"){cells=Chr15eid;}
 				    for(var i=0; i<cells.length; i++){
-				      table += '<tr><td>'+cells[i]+'</td><td>'+d[15+i]+'</td></tr>';
+				      table += '<tr><td>'+cells[i]+'</td><td>'+d[14+i]+'</td></tr>';
 				    }
 				  }
 				  if(eqtlplot==1 & plotData["eqtl"].length>0){
@@ -510,7 +512,7 @@ $(document).ready(function(){
 				    cells = Chr15cells.split(":");
 				    if(cells[0]=="all"){cells=Chr15eid;}
 				    for(var i=0; i<cells.length; i++){
-				      table += '<tr><td>'+cells[i]+'</td><td>'+d[15+i]+'</td></tr>';
+				      table += '<tr><td>'+cells[i]+'</td><td>'+d[14+i]+'</td></tr>';
 				    }
 				  }
 				  if(eqtlplot==1 & plotData["eqtl"].length>0){
@@ -556,7 +558,7 @@ $(document).ready(function(){
 				    cells = Chr15cells.split(":");
 				    if(cells[0]=="all"){cells=Chr15eid;}
 				    for(var i=0; i<cells.length; i++){
-				      table += '<tr><td>'+cells[i]+'</td><td>'+d[15+i]+'</td></tr>';
+				      table += '<tr><td>'+cells[i]+'</td><td>'+d[14+i]+'</td></tr>';
 				    }
 				  }
 				  if(eqtlplot==1 & plotData["eqtl"].length>0){
@@ -632,7 +634,7 @@ $(document).ready(function(){
 				    cells = Chr15cells.split(":");
 				    if(cells[0]=="all"){cells=Chr15eid;}
 				    for(var i=0; i<cells.length; i++){
-				      table += '<tr><td>'+cells[i]+'</td><td>'+d[15+i]+'</td></tr>';
+				      table += '<tr><td>'+cells[i]+'</td><td>'+d[14+i]+'</td></tr>';
 				    }
 				  }
 				  if(eqtlplot==1 & plotData["eqtl"].length>0){
@@ -701,7 +703,7 @@ $(document).ready(function(){
 				    cells = Chr15cells.split(":");
 				    if(cells[0]=="all"){cells=Chr15eid;}
 				    for(var i=0; i<cells.length; i++){
-				      table += '<tr><td>'+cells[i]+'</td><td>'+d[15+i]+'</td></tr>';
+				      table += '<tr><td>'+cells[i]+'</td><td>'+d[14+i]+'</td></tr>';
 				    }
 				  }
 				  if(eqtlplot==1 & plotData["eqtl"].length>0){
@@ -804,13 +806,23 @@ $(document).ready(function(){
 			// plot rect
 			svg.selectAll("rect.chr").data(plotData.Chr15).enter().append("g")
 				.insert('rect').attr('class', 'cell').attr("class", "Chr15rect")
-				.attr("width", function(d){return x(d[2])-x(d[1]);})
+				.attr("x", function(d){
+		          if(x(d[1])<0 || x(d[2])<0){return 0;}
+		          else{return x(d[1]);}
+		        })
+		        .attr("width", function(d){
+		          if(x(d[2])<0 || x(d[1])>width){return 0;}
+		          else if(x(d[1])<0 && x(d[2])>width){return width;}
+		          else if(x(d[1])<0){return x(d[2]);}
+		          else if(x(d[2])>width){return width-x(d[1]);}
+		          else{return x(d[2])-x(d[1]);}
+		        })
 				.attr("height", tileHeight)
-				.attr('x', function(d){
-					if(x(d[1])<0){return 0;}else{return x(d[1]);}
-				})
 				.attr('y', function(d){return yChr15(d[0])})
-				.attr("fill", function(d){return Chr15colors[d[3]*1-1];})
+				.attr("fill", function(d){
+					if(x(d[2])<0 || x(d[1])>width){return "none";}
+  	          		else{return Chr15colors[d[3]-1];}
+				})
 				.on("mousemove", function(){
 					var mousex = d3.mouse(this)[0];
 					vertical.attr("x", mousex);
@@ -893,12 +905,12 @@ $(document).ready(function(){
 				legendEqtl.append("circle")
 					.attr("r", 3.5)
 					.attr("cx", width+10)
-					.attr("cy", function(d){return eqtlTop+15+d*10})
+					.attr("cy", function(d){return eqtlTop+10+d*10})
 					.style("fill", function(d){return eQTLcolors[tissue[d]]});
 				legendEqtl.append("text")
 					.attr("text-anchor", "start")
 					.attr("x", width+15)
-					.attr("y", function(d){return eqtlTop+18+d*10;})
+					.attr("y", function(d){return eqtlTop+13+d*10;})
 					.text(function(d){return db[tissue[d]]+" "+tissue[d]})
 					.style("font-size", "10px");
 
@@ -1014,7 +1026,7 @@ $(document).ready(function(){
 						})
 						.attr("height", ci_cellsize)
 						.attr("fill", function(d){
-							if(x(d[0])>width || x(d[1])<0){return "transparent"}
+							if(x(d[0])>width || x(d[1])<0){return "none"}
 							else{return cicolor(-Math.log10(d[4]))}
 						})
 						.attr("stroke", function(d){

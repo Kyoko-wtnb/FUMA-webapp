@@ -8,6 +8,8 @@ xmin <- as.numeric(args[3])-500000
 xmax <- as.numeric(args[4])+500000
 eqtlgenes <- args[5]
 eqtlgenes = unlist(strsplit(eqtlgenes, ":"))
+eqtlplot <- as.numeric(args[6])
+ciplot <- as.numeric(args[7])
 
 
 curfile <- thisfile()
@@ -30,7 +32,7 @@ if(length(g)==0){
   g <- c(g, ENSG.all.genes$ensembl_gene_id[which(abs(ENSG.all.genes$start_position-xmax)==start)])
 }
 
-g <- unique(c(g, eqtlgenes[eqtlgenes %in% ENSG.all.genes$external_gene_name]))
+g <- unique(c(g, ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$external_gene_name %in% eqtlgenes]))
 
 gmin <- min(ENSG.all.genes$start_position[ENSG.all.genes$ensembl_gene_id %in% g])
 gmax <- max(ENSG.all.genes$end_position[ENSG.all.genes$ensembl_gene_id %in% g])
@@ -48,6 +50,23 @@ genes <- unique(exons[,1:6])
 genes <- genes[order(genes$start_position),]
 
 mappedGenes <- fread(paste(filedir, "genes.txt", sep=""), data.table=F)
+if(eqtlplot==0 & ciplot==0){
+	if("posMapSNPs" %in% colnames(mappedGenes)){
+		mappedGenes <- mappedGenes[mappedGenes$posMapSNPs>0,]
+	}
+}else if(eqtlplot==1 & ciplot==0){
+	if("posMapSNPs" %in% colnames(mappedGenes)){
+		mappedGenes <- mappedGenes[mappedGenes$posMapSNPs>0 | mappedGenes$eqtlMapSNPs>0,]
+	}else{
+		mappedGenes <- mappedGenes[mappedGenes$eqtlMapSNPs>0,]
+	}
+}else if(eqtlplot==0 & ciplot==1){
+	if("posMapSNPs" %in% colnames(mappedGenes)){
+		mappedGenes <- mappedGenes[mappedGenes$posMapSNPs>0 | mappedGenes$ciMap=="Yes",]
+	}else{
+		mappedGenes <- mappedGenes[mappedGenes$ciMap=="Yes",]
+	}
+}
 mappedGenes <- mappedGenes$symbol[mappedGenes$ensg %in% genes$ensembl_gene_id]
 
 #write.table(exons, paste(filedir, "exons.txt", sep=""), quote=F, row.names=F, sep="\t")
