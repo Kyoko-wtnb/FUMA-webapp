@@ -324,17 +324,17 @@ var loggedin = "{{ Auth::check() }}";
 						<!-- Nav tabs -->
 						<ul class="nav nav-tabs" role="tablist">
 							<!-- <li role="presentation" class="active"><a href="#summaryTable" aria-controls="summaryTable" rolw="tab" data-toggle="tab">Summary</a></li> -->
-							<li role="presentation" class="active"><a href="#lociTablePane" aria-controls="lociTablePane" rolw="tab" data-toggle="tab">Genomic risk loci</a></li>
-							<li role="presentation"><a href="#leadSNPtablePane" aria-controls="leadSNPtablePane" rolw="tab" data-toggle="tab">lead SNPs</a></li>
-							<li role="presentation"><a href="#sigSNPtablePane" aria-controls="sigSNPtablePane" rolw="tab" data-toggle="tab">Ind. Sig. SNPs</a></li>
-							<li role="presentation"><a href="#SNPtablePane" aria-controls="SNPtablePane" rolw="tab" data-toggle="tab">SNPs (annotations)</a></li>
-							<li role="presentation"><a href="#annovTablePane" aria-controls="annovTablePane" rolw="tab" data-toggle="tab">ANNOVAR</a></li>
-							<li role="presentation"><a href="#geneTablePane" aria-controls="geneTablePane" rolw="tab" data-toggle="tab">Mapped Genes</a></li>
-							<li role="presentation" id="eqtlTableTab"><a href="#eqtlTablePane" aria-controls="eqtlTablePane" rolw="tab" data-toggle="tab">eQTL</a></li>
-							<li role="presentation" id="ciTableTab"><a href="#ciTablePane" aria-controls="ciTablePane" rolw="tab" data-toggle="tab">Chromatin interactions</a></li>
-							<li role="presentation" id="gwascatTableTab"><a href="#gwascatTablePane" aria-controls="gwascatTablePane" rolw="tab" data-toggle="tab">GWAScatalog</a></li>
+							<li role="presentation" class="active"><a class="RegionalPlotOn" href="#lociTablePane" aria-controls="lociTablePane" rolw="tab" data-toggle="tab">Genomic risk loci</a></li>
+							<li role="presentation"><a class="RegionalPlotOn" href="#leadSNPtablePane" aria-controls="leadSNPtablePane" rolw="tab" data-toggle="tab">lead SNPs</a></li>
+							<li role="presentation"><a class="RegionalPlotOn" href="#sigSNPtablePane" aria-controls="sigSNPtablePane" rolw="tab" data-toggle="tab">Ind. Sig. SNPs</a></li>
+							<li role="presentation"><a class="RegionalPlotOff" href="#SNPtablePane" aria-controls="SNPtablePane" rolw="tab" data-toggle="tab">SNPs (annotations)</a></li>
+							<li role="presentation"><a class="RegionalPlotOff" href="#annovTablePane" aria-controls="annovTablePane" rolw="tab" data-toggle="tab">ANNOVAR</a></li>
+							<li role="presentation"><a class="RegionalPlotOff" href="#geneTablePane" aria-controls="geneTablePane" rolw="tab" data-toggle="tab">Mapped Genes</a></li>
+							<li role="presentation" id="eqtlTableTab"><a class="RegionalPlotOff" href="#eqtlTablePane" aria-controls="eqtlTablePane" rolw="tab" data-toggle="tab">eQTL</a></li>
+							<li role="presentation" id="ciTableTab"><a class="RegionalPlotOff" href="#ciTablePane" aria-controls="ciTablePane" rolw="tab" data-toggle="tab">Chromatin interactions</a></li>
+							<li role="presentation" id="gwascatTableTab"><a class="RegionalPlotOff" href="#gwascatTablePane" aria-controls="gwascatTablePane" rolw="tab" data-toggle="tab">GWAScatalog</a></li>
 							<!-- <li role="presentation"><a href="#exacTablePane" aria-controls="exacTablePane" rolw="tab" data-toggle="tab">ExAC</a></li> -->
-							<li role="presentation"><a href="#paramsPane" aria-controls="paramsPane" rolw="tab" data-toggle="tab">Parameters</a></li>
+							<li role="presentation"><a class="RegionalPlotOff" href="#paramsPane" aria-controls="paramsPane" rolw="tab" data-toggle="tab">Parameters</a></li>
 							<!-- <li role="presentation"><a href="#downloads" aria-controls="downloads" rolw="tab" data-toggle="tab">Downloads</a></li> -->
 						</ul>
 						<!-- Tab panes -->

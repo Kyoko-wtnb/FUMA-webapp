@@ -18,6 +18,13 @@ $(document).ready(function(){
 		$('a[href="'+hashid+'"]').trigger('click');
 	}
 
+	$('.RegionalPlotOn').on('click', function(){
+		$('#regionalPlot').show();
+	});
+	$('.RegionalPlotOff').on('click', function(){
+		$('#regionalPlot').hide();
+	});
+
 	getJobList();
 
 	$('#refreshTable').on('click', function(){
