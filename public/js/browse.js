@@ -938,7 +938,7 @@ function showResultTables(filedir, gwasID, posMap, eqtlMap, ciMap, orcol, becol,
 					id: gwasID,
 					prefix: prefix,
 					infile: file,
-					header: "uniqID:chr:pos:db:tissue:gene:symbol:p:FDR:tz"
+					header: "uniqID:chr:pos:testedAllele:db:tissue:gene:symbol:p:FDR:tz"
 				}
 			},
 			"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],

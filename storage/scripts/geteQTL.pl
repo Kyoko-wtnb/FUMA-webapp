@@ -96,7 +96,7 @@ while(<IN>){
 }
 close IN;
 open(OUT, ">$out") or die "Cannot open $out\n";
-print OUT "uniqID\tdb\ttissue\tgene\ttestedAllel\tp\ttz\tFDR\n";
+print OUT "uniqID\tdb\ttissue\tgene\ttestedAllele\tp\ttz\tFDR\n";
 
 foreach my $s (keys %db){
 	my @files = split(/:/, $db{$s});

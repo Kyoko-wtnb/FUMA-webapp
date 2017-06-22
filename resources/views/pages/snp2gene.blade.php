@@ -452,7 +452,7 @@ var loggedin = "{{ Auth::check() }}";
 							<table id="eqtlTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
 								<thead>
 									<tr>
-										<th>uniqID</th><th>chr</th><th>bp</th><th>DB</th><th>tissue</th><th>Gene</th><th>Symbol</th><th>P-value</th><th>FDR</th><th>t/z</th>
+										<th>uniqID</th><th>chr</th><th>pos</th><th>testedAllele</th><th>DB</th><th>tissue</th><th>Gene</th><th>Symbol</th><th>P-value</th><th>FDR</th><th>t/z</th>
 									</tr>
 								</thead>
 							</table>
