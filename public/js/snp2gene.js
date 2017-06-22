@@ -1070,7 +1070,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
 				id: jobID,
 				prefix: prefix,
 				infile: file,
-				header: "uniqID:chr:pos:testedAllele:db:tissue:gene:symbol:p:FDR:tz"
+				header: "uniqID:chr:pos:testedAllele:db:tissue:gene:symbol:p:FDR:tz:RiskIncAllele:alignedDirection"
 			}
 		},
 		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],

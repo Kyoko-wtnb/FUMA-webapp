@@ -74,9 +74,9 @@ r2 : The maximum r2 of the SNP with one of the independent significant SNP (this
 IndSigSNP : rsID of a independent significant SNP which has the maximum r2 of the SNP.
 Genomic locus : Index of the genomic risk loci matching with "GenomicRiskLoci.txt".
 nearestGene : The nearest Gene of the SNP based on ANNOVAR annotations.
-  Note that ANNOVAR annotates "consequence" function by prioritizing the most deleterious annotation for SNPs which are locating a genomic region where multiple genes are obverlapped.
-  Genes are encoded in symbol, if it is available, otherwise Ensembl ID.
-  Genes include all transcripts from Ensembl gene build 85 including non-protein coding genes and RNAs.
+	Note that ANNOVAR annotates "consequence" function by prioritizing the most deleterious annotation for SNPs which are locating a genomic region where multiple genes are obverlapped.
+	Genes are encoded in symbol, if it is available, otherwise Ensembl ID.
+	Genes include all transcripts from Ensembl gene build 85 including non-protein coding genes and RNAs.
 dist : Distance to the nearest gene. SNPs which are locating in the gene body or 1kb up- or down-stream of TSS or TES have 0.
 func : Functional consequence of the SNP on the gene obtained from ANNOVAR. For exonic SNPs, detail annotation (e.g. non-synonymous, stop gain and so on) is available in ANNOVAR table (annov.txt).
 CADD : CADD score which is computed based on 63 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al(ref).
@@ -141,7 +141,8 @@ eqtlMapSNPs (eqtlMap): The number of SNPs mapped to the gene based on eQTL mappi
 eqtlMapminP (eqtlMap): The minimum eQTL P-value of mapped SNPs.
 eqtlMapmin! (eqtlMap): The minimum eQTL FDR of mapped SNPs.
 eqtlMapts (eqtlMap): Tissue types of mapped eQTL SNPs.
-eqtlDirection (eqtlMap): consecutive direction of mapped eQTL SNPs.
+eqtlDirection (eqtlMap): Consecutive direction of mapped eQTL SNPs after aligning risk increasing alleles in GWAS and tested alleles in eQTL data source.
+ 	"NA" if risk increase alleles are not defined either because signed effect is not provided in the input GWAS file or all of eQTL SNPs are not in the input GWAS file but included from reference panel for the gene.
 ciMap (ciMap): "Yes" if the gene is mapped by chromatin interaction mapping, "No" otherwise.
 ciMapts (ciMap): Tissue/cell types of mapped chromatin interactions.
 minGwasP : The minimum P-value of mapped SNPs.
@@ -163,6 +164,13 @@ Symbol : Gene symbol
 P-value : P-value of eQTLs
 FDR : FDR of eQTLs. Note that method to compute FDR differs between data sources.
 tz : T-statistics or z score depends on data source.
+RiskIncAllele : Risk increasing allele obtained from input GWAS summary statistics.
+	"NA" if signed effect is not provided in the input file.
+	SNPs which are not in the input GWAS but included from reference panel are also encoded as "NA".
+alignedDirection : The direction of effect to gene expression after aligning risk increasing allele of GWAS and tested allele of eQTLs.
+	"+" when the risk increasing allele increase the expression of the gene, "-" when the risk increasing allele decrease the expression of the gene.
+	"NA" if risk increasing allele is not defined.
+	Please refer the tutorial on the FUMA website for details.
 
 ######################
 # ci.txt

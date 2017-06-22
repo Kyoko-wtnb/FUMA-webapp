@@ -167,3 +167,5 @@ foreach my $s (keys %db){
 
 }
 close OUT;
+
+system "Rscript $dir/align_eqtl.R $filedir";

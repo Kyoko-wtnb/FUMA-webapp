@@ -1,6 +1,7 @@
 <h3 id="eQTLs">eQTLs</h3>
 FUMA contains several data sources of eQTL information, and can include more sources when available.
 Each data source is described in more detail in this section.
+<h4><strong>eQTL data sources</strong></h4>
 <div style="padding-left: 40px;">
 	<h4><strong>1. GTEx v6</strong></h4>
 	<p><strong>Data source</strong><br/>
@@ -113,6 +114,7 @@ Each data source is described in more detail in this section.
 	</p>
 	<p><strong>Description</strong><br/>
 		The data include all eQTLs with nominal P-value < 0.05.
+		Since tested allele was not provided in the original data source, minor alleles in 1000 genome phase 3 are asigned as tested alleles.
 		eQTLs were identified for each of the following 10 brain regions and based on aberaged expression across them.
 		<ul>
 			<li>Cerebellar cortex</li>
@@ -131,4 +133,70 @@ Each data source is described in more detail in this section.
 		134 neuropathologically confirmed control individuals of European descent from <a target="_blank" href="https://ukbec.wordpress.com/">UK Brain Expression Consortium</a>
 		(<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/25174004">Ramasamy et al. 2014</a>).
 	</p>
+</div>
+<br/>
+<h4><strong>Alignment of risk increasing allele in GWAS and tested allele of eQTLs</strong></h4>
+<div style="padding-left: 40px;">
+	<h4><strong>Risk increasing allele in GWAS</strong></h4>
+	<p>
+		When "beta" or "OR" column is provided in the input GWAS file, risk increasing alleles are defined as follows:
+		if beta > 0 or OR > 1, effect/risk allele ("alt" allele in the SNPs table) is defined as the risk increasing allele,
+		if beta < 0 or OR < 1, non-effect/non-risk allele ("ref" allele in the SNPs table) is defined as the risk increasing allele.<br/>
+		If signed effect is not provided in the input GWAS file, risk increasing allele is not defined ("NA").
+		SNPs which are not in the input GWAS file but obtained from reference panel due to high LD are also encoded as "NA".
+	</p>
+	<h4><strong>Aligned direction of eQTLs</strong></h4>
+	<p>
+		The sign of the t-statistics or z-score of the original eQTL data sources represents the direction of effect of tested allele.
+		To obtain the direction of effect for risk increasing allele of GWAS, risk increasing allele and tested allele of eQTLs are aligned as follows:
+		if risk increasing allele is the same allele as tested allele of the eQTL, direction is the same as the sign of the original t-statistics/z-score,
+		if risk increasing allele is not same allele as tested allele of the eQTL, direction of t-statistics/z-score was flipped.<br/>
+		Direction is either "+" (risk increasing allele increases the expression of the gene) or "-" (risk increasing allele decreases the expression of the gene).
+	</p>
+	<h4><strong>Examples</strong></h4>
+	<p>Here are some examples how the alleles are aligned.</p>
+	<table class="table table-bordered" style="text-align: center;">
+		<thead>
+			<th>uniqID</th>
+			<th>effect allale (alt)</th>
+			<th>non-effect allele (ref)</th>
+			<th>beta</th>
+			<th>risk increasing allele</th>
+			<th>tested allele of eQTL</th>
+			<th>t-statistics of eQTL</th>
+			<th>aligned direction</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>1:201885026:C:T</td>
+				<td>T</td>
+				<td>C</td>
+				<td>0.22</td>
+				<td>T</td>
+				<td>T</td>
+				<td>-7.98</td>
+				<td>-</td>
+			</tr>
+			<tr>
+				<td>11:43843579:C:G</td>
+				<td>C</td>
+				<td>G</td>
+				<td>0.004</td>
+				<td>C</td>
+				<td>G</td>
+				<td>17.23</td>
+				<td>-</td>
+			</tr>
+			<tr>
+				<td>16:28537971:C:T</td>
+				<td>T</td>
+				<td>C</td>
+				<td>-0.028</td>
+				<td>C</td>
+				<td>C</td>
+				<td>5.04</td>
+				<td>+</td>
+			</tr>
+		</tbody>
+	</table>
 </div>

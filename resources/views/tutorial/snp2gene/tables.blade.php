@@ -139,9 +139,9 @@
 			<li><strong>posMapMaxCADD</strong> (posMap): The maximum CADD score of mapped SNPs by positional mapping.</li>
 			<li><strong>eqtlMapSNPs</strong> (eqtlMap): The number of SNPs mapped to the gene based on eQTL mapping.</li>
 			<li><strong>eqtlMapminP</strong> (eqtlMap): The minimum eQTL P-value of mapped SNPs.</li>
-			<li><strong>eqtlMapmin!</strong> (eqtlMap): The minimum eQTL FDR of mapped SNPs.</li>
+			<li><strong>eqtlMapminQ</strong> (eqtlMap): The minimum eQTL FDR of mapped SNPs.</li>
 			<li><strong>eqtlMapts</strong> (eqtlMap): Tissue types of mapped eQTL SNPs.</li>
-			<li><strong>eqtlDirection</strong> (eqtlMap): consecutive direction of mapped eQTL SNPs.</li>
+			<li><strong>eqtlDirection</strong> (eqtlMap): Consecutive direction of mapped eQTL SNPs after aligning risk increasing alleles in GWAS and tested alleles in eQTL data source.</li>
 			<li><strong>ciMap</strong> (ciMap): "Yes" if the gene is mapped by chromatin interaction mapping.</li>
 			<li><strong>ciMapts</strong> (ciMap): Tissue/cell types of mapped chromatin interactions.</li>
 			<li><strong>minGwasP</strong> : The minimum P-value of mapped SNPs.</li>
@@ -164,6 +164,11 @@
 			<li><strong>P-value</strong> : P-value of eQTLs</li>
 			<li><strong>FDR</strong> : FDR of eQTLs. Note that the method to compute FDR differs between data sources. Please refer to the <a href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">eQTL</a> section for details.</li>
 			<li><strong>tz</strong> : T-statistics or z score depending on data source.</li>
+			<li><strong>RiskIncAllele</strong> : Risk increasing allele obtained from the input GWAS summary statistics. <br/>
+				"NA" if signed effect is not provided in the input file.
+				SNPs which are not in the input GWAS but included from reference panel are also encoded as "NA".
+			</li>
+			<li><strong>alignedDirection</strong> : The direction of effect to gene expression after aligning risk increasing allele of GWAS and tested allele of eQTLs.</li>
 		</ul>
 	</li>
 </ul>

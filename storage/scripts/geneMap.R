@@ -283,7 +283,13 @@ if(nrow(geneTable)>0){
     geneTable$eqtlMapminQ <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene[!is.na(eqtl$FDR)]){min(eqtl$FDR[eqtl$gene==x & !is.na(eqtl$FDR)])}else{NA}})
     geneTable$eqtlMapts <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){paste(sub("gtex.", "",unique(eqtl$tissue[eqtl$gene==x])), collapse = ":")}else{NA}})
     geneTable$eqtlDirection <- NA
-    geneTable$eqtlDirection <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){if(length(which(eqtl$tz[eqtl$gene==x]>0))>=length(which(eqtl$tz[eqtl$gene==x]<0))){"+"}else{"-"}}else{"NA"}})
+    geneTable$eqtlDirection <- sapply(geneTable$ensg, function(x){
+		if(x %in% eqtl$gene){
+			if(length(which(!is.na(eqtl$alignedDirection[eqtl$gene==x])))==0){"NA"}
+			else if(length(which(eqtl$alignedDirection[eqtl$gene==x]=="+"))>=length(which(eqtl$alignedDirection[eqtl$gene==x]=="-"))){"+"}
+			else{"-"}
+		}else{"NA"}
+	})
   }
   if(ciMap==1){
   	geneTable$ciMap <- "No"
