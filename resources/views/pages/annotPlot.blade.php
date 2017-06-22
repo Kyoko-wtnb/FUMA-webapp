@@ -42,7 +42,10 @@ var Chr15cells = "{{$Chr15cells}}";
 		<div class="col-md-9 col-xs-9 col-sm-9">
 			<div id='title' style="text-align: center;"><h4>Regional plot</h4></div>
 			<span class="info"><i class="fa fa-info"></i>
-				For SNPs colored grey in the plots of GWAS P-value, CADD, RegulomeDB score and eQTLs, please refer the legend at the bottom of the plot.
+				For SNPs colored grey in the plots of GWAS P-value, CADD, RegulomeDB score and eQTLs, please refer the legend at the bottom of the page.
+			</span><br/>
+			<span class="info"><i class="fa fa-info"></i>
+				For details of color-code of genes, please refer the legend at the bottom of the page.
 			</span><br/>
 			<a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
 			Download the plot as
@@ -70,14 +73,27 @@ var Chr15cells = "{{$Chr15cells}}";
 			<div id="EIDlegend"></div>
 			<br/>
 			<div id="SNPlegend">
-			<h4>SNPs colored grey in the plots</h4>
-			<strong>GWAS P-value</strong>: SNPs which are not in LD of any of significant independent lead SNPs in the selected region are colored grey.<br/>
-			<strong>CADD score</strong>: Only SNPs which are in LD of any of significant independet lead SNPs are displayed in the plot.
-			Of those SNPs, SNPs which did not used for mapping (SNPs that were filtered by user defined parameters) are colored grey.
-			When both positional and eQTL mappings were performed, only SNPs which were not used either of them are colored grey.<br/>
-			<strong>RegulomeDB score</strong>: Same as CADD score.<br/>
-			<strong>eQTLs</strong>: When eQTL mapping was performed and eQTLs exist in the selected region, all eQTLs with user defined P-value threshold and tissue types are displayed.
-			Of those eQTLs, eQTLs which did not used for eQTL mapping (eQTLs that were filtered by user defined parameters) are colored grey.<br/>
+				<h4>SNPs colored grey in the plots</h4>
+				<strong>GWAS P-value</strong>: SNPs which are not in LD of any of significant independent lead SNPs in the selected region are colored grey.<br/>
+				<strong>CADD score</strong>: Only SNPs which are in LD of any of significant independet lead SNPs are displayed in the plot.
+				Of those SNPs, SNPs which did not used for mapping (SNPs that were filtered by user defined parameters) are colored grey.<br/>
+				When positional mapping is performed, SNPs used for positional mapping are always colored non-grey colors.<br/>
+				When eQTL mapping is performed and eQTLs are plotted, SNPs used for eQTL mapping are also colored non-grey colors.
+				If the option of eQTLs is not selected for the plot, SNPs which are not used for other mappings are colored grey even if they are used for eQTL mapping.<br/>
+				When chromatin interaction maping is performed and chromatin interactions are plotted, SNPs used for chromatin interaction mapping are also colored non-grey colors.
+				If the option of chromatin interactions is not selected for the plot, SNPs which are not used for other mappins are colored grey even if they are used for chromatin interaction mapping.<br/>
+				<strong>RegulomeDB score</strong>: Same as CADD score.<br/>
+				<strong>eQTLs</strong>: When eQTL mapping was performed and if there is any eQTL in the selected region, all eQTLs with user defined P-value threshold and tissue types are displayed.
+				Of those eQTLs, eQTLs which did not used for eQTL mapping (eQTLs that were filtered by user defined parameters) are colored grey.<br/>
+			</div>
+			<br/>
+			<div id="GeneLegnd">
+				<h4>Color-code for genes</h4>
+				<strong>Red</strong> : Mapped genes. Genes mapped by positional mapping are always colored red.
+				Genes mapped only by eQTL mapping are colore red only when the option of eQTLs is selected for the plot, oetherwise those genes are considered as non-mapped genes.
+				Genes mapped only by chromatin interaction are colored red only when the option of chroamtin interactions is selected for the plot, otherwise those genes are considered as non-mapped genes.<br/>
+				<strong>Blue</strong> : Non-mapped protein-coding genes.<br/>
+				<strong>Dark grey</strong> : Non-mapped non-coding genes.<br/>
 			</div>
 		</div>
 		<div class="col-md-3 col-xs-3 col-sm-3" style="text-align: center;">
