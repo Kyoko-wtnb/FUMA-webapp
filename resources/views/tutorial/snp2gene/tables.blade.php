@@ -285,6 +285,21 @@
 			<li><strong>eqtlMapChr15</strong> : Select tissue/cell types, NA otherwise</li>
 			<li><strong>eqtlMapChr15Max</strong> : The maximum 15-core chromatin state</li>
 			<li><strong>eqtlMapChr15Meth</strong> : The method of chromatin state filtering</li>
+			[ciMap]
+			<li><strong>ciMap</strong> : 1 to perform chromatin interaction mapping, 0 otherwise</li>
+			<li><strong>ciMapBuildin</strong> : Selected buildin chromatin interaction data</li>
+			<li><strong>ciMapFileN</strong> : The number of uploaded chromatin interaction matrices</li>
+			<li><strong>ciMapFiles</strong>: File names of uploaded chromatin interaction matrices</li>
+			<li><strong>ciMapFDR</strong> : The FDR threshold of chromatin interactions</li>
+			<li><strong>ciMapPromWindow</strong> : Window of the promoter regions from TSS. 250-500 means, 250bp up- and 500bp down-stream of TSS region is defined as promoter.</li>
+			<li><strong>ciMapRoadmap</strong> : Select epigenome ID of roadmap epigenomes for annotation of promoter/enhancer regions</li>
+			<li><strong>ciMapEnhFilt</strong> : 1 to filter SNPs on such that are overlapped with annotated enhancer regions of selected epigenomes, 0 otherwise</li>
+			<li><strong>ciMapPromFilt</strong>: 1 to filter mapped genes on such that whose promoter regions are overlapped with annotated promoter regions of selected epigenomes, 0 otherwise</li>
+			<li><strong>ciMapCADDth</strong> : The minimum CADD score for SNP filtering</li>
+			<li><strong>ciMapRDBth</strong> : The minimum RegulomeDB score for SNP filtering</li>
+			<li><strong>ciMapChr15</strong> : Select tissue/cell types, NA otherwise</li>
+			<li><strong>ciMapChr15Max</strong> : The maximum 15-core chromatin state</li>
+			<li><strong>ciMapChr15Meth</strong> : The method of chromatin state filtering</li>
 	  </ul>
   </li>
 </ul>

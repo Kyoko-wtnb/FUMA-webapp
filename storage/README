@@ -295,6 +295,21 @@ eqtlMapRDBth : The minimum RegulomeDB score for SNP filtering
 eqtlMapChr15 : Select tissue/cell types, NA otherwise
 eqtlMapChr15Max : The maximum 15-core chromatin state
 eqtlMapChr15Meth : The method of chromatin state filtering
+[ciMap]
+ciMap : 1 to perform chromatin interaction mapping, 0 otherwise
+ciMapBuildin : Selected buildin chromatin interaction data
+ciMapFileN : The number of uploaded chromatin interaction matrices
+ciMapFiles: File names of uploaded chromatin interaction matrices
+ciMapFDR : The FDR threshold of chromatin interactions
+ciMapPromWindow : Window of the promoter regions from TSS. 250-500 means, 250bp up- and 500bp down-stream of TSS region is defined as promoter.
+ciMapRoadmap : Select epigenome ID of roadmap epigenomes for annotation of promoter/enhancer regions
+ciMapEnhFilt : 1 to filter SNPs on such that are overlapped with annotated enhancer regions of selected epigenomes, 0 otherwise
+ciMapPromFilt: 1 to filter mapped genes on such that whose promoter regions are overlapped with annotated promoter regions of selected epigenomes, 0 otherwise
+ciMapCADDth : The minimum CADD score for SNP filtering
+ciMapRDBth : The minimum RegulomeDB score for SNP filtering
+ciMapChr15 : Select tissue/cell types, NA otherwise
+ciMapChr15Max : The maximum 15-core chromatin state
+ciMapChr15Meth : The method of chromatin state filtering
 
 ######################
 # MAGMA outputs
