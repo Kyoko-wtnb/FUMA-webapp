@@ -100,23 +100,25 @@ Regional plots can be created with the following optional annotations:<br/>
 <img src="{!! URL::asset('/image/snp2geneResults.png') !!}" style="width:60%"/><br/>
 <img src="{!! URL::asset('/image/snp2geneAnnotPlot.png') !!}" style="width:50%"/><br/><br/>
 <br/>
-<p>When chromatin interaction mapping is performed, circos plots are created per chromosome which contains at least one risk loci.
-	The circos plots are displayed in the same panel as chroamtin itneraction table.
-	Each plot is clickable which opens new tab with zoomed in plot.
+<p>When chromatin interaction mapping is performed, circos plots are created for each chromosome that contains at least one risk locus.
+	The circos plots are displayed in the panel where the chromatin itneraction tables are displayed.
+	Each plot is clickable and opens in a new tab showing a larger plot.
 	PNG, SVG and circos config files are downloadable.
 </p>
 <p>
-	Each of layers, texts and links of the circos plot are described below.<br/>
+	The specific layers and color-coding of the circos plot is described below.<br/>
 	<ul>
-		<li>Manhattan plot: The most outer layer. Only SNPs with P < 0.05 are displayed. Candidate SNPs are colored by the maximum r<sup>2</sup> to the one of the independent significant SNPs.<br/>
-			SNPs are colored in red (r<sup>2</sup> > 0.8), orange (r<sup>2</sup> > 0.6), green (r<sup>2</sup> > 0.4) and blue (r<sup>2</sup> > 0.2). SNPs wich are not in LD of any of independent significat SNPs and wih r<sup>2</sup> &le; 0.2 are colored grey.<br/>
-			rsID of the top SNPs in each risk locus are displayed the most outer layer.
+		<li>Manhattan plot: The most outer layer. Only SNPs with P < 0.05 are displayed. SNPs in genomic risk loci are color-coded as a function of their maximum r<sup>2</sup> to the one of the independent significant SNPs in the locus, as follows:
+			red (r<sup>2</sup> > 0.8), orange (r<sup>2</sup> > 0.6), green (r<sup>2</sup> > 0.4) and blue (r<sup>2</sup> > 0.2). SNPs that are not in LD with any of the independent significat SNPs (with r<sup>2</sup> &le; 0.2) are grey.<br/>
+			The rsID of the top SNPs in each risk locus are displayed in the most outer layer.
+			Y-axis are raned between 0 to the maximum -log10(P-value) of the SNPs.
 		</li>
-		<li>Chromosome ring: The second layer. Genomcin risk loci are highlighted in blue.</li>
-		<li>Mapped gene by chromatin interaction or eQTLs: Only mapped genes by either chroamtin interaction or eQTLs by user defined parameters are displayed. If the gene is mapped only by chroamtin interaction or eQTLs, it is colored orange or green, respectively. When the gene is mapped by both, it is colored red.</li>
-		<li>Chromosome ring: The third layer. This is the same as second layer but without corrdinates.</li>
-		<li>Chroamtin interaction links: Links colored orange are chroamtin interactions used in the mapping</li>
-		<li>eQTL lilnks: Links colored green are eQTLs used in the mapping</li>
+		<li>Chromosome ring: The second layer. Genomic risk loci are highlighted in blue.</li>
+		<li>Mapped genes by chromatin interactions or eQTLs: Only mapped genes by either chroamtin interaction and/or eQTLs (conditional on user defined parameters) are displayed.
+			If the gene is mapped only by chromatin interactions or only by eQTLs, it is colored orange or green, respectively. When the gene is mapped by both, it is colored red.</li>
+		<li>Chromosome ring: The third layer. This is the same as second layer but without coordinates to make it easy to align position of genes with genomic coordinate.</li>
+		<li>Chromatin interaction links: Links colored orange are chromatin interactions used in the mapping (based on user-defined parameters).</li>
+		<li>eQTL lilnks: Links colored green are eQTLs used in the mapping  (based on user-defined parameters).</li>
 	</ul>
 </p>
 <br/>
