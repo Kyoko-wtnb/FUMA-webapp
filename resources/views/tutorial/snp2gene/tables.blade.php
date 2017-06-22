@@ -64,8 +64,8 @@
 			<li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
 			<li><strong>chr</strong> : chromosome</li>
 			<li><strong>pos</strong> : position on hg19</li>
-			<li><strong>ref</strong> : Reference allele. Non-effect allele if it is provided in the input GWAS summary statistics file. If not, this is the reference (major) allele in 1000G.</li>
-			<li><strong>alt</strong> : Alternative allele. Effect allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.</li>
+			<li><strong>ref</strong> : Reference allele. Non-effect/non-risk allele if it is provided in the input GWAS summary statistics file. If not, this is the reference (major) allele in 1000G.</li>
+			<li><strong>alt</strong> : Alternative allele. Effect/risk allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.</li>
 			<li><strong>MAF</strong> : Minor allele frequency computed based on 1000G.</li>
 			<li><strong>gwasP</strong> : P-value provided in the input GWAS summary statistics file.
 				Non-GWAS tagged SNPs (which do not exist in input file but are extracted from the reference panel) have "NA" instead.

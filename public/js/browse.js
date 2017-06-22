@@ -829,8 +829,8 @@ function showResultTables(filedir, gwasID, posMap, eqtlMap, ciMap, orcol, becol,
 
 	var table = "<thead>"
 		+"<tr>"
-		+"<th>uniqID</th><th>rsID</th><th>chr</th><th>bp</th><th>MAF</th><th>gwasP</th>";
-	var cols = "uniqID:rsID:chr:pos:MAF:gwasP";
+		+"<th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>ref</th><th>alt</th><th>MAF</th><th>gwasP</th>";
+	var cols = "uniqID:rsID:chr:pos:ref:alt:MAF:gwasP";
 	if(orcol!="NA"){
 		table += "<th>OR</th>";
 		cols += ":or";

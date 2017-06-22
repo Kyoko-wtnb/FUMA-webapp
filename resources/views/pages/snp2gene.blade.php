@@ -405,7 +405,9 @@ var loggedin = "{{ Auth::check() }}";
 
 						<div role="tabpanel" class="tab-pane" id="SNPtablePane">
 							<br/>
-							<span class="info"><i class="fa fa-info"></i> This table contain all SNPs in LD of identified lead SNPs even if functional filtering is performed for gene mapping.</span>
+							<span class="info"><i class="fa fa-info"></i> This table contain all SNPs in LD of identified lead SNPs (functional filtering for gene mapping is not applied in this table).</span>
+							<br/>
+							<span class="info"><i class="fa fa-info"></i> In this table "alt" is the risk allele if provided in the input GWAS file. See <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#table-columns">tutorial</a> for details.</span>
 							<br/>
 							<table id="SNPtable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
 							</table>

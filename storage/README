@@ -63,8 +63,8 @@ uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where allele
 rsID : rsID based on dbSNP build 146.
 chr : chromosome
 pos : position on hg19
-ref : Reference allele. Non-effect allele if it is provided in the input GWAS summary statistics file. If not, this is the reference allele in 1000G.
-alt : Alternative allele. Effect allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.
+ref : Reference allele. Non-effect/non-risk allele if it is provided in the input GWAS summary statistics file. If not, this is the reference allele in 1000G.
+alt : Alternative allele. Effect/risk allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.
 MAF : Minor allele frequency computed based on 1000G.
 gwasP : P-value provided in the input GWAS summary statistics file. Non-GWAS tagged SNPs (which do not exist in input file but are extracted from the reference panel) have "NA" instead.
 or : Odds ratio provided in the input GWAS summary statistics file if available. Non-GWAS tagged SNPs (which do not exist in input file but are extracted from the reference panel) have "NA" instead.
