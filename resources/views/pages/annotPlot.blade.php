@@ -90,8 +90,8 @@ var Chr15cells = "{{$Chr15cells}}";
 			<div id="GeneLegnd">
 				<h4>Color-code for genes</h4>
 				<strong>Red</strong> : Mapped genes. Genes mapped by positional mapping are always colored red.
-				Genes mapped only by eQTL mapping are colore red only when the option of eQTLs is selected for the plot, oetherwise those genes are considered as non-mapped genes.
-				Genes mapped only by chromatin interaction are colored red only when the option of chroamtin interactions is selected for the plot, otherwise those genes are considered as non-mapped genes.<br/>
+				Genes mapped by eQTL mapping are colore red only when the option of eQTLs is selected for the plot, oetherwise those genes are considered as non-mapped genes.
+				Genes mapped by chromatin interaction are colored red only when the option of chroamtin interactions is selected for the plot, otherwise those genes are considered as non-mapped genes.<br/>
 				<strong>Blue</strong> : Non-mapped protein-coding genes.<br/>
 				<strong>Dark grey</strong> : Non-mapped non-coding genes.<br/>
 			</div>
