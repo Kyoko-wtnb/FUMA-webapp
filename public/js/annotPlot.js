@@ -876,12 +876,11 @@ $(document).ready(function(){
 			}else{
 				xAxisLabel = "eqtl";
 				plotData.eqtl.forEach(function(d){
-					d[9] = +d[9]; //pos
-					d[5] = +d[5]; //pos
-					// d.ld = +d.ld;
-					d[11] = +d[11]; //eqtlMapFilt
+					d[11] = +d[11]; //pos
+					d[5] = +d[5]; //p
+					d[13] = +d[13]; //eqtlMapFilt
 				});
-				var eqtlgenes = d3.set(plotData.eqtl.map(function(d){return d[10];})).values();
+				var eqtlgenes = d3.set(plotData.eqtl.map(function(d){return d[12];})).values();
 				var tissue = d3.set(plotData.eqtl.map(function(d){return d[2];})).values();
 
 				// eqtl color and DB
@@ -919,13 +918,13 @@ $(document).ready(function(){
 					var y = d3.scale.linear().range([eqtlTop+55*i+50, eqtlTop+55*i]);
 					var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
 					y.domain([0, d3.max(plotData.eqtl, function(d){return -Math.log10(d[5])})+0.5]);
-					svg.selectAll("dot").data(plotData.eqtl.filter(function(d){if(d[10]===eqtlgenes[i]){return d}})).enter()
+					svg.selectAll("dot").data(plotData.eqtl.filter(function(d){if(d[12]===eqtlgenes[i]){return d}})).enter()
 						.append("circle").attr("class", "eqtldot")
 						.attr("r", 3.5)
-						.attr("cx", function(d){return x(d[9]);})
+						.attr("cx", function(d){return x(d[11]);})
 						.attr("cy", function(d){return y(-Math.log10(d[5]));})
 						.style("fill", function(d){
-						  if(d[11]==0){
+						  if(d[13]==0){
 						    return "grey";
 						  }else{
 						    return eQTLcolors[d[2]]
@@ -1326,10 +1325,10 @@ $(document).ready(function(){
 	          if(x(d[2])<0 || x(d[1])>width){return "none";}
 	          else{return Chr15colors[d[3]*1-1];}
 	        });
-	      svg.selectAll(".eqtldot").attr("cx", function(d){return x(d[9])})
+	      svg.selectAll(".eqtldot").attr("cx", function(d){return x(d[11])})
 	        .style("fill", function(d){
-	          if(x(d[9])<0 || x(d[9])>width){return "none";}
-	          else if(d[11]==0){return "grey"}
+	          if(x(d[11])<0 || x(d[11])>width){return "none";}
+	          else if(d[13]==0){return "grey"}
 	          else{return eQTLcolors[d[2]]}
 	        });
 		  svg.selectAll(".cirect1")

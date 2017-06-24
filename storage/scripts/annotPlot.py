@@ -311,7 +311,7 @@ def main():
 	##### get eqtl #####
 	[snps, eqtldata] = geteQTLs(filedir, snps, eqtlplot)
 	if len(eqtldata) > 0:
-		eqtlgenes = unique(eqtldata[:,10])
+		eqtlgenes = unique(eqtldata[:,-2])
 	else:
 		eqtlgenes = ["NA"]
 

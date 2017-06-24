@@ -57,22 +57,22 @@ if(posMapWindowSize=="NA"){
 }
 
 ##### load ENSG genes #####
-load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
+ENSG <- fread(config$data$ENSG, data.table=F)
 
 if(genetype!="all"){
   genetype <- unique(unlist(strsplit(genetype, ":")))
-  ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$gene_biotype %in% genetype,]
+  ENSG <- ENSG[ENSG$gene_biotype %in% genetype,]
 }
 if(exMHC==1){
-  start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
-  end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
+  start <- ENSG$start_position[ENSG$external_gene_name=="MOG"]
+  end <- ENSG$end_position[ENSG$external_gene_name=="COL11A2"]
   if(extMHC!="NA"){
     extMHC <- as.numeric(unlist(strsplit(extMHC, "-")))
     if(extMHC[1]<start){start<-extMHC[1]}
     if(extMHC[2]>end){end <- extMHC[2]}
   }
-  MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
-  ENSG.all.genes <- ENSG.all.genes[!(ENSG.all.genes$ensembl_gene_id%in%MHCgenes),]
+  MHCgenes <- ENSG$ensembl_gene_id[ENSG$chromosome_name==6 & ((ENSG$end_position>=start&ENSG$end_position<=end)|(ENSG$start_position>=start&ENSG$start_position<=end))]
+  ENSG <- ENSG[!(ENSG$ensembl_gene_id%in%MHCgenes),]
 }
 
 ##### read files #####
@@ -87,7 +87,7 @@ genes <- vector()
 ##### positional mapping #####
 if(posMap==1){
   annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
-  annov <- annov[annov$gene %in% ENSG.all.genes$ensembl_gene_id,]
+  annov <- annov[annov$gene %in% ENSG$ensembl_gene_id,]
   if(posMapCADDth>0){
     annov <- annov[annov$uniqID %in% annot$uniqID[annot$CADD>=posMapCADDth],]
   }
@@ -142,10 +142,10 @@ if(posMap==1){
 if(eqtlMap==1){
   eqtl <- fread(paste(filedir, "eqtl.txt", sep=""), data.table=F)
   if(nrow(eqtl)>0){
-  	eqtl <- eqtl[eqtl$gene %in% ENSG.all.genes$ensembl_gene_id,]
+  	eqtl <- eqtl[eqtl$gene %in% ENSG$ensembl_gene_id,]
     eqtl$chr <- snps$chr[match(eqtl$uniqID, snps$uniqID)]
     eqtl$pos <- snps$pos[match(eqtl$uniqID, snps$uniqID)]
-    eqtl$symbol <- ENSG.all.genes$external_gene_name[match(eqtl$gene, ENSG.all.genes$ensembl_gene_id)]
+    eqtl$symbol <- ENSG$external_gene_name[match(eqtl$gene, ENSG$ensembl_gene_id)]
     eqtlall <- eqtl
 	if(nrow(eqtlall)>0){
 	    eqtlall$eqtlMapFilt <- 0
@@ -246,6 +246,7 @@ if(ciMap==1){
 	      rm(epi, temp)
 	    }
 		cicheck <- sapply(ci$SNPs, function(x){if(length(which(unlist(strsplit(x, ":")) %in% cisnps$rsID))>0){1}else{0}})
+		ci <- ci[cicheck==1,]
 		if(ciMapPromFilt==1){
 			ciprom <- fread(paste(filedir, "ciProm.txt", sep=""), data.table=F)
 			ci <- ci[ci$region2 %in% ciprom$region2,]
@@ -264,7 +265,7 @@ if(ciMap==1){
 write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
 
 ##### create gene table #####
-geneTable <- ENSG.all.genes[ENSG.all.genes$ensembl_gene_id %in% genes,]
+geneTable <- ENSG[ENSG$ensembl_gene_id %in% genes,]
 colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "status", "type", "entrezID","HUGO")
 if(nrow(geneTable)>0){
   geneTable$chr <- as.numeric(geneTable$chr)
@@ -389,11 +390,11 @@ if(nrow(geneTable)>0){
 
 int.table$nGenes[is.na(int.table$nGenes)] <- 0
 for(i in 1:nrow(int.table)){
-  int.table$nWithinGene[i] <- length(which(ENSG.all.genes$chromosome_name==loci$chr[i] & (
-    (ENSG.all.genes$start_position<=loci$start[i] & ENSG.all.genes$end_position>=loci$end[i])
-    | (ENSG.all.genes$start_position>=loci$start[i] & ENSG.all.genes$start_position<=loci$end[i])
-    | (ENSG.all.genes$end_position>=loci$start[i] & ENSG.all.genes$end_position<=loci$end[i])
-    | (ENSG.all.genes$start_position>=loci$start[i] & ENSG.all.genes$end_position<=loci$end[i])
+  int.table$nWithinGene[i] <- length(which(ENSG$chromosome_name==loci$chr[i] & (
+    (ENSG$start_position<=loci$start[i] & ENSG$end_position>=loci$end[i])
+    | (ENSG$start_position>=loci$start[i] & ENSG$start_position<=loci$end[i])
+    | (ENSG$end_position>=loci$start[i] & ENSG$end_position<=loci$end[i])
+    | (ENSG$start_position>=loci$start[i] & ENSG$end_position<=loci$end[i])
   )))
 }
 

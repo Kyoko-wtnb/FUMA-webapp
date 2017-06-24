@@ -21,14 +21,14 @@ if(gtype == "text"){
   genes <- genes[,1]
 }
 
-load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
+ENSG <- fread(config$data$ENSG, data.table=F)
 
 if(bkgtype == "select"){
   bkg = unlist(strsplit(bkgval, ":"))
   if(bkg[1]=="all"){
-    bkgenes = ENSG.all.genes$entrezID
+    bkgenes = ENSG$entrezID
   }else{
-    bkgenes = ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$gene_biotype %in% bkg]
+    bkgenes = ENSG$ensembl_gene_id[ENSG$gene_biotype %in% bkg]
   }
 }else if(bkgtype == "text"){
   bkgenes = unlist(strsplit(bkgval, ":"))
@@ -38,7 +38,7 @@ if(bkgtype == "select"){
 }
 
 #if(Xchr==1){
-#  ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name != 23,]
+#  ENSG <- ENSG[ENSG$chromosome_name != 23,]
 #}
 
 if(MHC==1){
@@ -53,26 +53,26 @@ type <- 0
 # 1-> ensg
 # 2-> entrezID
 
-if(length(which(toupper(genes) %in% toupper(ENSG.all.genes$external_gene_name)))>0){
-  genes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$external_gene_name) %in% toupper(genes)]
+if(length(which(toupper(genes) %in% toupper(ENSG$external_gene_name)))>0){
+  genes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name) %in% toupper(genes)]
   type <- 0
-}else if(length(which(toupper(genes) %in% toupper(ENSG.all.genes$ensembl_gene_id)))>0){
-  genes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$ensembl_gene_id) %in% toupper(genes)]
+}else if(length(which(toupper(genes) %in% toupper(ENSG$ensembl_gene_id)))>0){
+  genes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(genes)]
   type <- 1
-}else if(length(which(genes %in% ENSG.all.genes$entrezID))>0){
-  genes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$entrezID%in%genes]
+}else if(length(which(genes %in% ENSG$entrezID))>0){
+  genes <- ENSG$ensembl_gene_id[ENSG$entrezID%in%genes]
   type <- 2
 }else{
   stop("gene ID did not match")
 }
 
 
-if(length(which(toupper(bkgenes) %in% toupper(ENSG.all.genes$external_gene_name)))>0){
-  bkgenes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$external_gene_name)%in%toupper(bkgenes)]
-}else if(length(which(toupper(bkgenes) %in% toupper(ENSG.all.genes$ensembl_gene_id)))>0){
-  bkgenes <- ENSG.all.genes$ensembl_gene_id[toupper(ENSG.all.genes$ensembl_gene_id) %in% toupper(bkgenes)]
-}else if(length(which(bkgenes %in% ENSG.all.genes$entrezID))>0){
-  bkgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$entrezID%in%bkgenes]
+if(length(which(toupper(bkgenes) %in% toupper(ENSG$external_gene_name)))>0){
+  bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name)%in%toupper(bkgenes)]
+}else if(length(which(toupper(bkgenes) %in% toupper(ENSG$ensembl_gene_id)))>0){
+  bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(bkgenes)]
+}else if(length(which(bkgenes %in% ENSG$entrezID))>0){
+  bkgenes <- ENSG$ensembl_gene_id[ENSG$entrezID%in%bkgenes]
 }
 
 load(paste(config$data$GTExExp, "/gtex.avg.log2RPKM.ts.RData", sep=""))
@@ -82,8 +82,8 @@ if(length(which(rownames(gtex.avg.ts) %in% genes))>1){
   gtex.exp.log2 <- gtex.avg.log2RPKM.ts[rownames(gtex.avg.log2RPKM.ts) %in% genes, ]
   gtex.exp.norm <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
   rm(gtex.avg.ts, gtex.avg.log2RPKM.ts)
-  rownames(gtex.exp.log2) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp.log2), ENSG.all.genes$ensembl_gene_id)]
-  rownames(gtex.exp.norm) <- ENSG.all.genes$external_gene_name[match(rownames(gtex.exp.norm), ENSG.all.genes$ensembl_gene_id)]
+  rownames(gtex.exp.log2) <- ENSG$external_gene_name[match(rownames(gtex.exp.log2), ENSG$ensembl_gene_id)]
+  rownames(gtex.exp.norm) <- ENSG$external_gene_name[match(rownames(gtex.exp.norm), ENSG$ensembl_gene_id)]
 
   g.sort <- 1:nrow(gtex.exp.log2)
   names(g.sort) <- sort(rownames(gtex.exp.log2))
@@ -119,7 +119,7 @@ if(length(which(rownames(gtex.avg.ts) %in% genes))>1){
   gtex.exp.log2 <- gtex.avg.log2RPKM.ts[rownames(gtex.avg.log2RPKM.ts) %in% genes, ]
   gtex.exp.norm <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
   rm(gtex.avg.ts, gtex.avg.log2RPKM.ts)
-  gname <- ENSG.all.genes$external_gene_name[ENSG.all.genes$ensembl_gene_id %in% genes]
+  gname <- ENSG$external_gene_name[ENSG$ensembl_gene_id %in% genes]
   cat(gname)
   row.order <- data.frame(gene=gname, alph=1, clstLog2=1, clstNorm=1)
   write.table(row.order, paste(filedir, "exp.row.txt", sep=""), quote=F, row.names=F, sep="\t")
@@ -158,7 +158,7 @@ if(length(which(genes %in% bkgenes))>1){
   #write.table(ExpTsG, paste(filedir, "ExpTsGeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
 }
 
-geneTable <- ENSG.all.genes[toupper(ENSG.all.genes$ensembl_gene_id) %in% toupper(genes),]
+geneTable <- ENSG[toupper(ENSG$ensembl_gene_id) %in% toupper(genes),]
 geneTable <- subset(geneTable, select=c("ensembl_gene_id", "entrezID", "external_gene_name"))
 colnames(geneTable) <- c("ensg", "entrezID", "symbol")
 load(paste(config$data$geneIDs, "/entrez2mim.RData", sep=""))

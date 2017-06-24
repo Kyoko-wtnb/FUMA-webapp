@@ -16,33 +16,33 @@ curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
-load(paste(config$data$ENSG, "/ENSG.all.genes.RData", sep=""))
+ENSG <- fread(config$data$ENSG, data.table=F)
 
-ENSG.all.genes <- ENSG.all.genes[ENSG.all.genes$chromosome_name==chr,]
-g <- ENSG.all.genes$ensembl_gene_id[(ENSG.all.genes$start_position <= xmin & ENSG.all.genes$end_position>=xmax)
-  | (ENSG.all.genes$start_position>=xmin & ENSG.all.genes$start_position<=xmax)
-  | (ENSG.all.genes$end_position>=xmin & ENSG.all.genes$end_position<=xmax)
-  | (ENSG.all.genes$start_position >= xmin & ENSG.all.genes$end_position<=xmax)
+ENSG <- ENSG[ENSG$chromosome_name==chr,]
+g <- ENSG$ensembl_gene_id[(ENSG$start_position <= xmin & ENSG$end_position>=xmax)
+  | (ENSG$start_position>=xmin & ENSG$start_position<=xmax)
+  | (ENSG$end_position>=xmin & ENSG$end_position<=xmax)
+  | (ENSG$start_position >= xmin & ENSG$end_position<=xmax)
 ]
 
 if(length(g)==0){
-  start <- min(abs(ENSG.all.genes$end_position-xmin))
-  end <- min(abs(ENSG.all.genes$start_position-xmax))
-  g <- ENSG.all.genes$ensembl_gene_id[which(abs(ENSG.all.genes$end_position-xmin)==start)]
-  g <- c(g, ENSG.all.genes$ensembl_gene_id[which(abs(ENSG.all.genes$start_position-xmax)==start)])
+  start <- min(abs(ENSG$end_position-xmin))
+  end <- min(abs(ENSG$start_position-xmax))
+  g <- ENSG$ensembl_gene_id[which(abs(ENSG$end_position-xmin)==start)]
+  g <- c(g, ENSG$ensembl_gene_id[which(abs(ENSG$start_position-xmax)==start)])
 }
 
-g <- unique(c(g, ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$external_gene_name %in% eqtlgenes]))
+g <- unique(c(g, ENSG$ensembl_gene_id[ENSG$external_gene_name %in% eqtlgenes]))
 
-gmin <- min(ENSG.all.genes$start_position[ENSG.all.genes$ensembl_gene_id %in% g])
-gmax <- max(ENSG.all.genes$end_position[ENSG.all.genes$ensembl_gene_id %in% g])
+gmin <- min(ENSG$start_position[ENSG$ensembl_gene_id %in% g])
+gmax <- max(ENSG$end_position[ENSG$ensembl_gene_id %in% g])
 
-g <- unique(c(g, ENSG.all.genes$ensembl_gene_id[
-  (ENSG.all.genes$start_position>=gmin & ENSG.all.genes$start_position<=gmax)
-  | (ENSG.all.genes$end_position>=gmin & ENSG.all.genes$end_position<=gmax)
+g <- unique(c(g, ENSG$ensembl_gene_id[
+  (ENSG$start_position>=gmin & ENSG$start_position<=gmax)
+  | (ENSG$end_position>=gmin & ENSG$end_position<=gmax)
 ]))
 
-rm(ENSG.all.genes)
+rm(ENSG)
 library(biomaRt)
 ensembl <- useMart(biomart = "ENSEMBL_MART_ENSEMBL", host="grch37.ensembl.org", path="/biomart/martservice", dataset="hsapiens_gene_ensembl")
 exons <- getBM(attributes = c("ensembl_gene_id", "external_gene_name", "start_position", "end_position", "strand", "gene_biotype", "exon_chrom_start", "exon_chrom_end"), filter="ensembl_gene_id", values=g, mart = ensembl)

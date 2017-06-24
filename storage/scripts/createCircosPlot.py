@@ -166,16 +166,17 @@ def main():
 	pos2max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,2]]
 	ci = np.c_[ci[:,0], chr1, pos1min, pos1max, chr2, pos2min, pos2max, ci[:,3:7]]
 
+	##### mapped genes #####
+	genes = pd.read_table(filedir+"genes.txt", delim_whitespace=True)
+	geneshead = list(genes.columns.values)
+	genes = np.array(genes)
+
 	##### eqtl #####
 	eqtl = []
 	if os.path.isfile(filedir+"eqtl.txt"):
 		eqtl = pd.read_table(filedir+"eqtl.txt", delim_whitespace=True)
 		eqtl = np.array(eqtl)
-
-	##### mapped genes #####
-	genes = pd.read_table(filedir+"genes.txt", delim_whitespace=True)
-	geneshead = list(genes.columns.values)
-	genes = np.array(genes)
+		eqtl = eqtl[ArrayIn(eqtl[:,3], genes[:,0])]
 
 	##### process per chromosome #####
 	chrom = unique(loci[:,2])
