@@ -305,8 +305,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 					if int(m[1]) in pos_set:
 						# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
 						jgwas = bisect_left(posall, int(m[1]))
-						if float(gwas_in[jgwas, pcol])>gwasP:
-							continue
+
 						allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
 						allele.sort()
 						uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
@@ -327,6 +326,9 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 								jgwas += 1
 							if not checkall:
 								continue
+
+						if float(gwas_in[jgwas, pcol])>gwasP:
+							continue
 
 						ld.append([l_uid, uid, ld_tmp[ild, 2]])
 
@@ -451,8 +453,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 						if int(m[1]) in pos_set:
 							# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
 							jgwas = bisect_left(posall, int(m[1]))
-							if float(gwas_in[jgwas, pcol])>gwasP:
-								continue
+
 							allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
 							allele.sort()
 							uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
@@ -473,6 +474,10 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 									jgwas += 1
 								if not checkall:
 									continue
+
+							if float(gwas_in[jgwas, pcol])>gwasP:
+								continue
+
 							ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
 							if tmp_uid in checkeduid:
 								continue
@@ -588,8 +593,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							ild = np.where(ld_tmp[:,1]==m[1])[0][0]
 							if int(m[1]) in pos_set:
 								jgwas = bisect_left(posall, int(m[1]))
-								if float(gwas_in[jgwas, pcol])>gwasP:
-									continue
+
 								allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
 								allele.sort()
 								uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
@@ -611,6 +615,10 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 										jgwas += 1
 									if not checkall:
 										continue
+
+								if float(gwas_in[jgwas, pcol])>gwasP:
+									continue
+
 								ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
 								if tmp_uid in checkeduid:
 									continue
@@ -705,122 +713,9 @@ def getAnnot(snps, annot_dir):
 			out = np.r_[out, tmp_out]
 	return out
 
-def main():
-	starttime = time.time()
-
-	##### check arguments #####
-	if len(sys.argv)<2:
-		sys.exit('ERROR: not enough arguments\nUSAGE ./getLD.py <filedir>')
-
-	filedir = sys.argv[1]
-	if re.match(".+\/$", filedir) is None:
-		filedir += '/'
-
-	##### get config files #####
-	cfg = ConfigParser.ConfigParser()
-	cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
-
-	param_cfg = ConfigParser.ConfigParser()
-	param_cfg.read(filedir+'params.config')
-
-	##### get parameters #####
-	params = getParams(filedir, cfg, param_cfg)
-	# params = getParams(os.path.dirname(os.path.realpath(__file__))+'/app.config', filedir+'params.config')
-
-	##### output files #####
-	ldout = filedir+"ld.txt"
-	snpsout = filedir+"snps.txt"
-	annotout = filedir+"annot.txt"
-	indsigout = filedir+"IndSigSNPs.txt"
-	leadout = filedir+"leadSNPs.txt"
-	glout = filedir+"GenomicRiskLoci.txt"
-	annovin = filedir+"annov.input"
-
-	with open(ldout, 'w') as o:
-		o.write("\t".join(["SNP1","SNP2","r2"])+"\n")
-
-	ohead = "\t".join(["uniqID", "rsID", "chr", "pos", "ref", "alt", "MAF", "gwasP"])
-	if params.orcol:
-		ohead += "\tor"
-	if params.becol:
-		ohead += "\tbeta"
-	if params.secol:
-		ohead += "\tse"
-	ohead += "\tr2\tIndSigSNP\tGenomicLocus"
-	ohead += "\n"
-	with open(snpsout, 'w') as o:
-		o.write(ohead)
-
-	tmp = subprocess.check_output('gzip -cd '+params.annot_dir+'/chr1.annot.txt.gz | head -1', shell=True)
-	tmp = tmp.strip().split()
-
-	ohead = "\t".join(["uniqID"]+tmp[4:])
-	ohead += "\n"
-	with open(annotout, 'w') as o:
-		o.write(ohead)
-
-	##### region file #####
-	# 0: chr, 1: start, 2: end
-	regions = None
-	if params.regions:
-		regions = pd.read_table(params.regions, comment="#", delim_whitespace=True)
-		regions = regions.as_matrix()
-
-	##### lead SNPs file #####
-	# 0: rsID, 1: chr, 2: pos
-	leadSNPs = None
-	if params.leadSNPs:
-		leadSNPs = pd.read_table(params.leadSNPs, comment="#", delim_whitespace=True)
-		leadSNPs = leadSNPs.as_matrix()
-		leadSNPs = rsIDup(leadSNPs, 0, params.dbSNPfile)
-
-	##### get row index for each chromosome #####
-	# input file needs to be sorted by chr and position
-	gwasfile_chr = separateGwasByChr(params.gwas)
-
-	##### process per chromosome #####
-	ld = []
-	snps = []
-	annot = []
-	IndSigSNPs = []
-
-	for i in range(0, len(gwasfile_chr)):
-	# for i in range(0, 1):
-		ld_tmp, snps_tmp, IndSigSNPs_tmp = chr_process(i, gwasfile_chr, regions, leadSNPs, params)
-		if len(snps_tmp)>0:
-			if len(snps)>0:
-				ld = np.r_[ld, ld_tmp]
-				snps = np.r_[snps, snps_tmp]
-				# annot = np.r_[annot, annot_tmp]
-				IndSigSNPs = np.r_[IndSigSNPs, IndSigSNPs_tmp]
-			else:
-				ld = ld_tmp
-				snps = snps_tmp
-				# annot = annot_tmp
-				IndSigSNPs = IndSigSNPs_tmp
-	if len(snps)==0:
-		sys.exit("No candidate SNP was identified")
-
-	##### output LD #####
-	with open(ldout, 'a') as o:
-		np.savetxt(o, ld, delimiter="\t", fmt="%s")
-
-	##### output ANNOVAR input file #####
-	with open(annovin, 'w') as o:
-		for l in snps:
-			o.write("\t".join([l[2], l[3], l[3], l[4], l[5]])+"\n")
-
-	##### get annotations and output #####
-	print "\ngetting annotations..."
-	annot = getAnnot(snps, params.annot_dir)
-	with open(annotout, 'a') as o:
-		np.savetxt(o, annot, delimiter="\t", fmt="%s")
-
-	##### define lead SNPs #####
-	print "\ndefining lead SNPs..."
+def getLeadSNPs(chrom, snps, IndSigSNPs, params):
 	leadSNPs = []
 	checked = []
-
 	IndSigSNPs = IndSigSNPs[IndSigSNPs[:,4].astype(float).argsort()]
 	for snp in IndSigSNPs:
 		if snp[1] in checked:
@@ -830,19 +725,23 @@ def main():
 		ld_tmp = tb.querys(snp[2]+":"+snp[3]+"-"+snp[3])
 		inSNPs = []
 		inSNPs.append(snp[1])
+
 		for l in ld_tmp:
 			if float(l[6])<0.1:
 				continue
-			if l[5] in IndSigSNPs[:,1]:
-				checked.append(l[5])
-				inSNPs.append(l[5])
+			if int(l[1]) != int(snp[3]):
+				continue
+			if int(l[4]) in IndSigSNPs[:,3].astype(int):
+				rsID = IndSigSNPs[IndSigSNPs[:,3].astype(int)==int(l[4]),1][0]
+				checked.append(rsID)
+				inSNPs.append(rsID)
 		leadSNPs.append([snp[0], snp[1], snp[2], snp[3], snp[4], str(len(inSNPs)), ":".join(inSNPs)])
 	leadSNPs = np.array(leadSNPs)
-	leadSNPs = leadSNPs[np.lexsort((leadSNPs[:,3].astype(int), leadSNPs[:,2].astype(int)))]
-	IndSigSNPs = IndSigSNPs[np.lexsort((IndSigSNPs[:,3].astype(int), IndSigSNPs[:,2].astype(int)))]
+	leadSNPs = leadSNPs[leadSNPs[:,3].astype(int).argsort()]
 
-	##### define risk loci #####
-	print "\ndefining risk loci..."
+	return leadSNPs
+
+def getGenomicRiskLoci(chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 	loci = []
 	iloci = 0
 	chrom = 0
@@ -876,7 +775,7 @@ def main():
 			inInd = unique(inInd)
 			inLead += [leadSNPs[i,1]]
 			n = ArrayIn(snps[:,0], ld[ArrayIn(ld[:,0], uid),1])
-			snps_tmp = snps[n,]
+			snps_tmp = snps[n]
 			nonGWASSNPs += list(snps_tmp[snps_tmp[:,7]=="NA", 0])
 			GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
 			nonGWASSNPs = unique(nonGWASSNPs)
@@ -937,45 +836,153 @@ def main():
 			end = max(snps[n,3].astype(int))
 			loci.append([str(iloci+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ":".join(inInd), str(len(inLead)), ":".join(inLead)])
 	loci = np.array(loci)
+	return loci, uid2gl
 
-	addcol = []
-	for i in range(0,len(IndSigSNPs)):
-		addcol.append([str(i+1), str(uid2gl[IndSigSNPs[i,0]])])
-	IndSigSNPs = np.c_[addcol, IndSigSNPs]
+def main():
+	starttime = time.time()
 
-	addcol = []
-	for i in range(0,len(leadSNPs)):
-		addcol.append([str(i+1), str(uid2gl[leadSNPs[i,0]])])
-	leadSNPs = np.c_[addcol, leadSNPs]
+	##### check arguments #####
+	if len(sys.argv)<2:
+		sys.exit('ERROR: not enough arguments\nUSAGE ./getLD.py <filedir>')
 
-	##### write significant SNPs #####
+	filedir = sys.argv[1]
+	if re.match(".+\/$", filedir) is None:
+		filedir += '/'
+
+	##### get config files #####
+	cfg = ConfigParser.ConfigParser()
+	cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
+
+	param_cfg = ConfigParser.ConfigParser()
+	param_cfg.read(filedir+'params.config')
+
+	##### get parameters #####
+	params = getParams(filedir, cfg, param_cfg)
+	# params = getParams(os.path.dirname(os.path.realpath(__file__))+'/app.config', filedir+'params.config')
+
+	##### output files #####
+	ldout = filedir+"ld.txt"
+	snpsout = filedir+"snps.txt"
+	annotout = filedir+"annot.txt"
+	indsigout = filedir+"IndSigSNPs.txt"
+	leadout = filedir+"leadSNPs.txt"
+	glout = filedir+"GenomicRiskLoci.txt"
+	annovin = filedir+"annov.input"
+
+	##### write headers #####
+	with open(ldout, 'w') as o:
+		o.write("\t".join(["SNP1","SNP2","r2"])+"\n")
+
+	ohead = "\t".join(["uniqID", "rsID", "chr", "pos", "ref", "alt", "MAF", "gwasP"])
+	if params.orcol:
+		ohead += "\tor"
+	if params.becol:
+		ohead += "\tbeta"
+	if params.secol:
+		ohead += "\tse"
+	ohead += "\tr2\tIndSigSNP\tGenomicLocus"
+	ohead += "\n"
+	with open(snpsout, 'w') as o:
+		o.write(ohead)
+
+	tmp = subprocess.check_output('gzip -cd '+params.annot_dir+'/chr1.annot.txt.gz | head -1', shell=True)
+	tmp = tmp.strip().split()
+
+	ohead = "\t".join(["uniqID"]+tmp[4:])
+	ohead += "\n"
+	with open(annotout, 'w') as o:
+		o.write(ohead)
+
 	with open(indsigout, 'w') as o:
 		o.write("\t".join(["No", "GenomicLocus", "uniqID", "rsID", "chr", "pos", "p","nSNPs", "nGWASSNPs"])+"\n")
-	with open(indsigout, 'a') as o:
-		np.savetxt(o, IndSigSNPs, delimiter="\t", fmt="%s")
 
 	with open(leadout, 'w') as o:
 		o.write("\t".join(["No", "GenomicLocus", "uniqID", "rsID", "chr", "pos", "p","nIndSigSNPs", "IndSigSNPs"])+"\n")
-	with open(leadout, 'a') as o:
-		np.savetxt(o, leadSNPs, delimiter="\t", fmt="%s")
 
 	with open(glout, 'w') as o:
 		o.write("\t".join(["GenomicLocus", "uniqID", "rsID", "chr", "pos", "p", "start", "end", "nSNPs", "nGWASSNPs", "nIndSigSNPs", "IndSigSNPs", "nLeadSNPs", "LeadSNPs"])+"\n")
-	with open(glout, 'a') as o:
-		np.savetxt(o, loci, delimiter="\t", fmt="%s")
 
-	##### snps write #####
-	addcol = [] #r2, IndSigSNP, GenomicLocus
-	for l in snps:
-		tmp = ld[ld[:,1]==l[0]]
-		tmp = tmp[tmp[:,2]==max(tmp[:,2])][0]
-		r2 = tmp[2]
-		rsID = snps[snps[:,0]==tmp[0],1][0]
-		GenomicLocus = IndSigSNPs[IndSigSNPs[:,2]==tmp[0],1][0]
-		addcol.append([r2, rsID, GenomicLocus])
-	snps = np.c_[snps, addcol]
-	with open(snpsout, 'a') as o:
-		np.savetxt(o, snps, delimiter="\t", fmt="%s")
+	##### region file #####
+	# 0: chr, 1: start, 2: end
+	regions = None
+	if params.regions:
+		regions = pd.read_table(params.regions, comment="#", delim_whitespace=True)
+		regions = regions.as_matrix()
+
+	##### lead SNPs file #####
+	# 0: rsID, 1: chr, 2: pos
+	inleadSNPs = None
+	if params.leadSNPs:
+		inleadSNPs = pd.read_table(params.leadSNPs, comment="#", delim_whitespace=True)
+		inleadSNPs = inleadSNPs.as_matrix()
+		inleadSNPs = rsIDup(inleadSNPs, 0, params.dbSNPfile)
+
+	##### get row index for each chromosome #####
+	# input file needs to be sorted by chr and position
+	gwasfile_chr = separateGwasByChr(params.gwas)
+
+	##### process per chromosome #####
+	nSNPs = 0
+	for i in range(0, len(gwasfile_chr)):
+		chrom = chrom = gwasfile_chr[i][0]
+		ld, snps, IndSigSNPs = chr_process(i, gwasfile_chr, regions, inleadSNPs, params)
+		if len(snps)>0:
+			nSNPs += len(IndSigSNPs)
+			### get annot
+			annot = getAnnot(snps, params.annot_dir)
+			### get lead SNPs
+			leadSNPs = getLeadSNPs(chrom, snps, IndSigSNPs, params)
+			### get Genomic risk loci
+			loci, uid2gl = getGenomicRiskLoci(chrom, snps, ld, IndSigSNPs, leadSNPs, params)
+
+			### add columns for sig SNPs
+			addcol = []
+			for i in range(0,len(IndSigSNPs)):
+				addcol.append([str(i+1), str(uid2gl[IndSigSNPs[i,0]])])
+			IndSigSNPs = np.c_[addcol, IndSigSNPs]
+
+			addcol = []
+			for i in range(0,len(leadSNPs)):
+				addcol.append([str(i+1), str(uid2gl[leadSNPs[i,0]])])
+			leadSNPs = np.c_[addcol, leadSNPs]
+
+			### snps add columns
+			pd_ld = pd.DataFrame(ld)
+			pd_ld[[2]] = pd_ld[[2]].astype(float)
+			idx = pd_ld.groupby(1)[2].transform(max) == pd_ld[2]
+			uid1 = np.array(pd_ld[0][idx].tolist())
+			uid2 = np.array(pd_ld[1][idx].tolist())
+			r2 = np.array(pd_ld[2][idx].tolist())
+			tmp = list(snps[:,0])
+			r2 = r2[[tmp.index(x) for x in uid2]]
+			rsIDs = snps[[tmp.index(x) for x in uid1],1]
+			tmp = list(IndSigSNPs[:,2])
+			gl = IndSigSNPs[[tmp.index(x) for x in uid1],1]
+			snps = np.c_[snps, r2, rsIDs, gl]
+
+			### write outputs
+			with open(snpsout, 'a') as o:
+				np.savetxt(o, snps, delimiter="\t", fmt="%s")
+
+			with open(annotout, 'a') as o:
+				np.savetxt(o, annot, delimiter="\t", fmt="%s")
+
+			with open(annovin, 'a') as o:
+				for l in snps:
+					o.write("\t".join([l[2], l[3], l[3], l[4], l[5]])+"\n")
+
+			with open(indsigout, 'a') as o:
+				np.savetxt(o, IndSigSNPs, delimiter="\t", fmt="%s")
+
+			with open(leadout, 'a') as o:
+				np.savetxt(o, leadSNPs, delimiter="\t", fmt="%s")
+
+			with open(glout, 'a') as o:
+				np.savetxt(o, loci, delimiter="\t", fmt="%s")
+
+	##### exit if there is no SNPs with P<=leadP
+	if nSNPs==0:
+		sys.exit("No candidate SNP was identified")
 
 	##### ANNOVAR #####
 	annovout = filedir+"annov"
