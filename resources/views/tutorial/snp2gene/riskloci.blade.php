@@ -15,18 +15,18 @@ In this section, "Genomic risk locai", "lead SNPs" and
 	The higher the threshold for r<sup>2</sup>, the more SNPs are defined as ind. sig. SNPs.
 	At the same time, the number of SNPs in the LD with the ind. sig. SNPs (the candidate SNPs; which are the SNPs annotated in FUMA and used for gene prioritization) decreases.
 	<h4><strong>2. Lead SNPs</strong></h4>
-	Lead SNPs are defined as SNPs which are ind. sig. SNPs and are independent from each other at r<sup>2</sup> 0.1 (currentlly not adjustable).
-	Therefore, lead SNPs are same as the SNPs clumped ind. sig. SNPs at the same P-value and r<sup>2</sup> 0.1 by plink.<br/>
+	Lead SNPs are defined as SNPs which are ind. sig. SNPs and are independent from each other at r<sup>2</sup> &lt; 0.1 (currentlly not adjustable).
+	Therefore, lead SNPs are same as the SNPs clumped ind. sig. SNPs at the user defined P-value and r<sup>2</sup> = 0.1 by plink.<br/>
 	When r<sup>2</sup> is set at 0.1, lead SNPs are exactlly the same as ind. sig. SNPs.
 	However, this will also result in selecting candidate SNPs that have r<sup>2</sup> above 0.1 with any of ind. sig. SNPs.
 	We thus advise to set r<sup>2</sup> at 0.6 or higher.
 	<h4><strong>3. Genomic risk loci</strong></h4>
 	On top of lead SNPs, FUMA defines genomic risk loci, including all independent signals that are physically close or overlapping in a single locus.
-	Genomic risk loci are defined by merging LD blocks of ind. sig. SNPs witch are closer than the user defined distance (250 kb by default).
+	First, ind. sig. SNPs which are dependent each other at r2 &ge; 0.1 are assigned to the same genomic risk locus.
+	Then, ind. sig. SNPs witch are closer than the user defined distance (250 kb by default) are merged into one genomic risk locus.
 	The distance between two LD blocks of two ind. sig. SNPs is the distance between the closest SNPs
 	(which are in LD of the ind. sig. SNPs at user defined r<sup>2</sup>) from each LD block.<br/>
-	Each locus is represented by the top lead SNP which has the minimum P-value in tha locus. <br/>
-	When the distance is set at 0, only physically overlapped LD blocks will be merged into locus.
+	Each locus is represented by the top lead SNP which has the minimum P-value in tha locus.
 	<h4><strong>4. Candidate SNPs (SNPs in LD of ind. sig. SNPs)</strong></h4>
 	Candidate SNPs are SNPs that are in LD with any of the ind. sig. SNPs at the user defined r<sup>2</sup>.
 	Candidate SNPs, together with the ind. sig. SNPs, are the SNPs that are used to prioritize genes.
