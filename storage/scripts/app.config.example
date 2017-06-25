@@ -3,14 +3,14 @@
 [inputfiles]
 gwas=input.gwas
 leadSNP=input.lead
-regions=input.reagions
+regions=input.regions
 params=params.txt
 
 [data]
 dbSNP=/data/dbSNP
 chr15=/data/Chr15States
 refgenome=/data/1KG/Phase3
-ENSG=/data/ENSG
+ENSG=/data/ENSG.file.txt
 GeneSet=/data/GeneSet
 GTEx=/data/QTL/GTEx
 QTL=/data/QTL
@@ -30,5 +30,5 @@ annovdir=/home/kyoko/bin/annovar
 humandb=/data/annovar/humandb
 
 [CI]
-CIdata = /data/CI
-RoadmapData = /data/Roadmap
+CIdata=/data/CI
+RoadmapData=/data/Roadmap
