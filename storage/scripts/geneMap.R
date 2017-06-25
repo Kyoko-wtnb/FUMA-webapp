@@ -191,7 +191,7 @@ if(eqtlMap==1){
 	    eqtlall$eqtlMapFilt[eqtlall$uniqID %in% eqtl$uniqID] <- 1
 	}
     write.table(eqtlall, paste(filedir, "eqtl.txt", sep=""), quote=F, row.names=F, sep="\t")
-    snps$eqtlMapFilt <- sapply(snps$uniqID, function(x){if(x %in% eqtlall$uniqID){max(eqtlall$eqtlMapFilt[eqtlall$uniqID==x])}else{0}})
+    snps$eqtlMapFilt[snps$uniqID %in% eqtl$uniqID] <- 1
   }
 }
 
