@@ -208,12 +208,12 @@ function CheckAll(){
 				+'<i class="fa fa-ban"></i> Invalid input</div></td>');
 			submit=false;
 			tablecheck=false;
-		}else if($('#leadP').val()>=0 && $('#leadP').val()<=0.05){
+		}else if($('#leadP').val()>=0 && $('#leadP').val()<=1e-5){
 			$(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-check"></i> OK.</div></td>');
-		}else if($('#leadP').val()>0.05 && $('#leadP').val()<=1){
+		}else if($('#leadP').val()>1e-5 && $('#leadP').val()<=1){
 			$(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-				+'<i class="fa fa-ban"></i> The maximum lead SNP P-value is 0.05.</div></td>');
+				+'<i class="fa fa-ban"></i> The maximum lead SNP P-value is 1e-5.</div></td>');
 			submit=false;
 			tablecheck=false;
 		}else{
