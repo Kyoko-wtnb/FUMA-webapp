@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Http\Controllers;
+namespace fuma\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

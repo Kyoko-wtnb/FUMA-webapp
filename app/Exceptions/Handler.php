@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Exceptions;
+namespace fuma\Exceptions;
 
 use Exception;
 use Illuminate\Validation\ValidationException;

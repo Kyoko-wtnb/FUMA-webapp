@@ -1,10 +1,10 @@
 <?php
 
-namespace IPGAP\Console;
+namespace fuma\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use IPGAP\Http\Controllers\Controller;
+use fuma\Http\Controllers\Controller;
 use DB;
 use Mail;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Console\Commands;
+namespace fuma\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Inspiring;

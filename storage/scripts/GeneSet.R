@@ -10,10 +10,10 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir, filedi
   require(data.table)
   load(paste(filedir, "/gtex.avg.RPKM.genes.RData", sep=""))
   if(MHC==FALSE){
-    load(paste(ensgdir, "/ENSG.all.genes.RData", sep=""))
-    start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
-    end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
-    MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
+    ENSG <- fread(config$data$ENSG, data.table=F)
+    start <- ENSG$start_position[ENSG$external_gene_name=="MOG"]
+    end <- ENSG$end_position[ENSG$external_gene_name=="COL11A2"]
+    MHCgenes <- ENSG$ensembl_gene_id[ENSG$chromosome_name==6 & ((ENSG$end_position>=start&ENSG$end_position<=end)|(ENSG$start_position>=start&ENSG$start_position<=end))]
     allgenes <- allgenes[!(allgenes %in% MHCgenes)]
     cat("Excluding genes in MHC region\n")
   }
@@ -61,10 +61,10 @@ DEGgeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir 
   require(data.table)
   load(paste(filedir, "/gtex.avg.RPKM.genes.RData", sep=""))
   if(MHC==FALSE){
-    load(paste(ensgdir, "/ENSG.all.genes.RData", sep=""))
-    start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
-    end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
-    MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
+    ENSG <- fread(config$data$ENSG, data.table=F)
+    start <- ENSG$start_position[ENSG$external_gene_name=="MOG"]
+    end <- ENSG$end_position[ENSG$external_gene_name=="COL11A2"]
+    MHCgenes <- ENSG$ensembl_gene_id[ENSG$chromosome_name==6 & ((ENSG$end_position>=start&ENSG$end_position<=end)|(ENSG$start_position>=start&ENSG$start_position<=end))]
     allgenes <- allgenes[!(allgenes %in% MHCgenes)]
     cat("Excluding genes in MHC region\n")
   }
@@ -112,10 +112,10 @@ ExpTstest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdir ,file
   require(data.table)
   load(paste(filedir, "/gtex.avg.RPKM.genes.RData", sep=""))
   if(MHC==FALSE){
-    load(paste(ensgdir, "/ENSG.all.genes.RData", sep=""))
-    start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
-    end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
-    MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
+    ENSG <- fread(config$data$ENSG, data.table=F)
+    start <- ENSG$start_position[ENSG$external_gene_name=="MOG"]
+    end <- ENSG$end_position[ENSG$external_gene_name=="COL11A2"]
+    MHCgenes <- ENSG$ensembl_gene_id[ENSG$chromosome_name==6 & ((ENSG$end_position>=start&ENSG$end_position<=end)|(ENSG$start_position>=start&ENSG$start_position<=end))]
     allgenes <- allgenes[!(allgenes %in% MHCgenes)]
     cat("Excluding genes in MHC region\n")
   }
@@ -152,10 +152,10 @@ ExpTsGeneraltest <- function(genes, allgenes, adjP.method="BH", MHC=TRUE, ensgdi
   require(data.table)
   load(paste(filedir, "/gtex.avg.RPKM.genes.RData", sep=""))
   if(MHC==FALSE){
-    load(paste(ensgdir, "/ENSG.all.genes.RData", sep=""))
-    start <- ENSG.all.genes$start_position[ENSG.all.genes$external_gene_name=="MOG"]
-    end <- ENSG.all.genes$end_position[ENSG.all.genes$external_gene_name=="COL11A2"]
-    MHCgenes <- ENSG.all.genes$ensembl_gene_id[ENSG.all.genes$chromosome_name==6 & ((ENSG.all.genes$end_position>=start&ENSG.all.genes$end_position<=end)|(ENSG.all.genes$start_position>=start&ENSG.all.genes$start_position<=end))]
+    ENSG <- fread(config$data$ENSG, data.table=F)
+    start <- ENSG$start_position[ENSG$external_gene_name=="MOG"]
+    end <- ENSG$end_position[ENSG$external_gene_name=="COL11A2"]
+    MHCgenes <- ENSG$ensembl_gene_id[ENSG$chromosome_name==6 & ((ENSG$end_position>=start&ENSG$end_position<=end)|(ENSG$start_position>=start&ENSG$start_position<=end))]
     allgenes <- allgenes[!(allgenes %in% MHCgenes)]
     cat("Excluding genes in MHC region\n")
   }

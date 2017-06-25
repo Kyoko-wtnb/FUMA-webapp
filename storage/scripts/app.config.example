@@ -19,6 +19,7 @@ GTExExp=/data/GeneExp/GTEx
 scripts=/var/www/IPGAP/storage/scripts
 geneIDs=/data/genes
 geneScores=/data/geneScores
+circos_config=/data/circos
 
 [magma]
 magmadir=/home/kyoko/bin/MAGMA
@@ -27,3 +28,7 @@ magmafiles=/data/MAGMA
 [annovar]
 annovdir=/home/kyoko/bin/annovar
 humandb=/data/annovar/humandb
+
+[CI]
+CIdata = /data/CI
+RoadmapData = /data/Roadmap

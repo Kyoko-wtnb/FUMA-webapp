@@ -11,7 +11,7 @@
 |
 */
 
-$factory->define(IPGAP\User::class, function (Faker\Generator $faker) {
+$factory->define(fuma\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->safeEmail,

@@ -1,8 +1,8 @@
 <?php
 
-namespace IPGAP\Jobs;
+namespace fuma\Jobs;
 
-use IPGAP\Jobs\Job;
+use fuma\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,8 +32,7 @@ class snp2geneProcess extends Job implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
-    {
+    public function handle(){
       // Update status when job is started
       $jobID = $this->jobID;
       $started_at = date("Y-m-d H:i:s");
@@ -274,6 +273,26 @@ class snp2geneProcess extends Job implements ShouldQueue
         }
       }
 
+	  if($params['ciMap']==1){
+		  file_put_contents($logfile, "\n----- createCircosPlot.py -----\n", FILE_APPEND);
+          file_put_contents($errorfile, "\n----- createCircosPlot.py -----\n", FILE_APPEND);
+		  $script = storage_path().'/scripts/createCircosPlot.py';
+		  exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+		  if($error != 0){
+            $this->rmFiles($filedir);
+            DB::table('SubmitJobs') -> where('jobID', $jobID)
+                              -> update(['status'=>'ERROR:012']);
+            $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+			$errorout = file_get_contents($errorfile);
+	        $errorout = explode("\n", $errorout);
+	        $msg = $errorout[count($errorout)-2];
+            if($email!=null){
+              $this->sendJobCompMail($email, $jobtitle, $jobID, 12, $msg);
+              return;
+            }
+          }
+	  }
+
       $this->rmFiles($filedir);
 
       DB::table('SubmitJobs') -> where('jobID', $jobID)
@@ -285,6 +304,17 @@ class snp2geneProcess extends Job implements ShouldQueue
       }
       return;
     }
+
+	public function failed(){
+		$jobID = $this->jobID;
+		$user = $this->user;
+        $email = $user->email;
+		$jobtitle = DB::table('SubmitJobs') -> where('jobID', $jobID)
+            ->first() ->title;
+        DB::table('SubmitJobs') -> where('jobID', $jobID)
+                        -> update(['status'=>'JOB FAILED']);
+		$this->sendJobFailedMail($email, $jobtitle, $jobID);
+	}
 
     public function sendJobCompMail($email, $jobtitle, $jobID, $status, $msg){
       if($status==0){
@@ -312,6 +342,19 @@ class snp2geneProcess extends Job implements ShouldQueue
       }
       return;
     }
+
+	public function sendJobFailedMail($email, $jobtitle, $jobID){
+		$user = $this->user;
+		$data = [
+			'jobtitle'=>$jobtitle,
+			'jobID'=>$jobID
+		];
+		$devemail = config('app.devemail');
+		Mail::send('emails.jobFailed', $data, function($m) use($user, $devemail){
+          $m->from('noreply@ctglab.nl', "FUMA web application");
+          $m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job failed");
+        });
+	}
 
     public function JobMonitorUpdate($jobID, $created_at, $started_at){
       $completed_at = date("Y-m-d H:i:s");

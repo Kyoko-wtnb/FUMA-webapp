@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP;
+namespace fuma;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 

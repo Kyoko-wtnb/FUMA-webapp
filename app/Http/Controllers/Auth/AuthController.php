@@ -1,10 +1,10 @@
 <?php
 
-namespace IPGAP\Http\Controllers\Auth;
+namespace fuma\Http\Controllers\Auth;
 
-use IPGAP\User;
+use fuma\User;
 use Validator;
-use IPGAP\Http\Controllers\Controller;
+use fuma\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 

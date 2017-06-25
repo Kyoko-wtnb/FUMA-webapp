@@ -237,7 +237,7 @@ def main():
 	##### get parameters #####
 	ENSG = cfg.get("data", "ENSG")
 	datadir = cfg.get("CI", "CIdata")
-	reg_datadir = cfg.get("CI", "open_chromatin")
+	reg_datadir = cfg.get("CI", "RoadmapData")
 	ciMapBuildin = param.get("ciMap", "ciMapBuildin")
 	if ciMapBuildin=="NA":
 		ciMapBuildin = ["NA"]
@@ -266,10 +266,10 @@ def main():
 	snps = getSNPs(filedir)
 
 	##### get genes #####
-	genes = pd.read_table(ENSG+"/ENSG.all.genes.txt", sep="\t", header=None)
+	genes = pd.read_table(ENSG, sep="\t")
 	genes = np.array(genes)
-	genes = genes[:, [1,3,4,5,6,8]]
-	genes[:,1] = [int(x.replace("X", "23")) for x in genes[:,1]]
+	genes = genes[:, [0,2,3,4,5,7]]
+	genes[:,1] = [int(str(x).replace("X", "23")) for x in genes[:,1]]
 	genes = genes[ArrayIn(genes[:,5], genetype)]
 	genes = GeneToPromoter(genes, promoter)
 

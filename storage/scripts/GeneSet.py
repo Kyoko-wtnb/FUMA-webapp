@@ -25,7 +25,7 @@ def ArrayIn(a1, a2):
 ##### config variables #####
 cfg = ConfigParser.ConfigParser()
 cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
-ensgdir = cfg.get('data', 'ENSG')
+ensgfile = cfg.get('data', 'ENSG')
 gsdir = cfg.get('data', 'GeneSet')
 
 if len(sys.argv)<1:
@@ -54,13 +54,14 @@ else:
 	genes = list(lines[:,0])
 genes = [s.upper() for s in genes]
 
-ENSG = pd.read_table(ensgdir+"/ENSG.all.genes.txt", header=None, delim_whitespace=True)
+ENSG = pd.read_table(ensgfile, delim_whitespace=True)
+ENSGheads = list(ENSG.columns.values)
 ENSG = np.array(ENSG)
 
 if bkgtype == "select":
 	bkgval = list(bkgval.split(":"))
-	ENSG = ENSG[ArrayIn(ENSG[:,8], bkgval),]
-	bkgenes = list(ENSG[:,9])
+	ENSG = ENSG[ArrayIn(ENSG[:,ENSGheads.index("gene_biotype")], bkgval),]
+	bkgenes = list(ENSG[:,ENSGheads.index("entrezID")])
 elif bkgtype == "text":
 	bkgenes = bkgval.split(":")
 	bkgenes = [s.upper() for s in bkgenes]
@@ -79,26 +80,26 @@ else:
 
 ## genes ID
 Type = 0
-if len(ArrayIn(genes, ENSG[:,2]))>0:
+if len(ArrayIn(genes, ENSG[:,ENSGheads.index("external_gene_name")]))>0:
 	Type = 0
-	genes = list(ENSG[ArrayIn(ENSG[:,2], genes),9])
-elif len(ArrayIn(genes, ENSG[:,1]))>0:
+	genes = list(ENSG[ArrayIn(ENSG[:,ENSGheads.index("external_gene_name")], genes),ENSGheads.index("entrezID")])
+elif len(ArrayIn(genes, ENSG[:,ENSGheads.index("ensembl_gene_id")]))>0:
 	Type = 1
-	genes = list(ENSG[ArrayIn(ENSG[:,1], genes),9])
-elif len(ArrayIn(genes, ENSG[:,9]))>0:
+	genes = list(ENSG[ArrayIn(ENSG[:,ENSGheads.index("ensembl_gene_id")], genes),ENSGheads.index("entrezID")])
+elif len(ArrayIn(genes, ENSG[:,ENSGheads.index("entrezID")]))>0:
 	Type = 2
-	genes = list(ENSG[ArrayIn(ENSG[:,9], genes),9])
+	genes = list(ENSG[ArrayIn(ENSG[:,ENSGheads.index("entrezID")], genes),ENSGheads.index("entrezID")])
 genes = np.array(genes)
 genes = np.unique(genes)
 
 ## bkgenes ID
 if bkgtype != "select":
-	if len(ArrayIn(bkgenes, ENSG[:,2]))>0 :
-		bkgenes = list(ENSG[ArrayIn(ENSG[:,2], bkgenes),9])
-	elif len(ArrayIn(bkgenes, ENSG[:,1]))>0 :
-		bkgenes = list(ENSG[ArrayIn(ENSG[:,1], bkgenes),9])
-	elif len(ArrayIn(bkgenes, ENSG[:,9]))>0:
-		bkgenes = list(ENSG[ArrayIn(ENSG[:,9], bkgenes),9])
+	if len(ArrayIn(bkgenes, ENSG[:,ENSGheads.index("external_gene_name")]))>0 :
+		bkgenes = list(ENSG[ArrayIn(ENSG[:,ENSGheads.index("external_gene_name")], bkgenes),ENSGheads.index("entrezID")])
+	elif len(ArrayIn(bkgenes, ENSG[:,ENSGheads.index("ensembl_gene_id")]))>0 :
+		bkgenes = list(ENSG[ArrayIn(ENSG[:,ENSGheads.index("ensembl_gene_id")], bkgenes),ENSGheads.index("entrezID")])
+	elif len(ArrayIn(bkgenes, ENSG[:,ENSGheads.index("entrezID")]))>0:
+		bkgenes = list(ENSG[ArrayIn(ENSG[:,ENSGheads.index("entrezID")], bkgenes),ENSGheads.index("entrezID")])
 bkgenes = np.array(bkgenes)
 bkgenes = np.unique(bkgenes)
 
@@ -109,7 +110,7 @@ if len(genes)==0:
 if len(genes)==1:
 	sys.exit("Only one gene remained")
 
-ENSG = ENSG[ArrayIn(ENSG[:,9], genes)]
+ENSG = ENSG[ArrayIn(ENSG[:,ENSGheads.index("entrezID")], genes)]
 
 fglob = glob.glob(gsdir+'/*.txt')
 
@@ -138,7 +139,7 @@ def hypTest(l, c):
 	x = len(gin)
 	if x>0:
 		p = stats.hypergeom.sf(x, N ,n, m)
-		gin = ENSG[ArrayIn(ENSG[:,9], gin),2]
+		gin = ENSG[ArrayIn(ENSG[:,ENSGheads.index("entrezID")], gin),ENSGheads.index("external_gene_name")]
 		if len(l)>3:
 			return([c.group(1), l[0], n, x, p, 1.0, ":".join(gin.astype(str)), l[3]])
 		else:

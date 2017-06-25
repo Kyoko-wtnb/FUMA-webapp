@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Events;
+namespace fuma\Events;
 
 abstract class Event
 {

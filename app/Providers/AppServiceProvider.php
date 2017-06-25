@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Providers;
+namespace fuma\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

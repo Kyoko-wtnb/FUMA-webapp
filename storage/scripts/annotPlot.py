@@ -29,7 +29,7 @@ def unique(a):
 	[unique.append(s) for s in a if s not in unique]
 	return unique
 
-def getSNPs(filedir, i, Type):
+def getSNPs(filedir, i, Type, eqtlplot, ciplot):
 	snps = pd.read_table(filedir+"snps.txt", sep="\t")
 	snpshead = list(snps.columns.values)
 	snps = snps.as_matrix()
@@ -72,21 +72,26 @@ def getSNPs(filedir, i, Type):
 		snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
 		snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 
+	mapFilt = []
+	if eqtlplot==1 and ciplot==1:
+		tmp = snps[:,[snpshead.index("posMapFilt"), snpshead.index("eqtlMapFilt"), snpshead.index("ciMapFilt")]]
+		mapFilt = [max(l) for l in tmp]
+	elif eqtlplot==1 and ciplot==0:
+		tmp = snps[:,[snpshead.index("posMapFilt"), snpshead.index("eqtlMapFilt")]]
+		mapFilt = [max(l) for l in tmp]
+	elif eqtlplot==0 and ciplot==1:
+		tmp = snps[:,[snpshead.index("posMapFilt"), snpshead.index("ciMapFilt")]]
+		mapFilt = [max(l) for l in tmp]
+	else:
+		mapFilt = snps[:,snpshead.index("posMapFilt")]
+
 	gl = int(snps[0, snpshead.index("GenomicLocus")])
-	snps_headi = [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func"), snpshead.index("posMapFilt"), snpshead.index("eqtlMapFilt")]
-	snpshead_tmp = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "posMapFilt", "eqtlMapFilt"]
-	if "or" in snpshead:
-		snps_headi.append(snpshead.index("or"))
-		snpshead_tmp.append("or")
-	if "beta" in snpshead:
-		snps_headi.append(snpshead.index("beta"))
-		snpshead_tmp.append("beta")
-	if "se" in snpshead:
-		snps_headi.append(snpshead.index("se"))
-		snpshead_tmp.append("se")
+	snps_headi = [snpshead.index("uniqID"), snpshead.index("chr"), snpshead.index("pos"), snpshead.index("rsID"), snpshead.index("gwasP"), len(snps[0])-1, snpshead.index("r2"), snpshead.index("IndSigSNP"), snpshead.index("MAF"), snpshead.index("CADD"), snpshead.index("RDB"), snpshead.index("nearestGene"), snpshead.index("func")]
+	snpshead_tmp = ["uniqID", "chr","pos", "rsID", "gwasP", "ld", "r2", "IndSigSNP", "MAF", "CADD", "RDB", "nearestGene", "func", "MapFilt"]
 
 	snpshead = snpshead_tmp
 	snps = snps[:, snps_headi]
+	snps = np.c_[snps, mapFilt]
 	snps[:, snpshead.index("RDB")] = snps[:, snpshead.index("RDB")].astype(str)
 	snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]
 	return [snps, gl]
@@ -227,19 +232,19 @@ def getChr15(filedir, snps, Chr15, Chr15cells, chr15dir):
 
 def geteQTLs(filedir, snps, eqtlplot):
 	if eqtlplot==1:
-	    eqtl = pd.read_table(filedir+"eqtl.txt", sep="\t")
-	    eqtlhead = list(eqtl.columns.values)
-	    eqtl = eqtl.as_matrix()
-	    eqtl = eqtl[ArrayIn(eqtl[:,0], snps[:,0])]
-	    snps = np.c_[snps, ["NA"]*len(snps)]
+		eqtl = pd.read_table(filedir+"eqtl.txt", sep="\t")
+		eqtlhead = list(eqtl.columns.values)
+		eqtl = eqtl.as_matrix()
+		eqtl = eqtl[ArrayIn(eqtl[:,0], snps[:,0])]
+		snps = np.c_[snps, ["NA"]*len(snps)]
 
-	    for l in range(0,len(snps)):
-	        if snps[l,0] in eqtl[:,0]:
-	            temp = eqtl[eqtl[:,0]==snps[l,0]]
-	            out = []
-	            for e in temp:
-	                out.append(":".join(e.astype(str)[[1,2,10,5,7]]))
-	            snps[l, len(snps[0])-1] = "</br>".join(out)
+		for l in range(0,len(snps)):
+			if snps[l,0] in eqtl[:,0]:
+				temp = eqtl[eqtl[:,0]==snps[l,0]]
+				out = []
+				for e in temp:
+					out.append(":".join(e.astype(str)[[1,2,10,5,7]]))
+				snps[l, len(snps[0])-1] = "</br>".join(out)
 		return [snps, eqtl]
 	else:
 		return [snps, []]
@@ -294,7 +299,7 @@ def main():
 	eqtlMapChr15Meth = param.get('eqtlMap', 'eqtlMapChr15Meth')
 
 	##### get SNPs data #####
-	[snps, gl] = getSNPs(filedir, rowI, Type)
+	[snps, gl] = getSNPs(filedir, rowI, Type, eqtlplot, ciplot)
 	##### get chromatin interaction #####
 	[min_pos, max_pos, cidata, cireg, citypes, ciheight, cieid] = getCI(filedir, snps, ciplot, gl)
 
@@ -306,7 +311,7 @@ def main():
 	##### get eqtl #####
 	[snps, eqtldata] = geteQTLs(filedir, snps, eqtlplot)
 	if len(eqtldata) > 0:
-		eqtlgenes = unique(eqtldata[:,10])
+		eqtlgenes = unique(eqtldata[:,-2])
 	else:
 		eqtlgenes = ["NA"]
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Http;
+namespace fuma\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -25,11 +25,11 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \IPGAP\Http\Middleware\EncryptCookies::class,
+            \fuma\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \IPGAP\Http\Middleware\VerifyCsrfToken::class,
+            \fuma\Http\Middleware\VerifyCsrfToken::class,
         ],
 
         'api' => [
@@ -45,11 +45,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \IPGAP\Http\Middleware\Authenticate::class,
+        'auth' => \fuma\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
-        'guest' => \IPGAP\Http\Middleware\RedirectIfAuthenticated::class,
+        'guest' => \fuma\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'timeout' => \IPGAP\Http\Middleware\SessionTimeout::class
+        'timeout' => \fuma\Http\Middleware\SessionTimeout::class
     ];
 }

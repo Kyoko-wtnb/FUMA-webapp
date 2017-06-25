@@ -1,6 +1,6 @@
 <?php
 
-namespace IPGAP\Http\Requests;
+namespace fuma\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
