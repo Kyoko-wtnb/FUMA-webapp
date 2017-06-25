@@ -14,3 +14,4 @@ storage/gene2func/
 storage/scripts/gwas_file.pl
 storage/scripts/geneDist.py
 storage/JobReport.html
+public/image/
