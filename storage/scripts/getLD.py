@@ -741,7 +741,7 @@ def getLeadSNPs(chrom, snps, IndSigSNPs, params):
 
 	return leadSNPs
 
-def getGenomicRiskLoci(chrom, snps, ld, IndSigSNPs, leadSNPs, params):
+def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 	loci = []
 	iloci = 0
 	chrom = 0
@@ -756,21 +756,21 @@ def getGenomicRiskLoci(chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 			rsIDs = list(leadSNPs[i,6].split(":"))
 			uid = list(snps[ArrayIn(snps[:,1], rsIDs),0])
 			for s in uid:
-				uid2gl[s] = iloci+1
+				uid2gl[s] = gidx+1
 			inInd = rsIDs
 			inLead = [leadSNPs[i,1]]
 			n = ArrayIn(snps[:,0], ld[ArrayIn(ld[:,0], uid),1])
-			snps_tmp = snps[n,]
+			snps_tmp = snps[n]
 			nonGWASSNPs += list(snps_tmp[snps_tmp[:,7]=="NA", 0])
 			GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
 			start = min(snps[n,3].astype(int))
 			end = max(snps[n,3].astype(int))
-			loci.append([str(iloci+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ":".join(inInd), str(len(inLead)), ":".join(inLead)])
-		elif chrom==int(leadSNPs[i,2]):
+			loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ":".join(inInd), str(len(inLead)), ":".join(inLead)])
+		else:
 			rsIDs = list(leadSNPs[i,6].split(":"))
 			uid = list(snps[ArrayIn(snps[:,1], rsIDs),0])
 			for s in uid:
-				uid2gl[s] = iloci+1
+				uid2gl[s] = gidx+1
 			inInd += rsIDs
 			inInd = unique(inInd)
 			inLead += [leadSNPs[i,1]]
@@ -797,6 +797,7 @@ def getGenomicRiskLoci(chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 					loci[iloci][4] = leadSNPs[i,3]
 					loci[iloci][5] = leadSNPs[i,4]
 			else:
+				gidx += 1
 				iloci += 1
 				inInd = []
 				inLead = []
@@ -805,7 +806,7 @@ def getGenomicRiskLoci(chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 				rsIDs = list(leadSNPs[i,6].split(":"))
 				uid = list(snps[ArrayIn(snps[:,1], rsIDs),0])
 				for s in uid:
-					uid2gl[s] = iloci+1
+					uid2gl[s] = gidx+1
 				inInd = rsIDs
 				inLead = [leadSNPs[i,1]]
 				n = ArrayIn(snps[:,0], ld[ArrayIn(ld[:,0], uid),1])
@@ -814,29 +815,10 @@ def getGenomicRiskLoci(chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 				GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
 				start = min(snps[n,3].astype(int))
 				end = max(snps[n,3].astype(int))
-				loci.append([str(iloci+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ":".join(inInd), str(len(inLead)), ":".join(inLead)])
-		else:
-			chrom = int(leadSNPs[i,2])
-			iloci += 1
-			inInd = []
-			inLead = []
-			nonGWASSNPs = []
-			GWASSNPs = []
-			rsIDs = list(leadSNPs[i,6].split(":"))
-			uid = list(snps[ArrayIn(snps[:,1], rsIDs),0])
-			for s in uid:
-				uid2gl[s] = iloci+1
-			inInd = rsIDs
-			inLead = [leadSNPs[i,1]]
-			n = ArrayIn(snps[:,0], ld[ArrayIn(ld[:,0], uid),1])
-			snps_tmp = snps[n,]
-			nonGWASSNPs += list(snps_tmp[snps_tmp[:,7]=="NA", 0])
-			GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
-			start = min(snps[n,3].astype(int))
-			end = max(snps[n,3].astype(int))
-			loci.append([str(iloci+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ":".join(inInd), str(len(inLead)), ":".join(inLead)])
+				loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ":".join(inInd), str(len(inLead)), ":".join(inLead)])
 	loci = np.array(loci)
-	return loci, uid2gl
+	gidx += 1
+	return loci, uid2gl, gidx
 
 def main():
 	starttime = time.time()
@@ -923,6 +905,9 @@ def main():
 
 	##### process per chromosome #####
 	nSNPs = 0
+	gidx = 0 #risk loci index
+	IndSigIdx = 0
+	leadIdx = 0
 	for i in range(0, len(gwasfile_chr)):
 		chrom = chrom = gwasfile_chr[i][0]
 		ld, snps, IndSigSNPs = chr_process(i, gwasfile_chr, regions, inleadSNPs, params)
@@ -933,18 +918,20 @@ def main():
 			### get lead SNPs
 			leadSNPs = getLeadSNPs(chrom, snps, IndSigSNPs, params)
 			### get Genomic risk loci
-			loci, uid2gl = getGenomicRiskLoci(chrom, snps, ld, IndSigSNPs, leadSNPs, params)
+			loci, uid2gl, gidx = getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params)
 
 			### add columns for sig SNPs
 			addcol = []
 			for i in range(0,len(IndSigSNPs)):
-				addcol.append([str(i+1), str(uid2gl[IndSigSNPs[i,0]])])
+				addcol.append([str(IndSigIdx+i+1), str(uid2gl[IndSigSNPs[i,0]])])
 			IndSigSNPs = np.c_[addcol, IndSigSNPs]
+			IndSigIdx += len(IndSigSNPs)
 
 			addcol = []
 			for i in range(0,len(leadSNPs)):
-				addcol.append([str(i+1), str(uid2gl[leadSNPs[i,0]])])
+				addcol.append([str(leadIdx+i+1), str(uid2gl[leadSNPs[i,0]])])
 			leadSNPs = np.c_[addcol, leadSNPs]
+			leadIdx += len(leadSNPs)
 
 			### snps add columns
 			pd_ld = pd.DataFrame(ld)
@@ -954,7 +941,10 @@ def main():
 			uid2 = np.array(pd_ld[1][idx].tolist())
 			r2 = np.array(pd_ld[2][idx].tolist())
 			tmp = list(snps[:,0])
-			r2 = r2[[tmp.index(x) for x in uid2]]
+			uid2 = list(uid2)
+			idx = [uid2.index(x) for x in tmp]
+			uid1 = uid1[idx]
+			r2 = r2[idx]
 			rsIDs = snps[[tmp.index(x) for x in uid1],1]
 			tmp = list(IndSigSNPs[:,2])
 			gl = IndSigSNPs[[tmp.index(x) for x in uid1],1]
@@ -963,6 +953,9 @@ def main():
 			### write outputs
 			with open(snpsout, 'a') as o:
 				np.savetxt(o, snps, delimiter="\t", fmt="%s")
+
+			with open(ldout, 'a') as o:
+				np.savetxt(o, ld, delimiter="\t", fmt="%s")
 
 			with open(annotout, 'a') as o:
 				np.savetxt(o, annot, delimiter="\t", fmt="%s")
