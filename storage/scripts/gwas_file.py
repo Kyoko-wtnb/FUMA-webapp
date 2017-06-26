@@ -313,30 +313,16 @@ elif chrcol is not None and poscol is not None:
 			for l in snps:
 				if int(l[poscol]) in poss:
 					j = bisect_left(pos, int(l[poscol]))
-					if (l[refcol].upper()==dbSNP[j,3] and l[altcol].upper()==dbSNP[j,4]) or (l[refcol].upper()==dbSNP[j,4] and l[altcol].upper()==dbSNP[j,3]):
-						out.write("\t".join([dbSNP[j,0],dbSNP[j,1], l[refcol].upper(), l[altcol].upper(), dbSNP[j,2], l[pcol]]))
-						if orcol is not None:
-							out.write("\t"+l[orcol])
-						if becol is not None:
-							out.write("\t"+l[becol])
-						if secol is not None:
-							out.write("\t"+l[secol])
-						if Ncol is not None:
-							out.write("\t"+l[Ncol])
-						out.write("\n")
-					else:
-						a = [l[refcol], l[altcol]]
-						a.sort()
-						out.write("\t".join([l[chrcol],l[poscol], l[refcol].upper(), l[altcol].upper(), ":".join([l[chrcol], l[poscol]]+a), l[pcol]]))
-						if orcol is not None:
-							out.write("\t"+l[orcol])
-						if becol is not None:
-							out.write("\t"+l[becol])
-						if secol is not None:
-							out.write("\t"+l[secol])
-						if Ncol is not None:
-							out.write("\t"+l[Ncol])
-						out.write("\n")
+					out.write("\t".join([dbSNP[j,0],dbSNP[j,1], l[refcol].upper(), l[altcol].upper(), dbSNP[j,2], l[pcol]]))
+					if orcol is not None:
+						out.write("\t"+l[orcol])
+					if becol is not None:
+						out.write("\t"+l[becol])
+					if secol is not None:
+						out.write("\t"+l[secol])
+					if Ncol is not None:
+						out.write("\t"+l[Ncol])
+					out.write("\n")
 				else:
 					a = [l[refcol], l[altcol]]
 					a.sort()
@@ -446,20 +432,23 @@ elif chrcol is not None and poscol is not None:
 		        maxpos = int(float(l[poscol]))
 		        temp.append(l)
 		    else:
-				Tabix(cur_chr, minpos, maxpos, temp)
+				if str(cur_chr) in [str(x) for x in range(1,24)]:
+					Tabix(cur_chr, minpos, maxpos, temp)
 				minpos = int(float(l[poscol]))
 				maxpos = int(float(l[poscol]))
 				temp = []
 				temp.append(l)
 		else:
 			if minpos!=0 and maxpos!=0:
-				Tabix(cur_chr, minpos, maxpos, temp)
+				if str(cur_chr) in [str(x) for x in range(1,24)]:
+					Tabix(cur_chr, minpos, maxpos, temp)
 			cur_chr = int(l[chrcol])
 			minpos = int(float(l[poscol]))
 			maxpos = int(float(l[poscol]))
 			temp = []
 			temp.append(l)
-	Tabix(cur_chr, minpos, maxpos, temp)
+	if str(cur_chr) in [str(x) for x in range(1,24)]:
+		Tabix(cur_chr, minpos, maxpos, temp)
 # if either chr or pos is not procided, use rsID to extract position
 elif chrcol is None or poscol is None:
     print "Either chr or pos is not provided"
