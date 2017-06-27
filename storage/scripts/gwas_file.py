@@ -308,6 +308,9 @@ elif chrcol is not None and poscol is not None:
 			for l in temp:
 				dbSNP.append(l)
 			dbSNP = np.array(dbSNP)
+			if len(dbSNP)==0:
+				out.close()
+				return
 			poss = set(dbSNP[:,1].astype(int))
 			pos = dbSNP[:,1].astype(int)
 			for l in snps:
@@ -373,6 +376,7 @@ elif chrcol is not None and poscol is not None:
 				            out.write("\t"+snps[j,Ncol])
 				        out.write("\n")
 		out.close()
+		return
 		##### end def Tabix() #####
 
 	##### sort input sum stats #####
