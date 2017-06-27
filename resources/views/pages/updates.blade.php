@@ -26,6 +26,7 @@
 				In the page, pre-computed results can be borwsed with full features (e.g. interactive plots and download).<br/>
 				<strong>Minor updates</strong>: SNP2GENE process is improved.
 				eQTLs are aligned with the risk increasing alleles in the input GWAS file (see <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">Tutorial</a> for details).
+				To avoid confusion, allele names in the SNPs table were updated to non_efefct_allele/effect_allele from ref/alt.
 			</td>
 		</tr>
 		<tr>

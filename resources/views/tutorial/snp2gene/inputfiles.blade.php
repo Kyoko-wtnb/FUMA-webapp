@@ -27,7 +27,7 @@
 		Alleles are not mandatory but if only one allele is provided, that is considered to be the effect allele.
 		When two alleles are provided, the effect allele will be defined depending on column name.
 		If alleles are not provided, they will be extracted from the dbSNP build 146 and minor alleles will be assumed to be the effect alleles.
-		This information is used when matching with eQTL information.
+		Effect and non-effect alleles are not distinguished during annotations, but used for alignment with eQTLs. 
 		Whenever alleles are provided, they are matched with dbSNP build 146 if extraction of rsID, chromosome or position is necessary.<br/>
 		Alleles are case insensitive.
 	</p>
@@ -37,8 +37,8 @@
 			<li><strong>SNP | snpid | markername | rsID</strong>: rsID</li>
 			<li><strong>CHR | chromosome | chrom</strong>: chromosome</li>
 			<li><strong>BP | pos | position</strong>: genomic position (hg19)</li>
-			<li><strong>A1 | alt | effect_allele | allele1 | alleleB</strong>: affected allele</li>
-			<li><strong>A2 | ref | non_effect_allele | allele2 | alleleA</strong>: another allele</li>
+			<li><strong>A1 | effect_allele | allele1 | alleleB</strong>: affected allele</li>
+			<li><strong>A2 | non_effect_allele | allele2 | alleleA</strong>: another allele</li>
 			<li><strong>P | pvalue | p-value | p_value | frequentist_add_pvalue | pval</strong>: P-value (Mandatory)</li>
 			<li><strong>OR</strong>: Odds Ratio</li>
 			<li><strong>Beta | be</strong>: Beta</li>
@@ -50,8 +50,9 @@
 		Extra columns will be ignored.<br/>
 		Rows that start with "#" will be ignored.<br/>
 		<span class="info"><i class="fa fa-info"></i> Column  "N" is described in the <a href="{{ Config::get('app.subdir') }}/tutorial#parameters">Parameters</a> section.</span><br/>
-		<span class="info"><i class="fa fa-info"></i> Be carefull with the alleles header in which A1 and Allele1 are the effect allele while alleleA is non-effect allele, as based on PLINK, SNPTEST and METAL output files.<br/>
-			If wrong labels are proveded for alleles, it does not affect any annotation and prioritization results. It does however affect eQTLs results. Be aware of that when you interpret results.
+		<span class="info"><i class="fa fa-info"></i> Be carefull with the alleles header in which A1 is defined as effect allele by default. Please specify both effect and non-effect allele column to avoid mislabeling.<br/>
+			If wrong labels are proveded for alleles, it does not affect any annotation and prioritization results. It does however affect eQTLs results (alignment of risk increasing allele of GWAS and tested allele of eQTLs).
+			Be aware of that when you interpret results.
 		</span><br/>
 	</p>
 

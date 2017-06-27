@@ -115,7 +115,10 @@ Each data source is described in more detail in this section.
 	<p><strong>Description</strong><br/>
 		The data include all eQTLs with nominal P-value < 0.05.
 		Since tested allele was not provided in the original data source, minor alleles in 1000 genome phase 3 are asigned as tested alleles.
-		eQTLs were identified for each of the following 10 brain regions and based on aberaged expression across them.
+		eQTLs were identified for each of the following 10 brain regions and based on averaged expression across them.<br/>
+		<span class="info"><i class="fa fa-info"></i>
+			Since tested allele was not provided in the original data source, assigned "NA" in the result table.
+		</span>
 		<ul>
 			<li>Cerebellar cortex</li>
 			<li>Frontal cortex</li>
@@ -140,10 +143,14 @@ Each data source is described in more detail in this section.
 	<h4><strong>Risk increasing allele in GWAS</strong></h4>
 	<p>
 		When "beta" or "OR" column is provided in the input GWAS file, risk increasing alleles are defined as follows:
-		if beta > 0 or OR > 1, effect/risk allele ("alt" allele in the SNPs table) is defined as the risk increasing allele,
-		if beta < 0 or OR < 1, non-effect/non-risk allele ("ref" allele in the SNPs table) is defined as the risk increasing allele.<br/>
+		if beta > 0 or OR > 1, effect/risk allele is defined as the risk increasing allele,
+		if beta < 0 or OR < 1, non-effect/non-risk allele is defined as the risk increasing allele.<br/>
 		If signed effect is not provided in the input GWAS file, risk increasing allele is not defined ("NA").
 		SNPs which are not in the input GWAS file but obtained from reference panel due to high LD are also encoded as "NA".
+		<span class="info"><i class="fa fa-info"></i>
+			When both effect and non-effect alleles are not provided in the input GWAS file, this alignment is not relevant.
+			Please be careful to interpret the results.
+		</span>
 	</p>
 	<h4><strong>Aligned direction of eQTLs</strong></h4>
 	<p>
@@ -158,8 +165,8 @@ Each data source is described in more detail in this section.
 	<table class="table table-bordered" style="text-align: center;">
 		<thead>
 			<th>uniqID</th>
-			<th>effect allale (alt)</th>
-			<th>non-effect allele (ref)</th>
+			<th>effect allale</th>
+			<th>non-effect allele</th>
 			<th>beta</th>
 			<th>risk increasing allele</th>
 			<th>tested allele of eQTL</th>

@@ -855,7 +855,7 @@ def main():
 	with open(ldout, 'w') as o:
 		o.write("\t".join(["SNP1","SNP2","r2"])+"\n")
 
-	ohead = "\t".join(["uniqID", "rsID", "chr", "pos", "ref", "alt", "MAF", "gwasP"])
+	ohead = "\t".join(["uniqID", "rsID", "chr", "pos", "non_effect_allele", "effect_allele", "MAF", "gwasP"])
 	if params.orcol:
 		ohead += "\tor"
 	if params.becol:
