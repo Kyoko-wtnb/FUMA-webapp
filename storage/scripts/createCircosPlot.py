@@ -227,12 +227,14 @@ def main():
 		genes = genes[np.where((genes[:,geneshead.index("ciMap")]=="Yes") | (genes[:,geneshead.index("eqtlMapSNPs")]>0))]
 	else:
 		genes = genes[genes[:, geneshead.index("ciMap")]=="Yes"]
-	gid = np.array(["id=0"]*len(genes))
-	gid[np.where(genes[:, geneshead.index("ciMap")]=="Yes")] = "id=1"
-	if "eqtlMapSNPs" in geneshead:
-		gid[np.where((genes[:,geneshead.index("ciMap")]=="Yes") & (genes[:,geneshead.index("eqtlMapSNPs")]>0))] = "id=2"
-	genes = np.c_[genes[:,[2,3,4,1]], gid]
-	genes[:,0] = ["hs"+str(x) for x in genes[:,0]]
+	gid = []
+	if len(genes) > 0:
+		gid = np.array(["id=0"]*len(genes))
+		gid[np.where(genes[:, geneshead.index("ciMap")]=="Yes")] = "id=1"
+		if "eqtlMapSNPs" in geneshead:
+			gid[np.where((genes[:,geneshead.index("ciMap")]=="Yes") & (genes[:,geneshead.index("eqtlMapSNPs")]>0))] = "id=2"
+		genes = np.c_[genes[:,[2,3,4,1]], gid]
+		genes[:,0] = ["hs"+str(x) for x in genes[:,0]]
 	with open(filedir+"circos/circos_genes.txt", "w") as o:
 		np.savetxt(o, genes, delimiter=" ", fmt="%s")
 

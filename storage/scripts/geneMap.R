@@ -332,8 +332,10 @@ if(nrow(geneTable)>0){
   	geneTable$minGwasP <- sapply(geneTable$ensg, function(x){
 		if(nrow(ci)>0){tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ":")))}
 		else{tmp <- c()}
-		if(length(which(!is.na(cisnps$gwasP[cisnps$rsID %in% tmp])))>0){
-			min(c(cisnps$gwasP[!is.na(cisnps$gwasP) & cisnps$rsID %in% tmp], geneTable$minGwasP[geneTable$ensg==x]), na.rm=T)
+		if(length(tmp)>0){
+			if(length(which(!is.na(cisnps$gwasP[cisnps$rsID %in% tmp])))>0){
+				min(c(cisnps$gwasP[!is.na(cisnps$gwasP) & cisnps$rsID %in% tmp], geneTable$minGwasP[geneTable$ensg==x]), na.rm=T)
+			}else{geneTable$minGwasP[geneTable$ensg==x]}
 		}else{geneTable$minGwasP[geneTable$ensg==x]}
 	})
 	geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){

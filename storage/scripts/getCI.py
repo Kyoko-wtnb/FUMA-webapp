@@ -270,7 +270,8 @@ def main():
 	genes = np.array(genes)
 	genes = genes[:, [0,2,3,4,5,7]]
 	genes[:,1] = [int(str(x).replace("X", "23")) for x in genes[:,1]]
-	genes = genes[ArrayIn(genes[:,5], genetype)]
+	if genetype[0] != 'all':
+		genes = genes[ArrayIn(genes[:,5], genetype)]
 	genes = GeneToPromoter(genes, promoter)
 
 	##### outputs #####
@@ -305,14 +306,15 @@ def main():
 					ci = np.r_[ci, tmp_ci]
 
 	insnps = []
-	for x in ci[:,8]:
-		insnps += x.split(":")
-	insnps = unique(insnps)
+	if len(ci) > 0:
+		for x in ci[:,8]:
+			insnps += x.split(":")
+		insnps = unique(insnps)
 	snps = snps[ArrayIn(snps[:,1], insnps)]
 	print len(snps)
 
 	##### Map SNPs to reguratory elements #####
-	if ciMapRoadmap[0] != "NA":
+	if ciMapRoadmap[0] != "NA" and len(snps) > 0:
 		for eid in ciMapRoadmap:
 			f = "enh/regions_enh_"+eid+".bed.gz"
 			print f
@@ -332,8 +334,9 @@ def main():
 					cisnps = np.r_[cisnps, tmp_cisnps]
 
 	##### Map CI regions to reguratory elements #####
-	regions = unique(ci[:,1])
-	if ciMapRoadmap[0] != "NA":
+	regions = []
+	if ciMapRoadmap[0] != "NA" and len(ci) > 0:
+		regions = unique(ci[:,1])
 		for eid in ciMapRoadmap:
 			f = "prom/regions_prom_"+eid+".bed.gz"
 			print f
