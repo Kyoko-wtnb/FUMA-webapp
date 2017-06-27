@@ -19,9 +19,9 @@ if(nrow(eqtl)>0){
 	##### check signed effect in the SNPs file #####
 	tmp <- data.frame(uniqID=snps$uniqID)
 	if("beta" %in% colnames(snps)){
-		tmp$RiskIncAllele <- ifelse(snps$beta>0, snps$alt, snps$ref)
+		tmp$RiskIncAllele <- ifelse(snps$beta>0, snps$effect_allele, snps$non_effect_allele)
 	}else if("or" %in% colnames(snps)){
-		tmp$RiskIncAllele <- ifelse(snps$or>1, snps$alt, snps$ref)
+		tmp$RiskIncAllele <- ifelse(snps$or>1, snps$effect_allele, snps$non_effect_allele)
 	}
 
 	if(length(!is.na(tmp$RiskIncAllele))>0){

@@ -59,8 +59,8 @@ class getParams:
 		##### get column index ######
 		chrcol = 0
 		poscol = 1
-		refcol = 2
-		altcol = 3
+		neacol = 2
+		eacol = 3
 		rsIDcol = 4
 		pcol = 5
 		orcol = None
@@ -106,8 +106,8 @@ class getParams:
 		self.refgenome_dir = refgenome_dir
 		self.chrcol = chrcol
 		self.poscol = poscol
-		self.refcol = refcol
-		self.altcol = altcol
+		self.neacol = neacol
+		self.eacol = eacol
 		self.rsIDcol = rsIDcol
 		self.pcol = pcol
 		self.orcol = orcol
@@ -182,8 +182,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 	refgenome_dir = params.refgenome_dir
 	chrcol = params.chrcol
 	poscol = params.poscol
-	refcol = params.refcol
-	altcol = params.altcol
+	neacol = params.neacol
+	eacol = params.eacol
 	rsIDcol = params.rsIDcol
 	pcol = params.pcol
 	orcol = params.orcol
@@ -256,7 +256,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				continue # rsID of lead SNPs needs to be matched with the one in GWAS file
 
 			igwas = np.where(gwas_in[:,rsIDcol]==l[0])[0][0]
-			allele = [gwas_in[igwas, refcol], gwas_in[igwas, altcol]]
+			allele = [gwas_in[igwas, neacol], gwas_in[igwas, eacol]]
 			allele.sort()
 			l_uid = ":".join([str(gwas_in[igwas, chrcol]), str(gwas_in[igwas, poscol])]+allele)
 			# checkeduid.add(l_uid)
@@ -306,7 +306,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 						# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
 						jgwas = bisect_left(posall, int(m[1]))
 
-						allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+						allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
 						allele.sort()
 						uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 
@@ -317,7 +317,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							checkall = False
 							jgwas += 1
 							while int(m[1]) == gwas_in[jgwas, poscol]:
-								allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+								allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
 								allele.sort()
 								uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 								if uid == tmp_uid:
@@ -337,7 +337,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 
 						checkeduid.add(uid)
 						p = str(gwas_in[jgwas, pcol])
-						snp = [uid, gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
+						snp = [uid, gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, neacol], gwas_in[jgwas, eacol], m[5], p]
 						if orcol:
 							snp.append(str(gwas_in[jgwas, orcol]))
 						if becol:
@@ -404,7 +404,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				continue
 			if float(l[pcol])>leadP:
 				break
-			allele = [l[refcol], l[altcol]]
+			allele = [l[neacol], l[eacol]]
 			allele.sort()
 			l_uid = ":".join([str(l[chrcol]), str(l[poscol])]+allele)
 			if not l_uid in checkeduid:
@@ -454,7 +454,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
 							jgwas = bisect_left(posall, int(m[1]))
 
-							allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+							allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
 							allele.sort()
 							uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 
@@ -465,7 +465,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 								checkall = False
 								jgwas += 1
 								while int(m[1]) == gwas_in[jgwas, poscol]:
-									allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+									allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
 									allele.sort()
 									uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 									if uid == tmp_uid:
@@ -483,7 +483,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 								continue
 							checkeduid.add(tmp_uid)
 							p = str(gwas_in[jgwas, pcol])
-							snp = [tmp_uid, gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
+							snp = [tmp_uid, gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, neacol], gwas_in[jgwas, eacol], m[5], p]
 							if orcol:
 								snp.append(str(gwas_in[jgwas, orcol]))
 							if becol:
@@ -552,7 +552,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 					l = mhc_gwas[pi]
 					if float(l[pcol]) > leadP:
 						break
-					allele = [l[refcol], l[altcol]]
+					allele = [l[neacol], l[eacol]]
 					allele.sort()
 					l_uid = ":".join([str(l[chrcol]), str(l[poscol])]+allele)
 					pos = int(l[poscol])
@@ -594,7 +594,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							if int(m[1]) in pos_set:
 								jgwas = bisect_left(posall, int(m[1]))
 
-								allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+								allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
 								allele.sort()
 								uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 
@@ -606,7 +606,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 									checkall = False
 									jgwas += 1
 									while int(m[1]) == gwas_in[jgwas, poscol]:
-										allele = [gwas_in[jgwas, refcol], gwas_in[jgwas, altcol]]
+										allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
 										allele.sort()
 										uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
 										if uid == tmp_uid:
@@ -624,7 +624,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 									continue
 								checkeduid.add(tmp_uid)
 								p = str(gwas_in[jgwas, pcol])
-								snp = [tmp_uid, gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, refcol], gwas_in[jgwas, altcol], m[5], p]
+								snp = [tmp_uid, gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, neacol], gwas_in[jgwas, eacol], m[5], p]
 								if orcol:
 									snp.append(str(gwas_in[jgwas, orcol]))
 								if becol:
@@ -855,7 +855,7 @@ def main():
 	with open(ldout, 'w') as o:
 		o.write("\t".join(["SNP1","SNP2","r2"])+"\n")
 
-	ohead = "\t".join(["uniqID", "rsID", "chr", "pos", "ref", "alt", "MAF", "gwasP"])
+	ohead = "\t".join(["uniqID", "rsID", "chr", "pos", "non_effect_allele", "effect_allele", "MAF", "gwasP"])
 	if params.orcol:
 		ohead += "\tor"
 	if params.becol:

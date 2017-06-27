@@ -79,8 +79,8 @@ chrcol = param.get('inputfiles', 'chrcol').upper()
 poscol = param.get('inputfiles', 'poscol').upper()
 rsIDcol = param.get('inputfiles', 'rsIDcol').upper()
 pcol = param.get('inputfiles', 'pcol').upper()
-refcol = param.get('inputfiles', 'refcol').upper()
-altcol = param.get('inputfiles', 'altcol').upper()
+neacol = param.get('inputfiles', 'neacol').upper()
+eacol = param.get('inputfiles', 'eacol').upper()
 orcol = param.get('inputfiles', 'orcol').upper()
 becol = param.get('inputfiles', 'becol').upper()
 secol = param.get('inputfiles', 'secol').upper()
@@ -110,12 +110,12 @@ for i in range(0,len(header)):
     elif poscol == header[i].upper():
         poscol = i
         checkedheader.append(poscol)
-    elif altcol == header[i].upper():
-        altcol = i
-        checkedheader.append(altcol)
-    elif refcol == header[i].upper():
-        refcol = i
-        checkedheader.append(refcol)
+    elif eacol == header[i].upper():
+        eacol = i
+        checkedheader.append(eacol)
+    elif neacol == header[i].upper():
+        neacol = i
+        checkedheader.append(neacol)
     elif pcol == header[i].upper():
         pcol = i
         checkedheader.append(pcol)
@@ -140,10 +140,10 @@ for i in range(0, len(header)):
 		rsIDcol = i
 	elif re.match("^BP$|^pos$|^position$", header[i], re.IGNORECASE):
 		poscol = i
-	elif re.match("^A1$|^Effect_allele$|^alt$|^allele1$|^alleleB$", header[i], re.IGNORECASE):
-		altcol = i
-	elif re.match("^A2$|^Non_Effect_allele$|^ref$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
-		refcol = i
+	elif re.match("^A1$|^Effect_allele$|^allele1$|^alleleB$", header[i], re.IGNORECASE):
+		eacol = i
+	elif re.match("^A2$|^Non_Effect_allele$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
+		neacol = i
 	elif re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$", header[i], re.IGNORECASE):
 		pcol = i
 	elif re.match("^or$", header[i], re.IGNORECASE):
@@ -168,14 +168,14 @@ if poscol=="NA":
     poscol = None
 else:
 	user_header.append(poscol)
-if refcol=="NA":
-    refcol = None
+if neacol=="NA":
+    neacol = None
 else:
-	user_header.append(refcol)
-if altcol=="NA":
-    altcol = None
+	user_header.append(neacol)
+if eacol=="NA":
+    eacol = None
 else:
-	user_header.append(altcol)
+	user_header.append(eacol)
 if pcol=="NA":
     pcol = None
 else:
@@ -206,9 +206,9 @@ if not all([type(x) is int for x in user_header]):
 
 ##### allele column check #####
 # if only one allele is defined, this has to be alt (effect) allele
-if refcol is not None and altcol is None:
-    altcol = refcol
-    refcol = None
+if neacol is not None and eacol is None:
+    eacol = neacol
+    neacol = None
 
 ##### Mandatory header check #####
 if pcol is None:
@@ -231,7 +231,7 @@ paramout.close()
 ##### Process input gwas sum stats #####
 # when all columns are provided
 # In this case, if the rsID columns is wrongly labeled, it will be problem later (not checked here)
-if chrcol is not None and poscol is not None and rsIDcol is not None and altcol is not None and refcol is not None:
+if chrcol is not None and poscol is not None and rsIDcol is not None and eacol is not None and neacol is not None:
     dbSNPfile = cfg.get('data', 'dbSNP')
     rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
     rsID = np.array(rsID)
@@ -239,7 +239,7 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and altcol 
     rsID = rsID[rsID[:,0].argsort()]
 
     out = open(outSNPs, 'w')
-    out.write("chr\tbp\tref\talt\trsID\tp")
+    out.write("chr\tbp\tnon_effect_allele\teffect_allele\trsID\tp")
     if orcol is not None:
         out.write("\tor")
     if becol is not None:
@@ -268,7 +268,7 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and altcol 
             l[chrcol] = '23'
         if float(l[pcol]) < 1e-308:
             l[pcol] = str(1e-308)
-        out.write("\t".join([l[chrcol], l[poscol], l[refcol].upper(), l[altcol].upper(), l[rsIDcol], l[pcol]]))
+        out.write("\t".join([l[chrcol], l[poscol], l[neacol].upper(), l[eacol].upper(), l[rsIDcol], l[pcol]]))
         if orcol is not None:
             out.write("\t"+l[orcol])
         if becol is not None:
@@ -303,7 +303,7 @@ elif chrcol is not None and poscol is not None:
 
 		# when rsID is the only missing column, keep all SNPs in input file
 		# assigned rsID for only SNPs that exists in dbSNP
-		if refcol is not None and altcol is not None:
+		if neacol is not None and eacol is not None:
 			dbSNP = []
 			for l in temp:
 				dbSNP.append(l)
@@ -316,7 +316,7 @@ elif chrcol is not None and poscol is not None:
 			for l in snps:
 				if int(l[poscol]) in poss:
 					j = bisect_left(pos, int(l[poscol]))
-					out.write("\t".join([dbSNP[j,0],dbSNP[j,1], l[refcol].upper(), l[altcol].upper(), dbSNP[j,2], l[pcol]]))
+					out.write("\t".join([dbSNP[j,0],dbSNP[j,1], l[neacol].upper(), l[eacol].upper(), dbSNP[j,2], l[pcol]]))
 					if orcol is not None:
 						out.write("\t"+l[orcol])
 					if becol is not None:
@@ -327,9 +327,9 @@ elif chrcol is not None and poscol is not None:
 						out.write("\t"+l[Ncol])
 					out.write("\n")
 				else:
-					a = [l[refcol], l[altcol]]
+					a = [l[neacol], l[eacol]]
 					a.sort()
-					out.write("\t".join([l[chrcol],l[poscol], l[refcol].upper(), l[altcol].upper(), ":".join([l[chrcol], l[poscol]]+a), l[pcol]]))
+					out.write("\t".join([l[chrcol],l[poscol], l[neacol].upper(), l[eacol].upper(), ":".join([l[chrcol], l[poscol]]+a), l[pcol]]))
 					if orcol is not None:
 						out.write("\t"+l[orcol])
 					if becol is not None:
@@ -347,14 +347,14 @@ elif chrcol is not None and poscol is not None:
 				    j = bisect_left(pos, int(l[1]))
 				    if snps[j,pcol] is None:
 						continue
-				    if altcol is not None:
-				        if snps[j,altcol].upper()==l[3] or snps[j,altcol].upper()==l[4]:
+				    if eacol is not None:
+				        if snps[j,eacol].upper()==l[3] or snps[j,eacol].upper()==l[4]:
 				            a = "NA"
-				            if snps[j,altcol]==l[3]:
+				            if snps[j,eacol]==l[3]:
 				                a = l[4]
 				            else:
 				                a = l[3]
-				            out.write("\t".join([l[0],l[1], a, snps[j,altcol].upper(), l[2], snps[j,pcol]]))
+				            out.write("\t".join([l[0],l[1], a, snps[j,eacol].upper(), l[2], snps[j,pcol]]))
 				            if orcol is not None:
 				                out.write("\t"+snps[j,orcol])
 				            if becol is not None:
@@ -508,9 +508,9 @@ elif chrcol is None or poscol is None:
 					continue
 				if(gwas[j,pcol]<1e-308):
 				    gwas[j,pcol]=1e-308
-				if altcol is not None and refcol is not None:
-				    if (gwas[j,altcol].upper()==l[3] and gwas[j,refcol].upper() in alt) or gwas[j,altcol].upper() in alt and gwas[j,refcol].upper()==l[3]:
-				        out.write("\t".join([str(chrom), str(l[1]), gwas[j,refcol].upper(), gwas[j,altcol].upper(), l[2], str(gwas[j,pcol])]))
+				if eacol is not None and neacol is not None:
+				    if (gwas[j,eacol].upper()==l[3] and gwas[j,neacol].upper() in alt) or gwas[j,eacol].upper() in alt and gwas[j,neacol].upper()==l[3]:
+				        out.write("\t".join([str(chrom), str(l[1]), gwas[j,neacol].upper(), gwas[j,eacol].upper(), l[2], str(gwas[j,pcol])]))
 				        if orcol is not None:
 				            out.write("\t"+str(gwas[j,orcol]))
 				        if becol is not None:
@@ -520,18 +520,18 @@ elif chrcol is None or poscol is None:
 				        if Ncol is not None:
 				            out.write("\t"+str(gwas[j,Ncol]))
 				        out.write("\n")
-				elif altcol is not None:
-				    if gwas[j,altcol].upper()==l[3] or gwas[j,altcol].upper() in alt:
+				elif eacol is not None:
+				    if gwas[j,eacol].upper()==l[3] or gwas[j,eacol].upper() in alt:
 						if len(alt)>1 :
 							continue
 
 						a = "NA"
-						if gwas[j,altcol].upper()==l[3]:
+						if gwas[j,eacol].upper()==l[3]:
 						    a=l[4]
 						else:
 						    a=l[3]
 
-						out.write("\t".join([str(chrom), str(l[1]), a, gwas[j,altcol].upper(), l[2], str(gwas[j,pcol])]))
+						out.write("\t".join([str(chrom), str(l[1]), a, gwas[j,eacol].upper(), l[2], str(gwas[j,pcol])]))
 						if orcol is not None:
 						    out.write("\t"+str(gwas[j,orcol]))
 						if becol is not None:
