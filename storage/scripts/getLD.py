@@ -915,6 +915,8 @@ def main():
 			nSNPs += len(IndSigSNPs)
 			### get annot
 			annot = getAnnot(snps, params.annot_dir)
+			tmp_uids = list(annot[:,0])
+			annot = annot[[tmp_uids.index(x) for x in snps[:,0]]]
 			### get lead SNPs
 			leadSNPs = getLeadSNPs(chrom, snps, IndSigSNPs, params)
 			### get Genomic risk loci

@@ -17,10 +17,13 @@ annov$symbol <- ENSG$external_gene_name[match(annov$gene, ENSG$ensembl_gene_id)]
 annov$symbol[is.na(annov$symbol)] <- annov$gene[is.na(annov$symbol)]
 annov$chr <- snps$chr[match(annov$uniqID, snps$uniqID)]
 annov$pos <- snps$pos[match(annov$uniqID, snps$uniqID)]
-snps$nearestGene <- sapply(snps$uniqID, function(x){paste(annov$symbol[annov$uniqID==x & annov$dist==min(annov$dist[annov$uniqID==x])], collapse=":")})
-#snps$nearestGene[is.na(snps$nearestGene)] <- sapply(snps$uniqID[is.na(snps$nearestGene)], function(x){paste(annov$gene[annov$uniqID==x & annov$dist==min(annov$dist[annov$uniqID==x])], collapse=":")})
-snps$dist <- sapply(snps$uniqID, function(x){min(annov$dist[annov$uniqID==x])})
-snps$func <- sapply(snps$uniqID, function(x){paste(annov$annot[annov$uniqID==x & annov$dist==min(annov$dist[annov$uniqID==x])], collapse=":")})
+tmp <- merge(aggregate(dist ~ uniqID, annov, min), annov, by=c("dist", "uniqID"))
+tmp2 <- aggregate(symbol ~ uniqID, tmp, paste, collapse=":")
+snps$nearestGene <- tmp2$symbol[match(snps$uniqID, tmp2$uniqID)]
+tmp2 <- aggregate(dist ~ uniqID, tmp, min)
+snps$dist <- tmp2$dist[match(snps$uniqID, tmp2$uniqID)]
+tmp2 <- aggregate(annot ~ uniqID, tmp, paste, collapse=":")
+snps$func <- tmp2$annot[match(snps$uniqID, tmp2$uniqID)]
 snps$CADD <- annot$CADD[match(snps$uniqID, annot$uniqID)]
 snps$RDB <- annot$RDB[match(snps$uniqID, annot$uniqID)]
 snps$RDB[snps$RDB==""] <- NA
