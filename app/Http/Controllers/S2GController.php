@@ -224,8 +224,8 @@ class S2GController extends Controller
 		$poscol = "NA";
 		$rsIDcol = "NA";
 		$pcol = "NA";
-		$altcol = "NA";
-		$refcol = "NA";
+		$eacol = "NA";
+		$neacol = "NA";
 		$orcol = "NA";
 		$becol = "NA";
 		$secol = "NA";
@@ -234,8 +234,8 @@ class S2GController extends Controller
 		if($request -> has('poscol')){$poscol = $request->input('poscol');}
 		if($request -> has('rsIDcol')){$rsIDcol = $request->input('rsIDcol');}
 		if($request -> has('pcol')){$pcol = $request->input('pcol');}
-		if($request -> has('altcol')){$altcol = $request->input('altcol');}
-		if($request -> has('refcol')){$refcol = $request->input('refcol');}
+		if($request -> has('eacol')){$eacol = $request->input('eacol');}
+		if($request -> has('neacol')){$neacol = $request->input('neacol');}
 		if($request -> has('orcol')){$orcol = $request->input('orcol');}
 		if($request -> has('becol')){$orcol = $request->input('becol');}
 		if($request -> has('secol')){$secol = $request->input('secol');}
@@ -483,8 +483,8 @@ class S2GController extends Controller
 		File::append($paramfile, "poscol=$poscol\n");
 		File::append($paramfile, "rsIDcol=$rsIDcol\n");
 		File::append($paramfile, "pcol=$pcol\n");
-		File::append($paramfile, "altcol=$altcol\n");
-		File::append($paramfile, "refcol=$refcol\n");
+		File::append($paramfile, "eacol=$eacol\n");
+		File::append($paramfile, "neacol=$neacol\n");
 		File::append($paramfile, "orcol=$orcol\n");
 		File::append($paramfile, "becol=$becol\n");
 		File::append($paramfile, "secol=$secol\n");

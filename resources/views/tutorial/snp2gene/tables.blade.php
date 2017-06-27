@@ -64,8 +64,8 @@
 			<li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
 			<li><strong>chr</strong> : chromosome</li>
 			<li><strong>pos</strong> : position on hg19</li>
-			<li><strong>ref</strong> : Reference allele. Non-effect/non-risk allele if it is provided in the input GWAS summary statistics file. If not, this is the reference (major) allele in 1000G.</li>
-			<li><strong>alt</strong> : Alternative allele. Effect/risk allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.</li>
+			<li><strong>effect_allele</strong> : Effect/risk allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.</li>
+			<li><strong>non_effect_allele</strong> : Non-effect/non-risk allele if it is provided in the input GWAS summary statistics file. If not, this is the reference (major) allele in 1000G.</li>
 			<li><strong>MAF</strong> : Minor allele frequency computed based on 1000G.</li>
 			<li><strong>gwasP</strong> : P-value provided in the input GWAS summary statistics file.
 				Non-GWAS tagged SNPs (which do not exist in input file but are extracted from the reference panel) have "NA" instead.
@@ -179,14 +179,14 @@
 		</p>
 		<ul>
 			<li><strong>GenomicLocus</strong> : Index of genomic loci where the significant interaction is overlapped.</li>
-			<li><strong>region1</strong> : One end of significant interaction which overlap with at least one candidate SNPs in one of the genomic risk loci.</li>
-			<li><strong>region2</strong> : The other end of significant interaction. This region could be located outside the risk loci.</li>
+			<li><strong>region1</strong> : One end of significant chromatin interaction which overlap with at least one candidate SNPs in one of the genomic risk loci.</li>
+			<li><strong>region2</strong> : The other end of significant chromatin interaction. This region could be located outside the risk loci.</li>
 			<li><strong>FDR</strong> : FDR of interaction.</li>
 			<li><strong>type</strong> : Type of chromatin interaction data, e.g. Hi-C or ChIA-PET</li>
 			<li><strong>DB</strong> : The name of data source.</li>
 			<li><strong>tissue/cell</strong> : Tissue or cell type of the interaction.</li>
-			<li><strong>intra/inter</strong> : Intra- or Inter-chromosomal iteraction.</li>
-			<li><strong>SNPs</strong> : rsID of candidate SNPs which are overlapped with the region 1.</li>
+			<li><strong>intra/inter</strong> : Intra- or Inter-chromosomal interaction.</li>
+			<li><strong>SNPs</strong> : rsID of candidate SNPs which are overlapping with the region 1.</li>
 			<li><strong>genes</strong> : ENSG ID of genes whose promoter regions are overlapped with region 2.</li>
 		</ul>
 	</li>

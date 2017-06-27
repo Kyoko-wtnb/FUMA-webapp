@@ -93,8 +93,8 @@ function CheckAll(){
 			$('#poscol').attr("disabled", true);
 			$('#rsIDcol').attr("disabled", true);
 			$('#pcol').attr("disabled", true);
-			$('#altcol').attr("disabled", true);
-			$('#refcol').attr("disabled", true);
+			$('#eacol').attr("disabled", true);
+			$('#neacol').attr("disabled", true);
 			$('#orcol').attr("disabled", true);
 			$('#becol').attr("disabled", true);
 			$('#secol').attr("disabled", true);
@@ -107,8 +107,8 @@ function CheckAll(){
 			$('#poscol').attr("disabled", true);
 			$('#rsIDcol').attr("disabled", true);
 			$('#pcol').attr("disabled", true);
-			$('#altcol').attr("disabled", true);
-			$('#refcol').attr("disabled", true);
+			$('#eacol').attr("disabled", true);
+			$('#neacol').attr("disabled", true);
 			$('#orcol').attr("disabled", true);
 			$('#becol').attr("disabled", true);
 			$('#secol').attr("disabled", true);
@@ -120,8 +120,8 @@ function CheckAll(){
 		$('#poscol').attr("disabled", false);
 		$('#rsIDcol').attr("disabled", false);
 		$('#pcol').attr("disabled", false);
-		$('#altcol').attr("disabled", false);
-		$('#refcol').attr("disabled", false);
+		$('#eacol').attr("disabled", false);
+		$('#neacol').attr("disabled", false);
 		$('#orcol').attr("disabled", false);
 		$('#becol').attr("disabled", false);
 		$('#secol').attr("disabled", false);

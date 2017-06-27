@@ -41,8 +41,9 @@
 						<span class="form-inline">Position: <input type="text" class="form-control" id="poscol" name="poscol"></span><br/>
 						<span class="form-inline">rsID: <input type="text" class="form-control" id="rsIDcol" name="rsIDcol"></span><br/>
 						<span class="form-inline">P-value: <input type="text" class="form-control" id="pcol" name="pcol"></span><br/>
-						<span class="form-inline">Risk allele: <input type="text" class="form-control" id="altcol" name="altcol"></span><br/>
-						<span class="form-inline">Other allele: <input type="text" class="form-control" id="refcol" name="refcol"></span><br/>
+						<span class="form-inline">Effect allele*: <input type="text" class="form-control" id="eacol" name="eacol"></span><br/>
+						<span style="color:red; font-size: 10px;">*"A1" is risk allele by default</span><br/>
+						<span class="form-inline">Non effect allele: <input type="text" class="form-control" id="neacol" name="neacol"></span><br/>
 						<span class="form-inline">OR: <input type="text" class="form-control" id="orcol" name="orcol"></span><br/>
 						<span class="form-inline">Beta: <input type="text" class="form-control" id="becol" name="becol"></span><br/>
 						<span class="form-inline">SE: <input type="text" class="form-control" id="secol" name="secol"></span><br/>

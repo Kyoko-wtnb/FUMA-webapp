@@ -158,7 +158,12 @@ foreach my $s (keys %db){
 					else{next if($line[6]>$eqtlP)}
 					my $id = join(":", $line[0], $line[1], sort($line[2], $line[3]));
 					if(exists $SNPs{$lid}{$id}){
-						print OUT join("\t", ($id, $s, $ts, $line[4], $line[3], $line[6], $line[5], $line[7])), "\n";
+						if($s eq "BRAINEAC"){
+							print OUT join("\t", ($id, $s, $ts, $line[4], "NA", $line[6], $line[5], $line[7])), "\n";
+							#tested allele was not defined in the original file of BRAINEAC
+						}else{
+							print OUT join("\t", ($id, $s, $ts, $line[4], $line[3], $line[6], $line[5], $line[7])), "\n";
+						}
 					}
 				}
 			}
