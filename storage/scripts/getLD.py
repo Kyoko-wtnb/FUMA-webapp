@@ -32,7 +32,7 @@ class getParams:
 		    print "predefined genomic regions are not provided"
 		    regions = None
 		else:
-		    print "predefined gwnomic regions are provided"
+		    print "predefined genomic regions are provided"
 		    regions = filedir+cfg.get('inputfiles', 'regions')
 
 		pop = param_cfg.get('params', 'pop')
@@ -190,7 +190,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 	becol = params.becol
 	secol = params.secol
 
-	chrom = gwasfile_chr[ichrom][0]
+	chrom = int(gwasfile_chr[ichrom][0])
 	print "Start chromosome "+str(chrom)+" ..."
 
 	### check pre-defined regions
@@ -199,6 +199,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 		regions_tmp = regions[regions[:,0]==chrom]
 		if len(regions_tmp)==0:
 			return [], [], []
+		regions_tmp = regions_tmp[regions_tmp[:,1].argsort()]
 
 	### check pre-defined lead SNPs
 	leadSNPs_tmp = None
@@ -229,9 +230,9 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 		if len(gwas_tmp) == 0:
 			return [], [], []
 		gwas_in = gwas_tmp
+	gwas_in = gwas_in[gwas_in[:,poscol].argsort()]
 
 	print str(len(gwas_in))+" SNPs in chromosome "+str(chrom)
-
 	### init variables
 	ld = []
 	canSNPs = []
