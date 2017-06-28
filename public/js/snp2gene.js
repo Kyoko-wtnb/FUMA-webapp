@@ -8,6 +8,7 @@ $(document).ready(function(){
 	// hide submit buttons for imgDown
 	$('.ImgDownSubmit').hide();
 	$('#annotPlotPanel').hide();
+	$('#g2fSubmitBtn').hide();
 
 	var hashid = window.location.hash;
 	if(hashid=="" && status.length==0){
@@ -282,13 +283,7 @@ function getJobList(){
 				var g2fbutton = 'Not available';
 				if(val.status == 'OK'){
 					val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">Go to results</a>';
-					g2fbutton = '<form action="'+subdir+'/gene2func/geneSubmit" method="post">'
-						+'<input type="hidden" name="_token" value="{{ csrf_token() }}">'
-						+'<input type="hidden" name="jobID" value="'+val.jobID+'"/>'
-						+'<span class="form-inline">'
-						+'<input type="submit" class="btn btn-xs" id="geneQuerySubmit" name="geneQuerySubmit" value="GENE2FUNC">'
-						+'</span>'
-						+'</form>';
+					g2fbutton = '<button class="btn btn-xs" value="'+val.jobID+'" onclick="g2fbtn('+val.jobID+');">GENE2FUNC</button>';
 				}else if(val.status == 'ERROR:005'){
 					val.status = '<a href="'+subdir+'/snp2gene/'+val.jobID+'">ERROR:005</a>';
 				}
@@ -304,6 +299,11 @@ function getJobList(){
 			.empty()
 			.append(items);
 	});
+}
+
+function g2fbtn(id){
+	$('#g2fSubmitJobID').val(id);
+	$('#g2fSubmitBtn').trigger('click');
 }
 
 function GWplot(jobID){
