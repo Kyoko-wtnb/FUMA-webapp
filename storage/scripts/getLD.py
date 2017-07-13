@@ -736,7 +736,7 @@ def getLeadSNPs(chrom, snps, IndSigSNPs, params):
 				rsID = IndSigSNPs[IndSigSNPs[:,3].astype(int)==int(l[4]),1][0]
 				checked.append(rsID)
 				inSNPs.append(rsID)
-		leadSNPs.append([snp[0], snp[1], snp[2], snp[3], snp[4], str(len(inSNPs)), ":".join(inSNPs)])
+		leadSNPs.append([snp[0], snp[1], snp[2], snp[3], snp[4], str(len(inSNPs)), ";".join(inSNPs)])
 	leadSNPs = np.array(leadSNPs)
 	leadSNPs = leadSNPs[leadSNPs[:,3].astype(int).argsort()]
 
@@ -754,7 +754,7 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 	for i in range(0, len(leadSNPs)):
 		if i == 0:
 			chrom = int(leadSNPs[i, 2])
-			rsIDs = list(leadSNPs[i,6].split(":"))
+			rsIDs = list(leadSNPs[i,6].split(";"))
 			uid = list(snps[ArrayIn(snps[:,1], rsIDs),0])
 			for s in uid:
 				uid2gl[s] = gidx+1
@@ -766,9 +766,9 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 			GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
 			start = min(snps[n,3].astype(int))
 			end = max(snps[n,3].astype(int))
-			loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ":".join(inInd), str(len(inLead)), ":".join(inLead)])
+			loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ";".join(inInd), str(len(inLead)), ";".join(inLead)])
 		else:
-			rsIDs = list(leadSNPs[i,6].split(":"))
+			rsIDs = list(leadSNPs[i,6].split(";"))
 			uid = list(snps[ArrayIn(snps[:,1], rsIDs),0])
 			for s in uid:
 				uid2gl[s] = gidx+1
@@ -789,9 +789,9 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 				loci[iloci][8] = str(len(nonGWASSNPs)+len(GWASSNPs))
 				loci[iloci][9] = str(len(GWASSNPs))
 				loci[iloci][10] = str(len(inInd))
-				loci[iloci][11] = ":".join(inInd)
+				loci[iloci][11] = ";".join(inInd)
 				loci[iloci][12] = str(len(inLead))
-				loci[iloci][13] = ":".join(inLead)
+				loci[iloci][13] = ";".join(inLead)
 				if float(leadSNPs[i,4]) < float(loci[iloci][5]):
 					loci[iloci][1] = leadSNPs[i,0]
 					loci[iloci][2] = leadSNPs[i,1]
@@ -804,7 +804,7 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 				inLead = []
 				nonGWASSNPs = []
 				GWASSNPs = []
-				rsIDs = list(leadSNPs[i,6].split(":"))
+				rsIDs = list(leadSNPs[i,6].split(";"))
 				uid = list(snps[ArrayIn(snps[:,1], rsIDs),0])
 				for s in uid:
 					uid2gl[s] = gidx+1
@@ -816,7 +816,7 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 				GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
 				start = min(snps[n,3].astype(int))
 				end = max(snps[n,3].astype(int))
-				loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ":".join(inInd), str(len(inLead)), ":".join(inLead)])
+				loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ";".join(inInd), str(len(inLead)), ";".join(inLead)])
 	loci = np.array(loci)
 	gidx += 1
 	return loci, uid2gl, gidx
