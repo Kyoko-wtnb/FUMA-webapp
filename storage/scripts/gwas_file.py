@@ -399,7 +399,7 @@ elif chrcol is not None and poscol is not None:
 
 	##### write header of input.snps #####
 	out = open(outSNPs, 'w')
-	out.write("chr\tbp\tref\talt\trsID\tp")
+	out.write("chr\tbp\tnon_effect_allele\teffect_allele\trsID\tp")
 	if orcol is not None:
 		out.write("\tor")
 	if becol is not None:
@@ -463,7 +463,7 @@ elif chrcol is None or poscol is None:
 
 	##### write header of input.snps #####
     out = open(outSNPs, 'w')
-    out.write("chr\tbp\tref\talt\trsID\tp")
+    out.write("chr\tbp\tnon_effect_allele\teffect_allele\trsID\tp")
     if orcol is not None:
         out.write("\tor")
     if becol is not None:

@@ -256,7 +256,9 @@ if(ciMap==1){
 			ci$genes[ci$genes==""] <- NA
 		}
 		ci <- ci[!is.na(ci$genes),]
-		genes <- c(genes, unique(unlist(strsplit(ci$genes, ":"))))
+		if(nrow(ci)>0){
+			genes <- c(genes, unique(unlist(strsplit(ci$genes, ":"))))
+		}
 		cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ":"))),]
 		snps$ciMapFilt[snps$uniqID %in% cisnps$uniqID] <- 1
 	}
