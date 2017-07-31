@@ -129,14 +129,14 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td>Population</td>
+					<td>Reference panle population</td>
 					<td>
-						<select class="form-control" id="pop" name="pop">
-							<option selected>EUR</option>
-							<option>AMR</option>
-							<option>AFR</option>
-							<option>SAS</option>
-							<option>EAS</option>
+						<select class="form-control" id="refpanel" name="refpanel">
+							<option selected value="1KG/Phase3/EUR">1000G Phase3 EUR</option>
+							<option value="1KG/Phase3/AMR">1000G Phase3 AMR</option>
+							<option value="1KG/Phase3/AFR">1000G Phase3 AFR</option>
+							<option value="1KG/Phase3/SAS">1000G Phase3 SAS</option>
+							<option value="1KG/Phase3/EAS">1000G Phase3 EAS</option>
 						</select>
 					</td>
 					<td>
