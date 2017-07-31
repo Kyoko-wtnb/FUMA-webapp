@@ -54,7 +54,10 @@ if Type=="IndSigSNP":
 	snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 
 elif Type=="leadSNP":
-	ls = np.array(lead[i,8].split(":"))
+	if ";" in lead[i,8]:
+		ls = np.array(lead[i,8].split(";"))
+	else:
+		ls = np.array(lead[i,8].split(":"))
 	ls = snps[ArrayIn(snps[:,1], ls),0]
 	ld = ld[ArrayIn(ld[:,0], ls)]
 	snps = snps[ArrayIn(snps[:,0], ld[:,1])]
