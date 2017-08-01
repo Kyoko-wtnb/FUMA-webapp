@@ -35,6 +35,7 @@ class getParams:
 		    print "predefined genomic regions are provided"
 		    regions = filedir+cfg.get('inputfiles', 'regions')
 
+		refpanel = param_cfg.get('params', 'refpanel')
 		pop = param_cfg.get('params', 'pop')
 		leadP = float(param_cfg.get('params', 'leadP'))
 		KGSNPs = int(param_cfg.get('params', 'Incl1KGSNPs')) #1 to add, 0 to not add
@@ -90,6 +91,7 @@ class getParams:
 		self.leadSNPs = leadSNPs
 		self.addleadSNPs = addleadSNPs
 		self.regions = regions
+		self.refpanel = refpanel
 		self.pop = pop
 		self.leadP = leadP
 		self.KGSNPs = KGSNPs #1 to add, 0 to not add
@@ -168,6 +170,7 @@ def separateGwasByChr(gwas):
 def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 	### Parameters
 	addleadSNPs = params.addleadSNPs
+	refpanel = params.refpanel
 	pop = params.pop
 	leadP = params.leadP
 	KGSNPs = params.KGSNPs
@@ -242,8 +245,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 	pos_set = set(gwas_in[:,poscol])
 	posall = gwas_in[:,poscol]
 
-	ldfile = refgenome_dir+"/"+pop+"ld/"+pop+".chr"+str(chrom)+".ld.gz"
-	maffile = refgenome_dir+"/"+pop+"/"+pop+".chr"+str(chrom)+".frq.gz"
+	ldfile = refgenome_dir+"/"+refpanel+'/'+pop+"/"+pop+".chr"+str(chrom)+".ld.gz"
+	maffile = refgenome_dir+"/"+refpanel+'/'+pop+"/"+pop+".chr"+str(chrom)+".frq.gz"
 	# annotfile = refgenome_dir+"/"+pop+"/"+"chr"+str(chrom)+".data.txt.gz"
 
 	rsIDset = set(gwas_in[:, rsIDcol])
@@ -721,7 +724,7 @@ def getLeadSNPs(chrom, snps, IndSigSNPs, params):
 	for snp in IndSigSNPs:
 		if snp[1] in checked:
 			continue
-		ldfile = params.refgenome_dir+'/'+params.pop+'ld/'+params.pop+'.chr'+str(snp[2])+'.ld.gz';
+		ldfile = params.refgenome_dir+'/'+params.refpanel+'/'+params.pop+'/'+params.pop+'.chr'+str(snp[2])+'.ld.gz';
 		tb = tabix.open(ldfile)
 		ld_tmp = tb.querys(snp[2]+":"+snp[3]+"-"+snp[3])
 		inSNPs = []

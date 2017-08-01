@@ -265,7 +265,9 @@ class S2GController extends Controller
 		$leadP = $request -> input('leadP');
 		$r2 = $request -> input('r2');
 		$gwasP = $request -> input('gwasP');
-		$pop = $request -> input('pop');
+		$refpanel = $request -> input('refpanel');
+		$pop = preg_replace('/.+\/.+\/(.+)/', '$1', $refpanel);
+		$refpanel = preg_replace('/(.+\/.+)\/.+/', '$1', $refpanel);
 		$KGSNPs = $request -> input('KGSNPs');
 		if(strcmp($KGSNPs, "Yes")==0){$KGSNPs=1;}
 		else{$KGSNPs=0;}
@@ -507,6 +509,7 @@ class S2GController extends Controller
 		File::append($paramfile, "leadP=$leadP\n");
 		File::append($paramfile, "r2=$r2\n");
 		File::append($paramfile, "gwasP=$gwasP\n");
+		File::append($paramfile, "refpanel=$refpanel\n");
 		File::append($paramfile, "pop=$pop\n");
 		File::append($paramfile, "MAF=$maf\n");
 		File::append($paramfile, "Incl1KGSNPs=$KGSNPs\n");

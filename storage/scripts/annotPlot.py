@@ -53,7 +53,10 @@ def getSNPs(filedir, i, Type, eqtlplot, ciplot):
 		snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 
 	elif Type=="leadSNP":
-		ls = np.array(lead[i,8].split(":"))
+		if ";" in lead[i,8]:
+			ls = np.array(lead[i,8].split(";"))
+		else:
+			ls = np.array(lead[i,8].split(":"))
 		ls = snps[ArrayIn(snps[:,1], ls),0]
 		ld = ld[ArrayIn(ld[:,0], ls)]
 		snps = snps[ArrayIn(snps[:,0], ld[:,1])]
@@ -62,7 +65,10 @@ def getSNPs(filedir, i, Type, eqtlplot, ciplot):
 		snps[ArrayIn(snps[:,0], lead[:,2]),len(snps[0])-1] = 3
 		snps[ArrayIn(snps[:,0], loci[:,1]),len(snps[0])-1] = 4
 	else:
-		ls = np.array(loci[i,11].split(":"))
+		if ";" in loci[i,11]:
+			ls = np.array(loci[i,11].split(";"))
+		else:
+			ls = np.array(loci[i,11].split(":"))
 		ls = snps[ArrayIn(snps[:,1], ls), 0]
 		ld = ld[ArrayIn(ld[:,0], ls)]
 		snps = snps[snps[:,snpshead.index("GenomicLocus")]==i+1]
