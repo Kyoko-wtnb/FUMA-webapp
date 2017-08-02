@@ -54,8 +54,8 @@ class getParams:
 
 		###### input files #####
 		gwas = filedir+cfg.get('inputfiles', 'snps')
-		annot_dir = cfg.get('data', 'annot')
 		refgenome_dir = cfg.get('data', 'refgenome')
+		annot_dir = refgenome_dir+"/"+refpanel+"/annot"
 
 		##### get column index ######
 		chrcol = 0

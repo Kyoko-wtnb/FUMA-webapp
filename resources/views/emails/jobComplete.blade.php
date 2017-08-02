@@ -8,6 +8,14 @@
 			<br/>
 		</p>
 
+		<?php
+		if($status==2){
+			echo '<span style="color:blue">There was an error during MAGMA process (ERROR message: '.$msg.').
+			This error might be because rsID in the input file did not match with MAGMA reference panel or the number of input SNPs were too small.
+			Other results are available from the link above but MAGMA results will not be displayed.</span>';
+		}
+		?>
+
 		<p>
 			Please do not hesitate to contact me if you have questions/suggestions regarding FUMA.<br/>
 			You can also post questions, suggestions and bug reports on Google Forum: <a href="https://groups.google.com/forum/#!forum/fuma-gwas-users">FUMA GWAS users</a><br/><br/>

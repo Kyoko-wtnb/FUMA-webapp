@@ -389,91 +389,96 @@ function GWplot(jobID){
 	});
 
 	d3.json("manhattan/"+prefix+"/"+jobID+"/magma.genes.out", function(data){
-		data.forEach(function(d){
-			d[0] = +d[0]; //chr
-			d[1] = +d[1]; //start
-			d[2] = +d[2]; //stop
-			d[3] = +d[3]; //p
-		});
+		if(data==null || data.length==0){
+			$("#geneManhattan").html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+			+' ERROR:002 MAGMA was not able to perform.</span><br/></div>');
+		}else{
+			data.forEach(function(d){
+				d[0] = +d[0]; //chr
+				d[1] = +d[1]; //start
+				d[2] = +d[2]; //stop
+				d[3] = +d[3]; //p
+			});
 
-		var nSigGenes=0;
-		var sortedP = [];
-		sortedP.push(0);
-		data.forEach(function(d){
-		if(d[3]<=0.05/data.length){nSigGenes++;}
-			sortedP.push(d[3]);
-		});
-		$('#topGenes').val(nSigGenes);
+			var nSigGenes=0;
+			var sortedP = [];
+			sortedP.push(0);
+			data.forEach(function(d){
+			if(d[3]<=0.05/data.length){nSigGenes++;}
+				sortedP.push(d[3]);
+			});
+			$('#topGenes').val(nSigGenes);
 
-		$('#geneManhattanDesc').html("Input SNPs were mapped to "+data.length+" protein coding genes (distance 0). "
-			+"Genome wide significance (red dashed line in the plot) was defined at P = 0.05/"+data.length+" = "+(Number((0.05/data.length).toPrecision(3)).toExponential())+".");
+			$('#geneManhattanDesc').html("Input SNPs were mapped to "+data.length+" protein coding genes (distance 0). "
+				+"Genome wide significance (red dashed line in the plot) was defined at P = 0.05/"+data.length+" = "+(Number((0.05/data.length).toPrecision(3)).toExponential())+".");
 
-		sortedP = sortedP.sort(function(a,b){return a-b;});
-		// var chr = d3.set(data.map(function(d){return d.CHR;})).values();
-		var chr = d3.set(data.map(function(d){return d[0];})).values();
-		var max_chr = chr.length;
-		var x = d3.scale.linear().range([0, width]);
-		x.domain([0, (chromStart[max_chr-1]+chromSize[max_chr-1])]);
-		var xAxis = d3.svg.axis().scale(x).orient("bottom");
-		var y = d3.scale.linear().range([height, 0]);
-		// y.domain([0, d3.max(data, function(d){return -Math.log10(d.P);})+1]);
-		y.domain([0, d3.max(data, function(d){return -Math.log10(d[3]);})+1]);
-		var yAxis = d3.svg.axis().scale(y).orient("left");
+			sortedP = sortedP.sort(function(a,b){return a-b;});
+			// var chr = d3.set(data.map(function(d){return d.CHR;})).values();
+			var chr = d3.set(data.map(function(d){return d[0];})).values();
+			var max_chr = chr.length;
+			var x = d3.scale.linear().range([0, width]);
+			x.domain([0, (chromStart[max_chr-1]+chromSize[max_chr-1])]);
+			var xAxis = d3.svg.axis().scale(x).orient("bottom");
+			var y = d3.scale.linear().range([height, 0]);
+			// y.domain([0, d3.max(data, function(d){return -Math.log10(d.P);})+1]);
+			y.domain([0, d3.max(data, function(d){return -Math.log10(d[3]);})+1]);
+			var yAxis = d3.svg.axis().scale(y).orient("left");
 
-		svg2.selectAll("dot.geneManhattan").data(data).enter()
-			.append("circle")
-			.attr("r", 2)
-			.attr("cx", function(d){return x((d[1]+d[2])/2+chromStart[d[0]-1])})
-			.attr("cy", function(d){return y(-Math.log10(d[3]))})
-			.attr("fill", function(d){if(d[0]%2==0){return "steelblue"}else{return "blue"}});
+			svg2.selectAll("dot.geneManhattan").data(data).enter()
+				.append("circle")
+				.attr("r", 2)
+				.attr("cx", function(d){return x((d[1]+d[2])/2+chromStart[d[0]-1])})
+				.attr("cy", function(d){return y(-Math.log10(d[3]))})
+				.attr("fill", function(d){if(d[0]%2==0){return "steelblue"}else{return "blue"}});
 
-		svg2.selectAll('text.gene').data(data.filter(function(d){if(d[3]<=0.05/data.length){return d;}})).enter()
-			.append("text")
-			.attr("class", "gene")
-			.attr("x", function(d){return x((d[1]+d[2])/2+chromStart[d[0]-1])})
-			.attr("y", function(d){return y(-Math.log10(d[3]))-2})
-			.text(function(d){return d[4]})
-			.style("font-size", "10px");
-
-		svg2.append("line")
-			.attr("x1", 0).attr("x2", width)
-			.attr("y1", y(-Math.log10(0.05/data.length))).attr("y2", y(-Math.log10(0.05/data.length)))
-			.style("stroke", "red")
-			.style("stroke-dasharray", ("3,3"));
-		svg2.append("g").attr("class", "x axis")
-			.attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
-		svg2.append("g").attr("class", "y axis").call(yAxis)
-			.selectAll('text').style('font-size', '11px');
-
-		//Chr label
-		for(var i=0; i<chr.length; i++){
-			svg2.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+x((chromStart[i]*2+chromSize[i])/2)+","+(height+20)+")")
-				.text(chr[i])
-				.style("font-size", "10px");
-		}
-		svg2.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate("+width/2+","+(height+35)+")")
-			.text("Chromosome");
-		svg2.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate("+(-35)+","+(height/2)+")rotate(-90)")
-			.text("-log10 P-value");
-		svg2.selectAll('path').style('fill', 'none').style('stroke', 'grey');
-		svg2.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-		svg2.selectAll('text').style("font-family", "sans-serif");
-
-		$('#topGenes').on("input", function(){
-			svg2.selectAll(".gene").remove();
-			var n = $('#topGenes').val();
-			svg2.selectAll('text.gene').data(data.filter(function(d){if(d[3]<=sortedP[n]){return d;}})).enter()
+			svg2.selectAll('text.gene').data(data.filter(function(d){if(d[3]<=0.05/data.length){return d;}})).enter()
 				.append("text")
 				.attr("class", "gene")
 				.attr("x", function(d){return x((d[1]+d[2])/2+chromStart[d[0]-1])})
 				.attr("y", function(d){return y(-Math.log10(d[3]))-2})
 				.text(function(d){return d[4]})
-				.style("font-size", "10px")
-				.style("font-family", "sans-serif");
-		})
+				.style("font-size", "10px");
+
+			svg2.append("line")
+				.attr("x1", 0).attr("x2", width)
+				.attr("y1", y(-Math.log10(0.05/data.length))).attr("y2", y(-Math.log10(0.05/data.length)))
+				.style("stroke", "red")
+				.style("stroke-dasharray", ("3,3"));
+			svg2.append("g").attr("class", "x axis")
+				.attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
+			svg2.append("g").attr("class", "y axis").call(yAxis)
+				.selectAll('text').style('font-size', '11px');
+
+			//Chr label
+			for(var i=0; i<chr.length; i++){
+				svg2.append("text").attr("text-anchor", "middle")
+					.attr("transform", "translate("+x((chromStart[i]*2+chromSize[i])/2)+","+(height+20)+")")
+					.text(chr[i])
+					.style("font-size", "10px");
+			}
+			svg2.append("text").attr("text-anchor", "middle")
+				.attr("transform", "translate("+width/2+","+(height+35)+")")
+				.text("Chromosome");
+			svg2.append("text").attr("text-anchor", "middle")
+				.attr("transform", "translate("+(-35)+","+(height/2)+")rotate(-90)")
+				.text("-log10 P-value");
+			svg2.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+			svg2.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+			svg2.selectAll('text').style("font-family", "sans-serif");
+
+			$('#topGenes').on("input", function(){
+				svg2.selectAll(".gene").remove();
+				var n = $('#topGenes').val();
+				svg2.selectAll('text.gene').data(data.filter(function(d){if(d[3]<=sortedP[n]){return d;}})).enter()
+					.append("text")
+					.attr("class", "gene")
+					.attr("x", function(d){return x((d[1]+d[2])/2+chromStart[d[0]-1])})
+					.attr("y", function(d){return y(-Math.log10(d[3]))-2})
+					.text(function(d){return d[4]})
+					.style("font-size", "10px")
+					.style("font-family", "sans-serif");
+			})
+		}
 	});
 }
 
@@ -539,49 +544,54 @@ function QQplot(jobID){
 	});
 
 	d3.json('QQplot/'+prefix+'/'+jobID+'/Gene', function(data){
-		data.forEach(function(d){
-			d.obs = +d.obs;
-			d.exp = +d.exp;
-			d.n = +d.n;
-		});
+		if(data==null || data.length==0){
+			$("#geneQQplot").html('<div style="text-align:center; padding-top:24px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+			+' ERROR:002 MAGMA was not able to perform.</span><br/></div>');
+		}else{
+			data.forEach(function(d){
+				d.obs = +d.obs;
+				d.exp = +d.exp;
+				d.n = +d.n;
+			});
 
-		var x = d3.scale.linear().range([0, width]);
-		var y = d3.scale.linear().range([height, 0]);
-		var xMax = d3.max(data, function(d){return d.exp;});
-		var yMax = d3.max(data, function(d){return d.obs;});
-		x.domain([0, (xMax+xMax*0.01)]);
-		y.domain([0, (yMax+yMax*0.01)]);
-		var yAxis = d3.svg.axis().scale(y).orient("left");
-		var xAxis = d3.svg.axis().scale(x).orient("bottom");
+			var x = d3.scale.linear().range([0, width]);
+			var y = d3.scale.linear().range([height, 0]);
+			var xMax = d3.max(data, function(d){return d.exp;});
+			var yMax = d3.max(data, function(d){return d.obs;});
+			x.domain([0, (xMax+xMax*0.01)]);
+			y.domain([0, (yMax+yMax*0.01)]);
+			var yAxis = d3.svg.axis().scale(y).orient("left");
+			var xAxis = d3.svg.axis().scale(x).orient("bottom");
 
-		// var maxP = Math.min(d3.max(data, function(d){return d.exp;}), d3.max(data, function(d){return d.obs;}));
-		var maxP = Math.min(xMax, yMax);
+			// var maxP = Math.min(d3.max(data, function(d){return d.exp;}), d3.max(data, function(d){return d.obs;}));
+			var maxP = Math.min(xMax, yMax);
 
-		qqGene.selectAll("dot.geneQQ").data(data).enter()
-			.append("circle")
-			.attr("r", 2)
-			.attr("cx", function(d){return x(d.exp)})
-			.attr("cy", function(d){return y(d.obs)})
-			.attr("fill", "grey");
-		qqGene.append("g").attr("class", "x axis")
-			.attr("transform", "translate(0,"+height+")").call(xAxis)
-			.selectAll('text').style('font-size', '11px');
-		qqGene.append("g").attr("class", "y axis").call(yAxis)
-			.selectAll('text').style('font-size', '11px');
-		qqGene.append("line")
-			.attr("x1", 0).attr("x2", x(maxP))
-			.attr("y1", y(0)).attr("y2", y(maxP))
-			.style("stroke", "red")
-			.style("stroke-dasharray", ("3,3"));
-		qqGene.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate("+(-35)+","+height/2+")rotate(-90)")
-			.text("Observed -log10 P-value");
-		qqGene.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate("+(width/2)+","+(height+35)+")")
-			.text("Expected -log10 P-value");
-		qqGene.selectAll('path').style('fill', 'none').style('stroke', 'grey');
-		qqGene.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-		qqGene.selectAll("text").style("font-family", "sans-serif");
+			qqGene.selectAll("dot.geneQQ").data(data).enter()
+				.append("circle")
+				.attr("r", 2)
+				.attr("cx", function(d){return x(d.exp)})
+				.attr("cy", function(d){return y(d.obs)})
+				.attr("fill", "grey");
+			qqGene.append("g").attr("class", "x axis")
+				.attr("transform", "translate(0,"+height+")").call(xAxis)
+				.selectAll('text').style('font-size', '11px');
+			qqGene.append("g").attr("class", "y axis").call(yAxis)
+				.selectAll('text').style('font-size', '11px');
+			qqGene.append("line")
+				.attr("x1", 0).attr("x2", x(maxP))
+				.attr("y1", y(0)).attr("y2", y(maxP))
+				.style("stroke", "red")
+				.style("stroke-dasharray", ("3,3"));
+			qqGene.append("text").attr("text-anchor", "middle")
+				.attr("transform", "translate("+(-35)+","+height/2+")rotate(-90)")
+				.text("Observed -log10 P-value");
+			qqGene.append("text").attr("text-anchor", "middle")
+				.attr("transform", "translate("+(width/2)+","+(height+35)+")")
+				.text("Expected -log10 P-value");
+			qqGene.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+			qqGene.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+			qqGene.selectAll("text").style("font-family", "sans-serif");
+		}
 	});
 }
 
@@ -612,8 +622,7 @@ function MAGMAresults(jobID){
 	d3.json(subdir+'/snp2gene/MAGMAtsplot/general/'+prefix+"/"+jobID, function(data){
 		if(data==null || data==undefined || data.lenght==0){
 			$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
-			+' MAGMA tissue expression analyses is only available for FUMA v1.1.0 or later.</span><br/>'
-			+'If your job has been submitted to older version, please contact Kyoko Watanabe (k.watanabe@vu.nl) or resubmit the job to obtain the MAGMA tisue expression results.</div>');
+			+' MAGMA was not able to perform.</span><br/></div>');
 		}else{
 			var margin = {top:30, right: 30, bottom:100, left:80},
 				width = 600,

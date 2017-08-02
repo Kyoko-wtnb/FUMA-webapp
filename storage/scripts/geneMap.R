@@ -200,7 +200,7 @@ if(ciMap==1){
 	ci <- fread(paste(filedir, "ci.txt", sep=""), data.table=F)
 	cisnps <- c()
 	if(nrow(ci)>0){
-		cisnps <- unique(unlist(strsplit(ci$SNPs, ":")))
+		cisnps <- unique(unlist(strsplit(ci$SNPs, ";")))
 		cisnps <- snps[snps$rsID %in% cisnps,]
 
 		if(ciMapEnhFilt==1){
@@ -245,7 +245,7 @@ if(ciMap==1){
 	      cisnps <- cisnps[cisnps$uniqID %in% epi$uniqID,]
 	      rm(epi, temp)
 	    }
-		cicheck <- sapply(ci$SNPs, function(x){if(length(which(unlist(strsplit(x, ":")) %in% cisnps$rsID))>0){1}else{0}})
+		cicheck <- sapply(ci$SNPs, function(x){if(length(which(unlist(strsplit(x, ";")) %in% cisnps$rsID))>0){1}else{0}})
 		ci <- ci[cicheck==1,]
 		if(ciMapPromFilt==1){
 			ciprom <- fread(paste(filedir, "ciProm.txt", sep=""), data.table=F)
@@ -259,7 +259,7 @@ if(ciMap==1){
 		if(nrow(ci)>0){
 			genes <- c(genes, unique(unlist(strsplit(ci$genes, ":"))))
 		}
-		cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ":"))),]
+		cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ";"))),]
 		snps$ciMapFilt[snps$uniqID %in% cisnps$uniqID] <- 1
 	}
 }
@@ -310,7 +310,7 @@ if(nrow(geneTable)>0){
 	})
     geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){
 		if(length(which(snps$uniqID %in% annov$uniqID[which(annov$gene==x)]))>0){
-			paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% annov$uniqID[which(annov$gene==x)]]]), collapse = ":")
+			paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% annov$uniqID[which(annov$gene==x)]]]), collapse = ";")
 		}else{NA}
 	})
   }
@@ -322,8 +322,8 @@ if(nrow(geneTable)>0){
 	})
     geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){
 		if(length(which(snps$uniqID %in% eqtl$uniqID[eqtl$gene==x]))>0){
-			if(is.na(geneTable$IndSigSNPs[geneTable$ensg==x])){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ":")}
-			else{paste(unique(c(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]], unlist(strsplit(geneTable$IndSigSNPs[geneTable$ensg==x], ":")))), collapse = ":")}
+			if(is.na(geneTable$IndSigSNPs[geneTable$ensg==x])){paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]]), collapse = ";")}
+			else{paste(unique(c(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% eqtl$uniqID[eqtl$gene==x]]], unlist(strsplit(geneTable$IndSigSNPs[geneTable$ensg==x], ";")))), collapse = ";")}
 		}else{
 			if(is.na(geneTable$IndSigSNPs[geneTable$ensg==x])){NA}
 			else{geneTable$IndSigSNPs[geneTable$ensg==x]}
@@ -332,7 +332,7 @@ if(nrow(geneTable)>0){
   }
   if(ciMap==1){
   	geneTable$minGwasP <- sapply(geneTable$ensg, function(x){
-		if(nrow(ci)>0){tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ":")))}
+		if(nrow(ci)>0){tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ";")))}
 		else{tmp <- c()}
 		if(length(tmp)>0){
 			if(length(which(!is.na(cisnps$gwasP[cisnps$rsID %in% tmp])))>0){
@@ -341,14 +341,14 @@ if(nrow(geneTable)>0){
 		}else{geneTable$minGwasP[geneTable$ensg==x]}
 	})
 	geneTable$IndSigSNPs <- sapply(geneTable$ensg, function(x){
-		if(nrow(ci)>0){tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ":")))}
+		if(nrow(ci)>0){tmp <- unique(unlist(strsplit(ci$SNPs[grepl(x, ci$genes)], ";")))}
 		else{tmp <- c()}
 		if(length(tmp)==0){
 			geneTable$IndSigSNPs[geneTable$ensg==x]
 		}else if(is.na(geneTable$IndSigSNPs[geneTable$ensg==x])){
-			paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% cisnps$uniqID[cisnps$rsID %in% tmp]]]), collapse=":")
+			paste(unique(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% cisnps$uniqID[cisnps$rsID %in% tmp]]]), collapse=";")
 		}else{
-			paste(unique(c(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% cisnps$uniqID[cisnps$rsID %in% tmp]]], unique(unlist(strsplit(geneTable$IndSigSNPs[geneTable$ensg==x], ":"))))), collapse=":")
+			paste(unique(c(snps$rsID[snps$uniqID %in% ld$SNP1[ld$SNP2 %in% cisnps$uniqID[cisnps$rsID %in% tmp]]], unique(unlist(strsplit(geneTable$IndSigSNPs[geneTable$ensg==x], ";"))))), collapse=";")
 		}
 	})
   }
@@ -356,7 +356,7 @@ if(nrow(geneTable)>0){
   leadS <- fread(paste(filedir, "IndSigSNPs.txt", sep=""), data.table=F)
   geneTable$GenomicLocus <- NA
   for(i in 1:nrow(geneTable)){
-    ls <- unlist(strsplit(geneTable$IndSigSNPs[i], ":"))
+    ls <- unlist(strsplit(geneTable$IndSigSNPs[i], ";"))
     geneTable$GenomicLocus[i] <- paste(unique(leadS$GenomicLocus[leadS$rsID %in% ls]), collapse=":")
   }
 }

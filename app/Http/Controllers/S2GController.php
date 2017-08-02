@@ -605,6 +605,14 @@ class S2GController extends Controller
 			$files[$i] = preg_replace("/.+\/(\w+\.$type)/", '$1', $files[$i]);
 		}
 
+		if($type=="conf"){
+			$tmp = File::glob($filedir."*.txt");
+			foreach($tmp as $f){
+				$f = preg_replace("/.+\/(\w+\.txt)/", '$1', $f);
+				$files[] = $f;
+			}
+		}
+
 		$zip -> open($zipfile, \ZipArchive::CREATE);
         foreach($files as $f){
           $zip->addFile($filedir.$f, $f);
@@ -701,32 +709,36 @@ class S2GController extends Controller
 
 		if(strcmp($plot,"SNP")==0){
 			$file=$filedir."QQSNPs.txt";
-			$f = fopen($file, 'r');
-			$all_row = array();
-			$head = fgetcsv($f, 0, "\t");
-			while($row = fgetcsv($f, 0, "\t")){
-				$all_row[] = array_combine($head, $row);
+			if(file_exists($file)){
+				$f = fopen($file, 'r');
+				$all_row = array();
+				$head = fgetcsv($f, 0, "\t");
+				while($row = fgetcsv($f, 0, "\t")){
+					$all_row[] = array_combine($head, $row);
+				}
+				return json_encode($all_row);
 			}
-			return json_encode($all_row);
 		}else if(strcmp($plot,"Gene")==0){
 			$file=$filedir."magma.genes.out";
-			$f = fopen($file, 'r');
-			$obs = array();
-			$exp = array();
-			$c = 0;
-			fgetcsv($f, 0, "\t");
-			while($row = fgetcsv($f, 0, "\t")){
-				$c++;
-				$obs[] = -log10($row[8]);
+			if(file_exists($file)){
+				$f = fopen($file, 'r');
+				$obs = array();
+				$exp = array();
+				$c = 0;
+				fgetcsv($f, 0, "\t");
+				while($row = fgetcsv($f, 0, "\t")){
+					$c++;
+					$obs[] = -log10($row[8]);
+				}
+				sort($obs);
+				$step = (1-1/$c)/$c;
+				$head = ["obs", "exp", "n"];
+				$all_row = array();
+				for($i=0; $i<$c; $i++){
+					$all_row[] = array_combine($head, [$obs[$i], -log10(1-$i*$step), $i+1]);
+				}
+				return json_encode($all_row);
 			}
-			sort($obs);
-			$step = (1-1/$c)/$c;
-			$head = ["obs", "exp", "n"];
-			$all_row = array();
-			for($i=0; $i<$c; $i++){
-				$all_row[] = array_combine($head, [$obs[$i], -log10(1-$i*$step), $i+1]);
-			}
-			return json_encode($all_row);
 		}
     }
 

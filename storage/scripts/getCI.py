@@ -90,7 +90,7 @@ def mapToCI(snps, f, ciMapFDR, dt, DB, ts, genes):
 	for i in range(0,len(snps)):
 		if int(snps[i,2]) == cur_chr and int(snps[i,3]) <= cur_max:
 			for j in last_n:
-				out[j][8] = ":".join([str(out[j][8]), str(snps[i,1])])
+				out[j][8] = ";".join([str(out[j][8]), str(snps[i,1])])
 		else:
 			cur_chr = int(snps[i,2])
 			last_n=[]
@@ -308,7 +308,7 @@ def main():
 	insnps = []
 	if len(ci) > 0:
 		for x in ci[:,8]:
-			insnps += x.split(":")
+			insnps += x.split(";")
 		insnps = unique(insnps)
 	snps = snps[ArrayIn(snps[:,1], insnps)]
 	print len(snps)
