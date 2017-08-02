@@ -28,6 +28,20 @@ def unique(a):
 	[unique.append(s) for s in a if s not in unique]
 	return unique
 
+def checkSNPs(snps):
+	results = []
+	for chrom in range(1,24):
+		tmp = snps[snps[:,0]==chrom]
+		if len(tmp)>150000:
+			tmp = tmp[np.argsort(tmp[:,2])]
+			tmp = tmp[0:150000]
+			tmp = tmp[np.argsort(tmp[:,1])]
+		if len(results)==0:
+			results = tmp
+		else:
+			results = np.r_[results, tmp]
+	return results
+
 def createConfig(c, filedir, circos_config, loci, ci, snps, allsnps, genes):
 	regions = []
 	breaks = ""
@@ -123,6 +137,7 @@ def main():
 	cfg = ConfigParser.ConfigParser()
 	cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
 	circos_config = cfg.get('data', 'circos_config')
+	circos_path = cfg.get('data', 'circos_path')
 	param = ConfigParser.RawConfigParser()
 	param.optionxform = str
 	param.read(filedir+'params.config')
@@ -152,6 +167,7 @@ def main():
 	allsnps = pd.read_table(filedir+"all.txt", sep="\t", dtype="str")
 	allsnps = np.array(allsnps)
 	allsnps = allsnps[allsnps[:,2].astype(float)<0.05]
+	allsnps = checkSNPs(allsnps)
 
 	##### 3D genome  #####
 	ci = pd.read_table(filedir+"ci.txt", delim_whitespace=True)
@@ -248,6 +264,6 @@ def main():
 
 	### execute circos ###
 	for i in chrom:
-		os.system("circos -conf "+filedir+"circos/circos_chr"+str(i)+".conf -outputdir "+filedir+"circos -outputfile circos_chr"+str(i))
+		os.system(circos_path+"/circos -conf "+filedir+"circos/circos_chr"+str(i)+".conf -outputdir "+filedir+"circos -outputfile circos_chr"+str(i))
 
 if __name__=="__main__": main()
