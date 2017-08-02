@@ -605,6 +605,14 @@ class S2GController extends Controller
 			$files[$i] = preg_replace("/.+\/(\w+\.$type)/", '$1', $files[$i]);
 		}
 
+		if($type=="conf"){
+			$tmp = File::glob($filedir."*.txt");
+			foreach($tmp as $f){
+				$f = preg_replace("/.+\/(\w+\.txt)/", '$1', $f);
+				$files[] = $f;
+			}
+		}
+
 		$zip -> open($zipfile, \ZipArchive::CREATE);
         foreach($files as $f){
           $zip->addFile($filedir.$f, $f);
