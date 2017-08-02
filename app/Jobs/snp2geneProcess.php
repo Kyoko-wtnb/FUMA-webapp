@@ -49,6 +49,9 @@ class snp2geneProcess extends Job implements ShouldQueue
       //error message
       $msg = "";
 
+	  //current error state
+      $status = 0;
+
       // file check
       if(!file_exists(config('app.jobdir').'/jobs/'.$jobID.'/input.gwas')){
         DB::table('SubmitJobs') -> where('jobID', $jobID)
@@ -95,9 +98,9 @@ class snp2geneProcess extends Job implements ShouldQueue
       $script = storage_path().'/scripts/magma.pl';
       exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
       if($error != 0){
-        $this->rmFiles($filedir);
-        DB::table('SubmitJobs') -> where('jobID', $jobID)
-                          -> update(['status'=>'ERROR:002']);
+        // $this->rmFiles($filedir);
+        // DB::table('SubmitJobs') -> where('jobID', $jobID)
+        //                   -> update(['status'=>'ERROR:002']);
         $errorout = file_get_contents($errorfile);
         if(preg_match('/MAGMA ERROR/', $errorout)==1){
           $errorout = file_get_contents($logfile);
@@ -111,11 +114,12 @@ class snp2geneProcess extends Job implements ShouldQueue
         }else{
           $msg = "server error";
         }
-        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
-        if($email!=null){
-          $this->sendJobCompMail($email, $jobtitle, $jobID, 2, $msg);
-          return;
-        }
+		$status = 2;
+        // $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+        // if($email!=null){
+        //   $this->sendJobCompMail($email, $jobtitle, $jobID, 2, $msg);
+        //   return;
+        // }
       }
 
       file_put_contents($logfile, "\n----- manhattan_filt.py -----\n", FILE_APPEND);
@@ -300,7 +304,7 @@ class snp2geneProcess extends Job implements ShouldQueue
       $this->JobMonitorUpdate($jobID, $created_at, $started_at);
 
       if($email != null){
-        $this->sendJobCompMail($email, $jobtitle, $jobID, 0, $msg);
+        $this->sendJobCompMail($email, $jobtitle, $jobID, $status, $msg);
       }
       return;
     }
@@ -317,11 +321,13 @@ class snp2geneProcess extends Job implements ShouldQueue
 	}
 
     public function sendJobCompMail($email, $jobtitle, $jobID, $status, $msg){
-      if($status==0){
+      if($status==0 || $status==2){
         $user = DB::table('users')->where('email', $email)->first();
         $data = [
           'jobID'=>$jobID,
-          'jobtitle'=>$jobtitle
+          'jobtitle'=>$jobtitle,
+		  'status'=>$status,
+		  'msg'=>$msg
         ];
         Mail::send('emails.jobComplete', $data, function($m) use($user){
           $m->from('noreply@ctglab.nl', "FUMA web application");
