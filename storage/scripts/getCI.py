@@ -133,30 +133,32 @@ def mapToCI(snps, f, ciMapFDR, dt, DB, ts, genes):
 	out = np.c_[out, mappedGenes]
 	return out
 
-def mapToRegElements(snps, f, dt, ts):
-	mapdat = pd.read_table(f, comment="#", delim_whitespace=True, header=None)
-	mapdat = np.array(mapdat)
-	mapdat = mapdat[:,0:3]
-	mapdat[:,0] = [int(re.sub(r'X|x', '23', x.replace("chr",""))) for x in mapdat[:,0]]
-	mapdat[:,1] = [int(x)+1 for x in mapdat[:,1]]
-	mapdat[:,2] = [int(x)+1 for x in mapdat[:,2]]
-	print len(mapdat)
-
+def mapSNPsToRegElements(snps, reg_datadir, ts):
+	gid = unique(snps[:,4])
 	out = []
-	chrdat = {}
-	for i in range(1,24):
-		chrdat[i] = mapdat[mapdat[:,0].astype(int)==i]
-	mapdat = None
-
-	for i in range(0, len(snps)):
-		tmpdat = chrdat[int(snps[i,2])]
-		if len(tmpdat)==0:
-			continue
-		n = getRow(tmpdat, int(snps[i,2]), int(snps[i,3]))
-		for j in n:
-			r = str(int(tmpdat[j,0]))+":"+str(int(tmpdat[j,1]))+"-"+str(int(tmpdat[j,2]))
-			out.append(list(snps[i, 0:4])+[r, dt, ts])
+	for i in gid:
+		tmp = snps[snps[:,4]==i]
+		chrom = tmp[0,2]
+		start = min(tmp[:,3])
+		end = max(tmp[:,3])
+		tb = tabix.open(reg_datadir+"/enh/enh.bed.gz")
+		enh = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
+		for l in enh:
+			if "all" in ts or l[3] in ts:
+				r = str(chrom)+":"+str(int(l[1])+1)+"-"+str(int(l[2])+1)
+				tmp_snps = tmp[np.where((tmp[:,3]>int(l[1])) & (tmp[:,3]<int(l[2])+1))]
+				for m in tmp_snps:
+					out.append(list(m[0:4])+[r, "enh", l[3]])
+		tb = tabix.open(reg_datadir+"/dyadic/dyadic.bed.gz")
+		dyadic = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
+		for l in dyadic:
+			if "all" in ts or l[3] in ts:
+				r = str(chrom)+":"+str(int(l[1])+1)+"-"+str(int(l[2])+1)
+				tmp_snps = tmp[np.where((tmp[:,3]>int(l[1])) & (tmp[:,3]<int(l[2])+1))]
+				for m in tmp_snps:
+					out.append(list(m[0:4])+[r, "dyadic", l[3]])
 	return np.array(out)
+
 
 def GeneToPromoter(genes, promoter):
 	"""
@@ -173,40 +175,39 @@ def GeneToPromoter(genes, promoter):
 def getciprom(dat, chrom, min_pos, max_pos, genes):
 	if len(dat) == 0:
 		return []
-	tmpdat = dat[np.where(((dat[:,1].astype(int)>=min_pos) & (dat[:,1].astype(int)<=max_pos)) | ((dat[:,2].astype(int)>=min_pos) & (dat[:,2].astype(int)<=max_pos)) | ((dat[:,1].astype(int)<=min_pos) & (dat[:,2].astype(int)>=max_pos)))]
-	if len(tmpdat) == 0:
-		return []
 	out = []
-	for l in tmpdat:
-		r = str(l[0])+":"+str(l[1])+"-"+str(l[2])
+	for l in dat:
+		r = str(l[0])+":"+str(int(l[1])+1)+"-"+str(int(l[2])+1)
 		g = getGenes(genes, int(l[1]), int(l[2]))
-		out.append([r, g])
+		out.append([r, l[4], l[3], g])
 	return np.array(out)
 
-def RegionToGenes(regions, f, dt, ts, genes):
-	mapdat = pd.read_table(f, comment="#", delim_whitespace=True, header=None)
-	mapdat = np.array(mapdat)
-	mapdat = mapdat[:,0:3]
-	mapdat[:,0] = [int(re.sub(r'X|x', '23', x.replace("chr",""))) for x in mapdat[:,0]]
-	mapdat[:,1] = [int(x)+1 for x in mapdat[:,1]]
-	mapdat[:,2] = [int(x)+1 for x in mapdat[:,2]]
-	print len(mapdat)
-
+def mapRegionToGenes(regions, reg_datadir, ts, genes):
 	out = []
-	chrdat = {}
-	for i in range(1,24):
-		chrdat[i] = mapdat[mapdat[:,0].astype(int)==i]
-	mapdat = None
-
-	for i in range(0, len(regions)):
-		c = re.match(r'(\d+):(\d+)-(\d+)', regions[i])
+	for reg in regions:
+		c = re.match(r'(\d+):(\d+)-(\d+)', reg)
 		chrom = int(c.group(1))
-		min_pos = int(c.group(2))
-		max_pos = int(c.group(3))
-		tmpdat = chrdat[chrom]
-		tmp_out = getciprom(tmpdat, chrom, min_pos, max_pos, genes[genes[:,1].astype(int)==chrom])
+		start = int(c.group(2))
+		end = int(c.group(3))
+		mapdat = []
+
+		tb = tabix.open(reg_datadir+"/prom/prom.bed.gz")
+		prom = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
+		for l in prom:
+			if "all" in ts or l[3] in ts:
+				l = l+["prom"]
+				mapdat.append(l)
+		tb = tabix.open(reg_datadir+"/dyadic/dyadic.bed.gz")
+		dyadic = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
+		for l in dyadic:
+			if "all" in ts or l[3] in ts:
+				l = l+["dyadic"]
+				mapdat.append(l)
+		mapdat = np.array(mapdat)
+
+		tmp_out = getciprom(mapdat, chrom, start, end, genes[genes[:,1].astype(int)==chrom])
 		if len(tmp_out) > 0:
-			tmp_out = np.c_[[regions[i]]*len(tmp_out), tmp_out[:,0], [dt]*len(tmp_out), [ts]*len(tmp_out), tmp_out[:,1]]
+			tmp_out = np.c_[[reg]*len(tmp_out),tmp_out]
 			if len(out) == 0:
 				out = tmp_out
 			else:
@@ -219,7 +220,7 @@ def main():
 		sys.exit('ERROR: not enough arguments\nUSAGE ./getCI.py <filedir>')
 
 	##### start time #####
-	start = time.time()
+	start_time = time.time()
 
 	##### add '/' to the filedir #####
 	filedir = sys.argv[1]
@@ -255,9 +256,7 @@ def main():
 	ciMapRoadmap = param.get("ciMap", "ciMapRoadmap")
 	ciMapRoadmap = ciMapRoadmap.split(":")
 	if "all" in ciMapRoadmap:
-		tmp = glob.glob(reg_datadir+"/enh/*.bed.gz")
-		# ciMapRoadmap = [x.replace(reg_datadir+"/", "") for x in tmp]
-		ciMapRoadmap = [re.match(r'.+regions_enh_(E\d+)\.bed.gz', x).group(1) for x in tmp]
+		ciMapRoadmap = ["all"]
 	promoter = param.get("ciMap", "ciMapPromWindow")
 	promoter = [int(x) for x in promoter.split("-")]
 	genetype = param.get("params", "genetype")
@@ -311,49 +310,16 @@ def main():
 			insnps += x.split(";")
 		insnps = unique(insnps)
 	snps = snps[ArrayIn(snps[:,1], insnps)]
-	print len(snps)
 
 	##### Map SNPs to reguratory elements #####
 	if ciMapRoadmap[0] != "NA" and len(snps) > 0:
-		for eid in ciMapRoadmap:
-			f = "enh/regions_enh_"+eid+".bed.gz"
-			print f
-			tmp_cisnps = mapToRegElements(snps, reg_datadir+"/"+f, "enh", eid)
-			if len(tmp_cisnps) > 0:
-				if len(cisnps) == 0:
-					cisnps = tmp_cisnps
-				else:
-					cisnps = np.r_[cisnps, tmp_cisnps]
-			f = "dyadic/regions_dyadic_"+eid+".bed.gz"
-			print f
-			tmp_cisnps = mapToRegElements(snps, reg_datadir+"/"+f, "dyadic", eid)
-			if len(tmp_cisnps) > 0:
-				if len(cisnps) == 0:
-					cisnps = tmp_cisnps
-				else:
-					cisnps = np.r_[cisnps, tmp_cisnps]
+		cisnps = mapSNPsToRegElements(snps, reg_datadir, ciMapRoadmap)
 
 	##### Map CI regions to reguratory elements #####
 	regions = []
 	if ciMapRoadmap[0] != "NA" and len(ci) > 0:
 		regions = unique(ci[:,1])
-		for eid in ciMapRoadmap:
-			f = "prom/regions_prom_"+eid+".bed.gz"
-			print f
-			tmp_ciprom = RegionToGenes(regions, reg_datadir+"/"+f, "prom", eid, genes)
-			if len(tmp_ciprom) > 0:
-				if len(ciprom) == 0:
-					ciprom = tmp_ciprom
-				else:
-					ciprom = np.r_[ciprom, tmp_ciprom]
-			f = "dyadic/regions_dyadic_"+eid+".bed.gz"
-			print f
-			tmp_ciprom = RegionToGenes(regions, reg_datadir+"/"+f, "dyadic", eid, genes)
-			if len(tmp_ciprom) > 0:
-				if len(ciprom) == 0:
-					ciprom = tmp_ciprom
-				else:
-					ciprom = np.r_[ciprom, tmp_ciprom]
+		ciprom = mapRegionToGenes(regions, reg_datadir, ciMapRoadmap, genes)
 
 	##### write outputs #####
 	with open(outci, 'w') as o:
@@ -371,7 +337,7 @@ def main():
 	with open(outgenes, 'a') as o:
 		np.savetxt(o, ciprom, delimiter="\t", fmt="%s")
 
-	print time.time() - start
+	print time.time() - start_time
 
 
 if __name__ == "__main__": main()

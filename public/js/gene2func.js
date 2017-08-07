@@ -92,7 +92,7 @@ $(document).ready(function(){
 				}
 			}
 		}else if(bkgtype == "text"){
-			$('#bkgenes').val() = bkgval.replace(/:/g, '\n');
+			$('#bkgenes').val(bkgval.replace(/:/g, '\n'));
 		}
 
 		if(MHC==1){

@@ -119,7 +119,7 @@
 <ul>
 	<li><p>Mapped genes</p>
 		<p>The genes which are mapped by SNPs in the SNPs table based on user-defined mapping parameters.
-		Columns with posMap or eqtlMap in the parentheses are only available when positional, eQTL or chromatin interaction mapping is performed, respectively.
+		Columns with posMap, eqtlMap or ciMap in the parentheses are only available when positional, eQTL or chromatin interaction mapping is performed, respectively.
 		</p>
 		<ul>
 			<li><strong>Gene</strong> : ENSG ID</li>
