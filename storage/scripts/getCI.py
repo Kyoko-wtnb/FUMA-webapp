@@ -179,7 +179,7 @@ def getciprom(dat, chrom, min_pos, max_pos, genes):
 	for l in dat:
 		r = str(l[0])+":"+str(int(l[1])+1)+"-"+str(int(l[2])+1)
 		g = getGenes(genes, int(l[1]), int(l[2]))
-		out.append([r, l[3], l[4], g])
+		out.append([r, l[4], l[3], g])
 	return np.array(out)
 
 def mapRegionToGenes(regions, reg_datadir, ts, genes):
