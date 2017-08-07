@@ -196,9 +196,12 @@ def getNonCandidateSNPs(filedir, snps, min_pos, max_pos):
 	chrcol = 0
 	poscol = 1
 
-	tmp = pd.read_table(filedir+"all.txt", sep="\t")
-	tmp = tmp.as_matrix()
-	tmp = tmp[np.where((tmp[:,chrcol]==chrom) & (tmp[:,poscol]>=min_pos-500000) & (tmp[:,poscol]<=max_pos+500000))]
+	tb = tabix.open(filedir+"all.txt.gz")
+	tb_snps = tb.querys(str(chrom)+":"+str(min_pos-500000)+"-"+str(max_pos+500000))
+	tmp = []
+	for l in tb_snps:
+		tmp.append([int(l[0]), int(l[1]), float(l[2])])
+	tmp = np.array(tmp)
 	tmp = tmp[ArrayNotIn(tmp[:,poscol], snps[:,3])]
 	out = []
 	for l in tmp:

@@ -91,7 +91,8 @@ class snp2geneProcess extends Job implements ShouldQueue
         }
       }
 
-      exec("cut -f 1,2,6 $filedir"."input.snps >$filedir"."all.txt");
+	  $script = storage_path().'/scripts/allSNPs.py';
+	  exec("python $script $filedir");
 
       file_put_contents($logfile, "\n----- magma.pl -----\n", FILE_APPEND);
       file_put_contents($errorfile, "\n----- magma.pl -----\n", FILE_APPEND);

@@ -5,6 +5,7 @@ import re
 import pandas as pd
 import numpy as np
 import json
+import tabix
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -102,19 +103,13 @@ else:
 chrcol = 0
 poscol = 1
 
-allsnps = pd.read_table(filedir+"all.txt", sep="\t", dtype="str")
-allsnps = allsnps.as_matrix()
-allsnps = allsnps[np.where((allsnps[:,chrcol].astype(int)==chrom) & (allsnps[:,poscol].astype(int)>=xMin-500000) & (allsnps[:,poscol].astype(int)<=xMax+500000))]
-
+tb = tabix.open(filedir+"all.txt.gz")
+tb_snps = tb.querys(str(chrom)+":"+str(xMin-500000)+"-"+str(xMax+500000))
+allsnps = []
+for l in tb_snps:
+	allsnps.append([int(l[0]), int(l[1]), float(l[2])])
+allsnps = np.array(allsnps)
 allsnps = allsnps[ArrayNotIn(allsnps[:,poscol].astype(int), snps[:,3])]
-
-# outfile = open(filedir+"temp.txt", 'w')
-# outfile.write("chr\tpos\tgwasP\n")
-# for l in temp:
-#     outfile.write(str(int(l[0]))+"\t"+str(int(l[1]))+"\t"+str(l[2])+"\n")
-
-# stop = timeit.default_timer()
-# print stop - start
 
 out = {}
 out["snps"] = [dict(zip(snpshead, l)) for l in snps]

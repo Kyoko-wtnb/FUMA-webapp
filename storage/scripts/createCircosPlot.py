@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import math
 import ConfigParser
+import tabix
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -28,7 +29,7 @@ def unique(a):
 	[unique.append(s) for s in a if s not in unique]
 	return unique
 
-def createConfig(c, filedir, circos_config, loci, ci, snps, allsnps, genes):
+def createConfig(c, filedir, circos_config, loci, ci, snps, genes):
 	regions = []
 	breaks = ""
 	loci = loci[loci[:,3].argsort()]
@@ -68,13 +69,17 @@ def createConfig(c, filedir, circos_config, loci, ci, snps, allsnps, genes):
 	tmp_end.append((int((cur_pos+1000)/1000000)+1)*1000000)
 	regions = np.c_[tmp_start, tmp_end]
 
-	allsnps = allsnps[ArrayNotIn(allsnps[:,1].astype(int), snps[:,1])]
+	tb = tabix.open(filedir+"all.txt.gz")
 	tmp_snps = []
 	for l in regions:
+		tb_snps = tb.querys(str(c)+":"+str(l[0])+"-"+str(l[1]))
+		tmp = []
+		for l in tb_snps:
+			tmp.append(l)
 		if len(tmp_snps)==0:
-			tmp_snps = allsnps[np.where((allsnps[:,1].astype(int)>=l[0]) | (allsnps[:,1].astype(int)<=l[1]))]
+			tmp_snps = np.array(tmp)
 		else:
-			tmp_snps = np.r_[tmp_snps, allsnps[np.where((allsnps[:,1].astype(int)>=l[0]) | (allsnps[:,1].astype(int)<=l[1]))]]
+			tmp_snps = np.r_[tmp_snps, np.array(tmp)]
 	tmp_snps = np.c_[tmp_snps, [0]*len(tmp_snps)]
 	snps = np.r_[snps, tmp_snps]
 	snps[:,2] = [float(-1*x) for x in np.log10(snps[:,2].astype(float))]
@@ -157,9 +162,6 @@ def main():
 	snps = np.array(snps)
 	snps = snps[:,[2,3,7,snpshead.index("r2")]]
 	snps = snps[np.where(np.isfinite(snps[:,2].astype(float)))]
-	allsnps = pd.read_table(filedir+"all.txt", sep="\t", dtype="str")
-	allsnps = np.array(allsnps)
-	allsnps = allsnps[allsnps[:,2].astype(float)<0.05]
 
 	##### 3D genome  #####
 	ci = pd.read_table(filedir+"ci.txt", delim_whitespace=True)
@@ -194,7 +196,7 @@ def main():
 		tmp_genes = genes[genes[:,2]==c]
 		tmp_genes = tmp_genes[:,[2,3,4,1,geneshead.index("GenomicLocus")]]
 		tmp_genes[:,4] = [int(x.split(":")[-1]) for x in tmp_genes[:,4].astype(str)]
-		[tmp_snps, tmp_regions] = createConfig(c, filedir, circos_config, loci[loci[:,2].astype(int)==c], ci[np.where((ci[:,1]==c) & (ci[:,4]==c))], snps[snps[:,0]==c], allsnps[allsnps[:,0].astype(int)==c], tmp_genes)
+		[tmp_snps, tmp_regions] = createConfig(c, filedir, circos_config, loci[loci[:,2].astype(int)==c], ci[np.where((ci[:,1]==c) & (ci[:,4]==c))], snps[snps[:,0]==c], tmp_genes)
 		if len(snpsout)==0:
 			snpsout = tmp_snps
 			regions = tmp_regions
