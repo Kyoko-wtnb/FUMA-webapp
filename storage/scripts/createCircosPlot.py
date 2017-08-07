@@ -28,20 +28,6 @@ def unique(a):
 	[unique.append(s) for s in a if s not in unique]
 	return unique
 
-def checkSNPs(snps):
-	results = []
-	for chrom in range(1,24):
-		tmp = snps[snps[:,0]==chrom]
-		if len(tmp)>150000:
-			tmp = tmp[np.argsort(tmp[:,2])]
-			tmp = tmp[0:150000]
-			tmp = tmp[np.argsort(tmp[:,1])]
-		if len(results)==0:
-			results = tmp
-		else:
-			results = np.r_[results, tmp]
-	return results
-
 def createConfig(c, filedir, circos_config, loci, ci, snps, allsnps, genes):
 	regions = []
 	breaks = ""
@@ -92,6 +78,13 @@ def createConfig(c, filedir, circos_config, loci, ci, snps, allsnps, genes):
 	tmp_snps = np.c_[tmp_snps, [0]*len(tmp_snps)]
 	snps = np.r_[snps, tmp_snps]
 	snps[:,2] = [float(-1*x) for x in np.log10(snps[:,2].astype(float))]
+
+	##### take to 150000 SNPs per chromosome #####
+	if len(snps) > 150000:
+		snps = snps[snps[:,2].argsort()[::-1]]
+		snps = snps[0:150000]
+		snps = snps[snps[:,1].argsort()]
+
 	maxlogP = int(max(snps[:,2]))+1
 	minlogP = 0
 	snps[:,0] = ["hs"+str(x) for x in snps[:,0]]
@@ -167,7 +160,6 @@ def main():
 	allsnps = pd.read_table(filedir+"all.txt", sep="\t", dtype="str")
 	allsnps = np.array(allsnps)
 	allsnps = allsnps[allsnps[:,2].astype(float)<0.05]
-	allsnps = checkSNPs(allsnps)
 
 	##### 3D genome  #####
 	ci = pd.read_table(filedir+"ci.txt", delim_whitespace=True)
