@@ -81,13 +81,14 @@ def createConfig(c, filedir, circos_config, loci, ci, snps, genes):
 		else:
 			tmp_snps = np.r_[tmp_snps, np.array(tmp)]
 	tmp_snps = np.c_[tmp_snps, [0]*len(tmp_snps)]
+	tmp_snps = tmp_snps[ArrayNotIn(tmp_snps[:,1].astype(int), snps[:,1].astype(int))]
 	snps = np.r_[snps, tmp_snps]
 	snps[:,2] = [float(-1*x) for x in np.log10(snps[:,2].astype(float))]
 
-	##### take to 150000 SNPs per chromosome #####
-	if len(snps) > 150000:
+	##### take top 150000 SNPs per chromosome #####
+	if len(snps) > 50000:
 		snps = snps[snps[:,2].argsort()[::-1]]
-		snps = snps[0:150000]
+		snps = snps[0:50000]
 		snps = snps[snps[:,1].argsort()]
 
 	maxlogP = int(max(snps[:,2]))+1
@@ -175,6 +176,19 @@ def main():
 	pos2min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,2]]
 	pos2max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,2]]
 	ci = np.c_[ci[:,0], chr1, pos1min, pos1max, chr2, pos2min, pos2max, ci[:,3:7]]
+	### take top 100000 links per chromosome
+	ci_chrom = unique(ci[:,1])
+	ci_tmp = []
+	for c in ci_chrom:
+		tmp = ci[ci[:,1]==c]
+		if len(tmp)>10000:
+			tmp = tmp[tmp[:,7].astype(float).argsort()]
+			tmp = tmp[0:10000]
+		if len(ci_tmp)==0:
+			ci_tmp = tmp
+		else:
+			ci_tmp = np.r_[ci_tmp, tmp]
+	ci = ci_tmp
 
 	##### mapped genes #####
 	genes = pd.read_table(filedir+"genes.txt", delim_whitespace=True)
@@ -187,7 +201,21 @@ def main():
 		eqtl = pd.read_table(filedir+"eqtl.txt", delim_whitespace=True)
 		eqtl = np.array(eqtl)
 		eqtl = eqtl[ArrayIn(eqtl[:,3], genes[:,0])]
-
+	### take top 100000 links per chromosome
+	if len(eqtl)>0:
+		chrcol = np.array([int(x.split(":")[0]) for x in eqtl[:,0]])
+		e_chrom = unique(chrcol)
+		eqtl_tmp = []
+		for c in e_chrom:
+			tmp = eqtl[np.where(chrcol==c)]
+			if len(tmp)>10000:
+				tmp = tmp[tmp[:,5].astype(float).argsort()]
+				tmp = tmp[0:10000]
+			if len(eqtl_tmp)==0:
+				eqtl_tmp = tmp
+			else:
+				eqtl_tmp = np.r_[eqtl_tmp, tmp]
+		eqtl = eqtl_tmp
 	##### process per chromosome #####
 	chrom = unique(loci[:,2])
 	snpsout = []
