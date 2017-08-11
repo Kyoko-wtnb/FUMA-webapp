@@ -519,6 +519,13 @@ var loggedin = "{{ Auth::check() }}";
 									<li>Chromatin interaction links: Links colored orange are chromatin interactions used in the mapping (based on user-defined parameters).</li>
 									<li>eQTL lilnks: Links colored green are eQTLs used in the mapping  (based on user-defined parameters).</li>
 								</ul>
+								<span class="info"><i class="fa fa-info"></i>
+									Since creating a circos plot might take long time with a large number of points and links, the maximum number of points and links are limited to 50,000 and 10,000 per plot (chromosome), respectively, in the default plot.
+									Therefore, if there are more than 50,000 SNPs with P-value < 0.05 in a chromosome, top 50,000 SNPs (sorted by P-value) are displayed in the plot.
+									This is same for eQTLs and chromatin interactions, e.g. if there are more than 10,000 eQTLs in a chromosome, top 10,000 eQTLs (sorted by P-value for eQTLs, FDR for chromatin interactions) are displayed in the plot.
+									These can be optimized by downloading config file and re-creating input text files for SNPs and links.
+									Please refer github repository <a href="https://github.com/Kyoko-wtnb/FUAM-circos-plot" target="_blank">FUMA circos plot</a> for details.
+								</span>
 							</p>
 							<br/><br/>
 							<div id="ciMapCircosPlot" style="text-align:center;"></div>

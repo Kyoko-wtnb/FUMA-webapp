@@ -14,7 +14,7 @@ $(document).ready(function(){
 		});
 
 	if(loggedin==1){
-		var timer = new InactivityTimer("/logout", 3600000);
+		var timer = new InactivityTimer("/logout", 86400000);
 		timer.stop();
 		timer.start();
 	}
@@ -29,7 +29,7 @@ function InactivityTimer(path, delay){
 
 	function start(){
 		if(!timeout){
-			timeout = setTimeout(logout, delay || 7200000);
+			timeout = setTimeout(logout, delay || 86400000);
 		}
 	}
 

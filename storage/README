@@ -92,7 +92,7 @@ eqtlMapFilt : Whether the SNP was used for eqtl mapping or not. 1 is used, other
 ######################
 SNP1 : unique ID of one of the independent significant SNPs
 SNP2 : unique ID of SNPs which are in LD of SNP1 with r2 greater or equal to the user defined threshold
-r2 : r2 computed by plink using 1000 genomes reference panel (phase3) of defined population
+r2 : r2 computed by plink using user-selected reference panel
 
 ######################
 # annov.txt

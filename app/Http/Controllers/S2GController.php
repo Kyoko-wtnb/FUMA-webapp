@@ -80,7 +80,7 @@ class S2GController extends Controller
 			-> update(['updated_at'=>$date]);
 
 		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
-		$params = parse_ini_file($filedir."params.config");
+		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
 		$posMap = $params['posMap'];
 		$eqtlMap = $params['eqtlMap'];
 		$orcol = $params['orcol'];
@@ -632,7 +632,7 @@ class S2GController extends Controller
 		$filedir = $request -> input('filedir');
 
 		$table = '<table class="table table-striped" style="width: 100%; margin-left: 10px; margin-right: 10px;ext-align: right;"><tbody>';
-		$params = parse_ini_file($filedir."params.config");
+		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
 
 		foreach($params as $key=>$value){
 			$table .= "<tr><td>".$key.'</td><td style="word-break: break-all;">'.$value."</td></tr>";
