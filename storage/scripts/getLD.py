@@ -376,7 +376,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			if len(canSNPs)>0:
 				ld = np.array(ld)
 				canSNPs = np.array(canSNPs)
-				annot = np.array(annot)
+				# annot = np.array(annot)
 				IndSigSNPs = np.array(IndSigSNPs)
 				IndSigSNPs = IndSigSNPs[IndSigSNPs[:,3].astype(int).argsort()]
 				n = canSNPs[:,3].astype(int).argsort()
@@ -390,7 +390,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 		if len(canSNPs)>0:
 			ld = np.array(ld)
 			canSNPs = np.array(canSNPs)
-			annot = np.array(annot)
+			# annot = np.array(annot)
 			IndSigSNPs = np.array(IndSigSNPs)
 			IndSigSNPs = IndSigSNPs[IndSigSNPs[:,3].astype(int).argsort()]
 			n = canSNPs[:,3].astype(int).argsort()

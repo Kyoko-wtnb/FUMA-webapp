@@ -270,8 +270,11 @@ write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep=
 geneTable <- ENSG[ENSG$ensembl_gene_id %in% genes,]
 colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "status", "type", "entrezID","HUGO")
 if(nrow(geneTable)>0){
+  geneTable$chr[geneTable$chr=="X"] <- "23"
   geneTable$chr <- as.numeric(geneTable$chr)
-
+  geneTable <- geneTable[order(geneTable$start),]
+  geneTable <- geneTable[order(geneTable$chr),]
+  
   ### gene scores
   gene_scores <- fread(paste(config$data$geneScores, "/gene_scores.txt", sep=""), data.table=F)
   geneTable <- cbind(geneTable, gene_scores[match(geneTable$ensg, gene_scores$ensg), 5:ncol(gene_scores)])
