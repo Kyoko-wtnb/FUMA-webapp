@@ -134,25 +134,25 @@ for i in range(0,len(header)):
 for i in range(0, len(header)):
 	if i in checkedheader:
 		continue
-	if re.match("CHR$|^chromosome$|^chrom$", header[i], re.IGNORECASE):
+	if chrcol == "NA" and re.match("CHR$|^chromosome$|^chrom$", header[i], re.IGNORECASE):
 		chrcol = i
-	elif re.match("SNP$|^MarkerName$|^rsID$|^snpid$", header[i], re.IGNORECASE):
+	elif rsIDcol == "NA" and re.match("SNP$|^MarkerName$|^rsID$|^snpid$", header[i], re.IGNORECASE):
 		rsIDcol = i
-	elif re.match("^BP$|^pos$|^position$", header[i], re.IGNORECASE):
+	elif poscol == "NA" and re.match("^BP$|^pos$|^position$", header[i], re.IGNORECASE):
 		poscol = i
-	elif re.match("^A1$|^Effect_allele$|^allele1$|^alleleB$", header[i], re.IGNORECASE):
+	elif eacol == "NA" and re.match("^A1$|^Effect_allele$|^allele1$|^alleleB$", header[i], re.IGNORECASE):
 		eacol = i
-	elif re.match("^A2$|^Non_Effect_allele$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
+	elif neacol == "NA" and re.match("^A2$|^Non_Effect_allele$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
 		neacol = i
-	elif re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$", header[i], re.IGNORECASE):
+	elif pcol == "NA" and re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$", header[i], re.IGNORECASE):
 		pcol = i
-	elif re.match("^or$", header[i], re.IGNORECASE):
+	elif orcol == "NA" and re.match("^or$", header[i], re.IGNORECASE):
 		orcol = i
-	elif re.match("^beta$", header[i], re.IGNORECASE):
+	elif becol == "NA" and re.match("^beta$", header[i], re.IGNORECASE):
 		becol = i
-	elif re.match("^se$", header[i], re.IGNORECASE):
+	elif secol == "NA" and re.match("^se$", header[i], re.IGNORECASE):
 		secol = i
-	elif re.match("^N$", header[i], re.IGNORECASE):
+	elif Ncol == "NA" and re.match("^N$", header[i], re.IGNORECASE):
 		Ncol = i
 
 user_header = []
