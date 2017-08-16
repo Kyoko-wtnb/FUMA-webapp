@@ -901,7 +901,7 @@ def main():
 	if params.leadSNPs:
 		inleadSNPs = pd.read_table(params.leadSNPs, comment="#", delim_whitespace=True)
 		inleadSNPs = inleadSNPs.as_matrix()
-		inleadSNPs = rsIDup(inleadSNPs, 0, params.dbSNPfile)
+		#inleadSNPs = rsIDup(inleadSNPs, 0, params.dbSNPfile)
 
 	##### get row index for each chromosome #####
 	# input file needs to be sorted by chr and position

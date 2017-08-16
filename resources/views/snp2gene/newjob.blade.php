@@ -219,14 +219,14 @@
 						<span class="multiSelect">
 							<a>clear</a><br/>
 							<select multiple class="form-control" id="posMapAnnot" name="posMapAnnot[]" onchange="CheckAll();">
-						<option value="exonic">exonic</option>
-						<option value="splicing">splicing</option>
-						<option value="intronic">intronic</option>
-						<option value="UTR3">3UTR</option>
-						<option value="UTR5">5UTR</option>
-						<option value="upstream">upstream</option>
-						<option value="downstream">downstream</option>
-						</select>
+								<option value="exonic">exonic</option>
+								<option value="splicing">splicing</option>
+								<option value="intronic">intronic</option>
+								<option value="UTR3">3UTR</option>
+								<option value="UTR5">5UTR</option>
+								<option value="upstream">upstream</option>
+								<option value="downstream">downstream</option>
+							</select>
 						</span>
 					</td>
 					<td></td>
