@@ -228,8 +228,11 @@ def main():
 	regions = []
 	for c in chrom:
 		tmp_genes = genes[genes[:,2]==c]
-		tmp_genes = tmp_genes[:,[2,3,4,1,geneshead.index("GenomicLocus")]]
-		tmp_genes[:,4] = [int(x.split(":")[-1]) for x in tmp_genes[:,4].astype(str)]
+		if len(tmp_genes)>0:
+			tmp_genes = tmp_genes[:,[2,3,4,1,geneshead.index("GenomicLocus")]]
+			tmp_genes[:,4] = [int(x.split(":")[-1]) for x in tmp_genes[:,4].astype(str)]
+		else:
+			tmp_genes = []
 		[tmp_snps, tmp_regions] = createConfig(c, filedir, circos_config, loci[loci[:,2].astype(int)==c], ci[np.where((ci[:,1]==c) & (ci[:,4]==c))], snps[snps[:,0]==c], tmp_genes)
 		if len(snpsout)==0:
 			snpsout = tmp_snps
@@ -275,7 +278,7 @@ def main():
 	### write genes
 	if "eqtlMapSNPs" in geneshead:
 		genes = genes[np.where((genes[:,geneshead.index("ciMap")]=="Yes") | (genes[:,geneshead.index("eqtlMapSNPs")]>0))]
-	else:
+	elif "ciMap" in geneshead:
 		genes = genes[genes[:, geneshead.index("ciMap")]=="Yes"]
 	gid = []
 	if len(genes) > 0:
