@@ -17,6 +17,15 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>22 Aug 2017</td>
+			<td>v1.2.3</td>
+			<td>
+				GWAScatalog has been updated to release e89 2017-08-15.
+				Please be aware that jobs submitted to SNP2GENE begore 22th August 2017 used previous version (e85 2016-09-27).
+				If you wish to update GWAScatalog results for your SNP2GENE jobs, please contact developper with jobID.
+			</td>
+		</tr>
+		<tr>
 			<td>25 June 2017</td>
 			<td>v1.2.0</td>
 			<td><strong>Major update 1</strong>: Chromatin interaction mapping is newly added into SNP2GENE process which utilize 3D genome data such as Hi-C, ChIA-PET and so on.

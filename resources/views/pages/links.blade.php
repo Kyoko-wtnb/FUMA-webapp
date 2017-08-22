@@ -195,13 +195,13 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>GWAS-catalog e85 2016-09-27</td>
+				<td>GWAS-catalog e89 2017-08-15</td>
 				<td>A database of reported snp-trait associations.</td>
 				<td>
 					Info: <a href="https://www.ebi.ac.uk/gwas/" target="_blank">https://www.ebi.ac.uk/gwas/</a><br/>
 					Data: <a href="https://www.ebi.ac.uk/gwas/docs/downloads" target="_blank">https://www.ebi.ac.uk/gwas/docs/downloads</a>
 				</td>
-				<td>5 December 2016</td>
+				<td>22 August 2017</td>
 				<td>
 					MacArthur, J., et al. 2016. The new NHGRI-EBI Catalog of published genome-wide association studies (GWAS Catalog). <i>Nucleic Acids Res.</i> pii:gkw1133.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/27899670" target="_blank">PMID:27899670</a>

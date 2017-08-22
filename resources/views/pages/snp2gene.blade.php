@@ -540,7 +540,7 @@ var loggedin = "{{ Auth::check() }}";
 							<table id="gwascatTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
 								<thead>
 									<tr>
-										<th>Genomic Locus</th><th>lead SNP</th><th>chr</th><th>bp</th><th>rsID</th><th>PMID</th><th>Trait</th><th>FirstAuth</th><th>Date</th><th>P-value</th>
+										<th>Genomic Locus</th><th>IndSigSNP</th><th>chr</th><th>bp</th><th>rsID</th><th>PMID</th><th>Trait</th><th>FirstAuth</th><th>Date</th><th>P-value</th>
 									</tr>
 								</thead>
 							</table>

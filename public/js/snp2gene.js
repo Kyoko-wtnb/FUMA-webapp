@@ -1161,7 +1161,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
 				id: jobID,
 				prefix: prefix,
 				infile: file,
-				header: "GenomicLocus:leadSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
+				header: "GenomicLocus:IndSigSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
 			}
 		},
 		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
