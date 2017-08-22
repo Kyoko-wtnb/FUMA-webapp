@@ -219,7 +219,7 @@ genes : genes whose promoter regions are overlapped with region2
 # List of SNPs reported in GWAScatalog which are candidate SNPs of your GWAS summary statistics.
 ######################
 Genomic locus : Index of genomic risk loci.
-lead SNP : The lead SNP of the SNP in GWAScatalog.
+IndSigSNP : One of the independent significant SNPs of the SNP in GWAScatalog.
 chr : chromosome
 bp : position on hg19
 snp : rsID of reported SNP in GWAS catalog

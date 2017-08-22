@@ -49,12 +49,12 @@ minOverlap = int(param.get('params', 'minOverlap'))
 if gtype == "text":
 	genes = gval.split(":")
 else:
-	lines = pd.read_table(filedir+gval, header=None, delim_whitespace=True)
+	lines = pd.read_table(filedir+gval, header=None, delim_whitespace=True, dtype=str)
 	lines = np.array(lines)
-	genes = list(lines[:,0])
+	genes = list(lines[:,0].astype(str))
 genes = [s.upper() for s in genes]
 
-ENSG = pd.read_table(ensgfile, delim_whitespace=True)
+ENSG = pd.read_table(ensgfile, delim_whitespace=True, dtype=str)
 ENSGheads = list(ENSG.columns.values)
 ENSG = np.array(ENSG)
 
@@ -66,13 +66,11 @@ elif bkgtype == "text":
 	bkgenes = bkgval.split(":")
 	bkgenes = [s.upper() for s in bkgenes]
 else:
-	lines = pd.read_table(filedir+bkgval, sep="\s+")
+	lines = pd.read_table(filedir+bkgval, header=None, delim_whitespace=True, dtype=str)
 	lines = np.array(lines)
-	bkgenes = lsit(lines[:,0])
+	bkgenes = lsit(lines[:,0].astype(str))
 	bkgenes = [s.upper() for s in bkgenes]
 
-# if Xchr == 1:
-# 	ENSG = ENSG[ENSG[:,3]!=23,]
 if MHC == 1:
 	MHC = False
 else:
@@ -118,21 +116,12 @@ files=[]
 for f in fglob:
 	if "Human_Adult_Brain" not in f:
 		files.append(f)
-#if(testCategory!="all"):
-#	testCategory = testCategory.split(":")
-#	testCategory = np.array(testCategory)
-#	files = files[InArray(files, testCategory)]
-
-#genes = np.array(genes)
-#bkgenes = np.array(bkgenes)
-#results = []
-#results.append(["Category", "GeneSet", "N_genes", "N_overlap", "p", "FDR", "genes", "logP", "logFDR"])
 N = len(bkgenes)
 m = len(genes)
 
 def hypTest(l, c):
 	g = l[2].split(":")
-	g = np.array(g).astype(int)
+	g = np.array(g)
 	g = g[ArrayIn(g, bkgenes)]
 	n = len(g)
 	gin = genes[ArrayIn(genes, g)]
@@ -168,8 +157,6 @@ def GeneSetTest(f):
 	tmp = tmp[tmp[:,5].astype(float)<adjPcut]
 	tmp = tmp[tmp[:,3].astype(int)>=minOverlap]
 	tmp = tmp[tmp[:,4].astype(float).argsort()]
-	# tmp[:,7] = -np.log10(tmp[:,4].astype(float))
-	# tmp[:,8] = -np.log10(tmp[:,5].astype(float))
 	return tmp;
 
 tmp = Parallel(n_jobs=n_cores)(delayed(GeneSetTest)(f) for f in files)
@@ -179,42 +166,6 @@ out.write("\t".join(["Category", "GeneSet", "N_genes", "N_overlap", "p", "adjP",
 for i in tmp:
 	for j in i:
 		out.write("\t".join(j)+"\n")
-
-#for f in files:
-#	if "Human_Adult_Brain" in f:
-#		continue
-#	print f
-#	c = re.match(".*GeneSet/(\w+)\.txt", f)
-#	gs = pd.read_table(f)
-#	gs = np.array(gs)
-#
-#	tmp = Parallel(n_jobs=n_cores)(delayed(hypTest)(l) for l in gs)
-	#tmp = []
-	#for l in gs:
-	#	tmp.append(hypTest(l))
-
-#	tmp = np.array(tmp)
-#	padj = multicomp.multipletests(list(tmp[:,4].astype(float)), alpha=0.05, method=adjPmeth, is_sorted=False, returnsorted=False)
-#	tmp[:, 5] = padj[1]
-#	tmp = tmp[tmp[:,5].astype(float)<adjPcut]
-#	tmp = tmp[tmp[:,3].astype(int)>=minOverlap]
-#	tmp = tmp[tmp[:,4].astype(float).argsort()]
-#	tmp[:,7] = -np.log10(tmp[:,4].astype(float))
-#	tmp[:,8] = -np.log10(tmp[:,5].astype(float))
-#	for i in tmp:
-		# g = i[6].split(":")
-		# g = [int(x) for x in g]
-		# g = ":".join(list(ENSG[ArrayIn(ENSG[:,9], g),2]))
-		# #g = ":".join(list(entrez2symbol[ArrayIn(entrez2symbol[:,1], g),0]))
-		# i[6]=g
-#		out.write("\t".join(i)+"\n")
-		#results.append(list(i))
-
-#GeneSetTest(genes, bkgenes, "BH", 0.05, True, 2)
-
-#out = open(filedir+"GS.txt", 'w')
-#for l in results:
-#	out.write("\t".join(list(l))+"\n")
 
 stop = timeit.default_timer()
 

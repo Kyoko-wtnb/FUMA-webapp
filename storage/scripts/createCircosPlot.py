@@ -108,10 +108,16 @@ def createConfig(c, filedir, circos_config, loci, ci, snps, genes):
 			l[4] = "id=5"
 	with open(circos_config+"/base.conf", 'r') as fin:
 		cfg = fin.read();
+	if c==23:
+		c="X"
+		breaks = breaks.replace("hs23", "hsX")
 	cfg = cfg.replace("[chr]", str(c))
 	cfg = cfg.replace("[breaks]", breaks)
 	cfg = cfg.replace("[maxlogP]", str(maxlogP))
 	cfg = cfg.replace("[minlogP]", "0")
+
+	if c=="X":
+		c = 23
 
 	with open(filedir+"circos/circos_chr"+str(c)+".conf", 'w') as o:
 		o.write(cfg)
@@ -222,8 +228,11 @@ def main():
 	regions = []
 	for c in chrom:
 		tmp_genes = genes[genes[:,2]==c]
-		tmp_genes = tmp_genes[:,[2,3,4,1,geneshead.index("GenomicLocus")]]
-		tmp_genes[:,4] = [int(x.split(":")[-1]) for x in tmp_genes[:,4].astype(str)]
+		if len(tmp_genes)>0:
+			tmp_genes = tmp_genes[:,[2,3,4,1,geneshead.index("GenomicLocus")]]
+			tmp_genes[:,4] = [int(x.split(":")[-1]) for x in tmp_genes[:,4].astype(str)]
+		else:
+			tmp_genes = []
 		[tmp_snps, tmp_regions] = createConfig(c, filedir, circos_config, loci[loci[:,2].astype(int)==c], ci[np.where((ci[:,1]==c) & (ci[:,4]==c))], snps[snps[:,0]==c], tmp_genes)
 		if len(snpsout)==0:
 			snpsout = tmp_snps
@@ -233,6 +242,7 @@ def main():
 			regions = np.r_[regions, tmp_regions]
 
 	##### write SNPs #####
+	snpsout[snpsout[:,0]=="hs23",0] = "hsX"
 	with open(filedir+"circos/circos_snps.txt", 'w') as o:
 		np.savetxt(o, snpsout, delimiter=" ", fmt="%s")
 
@@ -240,12 +250,15 @@ def main():
 	regions[:,0] = regions[:,0].astype(str)
 	c = ["hs"+str(x) for x in regions[:,0].astype(int)]
 	regions = np.c_[c, regions[:,[1,2]]]
+	regions[regions[:,0]=="hs23", 0] = "hsX"
 	with open(filedir+"circos/circos_regions.txt", "w") as o:
 		np.savetxt(o, regions, delimiter=" ", fmt="%s")
 
 	##### write 3d genome links #####
 	ci[:,1] = ["hs"+str(x) for x in ci[:,1]]
 	ci[:,4] = ["hs"+str(x) for x in ci[:,4]]
+	ci[ci[:,1]=="hs23", 1] = "hsX"
+	ci[ci[:,4]=="hs23", 4] = "hsX"
 	ci = ci[:,1:7]
 	with open(filedir+"circos/ci_links.txt", "w") as o:
 		np.savetxt(o, ci, delimiter=" ", fmt="%s")
@@ -257,13 +270,15 @@ def main():
 		gstart = list(map(lambda x: genes[genes[:,0]==x,3], eqtl[:,3]))
 		gend = list(map(lambda x: genes[genes[:,0]==x,4], eqtl[:,3]))
 		eqtl = np.c_[c, pos, [x+1 for x in pos], c, gstart, gend]
+		eqtl[eqtl[:,0]=="hs23", 0] = "hsX"
+		eqtl[eqtl[:,3]=="hs23", 3] = "hsX"
 	with open(filedir+"circos/eqtl_links.txt", "w") as o:
 		np.savetxt(o, eqtl, delimiter=" ", fmt="%s")
 
 	### write genes
 	if "eqtlMapSNPs" in geneshead:
 		genes = genes[np.where((genes[:,geneshead.index("ciMap")]=="Yes") | (genes[:,geneshead.index("eqtlMapSNPs")]>0))]
-	else:
+	elif "ciMap" in geneshead:
 		genes = genes[genes[:, geneshead.index("ciMap")]=="Yes"]
 	gid = []
 	if len(genes) > 0:
@@ -273,19 +288,22 @@ def main():
 			gid[np.where((genes[:,geneshead.index("ciMap")]=="Yes") & (genes[:,geneshead.index("eqtlMapSNPs")]>0))] = "id=2"
 		genes = np.c_[genes[:,[2,3,4,1]], gid]
 		genes[:,0] = ["hs"+str(x) for x in genes[:,0]]
+		genes[genes[:,0]=="hs23",0] = "hsX"
 	with open(filedir+"circos/circos_genes.txt", "w") as o:
 		np.savetxt(o, genes, delimiter=" ", fmt="%s")
 
 	### write loci and rsID
 	tmp = np.c_[["hs"+str(x) for x in loci[:,2]], loci[:,[4,5]]]
+	tmp[tmp[:,0]=="hs23",0] = "hsX"
 	with open(filedir+"circos/highlights.txt", "w") as o:
 		np.savetxt(o, tmp, delimiter=" ", fmt="%s")
 	tmp = np.c_[["hs"+str(x) for x in loci[:,2]], loci[:,3], [x+1 for x in loci[:,3]], loci[:,1]]
+	tmp[tmp[:,0]=="hs23",0] = "hsX"
 	with open(filedir+"circos/circos_rsID.txt", "w") as o:
 		np.savetxt(o, tmp, delimiter=" ", fmt="%s")
 
 	### execute circos ###
 	for i in chrom:
-		os.system(circos_path+"/circos -conf "+filedir+"circos/circos_chr"+str(i)+".conf -outputdir "+filedir+"circos -outputfile circos_chr"+str(i))
+		os.system(circos_path+"/circos -conf "+filedir+"circos/circos_chr"+str(i)+".conf -noparanoid -outputdir "+filedir+"circos -outputfile circos_chr"+str(i))
 
 if __name__=="__main__": main()

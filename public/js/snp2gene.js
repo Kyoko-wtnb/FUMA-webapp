@@ -410,7 +410,7 @@ function GWplot(jobID){
 			$('#topGenes').val(nSigGenes);
 
 			$('#geneManhattanDesc').html("Input SNPs were mapped to "+data.length+" protein coding genes (distance 0). "
-				+"Genome wide significance (red dashed line in the plot) was defined at P = 0.05/"+data.length+" = "+(Number((0.05/data.length).toPrecision(3)).toExponential())+".");
+				+"Genome wide significance (red dashed line in the plot) was defined at P = 0.05/"+data.length+" = "+(0.05/data.length).toExponential(3)+".");
 
 			sortedP = sortedP.sort(function(a,b){return a-b;});
 			// var chr = d3.set(data.map(function(d){return d.CHR;})).values();
@@ -1161,7 +1161,7 @@ function showResultTables(filedir, jobID, posMap, eqtlMap, ciMap, orcol, becol, 
 				id: jobID,
 				prefix: prefix,
 				infile: file,
-				header: "GenomicLocus:leadSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
+				header: "GenomicLocus:IndSigSNP:chr:bp:snp:PMID:Trait:FirstAuth:Date:P"
 			}
 		},
 		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],

@@ -33,6 +33,13 @@ def DetectDelim(header):
 	dialect = sniffer.sniff(header)
 	return dialect.delimiter
 
+##### check float #####
+def is_float(s):
+	try:
+		return float(s)
+	except ValueError:
+		return False
+
 ##### check argument #####
 if len(sys.argv)<2:
 	sys.exit('ERROR: not enough arguments\nUSAGE ./gwas_file.py <filedir>')
@@ -134,25 +141,25 @@ for i in range(0,len(header)):
 for i in range(0, len(header)):
 	if i in checkedheader:
 		continue
-	if re.match("CHR$|^chromosome$|^chrom$", header[i], re.IGNORECASE):
+	if chrcol == "NA" and re.match("CHR$|^chromosome$|^chrom$", header[i], re.IGNORECASE):
 		chrcol = i
-	elif re.match("SNP$|^MarkerName$|^rsID$|^snpid$", header[i], re.IGNORECASE):
+	elif rsIDcol == "NA" and re.match("SNP$|^MarkerName$|^rsID$|^snpid$", header[i], re.IGNORECASE):
 		rsIDcol = i
-	elif re.match("^BP$|^pos$|^position$", header[i], re.IGNORECASE):
+	elif poscol == "NA" and re.match("^BP$|^pos$|^position$", header[i], re.IGNORECASE):
 		poscol = i
-	elif re.match("^A1$|^Effect_allele$|^allele1$|^alleleB$", header[i], re.IGNORECASE):
+	elif eacol == "NA" and re.match("^A1$|^Effect_allele$|^allele1$|^alleleB$", header[i], re.IGNORECASE):
 		eacol = i
-	elif re.match("^A2$|^Non_Effect_allele$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
+	elif neacol == "NA" and re.match("^A2$|^Non_Effect_allele$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
 		neacol = i
-	elif re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$", header[i], re.IGNORECASE):
+	elif pcol == "NA" and re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$", header[i], re.IGNORECASE):
 		pcol = i
-	elif re.match("^or$", header[i], re.IGNORECASE):
+	elif orcol == "NA" and re.match("^or$", header[i], re.IGNORECASE):
 		orcol = i
-	elif re.match("^beta$", header[i], re.IGNORECASE):
+	elif becol == "NA" and re.match("^beta$", header[i], re.IGNORECASE):
 		becol = i
-	elif re.match("^se$", header[i], re.IGNORECASE):
+	elif secol == "NA" and re.match("^se$", header[i], re.IGNORECASE):
 		secol = i
-	elif re.match("^N$", header[i], re.IGNORECASE):
+	elif Ncol == "NA" and re.match("^N$", header[i], re.IGNORECASE):
 		Ncol = i
 
 user_header = []
@@ -232,57 +239,61 @@ paramout.close()
 # when all columns are provided
 # In this case, if the rsID columns is wrongly labeled, it will be problem later (not checked here)
 if chrcol is not None and poscol is not None and rsIDcol is not None and eacol is not None and neacol is not None:
-    dbSNPfile = cfg.get('data', 'dbSNP')
-    rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
-    rsID = np.array(rsID)
-    rsIDs = set(rsID[:,0])
-    rsID = rsID[rsID[:,0].argsort()]
+	dbSNPfile = cfg.get('data', 'dbSNP')
+	rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
+	rsID = np.array(rsID)
+	rsIDs = set(rsID[:,0])
+	rsID = rsID[rsID[:,0].argsort()]
 
-    out = open(outSNPs, 'w')
-    out.write("chr\tbp\tnon_effect_allele\teffect_allele\trsID\tp")
-    if orcol is not None:
-        out.write("\tor")
-    if becol is not None:
-        out.write("\tbeta")
-    if secol is not None:
-        out.write("\tse")
-    if Ncol is not None:
-        out.write("\tN")
-    out.write("\n")
+	out = open(outSNPs, 'w')
+	out.write("chr\tbp\tnon_effect_allele\teffect_allele\trsID\tp")
+	if orcol is not None:
+		out.write("\tor")
+	if becol is not None:
+		out.write("\tbeta")
+	if secol is not None:
+		out.write("\tse")
+	if Ncol is not None:
+		out.write("\tN")
+	out.write("\n")
 
-    gwasIn = open(gwas, 'r')
-    gwasIn.readline()
-    for l in gwasIn:
-        if re.match("^#", l):
-            next
-        l = re.split(delim, l.strip())
-        if len(l) < nheader:
+	gwasIn = open(gwas, 'r')
+	gwasIn.readline()
+	for l in gwasIn:
+		if re.match("^#", l):
+			next
+		l = re.split(delim, l.strip())
+		if len(l) < nheader:
 			continue
-        if l[pcol]=="":
+		if not is_float(l[pcol]):
 			continue
-        if l[rsIDcol] in rsIDs:
-            j = bisect_left(rsID[:,0], l[rsIDcol])
-            l[rsIDcol] = rsID[j,1]
-        l[chrcol] = l[chrcol].replace("chr", "")
-        if re.match("x", l[chrcol], re.IGNORECASE):
-            l[chrcol] = '23'
-        if float(l[pcol]) < 1e-308:
-            l[pcol] = str(1e-308)
-        out.write("\t".join([l[chrcol], l[poscol], l[neacol].upper(), l[eacol].upper(), l[rsIDcol], l[pcol]]))
-        if orcol is not None:
-            out.write("\t"+l[orcol])
-        if becol is not None:
-            out.write("\t"+l[becol])
-        if secol is not None:
-            out.write("\t"+l[secol])
-        if Ncol is not None:
-            out.write("\t"+l[Ncol])
-        out.write("\n")
-    gwasIn.close()
-    out.close()
-    tempfile = filedir+"temp.txt"
-    os.system("sort -k 1n -k 2n "+outSNPs+" > "+tempfile)
-    os.system("mv "+tempfile+" "+outSNPs)
+		if l[rsIDcol] in rsIDs:
+			j = bisect_left(rsID[:,0], l[rsIDcol])
+			l[rsIDcol] = rsID[j,1]
+		l[chrcol] = l[chrcol].replace("chr", "")
+		if re.match("x", l[chrcol], re.IGNORECASE):
+			l[chrcol] = '23'
+		if not l[chrcol].isdigit():
+			continue
+		if int(l[chrcol]) not in range(1,23):
+			continue
+        # if float(l[pcol]) < 1e-308:
+        #     l[pcol] = str(1e-308)
+		out.write("\t".join([l[chrcol], l[poscol], l[neacol].upper(), l[eacol].upper(), l[rsIDcol], l[pcol]]))
+		if orcol is not None:
+			out.write("\t"+l[orcol])
+		if becol is not None:
+			out.write("\t"+l[becol])
+		if secol is not None:
+			out.write("\t"+l[secol])
+		if Ncol is not None:
+			out.write("\t"+l[Ncol])
+		out.write("\n")
+	gwasIn.close()
+	out.close()
+	tempfile = filedir+"temp.txt"
+	os.system("sort -k 1n -k 2n "+outSNPs+" > "+tempfile)
+	os.system("mv "+tempfile+" "+outSNPs)
 
 # if both chr and pos are provided
 elif chrcol is not None and poscol is not None:
@@ -421,13 +432,17 @@ elif chrcol is not None and poscol is not None:
 		l = l.strip('\n').split(' ')
 		if len(l) < nheader:
 			continue
-		if l[pcol]=="":
+		if not is_float(l[pcol]):
 			continue
 		l[chrcol] = l[chrcol].replace("chr", "")
 		if re.match(r"x", l[chrcol], re.IGNORECASE):
 		    l[chrcol] = '23'
-		if float(l[pcol]) < 1e-308:
-		    l[pcol] = str(1e-308)
+		if not l[chrcol].isdigit():
+			continue
+		if int(l[chrcol]) not in range(1,23):
+			continue
+		# if float(l[pcol]) < 1e-308:
+		#     l[pcol] = str(1e-308)
 
 		if int(float(l[chrcol])) == cur_chr:
 		    if minpos==0:
@@ -506,8 +521,8 @@ elif chrcol is None or poscol is None:
 				j = bisect_left(rsID, l[2])
 				if np.isnan(gwas[j,pcol]):
 					continue
-				if(gwas[j,pcol]<1e-308):
-				    gwas[j,pcol]=1e-308
+				# if(gwas[j,pcol]<1e-308):
+				#     gwas[j,pcol]=1e-308
 				if eacol is not None and neacol is not None:
 				    if (gwas[j,eacol].upper()==l[3] and gwas[j,neacol].upper() in alt) or gwas[j,eacol].upper() in alt and gwas[j,neacol].upper()==l[3]:
 				        out.write("\t".join([str(chrom), str(l[1]), gwas[j,neacol].upper(), gwas[j,eacol].upper(), l[2], str(gwas[j,pcol])]))

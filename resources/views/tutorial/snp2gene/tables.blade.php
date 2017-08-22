@@ -232,7 +232,7 @@
 		</p>
 		<ul>
 			<li><strong>Genomic locus</strong> : Index of genomic risk loci.</li>
-			<li><strong>lead SNP</strong> : The lead SNP of the SNP in GWAScatalog.</li>
+			<li><strong>IndSigSNP</strong> : One of the independent significant SNPs of the SNP in GWAScatalog.</li>
 			<li><strong>chr</strong> : chromosome</li>
 			<li><strong>bp</strong> : position on hg19</li>
 			<li><strong>snp</strong> : rsID of reported SNP in GWAS catalog</li>
