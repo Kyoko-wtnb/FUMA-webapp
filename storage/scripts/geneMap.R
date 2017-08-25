@@ -132,7 +132,7 @@ if(posMap==1){
 		genes <- c(genes, unique(annov$gene))
 		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
 	}else{
-		annov <- annov[annov$dist <= posMapWindowSize,]
+		annov <- annov[annov$dist < posMapWindowSize,]
 		genes <- c(genes, unique(annov$gene))
 		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
 	}

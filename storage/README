@@ -20,8 +20,8 @@ p : P-value of top lead SNP (from the input file).
 start : Start position of the locus
 end : End postion of the locus
 nSNPs : The number of unique canidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
-nGWASSNPs : The number of the GWAS-tagged candidate SNPs within the genomic locus. This is a subset of "nSNPs";.
-nIndSigSNPs : The number of the independent significant SNPs in the genomic locus (r2 < uder defined parameter)
+nGWASSNPs : The number of the GWAS-tagged candidate SNPs within the genomic locus. This is a subset of "nSNPs".
+nIndSigSNPs : The number of the independent significant SNPs in the genomic locus (r2 < user defined parameter)
 IndSigSNPs : rsID of independent significant SNPs in the genomic locus
 nLeadSNPs : The number of lead SNPs in the genomic locus (r2 < 0.1)
 LeadSNPs : rsID of lead SNPs in the genomic locus
@@ -297,7 +297,7 @@ posMapChr15Meth : The method of chromatin state filtering
 eqtlMap : 1 to perform eQTL mapping, 0 otherwise
 eqtlMaptss : Selected tissue typed for eQTL mapping
 eqtlMapSig : 1 to use only significant snp-gene pairs, 0 otherwise
-eqtlMapP : The P-value threshold for eQTLs if <code> eqtlMap significant only</code> is not selected.
+eqtlMapP : The P-value threshold for eQTLs if eqtlMap significant only is not selected.
 eqtlMapCADDth : The minimum CADD score for SNP filtering
 eqtlMapRDBth : The minimum RegulomeDB score for SNP filtering
 eqtlMapChr15 : Select tissue/cell types, NA otherwise

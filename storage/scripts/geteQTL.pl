@@ -130,7 +130,7 @@ foreach my $s (keys %db){
 					my @eqtl = split(/\n/, `tabix $file $chr:$start-$end`);
 					foreach my $l (@eqtl){
 						my @line = split(/\s/, $l);
-						next if($line[6]>$eqtlP);
+						next if($line[6]>=$eqtlP);
 						my $id = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
 						if(exists $SNPs{$lid}{$id}){
 							$line[4] =~ s/(ENSG\d+).\d+/$1/;
@@ -154,8 +154,8 @@ foreach my $s (keys %db){
 				my @eqtl = split(/\n/, `tabix $file $chr:$start-$end`);
 				foreach my $l (@eqtl){
 					my @line = split(/\s/, $l);
-					if($sigonly){next if($line[7]>0.05)}
-					else{next if($line[6]>$eqtlP)}
+					if($sigonly){next if($line[7]>=0.05)}
+					else{next if($line[6]>=$eqtlP)}
 					my $id = join(":", $line[0], $line[1], sort($line[2], $line[3]));
 					if(exists $SNPs{$lid}{$id}){
 						if($s eq "BRAINEAC"){

@@ -110,7 +110,7 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td>Minimum P-value of lead SNPs (&le;)</td>
+					<td>Minimum P-value of lead SNPs (&lt;)</td>
 					<td><input type="number" class="form-control" id="leadP" name="leadP" value="5e-8" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
 					<td></td>
 				</tr>
@@ -120,7 +120,7 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td>Maximum P-value cutoff (&le;)
+					<td>Maximum P-value cutoff (&lt;)
 						<a class="infoPop" data-toggle="popover" title="GWAS P-value cutoff" data-content="This threshold defines the maximum P-values of SNPs to be included in the annotation. Setting it at 1 means that all SNPs that are in LD with the lead SNP will be included in the annotation and prioritization even though they may not show a significant association with the phenotype. We advise to set this threshold at least at 0.05.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
@@ -173,7 +173,7 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td>Maximum distance between LD blocks to merge into a locus (&le; kb)
+					<td>Maximum distance between LD blocks to merge into a locus (&lt; kb)
 						<a class="infoPop" data-toggle="popover" title="Maximum distance between LD blocks to merge" data-content="LD blocks clorser than the distance will be merged into a genomic locus. If this is set at 0, only phesically overlapped LD blocks will be merged. This is only for representation of GWAS risk loci which does not affect any annotation and prioritization results.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
@@ -626,14 +626,14 @@
 				</tr>
 				<tr class="eqtlMapOptions">
 					<td>eQTL P-value threshold
-						<a class="infoPop" data-toggle="popover" title="eQTL P-value threshold" data-content="By default, only significant eQTLs are used (FDR &le; 0.05). Please UNCHECK 'Use only significant snp-gene pair' to filter eQTLs based on raw P-value.">
+						<a class="infoPop" data-toggle="popover" title="eQTL P-value threshold" data-content="By default, only significant eQTLs are used (FDR &lt; 0.05). Please UNCHECK 'Use only significant snp-gene pair' to filter eQTLs based on raw P-value.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
 					<td>
-						<span class="form-inline">Use only significant snp-gene pairs: <input type="checkbox" class="form-control" name="sigeqtlCheck" id="sigeqtlCheck" checked onchange="CheckAll();"> (FDR&le;0.05)</span><br/>
+						<span class="form-inline">Use only significant snp-gene pairs: <input type="checkbox" class="form-control" name="sigeqtlCheck" id="sigeqtlCheck" checked onchange="CheckAll();"> (FDR&lt;0.05)</span><br/>
 						OR<br/>
-						<span class="form-inline">(nominal) P-value cutoff (&le;): <input type="number" class="form-control" name="eqtlP" id="eqtlP" value="1e-3" onchange="CheckAll();"></span>
+						<span class="form-inline">(nominal) P-value cutoff (&lt;): <input type="number" class="form-control" name="eqtlP" id="eqtlP" value="1e-3" onchange="CheckAll();"></span>
 					</td>
 					<td></td>
 				</tr>
@@ -987,7 +987,7 @@
 						</a>
 					</td>
 					<td>
-						<span class="form-inline">FDR cutoff (&le;): <input type="number" class="form-control" name="ciMapFDR" id="ciMapFDR" value="1e-6" onchange="CheckAll();"></span>
+						<span class="form-inline">FDR cutoff (&lt;): <input type="number" class="form-control" name="ciMapFDR" id="ciMapFDR" value="1e-6" onchange="CheckAll();"></span>
 					</td>
 					<td></td>
 				</tr>
