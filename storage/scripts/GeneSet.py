@@ -60,7 +60,8 @@ ENSG = np.array(ENSG)
 
 if bkgtype == "select":
 	bkgval = list(bkgval.split(":"))
-	ENSG = ENSG[ArrayIn(ENSG[:,ENSGheads.index("gene_biotype")], bkgval),]
+	if "all" not in bkgval:
+		ENSG = ENSG[ArrayIn(ENSG[:,ENSGheads.index("gene_biotype")], bkgval),]
 	bkgenes = list(ENSG[:,ENSGheads.index("entrezID")])
 elif bkgtype == "text":
 	bkgenes = bkgval.split(":")
