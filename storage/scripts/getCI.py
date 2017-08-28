@@ -24,7 +24,6 @@ def unique(a):
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
-	# results = [i for i, x in enumerate(a1) if x in a2]
 	results = np.where(np.in1d(a1, a2))[0]
 	return results
 
@@ -34,11 +33,17 @@ def getSNPs(filedir):
 	snps = np.array(snps)
 	snps = snps[:,[0,1,2,3,snpshead.index("GenomicLocus")]]
 	snps = snps[np.lexsort((snps[:,3].astype(int), snps[:,2].astype(int)))]
-	return snps
+	### stor snps per chr
+	snps_chr = {}
+	chrom = unique(snps[:,2].astype(int))
+	for i in chrom:
+		snps_chr[i] = snps[snps[:,2]==i]
+	### genomic risk loci
+	gl = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
+	gl = np.array(gl)
+	gl = gl[:,[0,3,6,7]]
 
-def getRow(dat, chrom, pos):
-	n = np.where((dat[:,0].astype(int)==chrom) & (dat[:,1].astype(int)<=pos) & (dat[:,2].astype(int)>=pos))[0]
-	return n
+	return snps_chr, gl
 
 def getGenes(genes, start, end):
 	'''
@@ -47,22 +52,22 @@ def getGenes(genes, start, end):
 	n = np.where(((genes[:,3].astype(int)>=start) & (genes[:,3].astype(int)<=end)) | ((genes[:,4].astype(int)>=start) & (genes[:,4].astype(int)<=end)) | ((genes[:,3].astype(int)<=start) & (genes[:,4].astype(int)>=end)))[0]
 	if len(n) > 0:
 		genes = genes[n]
-		# dist = [str(min(abs(x-start), abs(x-end))) for x in genes[:,2].astype(int)]
-		# return [":".join(genes[:,0]), ":".join(dist)]
 		return ":".join(genes[:,0])
 	else:
-		# dist = [min(abs(x-start), abs(x-end)) for x in genes[:,2].astype(int)]
-		# i = dist.index(min(dist))
 		return "NA"
 
-def mapToCI(snps, f, ciMapFDR, dt, DB, ts, genes):
-	mapdat = pd.read_table(f, comment="#", delim_whitespace=True)
-	mapdat = np.array(mapdat)
-	if len(mapdat) < 7:
-		sys.exit("ERROR: a uploaded file of chromatin interactions does not contain enought columns.")
-	if not isinstance(mapdat[0,1], (int, long, float, complex)) or not isinstance(mapdat[0,2], (int, long, float, complex)) or not isinstance(mapdat[0,4], (int, long, float, complex)) or not isinstance(mapdat[0,5], (int, long, float, complex)) or not isinstance(mapdat[0,6], (int, long, float, complex)):
-		sys.exit("ERROR: the format of a uploaded file of chromatin interactions is wrong.")
-	mapdat = mapdat[mapdat[:,6].astype(float)<ciMapFDR]
+def mapToCI(snps, gl, f, ciMapFDR, dt, DB, ts, genes):
+	s = time.time()
+	chunks = pd.read_table(f, comment="#", delim_whitespace=True, chunksize=10000)
+	mapdat = []
+	for tmp in chunks:
+		tmp = np.array(tmp)
+		tmp = tmp[tmp[:,6].astype(float)<ciMapFDR]
+		if len(tmp)>0:
+			if len(mapdat)==0:
+				mapdat = tmp
+			else:
+				mapdat = np.r_[mapdat, tmp]
 	if len(mapdat) == 0:
 		print "No interaction left after filtering for "+f
 		return []
@@ -74,53 +79,88 @@ def mapToCI(snps, f, ciMapFDR, dt, DB, ts, genes):
 	if mapdat[0,3].dtype is np.str:
 		mapdat[:,3] = [int(re.sub(r'X|x', '23', x.replace("chr",""))) for x in mapdat[:,0]]
 
+	### filter interaction based on risk loci
 	chrdat1 = {}
 	chrdat2 = {}
-	for i in range(1,24):
-		chrdat1[i] = mapdat[mapdat[:,0]==i]
-		chrdat2[i] = mapdat[mapdat[:,3]==i]
+	for l in gl:
+		n1 = list(np.where((mapdat[:,0]==l[1]) & (((mapdat[:,1]>=l[2]) & (mapdat[:,1]<=l[3])) | ((mapdat[:,2]>=l[2]) & (mapdat[:,2]<=l[3])) | ((mapdat[:,1]<l[2]) & (mapdat[:,2]>l[3]))))[0])
+		n2 = list(np.where((mapdat[:,3]==l[1]) & (((mapdat[:,4]>=l[2]) & (mapdat[:,4]<=l[3])) | ((mapdat[:,5]>=l[2]) & (mapdat[:,5]<=l[3])) | ((mapdat[:,4]<l[2]) & (mapdat[:,5]>l[3]))))[0])
+		if len(n1) > 0:
+			n1 = unique(n1)
+			if l[1] in chrdat1 and len(chrdat1[l[1]])>0:
+				chrdat1[l[1]] = np.r_[chrdat1[l[1]], mapdat[n1]]
+			else:
+				chrdat1[l[1]] = mapdat[n1]
+		if len(n2) > 0:
+			n2 = unique(n2)
+			if l[1] in chrdat2 and len(chrdat2[l[1]])>0:
+				chrdat2[l[1]] = np.r_[chrdat2[l[1]], mapdat[n2]]
+			else:
+				chrdat2[l[1]] = mapdat[n2]
 
 	mapdat = None
-
 	out = []
-	cur_chr = 0
-	cur_max = 0
-	last_n = []
-	interaction = ""
-	for i in range(0,len(snps)):
-		if int(snps[i,2]) == cur_chr and int(snps[i,3]) <= cur_max:
-			for j in last_n:
-				out[j][8] = ";".join([str(out[j][8]), str(snps[i,1])])
-		else:
-			cur_chr = int(snps[i,2])
-			last_n=[]
-			tmpdat = chrdat1[int(snps[i,2])]
-			n = getRow(tmpdat[:,0:3], int(snps[i,2]), int(snps[i,3]))
-			if len(n) > 0:
-				for j in n:
-					cur_max = int(tmpdat[j,2])
-					r1 = str(int(tmpdat[j,0]))+":"+str(int(tmpdat[j,1]))+"-"+str(int(tmpdat[j,2]))
-					r2 = str(int(tmpdat[j,3]))+":"+str(int(tmpdat[j,4]))+"-"+str(int(tmpdat[j,5]))
-					if int(tmpdat[j,0]) == int(tmpdat[j,3]):
+	for chrom in range(1,24):
+		if chrom not in snps:
+			continue
+		tmp_snps = snps[chrom]
+		if chrom in chrdat1:
+			tmp = chrdat1[chrom]
+			tmp = tmp[np.lexsort((tmp[:,1], tmp[:,0]))]
+			cur_region = ""
+			cur_snps = ""
+			cur_gl = 0
+			for l in tmp:
+				r1 = str(int(l[0]))+":"+str(int(l[1]))+"-"+str(int(l[2]))
+				if r1 == cur_region:
+					r2 = str(int(l[3]))+":"+str(int(l[4]))+"-"+str(int(l[5]))
+					if l[0]==l[3]:
 						interaction = "intra"
 					else:
 						interaction = "inter"
-					out.append([snps[i,4], r1, r2, tmpdat[j,6], dt, DB, ts, interaction, snps[i,1]])
-					last_n.append(len(out)-1)
+					out.append([cur_gl, r1, r2, l[6], dt, DB, ts, interaction, cur_snps])
+				else:
+					n = np.where((tmp_snps[:,3]>=l[1]) & (tmp_snps[:,3]<=l[2]))[0]
+					if len(n) > 0:
+						cur_region = r1
+						r2 = str(int(l[3]))+":"+str(int(l[4]))+"-"+str(int(l[5]))
+						gl = ":".join(str(x) for x in unique(tmp_snps[n,4]))
+						cur_gl = gl
+						cur_snps = ";".join(unique(tmp_snps[n,1]))
+						if l[0]==l[3]:
+							interaction = "intra"
+						else:
+							interaction = "inter"
+						out.append([cur_gl, r1, r2, l[6], dt, DB, ts, interaction, cur_snps])
+		if chrom in chrdat2:
+			tmp = chrdat2[chrom]
+			tmp = tmp[np.lexsort((tmp[:,4], tmp[:,3]))]
+			cur_region = ""
+			cur_snps = ""
+			cur_gl = 0
+			for l in tmp:
+				r1 = str(int(l[3]))+":"+str(int(l[4]))+"-"+str(int(l[5]))
+				if r1 == cur_region:
+					r2 = str(int(l[0]))+":"+str(int(l[1]))+"-"+str(int(l[2]))
+					if l[0]==l[3]:
+						interaction = "intra"
+					else:
+						interaction = "inter"
+					out.append([cur_gl, r1, r2, l[6], dt, DB, ts, interaction, cur_snps])
+				else:
+					n = np.where((tmp_snps[:,3]>=l[4]) & (tmp_snps[:,3]<=l[5]))[0]
+					if len(n) > 0:
+						cur_region = r1
+						r2 = str(int(l[0]))+":"+str(int(l[1]))+"-"+str(int(l[2]))
+						gl = ":".join(str(x) for x in unique(tmp_snps[n,4]))
+						cur_gl = gl
+						cur_snps = ";".join(unique(tmp_snps[n,1]))
+						if l[0]==l[3]:
+							interaction = "intra"
+						else:
+							interaction = "inter"
+						out.append([cur_gl, r1, r2, l[6], dt, DB, ts, interaction, cur_snps])
 
-			tmpdat = chrdat2[int(snps[i,2])]
-			n = getRow(tmpdat[:,3:6], int(snps[i,2]), int(snps[i,3]))
-			if len(n) > 0:
-				for j in n:
-					cur_max = int(tmpdat[j,5])
-					r1 = str(int(tmpdat[j,3]))+":"+str(int(tmpdat[j,4]))+"-"+str(int(tmpdat[j,5]))
-					r2 = str(int(tmpdat[j,0]))+":"+str(int(tmpdat[j,1]))+"-"+str(int(tmpdat[j,2]))
-					if int(tmpdat[j,0]) == int(tmpdat[j,3]):
-						interaction = "intra"
-					else:
-						interaction = "inter"
-					out.append([snps[i,4], r1, r2, tmpdat[j,6], dt, DB, ts, interaction, snps[i,1]])
-					last_n.append(len(out)-1)
 	mappedGenes = []
 	for l in out:
 		c = re.match(r'(\d+):(\d+)-(\d+)', l[2])
@@ -133,12 +173,16 @@ def mapToCI(snps, f, ciMapFDR, dt, DB, ts, genes):
 	out = np.c_[out, mappedGenes]
 	return out
 
-def mapSNPsToRegElements(snps, reg_datadir, ts):
-	gid = unique(snps[:,4])
+def mapSNPsToRegElements(snps, gl, reg_datadir, ts):
 	out = []
-	for i in gid:
-		tmp = snps[snps[:,4]==i]
-		chrom = tmp[0,2]
+	for i in range(0, len(gl)):
+		chrom = gl[i,1]
+		if chrom not in snps:
+			continue
+		tmp = snps[chrom]
+		tmp = tmp[tmp[:,4]==gl[i,0]]
+		if len(tmp)==0:
+			continue
 		start = min(tmp[:,3])
 		end = max(tmp[:,3])
 		tb = tabix.open(reg_datadir+"/enh/enh.bed.gz")
@@ -262,78 +306,77 @@ def main():
 	genetype = param.get("params", "genetype")
 	genetype = list(genetype.split(":"))
 
-	snps = getSNPs(filedir)
+	snps, gl = getSNPs(filedir)
 
 	##### get genes #####
 	genes = pd.read_table(ENSG, sep="\t")
 	genes = np.array(genes)
 	genes = genes[:, [0,2,3,4,5,7]]
 	genes[:,1] = [int(str(x).replace("X", "23")) for x in genes[:,1]]
-	if genetype[0] != 'all':
+	if "all" not in genetype:
 		genes = genes[ArrayIn(genes[:,5], genetype)]
 	genes = GeneToPromoter(genes, promoter)
 
 	##### outputs #####
-	ci = []
 	cisnps = []
 	ciprom = []
 	outci = filedir+"ci.txt"
 	outsnps = filedir+"ciSNPs.txt"
 	outgenes = filedir+"ciProm.txt"
 
+	##### write headers #####
+	with open(outci, 'w') as o:
+		o.write("\t".join(["GenomicLocus", "region1", "region2", "FDR", "type", "DB", "tissue/cell", "inter/intra", "SNPs", "genes"])+"\n")
+	with open(outsnps, 'w') as o:
+		o.write("\t".join(["uniqID", "rsID", "chr", "pos", "reg_region", "type", "tissue/cell"])+"\n")
+	with open(outgenes, 'w') as o:
+		o.write("\t".join(["region2", "reg_region", "type", "tissue/cell", "genes"])+"\n")
+
 	##### Map SNPs to 3DC data #####
+	insnps = []
+	regions = []
 	if ciMapFileN > 0:
 		for f in ciMapFiles:
 			print f
 			c = re.match(r"(.+?)\/(.+?)\/(.+?)\.txt.gz", f)
-			tmp_ci = mapToCI(snps, filedir+c.group(3)+".txt.gz", ciMapFDR, c.group(1), c.group(2), c.group(3), genes)
+			tmp_ci = mapToCI(snps, gl, filedir+c.group(3)+".txt.gz", ciMapFDR, c.group(1), c.group(2), c.group(3), genes)
 			if len(tmp_ci)>0:
-				if len(ci) == 0:
-					ci = tmp_ci
-				else:
-					ci = np.r_[ci, tmp_ci]
+				with open(outci, 'a') as o:
+					np.savetxt(o, tmp_ci, delimiter="\t", fmt="%s")
+				for x in tmp_ci[:,8]:
+					insnps += x.split(";")
+				regions = regions+unique(tmp_ci[:,1])
 
 	if ciMapBuildin[0] != "NA":
 		for f in ciMapBuildin:
 			print f
 			c = re.match(r"(.+?)\/(.+?)\/(.+?)\.txt.gz", f)
-			tmp_ci = mapToCI(snps, datadir+"/"+f, ciMapFDR, c.group(1), c.group(2), c.group(3), genes)
+			tmp_ci = mapToCI(snps, gl, datadir+"/"+f, ciMapFDR, c.group(1), c.group(2), c.group(3), genes)
 			if len(tmp_ci)>0:
-				if len(ci) == 0:
-					ci = tmp_ci
-				else:
-					ci = np.r_[ci, tmp_ci]
+				with open(outci, 'a') as o:
+					np.savetxt(o, tmp_ci, delimiter="\t", fmt="%s")
+				for x in tmp_ci[:,8]:
+					insnps += x.split(";")
+				regions = regions+unique(tmp_ci[:,1])
 
-	insnps = []
-	if len(ci) > 0:
-		for x in ci[:,8]:
-			insnps += x.split(";")
-		insnps = unique(insnps)
-	snps = snps[ArrayIn(snps[:,1], insnps)]
+	insnps = np.unique(insnps)
+	for i in range(1,24):
+		if i in snps:
+			snps[i] = snps[i][ArrayIn(snps[i][:,1], insnps)]
 
 	##### Map SNPs to reguratory elements #####
 	if ciMapRoadmap[0] != "NA" and len(snps) > 0:
-		cisnps = mapSNPsToRegElements(snps, reg_datadir, ciMapRoadmap)
+		cisnps = mapSNPsToRegElements(snps, gl, reg_datadir, ciMapRoadmap)
 
 	##### Map CI regions to reguratory elements #####
-	regions = []
-	if ciMapRoadmap[0] != "NA" and len(ci) > 0:
-		regions = unique(ci[:,1])
+	if ciMapRoadmap[0] != "NA" and len(regions) > 0:
+		regions = unique(regions)
 		ciprom = mapRegionToGenes(regions, reg_datadir, ciMapRoadmap, genes)
 
 	##### write outputs #####
-	with open(outci, 'w') as o:
-		o.write("\t".join(["GenomicLocus", "region1", "region2", "FDR", "type", "DB", "tissue/cell", "inter/intra", "SNPs", "genes"])+"\n")
-	with open(outci, 'a') as o:
-		np.savetxt(o, ci, delimiter="\t", fmt="%s")
-
-	with open(outsnps, 'w') as o:
-		o.write("\t".join(["uniqID", "rsID", "chr", "pos", "reg_region", "type", "tissue/cell"])+"\n")
 	with open(outsnps, 'a') as o:
 		np.savetxt(o, cisnps, delimiter="\t", fmt="%s")
 
-	with open(outgenes, 'w') as o:
-		o.write("\t".join(["region2", "reg_region", "type", "tissue/cell", "genes"])+"\n")
 	with open(outgenes, 'a') as o:
 		np.savetxt(o, ciprom, delimiter="\t", fmt="%s")
 
