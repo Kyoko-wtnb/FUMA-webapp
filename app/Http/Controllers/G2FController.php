@@ -197,7 +197,7 @@ class G2FController extends Controller
 			$s2gfiledir = config('app.jobdir').'/jobs/'.$s2gID.'/';
 			$gtype="text";
 			$bkgtype="select";
-			$params = parse_ini_file($s2gfiledir.'params.config');
+			$params = parse_ini_file($s2gfiledir.'params.config', false, INI_SCANNER_RAW);
 			// $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
 			$MHC = $params['exMHC'];
 			$bkgval = $params['genetype'];

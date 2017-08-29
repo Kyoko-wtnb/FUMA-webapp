@@ -519,7 +519,7 @@ elif chrcol is None or poscol is None:
 			if l[2] in rsIDs:
 				checked.append(l[2])
 				j = bisect_left(rsID, l[2])
-				if np.isnan(gwas[j,pcol]):
+				if not is_float(gwas[j,pcol]):
 					continue
 				# if(gwas[j,pcol]<1e-308):
 				#     gwas[j,pcol]=1e-308

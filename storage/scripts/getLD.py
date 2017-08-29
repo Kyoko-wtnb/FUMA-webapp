@@ -331,7 +331,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							if not checkall:
 								continue
 
-						if float(gwas_in[jgwas, pcol])>gwasP:
+						if float(gwas_in[jgwas, pcol])>=gwasP:
 							continue
 
 						ld.append([l_uid, uid, ld_tmp[ild, 2]])
@@ -372,7 +372,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 
 			IndSigSNPs.append([l_uid, l[0], str(l[1]), str(l[2]), str(gwas_in[igwas, pcol]), str(nonGWASSNPs+GWASSNPs), str(GWASSNPs)])
 
-		if len(gwas_in[gwas_in[:,pcol]<=leadP]) == 0:
+		if len(gwas_in[gwas_in[:,pcol]<leadP]) == 0:
 			if len(canSNPs)>0:
 				ld = np.array(ld)
 				canSNPs = np.array(canSNPs)
@@ -386,7 +386,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			else:
 				return [], [], []
 
-	if len(gwas_in[gwas_in[:,pcol].astype(float)<=leadP]) == 0:
+	if len(gwas_in[gwas_in[:,pcol].astype(float)<leadP]) == 0:
 		if len(canSNPs)>0:
 			ld = np.array(ld)
 			canSNPs = np.array(canSNPs)
@@ -406,7 +406,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			l = gwas_in[pi]
 			if chrom==6 and int(l[poscol])>25000000 and int(l[poscol])<35000000:
 				continue
-			if float(l[pcol])>leadP:
+			if float(l[pcol])>=leadP:
 				break
 			allele = [l[neacol], l[eacol]]
 			allele.sort()
@@ -479,7 +479,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 								if not checkall:
 									continue
 
-							if float(gwas_in[jgwas, pcol])>gwasP:
+							if float(gwas_in[jgwas, pcol])>=gwasP:
 								continue
 
 							ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
@@ -523,7 +523,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 		print "processing MHC region..."
 		mhc_gwas = gwas_in[np.where((gwas_in[:,poscol].astype(int)>25000000) & (gwas_in[:, poscol].astype(int)<35000000))]
 		if len(mhc_gwas) > 0:
-			mhc_pos = list(mhc_gwas[mhc_gwas[:,pcol]<=leadP, poscol])
+			mhc_pos = list(mhc_gwas[mhc_gwas[:,pcol]<leadP, poscol])
 			if len(mhc_pos) > 0:
 				mhc_spos = set(mhc_pos)
 				mhc_ld = []
@@ -554,7 +554,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				nlead = 0
 				for pi in p_order:
 					l = mhc_gwas[pi]
-					if float(l[pcol]) > leadP:
+					if float(l[pcol]) >= leadP:
 						break
 					allele = [l[neacol], l[eacol]]
 					allele.sort()
@@ -620,7 +620,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 									if not checkall:
 										continue
 
-								if float(gwas_in[jgwas, pcol])>gwasP:
+								if float(gwas_in[jgwas, pcol])>=gwasP:
 									continue
 
 								ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
@@ -786,7 +786,7 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 			GWASSNPs = unique(GWASSNPs)
 			start = min(snps_tmp[:,3].astype(int))
 			end = max(snps_tmp[:,3].astype(int))
-			if start <= int(loci[iloci][7]) or start-int(loci[iloci][7])<=params.mergeDist:
+			if start <= int(loci[iloci][7]) or start-int(loci[iloci][7])<params.mergeDist:
 				loci[iloci][6] = str(min(start, int(loci[iloci][6])))
 				loci[iloci][7] = str(max(end, int(loci[iloci][7])))
 				loci[iloci][8] = str(len(nonGWASSNPs)+len(GWASSNPs))
