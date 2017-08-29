@@ -118,5 +118,10 @@ Since chromatin interaction mapping is more complecated than other two mappings 
 		When promoters are annotated to region 2, user can select the option to limit the chromatin interaction mapping to only genes whoes promoter regions are overlapped with annotated promoter regions of selected epigenomes.
 		Note that, in the result table, all significant interactions are included but not all are necessary mapped to genes.<br/>
 		<img src="{{ URL::asset('/image/ciMap3.png') }}" style="width: 60%; align: middle;">
+		<br/><br/>
+		<span class="info"><i class="fa fa-info"></i>
+			In very rare cares, when the promoter filtering is activated, genes whoes promoter regions (250bp up- and 500bp down-stream of TSS) do not overlap with region 2 but do overlap with promoters from Roadmap that are overlapping with region 2 are mapped.
+			In this case, thene genes are not in "ci.txt" file but in "ciProm.txt" file which can be linked to "ci.txt" by region 2.
+		</span>
 	</p>
 </div>

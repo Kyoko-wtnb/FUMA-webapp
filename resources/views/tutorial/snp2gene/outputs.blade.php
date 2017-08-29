@@ -103,7 +103,10 @@ Regional plots can be created with the following optional annotations:<br/>
 <p>When chromatin interaction mapping is performed, circos plots are created for each chromosome that contains at least one risk locus.
 	The circos plots are displayed in the panel where the chromatin itneraction tables are displayed.
 	Each plot is clickable and opens in a new tab showing a larger plot.
-	PNG, SVG and circos config files are downloadable.
+	PNG, SVG and circos config files are downloadable.<br/>
+	<span class="info"><i class="fa fa-info"></i>
+		All chromain interacions overlapping with any of risk loci (including interactions that do not map to genes) will be shown in the circo plot.
+	</span>
 </p>
 <p>
 	The specific layers and color-coding of the circos plot is described below.<br/>
