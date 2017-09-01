@@ -17,11 +17,21 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>1 Sep 2017</td>
+			<td>v1.2.4</td>
+			<td>
+				Minor bug in chromatin interaction mapping was fixed.
+				Chromatin interaction mapping has been missed some interactions that are overlapping with risk loci.
+				<span style="color:red;">If you have any NP2GENE job with chromatin interaction mapping submitted before 1st of September 2017,
+				it's stongly recommended to re-submit jobs or please contact developper to update the results.</span>
+			</td>
+		</tr>
+		<tr>
 			<td>22 Aug 2017</td>
 			<td>v1.2.3</td>
 			<td>
 				GWAScatalog has been updated to release e89 2017-08-15.
-				Please be aware that jobs submitted to SNP2GENE begore 22th August 2017 used previous version (e85 2016-09-27).
+				Please be aware that jobs submitted to SNP2GENE before 22th August 2017 used previous version (e85 2016-09-27).
 				If you wish to update GWAScatalog results for your SNP2GENE jobs, please contact developper with jobID.
 			</td>
 		</tr>
