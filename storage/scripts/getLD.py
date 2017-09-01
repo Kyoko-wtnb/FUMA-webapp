@@ -14,11 +14,6 @@ from bisect import bisect_left
 ##### initialize parameters #####
 class getParams:
 	def __init__(self, filedir, cfg, param_cfg):
-		# cfg = ConfigParser.ConfigParser()
-		# cfg.read(f1)
-		# param_cfg = ConfigParser.ConfigParser()
-		# param_cfg.read(f2)
-
 		leadSNPs = param_cfg.get('inputfiles', 'leadSNPsfile')
 		if leadSNPs == "NA":
 		    print "prefedined lead SNPs are not provided"
@@ -121,7 +116,6 @@ class getParams:
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
-	# results = [i for i, x in enumerate(a1) if x in a2]
 	results = np.where(np.in1d(a1, a2))[0]
 	return results
 
@@ -236,10 +230,10 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 	gwas_in = gwas_in[gwas_in[:,poscol].argsort()]
 
 	print str(len(gwas_in))+" SNPs in chromosome "+str(chrom)
+
 	### init variables
 	ld = []
 	canSNPs = []
-	# annot = []
 	IndSigSNPs = []
 	nlead = 0
 	pos_set = set(gwas_in[:,poscol])
@@ -247,7 +241,6 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 
 	ldfile = refgenome_dir+"/"+refpanel+'/'+pop+"/"+pop+".chr"+str(chrom)+".ld.gz"
 	maffile = refgenome_dir+"/"+refpanel+'/'+pop+"/"+pop+".chr"+str(chrom)+".frq.gz"
-	# annotfile = refgenome_dir+"/"+pop+"/"+"chr"+str(chrom)+".data.txt.gz"
 
 	rsIDset = set(gwas_in[:, rsIDcol])
 	checkeduid = set()
@@ -263,9 +256,9 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			allele = [gwas_in[igwas, neacol], gwas_in[igwas, eacol]]
 			allele.sort()
 			l_uid = ":".join([str(gwas_in[igwas, chrcol]), str(gwas_in[igwas, poscol])]+allele)
-			# checkeduid.add(l_uid)
 			pos = int(l[2])
-			#check uniq ID
+
+			### check if the lead SNP meat other condition
 			tb = tabix.open(maffile)
 			lead_id = False
 			lead_maf = False
@@ -281,7 +274,9 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 					break
 			if not lead_id or not lead_maf:
 				continue
+
 			nlead += 1
+			### get SNPs in LD
 			tb = tabix.open(ldfile)
 			ld_tb = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 			ld_tmp = []
@@ -293,6 +288,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 					ld_tmp.append([m[4], m[5], m[6]])
 			ld_tmp = np.array(ld_tmp)
 
+			### check MAF and add to array
 			minpos = min(ld_tmp[:,0].astype(int))
 			maxpos = max(ld_tmp[:,0].astype(int))
 			tb = tabix.open(maffile)
@@ -300,14 +296,16 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			nonGWASSNPs = 0
 			GWASSNPs = 0
 			for m in maf_tb:
+				## skip SNPs in MHC if exMHC==1
 				if chrom==6 and MHC==1 and int(m[1])>=MHCstart and int(m[1])<=MHCend:
 					continue
+				## MAF filtering
 				if float(m[5]) < maf:
 					continue
 				if m[1] in ld_tmp[:,0]:
 					ild = np.where(ld_tmp[:,0]==m[1])[0][0]
+					## process SNP if exists in input GWAS
 					if int(m[1]) in pos_set:
-						# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
 						jgwas = bisect_left(posall, int(m[1]))
 
 						allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
@@ -349,8 +347,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 						if secol:
 							snp.append(str(gwas_in[jgwas, secol]))
 						canSNPs.append(snp)
-						# annot.append([m[6], m[7], m[8]]+m[53:len(m)])
 						GWASSNPs += 1
+					## process SNPs whic do not exist in input file
 					elif KGSNPs==1:
 						a = [m[3], m[4]]
 						a.sort()
@@ -367,7 +365,6 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 						if secol:
 							snp.append("NA")
 						canSNPs.append(snp)
-						# annot.append([m[6], m[7], m[8]]+m[53:len(m)])
 						nonGWASSNPs += 1
 
 			IndSigSNPs.append([l_uid, l[0], str(l[1]), str(l[2]), str(gwas_in[igwas, pcol]), str(nonGWASSNPs+GWASSNPs), str(GWASSNPs)])
@@ -386,35 +383,32 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			else:
 				return [], [], []
 
+	### check if there are still sig SNPs
 	if len(gwas_in[gwas_in[:,pcol].astype(float)<leadP]) == 0:
 		if len(canSNPs)>0:
 			ld = np.array(ld)
 			canSNPs = np.array(canSNPs)
-			# annot = np.array(annot)
 			IndSigSNPs = np.array(IndSigSNPs)
 			IndSigSNPs = IndSigSNPs[IndSigSNPs[:,3].astype(int).argsort()]
 			n = canSNPs[:,3].astype(int).argsort()
 			canSNPs = canSNPs[n]
-			# annot = annot[n]
 			return ld, canSNPs, IndSigSNPs
 		else:
 			return [], [], []
 
+	### identifies sig SNPs
 	p_order = gwas_in[:,pcol].argsort()
 	if leadSNPs is None or addleadSNPs == 1:
 		for pi in p_order:
 			l = gwas_in[pi]
-			if chrom==6 and int(l[poscol])>25000000 and int(l[poscol])<35000000:
-				continue
 			if float(l[pcol])>=leadP:
 				break
 			allele = [l[neacol], l[eacol]]
 			allele.sort()
 			l_uid = ":".join([str(l[chrcol]), str(l[poscol])]+allele)
 			if not l_uid in checkeduid:
-				# checkeduid.add(l_uid)
 				pos = l[poscol]
-				#check uniq ID
+				### check if the SNP meat other condition
 				tb = tabix.open(maffile)
 				lead_id = False
 				lead_maf = False
@@ -431,6 +425,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				if not lead_id or not lead_maf:
 					continue
 				nlead += 1
+
+				### get SNPs in LD
 				tb = tabix.open(ldfile)
 				ld_tb = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 				ld_tmp = []
@@ -441,6 +437,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 					if float(m[6]) >= r2:
 						ld_tmp.append([m[4], m[5], m[6]])
 				ld_tmp = np.array(ld_tmp)
+
+				### get MAF
 				minpos = min(ld_tmp[:,0].astype(int))
 				maxpos = max(ld_tmp[:,0].astype(int))
 				tb = tabix.open(maffile)
@@ -448,14 +446,15 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				nonGWASSNPs = 0
 				GWASSNPs = 0
 				for m in maf_tb:
+					## skip SNPs in MHC if exMHC==1
 					if chrom==6 and MHC==1 and int(m[1])>=MHCstart and int(m[1])<=MHCend:
 						continue
 					if float(m[5]) < maf:
 						continue
 					if int(m[1]) in ld_tmp[:,0].astype(int):
 						ild = np.where(ld_tmp[:,0].astype(int)==int(m[1]))[0][0]
+						## process SNPs exist in input file
 						if int(m[1]) in pos_set:
-							# jgwas = np.where(gwas_in[:, poscol]==int(m[1]))[0][0]
 							jgwas = bisect_left(posall, int(m[1]))
 
 							allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
@@ -495,8 +494,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							if secol:
 								snp.append(str(gwas_in[jgwas, secol]))
 							canSNPs.append(snp)
-							# annot.append([m[6], m[7], m[8]]+m[53:len(m)])
 							GWASSNPs += 1
+						## process SNPs do not exist in input file
 						elif KGSNPs==1:
 							a = [m[3], m[4]]
 							a.sort()
@@ -513,151 +512,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							if secol:
 								snp.append("NA")
 							canSNPs.append(snp)
-							# annot.append([m[6], m[7], m[8]]+m[53:len(m)])
 							nonGWASSNPs += 1
 				IndSigSNPs.append([l_uid, l[4], str(l[0]), str(l[1]), str(l[5]), str(nonGWASSNPs+GWASSNPs), str(GWASSNPs)])
-
-	### separate process for extended MHC region
-
-	if chrom == 6:
-		print "processing MHC region..."
-		mhc_gwas = gwas_in[np.where((gwas_in[:,poscol].astype(int)>25000000) & (gwas_in[:, poscol].astype(int)<35000000))]
-		if len(mhc_gwas) > 0:
-			mhc_pos = list(mhc_gwas[mhc_gwas[:,pcol]<leadP, poscol])
-			if len(mhc_pos) > 0:
-				mhc_spos = set(mhc_pos)
-				mhc_ld = []
-				start = mhc_pos[0]
-				step = 10000
-				end = start
-				for tmp_pos in mhc_pos:
-					if tmp_pos - start < step:
-						end = tmp_pos
-					else:
-						tb = tabix.open(ldfile)
-						ld_tb = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
-						for l in ld_tb:
-							if int(l[1]) in mhc_spos and float(l[6])>=r2:
-									mhc_ld.append([int(l[1]), int(l[4]), float(l[6])])
-						start = tmp_pos
-						end = start
-				tb = tabix.open(ldfile)
-				ld_tb = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
-				for l in ld_tb:
-					if int(l[1]) in mhc_spos and float(l[6])>=r2:
-							mhc_ld.append([l[1], l[4], l[6]])
-				for pos in mhc_pos:
-					mhc_ld.append([str(pos), str(pos), '1'])
-
-				mhc_ld = np.array(mhc_ld)
-				p_order = mhc_gwas[:,pcol].argsort()
-				nlead = 0
-				for pi in p_order:
-					l = mhc_gwas[pi]
-					if float(l[pcol]) >= leadP:
-						break
-					allele = [l[neacol], l[eacol]]
-					allele.sort()
-					l_uid = ":".join([str(l[chrcol]), str(l[poscol])]+allele)
-					pos = int(l[poscol])
-					#check uniq ID
-					tb = tabix.open(maffile)
-					lead_id = False
-					lead_maf = False
-					check_id = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
-					for m in check_id:
-						a = [m[3], m[4]]
-						a.sort()
-						tmp_uid = ":".join([m[0], m[1]]+a)
-						if tmp_uid == l_uid:
-							lead_id = True
-							if float(m[5]) >= maf:
-								lead_maf = True
-							break
-					if not lead_id or not lead_maf:
-						continue
-
-					if l_uid in checkeduid:
-						continue
-					# checkeduid.add(l_uid)
-					ld.append([l_uid, l_uid, 1])
-					ld_tmp = mhc_ld[mhc_ld[:,0].astype(int)==int(l[poscol])]
-					minpos = min(ld_tmp[:,1].astype(int))
-					maxpos = max(ld_tmp[:,1].astype(int))
-					tb = tabix.open(maffile)
-					maf_tb = tb.querys(str(chrom)+":"+str(minpos)+"-"+str(maxpos))
-					nonGWASSNPs = 0
-					GWASSNPs = 0
-					for m in maf_tb:
-						if chrom==6 and MHC==1 and int(m[1])>=MHCstart and int(m[1])<=MHCend:
-							continue
-						if float(m[5]) < maf:
-							continue
-						if int(m[1]) in ld_tmp[:,1].astype(int):
-							ild = np.where(ld_tmp[:,1]==m[1])[0][0]
-							if int(m[1]) in pos_set:
-								jgwas = bisect_left(posall, int(m[1]))
-
-								allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
-								allele.sort()
-								uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
-
-								a = [m[3], m[4]]
-								a.sort()
-								tmp_uid = ":".join([m[0], m[1]]+a)
-
-								if uid != tmp_uid:
-									checkall = False
-									jgwas += 1
-									while int(m[1]) == gwas_in[jgwas, poscol]:
-										allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
-										allele.sort()
-										uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
-										if uid == tmp_uid:
-											checkall = True
-											break
-										jgwas += 1
-									if not checkall:
-										continue
-
-								if float(gwas_in[jgwas, pcol])>=gwasP:
-									continue
-
-								ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
-								if tmp_uid in checkeduid:
-									continue
-								checkeduid.add(tmp_uid)
-								p = str(gwas_in[jgwas, pcol])
-								snp = [tmp_uid, gwas_in[jgwas, rsIDcol], m[0], m[1], gwas_in[jgwas, neacol], gwas_in[jgwas, eacol], m[5], p]
-								if orcol:
-									snp.append(str(gwas_in[jgwas, orcol]))
-								if becol:
-									snp.append(str(gwas_in[jgwas, becol]))
-								if secol:
-									snp.append(str(gwas_in[jgwas, secol]))
-								canSNPs.append(snp)
-								# annot.append([m[6], m[7], m[8]]+m[53:len(m)])
-								GWASSNPs += 1
-							elif KGSNPs==1:
-								a = [m[3], m[4]]
-								a.sort()
-								tmp_uid = ":".join([m[0], m[1]]+a)
-								ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
-								if tmp_uid in checkeduid:
-									continue
-								checkeduid.add(tmp_uid)
-								snp = [tmp_uid, m[2], m[0], m[1], m[4], m[3], m[5], "NA"]
-								if orcol:
-									snp.append("NA")
-								if becol:
-									snp.append("NA")
-								if secol:
-									snp.append("NA")
-								canSNPs.append(snp)
-								# annot.append([m[6], m[7], m[8]]+m[53:len(m)])
-								nonGWASSNPs += 1
-					IndSigSNPs.append([l_uid, l[4], str(l[0]), str(l[1]), str(l[5]), str(nonGWASSNPs+GWASSNPs), str(GWASSNPs)])
-					nlead += 1
 
 	if len(canSNPs)>0:
 		ld = np.array(ld)
@@ -674,12 +530,15 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 def getAnnot(snps, annot_dir):
 	chroms = unique(snps[:,2].astype(int))
 	out = []
+	### process per chromosome
 	for chrom in chroms:
 		annotfile = annot_dir+"/chr"+str(chrom)+".annot.txt.gz"
 
 		tmp = snps[snps[:,2].astype(int)==chrom]
 		if len(tmp)==0:
 			continue
+
+		## split snps into chunks
 		ranges = []
 		start = min(tmp[:,3].astype(int))
 		end = min(tmp[:,3].astype(int))
@@ -697,6 +556,7 @@ def getAnnot(snps, annot_dir):
 		tmp = tmp[tmp[:,0].argsort()]
 		suid = set(tmp[:,0])
 
+		## get annotations
 		tmp_out = []
 		for i in range(0, len(ranges)):
 			tb = tabix.open(annotfile)
@@ -717,6 +577,7 @@ def getAnnot(snps, annot_dir):
 			out = np.r_[out, tmp_out]
 	return out
 
+##### defined lead SNPs from ind. sig. SNPs (r2 = 0.1)
 def getLeadSNPs(chrom, snps, IndSigSNPs, params):
 	leadSNPs = []
 	checked = []
@@ -745,6 +606,7 @@ def getLeadSNPs(chrom, snps, IndSigSNPs, params):
 
 	return leadSNPs
 
+##### Merge lead SNPs into genomic risk loci
 def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 	loci = []
 	iloci = 0
