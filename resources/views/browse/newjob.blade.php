@@ -124,7 +124,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Minimum P-value of lead SNPs (&le;)</td>
+					<td>Minimum P-value of lead SNPs (&lt;)</td>
 					<td><input type="number" class="form-control" id="leadP" name="leadP" value="5e-8"/></td>
 					<td>
 						<div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">
@@ -140,7 +140,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Maximum P-value cutoff (&le;)
+					<td>Maximum P-value cutoff (&lt;)
 						<a class="infoPop" data-toggle="popover" title="GWAS P-value cutoff" data-content="This threshold defines the maximum P-values of SNPs to be included in the annotation. Setting it at 1 means that all SNPs that are in LD with the lead SNP will be included in the annotation and prioritization even though they may not show a significant association with the phenotype. We advise to set this threshold at least at 0.05.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
@@ -199,7 +199,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Maximum distance between LD blocks to merge into a locus (&le; kb)
+					<td>Maximum distance between LD blocks to merge into a locus (&lt; kb)
 						<a class="infoPop" data-toggle="popover" title="Maximum distance between LD blocks to merge" data-content="LD blocks clorser than the distance will be merged into a genomic locus. If this is set at 0, only phesically overlapped LD blocks will be merged. This is only for representation of GWAS risk loci which does not affect any annotation and prioritization results.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
@@ -687,14 +687,14 @@
 				</tr>
 				<tr class="eqtlMapOptions">
 					<td>eQTL P-value threshold
-						<a class="infoPop" data-toggle="popover" title="eQTL P-value threshold" data-content="By default, only significant eQTLs are used (FDR &le; 0.05). Please UNCHECK 'Use only significant snp-gene pair' to filter eQTLs based on raw P-value.">
+						<a class="infoPop" data-toggle="popover" title="eQTL P-value threshold" data-content="By default, only significant eQTLs are used (FDR &lt; 0.05). Please UNCHECK 'Use only significant snp-gene pair' to filter eQTLs based on raw P-value.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
 					<td>
-						<span class="form-inline">Use only significant snp-gene pairs: <input type="checkbox" class="form-control" name="sigeqtlCheck" id="sigeqtlCheck" checked> (FDR&le;0.05)</span><br/>
+						<span class="form-inline">Use only significant snp-gene pairs: <input type="checkbox" class="form-control" name="sigeqtlCheck" id="sigeqtlCheck" checked> (FDR&lt;0.05)</span><br/>
 						OR<br/>
-						<span class="form-inline">(nominal) P-value cutoff (&le;): <input type="number" class="form-control" name="eqtlP" id="eqtlP" value="1e-3"></span>
+						<span class="form-inline">(nominal) P-value cutoff (&lt;): <input type="number" class="form-control" name="eqtlP" id="eqtlP" value="1e-3"></span>
 					</td>
 					<td>
 						<div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">
@@ -1078,12 +1078,12 @@
 				</tr>
 				<tr class="ciMapOptions">
 					<td>FDR threshold
-						<a class="infoPop" data-toggle="popover" title="FDR threshold for significant interaction" data-content="Significane of interaction for buildin Hi-C datasets are computed by Fit-Hi-C (see tutorial for details). The default threshold is FDR &le; 1e-6 as suggested by Schmit et al. (2016).">
+						<a class="infoPop" data-toggle="popover" title="FDR threshold for significant interaction" data-content="Significane of interaction for buildin Hi-C datasets are computed by Fit-Hi-C (see tutorial for details). The default threshold is FDR &lt; 1e-6 as suggested by Schmit et al. (2016).">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
 					<td>
-						<span class="form-inline">FDR cutoff (&le;): <input type="number" class="form-control" name="ciMapFDR" id="ciMapFDR" value="1e-6"></span>
+						<span class="form-inline">FDR cutoff (&lt;): <input type="number" class="form-control" name="ciMapFDR" id="ciMapFDR" value="1e-6"></span>
 					</td>
 					<td>
 						<div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">
