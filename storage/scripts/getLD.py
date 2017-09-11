@@ -830,7 +830,7 @@ def main():
 
 			with open(annovin, 'a') as o:
 				for l in snps:
-					o.write("\t".join([l[2], l[3], l[3], l[4], l[5]])+"\n")
+					o.write("\t".join([l[2].replace("23", "X"), l[3], l[3], l[4], l[5]])+"\n")
 
 			with open(indsigout, 'a') as o:
 				np.savetxt(o, IndSigSNPs, delimiter="\t", fmt="%s")
