@@ -16,6 +16,7 @@ open(IN, "$exonfile") or die "Cannot open $exonfile\n";
 while(<IN>){
 	chomp $_;
 	my @line = split(/\t/, $_);
+	$line[3] =~ s/x/23/i;
 	my $id = join(":", ($line[3], $line[4], sort($line[6], $line[7])));
 	# $exonic{$id}{"func"} = $line[1];
 	my @g = split(/,/, $line[2]);
@@ -34,6 +35,7 @@ open(OUT, ">$out") or die "Cannot open $out\n";
 print OUT "uniqID\tgene\tannot\tdist\texonic_func\texon\n";
 while(<IN>){
 	my @line = split(/\s+/, $_);
+	$line[2] =~ s/x/23/i;
 	my $id = join(":", ($line[2], $line[3], sort($line[5], $line[6])));
 
 	if($line[1] =~ /;/){

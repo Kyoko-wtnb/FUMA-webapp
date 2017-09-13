@@ -275,7 +275,7 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and eacol i
 			l[chrcol] = '23'
 		if not l[chrcol].isdigit():
 			continue
-		if int(l[chrcol]) not in range(1,23):
+		if int(l[chrcol]) not in range(1,24):
 			continue
         # if float(l[pcol]) < 1e-308:
         #     l[pcol] = str(1e-308)
@@ -439,7 +439,7 @@ elif chrcol is not None and poscol is not None:
 		    l[chrcol] = '23'
 		if not l[chrcol].isdigit():
 			continue
-		if int(l[chrcol]) not in range(1,23):
+		if int(l[chrcol]) not in range(1,24):
 			continue
 		# if float(l[pcol]) < 1e-308:
 		#     l[pcol] = str(1e-308)
