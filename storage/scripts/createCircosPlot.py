@@ -227,13 +227,17 @@ def main():
 	snpsout = []
 	regions = []
 	for c in chrom:
-		tmp_genes = genes[genes[:,2]==c]
-		if len(tmp_genes)>0:
+		if len(genes)>0:
+			tmp_genes = genes[genes[:,2]==c]
 			tmp_genes = tmp_genes[:,[2,3,4,1,geneshead.index("GenomicLocus")]]
 			tmp_genes[:,4] = [int(x.split(":")[-1]) for x in tmp_genes[:,4].astype(str)]
 		else:
 			tmp_genes = []
-		[tmp_snps, tmp_regions] = createConfig(c, filedir, circos_config, loci[loci[:,2].astype(int)==c], ci[np.where((ci[:,1]==c) & (ci[:,4]==c))], snps[snps[:,0]==c], tmp_genes)
+		if len(ci) >0 :
+			tmp_ci = ci[np.where((ci[:,1]==c) & (ci[:,4]==c))]
+		else:
+			tmp_ci = []
+		[tmp_snps, tmp_regions] = createConfig(c, filedir, circos_config, loci[loci[:,2].astype(int)==c], tmp_ci, snps[snps[:,0]==c], tmp_genes)
 		if len(snpsout)==0:
 			snpsout = tmp_snps
 			regions = tmp_regions
@@ -255,11 +259,12 @@ def main():
 		np.savetxt(o, regions, delimiter=" ", fmt="%s")
 
 	##### write 3d genome links #####
-	ci[:,1] = ["hs"+str(x) for x in ci[:,1]]
-	ci[:,4] = ["hs"+str(x) for x in ci[:,4]]
-	ci[ci[:,1]=="hs23", 1] = "hsX"
-	ci[ci[:,4]=="hs23", 4] = "hsX"
-	ci = ci[:,1:7]
+	if len(ci) > 0:
+		ci[:,1] = ["hs"+str(x) for x in ci[:,1]]
+		ci[:,4] = ["hs"+str(x) for x in ci[:,4]]
+		ci[ci[:,1]=="hs23", 1] = "hsX"
+		ci[ci[:,4]=="hs23", 4] = "hsX"
+		ci = ci[:,1:7]
 	with open(filedir+"circos/ci_links.txt", "w") as o:
 		np.savetxt(o, ci, delimiter=" ", fmt="%s")
 
