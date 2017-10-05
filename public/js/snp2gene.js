@@ -348,8 +348,14 @@ function GWplot(jobID){
 		x.domain([0, (chromStart[max_chr-1]+chromSize[max_chr-1])]);
 		var xAxis = d3.svg.axis().scale(x).orient("bottom");
 		var y = d3.scale.linear().range([height, 0]);
-		// y.domain([0, d3.max(data, function(d){return -Math.log10(d.p);})+1]);
-		y.domain([0, d3.max(data, function(d){return -Math.log10(d[2]);})+1]);
+		var minP = d3.min(data, function(d){if(d[2]>1e-300){return d[2]}})
+		var lowP = d3.min(data, function(d){return d[2]});
+		var yMax = -Math.log10(minP);
+		if(lowP < 1e-300){
+			if(yMax>=300){yMax = 360;}
+			else{yMax += yMax*0.2;}
+		}
+		y.domain([0, yMax+10]);
 
 		var yAxis = d3.svg.axis().scale(y).orient("left");
 
@@ -357,7 +363,7 @@ function GWplot(jobID){
 			.append("circle")
 			.attr("r", 2)
 			.attr("cx", function(d){return x(d[1]+chromStart[d[0]-1])})
-			.attr("cy", function(d){return y(-Math.log10(d[2]))})
+			.attr("cy", function(d){if(d[2]<1e-300){return y(yMax)}else{return y(-Math.log10(d[2]))}})
 			.attr("fill", function(d){if(d[0]%2==0){return "steelblue"}else{return "blue"}});
 
 		svg.append("line")
@@ -365,10 +371,27 @@ function GWplot(jobID){
 			.attr("y1", y(-Math.log10(5e-8))).attr("y2", y(-Math.log10(5e-8)))
 			.style("stroke", "red")
 			.style("stroke-dasharray", ("3,3"));
-			svg.append("g").attr("class", "x axis")
+		svg.append("g").attr("class", "x axis")
 			.attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
-			svg.append("g").attr("class", "y axis").call(yAxis)
-			.selectAll('text').style('font-size', '11px');
+		svg.append("g").attr("class", "y axis").call(yAxis)
+			.selectAll('text')
+			.each(function(d){
+				if(d >= -Math.log10(minP)*1.2){this.remove()}
+			})
+			.style('font-size', '11px');
+		if(lowP < 1e-300){
+			svg.append("text")
+				.attr("x", -32).attr("y", y(yMax)+2)
+				.text(">300")
+				.style("font-size", '11px')
+				.style("font-family", "sans-serif");
+			svg.append("text")
+				.attr("x", 0).attr("y", y(yMax)*1.5)
+				.text("\u2248")
+				.attr("text-anchor", "middle")
+				.style("font-size", '20px')
+				.style("font-family", "sans-serif");
+		}
 
 		//Chr label
 		for(var i=0; i<chr.length; i++){
@@ -507,7 +530,13 @@ function QQplot(jobID){
 		var x = d3.scale.linear().range([0, width]);
 		var y = d3.scale.linear().range([height, 0]);
 		var xMax = d3.max(data, function(d){return d.exp;});
-		var yMax = d3.max(data, function(d){return d.obs;});
+		var minP = d3.max(data, function(d){if(d.obs<300){return d.obs}})
+		var lowP = d3.max(data, function(d){return d.obs});
+		var yMax = minP;
+		if(lowP > 300){
+			if(yMax>=300){yMaxp = 360;}
+			else{yMax += yMax*0.2;}
+		}
 		x.domain([0, (xMax+xMax*0.01)]);
 		y.domain([0, (yMax+yMax*0.01)]);
 		var yAxis = d3.svg.axis().scale(y).orient("left");
@@ -520,13 +549,30 @@ function QQplot(jobID){
 			.append("circle")
 			.attr("r", 2)
 			.attr("cx", function(d){return x(d.exp)})
-			.attr("cy", function(d){return y(d.obs)})
+			.attr("cy", function(d){if(d.obs>300){y(yMax)}else{return y(d.obs)}})
 			.attr("fill", "grey");
 		qqSNP.append("g").attr("class", "x axis")
 			.attr("transform", "translate(0,"+height+")").call(xAxis)
 			.selectAll('text').style('font-size', '11px');
 		qqSNP.append("g").attr("class", "y axis").call(yAxis)
-			.selectAll('text').style('font-size', '11px');
+			.selectAll('text')
+			.each(function(d){
+				if(d >= minP*1.2){this.remove()}
+			})
+			.style('font-size', '11px');
+		if(lowP > 300){
+			qqSNP.append("text")
+				.attr("x", -32).attr("y", y(yMax)+2)
+				.text(">300")
+				.style("font-size", '11px')
+				.style("font-family", "sans-serif");
+			qqSNP.append("text")
+				.attr("x", 0).attr("y", y(yMax)*5)
+				.text("\u2248")
+				.attr("text-anchor", "middle")
+				.style("font-size", '20px')
+				.style("font-family", "sans-serif");
+		}
 		qqSNP.append("line")
 			.attr("x1", 0).attr("x2", x(maxP))
 			.attr("y1", y(0)).attr("y2", y(maxP))

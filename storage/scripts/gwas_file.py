@@ -17,13 +17,8 @@ def ArrayIn(a1, a2):
 	results = np.where(np.in1d(a1, a2))[0]
 	return results
 def ArrayNotIn(a1, a2):
-    temp = np.where(np.in1d(a1, a2))[0]
-    a1 = range(0, len(a1))
-    results = []
-    for i in a1:
-        if i not in temp:
-            results.append(i)
-    return results
+    tmp = np.where(np.in1d(a1, a2))[0]
+    return list(set(range(0,len(a1)))-set(tmp))
 
 ##### detect file delimiter from the header #####
 def DetectDelim(header):
@@ -36,7 +31,8 @@ def DetectDelim(header):
 ##### check float #####
 def is_float(s):
 	try:
-		return float(s)
+		float(s)
+		return True
 	except ValueError:
 		return False
 
@@ -108,36 +104,36 @@ nheader = len(header)
 # then automatic detection
 checkedheader = []
 for i in range(0,len(header)):
-    if chrcol == header[i].upper():
-	chrcol = i
-	checkedheader.append(chrcol)
-    elif rsIDcol == header[i].upper():
-        rsIDcol = i
-        checkedheader.append(rsIDcol)
-    elif poscol == header[i].upper():
-        poscol = i
-        checkedheader.append(poscol)
-    elif eacol == header[i].upper():
-        eacol = i
-        checkedheader.append(eacol)
-    elif neacol == header[i].upper():
-        neacol = i
-        checkedheader.append(neacol)
-    elif pcol == header[i].upper():
-        pcol = i
-        checkedheader.append(pcol)
-    elif orcol == header[i].upper():
-        orcol = i
-        checkedheader.append(orcol)
-    elif becol == header[i].upper():
-        becol = i
-        checkedheader.append(becol)
-    elif secol == header[i].upper():
-        secol = i
-        checkedheader.append(becol)
-    elif Ncol == header[i].upper():
-        Ncol = i
-        checkedheader.append(Ncol)
+	if chrcol == header[i].upper():
+		chrcol = i
+		checkedheader.append(chrcol)
+	elif rsIDcol == header[i].upper():
+		rsIDcol = i
+		checkedheader.append(rsIDcol)
+	elif poscol == header[i].upper():
+		poscol = i
+		checkedheader.append(poscol)
+	elif eacol == header[i].upper():
+		eacol = i
+		checkedheader.append(eacol)
+	elif neacol == header[i].upper():
+		neacol = i
+		checkedheader.append(neacol)
+	elif pcol == header[i].upper():
+		pcol = i
+		checkedheader.append(pcol)
+	elif orcol == header[i].upper():
+		orcol = i
+		checkedheader.append(orcol)
+	elif becol == header[i].upper():
+		becol = i
+		checkedheader.append(becol)
+	elif secol == header[i].upper():
+		secol = i
+		checkedheader.append(becol)
+	elif Ncol == header[i].upper():
+		Ncol = i
+		checkedheader.append(Ncol)
 for i in range(0, len(header)):
 	if i in checkedheader:
 		continue
@@ -266,6 +262,10 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and eacol i
 		if len(l) < nheader:
 			continue
 		if not is_float(l[pcol]):
+			continue
+		if float(l[pcol])<0 or float(l[pcol])>1:
+			continue
+		if float(l[pcol])==0 and re.match("^0", l[pcol]):
 			continue
 		if l[rsIDcol] in rsIDs:
 			j = bisect_left(rsID[:,0], l[rsIDcol])
@@ -434,6 +434,10 @@ elif chrcol is not None and poscol is not None:
 			continue
 		if not is_float(l[pcol]):
 			continue
+		if float(l[pcol])<0 or float(l[pcol])>1:
+			continue
+		if float(l[pcol])==0 and re.match("^0", l[pcol]):
+			continue
 		l[chrcol] = l[chrcol].replace("chr", "")
 		if re.match(r"x", l[chrcol], re.IGNORECASE):
 		    l[chrcol] = '23'
@@ -470,114 +474,116 @@ elif chrcol is not None and poscol is not None:
 		Tabix(cur_chr, minpos, maxpos, temp)
 # if either chr or pos is not procided, use rsID to extract position
 elif chrcol is None or poscol is None:
-    print "Either chr or pos is not provided"
+	print "Either chr or pos is not provided"
 	##### read input file #####
-    gwas = pd.read_table(gwas, comment="#", sep=delim)
-    gwas = gwas.as_matrix()
-    gwas = gwas[gwas[:,rsIDcol].argsort()]
+	gwas = pd.read_table(gwas, comment="#", sep=delim, dtype=str)
+	gwas = gwas.as_matrix()
+	gwas = gwas[gwas[:,rsIDcol].argsort()]
 
 	##### write header of input.snps #####
-    out = open(outSNPs, 'w')
-    out.write("chr\tbp\tnon_effect_allele\teffect_allele\trsID\tp")
-    if orcol is not None:
-        out.write("\tor")
-    if becol is not None:
-        out.write("\tbeta")
-    if secol is not None:
-        out.write("\tse")
-    if Ncol is not None:
-        out.write("\tN")
-    out.write("\n")
+	out = open(outSNPs, 'w')
+	out.write("chr\tbp\tnon_effect_allele\teffect_allele\trsID\tp")
+	if orcol is not None:
+		out.write("\tor")
+	if becol is not None:
+		out.write("\tbeta")
+	if secol is not None:
+		out.write("\tse")
+	if Ncol is not None:
+		out.write("\tN")
+	out.write("\n")
 
 	##### update rsID to dbSNP 146 #####
-    rsIDs = set(list(gwas[:, rsIDcol]))
-    rsID = list(gwas[:, rsIDcol])
-    dbSNPfile = cfg.get('data', 'dbSNP')
-    rsID146 = open(dbSNPfile+"/RsMerge146.txt", 'r')
-    for l in rsID146:
-        l = l.strip().split()
-        if l[0] in rsIDs:
-            j = bisect_left(rsID, l[0])
-            gwas[j,rsIDcol] = l[1]
-    rsID146.close()
+	rsIDs = set(list(gwas[:, rsIDcol]))
+	rsID = list(gwas[:, rsIDcol])
+	dbSNPfile = cfg.get('data', 'dbSNP')
+	rsID146 = open(dbSNPfile+"/RsMerge146.txt", 'r')
+	for l in rsID146:
+		l = l.strip().split()
+		if l[0] in rsIDs:
+			j = bisect_left(rsID, l[0])
+			gwas[j,rsIDcol] = l[1]
+	rsID146.close()
 
 	##### sort input snps by rsID for bisect_left #####
-    gwas = gwas[gwas[:,rsIDcol].argsort()]
-    rsIDs = set(list(gwas[:, rsIDcol]))
-    rsID = list(gwas[:, rsIDcol])
-    checked = []
+	gwas = gwas[gwas[:,rsIDcol].argsort()]
+	rsIDs = set(list(gwas[:, rsIDcol]))
+	rsID = list(gwas[:, rsIDcol])
+	checked = []
 
 	##### process per chromosome #####
-    for chrom in range(1,24):
-        print "start chr"+str(chrom)
-        fin = gzip.open(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", 'rb')
-        for l in fin:
+	for chrom in range(1,24):
+		print "start chr"+str(chrom)
+		fin = gzip.open(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", 'rb')
+		for l in fin:
 			l = l.decode('ascii')
 			l = l.strip().split()
 			alt = l[4].split(",")
-
 			if l[2] in rsIDs:
 				checked.append(l[2])
 				j = bisect_left(rsID, l[2])
 				if not is_float(gwas[j,pcol]):
 					continue
+				if float(gwas[j,pcol])<0 or float(gwas[j,pcol])>1:
+					continue
+				if float(gwas[j,pcol])==0 and re.match("^0", gwas[j,pcol]):
+					continue
 				# if(gwas[j,pcol]<1e-308):
 				#     gwas[j,pcol]=1e-308
 				if eacol is not None and neacol is not None:
-				    if (gwas[j,eacol].upper()==l[3] and gwas[j,neacol].upper() in alt) or gwas[j,eacol].upper() in alt and gwas[j,neacol].upper()==l[3]:
-				        out.write("\t".join([str(chrom), str(l[1]), gwas[j,neacol].upper(), gwas[j,eacol].upper(), l[2], str(gwas[j,pcol])]))
-				        if orcol is not None:
-				            out.write("\t"+str(gwas[j,orcol]))
-				        if becol is not None:
-				            out.write("\t"+str(gwas[j,becol]))
-				        if secol is not None:
-				            out.write("\t"+str(gwas[j,secol]))
-				        if Ncol is not None:
-				            out.write("\t"+str(gwas[j,Ncol]))
-				        out.write("\n")
+					if (gwas[j,eacol].upper()==l[3] and gwas[j,neacol].upper() in alt) or gwas[j,eacol].upper() in alt and gwas[j,neacol].upper()==l[3]:
+						out.write("\t".join([str(chrom), str(l[1]), gwas[j,neacol].upper(), gwas[j,eacol].upper(), l[2], str(gwas[j,pcol])]))
+						if orcol is not None:
+							out.write("\t"+str(gwas[j,orcol]))
+						if becol is not None:
+							out.write("\t"+str(gwas[j,becol]))
+						if secol is not None:
+							out.write("\t"+str(gwas[j,secol]))
+						if Ncol is not None:
+							out.write("\t"+str(gwas[j,Ncol]))
+						out.write("\n")
 				elif eacol is not None:
-				    if gwas[j,eacol].upper()==l[3] or gwas[j,eacol].upper() in alt:
+					if gwas[j,eacol].upper()==l[3] or gwas[j,eacol].upper() in alt:
 						if len(alt)>1 :
 							continue
-
 						a = "NA"
 						if gwas[j,eacol].upper()==l[3]:
-						    a=l[4]
+							a=l[4]
 						else:
-						    a=l[3]
+							a=l[3]
 
 						out.write("\t".join([str(chrom), str(l[1]), a, gwas[j,eacol].upper(), l[2], str(gwas[j,pcol])]))
 						if orcol is not None:
-						    out.write("\t"+str(gwas[j,orcol]))
+							out.write("\t"+str(gwas[j,orcol]))
 						if becol is not None:
-						    out.write("\t"+str(gwas[j,becol]))
+							out.write("\t"+str(gwas[j,becol]))
 						if secol is not None:
-						    out.write("\t"+str(gwas[j,secol]))
+							out.write("\t"+str(gwas[j,secol]))
 						if Ncol is not None:
-						    out.write("\t"+str(gwas[j,Ncol]))
+							out.write("\t"+str(gwas[j,Ncol]))
 						out.write("\n")
 				else:
 					if len(alt)>1:
 						continue
-
 					out.write("\t".join([str(chrom), str(l[1]), l[3], l[4], l[2], str(gwas[j,pcol])]))
 					if orcol is not None:
-					    out.write("\t"+str(gwas[j,orcol]))
+						out.write("\t"+str(gwas[j,orcol]))
 					if becol is not None:
-					    out.write("\t"+str(gwas[j,becol]))
+						out.write("\t"+str(gwas[j,becol]))
 					if secol is not None:
-					    out.write("\t"+str(gwas[j,secol]))
+						out.write("\t"+str(gwas[j,secol]))
 					if Ncol is not None:
-					    out.write("\t"+str(gwas[j,Ncol]))
+						out.write("\t"+str(gwas[j,Ncol]))
 					out.write("\n")
-        gwas = np.delete(gwas, np.where(np.in1d(gwas[:,rsIDcol], checked)), 0)
-        # gwas = np.delete(gwas, ArrayIn(gwas[:,rsIDcol], checked), 0)
-        # print time.time() - temptime
-        rsID = list(gwas[:, rsIDcol])
-        checked = []
-        if len(gwas)==0:
-            break
-    out.close()
+
+		gwas = np.delete(gwas, np.where(np.in1d(gwas[:,rsIDcol], checked)), 0)
+		# gwas = np.delete(gwas, ArrayIn(gwas[:,rsIDcol], checked), 0)
+		# print time.time() - temptime
+		rsID = list(gwas[:, rsIDcol])
+		checked = []
+		if len(gwas)==0:
+			break
+	out.close()
 
 ##### total time #####
 print time.time()-start

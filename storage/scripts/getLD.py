@@ -75,10 +75,6 @@ class getParams:
 			elif head[i] == "se":
 				secol = i
 
-		##### annovar #####
-		annov = cfg.get('annovar', 'annovdir')
-		humandb = cfg.get('annovar', 'humandb')
-
 		##### dbSNP file #####
 		dbSNPfile = cfg.get('data', 'dbSNP')+"/RsMerge146.npy"
 
@@ -110,8 +106,6 @@ class getParams:
 		self.orcol = orcol
 		self.becol = becol
 		self.secol = secol
-		self.annov = annov
-		self.humandb = humandb
 		self.dbSNPfile = dbSNPfile
 
 ##### Return index of a1 which exists in a2 #####
@@ -373,12 +367,10 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			if len(canSNPs)>0:
 				ld = np.array(ld)
 				canSNPs = np.array(canSNPs)
-				# annot = np.array(annot)
 				IndSigSNPs = np.array(IndSigSNPs)
 				IndSigSNPs = IndSigSNPs[IndSigSNPs[:,3].astype(int).argsort()]
 				n = canSNPs[:,3].astype(int).argsort()
 				canSNPs = canSNPs[n]
-				# annot = annot[n]
 				return ld, canSNPs, IndSigSNPs
 			else:
 				return [], [], []
@@ -518,12 +510,10 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 	if len(canSNPs)>0:
 		ld = np.array(ld)
 		canSNPs = np.array(canSNPs)
-		# annot = np.array(annot)
 		IndSigSNPs = np.array(IndSigSNPs)
 		IndSigSNPs = IndSigSNPs[IndSigSNPs[:,3].astype(int).argsort()]
 		n = canSNPs[:,3].astype(int).argsort()
 		canSNPs = canSNPs[n]
-		# annot = annot[n]
 	return ld, canSNPs, IndSigSNPs
 
 ##### get annotations for candidate SNPs #####
@@ -706,7 +696,6 @@ def main():
 
 	##### get parameters #####
 	params = getParams(filedir, cfg, param_cfg)
-	# params = getParams(os.path.dirname(os.path.realpath(__file__))+'/app.config', filedir+'params.config')
 
 	##### output files #####
 	ldout = filedir+"ld.txt"
@@ -715,7 +704,6 @@ def main():
 	indsigout = filedir+"IndSigSNPs.txt"
 	leadout = filedir+"leadSNPs.txt"
 	glout = filedir+"GenomicRiskLoci.txt"
-	annovin = filedir+"annov.input"
 
 	##### write headers #####
 	with open(ldout, 'w') as o:
@@ -828,10 +816,6 @@ def main():
 			with open(annotout, 'a') as o:
 				np.savetxt(o, annot, delimiter="\t", fmt="%s")
 
-			with open(annovin, 'a') as o:
-				for l in snps:
-					o.write("\t".join([l[2].replace("23", "X"), l[3], l[3], l[4], l[5]])+"\n")
-
 			with open(indsigout, 'a') as o:
 				np.savetxt(o, IndSigSNPs, delimiter="\t", fmt="%s")
 
@@ -846,12 +830,7 @@ def main():
 		sys.exit("No candidate SNP was identified")
 
 	##### ANNOVAR #####
-	annovout = filedir+"annov"
-	os.system(params.annov+"/annotate_variation.pl -out "+annovout+" -build hg19 "+annovin+" "+params.humandb+"/ -dbtype ensGene")
-	annov1 = filedir+"annov.variant_function"
-	annov2 = filedir+"annov.txt"
-	os.system(os.path.dirname(os.path.realpath(__file__))+"/annov_geneSNPs.pl "+annov1+" "+annov2)
-	os.system("rm "+filedir+"annov.input "+filedir+"annov.*function "+filedir+"annov.log")
+	os.system(os.path.dirname(os.path.realpath(__file__))+"/annovar.py "+filedir)
 
 	print "getLD.py run time: "+str(time.time()-starttime)
 

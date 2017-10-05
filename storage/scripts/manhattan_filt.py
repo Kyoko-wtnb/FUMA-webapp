@@ -13,15 +13,17 @@ filedir = sys.argv[1]
 if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 
-GWAS = pd.read_table(filedir+"input.snps", sep="\s+")
+GWAS = pd.read_table(filedir+"input.snps", sep="\s+", usecols=["chr", "bp", "p"], dtype="str")
 chrcol = 0
 poscol = 1
-pcol = 5
+pcol = 2
 
 GWAS = GWAS.as_matrix()
 width = 800 #px
 height = 300 #px
-yMax = max(-np.log10(GWAS[:,pcol].tolist()))
+minP = min(GWAS[GWAS[:,pcol].astype(float)>1e-300,pcol].astype(float))
+lowPs = len(np.where(GWAS[:,pcol].astype(float)==0)[0])
+yMax = -math.log10(minP)
 l = 3100000000/(width/2)
 h = yMax/(height/2)
 #print yMax
@@ -30,53 +32,50 @@ for chrom in range(1,24):
 	plotSNPs = []
 	if chrom==1:
 		plotSNPs.append(['chr', 'bp', 'p'])
-	temp = GWAS[GWAS[:,chrcol]==chrom]
-	temp = temp[:,[0,1,5]]
-	if temp.shape[0]==0:
+	temp = GWAS[GWAS[:,chrcol].astype(int)==chrom]
+	if len(temp)==0:
 		continue
-	#print temp.shape
-	xMax = max(temp[:,1])
+	xMax = max(temp[:,poscol].astype(int))
 	cur_h = 0
 	while True:
-		if cur_h >= -math.log(1e-5, 10):
+		if cur_h >= -math.log10(1e-5):
 			break
-		t = temp[-np.log10(temp[:,2].tolist())>=cur_h]
-		t = t[-np.log10(t[:,2].tolist())<(cur_h+h)]
+		t = temp[-np.log10(temp[:,pcol].astype(float))>=cur_h]
+		t = t[-np.log10(t[:,pcol].astype(float))<(cur_h+h)]
 		#print t.shape
-		if t.shape[0]==0:
+		if len(t)==0:
 			cur_h += h
 			continue
-		dens = t.shape[0]/(float(xMax)/float(l))
+		dens = len(t)/(float(xMax)/float(l))
 		if dens<=1:
 			break
 
 		cur_x = 0
 		while cur_x<xMax:
-			tn = t[t[:,1]>=cur_x]
-			tn = tn[tn[:,1]<cur_x+l]
-			tn = tn[-np.log10(tn[:,2].tolist())>=cur_h]
-			tn = tn[-np.log10(tn[:,2].tolist())<cur_h+h]
-			if tn.shape[0]==0:
+			tn = t[t[:,poscol].astype(int)>=cur_x]
+			tn = tn[tn[:,poscol].astype(int)<cur_x+l]
+			tn = tn[-np.log10(tn[:,pcol].astype(float))>=cur_h]
+			tn = tn[-np.log10(tn[:,pcol].astype(float))<cur_h+h]
+			if len(tn)==0:
 				cur_x += l
 				continue
-			elif tn.shape[0]>2:
-				tn = tn[np.random.randint(tn.shape[0], size=1)]
+			elif len(tn)>2:
+				tn = tn[np.random.randint(len(tn), size=1)]
 			for i in tn:
-				plotSNPs.append(i.tolist())
+				plotSNPs.append(i)
 			cur_x += l
 
 		cur_h += h
-	for i in temp[-np.log10(temp[:,2].tolist())>=cur_h]:
-		plotSNPs.append(i.tolist())
+	for i in temp[-np.log10(temp[:,pcol].astype(float))>=cur_h]:
+		plotSNPs.append(i)
 	#print len(plotSNPs)
 	if chrom==1:
 		outfile.write("\t".join(plotSNPs[0])+"\n")
 		plotSNPs = plotSNPs[1:]
-	plotSNPs = np.array(plotSNPs)
-	plotSNPs[:,1] = plotSNPs[:,1].astype(int)
-	plotSNPs = plotSNPs[np.argsort(plotSNPs[:,1])]
+	plotSNPs = np.array(plotSNPs, dtype="object")
+	plotSNPs = plotSNPs[plotSNPs[:,1].argsort()]
 	for i in plotSNPs:
-		outfile.write(str(int(i[0]))+"\t"+str(int(i[1]))+"\t"+str(i[2])+"\n")
+		outfile.write("\t".join(i)+"\n")
 		#outfile.write("\t".join(i.astype(str))+"\n")
 	print "Chromosome ",chrom," done!!"
 

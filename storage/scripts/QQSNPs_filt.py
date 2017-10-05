@@ -21,6 +21,8 @@ f.readline()
 for l in f:
 	l = l.rstrip()
 	l = l.split("\t")
+	if float(l[5]) < 1e-300:
+		l[5] = '1e-301'
 	obsP.append(float(l[5]))
 f.close()
 obsP.sort(reverse=True)
