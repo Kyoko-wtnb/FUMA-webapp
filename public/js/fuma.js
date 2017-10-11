@@ -14,7 +14,7 @@ $(document).ready(function(){
 		});
 
 	if(loggedin==1){
-		var timer = new InactivityTimer("/logout", 86400000);
+		var timer = new InactivityTimer("/logout", 7200000);
 		timer.stop();
 		timer.start();
 	}
