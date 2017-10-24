@@ -902,6 +902,10 @@ function showResultTables(filedir, gwasID, posMap, eqtlMap, ciMap, orcol, becol,
 		table += "<th>eqtlMapSNPs</th><th>eqtlMapminP</th><th>eqtlMapminQ</th><th>eqtlMapts</th><th>eqtlDirection</th>";
 		col += ":eqtlMapSNPs:eqtlMapminP:eqtlMapminQ:eqtlMapts:eqtlDirection";
 	}
+	if(ciMap==1){
+		table += "<th>ciMap</th><th>ciMapts</th>";
+		col += ":ciMap:ciMapts";
+	}
 	table += "<th>minGwasP</th><th>Genomic Locus</th><th>IndSigSNPs</th></tr></thead>";
 	col += ":minGwasP:GenomicLocus:IndSigSNPs"
 	$('#geneTable').append(table);
