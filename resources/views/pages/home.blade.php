@@ -38,7 +38,8 @@ $(document).ready(function(){
 	</p>
 	<p>
 		When using FUMA, please cite the following.<br/>
-		K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma. FUMA: Functional mapping and annotation of genetic associations. <i>bioRxiv.</i> <a target="_blank" href="http://biorxiv.org/content/early/2017/02/20/110023">https://doi.org/10.1101/110023.</a> (2017).
+		K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma. Functional mapping and annotation of genetic associations with FUMA. <i>Nat. Commun.</i> <b>[<i>in press</i>]</b>. (2017).<br/>
+		bioRxiv: <a target="_blank" href="http://biorxiv.org/content/early/2017/02/20/110023">https://doi.org/10.1101/110023.</a>
 	</p>
 	<p>
 		Please post any questions, suggestions and bug reports on Google Forum: <a target="_blank" href="https://groups.google.com/forum/#!forum/fuma-gwas-users">FUMA GWAS users</a>.

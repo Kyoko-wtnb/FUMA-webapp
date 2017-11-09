@@ -195,7 +195,7 @@ class S2GController extends Controller
 		}
 
 		if($leadSNPsfileup==1 && $request -> has('addleadSNPs')){$addleadSNPs=1;}
-		else if($leadSNPs==0){$addleadSNPs=1;}
+		else if($leadSNPsfileup==0){$addleadSNPs=1;}
 		else{$addleadSNPs=0;}
 
 		// pre-defined genomic region file

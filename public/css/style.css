@@ -12,6 +12,10 @@ img
 	margin: auto;
 }
 
+img.footerimg{
+	float:right;
+}
+
 #foot
 {
   margin: 0;

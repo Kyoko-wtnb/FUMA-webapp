@@ -29,6 +29,8 @@ def getAnnov(snps, chrom, annovin, dbSNP):
 	checked = []
 	maf = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
 	for l in maf:
+		if l[1] in checked:
+			continue
 		if int(l[1]) in snps[:,3].astype(int):
 			j = bisect_left(pos, l[1])
 			#j = np.where(snps[:,3].astype(int)==int(l[1]))[0][0]

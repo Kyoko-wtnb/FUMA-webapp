@@ -83,6 +83,7 @@ def createConfig(c, filedir, circos_config, loci, ci, snps, genes):
 	tmp_snps = np.c_[tmp_snps, [0]*len(tmp_snps)]
 	tmp_snps = tmp_snps[ArrayNotIn(tmp_snps[:,1].astype(int), snps[:,1].astype(int))]
 	snps = np.r_[snps, tmp_snps]
+	snps[snps[:,2].astype(float)==0,2] = "1e-300"
 	snps[:,2] = [float(-1*x) for x in np.log10(snps[:,2].astype(float))]
 
 	##### take top 150000 SNPs per chromosome #####

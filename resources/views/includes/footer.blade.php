@@ -7,7 +7,7 @@
 			k.watanabe@vu.nl</p>
 		</div>
 		<div class="col-md-6 col-xs-6 col-sm-6" style="text-align: right; padding-right: 50px;">
-			<img src="{{URL::asset('/image/ctg.svg')}}" height="70" width="180">
+			<img class="footerimg" src="{{URL::asset('/image/ctg.svg')}}" height="70" width="180">
 		</div>
 	</div>
 </footer>
