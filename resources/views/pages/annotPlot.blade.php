@@ -71,6 +71,8 @@ var Chr15cells = "{{$Chr15cells}}";
 			Genomic position (bp on hg19) shown in the link of RegulomeDB is the position shown in the SNP table - 1, since RegulomeDB used 0 based corrdinate.
 			<br/>
 			<div id="EIDlegend"></div>
+			*When 15-core chromatin state is included in the plot and >30 cell types are selected, the labels of Y-axis are omitted.
+			The order of the cell types is same as the table above.
 			<br/>
 			<div id="SNPlegend">
 				<h4>SNPs colored grey in the plots</h4>
