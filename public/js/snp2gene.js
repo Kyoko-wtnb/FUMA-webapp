@@ -354,8 +354,9 @@ function GWplot(jobID){
 		if(lowP < 1e-300){
 			if(yMax>=300){yMax = 360;}
 			else{yMax += yMax*0.2;}
+			yMax += 10;
 		}
-		y.domain([0, yMax+10]);
+		y.domain([0, yMax]);
 
 		var yAxis = d3.svg.axis().scale(y).orient("left");
 
