@@ -864,6 +864,7 @@ $(document).ready(function(){
 					.attr("width", 10).attr("height",tileHeight)
 					.attr("fill", chr15gcol[i]);
 			}
+			EIDlegend(y_element);
 		}
 
 		// eqtl plot
@@ -1184,9 +1185,6 @@ $(document).ready(function(){
 				}
 			}
 		}
-
-		// legend of EID if any
-		if(eid.length>0){EIDlegend(eid);}
 
 		// add style to text
 		svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
