@@ -124,7 +124,7 @@ var loggedin = "{{ Auth::check() }}";
 				<td>17 January 2017</td>
 				<td>
 					Westra et al. 2013. Systematic identification of trans eQTLs as putative divers of known disease associations. <i>Nat. Genet.</i> <b>45</b>, 1238-1243.<br/>
-					<a href="https://www.ncbi.nlm.nih.gov/pubmed/3991562" target="_blank">PMID:3991562</a>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/24013639" target="_blank">PMID:24013639</a>
 				</td>
 			</tr>
 			<tr>
