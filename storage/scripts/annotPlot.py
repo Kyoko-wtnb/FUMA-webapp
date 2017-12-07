@@ -202,6 +202,15 @@ def getNonCandidateSNPs(filedir, snps, min_pos, max_pos):
 		tmp.append([int(l[0]), int(l[1]), float(l[2])])
 	tmp = np.array(tmp)
 	tmp = tmp[ArrayNotIn(tmp[:,poscol], snps[:,3])]
+
+	### filter SNPs if there are too many #####
+	if len(tmp)>10000:
+		tmp_keep = tmp[tmp[:,2]<0.05]
+		tmp = tmp[tmp[:,2]>=0.05]
+		step = int(len(tmp)/(10000-len(tmp_keep)))+1
+		tmp = tmp[np.arange(0,len(tmp), step)]
+		tmp = np.r_[tmp, tmp_keep]
+
 	out = []
 	for l in tmp:
 		out.append([int(l[0]), int(l[1]), l[2]])
