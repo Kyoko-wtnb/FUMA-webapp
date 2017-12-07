@@ -30,6 +30,16 @@ class S2GController extends Controller
 		$this->user = Auth::user();
     }
 
+	public function authcheck($jobID){
+		$email = $this->user->email;
+		$check = DB::table('SubmitJobs')->where('jobID', $jobID)->first();
+		if($check->email==$email){
+			return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
+		}else{
+			return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]);
+		}
+	}
+
 	public function getJobList(){
 		$email = $this->user->email;
 
@@ -47,7 +57,7 @@ class S2GController extends Controller
 
     }
 
-    public function queueNewJobs(){
+	public function queueNewJobs(){
 		$user = $this->user;
 		$email = $user->email;
 		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW')->get();
@@ -60,7 +70,7 @@ class S2GController extends Controller
 			}
 		}
 		return;
-    }
+	}
 
     public function checkJobStatus($jobID){
         $job = SubmitJob::where('jobID', $jobID)
@@ -73,7 +83,7 @@ class S2GController extends Controller
         return $job->status;
     }
 
-    public function getParams(Request $request){
+	public function getParams(Request $request){
 		$jobID = $request->input('jobID');
 		$date = date('Y-m-d H:i:s');
 		DB::table('SubmitJobs') -> where('jobID', $jobID)
@@ -91,7 +101,7 @@ class S2GController extends Controller
 			$ciMap = $params['ciMap'];
 		}
 		return "$filedir:$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol";
-    }
+	}
 
 	public function newJob(Request $request){
 		// check file type
@@ -555,7 +565,7 @@ class S2GController extends Controller
 		return redirect("/snp2gene#joblist-panel");
     }
 
-    public function Error5(Request $request){
+	public function Error5(Request $request){
 		$jobID = $request->input('jobID');
 
 		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
@@ -566,7 +576,7 @@ class S2GController extends Controller
 		}
 
 		return json_encode($rows);
-    }
+	}
 
 	public function circos_chr(Request $request){
 		$id = $request->input("id");
@@ -621,12 +631,12 @@ class S2GController extends Controller
         return response() -> download($zipfile);
 	}
 
-    public function deleteJob(Request $request){
+	public function deleteJob(Request $request){
 		$jobID = $request->input('jobID');
 		File::deleteDirectory(config('app.jobdir').'/jobs/'.$jobID);
 		DB::table('SubmitJobs')->where('jobID', $jobID)->delete();
 		return;
-    }
+	}
 
 	public function paramTable(Request $request){
 		$filedir = $request -> input('filedir');
@@ -642,7 +652,7 @@ class S2GController extends Controller
 		return $table;
     }
 
-    public function sumTable(Request $request){
+	public function sumTable(Request $request){
 		$filedir = $request -> input('filedir');
 		$table = '<table class="table table-bordered" style="width:auto;margin-right:auto; margin-left:auto; text-align: right;"><tbody>';
 		$lines = file($filedir."summary.txt");
@@ -653,7 +663,7 @@ class S2GController extends Controller
 		$table .= "</tbody></table>";
 
 		return $table;
-    }
+	}
 
 	public function locusPlot(Request $request){
       $id = $request->input('id');
@@ -704,7 +714,7 @@ class S2GController extends Controller
 		}
     }
 
-    public function QQplot($prefix, $id, $plot){
+	public function QQplot($prefix, $id, $plot){
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
 		if(strcmp($plot,"SNP")==0){
@@ -740,9 +750,9 @@ class S2GController extends Controller
 				return json_encode($all_row);
 			}
 		}
-    }
+	}
 
-    public function MAGMAtsplot($type, $prefix, $jobID){
+	public function MAGMAtsplot($type, $prefix, $jobID){
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$jobID.'/';
 		$file = "";
 		if($type=="general"){
@@ -782,9 +792,9 @@ class S2GController extends Controller
 		}else{
 			return;
 		}
-    }
+	}
 
-    public function annotPlot(Request $request){
+	public function annotPlot(Request $request){
 		$id = $request->input('id');
 		$prefix = $request->input('prefix');
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
@@ -819,7 +829,7 @@ class S2GController extends Controller
 		return view('pages.annotPlot', ['id'=>$id, 'prefix'=>$prefix, 'type'=>$type, 'rowI'=>$rowI,
 			'GWASplot'=>$GWAS, 'CADDplot'=>$CADD, 'RDBplot'=>$RDB, 'eqtlplot'=>$eqtl,
 			'ciplot'=>$ci, 'Chr15'=>$Chr15, 'Chr15cells'=>$Chr15cells]);
-    }
+	}
 
 	public function annotPlotGetData(Request $request){
 		$id = $request->input("id");
