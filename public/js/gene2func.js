@@ -54,9 +54,9 @@ $(document).ready(function(){
 		});
 	});
 
-	if(status=="new"){
+	if(status.length==0 || status=="new"){
 		checkInput();
-		$('#resultSide').hide()
+		$('#resultSide').hide();
 	}else if(status=="getJob"){
 		var id = jobID;
 		checkInput();

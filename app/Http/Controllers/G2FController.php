@@ -30,6 +30,16 @@ class G2FController extends Controller
 		$this->user = Auth::user();
 	}
 
+	public function authcheck($jobID){
+		$email = $this->user->email;
+		$check = DB::table('gene2func')->where('jobID', $jobID)->first();
+		if($check->email==$email){
+			return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID]);
+		}else{
+			return view('pages.gene2func', ['status'=>null, 'id'=>$jobID]);
+		}
+	}
+
 	public function getJobList(){
 		$email = $this->user->email;
 

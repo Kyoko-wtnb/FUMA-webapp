@@ -88,6 +88,7 @@ orcol = param.get('inputfiles', 'orcol').upper()
 becol = param.get('inputfiles', 'becol').upper()
 secol = param.get('inputfiles', 'secol').upper()
 Ncol = param.get('params', 'Ncol').upper()
+N = param.get('params', 'N')
 
 ##### get header of sum stats #####
 fin = open(gwas, 'r')
@@ -155,7 +156,7 @@ for i in range(0, len(header)):
 		becol = i
 	elif secol == "NA" and re.match("^se$", header[i], re.IGNORECASE):
 		secol = i
-	elif Ncol == "NA" and re.match("^N$", header[i], re.IGNORECASE):
+	elif Ncol == "NA" and N=="NA" and re.match("^N$", header[i], re.IGNORECASE):
 		Ncol = i
 
 user_header = []
@@ -270,7 +271,7 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and eacol i
 		if l[rsIDcol] in rsIDs:
 			j = bisect_left(rsID[:,0], l[rsIDcol])
 			l[rsIDcol] = rsID[j,1]
-		l[chrcol] = l[chrcol].replace("chr", "")
+		l[chrcol] = l[chrcol].replace("chr", "").replace("CHR", "")
 		if re.match("x", l[chrcol], re.IGNORECASE):
 			l[chrcol] = '23'
 		if not l[chrcol].isdigit():
@@ -395,7 +396,7 @@ elif chrcol is not None and poscol is not None:
 	tmp = pd.read_table(gwas, comment="#", sep=delim, dtype=str)
 	head = list(tmp.columns.values)
 	tmp = np.array(tmp)
-	tmp[:,chrcol] = [x.replace("chr", "") for x in tmp[:,chrcol]]
+	tmp[:,chrcol] = [x.replace("chr", "").replace("CHR", "") for x in tmp[:,chrcol]]
 	tmp = tmp[np.lexsort((tmp[:,poscol].astype(int), tmp[:,chrcol].astype(int)))]
 	with open(gwas, 'w') as o:
 		o.write(" ".join(head)+"\n")
@@ -438,7 +439,7 @@ elif chrcol is not None and poscol is not None:
 			continue
 		if float(l[pcol])==0 and re.match("^0", l[pcol]):
 			continue
-		l[chrcol] = l[chrcol].replace("chr", "")
+		l[chrcol] = l[chrcol].replace("chr", "").replace("CHR", "")
 		if re.match(r"x", l[chrcol], re.IGNORECASE):
 		    l[chrcol] = '23'
 		if not l[chrcol].isdigit():

@@ -149,9 +149,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('snp2gene/imgdown', 'FumaController@imgdown');
 
-	Route::get('snp2gene/{jobID}', function($jobID){
-		return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
-	});
+	Route::get('snp2gene/{jobID}', 'S2GController@authcheck');
 
 	// ********************** GENE2FUNC ************************
 	Route::get('gene2func', function(){
@@ -176,9 +174,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::get('gene2func/ExpTsPlot/{type}/{jobID}', 'G2FController@ExpTsPlot');
 
-	Route::get('gene2func/{jobID}', function($jobID){
-		return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID]);
-	});
+	Route::get('gene2func/{jobID}', 'G2FController@authcheck');
 
 	Route::post('gene2func/deleteJob', 'G2FController@deleteJob');
 
