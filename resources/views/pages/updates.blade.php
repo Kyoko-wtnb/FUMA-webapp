@@ -17,12 +17,21 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>11 Dec 2017</td>
+			<td>v1.2.7</td>
+			<td>
+				Filtering of chromain interactions in circos plot has been updated.
+				Only chroamtin interactions (orange links) and eQTLs (green links) used for mapping are isplayed in circos plot from this version.
+				If you wish to update circos plot of existing SNP2GENE job, please contact developper with your jobID.
+			</td>
+		</tr>
+		<tr>
 			<td>1 Sep 2017</td>
 			<td>v1.2.4</td>
 			<td>
 				Minor bug in chromatin interaction mapping was fixed.
 				Chromatin interaction mapping has been missed some interactions that are overlapping with risk loci.
-				<span style="color:red;">If you have any NP2GENE job with chromatin interaction mapping submitted before 1st of September 2017,
+				<span style="color:red;">If you have any SNP2GENE job with chromatin interaction mapping submitted before 1st of September 2017,
 				it's stongly recommended to re-submit jobs or please contact developper to update the results.</span>
 			</td>
 		</tr>

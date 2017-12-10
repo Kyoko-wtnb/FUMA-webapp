@@ -204,6 +204,9 @@ if(ciMap==1){
 	ci <- fread(paste(filedir, "ci.txt", sep=""), data.table=F)
 	cisnps <- c()
 	if(nrow(ci)>0){
+		ci$ciMapFilt <- 0
+		ci$tmpid <- 1:nrow(ci)
+		ciall <- ci
 		cisnps <- unique(unlist(strsplit(ci$SNPs, ";")))
 		cisnps <- snps[snps$rsID %in% cisnps,]
 
@@ -265,6 +268,8 @@ if(ciMap==1){
 		}
 		cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ";"))),]
 		snps$ciMapFilt[snps$uniqID %in% cisnps$uniqID] <- 1
+		ciall$ciMapFilt[ciall$tmpid %in% ci$tmpid] <- 1
+		write.table(ciall[,1:(ncol(ciall)-1)], paste(filedir, "ci.txt", sep=""), quote=F, row.names=F, sep="\t")
 	}
 }
 

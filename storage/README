@@ -171,6 +171,7 @@ alignedDirection : The direction of effect to gene expression after aligning ris
 	"+" when the risk increasing allele increase the expression of the gene, "-" when the risk increasing allele decrease the expression of the gene.
 	"NA" if risk increasing allele is not defined.
 	Please refer the tutorial on the FUMA website for details.
+eqtlMapFilt : If the eQTL was used for eQTL mapping 1, otherwise 0. It can be 0 when the SNP has filtered by functional annotations such as CADD score.
 
 ######################
 # ci.txt
@@ -187,6 +188,11 @@ tissue/cell : Tissue or cell type of the interaction.
 intra/inter : Intra- or Inter-chromosomal interaction.
 SNPs : rsID of candidate SNPs which are overlapping with the region 1.
 genes : ENSG ID of genes whose promoter regions are overlapped with region 2.
+ciMapFilt : If the interaction used for mapping 1, otherwise 0. It can be 0 due to one of the following reasons.
+	1) region 2 is not mapped to any gene
+	2) genes mapped by region 2 are not user selected gene type (such as protein coding genes)
+	3) SNPs overlapping region 1 are filtered out by other functional filtering such as CADD score
+	4) When filtering based on enhancer and/or promoter is activated, either region 1 is not overlapping with any enhancer or region 2 is not overlapping with any promoter
 
 ######################
 # ciSNPs.txt
