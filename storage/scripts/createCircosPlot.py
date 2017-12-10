@@ -160,42 +160,46 @@ def main():
 	copyfile(circos_config+"/ticks.conf", filedir+"circos/ticks.conf")
 
 	##### risk loci #####
-	loci = pd.read_table(filedir+"GenomicRiskLoci.txt", delim_whitespace=True)
+	loci = pd.read_table(filedir+"GenomicRiskLoci.txt", delim_whitespace=True, header=0)
 	loci = np.array(loci)
 	loci = loci[:,[0,2,3,4,6,7]] #loci,rsID,chr,pos,start,end
 
 	##### snps #####
-	snps = pd.read_table(filedir+"snps.txt", delim_whitespace=True)
+	snps = pd.read_table(filedir+"snps.txt", delim_whitespace=True, header=0)
 	snpshead = list(snps.columns.values)
 	snps = np.array(snps)
 	snps = snps[:,[2,3,7,snpshead.index("r2")]]
 	snps = snps[np.where(np.isfinite(snps[:,2].astype(float)))]
 
 	##### 3D genome  #####
-	ci = pd.read_table(filedir+"ci.txt", delim_whitespace=True)
+	ci = pd.read_table(filedir+"ci.txt", delim_whitespace=True, header=0)
 	ci = np.array(ci)
+	ci = ci[ci[:,10]==1,]
 	ci = ci[ci[:,0].argsort()]
 	ci = ci[ci[:,7]=="intra"]
-	chr1 = [int(x.split(":")[0]) for x in ci[:,1]]
-	chr2 = [int(x.split(":")[0]) for x in ci[:,2]]
-	pos1min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,1]]
-	pos1max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,1]]
-	pos2min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,2]]
-	pos2max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,2]]
-	ci = np.c_[ci[:,0], chr1, pos1min, pos1max, chr2, pos2min, pos2max, ci[:,3:7]]
-	### take top 100000 links per chromosome
-	ci_chrom = unique(ci[:,1])
-	ci_tmp = []
-	for c in ci_chrom:
-		tmp = ci[ci[:,1]==c]
-		if len(tmp)>10000:
-			tmp = tmp[tmp[:,7].astype(float).argsort()]
-			tmp = tmp[0:10000]
-		if len(ci_tmp)==0:
-			ci_tmp = tmp
-		else:
-			ci_tmp = np.r_[ci_tmp, tmp]
-	ci = ci_tmp
+	if len(ci)>0:
+		chr1 = [int(x.split(":")[0]) for x in ci[:,1]]
+		chr2 = [int(x.split(":")[0]) for x in ci[:,2]]
+		pos1min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,1]]
+		pos1max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,1]]
+		pos2min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,2]]
+		pos2max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,2]]
+		ci = np.c_[ci[:,0], chr1, pos1min, pos1max, chr2, pos2min, pos2max]
+		ci = np.array(ci, dtype=str)
+		ci = np.vstack({tuple(row) for row in ci})
+		### take top 100000 links per chromosome
+		ci_chrom = unique(ci[:,1])
+		ci_tmp = []
+		for c in ci_chrom:
+			tmp = ci[ci[:,1]==c]
+			if len(tmp)>10000:
+				tmp = tmp[tmp[:,7].astype(float).argsort()]
+				tmp = tmp[0:10000]
+			if len(ci_tmp)==0:
+				ci_tmp = tmp
+			else:
+				ci_tmp = np.r_[ci_tmp, tmp]
+		ci = ci_tmp
 
 	##### mapped genes #####
 	genes = pd.read_table(filedir+"genes.txt", delim_whitespace=True)
@@ -204,19 +208,25 @@ def main():
 
 	##### eqtl #####
 	eqtl = []
+	### eQTL
+	# 0:ensg, 1: P-value, 2: chr, 3: pos
+	# later exclude p-value column
 	if os.path.isfile(filedir+"eqtl.txt"):
-		eqtl = pd.read_table(filedir+"eqtl.txt", delim_whitespace=True)
+		eqtl = pd.read_table(filedir+"eqtl.txt", delim_whitespace=True, header=0)
 		eqtl = np.array(eqtl)
+		eqtl = eqtl[eqtl[:,13]==1]
 		eqtl = eqtl[ArrayIn(eqtl[:,3], genes[:,0])]
-	### take top 100000 links per chromosome
+		eqtl = eqtl[:,[3,5,10,11]]
+
+	### take top 100000 links per chromosome (include all genes)
 	if len(eqtl)>0:
-		chrcol = np.array([int(x.split(":")[0]) for x in eqtl[:,0]])
-		e_chrom = unique(chrcol)
+		e_chrom = unique(eqtl[:,2])
 		eqtl_tmp = []
 		for c in e_chrom:
-			tmp = eqtl[np.where(chrcol==c)]
+			tmp = eqtl[eqtl[:,2]==c]
+			tmp = tmp[tmp[:,1].astype(float).argsort()][:,[0,2,3]]
+			tmp = np.vstack({tuple(row) for row in tmp})
 			if len(tmp)>10000:
-				tmp = tmp[tmp[:,5].astype(float).argsort()]
 				tmp = tmp[0:10000]
 			if len(eqtl_tmp)==0:
 				eqtl_tmp = tmp
@@ -235,7 +245,7 @@ def main():
 		else:
 			tmp_genes = []
 		if len(ci) >0 :
-			tmp_ci = ci[np.where((ci[:,1]==c) & (ci[:,4]==c))]
+			tmp_ci = ci[np.where((ci[:,1]==str(c)) & (ci[:,4]==str(c)))]
 		else:
 			tmp_ci = []
 		[tmp_snps, tmp_regions] = createConfig(c, filedir, circos_config, loci[loci[:,2].astype(int)==c], tmp_ci, snps[snps[:,0]==c], tmp_genes)
@@ -271,10 +281,10 @@ def main():
 
 	##### eqtl write out #####
 	if len(eqtl) >0 :
-		c = ["hs"+x.split(":")[0] for x in eqtl[:,0]]
-		pos = [int(x.split(":")[1]) for x in eqtl[:,0]]
-		gstart = list(map(lambda x: genes[genes[:,0]==x,3], eqtl[:,3]))
-		gend = list(map(lambda x: genes[genes[:,0]==x,4], eqtl[:,3]))
+		c = ["hs"+str(x) for x in eqtl[:,1]]
+		pos = eqtl[:,2].astype(int)
+		gstart = list(map(lambda x: genes[genes[:,0]==x,3], eqtl[:,0]))
+		gend = list(map(lambda x: genes[genes[:,0]==x,4], eqtl[:,0]))
 		eqtl = np.c_[c, pos, [x+1 for x in pos], c, gstart, gend]
 		eqtl[eqtl[:,0]=="hs23", 0] = "hsX"
 		eqtl[eqtl[:,3]=="hs23", 3] = "hsX"

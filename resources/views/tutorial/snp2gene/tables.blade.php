@@ -151,7 +151,7 @@
 </ul>
 <ul>
 	<li><p>eQTL</p>
-		<p>This table is only shown wheneQTL mapping is performed.
+		<p>This table is only shown when eQTL mapping is performed.
 		The table contains unique pairs of SNP-gene-tissue, therefore, a SNP could appear multiple times.</p>
 		<ul>
 			<li><strong>uniqID</strong> : Unique ID of SNPs consisting of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>

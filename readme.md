@@ -6,9 +6,9 @@ The application is available from [http://fuma.ctglab.nl](http://fuma.ctglab.nl)
 Currently FUMA is only available online, API will be available in near future.
 
 ## Citation
-Manuscript is under the preparation now. When it is possible please cite the following. Preprint is available at BioRxiv ([doi: https://doi.org/10.1101/110023](http://biorxiv.org/content/early/2017/02/20/110023)).
-
-Kyoko Watanabe, Erdogan Taskesen, Arjen van Bobhoven and Danielle Posthuma. FUMA: Functional mapping and annotation of genetic associations. In preparation
+When using FUMA, please cite the following.  
+K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma. Functional mapping and annotation of genetic associations with FUMA. *Nat. Commun.* **8**:1826. (2017).  
+[https://www.nature.com/articles/s41467-017-01261-5](https://www.nature.com/articles/s41467-017-01261-5)
 
 ## PHP frame work
 FUMA web application is based on [Laravel PHP Framework](https://laravel.com/docs/5.4).

@@ -121,8 +121,8 @@ Regional plots can be created with the following optional annotations:<br/>
 		<li>Mapped genes by chromatin interactions or eQTLs: Only mapped genes by either chroamtin interaction and/or eQTLs (conditional on user defined parameters) are displayed.
 			If the gene is mapped only by chromatin interactions or only by eQTLs, it is colored orange or green, respectively. When the gene is mapped by both, it is colored red.</li>
 		<li>Chromosome ring: The third layer. This is the same as second layer but without coordinates to make it easy to align position of genes with genomic coordinate.</li>
-		<li>Chromatin interaction links: Links colored orange are chromatin interactions used in the mapping (based on user-defined parameters).</li>
-		<li>eQTL lilnks: Links colored green are eQTLs used in the mapping  (based on user-defined parameters).</li>
+		<li>Chromatin interaction links: Links colored orange are chromatin interactions. Since v1.2.7, only the interactions used for mapping based on user defined parameters are displayed.</li>
+		<li>eQTL lilnks: Links colored green are eQTLs. Since v1.2.7, only the eQTLs used for mapping based on user defined parameters are displayed.</li>
 	</ul>
 	<span class="info"><i class="fa fa-info"></i>
 		Since creating a circos plot might take long time with a large number of points and links, the maximum number of points and links are limited to 50,000 and 10,000 per plot (chromosome), respectively, in the default plot.
