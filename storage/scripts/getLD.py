@@ -652,6 +652,26 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 					loci[iloci][2] = leadSNPs[i,1]
 					loci[iloci][4] = leadSNPs[i,3]
 					loci[iloci][5] = leadSNPs[i,4]
+				if iloci > 0 and int(loci[iloci][6])-int(loci[iloci-1][7])<params.mergeDist:
+					iloci -= 1
+					loci[iloci][6] = str(min(loci[iloci][6], loci[iloci+1][6]))
+					loci[iloci][7] = str(max(loci[iloci][7], loci[iloci+1][7]))
+					loci[iloci][11] = ";".join(unique(loci[iloci][11].split(";")+loci[iloci+1][11].split(";")))
+					loci[iloci][10] = len(loci[iloci][11].split(";"))
+					loci[iloci][13] = ";".join(unique(loci[iloci][13].split(";")+loci[iloci+1][13].split(";")))
+					loci[iloci][12] = len(loci[iloci][13].split(";"))
+					n = ArrayIn(snps[:,0], ld[ArrayIn(ld[:,0], snps[ArrayIn(snps[:,1], loci[iloci][11].split(";")),0]),1])
+					loci[iloci][8] = len(n)
+					loci[iloci][9] = len(np.where(snps[n,7]!="NA")[0])
+					if float(loci[iloci+1][5]) < float(loci[iloci][5]):
+						loci[iloci][1] = loci[iloci+1][1]
+						loci[iloci][2] = loci[iloci+1][2]
+						loci[iloci][4] = loci[iloci+1][4]
+						loci[iloci][5] = loci[iloci+1][5]
+					tmp_loci = []
+					for i in range(0, iloci+1):
+						tmp_loci.append(loci[i])
+					loci = tmp_loci
 			else:
 				gidx += 1
 				iloci += 1
