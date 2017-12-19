@@ -71,8 +71,7 @@ if(exMHC==1){
 		if(extMHC[1]<start){start<-extMHC[1]}
 		if(extMHC[2]>end){end <- extMHC[2]}
 	}
-	MHCgenes <- ENSG$ensembl_gene_id[ENSG$chromosome_name==6 & ((ENSG$end_position>=start&ENSG$end_position<=end)|(ENSG$start_position>=start&ENSG$start_position<=end))]
-	ENSG <- ENSG[!(ENSG$ensembl_gene_id%in%MHCgenes),]
+	ENSG <- ENSG[!(ENSG$ensembl_gene_id%in%ENSG$ensembl_gene_id[ENSG$chromosome_name==6 & ((ENSG$end_position>=start&ENSG$end_position<=end)|(ENSG$start_position>=start&ENSG$start_position<=end))]),]
 }
 
 ##### read files #####
@@ -82,17 +81,16 @@ snps$eqtlMapFilt <- 0
 snps$ciMapFilt <- 0
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
-genes <- vector()
+genes <- c()
 
 ##### positional mapping #####
 if(posMap==1){
-	annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
-	annov <- annov[annov$gene %in% ENSG$ensembl_gene_id,]
+	tmp_snps <- snps
 	if(posMapCADDth>0){
-		annov <- annov[annov$uniqID %in% annot$uniqID[annot$CADD>=posMapCADDth],]
+		tmp_snps <- tmp_snps[tmp_snps$CADD>=posMapCADDth,]
 	}
 	if(posMapRDBth!="NA"){
-		annov <- annov[annov$uniqID %in% annot$uniqID[annot$RDB<=posMapRDBth],]
+		tmp_snps <- tmp_snps[tmp_snps$RDB<=posMapRDBth,]
 	}
 	if(posMapChr15!="NA"){
 		if(grepl("all", posMapChr15)){
@@ -122,21 +120,25 @@ if(posMap==1){
 			}
 		}
 		epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
-		epi <- epi[epi$epi<=posMapChr15Max,]
-		annov <- annov[annov$uniqID %in% epi$uniqID,]
+		tmp_snps <- tmp_snps[tmp_snps$uniqID %in% epi$uniqID[epi$epi<=posMapChr15Max],]
 		rm(epi, temp)
 	}
 	if(is.na(posMapWindowSize)){
+		annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
+		annov <- annov[annov$gene %in% ENSG$ensembl_gene_id & annov$uniqID %in% tmp_snps$uniqID,]
 		posMapAnnot <- unique(unlist(strsplit(posMapAnnot, ":")))
 		annov <- annov[grepl(paste(posMapAnnot, collapse="|"), annov$annot),]
 		genes <- c(genes, unique(annov$gene))
 		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
 	}else{
-		if(posMapWindowSize==0){
-			annov <- annov[annov$dist <= posMapWindowSize,]
-		}else{
-			annov <- annov[annov$dist < posMapWindowSize,]
-		}
+		annov <- apply(ENSG[,c(1,3:5)], 1, function(x){
+		  c<-as.numeric(ifelse(x[2]=="X", "23", x[2])); s<-as.numeric(x[3]); e<-as.numeric(x[4]);
+		  tmp <- tmp_snps$uniqID[which(tmp_snps$chr==c & tmp_snps$pos>s-posMapWindowSize & tmp_snps$pos<e+posMapWindowSize)]
+		  if(length(tmp)>0){cbind(tmp, rep(x[1], length(tmp)))}
+		})
+		annov <- as.data.frame(do.call(rbind, annov[lapply(annov,length)>0]), stringsAsFactors = F)
+		rownames(annov) <- NULL
+		colnames(annov) <- c("uniqID", "gene")
 		genes <- c(genes, unique(annov$gene))
 		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
 	}
@@ -187,8 +189,7 @@ if(eqtlMap==1){
 					}
 				}
 				epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
-				epi <- epi[epi$epi<=eqtlMapChr15Max,]
-				eqtl <- eqtl[eqtl$uniqID %in% epi$uniqID,]
+				eqtl <- eqtl[eqtl$uniqID %in% epi$uniqID[epi$epi<=eqtlMapChr15Max],]
 				rm(epi, temp)
 			}
 			genes <- c(genes, unique(eqtl$gene))
@@ -248,8 +249,7 @@ if(ciMap==1){
 	        }
 	      }
 	      epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
-	      epi <- epi[epi$epi<=ciMapChr15Max,]
-	      cisnps <- cisnps[cisnps$uniqID %in% epi$uniqID,]
+	      cisnps <- cisnps[cisnps$uniqID %in% epi$uniqID[epi$epi<=ciMapChr15Max],]
 	      rm(epi, temp)
 	    }
 		cicheck <- sapply(ci$SNPs, function(x){if(length(which(unlist(strsplit(x, ";")) %in% cisnps$rsID))>0){1}else{0}})
@@ -279,8 +279,7 @@ write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep=
 geneTable <- ENSG[ENSG$ensembl_gene_id %in% genes,]
 colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "status", "type", "entrezID","HUGO")
 if(nrow(geneTable)>0){
-	geneTable$chr[geneTable$chr=="X"] <- "23"
-	geneTable$chr <- as.numeric(geneTable$chr)
+	geneTable$chr <- as.numeric(ifelse(geneTable$chr=="X", "23", geneTable$chr))
 	geneTable <- geneTable[order(geneTable$start),]
 	geneTable <- geneTable[order(geneTable$chr),]
 

@@ -17,6 +17,19 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>20 Dec 2017</td>
+			<td>v1.2.8</td>
+			<td>
+				Positional maping based on distance between SNPs and genes has been improved.
+				It was purely based on the distance annotated by ANNOVAR until v1.2.7, however,
+				ANNOVAR only annotate intergenic SNPs to two closet genes.
+				From v1.2.8, distance between SNPs to genes are checked independently from ANNOVAR.
+				This change more likely to affect your results when positional mapping was performed
+				with distance much larger than 10kb.
+				There must be no effect if positional mapping was performed based on the functional consequence of SNPs annotated by ANNOVAR.
+			</td>
+		</tr>
+		<tr>
 			<td>11 Dec 2017</td>
 			<td>v1.2.7</td>
 			<td>
