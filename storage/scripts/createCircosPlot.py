@@ -186,7 +186,8 @@ def main():
 		pos2max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,2]]
 		ci = np.c_[ci[:,0], chr1, pos1min, pos1max, chr2, pos2min, pos2max]
 		ci = np.array(ci, dtype=str)
-		ci = np.vstack({tuple(row) for row in ci})
+		if len(ci)>1:
+			ci = np.vstack({tuple(row) for row in ci})
 		### take top 100000 links per chromosome
 		ci_chrom = unique(ci[:,1])
 		ci_tmp = []
