@@ -38,7 +38,7 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'expire' => 7200,
+            'expire' => 10800,
         ],
 
         'beanstalkd' => [
@@ -61,7 +61,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => 'default',
-            'expire' => 7200,
+            'expire' => 10800,
         ],
 
     ],

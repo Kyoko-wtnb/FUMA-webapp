@@ -174,10 +174,10 @@ def main():
 	##### 3D genome  #####
 	ci = pd.read_table(filedir+"ci.txt", delim_whitespace=True, header=0)
 	ci = np.array(ci)
-	ci = ci[ci[:,10]==1,]
-	ci = ci[ci[:,0].argsort()]
-	ci = ci[ci[:,7]=="intra"]
 	if len(ci)>0:
+		ci = ci[ci[:,10]==1,]
+		ci = ci[ci[:,0].argsort()]
+		ci = ci[ci[:,7]=="intra"]
 		chr1 = [int(x.split(":")[0]) for x in ci[:,1]]
 		chr2 = [int(x.split(":")[0]) for x in ci[:,2]]
 		pos1min = [int(x.split(":")[1].split("-")[0]) for x in ci[:,1]]
@@ -186,7 +186,8 @@ def main():
 		pos2max = [int(x.split(":")[1].split("-")[1]) for x in ci[:,2]]
 		ci = np.c_[ci[:,0], chr1, pos1min, pos1max, chr2, pos2min, pos2max]
 		ci = np.array(ci, dtype=str)
-		ci = np.vstack({tuple(row) for row in ci})
+		if len(ci)>1:
+			ci = np.vstack({tuple(row) for row in ci})
 		### take top 100000 links per chromosome
 		ci_chrom = unique(ci[:,1])
 		ci_tmp = []
@@ -214,8 +215,9 @@ def main():
 	if os.path.isfile(filedir+"eqtl.txt"):
 		eqtl = pd.read_table(filedir+"eqtl.txt", delim_whitespace=True, header=0)
 		eqtl = np.array(eqtl)
-		eqtl = eqtl[eqtl[:,13]==1]
-		eqtl = eqtl[ArrayIn(eqtl[:,3], genes[:,0])]
+		if len(eqtl)>0:
+			eqtl = eqtl[eqtl[:,13]==1]
+			eqtl = eqtl[ArrayIn(eqtl[:,3], genes[:,0])]
 		eqtl = eqtl[:,[3,5,10,11]]
 
 	### take top 100000 links per chromosome (include all genes)
