@@ -247,7 +247,7 @@ class S2GController extends Controller
 		if($request -> has('eacol')){$eacol = $request->input('eacol');}
 		if($request -> has('neacol')){$neacol = $request->input('neacol');}
 		if($request -> has('orcol')){$orcol = $request->input('orcol');}
-		if($request -> has('becol')){$orcol = $request->input('becol');}
+		if($request -> has('becol')){$becol = $request->input('becol');}
 		if($request -> has('secol')){$secol = $request->input('secol');}
 
 		// MHC region
