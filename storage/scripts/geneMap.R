@@ -136,11 +136,15 @@ if(posMap==1){
 		  tmp <- tmp_snps$uniqID[which(tmp_snps$chr==c & tmp_snps$pos>s-posMapWindowSize & tmp_snps$pos<e+posMapWindowSize)]
 		  if(length(tmp)>0){cbind(tmp, rep(x[1], length(tmp)))}
 		})
-		annov <- as.data.frame(do.call(rbind, annov[lapply(annov,length)>0]), stringsAsFactors = F)
-		rownames(annov) <- NULL
-		colnames(annov) <- c("uniqID", "gene")
-		genes <- c(genes, unique(annov$gene))
-		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
+		if(length(annov)>0){
+			annov <- as.data.frame(do.call(rbind, annov[lapply(annov,length)>0]), stringsAsFactors = F)
+			rownames(annov) <- NULL
+			colnames(annov) <- c("uniqID", "gene")
+			genes <- c(genes, unique(annov$gene))
+			snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
+		}else{
+			annov <- data.frame(uniqID=NULL, gene=NULL)
+		}
 	}
 }
 
