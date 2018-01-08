@@ -74,10 +74,10 @@ def mapToCI(snps, gl, f, ciMapFDR, dt, DB, ts, genes):
 
 	print "Significant interactions: "+str(len(mapdat))
 
-	if mapdat[0,0].dtype is np.str:
+	if isinstance(mapdat[0,0], str):
 		mapdat[:,0] = [int(re.sub(r'X|x', '23', x.replace("chr",""))) for x in mapdat[:,0]]
-	if mapdat[0,3].dtype is np.str:
-		mapdat[:,3] = [int(re.sub(r'X|x', '23', x.replace("chr",""))) for x in mapdat[:,0]]
+	if isinstance(mapdat[0,3], str):
+		mapdat[:,3] = [int(re.sub(r'X|x', '23', x.replace("chr",""))) for x in mapdat[:,3]]
 
 	### filter interaction based on risk loci
 	chrdat1 = {}
