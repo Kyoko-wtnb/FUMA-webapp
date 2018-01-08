@@ -243,6 +243,12 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="alph" selected>Alphabetical order</option>
 						</select>
 					</span><br/><br/>
+					<form class="form-inline" action="fileDown" method="post" target="_blank">
+						<input type="hidden" name="_token" value="{{ csrf_token() }}">
+						<input type="hidden" name="id" value="{{$id}}"/>
+						<input type="hidden" name="file" value="exp.txt"/>
+						<input type="submit" class="btn btn-xs" id="expdown" name="expdown" value="Download text file">
+					</form>
 					Download the plot as
 					<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","png");'>PNG</button>
 					<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","jpeg");'>JPG</button>
