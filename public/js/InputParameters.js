@@ -13,6 +13,20 @@ $(document).ready(function(){
 	$('#eqtlMapOptFilt').hide();
 	$('.ciMapOptions').hide();
 	$('#ciMapOptFilt').hide();
+
+	// list of existing jobs
+	$.ajax({
+		url: subdir+"/snp2gene/getjobIDs",
+		type: "POST",
+		error: function(){
+			alert("error for getjobIDs");
+		},
+		success: function(data){
+			data.forEach(function(d){
+				$('#paramsID').append('<option value='+d.jobID+'>'+d.jobID+' ('+d.title+')</option>');
+			})
+		}
+	})
 	CheckAll();
 	$('#fileCheck').html("<br/><div class='alert alert-danger'>GWAS summary statistics is a mandatory input.</div>");
 
@@ -55,6 +69,214 @@ $(document).ready(function(){
 			+'" onchange="ciFileCheck()"><input type="hidden" class="ciFileID" id="ciFileID'+n+'" name="ciFileID'+n+'" value="'+n+'"></span>');
 	})
 });
+
+function loadParams(){
+	var paramsID = $('#paramsID').val();
+	if(paramsID > 0){
+		$.ajax({
+			url: subdir+"/snp2gene/loadParams",
+			type: "POST",
+			data: {
+				"id": paramsID
+			},
+			error: function(){
+				alert("error for loadParams");
+			},
+			success: function(data){
+				data = JSON.parse(data);
+				setParams(data);
+			}
+		})
+	}
+}
+
+function setParams(data){
+	// columns
+	if(data.chrcol!="NA"){$('#chrcol').val(data.chrcol)}
+	else{$('#chrcol').val('')}
+	if(data.poscol!="NA"){$('#poscol').val(data.poscol)}
+	else{$('#poscol').val('')}
+	if(data.rsIDcol!="NA"){$('#rsIDcol').val(data.rsIDcol)}
+	else{$('#rsIDcol').val('')}
+	if(data.pcol!="NA"){$('#pcol').val(data.pcol)}
+	else{$('#pcol').val('')}
+	if(data.eacol!="NA"){$('#eacol').val(data.eacol)}
+	else{$('#eacol').val('')}
+	if(data.neacol!="NA"){$('#neacol').val(data.neacol)}
+	else{$('#neacol').val('')}
+	if(data.orcol!="NA"){$('#orcol').val(data.orcol)}
+	else{$('#orcol').val('')}
+	if(data.becol!="NA"){$('#becol').val(data.becol)}
+	else{$('#becol').val('')}
+	if(data.secol!="NA"){$('#secol').val(data.secol)}
+	else{$('#secol').val('')}
+
+	if(data.addleadSNPs=="1"){$('#addleadSNPs').prop('checked', true);}
+	else{$('#addleadSNPs').prop('checked', false);}
+
+	// params
+	if(data.N == "NA"){
+		$('#N').val('');
+		CheckAll();
+		$('#Ncol').val(data.Ncol);
+	}else{
+		$('#Ncol').val('');
+		CheckAll();
+		$('#N').val(data.N);
+	}
+	$('#leadP').val(data.leadP);
+	$('r2').val(data.r2);
+	$('#gwasP').val(data.gwasP);
+	$('#refpanel').val(data.refpanel+"/"+data.pop);
+	if(data.Incl1KGSNPs=="1"){$('#KGSNPs').val("Yes")}
+	else($('#KGSNPs'.val("No")))
+	$('#maf').val(data.MAF);
+	$('#mergeDist').val(data.mergeDist);
+
+	//posMap
+	if(data.posMap=="1"){
+		$('#posMap').prop("checked", true);
+	}else{
+		$('#posMap').prop("checked", false);
+	}
+	if(data.posMapWindowSize != "NA"){
+		$('#posMapAnnot').val('');
+		CheckAll();
+		$('#posMapWindow').val(data.posMapWindowSize);
+	}else{
+		$('#posMapWindow').val('');
+		var annot = data.posMapAnnot.split(":");
+		$("#posMapAnnot option").each(function(){
+			if(annot.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+			else{$(this).prop('selected', false);}
+		});
+	}
+	if(data.posMapCADDth>0){
+		$('#posMapCADDcheck').prop("checked", true);
+		$('#posMapCADDth').val(data.posMapCADDth);
+	}else{
+		$('#posMapCADDcheck').prop("checked", false);
+	}
+	if(data.posMapRDBth!="NA"){
+		$('#posMapRDBcheck').prop("checked", true);
+		$('#posMapRDBth').val(data.posMapRDBth);
+	}else{
+		$('#posMapRDBcheck').prop("checked", false);
+	}
+	if(data.posMapChr15!="NA"){
+		$('#posMapChe15check').porp("checked", true);
+		var cell = data.posMapChr15.split(":");
+		$('#posMapChr15Ts option').each(function(){
+			if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+			else{$(this).prop('selected', false);}
+		});
+		$('#posMapChr15Max').val(data.posMapChr15Max);
+		$('#posMapChr15Meth').val(data.posMapChr15Meth);
+	}
+
+	//eqtl map
+	if(data.eqtlMap == "1"){$('#eqtlMap').prop("checked", true)}
+	else{$('#eqtlMap').prop("checked", false)}
+	if(data.eqtlMaptss != "NA"){
+		var ts = data.eqtlMaptss.split(":");
+		$('#eqtlMapTs option').each(function(){
+			if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+			else{$(this).prop('selected', false);}
+		});
+		CheckAll();
+		if(data.eqtlMapSig=="1"){$('#sigeqtlCheck').prop("checked", true);}
+		else{$('#sigeqtlCheck').prop("checked", false);$('#eqtlP').val(data.eqtlMapP);}
+	}
+	if(data.eqtlMapCADDth>0){
+		$('#eqtlMapCADDcheck').prop("checked", true);
+		$('#eqtlMapCADDth').val(data.eqtlMapCADDth);
+	}else{
+		$('#eqtlMapCADDcheck').prop("checked", false);
+	}
+	if(data.eqtlMapRDBth!="NA"){
+		$('#eqtlMapRDBcheck').prop("checked", true);
+		$('#eqtlMapRDBth').val(data.eqtlMapRDBth);
+	}else{
+		$('#eqtlMapRDBcheck').prop("checked", false);
+	}
+	if(data.eqtlMapChr15!="NA"){
+		$('#eqtlMapChr15check').prop("checked", true);
+		var cell = data.eqtlMapChr15.split(":");
+		$('#eqtlMapChr15Ts option').each(function(){
+			if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+			else{$(this).prop('selected', false);}
+		});
+		$('#eqtlMapChr15Max').val(data.eqtlMapChr15Max);
+		$('#eqtlMapChr15Meth').val(data.eqtlMapChr15Meth);
+	}
+	if(data.ciMap!=null){
+		if(data.ciMap=="1"){
+			$('#ciMap').prop('checked', true);
+			$('#ciMapFDR').val(data.ciMapFDR);
+			$('#ciMapPromWindow').val(data.ciMapPromWindow);
+		}else{
+			$('#chMap').prop('checked', false);
+		}
+		if(data.ciMapBuildin!="NA"){
+			var ts = data.ciMapBuildin.split(":");
+			$('#ciMapBuildin option').each(function(){
+				if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+			CheckAll();
+		}
+		if(data.ciMapRoadmap!="NA"){
+			var cell = data.ciMapRoadmap.split(":");
+			$('#ciMapRoadmap option').each(function(){
+				if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+			CheckAll();
+		}
+		if(data.ciMapEnhFilt=="1"){$('#ciMapEnhFilt').prop('checked', true)}
+		if(data.ciMapPromFilt=="1"){$('#ciMapPromFilt').prop('checked', true)}
+
+		if(data.ciMapCADDth>0){
+			$('#ciMapCADDcheck').prop("checked", true);
+			$('#ciMapCADDth').val(data.ciMapCADDth);
+		}else{
+			$('#ciMapCADDcheck').prop("checked", false);
+		}
+		if(data.ciMapRDBth!="NA"){
+			$('#ciMapRDBcheck').prop("checked", true);
+			$('#ciMapRDBth').val(data.ciMapRDBth);
+		}else{
+			$('#ciMapRDBcheck').prop("checked", false);
+		}
+		if(data.ciMapChr15!="NA"){
+			$('#ciMapChe15check').porp("checked", true);
+			var cell = data.ciMapChr15.split(":");
+			$('#ciMapChr15Ts option').each(function(){
+				if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+			$('#ciMapChr15Max').val(data.ciMapChr15Max);
+			$('#ciMapChr15Meth').val(data.ciMapChr15Meth);
+		}
+	}else{
+		$('#ciMap').prop('checked', false);
+	}
+
+	// gene type
+	$('#genetype option').each(function(){
+		if($(this).val().indexOf(data.genetype)>=0){$(this).prop('selected', true);}
+		else{$(this).prop('selected', false);}
+	});
+	// MHC region
+	if(data.exMHC=="1"){$('#MHCregion').prop('checked', true);}
+	else{$('#MHCregion').prop('checked', false);}
+	$('#MHCopt option').each(function(){
+		if($(this).val()==data.MHCopt){$(this).prop('selected', true);}
+	});
+	if(data.extMHC!="NA"){$('#extMHCregion').val(data.extMHC)}
+
+	CheckAll();
+}
 
 function ciFileCheck(){
 	var maxSize = 0;
@@ -102,7 +324,6 @@ function CheckAll(){
 		}else{
 			$(table.rows[0].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-ban"></i> Mandatory<br/>The maximum file size is 600Mb. Please gzip if your file is bigger than 600Mb.</div></td>');
-			$('#N').val('');
 			$('#chrcol').attr("disabled", true);
 			$('#poscol').attr("disabled", true);
 			$('#rsIDcol').attr("disabled", true);
