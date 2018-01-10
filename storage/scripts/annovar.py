@@ -27,20 +27,30 @@ def getAnnov(snps, chrom, annovin, dbSNP):
 
 	annov = []
 	checked = []
-	maf = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
-	for l in maf:
-		if l[1] in checked:
-			continue
-		if int(l[1]) in snps[:,3].astype(int):
-			j = bisect_left(pos, l[1])
-			#j = np.where(snps[:,3].astype(int)==int(l[1]))[0][0]
-			if l[3] == str(snps[j,4]):
-				annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], l[3], snps[j,5]])
-			elif l[3] == str(snps[j,5]):
-				annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], l[3], snps[j,4]])
-			else:
-				annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], snps[j,4], snps[j,5]])
-			checked.append(str(snps[j,3]))
+
+	cur_start = start
+	cur_end = start + 100000
+	if cur_end>end:
+		cur_end = end
+	while cur_start < end:
+		maf = tb.querys(str(chrom)+":"+str(cur_start)+"-"+str(cur_end))
+		for l in maf:
+			if l[1] in checked:
+				continue
+			if int(l[1]) in spos:
+				j = bisect_left(pos, l[1])
+				#j = np.where(snps[:,3].astype(int)==int(l[1]))[0][0]
+				if l[3] == str(snps[j,4]):
+					annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], l[3], snps[j,5]])
+				elif l[3] == str(snps[j,5]):
+					annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], l[3], snps[j,4]])
+				else:
+					annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], snps[j,4], snps[j,5]])
+				checked.append(str(snps[j,3]))
+		cur_start = cur_end+1
+		cur_end = cur_start + 100000
+		if cur_end>end:
+			cur_end = end
 	snps = snps[ArrayNotIn(snps[:,3], checked)]
 	for l in snps:
 		annov.append([str(chrom).replace('23', 'X'), l[3], l[3], l[4], l[5]])
