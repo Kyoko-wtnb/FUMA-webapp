@@ -34,7 +34,7 @@ if(bkgtype == "select"){
   bkgenes = unlist(strsplit(bkgval, ":"))
 }else{
   bkgenes = fread(paste(filedir, bkgval, sep=""), head=F, data.table=F)
-  blgenes = bkgenes[,1]
+  bkgenes = bkgenes[,1]
 }
 
 #if(Xchr==1){
