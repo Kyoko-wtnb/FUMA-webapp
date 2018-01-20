@@ -101,6 +101,10 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('snp2gene/getjobIDs', 'S2GController@getjobIDs');
 
+	Route::post('snp2gene/getGeneMapIDs', 'S2GController@getGeneMapIDs');
+
+	Route::post('snp2gene/geneMap', 'S2GController@geneMap');
+
 	Route::post('snp2gene/loadParams', 'S2GController@loadParams');
 
 	Route::get('snp2gene/checkJobStatus/{jobid}', 'S2GController@checkJobStatus');

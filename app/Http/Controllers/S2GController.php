@@ -17,6 +17,7 @@ use JavaScript;
 use Mail;
 use fuma\User;
 use fuma\Jobs\snp2geneProcess;
+use fuma\Jobs\geneMapProcess;
 
 class S2GController extends Controller
 {
@@ -52,6 +53,7 @@ class S2GController extends Controller
 		}
 
 		$this->queueNewJobs();
+		$this->queueGeneMap();
 
 		return response()->json($results);
 
@@ -60,6 +62,12 @@ class S2GController extends Controller
 	public function getjobIDs(){
 		$email = $this->user->email;
 		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=?', [$email]);
+		return $results;
+	}
+
+	public function getGeneMapIDs(){
+		$email = $this->user->email;
+		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=? AND status=="OK"', [$email]);
 		return $results;
 	}
 
@@ -80,6 +88,21 @@ class S2GController extends Controller
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
 				$this->dispatch(new snp2geneProcess($user, $jobID));
+			}
+		}
+		return;
+	}
+
+	public function queueGeneMap(){
+		$user = $this->user;
+		$email = $user->email;
+		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW_geneMap')->get();
+		if(count($newJobs)>0){
+			foreach($newJobs as $job){
+				$jobID = $job->jobID;
+				DB::table('SubmitJobs') -> where('jobID', $jobID)
+					-> update(['status'=>'QUEUED']);
+				$this->dispatch(new geneMapProcess($user, $jobID));
 			}
 		}
 		return;
@@ -577,6 +600,291 @@ class S2GController extends Controller
 		File::append($paramfile, "ciMapChr15Meth=$ciMapChr15Meth\n");
 		return redirect("/snp2gene#joblist-panel");
     }
+
+	public function geneMap(Request $request){
+		$date = date('Y-m-d H:i:s');
+		$oldID = $request->input("geneMapID");
+		$jobID;
+		$filedir;
+		$email = $this->user->email;
+
+		$jobtitle = "";
+		if($request->has("geneMapTitle")){
+			$jobtitle = $request -> input('geneMapTitle');
+		}
+		$jobtitle .= "_copied_".$oldID;
+
+		// Create new job in database
+		$submitJob = new SubmitJob;
+		$submitJob->email = $email;
+		$submitJob->title = $jobtitle;
+		$submitJob->status = 'NEW_geneMap';
+		$submitJob->save();
+
+		// Get jobID (automatically generated)
+		$jobID = $submitJob->jobID;
+
+		// copie old job to new ID
+		$filedir = config('app.jobdir').'/jobs/'.$jobID;
+		// $oldfiledir = config('app.jobdir').'/jobs/'.$oldID;
+		// File::makeDirectory($filedir, $mode = 0755, $recursive = true);
+		File::copyDirectory(config('app.jobdir').'/jobs/'.$oldID, $filedir);
+		system("rm $filedir/*.svg $filedir/*.png $filedir/*.pdf $filedir/*.jpg");
+		system("rm -r $filedir/circos");
+
+		// positional mapping
+		if($request -> has('geneMap_posMap')){$posMap=1;}
+		else{$posMap=0;}
+		if($request -> has('geneMap_posMapWindow')){
+		$posMapWindowSize=$request -> input('geneMap_posMapWindow');
+		$posMapAnnot="NA";
+		}else{
+		$posMapWindowSize="NA";
+		$posMapAnnot=implode(":",$request -> input('geneMap_posMapAnnot'));
+		}
+		if($request -> has('geneMap_posMapCADDcheck')){
+			$posMapCADDth = $request -> input('geneMap_posMapCADDth');
+		}else{
+			$posMapCADDth = 0;
+		}
+		if($request -> has('geneMap_posMapRDBcheck')){
+			$posMapRDBth = $request -> input('geneMap_posMapRDBth');
+		}else{
+			$posMapRDBth = "NA";
+		}
+
+		if($request -> has('geneMap_posMapChr15check')){
+			$temp = $request -> input('geneMap_posMapChr15Ts');
+			$posMapChr15 = [];
+			foreach($temp as $ts){
+				if($ts != "null"){
+					$posMapChr15[] = $ts;
+				}
+			}
+			$posMapChr15 = implode(":", $posMapChr15);
+			$posMapChr15Max = $request -> input('geneMap_posMapChr15Max');
+			$posMapChr15Meth = $request -> input('geneMap_posMapChr15Meth');
+		}else{
+			$posMapChr15 = "NA";
+			$posMapChr15Max = "NA";
+			$posMapChr15Meth = "NA";
+		}
+
+		// eqtl mapping
+		if($request -> has('geneMap_eqtlMap')){
+			$eqtlMap=1;
+			$temp = $request -> input('geneMap_eqtlMapTs');
+			// $eqtlMapGts = $request -> input('geneMap_eqtlMapGts');
+			$eqtlMapTs = [];
+			$eqtlMapGts = [];
+			foreach($temp as $ts){
+				if($ts != "null"){
+					$eqtlMapTs[] = $ts;
+				}
+			}
+			if(!empty($eqtlMapTs) && !empty($eqtlMapGts)){
+				$eqtlMapTs = implode(":", $eqtlMapTs);
+				$eqtlMapGts = implode(":", $eqtlMapGts);
+				$eqtlMaptss = implode(":", array($eqtlMapTs, $eqtlMapGts));
+			}else if(!empty($eqtlMapTs)){
+				$eqtlMaptss = implode(":", $eqtlMapTs);
+			}else{
+				$eqtlMaptss = implode(":", $eqtlMapGts);
+			}
+		}else{
+			$eqtlMap=0;
+			$eqtlMaptss = "NA";
+		}
+		if($request -> has('sigeqtlCheck')){
+			$sigeqtl = 1;
+			$eqtlP = 1;
+		}else{
+			$sigeqtl = 0;
+			$eqtlP = $request -> input('eqtlP');
+		}
+		if($request -> has('geneMap_eqtlMapCADDcheck')){
+			$eqtlMapCADDth = $request -> input('geneMap_eqtlMapCADDth');
+		}else{
+			$eqtlMapCADDth = 0;
+		}
+		if($request -> has('geneMap_eqtlMapRDBcheck')){
+			$eqtlMapRDBth = $request -> input('geneMap_eqtlMapRDBth');
+		}else{
+			$eqtlMapRDBth = "NA";
+		}
+		if($request -> has('geneMap_eqtlMapChr15check')){
+			$temp = $request -> input('geneMap_eqtlMapChr15Ts');
+			$eqtlMapChr15 = [];
+			foreach($temp as $ts){
+				if($ts != "null"){
+					$eqtlMapChr15[] = $ts;
+				}
+			}
+			$eqtlMapChr15 = implode(":", $eqtlMapChr15);
+			$eqtlMapChr15Max = $request -> input('geneMap_eqtlMapChr15Max');
+			$eqtlMapChr15Meth = $request -> input('geneMap_eqtlMapChr15Meth');
+		}else{
+			$eqtlMapChr15 = "NA";
+			$eqtlMapChr15Max = "NA";
+			$eqtlMapChr15Meth = "NA";
+		}
+
+		// chromatin interaction mapping
+		$ciMap = 0;
+		$ciMapFileN = 0;
+		$ciMapFiles = "NA";
+		if($request->has('geneMap_ciMap')){
+			$ciMap = 1;
+			if($request->has('geneMap_ciMapBuildin')){
+				$temp = $request->input('geneMap_ciMapBuildin');
+				$ciMapBuildin = [];
+				foreach($temp as $dat){
+					if($dat != "null"){
+						$ciMapBuildin[] = $dat;
+					}
+				}
+				$ciMapBuildin = implode(":", $ciMapBuildin);
+			}else{
+				$ciMapBuildin = "NA";
+			}
+
+			$ciMapFileN = (int)$request->input("ciFileN");
+			if($ciMapFileN>0){
+				$ciMapFiles = [];
+				$n = 1;
+				while(count($ciMapFiles)<$ciMapFileN){
+					$id = (string) $n;
+					if($request->hasFile("ciMapFile".$id)){
+						$tmp_filename = $_FILES["ciMapFile".$id]["name"];
+						$request -> file("ciMapFile".$id)->move($filedir, $tmp_filename);
+						$tmp_datatype="undefined";
+						if($request->has("ciMapType".$id)){
+							$tmp_datatype = $request->input("ciMapType".$id);
+						}
+						$ciMapFiles[] = $tmp_datatype."/user_upload/".$tmp_filename;
+					}
+					$n++;
+				}
+				$ciMapFiles = implode(":", $ciMapFiles);
+			}
+
+			$ciMapFDR = $request->input('geneMap_ciMapFDR');
+			if($request->has('geneMap_ciMapPromWindow')){
+				$ciMapPromWindow = $request->input('geneMap_ciMapPromWindow');
+			}else{
+				$ciMapPromWindow = "250-500";
+			}
+			if($request->has('geneMap_ciMapRoadmap')){
+				$temp = $request->input('geneMap_ciMapRoadmap');
+				$ciMapRoadmap = [];
+				foreach($temp as $dat){
+					if($dat != "null"){
+						$ciMapRoadmap[] = $dat;
+					}
+				}
+				$ciMapRoadmap = implode(":", $ciMapRoadmap);
+			}else{
+				$ciMapRoadmap="NA";
+			}
+			if($request->has('geneMap_ciMapEnhFilt')){$ciMapEnhFilt = 1;}
+			else{$ciMapEnhFilt=0;}
+			if($request->has('geneMap_ciMapPromFilt')){$ciMapPromFilt = 1;}
+			else{$ciMapPromFilt=0;}
+		}else{
+			$ciMapBuildin = "NA";
+			$ciMapFDR = "NA";
+			$ciMapPromWindow="NA";
+			$ciMapRoadmap="NA";
+			$ciMapEnhFilt=0;
+			$ciMapPromFilt=0;
+		}
+
+
+		if($request -> has('geneMap_ciMapCADDcheck')){
+			$ciMapCADDth = $request -> input('geneMap_ciMapCADDth');
+		}else{
+			$ciMapCADDth = 0;
+		}
+		if($request -> has('geneMap_ciMapRDBcheck')){
+			$ciMapRDBth = $request -> input('geneMap_ciMapRDBth');
+		}else{
+			$ciMapRDBth = "NA";
+		}
+		if($request -> has('geneMap_ciMapChr15check')){
+			$temp = $request -> input('geneMap_ciMapChr15Ts');
+			$ciMapChr15 = [];
+			foreach($temp as $ts){
+				if($ts != "null"){
+					$ciMapChr15[] = $ts;
+				}
+			}
+			$ciMapChr15 = implode(":", $ciMapChr15);
+			$ciMapChr15Max = $request -> input('geneMap_ciMapChr15Max');
+			$ciMapChr15Meth = $request -> input('geneMap_ciMapChr15Meth');
+		}else{
+			$ciMapChr15 = "NA";
+			$ciMapChr15Max = "NA";
+			$ciMapChr15Meth = "NA";
+		}
+
+		// write parameter into a file
+		$paramfile = $filedir.'/params.config';
+		File::put($paramfile, "");
+		$oldparam = fopen(config('app.jobdir').'/jobs/'.$oldID.'/params.config', 'r');
+		while($line = fgets($oldparam)){
+			if(preg_match('/^\n/', $line)){continue;}
+			else if(preg_match('/\[jobinfo\]/', $line)){File::append($paramfile, $line);}
+			else if(preg_match('/posMap|eqtlMap|ciMap/', $line)){continue;}
+			else if(preg_match('/^title/', $line)){
+				File::append($paramfile, "title=".$jobtitle."\n");
+			}else if(preg_match('/^created_at/', $line)){
+				File::append($paramfile, "created_at=".$date."\n");
+			}else if(preg_match('/^\[/', $line)){
+				File::append($paramfile, "\n".$line);
+			}else{
+				File::append($paramfile, $line);
+			}
+		}
+
+		File::append($paramfile, "\n[posMap]\n");
+		File::append($paramfile, "posMap=$posMap\n");
+		// File::append($paramfile, "posMapWindow=$posMapWindow\n");
+		File::append($paramfile, "posMapWindowSize=$posMapWindowSize\n");
+		File::append($paramfile, "posMapAnnot=$posMapAnnot\n");
+		File::append($paramfile, "posMapCADDth=$posMapCADDth\n");
+		File::append($paramfile, "posMapRDBth=$posMapRDBth\n");
+		File::append($paramfile, "posMapChr15=$posMapChr15\n");
+		File::append($paramfile, "posMapChr15Max=$posMapChr15Max\n");
+		File::append($paramfile, "posMapChr15Meth=$posMapChr15Meth\n");
+
+		File::append($paramfile, "\n[eqtlMap]\n");
+		File::append($paramfile, "eqtlMap=$eqtlMap\n");
+		File::append($paramfile, "eqtlMaptss=$eqtlMaptss\n");
+		File::append($paramfile, "eqtlMapSig=$sigeqtl\n");
+		File::append($paramfile, "eqtlMapP=$eqtlP\n");
+		File::append($paramfile, "eqtlMapCADDth=$eqtlMapCADDth\n");
+		File::append($paramfile, "eqtlMapRDBth=$eqtlMapRDBth\n");
+		File::append($paramfile, "eqtlMapChr15=$eqtlMapChr15\n");
+		File::append($paramfile, "eqtlMapChr15Max=$eqtlMapChr15Max\n");
+		File::append($paramfile, "eqtlMapChr15Meth=$eqtlMapChr15Meth\n");
+
+		File::append($paramfile, "\n[ciMap]\n");
+		File::append($paramfile, "ciMap=$ciMap\n");
+		File::append($paramfile, "ciMapBuildin=$ciMapBuildin\n");
+		File::append($paramfile, "ciMapFileN=$ciMapFileN\n");
+		File::append($paramfile, "ciMapFiles=$ciMapFiles\n");
+		File::append($paramfile, "ciMapFDR=$ciMapFDR\n");
+		File::append($paramfile, "ciMapPromWindow=$ciMapPromWindow\n");
+		File::append($paramfile, "ciMapRoadmap=$ciMapRoadmap\n");
+		File::append($paramfile, "ciMapEnhFilt=$ciMapEnhFilt\n");
+		File::append($paramfile, "ciMapPromFilt=$ciMapPromFilt\n");
+		File::append($paramfile, "ciMapCADDth=$ciMapCADDth\n");
+		File::append($paramfile, "ciMapRDBth=$ciMapRDBth\n");
+		File::append($paramfile, "ciMapChr15=$ciMapChr15\n");
+		File::append($paramfile, "ciMapChr15Max=$ciMapChr15Max\n");
+		File::append($paramfile, "ciMapChr15Meth=$ciMapChr15Meth\n");
+		return redirect("/snp2gene#joblist-panel");
+	}
 
 	public function Error5(Request $request){
 		$jobID = $request->input('jobID');

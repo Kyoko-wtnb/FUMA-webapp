@@ -33,7 +33,8 @@ var subdir = "{{ Config::get('app.subdir') }}";
 var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
-<script type="text/javascript" src="{!! URL::asset('js/InputParameters.js') !!}"></script>
+<script type="text/javascript" src="{!! URL::asset('js/NewJobParameters.js') !!}"></script>
+<script type="text/javascript" src="{!! URL::asset('js/geneMapParameters.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/snp2gene.js') !!}"></script>
 @stop
 @section('content')
@@ -44,6 +45,7 @@ var loggedin = "{{ Auth::check() }}";
 		</ul>
 		<ul class="sidebar-nav" id="sidebar">
 			<li class="active"><a href="#newJob">New Job<i class="sub_icon fa fa-upload"></i></a></li>
+			<li><a href="#geneMap">Redo gene mapping<i class="sub_icon fa fa-repeat"></i></a></li>
 			<li><a href="#joblist-panel">My Jobs<i class="sub_icon fa fa-search"></i></a></li>
 			<div id="GWplotSide">
 				<li><a href="#genomePlots">Genome-wide plots<i class="sub_icon fa fa-bar-chart"></i></a></li>
@@ -63,8 +65,9 @@ var loggedin = "{{ Auth::check() }}";
 
 	<div id="page-content-wrapper">
 		<div class="page-content inset">
-	        @include('snp2gene.joblist')
 	        @include('snp2gene.newjob')
+			@include('snp2gene.geneMap')
+	        @include('snp2gene.joblist')
 
 			<!-- genome wide plots -->
 			<div class="sidePanel container" style="padding-top:50px;" id="genomePlots">

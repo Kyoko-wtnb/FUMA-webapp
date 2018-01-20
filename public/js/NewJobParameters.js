@@ -14,19 +14,7 @@ $(document).ready(function(){
 	$('.ciMapOptions').hide();
 	$('#ciMapOptFilt').hide();
 
-	// list of existing jobs
-	$.ajax({
-		url: subdir+"/snp2gene/getjobIDs",
-		type: "POST",
-		error: function(){
-			alert("error for getjobIDs");
-		},
-		success: function(data){
-			data.forEach(function(d){
-				$('#paramsID').append('<option value='+d.jobID+'>'+d.jobID+' ('+d.title+')</option>');
-			})
-		}
-	})
+	getjobIDs();
 	CheckAll();
 	$('#fileCheck').html("<br/><div class='alert alert-danger'>GWAS summary statistics is a mandatory input.</div>");
 
@@ -69,6 +57,22 @@ $(document).ready(function(){
 			+'" onchange="ciFileCheck()"><input type="hidden" class="ciFileID" id="ciFileID'+n+'" name="ciFileID'+n+'" value="'+n+'"></span>');
 	})
 });
+
+function getjobIDs(){
+	$.ajax({
+		url: subdir+"/snp2gene/getjobIDs",
+		type: "POST",
+		error: function(){
+			alert("error for getjobIDs");
+		},
+		success: function(data){
+			$('#paramsID').html('<option value=0 selected>None</option>');
+			data.forEach(function(d){
+				$('#paramsID').append('<option value='+d.jobID+'>'+d.jobID+' ('+d.title+')</option>');
+			})
+		}
+	})
+}
 
 function loadParams(){
 	var paramsID = $('#paramsID').val();

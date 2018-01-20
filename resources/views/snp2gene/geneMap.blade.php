@@ -1,220 +1,47 @@
-<div id="newJob" class="sidePanel container" style="padding-top:50px;">
-	{!! Form::open(array('url' => 'snp2gene/newJob', 'files' => true, 'novalidate'=>'novalidate')) !!}
-	<!-- New -->
-	<h4 style="color: #00004d">Upload your GWAS summary statistics and set parameters to obtain functional annotations of the genomic loci associated with your trait.</h4>
+<div id="geneMap" class="sidePanel container" style="padding-top:50px;">
+	{!! Form::open(array('url' => 'snp2gene/geneMap', 'files' => true, 'novalidate'=>'novalidate')) !!}
+	<h4 style="color: #00004d">Select jobID of your existing jobs to re-perform gene mapping with different settings.</h4>
+	Re-dogin gene mapping does not require to upload any of input file, instead the selected job is duplicated
+	with new jobID and performe gene mapping can be performed with different parameter settings.
+	Only parameters of gene mapings can be modified, other parameters such as P-value and r2 for
+	defining independent significant SNPs are fixed.
+	<br/>
+	<span class="info"><i class="fa fa-info"></i>
+		User own files for chromatin interactions need to be uploaded again.
+	</span>
+	<br/><br/>
 
-	<!-- load preciout settings -->
+	<!-- load existing job -->
 	<span class="form-inline" style="font-size:18px;">
-		Use your previous settings from job
-		<select class="form-control" id="paramsID" name="paramsID" onchange="loadParams();">
+		jobID:
+		<select class="form-control" id="geneMapID" name="geneMapID" onchange="loadGeneMap();">
 			<option value=0>None</option>
 		</select>
 		<a class="infoPop" data-toggle="popover" data-content="By selecting jobID of your existing SNP2GENE jobs,
-		you can load parameter settings that you used before (only if there is any existing job in your account).
-		Note that this does not load input files and title. Please specify input files for each submission.">
+		you can re-perform gene mapping (only if there is any existing job in your account).
+		This load parameter settings that you used before, please change parameters before submission, otherwise results will be the same.
+		">
 			<i class="fa fa-question-circle-o fa-lg"></i>
 		</a>
 	</span>
 	<br/><br/>
 
-	<!-- Input files upload -->
-	<div class="panel panel-default" style="padding-top: 0px;">
-		<div class="panel-heading input" style="padding:5px;">
-			<h4>1. Upload input files <a href="#NewJobFilesPanel" data-toggle="collapse" class="active" style="float: right; padding-right:20px;"><i class="fa fa-chevron-up"></i></a></h4>
-		</div>
-		<div class="panel-body collapse in" id="NewJobFilesPanel">
-			<div id="fileFormatError"></div>
-			<table class="table table-bordered inputTable" id="NewJobFiles" style="width: auto;">
-				<tr>
-					<td>GWAS summary statistics
-						<a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file" data-content="Every row should have information on one SNP.
-							The minimum required columns are ‘chromosome, position and P-value’ or ‘rsID and P-value’.
-							If you provide position, please make sure the position is on hg19.
-							The file could be complete results of GWAS or a subset of SNPs can be used as an input.
-							The input file should be plain text, zip or gzip files.
-							If you would like to test FUMA, please check 'Use example input', this will load an example file automatically.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td><input type="file" class="form-control-file" name="GWASsummary" id="GWASsummary"/>
-						Or <input type="checkbox" class="form-check-input" name="egGWAS" id="egGWAS" onchange="CheckAll()"/> : Use example input (Crohn's disease, Franke et al. 2010).
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>GWAS summary statistics file columns
-					<a class="infoPop" data-toggle="popover" title="GWAS summary statistics input file columns" data-content="This is optional parameter to define column names.
-						Unless defined, FUMA will automatically detect columns from the list of acceptable column names (see tutorial for detail).
-						However, to avoid error, please provide column names.">
-						<i class="fa fa-question-circle-o fa-lg"></i>
-					</a>
-					</td>
-					<td>
-						<span class="info"><i class="fa fa-info"></i> case insensitive</span><br/>
-						<span class="form-inline">Chromosome: <input type="text" class="form-control" id="chrcol" name="chrcol"></span><br/>
-						<span class="form-inline">Position: <input type="text" class="form-control" id="poscol" name="poscol"></span><br/>
-						<span class="form-inline">rsID: <input type="text" class="form-control" id="rsIDcol" name="rsIDcol"></span><br/>
-						<span class="form-inline">P-value: <input type="text" class="form-control" id="pcol" name="pcol"></span><br/>
-						<span class="form-inline">Effect allele*: <input type="text" class="form-control" id="eacol" name="eacol"></span><br/>
-						<span style="color:red; font-size: 10px;">* "A1" is effect allele by default</span><br/>
-						<span class="form-inline">Non effect allele: <input type="text" class="form-control" id="neacol" name="neacol"></span><br/>
-						<span class="form-inline">OR: <input type="text" class="form-control" id="orcol" name="orcol"></span><br/>
-						<span class="form-inline">Beta: <input type="text" class="form-control" id="becol" name="becol"></span><br/>
-						<span class="form-inline">SE: <input type="text" class="form-control" id="secol" name="secol"></span><br/>
-					</td>
-					<td>
-						<div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">
-							<i class="fa fa-exclamation-circle"></i> Optional. Please fill as much as you can. It is not necessary to fill all column names.
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>Pre-defined lead SNPs
-						<a class="infoPop" data-toggle="popover" title="Pre-defined lead SNPs" data-content="This option can be used when you already have determined lead SNPs and do not want FUMA to do this for you. This option can be also used when you want to include specific SNPs as lead SNPs which do no reach significant P-value threshold. The input file should have 3 columns, rsID, chromosome and position with header (header could be anything but the order of columns have to match).">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td><input type="file" class="form-control-file" name="leadSNPs" id="leadSNPs" onchange="CheckAll()"/></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Identify additional independent lead SNPs
-						<a class="infoPop" data-toggle="popover" title="Additional identification of lead SNPs" data-content="This option is only vallid when pre-defined lead SNPs are provided. Please uncheck this to NOT IDENTIFY additional lead SNPs than the provided ones. When this option is checked, FUMA will identify all independent lead SNPs after taking all SNPs in LD of pre-defined lead SNPs if there is any.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td><input type="checkbox" class="form-check-input" name="addleadSNPs" id="addleadSNPs" value="1" checked onchange="CheckAll()"></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Predefined genomic region
-						<a class="infoPop" data-toggle="popover" title="Pre-defined genomic regions" data-content="This option can be used when you already have defined specific genomic regions of interest and only require annotations of significant SNPs and their proxi SNPs in these regions. The input file should have 3 columns, chromosome, start and end position (on hg19) with header (header could be anything but the order of columns have to match).">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td><input type="file" class="form-control-file" name="regions" id="regions" onchange="CheckAll()"/></td>
-					<td></td>
-				</tr>
-			</table>
-		</div>
-	</div>
-
-	<!-- Parameters for lead SNPs and candidate SNPs -->
-	<div class="panel panel-default" style="padding-top: 0px;">
-		<div class="panel-heading input" style="padding:5px;">
-			<h4>2. Parameters for lead SNPs and candidate SNPs identification<a href="#NewJobParamsPanel" data-toggle="collapse" class="active" style="float: right; padding-right:20px;"><i class="fa fa-chevron-up"></i></a></h4>
-		</div>
-		<div class="panel-body collapse in" id="NewJobParamsPanel">
-			<table class="table table-bordered inputTable" id="NewJobParams" style="width: auto;">
-				<tr>
-					<td>Sample size (N)
-						<a class="infoPop" data-toggle="popover" title="Sample size" data-content="The total number of individuals (cases + controls, or total N) used in GWAS.
-							This is only used for MAGMA. When total sample size is defined, the same number will be used for all SNPs.
-							If you have column 'N' in yout input GWAS summary statistics file, specified column will be used for N per SNP.
-							It does not affect functional annotations and prioritizations.
-							If you don't know the sample size, the random number should be fine (> 50), yet that does not render the gene-based tests from MAGMA invalid.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td>
-						Total sample size (integer): <input type="number" class="form-control" id="N" name="N" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();">
-						OR<br/>
-						Column name for N per SNP (text): <input type="text" class="form-control" id="Ncol" name="Ncol" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();">
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Minimum P-value of lead SNPs (&lt;)</td>
-					<td><input type="number" class="form-control" id="leadP" name="leadP" value="5e-8" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>r<sup>2</sup> threshold to define LD structure of lead SNPs (&ge;)</td>
-					<td><input type="number" class="form-control" id="r2" name="r2" value="0.6" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Maximum P-value cutoff (&lt;)
-						<a class="infoPop" data-toggle="popover" title="GWAS P-value cutoff" data-content="This threshold defines the maximum P-values of SNPs to be included in the annotation. Setting it at 1 means that all SNPs that are in LD with the lead SNP will be included in the annotation and prioritization even though they may not show a significant association with the phenotype. We advise to set this threshold at least at 0.05.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td><input type="number" class="form-control" id="gwasP" name="gwasP" value="0.05" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Reference panle population</td>
-					<td>
-						<select class="form-control" id="refpanel" name="refpanel">
-							<option selected value="1KG/Phase3/EUR">1000G Phase3 EUR</option>
-							<option value="1KG/Phase3/AMR">1000G Phase3 AMR</option>
-							<option value="1KG/Phase3/AFR">1000G Phase3 AFR</option>
-							<option value="1KG/Phase3/SAS">1000G Phase3 SAS</option>
-							<option value="1KG/Phase3/EAS">1000G Phase3 EAS</option>
-						</select>
-					</td>
-					<td>
-						<div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">
-							<i class="fa fa-check"></i> OK.
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>Include 1000 genome variant (non-GWAS tagged SNPs in LD)
-						<a class="infoPop" data-toggle="popover" title="1000G SNPs" data-content="Select ‘yes’ if you want to include SNPs that are not available in the GWAS output but are available in 1000G. Including these SNPs may provide information on functional variants in LD with the lead SNP.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td>
-						<select class="form-control" id="KGSNPs" name="KGSNPs">
-							<option selected>Yes</option>
-							<option>No</option>
-						</select>
-					</td>
-					<td>
-						<div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">
-							<i class="fa fa-check"></i> OK.
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>Minimum Minor Allele Frequency (&ge;)
-						<a class="infoPop" data-toggle="popover" title="Minimu Minor Allele Frequency" data-content="This threshold defines the minimum MAF of the SNPs to be included in the annotation. MAFs are based on the selected reference population (1000G).">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td><input type="number" class="form-control" id="maf" name="maf" value="0.01" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Maximum distance between LD blocks to merge into a locus (&lt; kb)
-						<a class="infoPop" data-toggle="popover" title="Maximum distance between LD blocks to merge" data-content="LD blocks clorser than the distance will be merged into a genomic locus. If this is set at 0, only phesically overlapped LD blocks will be merged. This is only for representation of GWAS risk loci which does not affect any annotation and prioritization results.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td><span class="form-inline"><input type="number" class="form-control" id="mergeDist" name="mergeDist" value="250" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/> kb</span></td>
-					<td></td>
-				</tr>
-			</table>
-		</div>
-	</div>
-
 	<!-- Parameters for gene mapping -->
 	<!-- positional mapping -->
 	<div class="panel panel-default" style="padding:0px;">
 		<div class="panel-heading input" style="padding:5px;">
-			<h4>3-1. Gene Mapping (positional mapping) <a href="#NewJobPosMapPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
+			<h4>3-1. Gene Mapping (positional mapping) <a href="#geneMapPosMapPanel" data-toggle="collapse" class="active" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
 		</div>
-		<div class="panel-body collapse" id="NewJobPosMapPanel">
+		<div class="panel-body collapse in" id="geneMapPosMapPanel">
 			<h4>Positional mapping</h4>
-			<table class="table table-bordered inputTable" id="NewJobPosMap" style="width: auto;">
+			<table class="table table-bordered inputTable" id="geneMapPosMap" style="width: auto;">
 				<tr>
 					<td>Perform positional mapping
 						<a class="infoPop" data-toggle="popover" title="Positional maping" data-content="When checked, positional mapping will be carried out and includes functional consequences of SNPs on gene functions (such as exonic, intronic and splicing).">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
-					<td><input type="checkbox" class="form-check-input" name="posMap" id="posMap" checked onchange="CheckAll();"></td>
+					<td><input type="checkbox" class="form-check-input" name="geneMap_posMap" id="geneMap_posMap" checked onchange="geneMapCheckAll();"></td>
 					<td></td>
 				</tr>
 				<tr class="posMapOptions">
@@ -227,12 +54,12 @@
 						</a>
 					</td>
 					<td>
-						<span class="form-inline">Maximum distance: <input type="number" class="form-control" id="posMapWindow" name="posMapWindow" value="10" min="0" max="1000" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"> kb</span><br/>
+						<span class="form-inline">Maximum distance: <input type="number" class="form-control" id="geneMap_posMapWindow" name="geneMap_posMapWindow" value="10" min="0" max="1000" onkeyup="geneMapCheckAll();" onpaste="geneMapCheckAll();" oninput="geneMapCheckAll();"> kb</span><br/>
 						OR<br/>
 						Functional consequences of SNPs on genes:<br/>
-						<span class="multiSelect">
+						<span class="geneMapMultiSelect">
 							<a>clear</a><br/>
-							<select multiple class="form-control" id="posMapAnnot" name="posMapAnnot[]" onchange="CheckAll();">
+							<select multiple class="form-control" id="geneMap_posMapAnnot" name="geneMap_posMapAnnot[]" onchange="geneMapCheckAll();">
 								<option value="exonic">exonic</option>
 								<option value="splicing">splicing</option>
 								<option value="intronic">intronic</option>
@@ -247,12 +74,12 @@
 				</tr>
 			</table>
 
-			<div id="posMapOptFilt">
+			<div id="geneMapposMapOptFilt">
 				Optional SNP filtering by functional annotations for positional mapping<br/>
 				<span class="info"><i class="fa fa-info"></i> This filtering only applies to SNPs mapped by positional mapping criterion. When eQTL mapping is also performed, this filtering can be specified separately.<br/>
 					All these annotations will be available for all SNPs within LD of identified lead SNPs in the result tables, but this filtering affect gene prioritization.
 				</span>
-				<table class="table table-bordered inputTable" id="posMapOptFiltTable" style="width: auto;">
+				<table class="table table-bordered inputTable" id="geneMap_posMapOptFiltTable" style="width: auto;">
 					<tr>
 						<td rowspan="2">CADD</td>
 						<td>Perform SNPs filtering based on CADD score.
@@ -260,7 +87,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="posMapCADDcheck" id="posMapCADDcheck" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_posMapCADDcheck" id="geneMap_posMapCADDcheck" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -269,7 +96,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="number" class="form-control" id="posMapCADDth" name="posMapCADDth" value="12.37" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
+						<td><input type="number" class="form-control" id="geneMap_posMapCADDth" name="geneMap_posMapCADDth" value="12.37" onkeyup="geneMapCheckAll();" onpaste="geneMapCheckAll();" oninput="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -279,7 +106,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="posMapRDBcheck" id="posMapRDBcheck" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_posMapRDBcheck" id="geneMap_posMapRDBcheck" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -289,8 +116,8 @@
 							</a>
 						</td>
 						<td>
-							<!-- <input type="text" class="form-control" id="posMapRDBth" name="posMapRDBth" value="7" style="width: 80px;"> -->
-							<select class="form-control" id="posMapRDBth" name="posMapRDBth" onchange="CheckAll();">
+							<!-- <input type="text" class="form-control" id="geneMap_posMapRDBth" name="geneMap_posMapRDBth" value="7" style="width: 80px;"> -->
+							<select class="form-control" id="geneMap_posMapRDBth" name="geneMap_posMapRDBth" onchange="geneMapCheckAll();">
 								<option>1a</option>
 								<option>1b</option>
 								<option>1c</option>
@@ -317,7 +144,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="posMapChr15check" id="posMapChr15check" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_posMapChr15check" id="geneMap_posMapChr15check" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -325,9 +152,9 @@
 							<span class="info"><i class="fa fa-info"></i> Multiple tissue/cell types can be selected.</span>
 						</td>
 						<td>
-							<span class="multiSelect">
+							<span class="geneMapMultiSelect">
 								<a style="float:right; padding-right:20px;">clear</a><br/>
-								<select multiple class="form-control" size="10" id="posMapChr15Ts" name="posMapChr15Ts[]" onchange="CheckAll();">
+								<select multiple class="form-control" size="10" id="geneMap_posMapChr15Ts" name="geneMap_posMapChr15Ts[]" onchange="geneMapCheckAll();">
 									<option value="all">All</option>
 									<option class="level1" value="null">Adrenal (1)</option>
 									<option class="level2" value="E080">E080 (Other) Fetal Adrenal Gland</option>
@@ -498,7 +325,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="number" class="form-control" id="posMapChr15Max" name="posMapChr15Max" value="7" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
+						<td><input type="number" class="form-control" id="geneMap_posMapChr15Max" name="geneMap_posMapChr15Max" value="7" onkeyup="geneMapCheckAll();" onpaste="geneMapCheckAll();" oninput="geneMapCheckAll();"/></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -508,7 +335,7 @@
 							</a>
 						</td>
 						<td>
-							<select  class="form-control" id="posMapChr15Meth" name="posMapChr15Meth" onchange="CheckAll();">
+							<select  class="form-control" id="geneMap_posMapChr15Meth" name="geneMap_posMapChr15Meth" onchange="geneMapCheckAll();">
 								<option selected value="any">any</option>
 								<option value="majority">majority</option>
 								<option value="all">all</option>
@@ -524,18 +351,18 @@
 	<!-- eqtl mapping -->
 	<div class="panel panel-default" style="padding: 0px;">
 		<div class="panel-heading input" style="padding:5px;">
-			<h4>3-2. Gene Mapping (eQTL mapping)<a href="#NewJobEqtlMapPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
+			<h4>3-2. Gene Mapping (eQTL mapping)<a href="#geneMapEqtlMapPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
 		</div>
-		<div class="panel-body collapse" id="NewJobEqtlMapPanel">
+		<div class="panel-body collapse" id="geneMapEqtlMapPanel">
 			<h4>eQTL mapping</h4>
-			<table class="table table-bordered inputTable" id="NewJobEqtlMap" style="width: auto;">
+			<table class="table table-bordered inputTable" id="geneMapEqtlMap" style="width: auto;">
 				<tr>
 					<td>Perform eQTL mapping
 						<a class="infoPop" data-toggle="popover" title="eQTL mapping" data-content="eQTL mapping maps SNPs to genes based on eQTL information. This maps SNPs to genes up to 1 Mb part (cis-eQTL). Please check this option to perform eQTL mapping.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
-					<td><input type="checkbox" calss="form-control" name="eqtlMap", id="eqtlMap" onchange="CheckAll();"></td>
+					<td><input type="checkbox" calss="form-control" name="geneMap_eqtlMap", id="geneMap_eqtlMap" onchange="geneMapCheckAll();"></td>
 					<td></td>
 				</tr>
 				<tr class="eqtlMapOptions">
@@ -545,9 +372,9 @@
 						</a>
 					</td>
 					<td>
-						<span class="multiSelect">
+						<span class="geneMapMultiSelect">
 							<a style="float:right; padding-right:20px;">clear</a><br/>
-							<select multiple class="form-control" id="eqtlMapTs" name="eqtlMapTs[]" size="10" onchange="CheckAll();">
+							<select multiple class="form-control" id="geneMap_eqtlMapTs" name="geneMap_eqtlMapTs[]" size="10" onchange="geneMapCheckAll();">
 								<option value="all">All</option>
 								<option class="level1" value="null">Blood eQTLs</option>
 								<option class="level2" value='BloodeQTL_BloodeQTL'>Westra et al. (2013) Blood eQTL Browser</option>
@@ -645,20 +472,20 @@
 						</a>
 					</td>
 					<td>
-						<span class="form-inline">Use only significant snp-gene pairs: <input type="checkbox" class="form-control" name="sigeqtlCheck" id="sigeqtlCheck" checked onchange="CheckAll();"> (FDR&lt;0.05)</span><br/>
+						<span class="form-inline">Use only significant snp-gene pairs: <input type="checkbox" class="form-control" name="sigeqtlCheck" id="sigeqtlCheck" checked onchange="geneMapCheckAll();"> (FDR&lt;0.05)</span><br/>
 						OR<br/>
-						<span class="form-inline">(nominal) P-value cutoff (&lt;): <input type="number" class="form-control" name="eqtlP" id="eqtlP" value="1e-3" onchange="CheckAll();"></span>
+						<span class="form-inline">(nominal) P-value cutoff (&lt;): <input type="number" class="form-control" name="eqtlP" id="eqtlP" value="1e-3" onchange="geneMapCheckAll();"></span>
 					</td>
 					<td></td>
 				</tr>
 			</table>
 
-			<div id="eqtlMapOptFilt">
+			<div id="geneMap_eqtlMapOptFilt">
 				Optional SNP filtering by functional annotation for eQTL mapping<br/>
 				<span class="info"><i class="fa fa-info"></i> This filtering only applies to SNPs mapped by eQTL mapping criterion.<br/>
 					All these annotations will be available for all SNPs within LD of identified lead SNPs in the result tables, but this filtering affect gene prioritization.
 				</span>
-				<table class="table table-bordered inputTable" id="eqtlMapOptFiltTable">
+				<table class="table table-bordered inputTable" id="geneMap_eqtlMapOptFiltTable">
 					<tr>
 						<td rowspan="2">CADD</td>
 						<td>Perform SNPs filtering based on CADD score.
@@ -666,7 +493,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="eqtlMapCADDcheck" id="eqtlMapCADDcheck" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_eqtlMapCADDcheck" id="geneMap_eqtlMapCADDcheck" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -675,7 +502,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="number" class="form-control" id="eqtlMapCADDth" name="eqtlMapCADDth" value="12.37" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
+						<td><input type="number" class="form-control" id="geneMap_eqtlMapCADDth" name="geneMap_eqtlMapCADDth" value="12.37" onkeyup="geneMapCheckAll();" onpaste="geneMapCheckAll();" oninput="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -685,7 +512,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="eqtlMapRDBcheck" id="eqtlMapRDBcheck" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_eqtlMapRDBcheck" id="geneMap_eqtlMapRDBcheck" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -695,8 +522,8 @@
 							</a>
 						</td>
 						<td>
-							<!-- <input type="text" class="form-control" id="eqtlMapRDBth" name="eqtlMapRDBth" value="7"> -->
-							<select class="form-control" id="eqtlMapRDBth" name="eqtlMapRDBth" onchange="CheckAll();">
+							<!-- <input type="text" class="form-control" id="geneMap_eqtlMapRDBth" name="geneMap_eqtlMapRDBth" value="7"> -->
+							<select class="form-control" id="geneMap_eqtlMapRDBth" name="geneMap_eqtlMapRDBth" onchange="geneMapCheckAll();">
 								<option>1a</option>
 								<option>1b</option>
 								<option>1c</option>
@@ -723,7 +550,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="eqtlMapChr15check" id="eqtlMapChr15check" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_eqtlMapChr15check" id="geneMap_eqtlMapChr15check" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -731,9 +558,9 @@
 							<span class="info"><i class="fa fa-info"></i> Multiple tissue/cell types can be selected.</span>
 						</td>
 						<td>
-							<span class="multiSelect">
+							<span class="geneMapMultiSelect">
 								<a style="float:right; padding-right:20px;">clear</a><br/>
-								<select multiple class="form-control" size="10" id="eqtlMapChr15Ts" name="eqtlMapChr15Ts[]" onchange="CheckAll();">
+								<select multiple class="form-control" size="10" id="geneMap_eqtlMapChr15Ts" name="geneMap_eqtlMapChr15Ts[]" onchange="geneMapCheckAll();">
 									<option value="all">All</option>
 									<option class="level1" value="null">Adrenal (1)</option>
 									<option class="level2" value="E080">E080 (Other) Fetal Adrenal Gland</option>
@@ -903,7 +730,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="number" class="form-control" id="eqtlMapChr15Max" name="eqtlMapChr15Max" value="7" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
+						<td><input type="number" class="form-control" id="geneMap_eqtlMapChr15Max" name="geneMap_eqtlMapChr15Max" value="7" onkeyup="geneMapCheckAll();" onpaste="geneMapCheckAll();" oninput="geneMapCheckAll();"/></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -913,7 +740,7 @@
 							</a>
 						</td>
 						<td>
-							<select  class="form-control" id="eqtlMapChr15Meth" name="eqtlMapChr15Meth" onchange="CheckAll();">
+							<select  class="form-control" id="geneMap_eqtlMapChr15Meth" name="geneMap_eqtlMapChr15Meth" onchange="geneMapCheckAll();">
 								<option selected value="any">any</option>
 								<option value="majority">majority</option>
 								<option value="all">all</option>
@@ -929,18 +756,18 @@
 	<!-- chromatin interaction mapping -->
 	<div class="panel panel-default" style="padding: 0px;">
 		<div class="panel-heading input" style="padding:5px;">
-			<h4>3-3. Gene Mapping (3D Chromatin Interaction mapping)<a href="#NewJobCiMapPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
+			<h4>3-3. Gene Mapping (3D Chromatin Interaction mapping)<a href="#geneMapCiMapPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
 		</div>
-		<div class="panel-body collapse" id="NewJobCiMapPanel">
+		<div class="panel-body collapse" id="geneMapCiMapPanel">
 			<h4>chromatin interaction mapping</h4>
-			<table class="table table-bordered inputTable" id="NewJobCiMap" style="width: auto;">
+			<table class="table table-bordered inputTable" id="geneMapCiMap" style="width: auto;">
 				<tr>
 					<td>Perform chromatin interaction mapping
 						<a class="infoPop" data-toggle="popover" title="3D chromatin interaction mapping" data-content="3D chromatin interaction mapping maps SNPs to genes based on chromatin interactions such as Hi-C and ChIA-PET. Please check to perform this mapping.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
-					<td><input type="checkbox" calss="form-control" name="ciMap", id="ciMap" onchange="CheckAll();"></td>
+					<td><input type="checkbox" calss="form-control" name="geneMap_ciMap", id="geneMap_ciMap" onchange="geneMapCheckAll();"></td>
 					<td></td>
 				</tr>
 				<tr class="ciMapOptions">
@@ -950,9 +777,9 @@
 						</a>
 					</td>
 					<td>
-						<span class="multiSelect">
+						<span class="geneMapMultiSelect">
 							<a style="float:right; padding-right:20px;">clear</a><br/>
-							<select multiple class="form-control" id="ciMapBuildin" name="ciMapBuildin[]" size="10" onchange="CheckAll();">
+							<select multiple class="form-control" id="geneMap_ciMapBuildin" name="geneMap_ciMapBuildin[]" size="10" onchange="geneMapCheckAll();">
 								<option value="all">All</option>
 								<option value="HiC/GSE87112/Adrenal.txt.gz">HiC(GSE87112) Adrenal</option>
 								<option value="HiC/GSE87112/Aorta.txt.gz">HiC(GSE87112) Aorta</option>
@@ -1001,7 +828,7 @@
 						</a>
 					</td>
 					<td>
-						<span class="form-inline">FDR cutoff (&lt;): <input type="number" class="form-control" name="ciMapFDR" id="ciMapFDR" value="1e-6" onchange="CheckAll();"></span>
+						<span class="form-inline">FDR cutoff (&lt;): <input type="number" class="form-control" name="geneMap_ciMapFDR" id="geneMap_ciMapFDR" value="1e-6" onchange="geneMapCheckAll();"></span>
 					</td>
 					<td></td>
 				</tr>
@@ -1012,7 +839,7 @@
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
-					<td><input type="text" class="form-control" name="ciMapPromWindow" id="ciMapPromWindow" value="250-500" onchange="CheckAll();">
+					<td><input type="text" class="form-control" name="geneMap_ciMapPromWindow" id="geneMap_ciMapPromWindow" value="250-500" onchange="geneMapCheckAll();">
 						<span class="info"><i class="fa fa-info"></i>
 							Please specify both upstream and downstream from TSS. For example, "250-500" means 250bp upstream and 500bp downstream from TSS.
 						</span>
@@ -1027,9 +854,9 @@
 						</a>
 					</td>
 					<td>
-						<span class="multiSelect">
+						<span class="geneMapMultiSelect">
 							<a style="float:right; padding-right:20px;">clear</a><br/>
-							<select multiple class="form-control" id="ciMapRoadmap" name="ciMapRoadmap[]" size="10" onchange="CheckAll();">
+							<select multiple class="form-control" id="geneMap_ciMapRoadmap" name="geneMap_ciMapRoadmap[]" size="10" onchange="geneMapCheckAll();">
 								<option value="all">All</option>
 								<option class="level1" value="null">Adrenal (1)</option>
 								<option class="level2" value="E080">E080 (Other) Fetal Adrenal Gland</option>
@@ -1184,7 +1011,7 @@
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
-					<td><input type="checkbox" calss="form-control" name="ciMapEnhFilt", id="ciMapEnhFilt" onchange="CheckAll();"></td>
+					<td><input type="checkbox" calss="form-control" name="geneMap_ciMapEnhFilt", id="geneMap_ciMapEnhFilt" onchange="geneMapCheckAll();"></td>
 					<td></td>
 				</tr>
 				<tr class="ciMapOptions">
@@ -1194,18 +1021,18 @@
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
-					<td><input type="checkbox" calss="form-control" name="ciMapPromFilt", id="ciMapPromFilt" onchange="CheckAll();"></td>
+					<td><input type="checkbox" calss="form-control" name="geneMap_ciMapPromFilt", id="geneMap_ciMapPromFilt" onchange="geneMapCheckAll();"></td>
 					<td></td>
 				</tr>
 				<!-- </div> -->
 			</table>
 
-			<div id="ciMapOptFilt">
+			<div id="geneMap_ciMapOptFilt">
 				Optional SNP filtering by functional annotation for chromatin interaction mapping<br/>
 				<span class="info"><i class="fa fa-info"></i> This filtering only applies to SNPs mapped by chromatin interaction mapping criterion.<br/>
 					All these annotations will be available for all SNPs within LD of identified lead SNPs in the result tables, but this filtering affect gene prioritization.
 				</span>
-				<table class="table table-bordered inputTable" id="ciMapOptFiltTable">
+				<table class="table table-bordered inputTable" id="geneMap_ciMapOptFiltTable">
 					<tr>
 						<td rowspan="2">CADD</td>
 						<td>Perform SNPs filtering based on CADD score.
@@ -1213,7 +1040,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="ciMapCADDcheck" id="ciMapCADDcheck" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_ciMapCADDcheck" id="geneMap_ciMapCADDcheck" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -1222,7 +1049,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="number" class="form-control" id="ciMapCADDth" name="ciMapCADDth" value="12.37" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
+						<td><input type="number" class="form-control" id="geneMap_ciMapCADDth" name="geneMap_ciMapCADDth" value="12.37" onkeyup="geneMapCheckAll();" onpaste="geneMapCheckAll();" oninput="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -1232,7 +1059,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="ciMapRDBcheck" id="ciMapRDBcheck" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_ciMapRDBcheck" id="geneMap_ciMapRDBcheck" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -1242,7 +1069,7 @@
 							</a>
 						</td>
 						<td>
-							<select class="form-control" id="ciMapRDBth" name="ciMapRDBth" onchange="CheckAll();">
+							<select class="form-control" id="geneMap_ciMapRDBth" name="geneMap_ciMapRDBth" onchange="geneMapCheckAll();">
 								<option>1a</option>
 								<option>1b</option>
 								<option>1c</option>
@@ -1269,7 +1096,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="checkbox" class="form-check-input" name="ciMapChr15check" id="ciMapChr15check" onchange="CheckAll();"></td>
+						<td><input type="checkbox" class="form-check-input" name="geneMap_ciMapChr15check" id="geneMap_ciMapChr15check" onchange="geneMapCheckAll();"></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -1277,9 +1104,9 @@
 							<span class="info"><i class="fa fa-info"></i> Multiple tissue/cell types can be selected.</span>
 						</td>
 						<td>
-							<span class="multiSelect">
+							<span class="geneMapMultiSelect">
 								<a style="float:right; padding-right:20px;">clear</a><br/>
-								<select multiple class="form-control" size="10" id="ciMapChr15Ts" name="ciMapChr15Ts[]" onchange="CheckAll();">
+								<select multiple class="form-control" size="10" id="geneMap_ciMapChr15Ts" name="geneMap_ciMapChr15Ts[]" onchange="geneMapCheckAll();">
 									<option value="all">All</option>
 									<option class="level1" value="null">Adrenal (1)</option>
 									<option class="level2" value="E080">E080 (Other) Fetal Adrenal Gland</option>
@@ -1431,7 +1258,7 @@
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
-						<td><input type="number" class="form-control" id="ciMapChr15Max" name="ciMapChr15Max" value="7" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
+						<td><input type="number" class="form-control" id="geneMap_ciMapChr15Max" name="geneMap_ciMapChr15Max" value="7" onkeyup="geneMapCheckAll();" onpaste="geneMapCheckAll();" oninput="geneMapCheckAll();"/></td>
 						<td></td>
 					</tr>
 					<tr>
@@ -1441,7 +1268,7 @@
 							</a>
 						</td>
 						<td>
-							<select  class="form-control" id="ciMapChr15Meth" name="ciMapChr15Meth" onchange="CheckAll();">
+							<select  class="form-control" id="geneMap_ciMapChr15Meth" name="geneMap_ciMapChr15Meth" onchange="geneMapCheckAll();">
 								<option selected value="any">any</option>
 								<option value="majority">majority</option>
 								<option value="all">all</option>
@@ -1454,90 +1281,16 @@
 		</div>
 	</div>
 
-	<!-- Gene type multiple selection -->
-	<div class="panel panel-default" style="padding:0px;">
-		<div class="panel-heading input" style="padding:5px;">
-			<h4>4. Gene types<a href="#NewJobGenePanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
-		</div>
-		<div class="panel-body collapse" id="NewJobGenePanel">
-			<table class="table table-bordered inputTable" id="NewJobGene" style="width: auto;">
-				<tr>
-					<td>Gene type
-						<a class="infoPop" data-toggle="popover" title="Gene Type" data-content="Setting gene type defines what kind of genes should be included in the gene prioritization. Gene type is based on gene biotype obtained from BioMart (Ensembl 85). By default, only protein-coding genes are used for mapping.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a><br/>
-						<span class="info"><i class="fa fa-info"></i> Multiple gene type can be selected.</span>
-					</td>
-					<td>
-						<select multiple class="form-control" name="genetype[]" id="genetype">
-							<option value="all">All</option>
-							<option selected value="protein_coding">Protein coding</option>
-							<option value="lincRNA:antisense:retained_intronic:sense_intronic:sense_overlapping:macro_lncRNA">lncRNA</option>
-							<option value="miRNA:piRNA:rRNA:siRNA:snRNA:snoRNA:tRNA:vaultRNA">ncRNA</option>
-							<option value="lincRNA:antisense:retained_intronic:sense_intronic:sense_overlapping:macro_lncRNA:miRNA:piRNA:rRNA:siRNA:snRNA:snoRNA:tRNA:vaultRNA:processed_transcript">Processed transcripts</option>
-							<option value="pseudogene:processed_pseudogene:unprocessed_pseudogene:polymorphic_pseudogene:IG_C_pseudogene:IG_D_pseudogene:ID_V_pseudogene:IG_J_pseudogene:TR_C_pseudogene:TR_D_pseudogene:TR_V_pseudogene:TR_J_pseudogene">Pseudogene</option>
-							<option value="IG_C_gene:TG_D_gene:TG_V_gene:IG_J_gene">IG genes</option>
-							<option value="TR_C_gene:TR_D_gene:TR_V_gene:TR_J_gene">TR genes</option>
-						</select>
-					</td>
-					<td>
-						<div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">
-							<i class="fa fa-check"></i> OK.
-						</div>
-					</td>
-				</tr>
-			</table>
-		</div>
-	</div>
-
-	<!-- MHC regions -->
-	<div class="panel panel-default" style="padding:0px;">
-		<div class="panel-heading input" style="padding:5px;">
-			<h4>5. MHC region<a href="#NewJobMHCPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
-		</div>
-		<div class="panel-body collapse" id="NewJobMHCPanel">
-			<table class="table table-bordered inputTable" id="NewJobMHC" style="width: auto;">
-				<tr>
-					<td>Exclude MHC region
-						<a class="infoPop" data-toggle="popover" title="Exclude MHC region" data-content="Please cehck to EXCLUDE MHC region; default MHC region is the genomic region between MOG and COL11A2 genes.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</td>
-					<td>
-						<span class="form-inline">
-							<input type="checkbox" class="form-check-input" name="MHCregion" id="MHCregion" value="exMHC" checked onchange="CheckAll();">
-							<select class="form-control" id="MHCopt" name="MHCopt" onchange="CheckAll();">
-								<option value="all">from all (annotations and MAGMA)</option>
-								<option selected value="annot">from only annotations</option>
-								<option value="magma">from only MAGMA</option>
-							</select>
-						</span>
-					</td>
-					<td></td>
-				</tr>
-				<tr>
-					<td>Extended MHC region
-						<a class="infoPop" data-toggle="popover" title="Extended MHC region" data-content="User defined MHC region. When this option is not given, the default MHC region will be used.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a><br/>
-						<span class="info"><i class="fa fa-info"></i>e.g. 25000000-33000000<br/>
-					</td>
-					<td><input type="text" class="form-control" name="extMHCregion" id="extMHCregion" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
-					<td></td>
-				</tr>
-			</table>
-		</div>
-	</div>
-
+	<!-- Title -->
 	<span class="form-inline">
 		<span style="font-size:18px;">Title of job submission</span>:
-		<input type="text" class="form-control" name="NewJobTitle" id="NewJobTitle"/><br/>
+		<input type="text" class="form-control" name="geneMapTitle" id="geneMapTitle"/><br/>
 		<span class="info"><i class="fa fa-info"></i>
-			This is not mandatory, but job title might help you to track your jobs.
+			Suffix (e.g. "_copied_100" when jobID 100 is selected) will be automatically added to the title.
 		</span>
 	</span><br/><br/>
 
-	<input class="btn" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
+	<input class="btn" type="submit" value="Submit Job" name="SubmitGeneMap" id="SubmitGeneMap"/>
 	<span style="color: red; font-size:18px;">
 		<i class="fa fa-exclamation-triangle"></i> After submitting, please wait until the file is uploaded, and do not move away from the submission page.
 	</span>

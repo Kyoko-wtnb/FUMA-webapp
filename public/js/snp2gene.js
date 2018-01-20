@@ -54,6 +54,8 @@ $(document).ready(function(){
 							},
 							complete: function(){
 								getJobList();
+								getjobIDs();
+								getGeneMapIDs();
 							}
 						});
 					}
