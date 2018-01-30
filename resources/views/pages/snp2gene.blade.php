@@ -452,12 +452,17 @@ var loggedin = "{{ Auth::check() }}";
 
 						<div role="tabpanel" class="tab-pane" id="eqtlTablePane">
 							<br/>
-							<span class="info"><i class="fa fa-info"></i> When signed effect is provided in the input GWAS file, risk increasing alleles are aligned to the tested alleles of eQTLs. See <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">tutorial</a> for details.</span>
+							<span class="info"><i class="fa fa-info"></i>
+								When signed effect size (beta or OR) is provided in the input GWAS file, risk increasing alleles are aligned to the tested alleles of eQTLs.
+								See <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">tutorial</a> for details.
+								<br/>
+								When P-value or FDR are not available in the original data source, they are replaced with -9.
+							</span>
 							<br/>
 							<table id="eqtlTable" class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
 								<thead>
 									<tr>
-										<th>uniqID</th><th>chr</th><th>pos</th><th>testedAllele</th><th>DB</th><th>tissue</th><th>Gene</th><th>Symbol</th><th>P-value</th><th>FDR</th><th>t/z</th><th>RiskincAllele</th><th>alignedDirection</th>
+										<th>uniqID</th><th>chr</th><th>pos</th><th>testedAllele</th><th>DB</th><th>tissue</th><th>Gene</th><th>Symbol</th><th>P-value</th><th>FDR</th><th>signed_stats</th><th>RiskincAllele</th><th>alignedDirection</th>
 									</tr>
 								</thead>
 							</table>

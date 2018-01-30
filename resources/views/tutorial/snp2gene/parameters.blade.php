@@ -273,6 +273,8 @@
 				<td>Tissue types</td>
 				<td>Mandatory if <code>eQTL mapping</code> is CHECKED</td>
 				<td>All available tissue types with data sources are shown in the select boxes.
+					From FUMA v1.3.0, GTEx v7 became available but GTEx v6 are kept available.
+					Therefore, when "all" is selected, both GTEx v6 and v7 are used for mapping.
 					For detail of eQTL data resources, please refer to the <a href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">eQTL</a> section in this tutorial.
 				</td>
 				<td>Multiple selection</td>

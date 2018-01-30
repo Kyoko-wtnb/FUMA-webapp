@@ -297,9 +297,10 @@ if(nrow(geneTable)>0){
 	}
 	if(eqtlMap==1){
 		geneTable$eqtlMapSNPs <- sapply(geneTable$ensg, function(x){length(unique(eqtl$uniqID[eqtl$gene==x]))})
-		geneTable$eqtlMapminP <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){min(eqtl$p[eqtl$gene==x])}else{NA}})
-		geneTable$eqtlMapminQ <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene[!is.na(eqtl$FDR)]){min(eqtl$FDR[eqtl$gene==x & !is.na(eqtl$FDR)])}else{NA}})
-		geneTable$eqtlMapts <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){paste(sub("gtex.", "",unique(eqtl$tissue[eqtl$gene==x])), collapse = ":")}else{NA}})
+		geneTable$eqtlMapminP <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene[eqtl$p>0]){min(eqtl$p[eqtl$gene==x & eqtl$p>0])}else{NA}})
+		geneTable$eqtlMapminQ <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene[!is.na(eqtl$FDR) & eqtl$FDR>0]){min(eqtl$FDR[eqtl$gene==x & !is.na(eqtl$FDR) & eqtl$FDR>0])}else{NA}})
+		eqtl$tissue[grepl("GTEx", eqtl$db)] <- paste(eqtl$db[grepl("GTEx", eqtl$db)], eqtl$tissue[grepl("GTEx", eqtl$db)], sep="_")
+		geneTable$eqtlMapts <- sapply(geneTable$ensg, function(x){if(x %in% eqtl$gene){paste(unique(eqtl$tissue[eqtl$gene==x], sep="_"), collapse = ":")}else{NA}})
 		geneTable$eqtlDirection <- NA
 		geneTable$eqtlDirection <- sapply(geneTable$ensg, function(x){
 			if(x %in% eqtl$gene){

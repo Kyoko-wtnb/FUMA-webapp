@@ -163,7 +163,8 @@ Gene : ENSG ID
 Symbol : Gene symbol
 P-value : P-value of eQTLs
 FDR : FDR of eQTLs. Note that method to compute FDR differs between data sources.
-tz : T-statistics or z score depends on data source.
+signed_stats : Signed test statistics, the actual value depends on the data source.
+	Please refer the online tutorial for details
 RiskIncAllele : Risk increasing allele obtained from input GWAS summary statistics.
 	"NA" if signed effect is not provided in the input file.
 	SNPs which are not in the input GWAS but included from reference panel are also encoded as "NA".

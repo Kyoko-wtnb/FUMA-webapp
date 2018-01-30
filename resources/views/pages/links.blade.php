@@ -11,7 +11,7 @@ var loggedin = "{{ Auth::check() }}";
 			<tr>
 				<th>Data source/tool</th>
 				<th style="width: 25%;">Used for</th>
-				<th style="width: 35%;">Links</th>
+				<th style="width: 30%;">Links</th>
 				<th>Last update</th>
 				<th style="width: 25%;">Reference</th>
 			</tr>
@@ -22,7 +22,7 @@ var loggedin = "{{ Auth::check() }}";
 				<td>
 					Reference panel used to compute r2 and MAF.
 				</td>
-				<td>
+				<td style="word-wrap:break-word;word-break:break-all;">
 					Info: <a href="http://www.internationalgenome.org/" target="_blank">http://www.internationalgenome.org/</a><br/>
 					Data: <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/" target="_blank">ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/</a>
 				</td>
@@ -104,17 +104,20 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-			<td>GTEx v6</td>
+			<td>GTEx v6/v7</td>
 				<td>eQTLs and gene expression used in the pipeline were obtained from GTEx v6.<br/>
-					For gene expression 53 tissue types are available and 44 of those which have more than 70 samples are included in eQTL analyses.
+					For gene expression 53 tissue types are available and 44 for v6 and 48 for v7 of those which have more than 70 samples are included in eQTL analyses.
 				</td>
 				<td>
 					Info and data: <a href="http://www.gtexportal.org/home/" target="_blank">http://www.gtexportal.org/home/</a>
 				</td>
-				<td>5 December 2016</td>
+				<td>21 January 2018</td>
 				<td>
 					GTEx Consortium. 2015. Human genomics, The genotype-tissue expression (GTEx) pilot analysis: multitissue gene regulation in humans. <i>Science.</i> <b>348</b>, 648-60.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/25954001" target="_blank">PMID:25954001</a>
+					<br/>
+					GTEx Consortium. 2017. Genetic effets on gene expression across human tissues. <i>Nature.</i> <b>550</b>, 204-213.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/29022597" target="_blank">PMID:29022597</a>
 				</td>
 			</tr>
 			<tr>
@@ -145,6 +148,43 @@ var loggedin = "{{ Auth::check() }}";
 				<td>
 					Ramasamy et al. 2014. Genetic variability in the regulation of gene expression in ten regions of the human brain. <i>Nat. Neurosci.</i> <b>17</b>, 1418-1428.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/25174004" target="_blank">PMID:27918533</a>
+				</td>
+			</tr>
+			<tr>
+				<td>MuTHER</td>
+				<td>eQTLs in Adipose, LCL and Skin samples (only cis eQTLs).</td>
+				<td>
+					Info: <a href="http://www.muther.ac.uk/" target="_blank">http://www.muther.ac.uk/</a><br/>
+					Data: <a href="http://www.muther.ac.uk/Data.html" target="_blank">http://www.muther.ac.uk/Data.html</a>
+				</td>
+				<td>21 January 2018</td>
+				<td>
+					Grundberg et al. 2012. Mapping cis and trans regulatory effects across multiple tissues in twins. <i>Nat. Genet.</i> <b>44</b>, 1084-1089.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/22941192" target="_blank">PMID:22941192</a>
+				</td>
+			</tr>
+			<tr>
+				<td>xQTLServer</td>
+				<td>eQTLs in dorsolateral prefrontal cortex samples.</td>
+				<td>
+					Info and data: <a href="http://mostafavilab.stat.ubc.ca/xqtl/" target="_blank">http://mostafavilab.stat.ubc.ca/xqtl/</a>
+				</td>
+				<td>21 January 2018</td>
+				<td>
+					Ng et al. 2017. An xQTL map integrates the genetic architecture of the human brain's transcriptome and epigenome. <i>Nat. Neurosci.</i> <b>20</b>, 1418-1426.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/28869584" target="_blank">PMID:28869584</a>
+				</td>
+			</tr>
+			<tr>
+				<td>CommonMind Consortium</td>
+				<td>eQTLs in brain samples. Both cis and trans eQTLs are available</td>
+				<td>
+					Info and data: <a href="https://www.synapse.org//#!Synapse:syn5585484" target="_blank">https://www.synapse.org//#!Synapse:syn5585484</a>
+				</td>
+				<td>21 January 2018</td>
+				<td>
+					Fromer et al. 2016. Gene expression elucidates functional impact of polygenic risk for schizophrenia. <i>Nat. Neurosci.</i> <b>16</b>, 1442-1453.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/27668389" target="_blank">PMID:27668389</a>
 				</td>
 			</tr>
 			<tr>
@@ -224,8 +264,8 @@ var loggedin = "{{ Auth::check() }}";
 				<td>pLI</td>
 				<td>A gene score annotated to prioritized genes. The score is the probability of being loss-of-function intolerance.
 				</td>
-				<td>
-					Info: <a href="http://exac.broadinstitute.org/" target="_blank">http://exac.broadinstitute.org/</a>
+				<td style="word-break:break-all;">
+					Info: <a href="http://exac.broadinstitute.org/" target="_blank">http://exac.broadinstitute.org/</a><br/>
 					Data: <a href="ftp://ftp.broadinstitute.org/pub/ExAC_release/release0.3.1/functional_gene_constraint" target="_blank">ftp://ftp.broadinstitute.org/pub/ExAC_release/release0.3.1/functional_gene_constraint</a>
 				</td>
 				<td>27 April 2017</td>
@@ -239,7 +279,7 @@ var loggedin = "{{ Auth::check() }}";
 				<td>A gene score annotated to prioritized genes. The score is the non-coding residual variation intolerance score.
 				</td>
 				<td>
-					Info: <a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005492" target="_blank">http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005492</a>
+					Info: <a href="http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005492" target="_blank">http://journals.plos.org/plosgenetics/article?id=10.1371/journal.pgen.1005492</a><br/>
 					Data: <a href="http://journals.plos.org/plosgenetics/article/file?type=supplementary&id=info:doi/10.1371/journal.pgen.1005492.s011" target="_blank">http://journals.plos.org/plosgenetics/article/file?type=supplementary&id=info:doi/10.1371/journal.pgen.1005492.s011</a>
 				</td>
 				<td>27 April 2017</td>

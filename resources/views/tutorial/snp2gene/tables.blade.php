@@ -163,7 +163,7 @@
 			<li><strong>Symbol</strong> : Gene symbol</li>
 			<li><strong>P-value</strong> : P-value of eQTLs</li>
 			<li><strong>FDR</strong> : FDR of eQTLs. Note that the method to compute FDR differs between data sources. Please refer to the <a href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">eQTL</a> section for details.</li>
-			<li><strong>tz</strong> : T-statistics or z score depending on data source.</li>
+			<li><strong>signed_stats</strong> : Signed statistics, the actual value depends on the data source. Please refer to the <a href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">eQTL</a> sectuib fir details.</li>
 			<li><strong>RiskIncAllele</strong> : Risk increasing allele obtained from the input GWAS summary statistics. <br/>
 				"NA" if signed effect is not provided in the input file.
 				SNPs which are not in the input GWAS but included from reference panel are also encoded as "NA".
