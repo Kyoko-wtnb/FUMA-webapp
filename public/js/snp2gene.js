@@ -153,6 +153,8 @@ $(document).ready(function(){
 			var orcol;
 			var becol;
 			var secol;
+			var magma_exp;
+			var magma;
 			$.ajax({
 				url: subdir+'/snp2gene/getParams',
 				type: 'POST',
@@ -172,12 +174,13 @@ $(document).ready(function(){
 					orcol = tmp[4];
 					becol = tmp[5];
 					secol = tmp[6];
+					magma = tmp[7];
 				},
 				complete: function(){
 					// jobInfo(jobid);
 					GWplot(jobid);
 					QQplot(jobid);
-					MAGMAresults(jobid);
+					MAGMAresults(jobid, magma);
 					ciMapCircosPlot(jobid, ciMap);
 					showResultTables(filedir, jobid, posMap, eqtlMap, ciMap, orcol, becol, secol);
 					$('#GWplotSide').show();
@@ -644,7 +647,17 @@ function QQplot(jobID){
 	});
 }
 
-function MAGMAresults(jobID){
+function MAGMAresults(jobID, magma){
+	if(magma==0){
+		$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+		+' MAGMA was not perform.</span><br/></div>');
+	}else{
+		MAGMA_GStable(jobID);
+		MAGMA_expPlot(jobID);
+	}
+}
+
+function MAGMA_GStable(jobID){
 	var file = "magma.sets.top";
 	$('#MAGMAtable').DataTable({
 		"processing": true,
@@ -667,185 +680,150 @@ function MAGMAresults(jobID){
 		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 		"iDisplayLength": 10
 	});
+}
 
-	d3.json(subdir+'/snp2gene/MAGMAtsplot/general/'+prefix+"/"+jobID, function(data){
+function MAGMA_expPlot(jobID){
+	var data_title = {
+		'gtex_v7_ts_avg_log2TPM': 'GTEx v7 53 tissue types',
+		'gtex_v7_ts_general_avg_log2TPM': 'GTEx v7 30 general tissue types',
+		'gtex_v6_ts_avg_log2RPKM': 'GTEx v6 53 tissue types',
+		'gtex_v6_ts_general_avg_log2RPKM': 'GTEx v6 30 general tissue types',
+		'bs_age_avg_log2RPKM': "BrainSpan 29 different ages of brain samples",
+		"bs_dev_avg_log2RPKM": "BrainSpan 11 general developmental stages of brain samples"
+	}
+
+	d3.json(subdir+'/snp2gene/MAGMA_expPlot/'+prefix+"/"+jobID, function(data){
 		if(data==null || data==undefined || data.lenght==0){
 			$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
 			+' MAGMA was not able to perform.</span><br/></div>');
 		}else{
+			data.forEach(function(d){
+				d[2] = +d[2]; //P-value
+				d[3] = +d[3]; //P order
+				d[4] = +d[4]; //alph order
+			})
+
+			var bars = [];
+			var xLabels = [];
+			var dataset = d3.set(data.map(function(d){return d[0]})).values();
+			var cellwidth = 15;
 			var margin = {top:30, right: 30, bottom:100, left:80},
-				width = 600,
 				height = 250;
-			var svg = d3.select("#magma_exp_general").append("svg")
-				.attr("width", width+margin.left+margin.right)
-				.attr("height", height+margin.top+margin.bottom)
-				.append("g")
-				.attr("transform", "translate("+margin.left+","+margin.top+")");
+			dataset.forEach(function(ds){
+				$('#magmaPlot').append('<div id="'+ds+'Panel"><h4>'+data_title[ds]+'</h4></div>')
 
-			data.data.forEach(function(d){
-				d[1] = +d[1]; // P-value
+				// img download buttons
+				$('#'+ds+'Panel').append('<div id="'+ds+'Plot">Download the plot as '
+					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'expImgDown("'+ds+'","png");'+"'"+'>PNG</button> '
+					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'expImgDown("'+ds+'","jpeg");'+"'"+'>JPG</button> '
+					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'expImgDown("'+ds+'","svg");'+"'"+'>SVG</button> '
+					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'expImgDown("'+ds+'","pdf");'+"'"+'>PDF</button></div>'
+				);
+
+				// plot
+				$('#'+ds+'Panel').append('<div id="'+ds+'"></div>')
+				var tdata = [];
+				var maxLabel = 100;
+				data.forEach(function(d){
+					if(d[0]==ds){
+						tdata.push(d)
+						if(d[1].length*5.5>maxLabel){maxLabel=d[1].length*5.5}
+					}
+				});
+				margin.bottom = maxLabel;
+				var width = cellwidth*tdata.length;
+				var svg = d3.select("#"+ds).append("svg")
+						.attr("width", width+margin.left+margin.right)
+						.attr("height", height+margin.top+margin.bottom)
+						.append("g")
+						.attr("transform", "translate("+margin.left+","+margin.top+")");
+
+				var x = d3.scale.ordinal().rangeBands([0,width]);
+				var xAxis = d3.svg.axis().scale(x).orient("bottom");
+				x.domain(tdata.map(function(d){return d[1];}));
+				var y = d3.scale.linear().range([height, 0]);
+				var yAxis = d3.svg.axis().scale(y).orient("left");
+				y.domain([0, d3.max(tdata, function(d){return -Math.log10(d[2]);})]);
+
+				var Pbon = 0.05/tdata.length;
+
+				var bar = svg.selectAll("rect.expgeneral").data(tdata).enter()
+					.append("rect")
+					.attr("x", function(d){return d[3]*cellwidth;})
+					.attr("y", function(d){return y(-Math.log10(d[2]));})
+					.attr("width", cellwidth-1)
+					.attr("height", function(d){return height - y(-Math.log10(d[2]));})
+					.style("fill", function(d){
+						if(d[2] < Pbon){return "#c00";}
+						else{return "#5668f4";}
+					})
+					.style("stroke", "grey");
+				bars.push(bar);
+				var xLabel = svg.append("g").selectAll(".xLabel")
+					.data(tdata).enter().append("text")
+					.text(function(d){return d[1];})
+					.style("text-anchor", "end")
+					.style("font-size", "11px")
+					.attr("transform", function(d){
+						return "translate("+(d[3]*cellwidth+((cellwidth-1)/2)+3)+","+(height+8)+")rotate(-70)";
+					});
+				xLabels.push(xLabel);
+				svg.append("line")
+					.attr("x1", 0).attr("x2", width)
+					.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
+					.style("stroke", "black")
+					.style("stroke-dasharray", ("3,3"));
+
+				svg.append('g').attr("class", "y axis")
+					.call(yAxis)
+					.selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
+				svg.append('g').attr("class", "x axis")
+					.attr("transform", "translate(0,"+(height)+")")
+					.call(xAxis).selectAll('text').remove();
+				svg.append("text").attr("text-anchor", "middle")
+					.attr("transform", "translate("+(-margin.left/2-15)+","+height/2+")rotate(-90)")
+					.text("-log 10 P-value");
+				svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+				svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+				svg.selectAll('text').style('font-family', 'sans-serif');
+
 			});
 
-			var x = d3.scale.ordinal().rangeBands([0,width]);
-			var xAxis = d3.svg.axis().scale(x).orient("bottom");
-			x.domain(data.data.map(function(d){return d[0];}));
-			var y = d3.scale.linear().range([height, 0]);
-			var yAxis = d3.svg.axis().scale(y).orient("left");
-			y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[1]);})]);
-
-			var cellsize = width/data.data.length;
-			var Pbon = 0.05/data.data.length;
-
-			var bar = svg.selectAll("rect.expgeneral").data(data.data).enter()
-				.append("rect")
-				.attr("x", function(d){return data.order.p[d[0]]*cellsize;})
-				.attr("y", function(d){return y(-Math.log10(d[1]));})
-				.attr("width", cellsize-1)
-				.attr("height", function(d){return height - y(-Math.log10(d[1]));})
-				.style("fill", function(d){
-					if(d[1] < Pbon){return "#c00";}
-					else{return "#5668f4";}
-				})
-				.style("stroke", "grey");
-				var xLabels = svg.append("g").selectAll(".xLabel")
-				.data(data.data).enter().append("text")
-				.text(function(d){return d[0];})
-				.style("text-anchor", "end")
-				.style("font-size", "11px")
-				.attr("transform", function(d){
-					return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
-				});
-
-			svg.append("line")
-				.attr("x1", 0).attr("x2", width)
-				.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
-				.style("stroke", "black")
-				.style("stroke-dasharray", ("3,3"));
-
-			svg.append('g').attr("class", "y axis")
-				.call(yAxis)
-				.selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-			svg.append('g').attr("class", "x axis")
-				.attr("transform", "translate(0,"+(height)+")")
-				.call(xAxis).selectAll('text').remove();
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(-margin.left/2-30)+","+height/2+")rotate(-90)")
-				.text("-log 10 P-value");
-			svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-			svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-			svg.selectAll('text').style('font-family', 'sans-serif');
-
 			function sortOptions(type){
-				if(type=="alph"){
-					bar.transition().duration(1000)
-						.attr("x", function(d){return data.order.alph[d[0]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.alph[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
-						});
-				}else if(type=="p"){
-					bar.transition().duration(1000)
-						.attr("x", function(d){return data.order.p[d[0]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
-						});
+				for(var i=0; i<bars.length; i++){
+					if(type=="alph"){
+						bars[i].transition().duration(1000)
+							.attr("x", function(d){return d[4]*cellwidth;});
+						xLabels[i].transition().duration(1000)
+							.attr("transform", function(d){
+								return "translate("+(d[4]*cellwidth+((cellwidth-1)/2)+3)+","+(height+8)+")rotate(-70)";
+							});
+					}else if(type=="p"){
+						bars[i].transition().duration(1000)
+							.attr("x", function(d){return d[3]*cellwidth;});
+						xLabels[i].transition().duration(1000)
+							.attr("transform", function(d){
+								return "translate("+(d[3]*cellwidth+((cellwidth-1)/2)+3)+","+(height+8)+")rotate(-70)";
+							});
+					}
 				}
 			}
 
-			d3.select('#magmaTsGorder').on("change", function(){
-				var type = $('#magmaTsGorder').val();
+			d3.select('#magma_exp_order').on("change", function(){
+				var type = $('#magma_exp_order').val();
 				sortOptions(type);
 			});
 		}
 	});
+}
 
-	d3.json(subdir+'/snp2gene/MAGMAtsplot/specific/'+prefix+"/"+jobID, function(data){
-		if(data==null || data==undefined || data.lenght==0){
-		}else{
-			var margin = {top:30, right: 30, bottom:230, left:80},
-				width = 800,
-				height = 250;
-			var svg = d3.select("#magma_exp").append("svg")
-				.attr("width", width+margin.left+margin.right)
-				.attr("height", height+margin.top+margin.bottom)
-				.append("g")
-				.attr("transform", "translate("+margin.left+","+margin.top+")");
-			data.data.forEach(function(d){
-				d[1] = +d[1]; // P-value
-			});
-			var x = d3.scale.ordinal().rangeBands([0,width]);
-			var xAxis = d3.svg.axis().scale(x).orient("bottom");
-			x.domain(data.data.map(function(d){return d[0];}));
-			var y = d3.scale.linear().range([height, 0]);
-			var yAxis = d3.svg.axis().scale(y).orient("left");
-			y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[1]);})]);
-
-			var cellsize = width/data.data.length;
-			var Pbon = 0.05/data.data.length;
-
-			var bar = svg.selectAll("rect.expgeneral").data(data.data).enter()
-				.append("rect")
-				.attr("x", function(d){return data.order.p[d[0]]*cellsize;})
-				.attr("y", function(d){return y(-Math.log10(d[1]));})
-				.attr("width", cellsize-1)
-				.attr("height", function(d){return height - y(-Math.log10(d[1]));})
-				.style("fill", function(d){
-					if(d[1] < Pbon){return "#c00";}
-					else{return "#5668f4";}
-				})
-				.style("stroke", "grey");
-			var xLabels = svg.append("g").selectAll(".xLabel")
-				.data(data.data).enter().append("text")
-				.text(function(d){return d[0];})
-				.style("text-anchor", "end")
-				.style("font-size", "11px")
-				.attr("transform", function(d){
-					return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
-				});
-
-			svg.append("line")
-				.attr("x1", 0).attr("x2", width)
-				.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
-				.style("stroke", "black")
-				.style("stroke-dasharray", ("3,3"));
-
-			svg.append('g').attr("class", "y axis")
-				.call(yAxis)
-				.selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-			svg.append('g').attr("class", "x axis")
-				.attr("transform", "translate(0,"+(height)+")")
-				.call(xAxis).selectAll('text').remove();
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(-margin.left/2-30)+","+height/2+")rotate(-90)")
-				.text("-log 10 P-value");
-			svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-			svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-			svg.selectAll('text').style('font-family', 'sans-serif');
-
-			function sortOptions(type){
-				if(type=="alph"){
-					bar.transition().duration(1000)
-						.attr("x", function(d){return data.order.alph[d[0]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.alph[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
-						});
-				}else if(type=="p"){
-					bar.transition().duration(1000)
-						.attr("x", function(d){return data.order.p[d[0]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-					return "translate("+(data.order.p[d[0]]*cellsize+((cellsize-1)/2)+3)+","+(height+8)+")rotate(-70)";
-				});
-				}
-			}
-			d3.select('#magmaTsorder').on("change", function(){
-				var type = $('#magmaTsorder').val();
-				sortOptions(type);
-			});
-		}
-	});
+function expImgDown(id, type){
+	$('#expData').val($('#'+id).html());
+	$('#expType').val(type);
+	$('#expJobID').val(jobid);
+	$('#expFileName').val("magma_exp_"+id);
+	$('#expDir').val("jobs");
+	$('#expSubmit').trigger('click');
 }
 
 function ciMapCircosPlot(jobID, ciMap){

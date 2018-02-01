@@ -136,7 +136,8 @@ class S2GController extends Controller
 		if(array_key_exists('ciMap', $params)){
 			$ciMap = $params['ciMap'];
 		}
-		return "$filedir:$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol";
+		$magma = $params['magma'];
+		return "$filedir:$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol:$magma";
 	}
 
 	public function newJob(Request $request){
@@ -515,6 +516,14 @@ class S2GController extends Controller
 			$ciMapChr15Meth = "NA";
 		}
 
+		// MAGMA option
+		$magma = 0;
+		$magma_exp = "NA";
+		if($request -> has('magma')){
+			$magma = 1;
+			$magma_exp = implode(":", $request->input('magma_exp'));
+		}
+
 		// write parameter into a file
 		$paramfile = $filedir.'/params.config';
 		File::put($paramfile, "[jobinfo]\n");
@@ -560,6 +569,10 @@ class S2GController extends Controller
 		File::append($paramfile, "MAF=$maf\n");
 		File::append($paramfile, "Incl1KGSNPs=$KGSNPs\n");
 		File::append($paramfile, "mergeDist=$mergeDist\n");
+
+		File::append($paramfile, "\n[magma]\n");
+		File::append($paramfile, "magma=$magma\n");
+		File::append($paramfile, "magma_exp=$magma_exp\n");
 
 		File::append($paramfile, "\n[posMap]\n");
 		File::append($paramfile, "posMap=$posMap\n");
@@ -1073,46 +1086,11 @@ class S2GController extends Controller
 		}
 	}
 
-	public function MAGMAtsplot($type, $prefix, $jobID){
+	public function MAGMA_expPlot($prefix, $jobID){
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$jobID.'/';
-		$file = "";
-		if($type=="general"){
-			$file = $filedir."magma_exp_general.gcov.out";
-		}else{
-			$file = $filedir."magma_exp.gcov.out";
-		}
-		if(file_exists($file)){
-			$f = fopen($file, 'r');
-			$data = [];
-			$p = [];
-			while($row=fgetcsv($f)){
-				$row = preg_split('/\s+/', $row[0]);
-				if($row[0]=="#" || $row[0]=="COVAR"){
-					continue;
-				}else{
-					$data[] = [$row[0], $row[5]];
-					$p[$row[0]] =$row[5];
-				}
-			}
-			asort($p);
-			$order_p = [];
-			$i = 0;
-			foreach($p as $key => $val){
-				$order_p[$key] = [$i];
-				$i++;
-			}
-			ksort($p);
-			$order_alph = [];
-			$i = 0;
-			foreach($p as $key => $val){
-				$order_alph[$key] = $i;
-				$i++;
-			}
-			$r = ["data"=>$data, "order"=>["p"=>$order_p, "alph"=>$order_alph]];
-			return json_encode($r);
-		}else{
-			return;
-		}
+		$script = storage_path()."/scripts/magma_expPlot.py";
+	    $data = shell_exec("python $script $filedir");
+		return $data;
 	}
 
 	public function annotPlot(Request $request){
@@ -1245,7 +1223,12 @@ class S2GController extends Controller
 				$files[] = "magma_exp.gcov.out";
 				$files[] = "magma_exp_general.gcov.out";
 			}
+			$tmp = File::glob($filedir."magma_exp_*.gcov.out");
+			for($i=0; $i<count($tmp); $i++){
+				$files[] = preg_replace("/.+\/(magma_exp_*)/", '$1', $tmp[$i]);
+			}
 		}
+
 
 		$zip = new \ZipArchive();
 		if($prefix=="gwas"){

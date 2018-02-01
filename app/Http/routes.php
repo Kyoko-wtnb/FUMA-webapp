@@ -125,7 +125,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::get('snp2gene/QQplot/{prefix}/{id}/{plot}', 'S2GController@QQplot');
 
-	Route::get('snp2gene/MAGMAtsplot/{type}/{prefix}/{id}', 'S2GController@MAGMAtsplot');
+	Route::get('snp2gene/MAGMA_expPlot/{prefix}/{id}', 'S2GController@MAGMA_expPlot');
 
 	Route::post('snp2gene/paramTable', 'S2GController@paramTable');
 

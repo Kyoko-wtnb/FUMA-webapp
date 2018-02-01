@@ -196,64 +196,31 @@ var loggedin = "{{ Auth::check() }}";
 					<br/><br/>
 					<h4 style="color: #00004d">MAGMA Tissue Expression Analysis</h4>
 					<span class="info"><i class="fa fa-info"></i>
-						MAGMA gene-property analysis is performed for gene expression per tissue baed on GTEx RNA-seq data.<br/>
-						Expression values (RPKM) were log2 transformed with pseudocount 1 after winsorization at 50 and average was taked per tissue.
-						MAGMA was performed for average expression of 30 general tissue types and 53 specific tissue types separately.
+						MAGMA gene-property analysis is performed for gene expression of user selected data sets.<br/>
+						Details of gene expression data sets are available at
+						<a target="_blank" href="{{ Config::get('app.subdir') }}/snp2gene#magma">Tutorial</a>.
 						Full results are downloadable from "Download" tab. <br/>
-						Note that MAGMA gene-property analyses uses the full distribution of SNP p-values and is different from a enrichment test of DEG (differentially expressed genes) and tissue expressed genes as implemented in GENE2FUNC that only tests for enrichment of prioritized genes.
+						Note that MAGMA gene-property analyses uses the full distribution of SNP p-values
+						and is different from a enrichment test of DEG (differentially expressed genes)
+						as implemented in GENE2FUNC that only tests for enrichment of prioritized genes.
 					</span><br/><br/>
 					<div id="magmaPlot">
-						General 30 tissue types<br/>
-						Download the plot as
-						<button class="btn btn-xs ImgDown" onclick='ImgDown("magma_exp_general","png");'>PNG</button>
-						<button class="btn btn-xs ImgDown" onclick='ImgDown("magma_exp_general","jpeg");'>JPG</button>
-						<button class="btn btn-xs ImgDown" onclick='ImgDown("magma_exp_general","svg");'>SVG</button>
-						<button class="btn btn-xs ImgDown" onclick='ImgDown("magma_exp_general","pdf");'>PDF</button>
-
 						<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
 							<input type="hidden" name="_token" value="{{ csrf_token() }}">
-							<input type="hidden" name="dir" id="magma_exp_generalDir" val=""/>
-							<input type="hidden" name="id" id="magma_exp_generalID" val=""/>
-							<input type="hidden" name="data" id="magma_exp_generalData" val=""/>
-							<input type="hidden" name="type" id="magma_exp_generalType" val=""/>
-							<input type="hidden" name="fileName" id="magma_exp_generalFileName" val=""/>
-							<input type="submit" id="magma_exp_generalSubmit" class="ImgDownSubmit"/>
+							<input type="hidden" name="dir" id="expDir" val=""/>
+							<input type="hidden" name="id" id="expJobID" val=""/>
+							<input type="hidden" name="data" id="expData" val=""/>
+							<input type="hidden" name="type" id="expType" val=""/>
+							<input type="hidden" name="fileName" id="expFileName" val=""/>
+							<input type="submit" id="expSubmit" class="ImgDownSubmit"/>
 						</form>
-						<br/>
 						<span class="form-inline">
 							Order tissue by :
-							<select id="magmaTsGorder" class="form-control" style="width: auto;">
+							<select id="magma_exp_order" class="form-control" style="width: auto;">
 								<option value="alph">Alphabetical</option>
 								<option value="p" selected>P-value</option>
 							</select>
 						</span>
-						<div id="magma_exp_general"></div>
-
-						Specific 53 tissue types<br/>
-						Download the plot as
-						<button class="btn btn-xs ImgDown" onclick='ImgDown("magma_exp","png");'>PNG</button>
-						<button class="btn btn-xs ImgDown" onclick='ImgDown("magma_exp","jpeg");'>JPG</button>
-						<button class="btn btn-xs ImgDown" onclick='ImgDown("magma_exp","svg");'>SVG</button>
-						<button class="btn btn-xs ImgDown" onclick='ImgDown("magma_exp","pdf");'>PDF</button>
-
-						<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/snp2gene/imgdown">
-							<input type="hidden" name="_token" value="{{ csrf_token() }}">
-							<input type="hidden" name="dir" id="magma_expDir" val=""/>
-							<input type="hidden" name="id" id="magma_expID" val=""/>
-							<input type="hidden" name="data" id="magma_expData" val=""/>
-							<input type="hidden" name="type" id="magma_expType" val=""/>
-							<input type="hidden" name="fileName" id="magma_expFileName" val=""/>
-							<input type="submit" id="magma_expSubmit" class="ImgDownSubmit"/>
-						</form>
-						<br/>
-						<span class="form-inline">
-							Order tissue by :
-							<select id="magmaTsorder" class="form-control" style="width: auto;">
-								<option value="alph">Alphabetical</option>
-								<option value="p" selected>P-value</option>
-							</select>
-						</span>
-						<div id="magma_exp"></div>
 					</div>
 				</div>
       		</div>

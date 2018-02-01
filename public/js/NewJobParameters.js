@@ -279,6 +279,18 @@ function setParams(data){
 	});
 	if(data.extMHC!="NA"){$('#extMHCregion').val(data.extMHC)}
 
+	// MAGMA
+	if(data["magma"]!=undefined){
+		if(data.magma=="1"){
+			$('#magma').prop('checked', true)
+			var ds = data.magma_exp.split(":");
+			$('#magma_exp option').each(function(){
+				if(ds.indexOf($(this).val())){$(this).prop('selected', true)}
+				else{$(this).prop('selected', false)}
+			})
+		}
+	}
+
 	CheckAll();
 }
 
@@ -1066,7 +1078,7 @@ function CheckAll(){
 	//MHC table
 	tablecheck=true;
 	table = $('#NewJobMHC')[0];
-	if($('#MHCregion').is(':checked')==true){
+	if($('#MHCregion').is(':checked')){
 		$('#MHCopt').show();
 		$(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-check"></i> OK. Normal MHC region will be excluded '+$('#MHCopt option:selected').text()+'.</div></td>');
@@ -1083,6 +1095,31 @@ function CheckAll(){
 		$('#MHCopt').hide();
 		$(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+		$(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+	}
+
+	//MAGMA
+	tablecheck=true;
+	table = $('#NewJobMAGMA')[0];
+	if($('#magma').is(':checked')){
+		$(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-check"></i> OK. MAGMA will be performed.</div></td>');
+		var ds = 0;
+		$('#magma_exp option').each(function(){
+			if($(this).is(":selected")){ds++;}
+		});
+		if(ds==0){
+			$(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-ban"></i> Please select at least one data set.</div></td>');
+			submit=false;
+		}else{
+			$(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-check"></i> OK.</div></td>');
+		}
+	}else{
+		$(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-exclamation-circle"></i> Optional. MAGMA results will not be available.</div></td>');
 		$(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
 	}

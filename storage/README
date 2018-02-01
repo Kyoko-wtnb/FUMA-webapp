@@ -1,4 +1,4 @@
-README file of FUMA web application
+README of output files from FUMA web application
 
 Author: Kyoko Watanabe (k.watanabe@vu.nl)
 Version: 1.0.0 (2 Feb 2017)
@@ -346,9 +346,8 @@ When genotype data is available, we recommend to re-run MAGMA locally with genot
   magma.sets.out: output of gene-set analysis containing P-value per gene set
   magma.setgenes.out: output of gene-set analysis containing all genes in each significant gene sets. This file is only available when there is significant gene sets after bonferroni correction.
 3. Tissue expression analysis
-  Gene expression was obtained from GTEx v6.
-  Average gene-expression per tissue type were used as gene covariate to test positive relationship between gene expression in a specific tissue type and genetic associations.
-  MAGMA gene-property test was performed for average expression (log2 transformed RPKM with pseudocount 1 after winsorization at 50) of 30 general tissue types and 53 specific tissue types conditioning on average expression across all tissue types.
-  magma_exp_general.gcov.out: output of tissue expression analysis for 30 general tissue types.
-  magma_exp.gcov.out: output of tissue expression analysis for 53 specific tissue types.
+  Gene expression data sets were obtained from one of the following, GTEx v6, GTEx v7 and BrainSpan.
+  MAGMA gene-property test was performed for average gene-expression per category (e.g. tissue type or developmental stage) conditioning on average expression across all categories (one-side).
+  This tests positive relationship between gene expression in a specific category and genetic associations.
+  magma_exp_xxx.gcov.out: output of user selected data sets.
 Please refer the manual of MAGMA from https://ctg.cncr.nl/software/magma for more details.

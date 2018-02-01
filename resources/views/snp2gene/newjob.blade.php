@@ -1620,6 +1620,49 @@
 		</div>
 	</div>
 
+	<!-- MAGMA -->
+	<div class="panel panel-default" style="padding:0px;">
+		<div class="panel-heading input" style="padding:5px;">
+			<h4>6. MAGMA analysis<a href="#NewJobMAGMAPanel" data-toggle="collapse" style="float: right; padding-right:20px;"><i class="fa fa-chevron-down"></i></a></h4>
+		</div>
+		<div class="panel-body collapse" id="NewJobMAGMAPanel">
+			<table class="table table-bordered inputTable" id="NewJobMAGMA" style="width: auto;">
+				<tr>
+					<td>Perform MAGMA
+						<a class="infoPop" data-toggle="popover" title="MAGMA" data-content="When checked, MAGMA gene and gene-set analyses will be performed.">
+							<i class="fa fa-question-circle-o fa-lg"></i>
+						</a>
+					</td>
+					<td>
+						<span class="form-inline">
+							<input type="checkbox" class="form-check-input" name="magma" id="magma" checked onchange="CheckAll();">
+						</span>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>MAGMA gene expression analysis
+						<a class="infoPop" data-toggle="popover" title="MAGMA gene expression analysis" data-content="When magma is performed, at least one data set needs to be selected.
+						Multiple data sets can be also selected.">
+							<i class="fa fa-question-circle-o fa-lg"></i>
+						</a><br/>
+					</td>
+					<td>
+						<select multiple class="form-control" name="magma_exp[]" id="magma_exp">
+							<option value="GTEx/v7/gtex_v7_ts_avg_log2TPM">GTEx v7: 53 tissue types</option>
+							<option value="GTEx/v7/gtex_v7_ts_general_avg_log2TPM">GTEx v7: 30 general tissue types</option>
+							<option selected value="GTEx/v6/gtex_v6_ts_avg_log2RPKM">GTEx v6: 53 tissue types</option>
+							<option selected value="GTEx/v6/gtex_v6_ts_general_avg_log2RPKM">GTEx v6: 30 general tissue types</option>
+							<option value="BrainSpan/bs_age_avg_log2RPKM">BrainSpan: 29 different ages of brain samples</option>
+							<option value="BrainSpan/bs_dev_avg_log2RPKM">BrainSpan: 11 general developmental stages of brain samples</option>
+						</select>
+					</td>
+					<td></td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
 	<span class="form-inline">
 		<span style="font-size:18px;">Title of job submission</span>:
 		<input type="text" class="form-control" name="NewJobTitle" id="NewJobTitle"/><br/>

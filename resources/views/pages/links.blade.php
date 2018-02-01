@@ -188,6 +188,18 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
+				<td>BrainSpan</td>
+				<td>Gene expression data of developmental brain samples.</td>
+				<td>
+					Info and data: <a href="http://www.brainspan.org/static/download" target="_blank">http://www.brainspan.org/static/download</a>
+				</td>
+				<td>31 January 2018</td>
+				<td>
+					Miller et al. 2014. Transcriptional landscape of the prenatal human brain. <i>Nature</i> <b>508</b>, 199-206.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/24695229" target="_blank">PMID:24695229</a>
+				</td>
+			</tr>
+			<tr>
 				<td>GSE87112 (Hi-C)</td>
 				<td>Hi-C data (significant loops) of 21 tissue/cell types. Pre-processed data (output of Fit-Hi-C) is used in FUMA.</td>
 				<td>Info and data: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112</a></td>

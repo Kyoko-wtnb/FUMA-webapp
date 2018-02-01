@@ -94,33 +94,27 @@ class snp2geneProcess extends Job implements ShouldQueue
 		$script = storage_path().'/scripts/allSNPs.py';
 		exec("python $script $filedir");
 
-		file_put_contents($logfile, "\n----- magma.pl -----\n", FILE_APPEND);
-		file_put_contents($errorfile, "\n----- magma.pl -----\n", FILE_APPEND);
-		$script = storage_path().'/scripts/magma.pl';
-		exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
-		if($error != 0){
-		// $this->rmFiles($filedir);
-		// DB::table('SubmitJobs') -> where('jobID', $jobID)
-		//                   -> update(['status'=>'ERROR:002']);
-		$errorout = file_get_contents($errorfile);
-		if(preg_match('/MAGMA ERROR/', $errorout)==1){
-			$errorout = file_get_contents($logfile);
-			$errorout = explode("\n", $errorout);
-			foreach($errorout as $l){
-				if(preg_match("/ERROR - /", $l)==1){
-					$msg = $l;
-					break;
+		if($params['magma']==1){
+			file_put_contents($logfile, "\n----- magma.pl -----\n", FILE_APPEND);
+			file_put_contents($errorfile, "\n----- magma.pl -----\n", FILE_APPEND);
+			$script = storage_path().'/scripts/magma.pl';
+			exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+			if($error != 0){
+				$errorout = file_get_contents($errorfile);
+				if(preg_match('/MAGMA ERROR/', $errorout)==1){
+					$errorout = file_get_contents($logfile);
+					$errorout = explode("\n", $errorout);
+					foreach($errorout as $l){
+						if(preg_match("/ERROR - /", $l)==1){
+							$msg = $l;
+							break;
+						}
+					}
+				}else{
+					$msg = "server error";
 				}
+				$status = 2;
 			}
-		}else{
-			$msg = "server error";
-		}
-		$status = 2;
-		// $this->JobMonitorUpdate($jobID, $created_at, $started_at);
-		// if($email!=null){
-		//   $this->sendJobCompMail($email, $jobtitle, $jobID, 2, $msg);
-		//   return;
-		// }
 		}
 
 		file_put_contents($logfile, "\n----- manhattan_filt.py -----\n", FILE_APPEND);
