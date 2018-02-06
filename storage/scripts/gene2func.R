@@ -1,8 +1,50 @@
 library(data.table)
 library(kimisc)
 args <- commandArgs(TRUE)
+
+##### DEG function #####
+DEGtest <- function(genes, allgenes, adjP.method="BH", file){
+	data <- fread(file, head=F)
+	colnames(data) <- c("GeneSet", "n", "genes")
+	allgenes <- allgenes[allgenes %in% unlist(strsplit(data$genes[data$GeneSet=="all"], ":"))]
+	results <- data.frame(matrix(vector(), 0, 7, dimnames = list(c(), c("Category", "GeneSet", "N", "N_overlap", "p", "adjP", "genes"))))
+	N <- length(allgenes)
+	for(i in 1:nrow(data)){
+		tempg <- unlist(strsplit(data$genes[i], ":"))
+		tempg <- tempg[tempg %in% allgenes]
+		data$n[i] <- length(tempg)
+		data$genes[i] <- paste(tempg, collapse = ":")
+	}
+
+	temp <- data.frame(matrix(vector(),0,6 ,dimnames = list(c(),c("GeneSet", "N_genes", "N_overlap", "p", "adjP", "genes"))))
+	m <- length(genes)
+	for(j in 1:nrow(data)){
+		temp[j,1] <- data$GeneSet[j]
+		n <- data$n[j]
+		temp[j,2] <- data$n[j]
+		GSgenes <- unlist(strsplit(data$genes[j], ":"))
+		x <- length(which(genes %in% GSgenes))
+		temp[j,3] <- x
+		temp[j,6] <- paste(genes[which(genes %in% GSgenes)], collapse=":")
+		if(x==0){temp[j,4]<-1}
+		else{temp$p[j] <- phyper(x, n, N-n, m, lower.tail = F)}
+	}
+	temp[,5] <- p.adjust(temp$p, method=adjP.method)
+
+	ct <- c("DEG.up", "DEG.down", "DEG.twoside")
+	for(i in ct){
+		tr <- temp[grepl(paste("\\", sub(".+(\\..+)", "\\1", i),sep=""), temp$GeneSet),]
+		tr$adjP <- p.adjust(tr$p, method=adjP.method)
+		tr$GeneSet <- sub("(.+)\\..+", "\\1", tr$GeneSet)
+		results <- rbind(results, data.frame(Category=rep(i, nrow(tr)), tr))
+	}
+	return(results)
+}
+
+##### get arguments #####
 filedir <- args[1]
 
+##### get params #####
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
@@ -12,150 +54,115 @@ gtype <- params$params$gtype
 gval <- params$params$gval
 bkgtype <- params$params$bkgtype
 bkgval <- params$params$bkgval
+gene_exp <- unlist(strsplit(params$params$gene_exp, ":"))
 MHC <- as.numeric(params$params$MHC)
 
-if(gtype == "text"){
-  genes <- unlist(strsplit(gval, ":"))
-}else{
-  genes <- fread(paste(filedir, gval, sep=""), head=F, data.table=F)
-  genes <- genes[,1]
-}
-
+##### all genes #####
 ENSG <- fread(config$data$ENSG, data.table=F)
 
+##### input genes #####
+### input
+if(gtype == "text"){
+	genes <- unlist(strsplit(gval, ":"))
+}else{
+	genes <- fread(paste(filedir, gval, sep=""), head=F, data.table=F)
+	genes <- genes[,1]
+}
+### background
 if(bkgtype == "select"){
-  bkg = unlist(strsplit(bkgval, ":"))
-  if(bkg[1]=="all"){
-    bkgenes = ENSG$entrezID
-  }else{
-    bkgenes = ENSG$ensembl_gene_id[ENSG$gene_biotype %in% bkg]
-  }
+	bkg = unlist(strsplit(bkgval, ":"))
+	if(bkg[1]=="all"){
+		bkgenes = ENSG$entrezID
+	}else{
+		bkgenes = ENSG$ensembl_gene_id[ENSG$gene_biotype %in% bkg]
+	}
 }else if(bkgtype == "text"){
-  bkgenes = unlist(strsplit(bkgval, ":"))
+	bkgenes = unlist(strsplit(bkgval, ":"))
 }else{
-  bkgenes = fread(paste(filedir, bkgval, sep=""), head=F, data.table=F)
-  bkgenes = bkgenes[,1]
+	bkgenes = fread(paste(filedir, bkgval, sep=""), head=F, data.table=F)
+	bkgenes = bkgenes[,1]
 }
+### summary
+summary <- matrix(c("Number of input genes", as.character(length(genes))), c(1,2))
+summary <- rbind(summary, c("Number of background genes", as.character(length(bkgenes))))
 
-#if(Xchr==1){
-#  ENSG <- ENSG[ENSG$chromosome_name != 23,]
-#}
-
+##### MHC exclude #####
 if(MHC==1){
-  MHC = FALSE
-}else{
-  MHC = TRUE
+	cat("Excluding genes in MHC region\n")
+	start <- ENSG$start_position[ENSG$external_gene_name=="MOG"]
+	end <- ENSG$end_position[ENSG$external_gene_name=="COL11A2"]
+	MHCgenes <- ENSG$ensembl_gene_id[ENSG$chromosome_name==6 & ((ENSG$end_position>=start&ENSG$end_position<=end)|(ENSG$start_position>=start&ENSG$start_position<=end))]
+	ENSG <- ENSG[!ENSG$ensembl_gene_id%in%MHCgenes,]
 }
 
-type <- 0
-## type
-# 0-> symbol
-# 1-> ensg
-# 2-> entrezID
-
+### convert genes to ENSG
+geneIDs <- data.frame(input=genes)
 if(length(which(toupper(genes) %in% toupper(ENSG$external_gene_name)))>0){
-  genes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name) %in% toupper(genes)]
-  type <- 0
+	colnames(geneIDs)[1] <- "symbol"
+	genes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name) %in% toupper(genes)]
+	geneIDs$ensg <- ENSG$ensembl_gene_id[match(toupper(geneIDs$symbol), toupper(ENSG$external_gene_name))]
+	geneIDs$entrez <- ENSG$entrezID[match(geneIDs$ensg, ENSG$ensembl_gene_id)]
 }else if(length(which(toupper(genes) %in% toupper(ENSG$ensembl_gene_id)))>0){
-  genes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(genes)]
-  type <- 1
+	colnames(geneIDs)[1] <- "ensg"
+	genes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(genes)]
+	geneIDs$entrez <- ENSG$entrezID[match(geneIDs$ensg, ENSG$ensembl_gene_id)]
+	geneIDs$symbol <- ENSG$external_gene_name[match(geneIDs$ensg, ENSG$ensembl_gene_id)]
 }else if(length(which(genes %in% ENSG$entrezID))>0){
-  genes <- ENSG$ensembl_gene_id[ENSG$entrezID%in%genes]
-  type <- 2
+	colnames(geneIDs)[1] <- "entrez"
+	genes <- ENSG$ensembl_gene_id[ENSG$entrezID%in%genes]
+	geneIDs$ensg <- ENSG$ensembl_gene_id[match(geneIDs$entrez, ENSG$entrezID)]
+	geneIDs$symbol <- ENSG$external_gene_name[match(geneIDs$ensg, ENSG$ensembl_gene_id)]
 }else{
-  stop("gene ID did not match")
+ 	stop("gene ID did not match")
 }
-
+summary <- rbind(summary, c("Number of input genes with recognised Ensembl ID", as.character(length(genes))))
+summary <- rbind(summary, c("Input genes without recognised Ensembl ID", paste(geneIDs[!geneIDs$ensg%in%genes,1], collapse=":")))
 
 if(length(which(toupper(bkgenes) %in% toupper(ENSG$external_gene_name)))>0){
-  bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name)%in%toupper(bkgenes)]
+	tmp <- bkgenes[!toupper(bkgenes)%in%toupper(ENSG$external_gene_name)]
+	bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name)%in%toupper(bkgenes)]
 }else if(length(which(toupper(bkgenes) %in% toupper(ENSG$ensembl_gene_id)))>0){
-  bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(bkgenes)]
+	tmp <- bkgenes[!toupper(bkgenes) %in% toupper(ENSG$ensembl_gene_id)]
+	bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(bkgenes)]
 }else if(length(which(bkgenes %in% ENSG$entrezID))>0){
-  bkgenes <- ENSG$ensembl_gene_id[ENSG$entrezID%in%bkgenes]
+	tmp <- bkgenes[!bkgenes %in% ENSG$entrezID]
+	bkgenes <- ENSG$ensembl_gene_id[ENSG$entrezID%in%bkgenes]
+}
+summary <- rbind(summary, c("Number of background genes with recognised Ensembl ID", as.character(length(bkgenes))))
+summary <- rbind(summary, c("Background genes without recognised Ensembl ID", paste(tmp, collapse=":")))
+summary <- rbind(summary, c("Number of unique entrez ID of input genes", as.character(length(unique(geneIDs$entrez)))))
+summary <- rbind(summary, c("Number of unique entrez ID of background genes", as.character(length(unique(ENSG$entrezID[ENSG$ensembl_gene_id%in%bkgenes])))))
+
+##### write summary #####
+summary[summary[,2]=="", 2] <- "NA"
+write.table(summary, paste0(filedir, "summary.txt"), quote=F, row.names=F, col.names=F, sep="\t")
+write.table(geneIDs, paste0(filedir, "geneIDs.txt"), quote=F, row.names=F, sep="\t")
+
+##### gene expression #####
+for(f in gene_exp){
+	load(paste0(config$data$GeneExp, "/", f, ".RData"))
+	if(length(which(genes %in% rownames(exp)))>1){
+		exp <- exp[rownames(exp) %in% genes,]
+		out <- data.frame(ensg=rownames(exp), symbol=ENSG$external_gene_name[match(rownames(exp),ENSG$ensembl_gene_id)])
+		out <- cbind(out, exp)
+		fname <- unlist(strsplit(f, "/"))
+		write.table(out, paste0(filedir, fname[length(fname)], "_exp.txt"), quote=F, row.names=F, sep="\t")
+		load(paste0(config$data$GeneExp, "/", sub("log2", "norm", f), ".RData"))
+		exp <- exp[rownames(exp) %in% genes,]
+		out <- data.frame(ensg=rownames(exp), symbol=ENSG$external_gene_name[match(rownames(exp),ENSG$ensembl_gene_id)])
+		out <- cbind(out, exp)
+		write.table(out, paste0(filedir, sub("log2", "norm", fname[length(fname)]), "_exp.txt"), quote=F, row.names=F, sep="\t")
+	}
 }
 
-load(paste(config$data$GTExExp, "/gtex.avg.log2RPKM.ts.RData", sep=""))
-load(paste(config$data$GTExExp, "/gtex.avg.ts.RData", sep=""))
-
-if(length(which(rownames(gtex.avg.ts) %in% genes))>1){
-  gtex.exp.log2 <- gtex.avg.log2RPKM.ts[rownames(gtex.avg.log2RPKM.ts) %in% genes, ]
-  gtex.exp.norm <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
-  rm(gtex.avg.ts, gtex.avg.log2RPKM.ts)
-  rownames(gtex.exp.log2) <- ENSG$external_gene_name[match(rownames(gtex.exp.log2), ENSG$ensembl_gene_id)]
-  rownames(gtex.exp.norm) <- ENSG$external_gene_name[match(rownames(gtex.exp.norm), ENSG$ensembl_gene_id)]
-
-  g.sort <- 1:nrow(gtex.exp.log2)
-  names(g.sort) <- sort(rownames(gtex.exp.log2))
-  row.order <- data.frame(gene=rownames(gtex.exp.log2), alph=g.sort[rownames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
-
-  hc <- hclust(dist(gtex.exp.log2))
-  #gtex.exp <- gtex.exp[rownames(gtex.exp)[hc$order],]
-  names(g.sort) <- hc$labels[hc$order]
-  row.order$clstLog2 <- g.sort[rownames(gtex.exp.log2)]
-  hc <- hclust(dist(gtex.exp.norm))
-  names(g.sort) <- hc$labels[hc$order]
-  row.order$clstNorm <- g.sort[rownames(gtex.exp.log2)]
-  write.table(row.order, paste(filedir, "exp.row.txt", sep=""), quote=F, row.names=F, sep="\t")
-
-  ts.sort <- 1:ncol(gtex.exp.log2)
-  names(ts.sort) <- sort(colnames(gtex.exp.log2))
-  col.order <- data.frame(ts=colnames(gtex.exp.log2), alph=ts.sort[colnames(gtex.exp.log2)], clstLog2=NA, clstNorm=NA)
-
-  hc <- hclust(dist(t(gtex.exp.log2)))
-  names(ts.sort) <- hc$labels[hc$order]
-  col.order$clstLog2 <- ts.sort[colnames(gtex.exp.log2)]
-  hc <- hclust(dist(t(gtex.exp.norm)))
-  names(ts.sort) <- hc$labels[hc$order]
-  col.order$clstNorm <- ts.sort[colnames(gtex.exp.log2)]
-  write.table(col.order, paste(filedir, "exp.col.txt", sep=""), quote=F, row.names=F, sep="\t")
-
-  gtex.exp <- melt(gtex.exp.log2)
-  colnames(gtex.exp) <- c("gene", "ts", "log2")
-  temp <- melt(gtex.exp.norm)
-  gtex.exp$norm <- temp$value
-  write.table(gtex.exp, paste(filedir, "exp.txt", sep=""), quote=F, row.names=F, sep="\t")
-}else if(length(which(rownames(gtex.avg.ts) %in% genes))==1){
-  gtex.exp.log2 <- gtex.avg.log2RPKM.ts[rownames(gtex.avg.log2RPKM.ts) %in% genes, ]
-  gtex.exp.norm <- gtex.avg.ts[rownames(gtex.avg.ts) %in% genes, ]
-  rm(gtex.avg.ts, gtex.avg.log2RPKM.ts)
-  gname <- ENSG$external_gene_name[ENSG$ensembl_gene_id %in% genes]
-  cat(gname)
-  row.order <- data.frame(gene=gname, alph=1, clstLog2=1, clstNorm=1)
-  write.table(row.order, paste(filedir, "exp.row.txt", sep=""), quote=F, row.names=F, sep="\t")
-
-  col.order <- data.frame(ts=names(gtex.exp.log2), alph=1:length(gtex.exp.log2), clstLog2=1:length(gtex.exp.log2), clstNorm=1:length(gtex.exp.log2))
-  write.table(col.order, paste(filedir, "exp.col.txt", sep=""), quote=F, row.names=F, sep="\t")
-
-  gtex.exp <- data.frame(matrix(nrow=53, ncol=4))
-  colnames(gtex.exp) <- c("gene", "ts", "log2", "norm")
-  gtex.exp$gene <- gname
-  gtex.exp$ts <- names(gtex.exp.log2)
-  gtex.exp$log2 <- gtex.exp.log2
-  gtex.exp$norm <- gtex.exp.norm
-  write.table(gtex.exp, paste(filedir, "exp.txt", sep=""), quote=F, row.names=F, sep="\t")
-}else{
-  stop("No gene exsits in expression data")
-}
-rm(hc, gtex.exp, gtex.exp.log2, gtex.exp.norm)
-
+##### DEG test #####
 if(length(which(genes %in% bkgenes))>1){
-  source(paste(config$data$scripts, "/GeneSet.R", sep=""))
-
-  DEG <- DEGtest(genes, allgenes=bkgenes, adjP.method="bonferroni", MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
-  #DEG$logP <- -log10(DEG$p)
-  #DEG$logFDR <- -log10(DEG$FDR)
-  write.table(DEG, paste(filedir, "DEG.txt", sep=""), quote=F, row.names=F, sep="\t")
-  rm(DEG)
-  DEGgeneral <- DEGgeneraltest(genes, allgenes=bkgenes, adjP.method="bonferroni", MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
-  #DEGgeneral$logP <- -log10(DEGgeneral$p)
-  #DEGgeneral$logFDR <- -log10(DEGgeneral$FDR)
-  write.table(DEGgeneral, paste(filedir, "DEGgeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
-  rm(DEGgeneral)
-  #ExpTs <- ExpTstest(genes, allgenes=bkgenes, adjP.method="bonferroni", MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
-  #write.table(ExpTs, paste(filedir, "ExpTs.txt", sep=""), quote=F, row.names=F, sep="\t")
-  #ExpTsG <- ExpTsGeneraltest(genes, allgenes=bkgenes, adjP.method="bonferroni", MHC=MHC, ensgdir=config$data$ENSG, filedir=config$data$GTExExp)
-  #write.table(ExpTsG, paste(filedir, "ExpTsGeneral.txt", sep=""), quote=F, row.names=F, sep="\t")
+	for(f in gene_exp){
+		f <- sub("(.+)_avg.+", "\\1", f)
+		DEG <- DEGtest(genes, allgenes=bkgenes, adjP.method="bonferroni", file=paste0(config$data$GeneExp, "/", f, "_DEG.txt"))
+		fname <- unlist(strsplit(f, "/"))
+		write.table(DEG, paste0(filedir, fname[length(fname)], "_DEG.txt"), quote=F, row.names=F, sep="\t")
+	}
 }
 
 geneTable <- ENSG[toupper(ENSG$ensembl_gene_id) %in% toupper(genes),]

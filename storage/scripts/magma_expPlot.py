@@ -8,21 +8,6 @@ import math
 import json
 import glob
 
-##### Return index of a1 which exists in a2 #####
-def ArrayIn(a1, a2):
-	results = np.where(np.in1d(a1, a2))[0]
-	return results
-
-def ArrayNotIn(a1, a2):
-    tmp = np.where(np.in1d(a1, a2))[0]
-    return list(set(range(0,len(a1)))-set(tmp))
-
-##### return unique element in list #####
-def unique(a):
-	unique = []
-	[unique.append(s) for s in a if s not in unique]
-	return unique
-
 def main():
 	##### check argument #####
 	if len(sys.argv)<2:
@@ -30,6 +15,8 @@ def main():
 
 	##### get command line arguments #####
 	filedir = sys.argv[1]
+	if re.match(".+\/$", filedir) is None:
+		filedir += '/'
 
 	### get files ###
 	files = glob.glob(filedir+"/magma_exp*.out")

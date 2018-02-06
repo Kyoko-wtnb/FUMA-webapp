@@ -172,7 +172,17 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('gene2func/geneSubmit', 'G2FController@snp2geneGeneQuery');
 
-	Route::post('gene2func/fileDown', 'G2FController@filedown');
+	Route::post('gene2func/filedown', 'G2FController@filedown');
+
+	Route::post('gene2func/paramTable', 'G2FController@paramTable');
+
+	Route::post('gene2func/sumTable', 'G2FController@sumTable');
+
+	Route::post('gene2func/expDataOption', 'G2FController@expDataOption');
+
+	Route::get('gene2func/expPlot/{prefix}/{id}/{dataset}', 'G2FController@expPlot');
+
+	Route::get('gene2func/DEGPlot/{prefix}/{id}', 'G2FController@DEGPlot');
 
 	Route::post('gene2func/geneTable', 'G2FController@geneTable');
 

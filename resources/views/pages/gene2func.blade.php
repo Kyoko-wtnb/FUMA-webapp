@@ -48,6 +48,7 @@ var loggedin = "{{ Auth::check() }}";
 			<li class="active"><a href="#newquery">New Query<i class="sub_icon fa fa-upload"></i></a></li>
 			<li class="active"><a href="#queryhistory">Query History<i class="sub_icon fa fa-history"></i></a></li>
 			<div id="resultSide">
+				<li><a href="#summaryPanel">Summary<i class="sub_icon fa fa-table"></i></a></li>
 				<li><a href="#expPanel">Heatmap<i class="sub_icon fa fa-th"></i></a></li>
 				<li><a href="#tsEnrichBarPanel">Tissue specificity<i class="sub_icon fa fa-bar-chart"></i></a></li>
 				<li><a href="#GeneSetPanel">Gene sets<i class="sub_icon fa fa-bar-chart"></i></a></li>
@@ -132,6 +133,18 @@ var loggedin = "{{ Auth::check() }}";
 				<div class="panel panel-default">
 					<div class="panel-body" style="padding:10;">
 						<h4>Other optional parameters</h4>
+						<tab>
+						<span class="form-inline">
+							Gene expression data sets:
+							<select multiple class="form-control" name="gene_exp[]" id="gene_exp">
+								<option value="GTEx/v7/gtex_v7_ts_avg_log2TPM">GTEx v7: 53 tissue types</option>
+								<option value="GTEx/v7/gtex_v7_ts_general_avg_log2TPM">GTEx v7: 30 general tissue types</option>
+								<option selected value="GTEx/v6/gtex_v6_ts_avg_log2RPKM">GTEx v6: 53 tissue types</option>
+								<option selected value="GTEx/v6/gtex_v6_ts_general_avg_log2RPKM">GTEx v6: 30 general tissue types</option>
+								<option value="BrainSpan/bs_age_avg_log2RPKM">BrainSpan: 29 different ages of brain samples</option>
+								<option value="BrainSpan/bs_dev_avg_log2RPKM">BrainSpan: 11 general developmental stages of brain samples</option>
+							</select>
+						</span><br/>
 						<!-- <tab><input type="checkbox" id="Xchr" name="Xchr">&nbsp;Execlude genes on X chromosome. <span style="color: #004d99">*Please check to EXCLUDE X chromosome.</span><br/> -->
 						<tab><input type="checkbox" id="MHC" name="MHC">&nbsp;Exclude the MHC region.<br/>
 						<!-- <span class="info"><i class="fa fa-info"></i> Please check to EXCLUDE genes in MHC region.</span><br/> -->
@@ -151,7 +164,7 @@ var loggedin = "{{ Auth::check() }}";
 							</select><br/>
 						</span>
 						<span class="form-inline">
-							<tab>Adjusted P-value for gene set association (&lt;): <input class="form-control" type="number" id="adjPcut" name="adjPcut" value="0.05"/>
+							<tab>Maximum adjusted P-value for gene set association (&lt;): <input class="form-control" type="number" id="adjPcut" name="adjPcut" value="0.05"/>
 							<a class="infoPop" data-toggle="popover" title="Adjusted P-value cutoff" data-content="Only gene sets significantly enriched at given adjusted P-value threshold will be reported.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
@@ -209,23 +222,65 @@ var loggedin = "{{ Auth::check() }}";
 
 			<!-- results panel -->
 			<div id="results">
+				<!-- Summary -->
+				<div id="summaryPanel" class="sidePanel container" style="padding-top:50px;">
+					<h4>Summary of input genes</h4>
+					<div id="summaryTable">
+					</div>
+					<br/>
+
+					<h4>Download files</h4>
+					<div id="downloads">
+						<form action="filedown" method="post" target="_blank">
+							<input type="hidden" name="_token" value="{{ csrf_token() }}">
+							<input type="hidden" name="id" value="<?php echo $id;?>"/>
+							<input type="hidden" name="prefix" value="gene2func"/>
+							<div id="downFileCheck">
+								<input type="checkbox" name="paramfile" id="paramfile" checked onchange="DownloadFiles();">Parameter settings</br>
+								<input type="checkbox" name="summaryfile" id="summaryfile" checked onchange="DownloadFiles();">Summary of input genes</br>
+								<input type="checkbox" name="geneIDfile" id="geneIDfile" checked onchange="DownloadFiles();">IDs of input genes (including Ensembl ID, entrez ID and gene symbol)<br/>
+								<input type="checkbox" name="expfile" id="expfile" checked onchange="DownloadFiles();">Data for expression heatmap of user selected gene expression data sets</br>
+								<input type="checkbox" name="DEGfile" id="DEGfile" checked onchange="DownloadFiles();">Tissue specificity restuls (enrichment test results of DEG sets for user selected expression data sets)</br>
+								<input type="checkbox" name="gsfile" id="gsfile" checked onchange="DownloadFiles();">Gene set analysis results (only include significnat gene sets) </br>
+							</div>
+							<span class="form-inline">
+								<input class="btn btn-xs" type="submit" name="download" id="download" value="Download files"/>
+								<tab><a id="allfiles"> Select All </a>
+								<tab><a id="clearfiles"> Clear</a>
+							</span>
+							<br/>
+						</form>
+					</div>
+
+					<br/>
+					<h4>Parameters</h4>
+					<div id="paramTable">
+					</div>
+				</div>
 				<!-- Expression heatmap -->
 				<div id="expPanel" class="sidePanel container" style="padding-top:50px;">
 					<!-- <div id="expHeat" style='overflow:auto; width:1010px; height:450px;'></div> -->
-					<h4>Gene expression heatmap of 53 specific tissue types (GTEx)</h4>
+					<h4>Gene expression heatmap</h4>
+					<span class="form-inline">
+						Data set:
+						<select id="gene_exp_data" class="form-control" style="width: auto;">
+						</select>
+					</span><br/><br/>
 					<span class="form-inline">
 						Expression Value:
 						<select id="expval" class="form-control" style="width: auto;">
-							<option value="log2RPKM" selected>Average RPKM per tissue (log2 transformed)</option>
-							<option value="norm">Average of normalized RPKM per tissue (zero mean across tissues)</option>
+							<option value="log2" selected>Average expression per label (log2 transformed)</option>
+							<option value="norm">Average of normalized expression per label (zero mean across samples)</option>
 						</select>
-						<a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="<b>Average RPKM per tissue</b>:
-							Average expression value (after following log2 transformed RPKM per tissue per gene, winsorization at 50).
+						<a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="
+							<b>Average expression per lavel</b>:
+							This is an average of log2 transformed expresion value (e.g. RPKM and TPM) per label (e.g. tissue type or developemental stage).
+							RPKM and TPM were wisolized at 50.
 							Darker red means higher expression of that gene, compared to a darker blue color.<br/>
-							<b>Average normalized RPKM per tissue</b>:
-							Average value of the <u>relatively</u> expression value (after following RPKM log2 transformation, and zero mean normalization)
-							Darker red means higher relative expression of that gene in tissue X, compared to a darker blue color in the same tissue.<br/>
-							<b>RPKM = Reads Per Killobase per Million</b>">
+							<b>Average of normalized expression per label</b>:
+							Average value of the <u>relative</u> expression value (zero mean normalization of log2 transformed expression).
+							Darker red means higher relative expression of that gene in label X, compared to a darker blue color in the same label.<br/>
+							">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</span>
@@ -243,12 +298,6 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="alph" selected>Alphabetical order</option>
 						</select>
 					</span><br/><br/>
-					<form class="form-inline" action="fileDown" method="post" target="_blank">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-						<input type="hidden" name="id" value="{{$id}}"/>
-						<input type="hidden" name="file" value="exp.txt"/>
-						<input type="submit" class="btn btn-xs" id="expdown" name="expdown" value="Download text file">
-					</form>
 					Download the plot as
 					<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","png");'>PNG</button>
 					<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","jpeg");'>JPG</button>
@@ -271,92 +320,41 @@ var loggedin = "{{ Auth::check() }}";
 
 				<!-- Tissue specificity bar chart -->
 				<div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50px;">
-					<h4>Differrentially expressed genes across 30 general tissue types (GTEx)
-						<a class="infoPop" data-toggle="popover" title="DEG of 30 general tissue types" data-content="Pre-calculated sets of differentially expressed genes (DEG) were created for the 30 general GTEx tissue types.
-							DEG sets are defined by a two-sided t-tests per tissue versus all remaining, and Bonferroni correction.
-							Genes with a adjusted p-value ≤ 0.05 and absolute log fold change ≥ 0.58 are selected.
-							For the signed DEG, the direction of expression was taken intoc account (i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in that tissue compared to other tissues).
+					<h4>Differrentially expressed genes
+						<a class="infoPop" data-toggle="popover" title="Enrichment in DEG sets"
+							data-content="Pre-calculated differentially expressed genes (DEG) sets were created for each of expression data set.
+							DEG sets are defined by a two-sided t-tests per label versus all remaining (tissue types or developmental stages).
+							Genes with a Conferroni corrected p-value < 0.05 and absolute log fold change ≥ 0.58 are selected as DEG.
+							For the signed DEG, the direction of expression was taken intoc account
+							(i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in sample with that label compared to other samples).
 							The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</h4>
 					<span class="info"><i class="fa fa-info"></i>
-						Significantly enriched DEG sets (P<sub>bon</sub> at 0.05) are highlighted in red.
+						Significantly enriched DEG sets (P<sub>bon</sub> &lt; 0.05) are highlighted in red.
 					</span><br/><br/>
-					Download the plot as
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","png");'>PNG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","jpeg");'>JPG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","svg");'>SVG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("tsGeneralEnrichBar","pdf");'>PDF</button>
-
-					<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-						<input type="hidden" name="dir" id="tsGeneralEnrichBarDir" val=""/>
-						<input type="hidden" name="id" id="tsGeneralEnrichBarJobID" val=""/>
-						<input type="hidden" name="data" id="tsGeneralEnrichBarData" val=""/>
-						<input type="hidden" name="type" id="tsGeneralEnrichBarType" val=""/>
-						<input type="hidden" name="fileName" id="tsGeneralEnrichBarFileName" val=""/>
-						<input type="submit" id="tsGeneralEnrichBarSubmit" class="ImgDownSubmit"/>
-					</form>
-					<form class="form-inline" action="fileDown" method="post" target="_blank">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-						<input type="hidden" name="id" value="{{$id}}"/>
-						<input type="hidden" name="file" value="DEGgeneral.txt"/>
-						<input type="submit" class="btn btn-xs" id="DEGgdown" name="DEGgdown" value="Download text file">
-					</form>
-					<br/>
-					<span class="form-inline">
-						Order tissue by :
-						<select id="DEGGorder" class="form-control" style="width: auto;">
-							<option value="alph">Alphabetical</option>
-							<option value="up">up-regulated DEG P-value</option>
-							<option value="down">down-regulated DEG P-value</option>
-							<option value="two" selected>two-side DEG P-value</option>
-						</select>
-					</span>
-					<div id="tsGeneralEnrichBar"></div>
-					<br/><br/>
-
-					<h4>Differentially expressed genes across 53 specific tissue types (GTEx)
-						<a class="infoPop" data-toggle="popover" title="DEG of 53 tissue types" data-content="The same method as mentioned above (for 30 general tissue types) was applied, except DEG sets were created for 53 specific tissue types.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</h4>
-					<span class="info"><i class="fa fa-info"></i>
-						DEG sets with significant enrichment of input genes (P<sub>bon</sub> at 0.05) are highlighted in red.
-					</span><br/><br/>
-					Download the plot as
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","png");'>PNG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","jpeg");'>JPG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","svg");'>SVG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("tsEnrichBar","pdf");'>PDF</button>
-
-					<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-						<input type="hidden" name="dir" id="tsEnrichBarDir" val=""/>
-						<input type="hidden" name="id" id="tsEnrichBarJobID" val=""/>
-						<input type="hidden" name="data" id="tsEnrichBarData" val=""/>
-						<input type="hidden" name="type" id="tsEnrichBarType" val=""/>
-						<input type="hidden" name="fileName" id="tsEnrichBarFileName" val=""/>
-						<input type="submit" id="tsEnrichBarSubmit" class="ImgDownSubmit"/>
-					</form>
-					<form action="fileDown" method="post" target="_blank">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-						<input type="hidden" name="id" value="{{$id}}"/>
-						<input type="hidden" name="file" value="DEG.txt"/>
-						<input type="submit" class="btn btn-xs" id="DEGdown" name="DEGdown" value="Download text file">
-					</form>
-					<br/>
-					<span class="form-inline">
-						Order tissue by :
-						<select id="DEGorder" class="form-control" style="width: auto;">
-							<option value="alph">Alphabetical</option>
-							<option value="up">up-regulated DEG P-value</option>
-							<option value="down">down-regulated DEG P-value</option>
-							<option value="two" selected>two-side DEG P-value</option>
-						</select>
-					</span>
-					<div id="tsEnrichBar"></div>
+					<div id="DEGPlot">
+						<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
+							<input type="hidden" name="_token" value="{{ csrf_token() }}">
+							<input type="hidden" name="dir" id="DEGDir" val=""/>
+							<input type="hidden" name="id" id="DEGJobID" val=""/>
+							<input type="hidden" name="data" id="DEGData" val=""/>
+							<input type="hidden" name="type" id="DEGType" val=""/>
+							<input type="hidden" name="fileName" id="DEGFileName" val=""/>
+							<input type="submit" id="DEGSubmit" class="ImgDownSubmit"/>
+						</form>
+						<br/>
+						<span class="form-inline">
+							Order tissue by :
+							<select id="DEGorder" class="form-control" style="width: auto;">
+								<option value="alph">Alphabetical</option>
+								<option value="up">up-regulated DEG P-value</option>
+								<option value="down">down-regulated DEG P-value</option>
+								<option value="two" selected>two-side DEG P-value</option>
+							</select>
+						</span>
+					</div>
 				</div>
 
 				<!-- GeneSet enrichment -->

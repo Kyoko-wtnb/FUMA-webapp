@@ -975,7 +975,7 @@ class S2GController extends Controller
 	public function paramTable(Request $request){
 		$filedir = $request -> input('filedir');
 
-		$table = '<table class="table table-striped" style="width: 100%; margin-left: 10px; margin-right: 10px;ext-align: right;"><tbody>';
+		$table = '<table class="table table-striped" style="width: 100%; margin-left: 10px; margin-right: 10px;text-align: right;"><tbody>';
 		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
 
 		foreach($params as $key=>$value){
@@ -1187,7 +1187,7 @@ class S2GController extends Controller
 		$prefix = $request->input('prefix');
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 		// $zip = new ZipArchive();
-		$files = array();
+		$files = [];
 		if($request -> has('paramfile')){ $files[] = "params.config";}
 		if($request -> has('indSNPfile')){$files[] = "IndSigSNPs.txt";}
 		if($request -> has('leadfile')){$files[] = "leadSNPs.txt";}

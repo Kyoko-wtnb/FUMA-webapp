@@ -228,36 +228,14 @@ $(document).ready(function(){
 
 	// download file selection
 	$('#allfiles').on('click', function(){
-	$('#paramfile').prop('checked', true);
-	$('#leadfile').prop('checked', true);
-	$('#locifile').prop('checked', true);
-	$('#indSNPfile').prop('checked', true);
-	$('#snpsfile').prop('checked', true);
-	$('#annovfile').prop('checked', true);
-	$('#annotfile').prop('checked', true);
-	$('#genefile').prop('checked', true);
-	$('#eqtlfile').prop('checked', true);
-	$('#cifile').prop('checked', true);
-	$('#gwascatfile').prop('checked', true);
-	// $('#exacfile').prop('checked', true);
-	$('#magmafile').prop('checked', true);
-	$('#download').attr('disabled',false);
+		$('#downFileCheck input').each(function(){
+			$(this).prop("checked", true);
+		});
 	});
 	$('#clearfiles').on('click', function(){
-	$('#paramfile').prop('checked', false);
-	$('#leadfile').prop('checked', false);
-	$('#locifile').prop('checked', false);
-	$('#indSNPfile').prop('checked', false);
-	$('#snpsfile').prop('checked', false);
-	$('#annovfile').prop('checked', false);
-	$('#annotfile').prop('checked', false);
-	$('#genefile').prop('checked', false);
-	$('#eqtlfile').prop('checked', false);
-	$('#cifile').prop('checked', false);
-	// $('#exacfile').prop('checked', false);
-	$('#gwascatfile').prop('checked', false);
-	$('#magmafile').prop('checked', false);
-	$('#download').attr('disabled',true);
+		$('#downFileCheck input').each(function(){
+			$(this).prop("checked", false);
+		});
 	});
 
 	// annotPlot Chr15 tissue selection clear click
@@ -790,15 +768,17 @@ function MAGMA_expPlot(jobID){
 			});
 
 			function sortOptions(type){
-				for(var i=0; i<bars.length; i++){
-					if(type=="alph"){
+				if(type=="alph"){
+					for(var i=0; i<bars.length; i++){
 						bars[i].transition().duration(1000)
 							.attr("x", function(d){return d[4]*cellwidth;});
 						xLabels[i].transition().duration(1000)
 							.attr("transform", function(d){
 								return "translate("+(d[4]*cellwidth+((cellwidth-1)/2)+3)+","+(height+8)+")rotate(-70)";
 							});
-					}else if(type=="p"){
+					}
+				}else if(type=="p"){
+					for(var i=0; i<bars.length; i++){
 						bars[i].transition().duration(1000)
 							.attr("x", function(d){return d[3]*cellwidth;});
 						xLabels[i].transition().duration(1000)
@@ -810,8 +790,7 @@ function MAGMA_expPlot(jobID){
 			}
 
 			d3.select('#magma_exp_order').on("change", function(){
-				var type = $('#magma_exp_order').val();
-				sortOptions(type);
+				sortOptions($('#magma_exp_order').val());
 			});
 		}
 	});
@@ -1798,23 +1777,12 @@ function Chr15Select(){
 }
 
 function DownloadFiles(){
-	// var allfiles = document.getElementById('allfiles').checked;
-	var paramfile = document.getElementById('paramfile').checked;
-	var leadfile = document.getElementById('leadfile').checked;
-	var locifile = document.getElementById('locifile').checked;
-	var snpsfile = document.getElementById('snpsfile').checked;
-	var annovfile = document.getElementById('annovfile').checked;
-	var annotfile = document.getElementById('annotfile').checked;
-	var genefile = document.getElementById('genefile').checked;
-	var eqtlfile = document.getElementById('eqtlfile').checked;
-	var cifile = document.getElementById('cifile').checked;
-	// var exacfile = document.getElementById('exacfile').checked;
-	var gwascatfile = document.getElementById('gwascatfile').checked;
-	var magmafile = document.getElementById('magmafile').checked;
-
-	if(paramfile || leadfile || locifile || snpsfile || annovfile || annotfile || genefile || eqtlfile || cifile || gwascatfile || magmafile){
-		document.getElementById('download').disabled=false;
-	}
+	var check = false;
+	$('#downFileCheck input').each(function(){
+		if($(this).is(":checked")==true){check=true; break;}
+	})
+	if(check){$('#download').prop('disabled', false)}
+	else{$('#download').prop('disabled', true)}
 }
 
 function ImgDown(name, type){

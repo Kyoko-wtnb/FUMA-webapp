@@ -1,5 +1,13 @@
 var geneTable;
 var prefix = "gene2func";
+var exp_data_title = {
+	'gtex_v7_ts_avg_log2TPM': 'GTEx v7 53 tissue types',
+	'gtex_v7_ts_general_avg_log2TPM': 'GTEx v7 30 general tissue types',
+	'gtex_v6_ts_avg_log2RPKM': 'GTEx v6 53 tissue types',
+	'gtex_v6_ts_general_avg_log2RPKM': 'GTEx v6 30 general tissue types',
+	'bs_age_avg_log2RPKM': "BrainSpan 29 different ages of brain samples",
+	"bs_dev_avg_log2RPKM": "BrainSpan 11 general developmental stages of brain samples"
+}
 $(document).ready(function(){
 	// hide submit buttons for imgDown
 	$('.ImgDownSubmit').hide();
@@ -7,7 +15,7 @@ $(document).ready(function(){
 	// hash activate
 	var hashid = window.location.hash;
 	if(hashid=="" && status=="getJob"){
-		$('a[href="#expPanel"]').trigger('click');
+		$('a[href="#summaryPanel"]').trigger('click');
 	}else if(hashid==""){
 		$('a[href="#newquery"]').trigger('click');
 	}else{
@@ -20,6 +28,18 @@ $(document).ready(function(){
 			$(this).prop('selected', false);
 		});
 		checkInput();
+	});
+
+	// download file selection
+	$('#allfiles').on('click', function(){
+		$('#downFileCheck input').each(function(){
+			$(this).prop("checked", true);
+		});
+	});
+	$('#clearfiles').on('click', function(){
+		$('#downFileCheck input').each(function(){
+			$(this).prop("checked", false);
+		});
 	});
 
 	updateList();
@@ -60,11 +80,17 @@ $(document).ready(function(){
 	}else if(status=="getJob"){
 		var id = jobID;
 		checkInput();
+		summaryTable(id);
+		paramTable(id);
 		expHeatMap(id);
 		tsEnrich(id);
-		tsGeneralEnrich(id);
+		// tsGeneralEnrich(id);
+		// DEGPlot(id)
 		GeneSet(id);
 		GeneTable(id);
+		$('#gene_exp_data').on('change', function(){
+			expHeatPlot(id, $('#gene_exp_data').val())
+		})
 	}else if(status=="query"){
 		$('#geneSubmit').attr("disabled", true);
 		var id = fumaJS.id;
@@ -74,6 +100,7 @@ $(document).ready(function(){
 		var bkgtype = fumaJS.bkgtype;
 		var bkgval = fumaJS.bkgval;
 		// var Xchr = fumaJS.Xchr;
+		var gene_exp = fumaJS.gene_exp;
 		var MHC = fumaJS.MHC;
 		var adjPmeth = fumaJS.adjPmeth;
 		var adjPcut = fumaJS.adjPcut;
@@ -95,6 +122,12 @@ $(document).ready(function(){
 			$('#bkgenes').val(bkgval.replace(/:/g, '\n'));
 		}
 
+		gene_exp = gene_exp.split(":");
+		$('#gene_exp option').each(function(){
+			if(gene_exp.indexOf($(this).val())){$(this).prop("selected", true)}
+			else{$(this).prop("selected", false)}
+		})
+
 		if(MHC==1){
 			$('#MHC').attr('checked', true);
 		}
@@ -110,6 +143,7 @@ $(document).ready(function(){
 				gval: gval,
 				bkgtype: bkgtype,
 				bkgval: bkgval,
+				gene_exp: gene_exp.join(":"),
 				MHC: MHC,
 				adjPmeth: adjPmeth,
 				adjPcut: adjPcut,
@@ -136,6 +170,15 @@ function ImgDown(id, type){
 	$('#'+id+'FileName').val(id);
 	$('#'+id+'Dir').val("gene2func");
 	$('#'+id+'Submit').trigger('click');
+}
+
+function DEGImgDown(id, type){
+	$('#DEGData').val($('#'+id).html());
+	$('#DEGType').val(type);
+	$('#DEGJobID').val(jobID);
+	$('#DEGFileName').val(id);
+	$('#DEGDir').val("gene2func");
+	$('#DEGSubmit').trigger('click');
 }
 
 function GSImgDown(id, type){
@@ -222,6 +265,52 @@ function AjaxLoad(){
 	$(over).appendTo('body');
 }
 
+function summaryTable(id){
+	$.ajax({
+		url: subdir+"/gene2func/sumTable",
+		type: "POST",
+		data: {
+			id: id,
+		},
+		error: function(){
+			alert("summary table error");
+		},
+		success: function(data){
+			data = JSON.parse(data);
+			var table = '<table class="table table-condensed table-bordered" style="width:auto;text-align:right;"><tbody>'
+			data.forEach(function(d){
+				if(d[0]!="created_at"){d[1] = d[1].replace(/:/g, ', ');}
+				table += '<tr><td>'+d[0]+'</td><td>'+d[1]+'</td></tr>'
+			})
+			table += '</tbody></table>'
+			$('#summaryTable').html(table);
+		}
+	});
+}
+
+function paramTable(id){
+	$.ajax({
+		url: subdir+"/gene2func/paramTable",
+		type: "POST",
+		data: {
+			id: id,
+		},
+		error: function(){
+			alert("param table error");
+		},
+		success: function(data){
+			data = JSON.parse(data);
+			var table = '<table class="table table-condensed table-bordered" style="width: 90%; text-align: right;"><tbody>'
+			data.forEach(function(d){
+				if(d[0]!="created_at"){d[1] = d[1].replace(/:/g, ', ');}
+				table += '<tr><td>'+d[0]+'</td><td>'+d[1]+'</td></tr>'
+			})
+			table += '</tbody></table>'
+			$('#paramTable').html(table);
+		}
+	});
+}
+
 function GeneSetPlot(category){
 	$('#'+category+'Plot').show();
 	$('#'+category+'Table').hide();
@@ -233,658 +322,548 @@ function GeneSetTable(category){
 }
 
 function expHeatMap(id){
+	$.ajax({
+		url: subdir+"/gene2func/expDataOption",
+		type: "POST",
+		data: {
+			id: id
+		},
+		error: function(){
+			alert("expdata error");
+		},
+		success: function(data){
+			data = data.split(":");
+			data.forEach(function(d){
+				var tmp = d.split("/");
+				tmp = tmp[tmp.length-1];
+				$('#gene_exp_data').append('<option value="'+tmp+'">'+exp_data_title[tmp]+'</option>');
+			})
+		},
+		complete: function(){
+			expHeatPlot(id, $("#gene_exp_data").val());
+		}
+	})
+}
+
+function expHeatPlot(id, dataset){
 	d3.select('#expHeat').select("svg").remove();
 	var itemSizeRow = 15, cellSize=itemSizeRow-1, itemSizeCol=10;
-	queue().defer(d3.json, "d3text/"+prefix+"/"+id+"/exp.txt")
-		.defer(d3.json, "d3text/"+prefix+"/"+id+"/exp.row.txt")
-		.defer(d3.json, "d3text/"+prefix+"/"+id+"/exp.col.txt")
-		.awaitAll(function(error, data){
-			if(data==null || data==undefined){
-				$('#expHeat').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> None of your input genes exists in expression data.</span></br>'
-					+'Only genes which have average RPKM per tissue > 1 in at least one tissue type are availalbe in the expression data.<br/>'
-					+'This might also be because of the mismatch of input gene ID or symbol.<br/></div>');
-				$('#expHeat').parent().children('.ImgDown').each(function(){$(this).prop("disabled", true)});
-			}else{
-				var exp = data[0];
-				var rows = data[1];
-				var cols = data[2];
+	d3.json(subdir+"/gene2func/expPlot/"+prefix+"/"+id+"/"+dataset, function(data){
+		if(data==null || data==undefined || data.length==0){
+			$('#expHeat').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> '
+				+'None of your input genes exists in the selected expression data.</span></br>'
+				+'This might also be because of the mismatch of input gene ID or symbol.<br/></div>');
+			$('#expHeat').parent().children('.ImgDown').each(function(){$(this).prop("disabled", true)});
+		}else{
+			// data = JSON.parse(data);
 
-				var galph = [];
-				var gclstlog2 = [];
-				var gclstnorm = [];
-				rows.forEach(function(d){
-					galph.push(d.alph);
-					gclstlog2.push(d.clstLog2);
-					gclstnorm.push(d.clstNorm);
+			data.data.forEach(function(d){
+				d[2] = +d[2];
+				d[3] = +d[3];
+			})
+
+			var margin = {top: 10, right: 60, bottom: 220, left: 100},
+				width = itemSizeRow*data.label.length,
+				height = itemSizeCol*data.gene.length;
+
+			var svg = d3.select('#expHeat').append('svg')
+				.attr("width", width+margin.left+margin.right)
+				.attr("height", height+margin.top+margin.bottom)
+				.append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
+			var expMax = d3.max(data.data,function(d){return d[2]});
+			var expMin = d3.min(data.data, function(d){return d[2];});
+			var colorScale = d3.scale.linear().domain([0, expMax/2, expMax]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+
+			// legened
+			var t = [];
+			for(var i =0; i<23; i++){t.push(i);}
+			var legendRect = svg.selectAll(".legend").data(t).enter().append("g")
+				.append("rect")
+				.attr("class", 'legendRect')
+				.attr("x", width+10)
+				.attr("y", function(d){return (t.length-1-d)*10+50})
+				.attr("width", 20)
+				.attr("height", 10)
+				.attr("fill", function(d){return colorScale(d*expMax/(t.length-1))});
+			var legendText = svg.selectAll("text.legend").data([0,11,22]).enter().append("g")
+				.append("text")
+				.attr("text-anchor", "start")
+				.attr("class", "legenedText")
+				.attr("x", width+32)
+				.attr("y", function(d){return (t.length-1-d)*10+11+50})
+				.text(function(d){return Math.round(100*d*expMax/(t.length-1))/100})
+				.style("font-size", "12px");
+
+			// y axis label
+			var rowLabels = svg.append("g").selectAll(".rowLabel")
+				.data(data.order_gene).enter().append("text")
+				.text(function(d){return data.gene[d[0]];})
+				.attr("x", -3)
+				.attr("y", function(d){return (d[0]+1)*itemSizeCol;})
+				.style("font-size", "10px")
+				.style("text-anchor", "end");
+			// x axis label
+			var colLabels = svg.append("g").selectAll(".colLabel")
+				.data(data.order_label).enter().append("text")
+				.text(function(d){return data.label[d[0]];})
+				.style("text-anchor", "end")
+				.style("font-size", "10px")
+				.attr("transform", function(d){
+					return "translate("+((d[0]+1)*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
 				});
 
-				var tsalph = [];
-				var tsclstlog2 = [];
-				var tsclstnorm = [];
-				cols.forEach(function(d){
-					tsalph.push(d.alph);
-					tsclstlog2.push(d.clstLog2);
-					tsclstnorm.push(d.clstNorm);
-				});
+			var heatMap = svg.append("g").attr("class", "cell heatmapcell")
+				.selectAll("rect.cell").data(data.data).enter()
+				.append("rect")
+				.attr("width", cellSize).attr("height", itemSizeCol-0.5)
+				.attr('y', function(d){return data.order_gene[data.gene.indexOf(d[0])][0]*itemSizeCol})
+				.attr('x', function(d){return data.order_label[data.label.indexOf(d[1])][0]*itemSizeRow})
+				.attr('fill', function(d){return colorScale(d[2])});
 
-				exp.forEach(function(d){
-					d.log2 = +d.log2;
-					d.norm = +d.norm;
-				});
+			svg.selectAll('text').style('font-family', 'sans-serif');
+			// Change ordeing of cells
+			function sortOptions(val, gsort, tssort){
+				var expMax;
+				var expMin;
+				var col;
+				var gi = 0;
+				var gcol = 2;
+				var li = 0;
+				if(val=="log2"){
+					expMax = d3.max(data.data,function(d){return d[2]});
+					expMin = d3.min(data.data, function(d){return d[2]});
+					col = d3.scale.linear().domain([0, (expMax+expMin)/2, expMax]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+					legendRect.attr("fill", function(d){return col(d*expMax/(t.length-1))});
+					legendText.text(function(d){return Math.round(100*d*expMax/(t.length-1))/100})
+					if(gsort=="clst"){gi = 1;}
+					if(tssort=="clst"){li = 1;}
+				}else{
+					expMax = d3.max(data.data,function(d){return d[3]});
+					expMin = d3.min(data.data, function(d){return d[3];});
+					var m = Math.max(expMax, Math.abs(expMin));
+					col = d3.scale.linear().domain([-m, 0, m]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+					legendRect.attr("fill", function(d){return col(d*2*m/(t.length-1)-m)});
+					legendText.text(function(d){return Math.round(d*2*m/(t.length-1)-m)});
+					gcol = 3;
+					if(gsort=="clst"){gi = 2;}
+					if(tssort=="clst"){li = 2;}
+				}
 
-				var genes = d3.set(rows.map(function(d){return d.gene})).values();
-				var tss = d3.set(cols.map(function(d){return d.ts})).values();
-				var margin = {top: 10, right: 60, bottom: 220, left: 100},
-					width = 800,
-					height = (itemSizeCol*genes.length);
-
-				var svg = d3.select('#expHeat').append('svg')
-					.attr("width", width+margin.left+margin.right)
-					.attr("height", height+margin.top+margin.bottom)
-					.append("g").attr("transform", "translate("+margin.left+","+margin.top+")");
-				var log2Max = d3.max(exp,function(d){return d.log2});
-				var log2Min = d3.min(exp, function(d){return d.log2;});
-				var colorScale = d3.scale.linear().domain([0, log2Max/2, log2Max]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-
-				// legened
-				var t = [];
-				for(var i =0; i<23; i++){t.push(i);}
-				var legendRect = svg.selectAll(".legend").data(t).enter().append("g")
-					.append("rect")
-					.attr("class", 'legendRect')
-					.attr("x", width+10)
-					.attr("y", function(d){return (t.length-1-d)*10+50})
-					.attr("width", 20)
-					.attr("height", 10)
-					.attr("fill", function(d){return colorScale(d*log2Max/(t.length-1))});
-				var legendText = svg.selectAll("text.legend").data([0,11,22]).enter().append("g")
-					.append("text")
-					.attr("text-anchor", "start")
-					.attr("class", "legenedText")
-					.attr("x", width+32)
-					.attr("y", function(d){return (t.length-1-d)*10+11+50})
-					.text(function(d){return Math.round(100*d*log2Max/(t.length-1))/100})
-					.style("font-size", "12px");
-
-				// y axis label
-				var rowLabels = svg.append("g").selectAll(".rowLabel")
-					.data(rows).enter().append("text")
-					.text(function(d){return d.gene;})
-					.attr("x", -3)
-					.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;})
-					.style("font-size", "10px")
-					.style("text-anchor", "end");
-				// x axis label
-				var colLabels = svg.append("g").selectAll(".colLabel")
-					.data(cols).enter().append("text")
-					.text(function(d){return d.ts;})
-					.style("text-anchor", "end")
-					.style("font-size", "10px")
+				heatMap.transition().duration(1000)
+					.attr("fill", function(d){return col(d[gcol])})
+					.attr("y", function(d){return data.order_gene[data.gene.indexOf(d[0])][gi]*itemSizeCol})
+					.attr("x", function(d){return data.order_label[data.label.indexOf(d[1])][li]*itemSizeRow});
+				rowLabels.transition().duration(1000)
+					.attr("y", function(d){return (d[gi]+1)*itemSizeCol;});
+				colLabels.transition().duration(1000)
 					.attr("transform", function(d){
-						return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
+						return "translate("+((d[li]+1)*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
 					});
+			};
 
-				var heatMap = svg.append("g").attr("class", "cell heatmapcell")
-					.selectAll("rect.cell").data(exp).enter()
-					.append("rect")
-					.attr("width", cellSize).attr("height", itemSizeCol-0.5)
-					.attr('y', function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-					.attr('x', function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow})
-					.attr('fill', function(d){return colorScale(d.log2)});
+			d3.select('#expval').on("change", function(){
+				var val = this.value;
+				var gsort = $('#geneSort').val();
+				var tssort = $('#tsSort').val();
+				sortOptions(val, gsort, tssort);
+			});
 
-				svg.append('text').attr("text-anchor", "middle")
-					.attr("transform", "translate("+(-margin.left/2-10)+","+height/2+")rotate(-90)")
-					.text("genes");
-				svg.append('text').attr("text-anchor", "middle")
-					.attr("transform", "translate("+width/2+","+(height+margin.bottom-10)+")")
-					.text("Tissue types");
+			d3.select('#geneSort').on("change", function(){
+				var val = $('#expval').val();
+				var gsort = this.value;
+				var tssort = $('#tsSort').val();
+				sortOptions(val, gsort, tssort);
+			});
 
-				svg.selectAll('text').style('font-family', 'sans-serif');
-				// Change ordeing of cells
-				function sortOptions(type, val, gsort, tssort){
-					if(type=="color"){
-						if(val=="log2RPKM"){
-							var log2Max = d3.max(exp,function(d){return d.log2});
-							var log2Min = d3.min(exp, function(d){return d.log2;});
-							var col = d3.scale.linear().domain([0, (log2Max+log2Min)/2, log2Max]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-							legendRect.attr("fill", function(d){return col(d*log2Max/(t.length-1))});
-							legendText.text(function(d){return Math.round(100*d*log2Max/(t.length-1))/100})
-							if(gsort=="clst" && tssort=="clst"){
-								heatMap.transition().duration(2000)
-									.attr("fill", function(d){return col(d.log2)})
-									.attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-									.attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-								rowLabels.transition().duration(2000)
-									.attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol;});
-								colLabels.transition().duration(2000)
-									.attr("transform", function(d){
-										return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-									});
-							}else if(gsort=="clst" && tssort=="alph"){
-								heatMap.transition().duration(2000)
-									.attr("fill", function(d){return col(d.log2)})
-									.attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-									.attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-								rowLabels.transition().duration(2000)
-									.attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol;});
-								colLabels.transition().duration(2000)
-									.attr("transform", function(d){
-										return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-									});
-							}else if(gsort=="alph" && tssort=="clst"){
-								heatMap.transition().duration(2000)
-									.attr("fill", function(d){return col(d.log2)})
-									.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-									.attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-								rowLabels.transition().duration(2000)
-									.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
-								colLabels.transition().duration(2000)
-									.attr("transform", function(d){
-										return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-									});
-							}else if(gsort=="alph" && tssort=="alph"){
-								heatMap.transition().duration(2000)
-									.attr("fill", function(d){return col(d.log2)})
-									.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-									.attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-								rowLabels.transition().duration(2000)
-									.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
-								colLabels.transition().duration(2000)
-									.attr("transform", function(d){
-										return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-									});
-							}
-						}else{
-							var normMax = d3.max(exp,function(d){return d.norm});
-							var normMin = d3.min(exp, function(d){return d.norm;});
-							var m = Math.max(normMax, Math.abs(normMin));
-							var col = d3.scale.linear().domain([-m, 0, m]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-							legendRect.attr("fill", function(d){return col(d*2*m/(t.length-1)-m)});
-							legendText.text(function(d){return Math.round(d*2*m/(t.length-1)-m)});
-							if(gsort=="clst" && tssort=="clst"){
-								heatMap.transition().duration(2000)
-									.attr("fill", function(d){return col(d.norm)})
-									.attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-									.attr("x", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-								rowLabels.transition().duration(2000)
-									.attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol;});
-								colLabels.transition().duration(2000)
-									.attr("transform", function(d){
-										return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-									});
-							}else if(gsort=="clst" && tssort=="alph"){
-							heatMap.transition().duration(2000)
-								.attr("fill", function(d){return col(d.norm)})
-								.attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-								.attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-							rowLabels.transition().duration(2000)
-								.attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol;});
-							colLabels.transition().duration(2000)
-								.attr("transform", function(d){
-									return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-								});
-							}else if(gsort=="alph" && tssort=="clst"){
-							heatMap.transition().duration(2000)
-								.attr("fill", function(d){return col(d.norm)})
-								.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-								.attr("x", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-							rowLabels.transition().duration(2000)
-								.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
-							colLabels.transition().duration(2000)
-								.attr("transform", function(d){
-									return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-								});
-							}else if(gsort=="alph" && tssort=="alph"){
-								heatMap.transition().duration(2000)
-									.attr("fill", function(d){return col(d.norm)})
-									.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol})
-									.attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-								rowLabels.transition().duration(2000)
-									.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
-								colLabels.transition().duration(2000)
-									.attr("transform", function(d){
-										return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-									});
-							}
-						}
-					}else if(type=="geneSort"){
-						if(gsort=="clst"){
-							if(val=="log2RPKM"){
-								heatMap.transition().duration(2000)
-									.attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol});
-								rowLabels.transition().duration(2000)
-									.attr("y", function(d){return gclstlog2[genes.indexOf(d.gene)]*itemSizeCol;});
-							}else{
-								heatMap.transition().duration(2000)
-									.attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol});
-								rowLabels.transition().duration(2000)
-									.attr("y", function(d){return gclstnorm[genes.indexOf(d.gene)]*itemSizeCol;});
-							}
-						}else{
-							heatMap.transition().duration(2000)
-								.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol-itemSizeCol});
-							rowLabels.transition().duration(2000)
-								.attr("y", function(d){return galph[genes.indexOf(d.gene)]*itemSizeCol;});
-						}
-					}else if(type="tsSort"){
-						if(tssort=="clst"){
-							if(val=="log2RPKM"){
-								heatMap.transition().duration(2000)
-									.attr("x", function(d){return tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-								colLabels.transition().duration(2000)
-									.attr("transform", function(d){
-										return "translate("+(tsclstlog2[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-									});
-							}else{
-								heatMap.transition().duration(2000)
-									.attr("x", function(d){return tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-								colLabels.transition().duration(2000)
-									.attr("transform", function(d){
-										return "translate("+(tsclstnorm[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-									});
-							}
-						}else{
-							heatMap.transition().duration(2000)
-								.attr("x", function(d){return tsalph[tss.indexOf(d.ts)]*itemSizeRow-itemSizeRow});
-							colLabels.transition().duration(2000)
-								.attr("transform", function(d){
-									return "translate("+(tsalph[tss.indexOf(d.ts)]*itemSizeRow-5)+","+(height+3)+")rotate(-90)";
-								});
-						}
-					}
-				};
-
-				d3.select('#expval').on("change", function(){
-					var val = this.value;
-					var gsort = $('#geneSort').val();
-					var tssort = $('#tsSort').val();
-					sortOptions("color", val, gsort, tssort);
-				});
-
-				d3.select('#geneSort').on("change", function(){
-					var val = $('#expval').val();
-					var gsort = this.value;
-					var tssort = $('#tsSort').val();
-					sortOptions('geneSort', val, gsort, tssort);
-				});
-
-				d3.select('#tsSort').on("change", function(){
-					var val = $('#expval').val();
-					var gsort = $('#geneSort').val();
-					var tssort = this.value;
-					sortOptions('tsSort', val, gsort, tssort);
-				});
-			}
-		});
+			d3.select('#tsSort').on("change", function(){
+				var val = $('#expval').val();
+				var gsort = $('#geneSort').val();
+				var tssort = this.value;
+				sortOptions(val, gsort, tssort);
+			});
+		}
+	})
 }
 
 function tsEnrich(id){
-	d3.select('#tsEnrichBar').select('svg').remove();
-	var span = 150;
-	var currentHeight = 0;
-	var margin = {top: 20, right: 20, bottom: 230, left: 80},
-		width = 900,
-		height = span*3+20;
-
-	var x = d3.scale.ordinal().rangeBands([0,width]);
-	var xAxis = d3.svg.axis().scale(x).orient("bottom");
-	var svg = d3.select('#tsEnrichBar').append('svg')
-		.attr("width", width+margin.left+margin.right)
-		.attr("height", height+margin.top+margin.bottom)
-		.append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
-
-	d3.json(subdir+"/gene2func/DEGPlot/specific/"+id, function(data){
-		if(data==null || data==undefined){
-			$('#tsEnrichBar').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in the selected background genes was 0 or 1.</span></br>'
-			+'Enrichment of differentially expressed genes in different tissue types require at least 2 gene to test.<br/>'
-			+'This might be because of the mismatch of input gene ID or symbol.<br/></div>');
-			$('#DEGdown').prop("disabled", true);
-			$('#tsEnrichBarPanel').children('.ImgDown').each(function(){$(this).prop("disabled", true)});
+	var data_title = {
+		'gtex_v7_ts': 'GTEx v7 53 tissue types',
+		'gtex_v7_ts_general': 'GTEx v7 30 general tissue types',
+		'gtex_v6_ts': 'GTEx v6 53 tissue types',
+		'gtex_v6_ts_general': 'GTEx v6 30 general tissue types',
+		'bs_age': "BrainSpan 29 different ages of brain samples",
+		"bs_dev": "BrainSpan 11 general developmental stages of brain samples"
+	}
+	d3.json(subdir+'/gene2func/DEGPlot/'+prefix+"/"+id, function(data){
+		if(data==null || data==undefined || data.lenght==0){
+			$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+			+' MAGMA was not able to perform.</span><br/></div>');
 		}else{
-			data.data.forEach(function(d){
-				d[2] = +d[2]; //p
-				d[3] = +d[3]; //adj.p
-			});
-			var ts = d3.set(data.data.map(function(d){return d[1]})).values();
-			x.domain(ts);
-			var cellsize = width/ts.length;
-			//up-regulated
-			var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
-			var yAxisup = d3.svg.axis().scale(yup).orient("left").ticks(4);
-			yup.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+			data.forEach(function(d){
+				d[3] = +d[3]; //P-value
+				d[4] = +d[4]; //alph order
+				d[5] = +d[5]; //P up order
+				d[6] = +d[6]; //P down order
+				d[7] = +d[7]; //P twoside order
+			})
+			var bars = [];
+			var xLabels = [];
+			var dataset = d3.set(data.map(function(d){return d[0]})).values();
+			var cellsize = 15;
+			var margin = {top:30, right: 30, bottom:100, left:80},
+				height = 450+20;
+			var span = 150;
+			dataset.forEach(function(ds){
+				$('#DEGPlot').append('<div id="'+ds+'Panel"><h4>'+data_title[ds]+'</h4></div>')
 
-			var xLabels = svg.append("g").selectAll(".xLabel")
-				.data(ts).enter().append("text")
-				.text(function(d){return d;})
-				.style("text-anchor", "end")
-				.style("font-size", "11px")
-				.style("font-family", "sans-serif")
-				.attr("transform", function(d){
-					return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+				// img download buttons
+				$('#'+ds+'Panel').append('<div id="'+ds+'Plot">Download the plot as '
+					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","png");'+"'"+'>PNG</button> '
+					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","jpeg");'+"'"+'>JPG</button> '
+					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","svg");'+"'"+'>SVG</button> '
+					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","pdf");'+"'"+'>PDF</button></div>'
+				);
+
+				// plot
+				$('#'+ds+'Panel').append('<div id="'+ds+'"></div>')
+				var tdata = [];
+				var maxLabel = 100;
+				data.forEach(function(d){
+					if(d[0]==ds){
+						tdata.push(d)
+						if(d[2].length*5.5>maxLabel){maxLabel=d[2].length*5.5}
+					}
 				});
+				margin.bottom = maxLabel;
+				var width = cellsize*tdata.length/3;
+				var svg = d3.select("#"+ds).append("svg")
+						.attr("width", width+margin.left+margin.right)
+						.attr("height", height+margin.top+margin.bottom)
+						.append("g")
+						.attr("transform", "translate("+margin.left+","+margin.top+")");
+				var x = d3.scale.ordinal().rangeBands([0,width]);
+				var xAxis = d3.svg.axis().scale(x).orient("bottom");
+				var label = d3.set(tdata.map(function(d){return d[2]})).values();
+				x.domain(label);
+				var currentHeight = 0;
 
-			var barup = svg.selectAll('rect.up').data(data.data.filter(function(d){if(d[0]=="DEG.up"){return d;}})).enter()
-				.append("rect").attr("class", "bar")
-				.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
-				.attr("width", cellsize-1)
-				.attr("y", function(d){return yup(-Math.log10(d[2]))})
-				.attr("height", function(d){return currentHeight+span-yup(-Math.log10(d[2]));})
-				.style("fill", function(d){
-					if(d[3]>0.05){return "#5668f4";}
-					else{return "#c00";}
-				})
-				.style("stroke", "grey")
-				.style("stroke-width", 0.3);
-			svg.append('g').attr("class", "y axis")
-				.call(yAxisup)
-				.selectAll('test').style('font-size', '11px');
-			svg.append('g').attr("class", "x axis")
-				.attr("transform", "translate(0,"+(currentHeight+span)+")")
-				.call(xAxis).selectAll('text').remove();
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-				.text("Up-regulated DEG");
-			currentHeight += span+10;
+				//up-regulated
+				var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
+				var yAxisup = d3.svg.axis().scale(yup).orient("left").ticks(4);
+				yup.domain([0, d3.max(tdata, function(d){return -Math.log10(d[3])})]);
+				var xLabel = svg.append("g").selectAll(".xLabel")
+					.data(tdata.filter(function(d){if(d[1]=="DEG.up"){return d;}})).enter().append("text")
+					.text(function(d){return d[2];})
+					.style("text-anchor", "end")
+					.style("font-size", "11px")
+					.style("font-family", "sans-serif")
+					.attr("transform", function(d){
+						return "translate("+((d[7]+1)*cellsize)+","+(height+10)+")rotate(-70)";
+					});
+				xLabels.push(xLabel);
 
-			//down regulated
-			var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
-			var yAxisdown = d3.svg.axis().scale(ydown).orient("left").ticks(4);
-			ydown.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+				var barup = svg.selectAll('rect.up')
+					.data(tdata.filter(function(d){if(d[1]=="DEG.up"){return d;}})).enter()
+					.append("rect").attr("class", "bar")
+					.attr("x", function(d){return d[7]*cellsize;})
+					.attr("width", cellsize-1)
+					.attr("y", function(d){return yup(-Math.log10(d[3]))})
+					.attr("height", function(d){return yup(0)-yup(-Math.log10(d[3]));})
+					.style("fill", function(d){
+						if(d[3]>0.05/label.length){return "#5668f4";}
+						else{return "#c00";}
+					})
+					.style("stroke", "grey")
+					.style("stroke-width", 0.3);
+				bars.push(barup);
+				svg.append('g').attr("class", "y axis")
+					.call(yAxisup)
+					.selectAll('test').style('font-size', '11px');
+				svg.append('g').attr("class", "x axis")
+					.attr("transform", "translate(0,"+(currentHeight+span)+")")
+					.call(xAxis).selectAll('text').remove();
+				svg.append("text").attr("text-anchor", "middle")
+					.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+					.text("Up-regulated DEG");
+				currentHeight += span+10;
 
-			var bardown = svg.selectAll('rect.down').data(data.data.filter(function(d){if(d[0]=="DEG.down"){return d;}})).enter()
-				.append("rect").attr("class", "bar")
-				.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
-				.attr("width", cellsize-1)
-				.attr("y", function(d){return ydown(-Math.log10(d[2]))})
-				.attr("height", function(d){return currentHeight+span-ydown(-Math.log10(d[2]));})
-				.style("fill", function(d){
-					if(d[3]>0.05){return "#5668f4";}
-					else{return "#c00";}
-				})
-				.style("stroke", "grey")
-				.style("stroke-width", 0.3);
-			svg.append('g').attr("class", "y axis")
-				.call(yAxisdown)
-				.selectAll('test').style('font-size', '11px');
-			svg.append('g').attr("class", "x axis")
-				.attr("transform", "translate(0, "+(currentHeight+span)+")")
-				.call(xAxis).selectAll('text').remove();
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-				.text("Down-regulated DEG");
-			currentHeight += span+10;
-			//twoside
-			var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
-			var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
-			y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+				//down regulated
+				var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
+				var yAxisdown = d3.svg.axis().scale(ydown).orient("left").ticks(4);
+				ydown.domain([0, d3.max(tdata, function(d){return -Math.log10(d[3])})]);
 
-			var bartwo = svg.selectAll('rect.two').data(data.data.filter(function(d){if(d[0]=="DEG.twoside"){return d;}})).enter()
-				.append("rect").attr("class", "bar")
-				.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
-				.attr("width", cellsize-1)
-				.attr("y", function(d){return y(-Math.log10(d[2]))})
-				.attr("height", function(d){return height-y(-Math.log10(d[2]));})
-				.style("fill", function(d){
-					if(d[3]>0.05){return "#5668f4";}
-					else{return "#c00";}
-				})
-				.style("stroke", "grey")
-				.style("stroke-width", 0.3);
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-				.text("DEG (both side)");
+				var bardown = svg.selectAll('rect.down')
+					.data(tdata.filter(function(d){if(d[1]=="DEG.down"){return d;}})).enter()
+					.append("rect").attr("class", "bar")
+					.attr("x", function(d){return d[7]*cellsize;})
+					.attr("width", cellsize-1)
+					.attr("y", function(d){return ydown(-Math.log10(d[3]))})
+					.attr("height", function(d){return ydown(0)-ydown(-Math.log10(d[3]));})
+					.style("fill", function(d){
+						if(d[3]>0.05){return "#5668f4";}
+						else{return "#c00";}
+					})
+					.style("stroke", "grey")
+					.style("stroke-width", 0.3);
+				bars.push(bardown);
+				svg.append('g').attr("class", "y axis")
+					.call(yAxisdown)
+					.selectAll('test').style('font-size', '11px');
+				svg.append('g').attr("class", "x axis")
+					.attr("transform", "translate(0, "+(currentHeight+span)+")")
+					.call(xAxis).selectAll('text').remove();
+				svg.append("text").attr("text-anchor", "middle")
+					.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+					.text("Down-regulated DEG");
+				currentHeight += span+10;
 
-			svg.append('g').attr("class", "x axis")
-				.attr("transform", "translate(0,"+height+")")
-				.call(xAxis).selectAll('text').remove();
+				//twoside
+				var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
+				var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
+				y.domain([0, d3.max(tdata, function(d){return -Math.log10(d[3])})]);
 
-			svg.append('g').attr("class", "y axis")
-				.call(yAxis)
-				.selectAll('test').style('font-size', '11px');
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(-margin.left/2+5)+","+height/2+")rotate(-90)")
-				.text("-log 10 P-value");
-			svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-			svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-			svg.selectAll('text').style('font-family', 'sans-serif');
+				var bartwo = svg.selectAll('rect.two')
+					.data(tdata.filter(function(d){if(d[1]=="DEG.twoside"){return d;}})).enter()
+					.append("rect").attr("class", "bar")
+					.attr("x", function(d){return d[7]*cellsize;})
+					.attr("width", cellsize-1)
+					.attr("y", function(d){return y(-Math.log10(d[3]))})
+					.attr("height", function(d){return y(0)-y(-Math.log10(d[3]));})
+					.style("fill", function(d){
+						if(d[3]>0.05){return "#5668f4";}
+						else{return "#c00";}
+					})
+					.style("stroke", "grey")
+					.style("stroke-width", 0.3);
+				bars.push(bartwo);
+				svg.append("text").attr("text-anchor", "middle")
+					.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+					.text("DEG (both side)");
+
+				svg.append('g').attr("class", "x axis")
+					.attr("transform", "translate(0,"+height+")")
+					.call(xAxis).selectAll('text').remove();
+
+				svg.append('g').attr("class", "y axis")
+					.call(yAxis)
+					.selectAll('test').style('font-size', '11px');
+				svg.append("text").attr("text-anchor", "middle")
+					.attr("transform", "translate("+(-margin.left/2+5)+","+height/2+")rotate(-90)")
+					.text("-log 10 P-value");
+				svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+				svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+				svg.selectAll('text').style('font-family', 'sans-serif');
+			});
 
 			function sortOptions(type){
+				var idx;
 				if(type=="alph"){
-					barup.transition().duration(1000)
-						.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
-					bardown.transition().duration(1000)
-						.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
-					bartwo.transition().duration(1000)
-						.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.alph[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
-						});
+					idx = 4;
 				}else if(type=="up"){
-					barup.transition().duration(1000)
-						.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
-					bardown.transition().duration(1000)
-						.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
-					bartwo.transition().duration(1000)
-						.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.up[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
-						});
+					idx = 5;
 				}else if(type=="down"){
-					barup.transition().duration(1000)
-						.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
-					bardown.transition().duration(1000)
-						.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
-					bartwo.transition().duration(1000)
-						.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.down[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
-						});
+					idx = 6;
 				}else if(type=="two"){
-					barup.transition().duration(1000)
-						.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
-					bardown.transition().duration(1000)
-						.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
-					bartwo.transition().duration(1000)
-						.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
-					xLabels.transition().duration(1000)
+					idx = 7;
+				}
+				for(var i=0; i<bars.length; i++){
+					bars[i].transition().duration(1000)
+						.attr("x", function(d){return d[idx]*cellsize;})
+				}
+				for(var i=0; i<xLabels.length; i++){
+					xLabels[i].transition().duration(1000)
 						.attr("transform", function(d){
-							return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+							return "translate("+((d[idx]+1)*cellsize)+","+(height+10)+")rotate(-70)";
 						});
 				}
 			}
 			d3.select('#DEGorder').on("change", function(){
-				var type = $('#DEGorder').val();
-				sortOptions(type);
+				sortOptions($('#DEGorder').val());
 			});
 		}
-	});
-}
-
-function tsGeneralEnrich(id){
-	d3.select('#tsGeneralEnrichBar').select('svg').remove();
-	var span = 150;
-	var currentHeight = 0;
-	var margin = {top: 20, right: 20, bottom: 80, left: 80},
-		width = 600,
-		height = span*3+20;
-
-	var x = d3.scale.ordinal().rangeBands([0,width]);
-	var xAxis = d3.svg.axis().scale(x).orient("bottom");
-	var svg = d3.select('#tsGeneralEnrichBar').append('svg')
-		.attr("width", width+margin.left+margin.right)
-		.attr("height", height+margin.top+margin.bottom)
-		.append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
-
-	d3.json(subdir+"/gene2func/DEGPlot/general/"+id, function(data){
-		if(data==null || data==undefined){
-			$('#tsGeneralEnrichBar').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in the selected background genes was 0 or 1.</span></br>'
-			+'Enrichment of differentially expressed genes in different tissue types require at least 2 gene to test.<br/>'
-			+'This might be because of the mismatch of input gene ID or symbol.<br/></div>');
-			$('#DEGgdown').prop("disabled", true);
-		}else{
-			data.data.forEach(function(d){
-				d[2] = +d[2]; //p
-				d[3] = +d[3]; //adj.p
-			});
-			var ts = d3.set(data.data.map(function(d){return d[1]})).values();
-			x.domain(ts);
-			var cellsize = width/ts.length;
-			//up-regulated
-			var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
-			var yAxisup = d3.svg.axis().scale(yup).orient("left").ticks(4);
-			yup.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
-
-			var xLabels = svg.append("g").selectAll(".xLabel")
-				.data(ts).enter().append("text")
-				.text(function(d){return d;})
-				.style("text-anchor", "end")
-				.style("font-size", "11px")
-				.style("font-family", "sans-serif")
-				.attr("transform", function(d){
-					return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
-				});
-
-			var barup = svg.selectAll('rect.up').data(data.data.filter(function(d){if(d[0]=="DEG.up"){return d;}})).enter()
-				.append("rect").attr("class", "bar")
-				.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
-				.attr("width", cellsize-1)
-				.attr("y", function(d){return yup(-Math.log10(d[2]))})
-				.attr("height", function(d){return currentHeight+span-yup(-Math.log10(d[2]));})
-				.style("fill", function(d){
-					if(d[3]>0.05){return "#5668f4";}
-					else{return "#c00";}
-				})
-				.style("stroke", "grey")
-				.style("stroke-width", 0.3);
-			svg.append('g').attr("class", "y axis")
-				.call(yAxisup)
-				.selectAll('test').style('font-size', '11px');
-			svg.append('g').attr("class", "x axis")
-				.attr("transform", "translate(0,"+(currentHeight+span)+")")
-				.call(xAxis).selectAll('text').remove();
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-				.text("Up-regulated DEG");
-			currentHeight += span+10;
-
-			//down regulated
-			var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
-			var yAxisdown = d3.svg.axis().scale(ydown).orient("left").ticks(4);
-			ydown.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
-
-			var bardown = svg.selectAll('rect.down').data(data.data.filter(function(d){if(d[0]=="DEG.down"){return d;}})).enter()
-				.append("rect").attr("class", "bar")
-				.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
-				.attr("width", cellsize-1)
-				.attr("y", function(d){return ydown(-Math.log10(d[2]))})
-				.attr("height", function(d){return currentHeight+span-ydown(-Math.log10(d[2]));})
-				.style("fill", function(d){
-					if(d[3]>0.05){return "#5668f4";}
-					else{return "#c00";}
-				})
-				.style("stroke", "grey")
-				.style("stroke-width", 0.3);
-			svg.append('g').attr("class", "y axis")
-				.call(yAxisdown)
-				.selectAll('test').style('font-size', '11px');
-			svg.append('g').attr("class", "x axis")
-				.attr("transform", "translate(0, "+(currentHeight+span)+")")
-				.call(xAxis).selectAll('text').remove();
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-				.text("Down-regulated DEG");
-			currentHeight += span+10;
-			//twoside
-			var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
-			var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
-			y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
-
-			var bartwo = svg.selectAll('rect.two').data(data.data.filter(function(d){if(d[0]=="DEG.twoside"){return d;}})).enter()
-				.append("rect").attr("class", "bar")
-				.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
-				.attr("width", cellsize-1)
-				.attr("y", function(d){return y(-Math.log10(d[2]))})
-				.attr("height", function(d){return height-y(-Math.log10(d[2]));})
-				.style("fill", function(d){
-					if(d[3]>0.05){return "#5668f4";}
-					else{return "#c00";}
-				})
-				.style("stroke", "grey")
-				.style("stroke-width", 0.3);
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
-				.text("DEG (both side)");
-
-			svg.append('g').attr("class", "x axis")
-				.attr("transform", "translate(0,"+height+")")
-				.call(xAxis).selectAll('text').remove();
-
-			svg.append('g').attr("class", "y axis")
-				.call(yAxis)
-				.selectAll('test').style('font-size', '11px');
-			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+(-margin.left/2+5)+","+height/2+")rotate(-90)")
-				.text("-log 10 P-value");
-			svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-			svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-			svg.selectAll('text').style('font-family', 'sans-serif');
-
-			function sortOptions(type){
-				if(type=="alph"){
-					barup.transition().duration(1000)
-						.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
-					bardown.transition().duration(1000)
-						.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
-					bartwo.transition().duration(1000)
-						.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.alph[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
-						});
-				}else if(type=="up"){
-					barup.transition().duration(1000)
-						.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
-					bardown.transition().duration(1000)
-						.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
-					bartwo.transition().duration(1000)
-						.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.up[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
-						});
-				}else if(type=="down"){
-					barup.transition().duration(1000)
-						.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
-					bardown.transition().duration(1000)
-						.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
-					bartwo.transition().duration(1000)
-						.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.down[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
-						});
-				}else if(type=="two"){
-					barup.transition().duration(1000)
-						.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
-					bardown.transition().duration(1000)
-						.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
-					bartwo.transition().duration(1000)
-						.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
-					xLabels.transition().duration(1000)
-						.attr("transform", function(d){
-							return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
-						});
-				}
-			}
-			d3.select('#DEGGorder').on("change", function(){
-				var type = $('#DEGGorder').val();
-				sortOptions(type);
-			});
-		}
-	});
+	})
+	// d3.select('#tsEnrichBar').select('svg').remove();
+	// var span = 150;
+	// var currentHeight = 0;
+	// var margin = {top: 20, right: 20, bottom: 230, left: 80},
+	// 	width = 900,
+	// 	height = span*3+20;
+    //
+	// var x = d3.scale.ordinal().rangeBands([0,width]);
+	// var xAxis = d3.svg.axis().scale(x).orient("bottom");
+	// var svg = d3.select('#tsEnrichBar').append('svg')
+	// 	.attr("width", width+margin.left+margin.right)
+	// 	.attr("height", height+margin.top+margin.bottom)
+	// 	.append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
+    //
+	// d3.json(subdir+"/gene2func/DEGPlot/specific/"+id, function(data){
+	// 	if(data==null || data==undefined){
+	// 		$('#tsEnrichBar').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in the selected background genes was 0 or 1.</span></br>'
+	// 		+'Enrichment of differentially expressed genes in different tissue types require at least 2 gene to test.<br/>'
+	// 		+'This might be because of the mismatch of input gene ID or symbol.<br/></div>');
+	// 		$('#DEGdown').prop("disabled", true);
+	// 		$('#tsEnrichBarPanel').children('.ImgDown').each(function(){$(this).prop("disabled", true)});
+	// 	}else{
+	// 		data.data.forEach(function(d){
+	// 			d[2] = +d[2]; //p
+	// 			d[3] = +d[3]; //adj.p
+	// 		});
+	// 		var ts = d3.set(data.data.map(function(d){return d[1]})).values();
+	// 		x.domain(ts);
+	// 		var cellsize = width/ts.length;
+	// 		//up-regulated
+	// 		var yup = d3.scale.linear().range([currentHeight+span, currentHeight]);
+	// 		var yAxisup = d3.svg.axis().scale(yup).orient("left").ticks(4);
+	// 		yup.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+    //
+	// 		var xLabels = svg.append("g").selectAll(".xLabel")
+	// 			.data(ts).enter().append("text")
+	// 			.text(function(d){return d;})
+	// 			.style("text-anchor", "end")
+	// 			.style("font-size", "11px")
+	// 			.style("font-family", "sans-serif")
+	// 			.attr("transform", function(d){
+	// 				return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+	// 			});
+    //
+	// 		var barup = svg.selectAll('rect.up').data(data.data.filter(function(d){if(d[0]=="DEG.up"){return d;}})).enter()
+	// 			.append("rect").attr("class", "bar")
+	// 			.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+	// 			.attr("width", cellsize-1)
+	// 			.attr("y", function(d){return yup(-Math.log10(d[2]))})
+	// 			.attr("height", function(d){return currentHeight+span-yup(-Math.log10(d[2]));})
+	// 			.style("fill", function(d){
+	// 				if(d[3]>0.05){return "#5668f4";}
+	// 				else{return "#c00";}
+	// 			})
+	// 			.style("stroke", "grey")
+	// 			.style("stroke-width", 0.3);
+	// 		svg.append('g').attr("class", "y axis")
+	// 			.call(yAxisup)
+	// 			.selectAll('test').style('font-size', '11px');
+	// 		svg.append('g').attr("class", "x axis")
+	// 			.attr("transform", "translate(0,"+(currentHeight+span)+")")
+	// 			.call(xAxis).selectAll('text').remove();
+	// 		svg.append("text").attr("text-anchor", "middle")
+	// 			.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+	// 			.text("Up-regulated DEG");
+	// 		currentHeight += span+10;
+    //
+	// 		//down regulated
+	// 		var ydown = d3.scale.linear().range([currentHeight+span, currentHeight]);
+	// 		var yAxisdown = d3.svg.axis().scale(ydown).orient("left").ticks(4);
+	// 		ydown.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+    //
+	// 		var bardown = svg.selectAll('rect.down').data(data.data.filter(function(d){if(d[0]=="DEG.down"){return d;}})).enter()
+	// 			.append("rect").attr("class", "bar")
+	// 			.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+	// 			.attr("width", cellsize-1)
+	// 			.attr("y", function(d){return ydown(-Math.log10(d[2]))})
+	// 			.attr("height", function(d){return currentHeight+span-ydown(-Math.log10(d[2]));})
+	// 			.style("fill", function(d){
+	// 				if(d[3]>0.05){return "#5668f4";}
+	// 				else{return "#c00";}
+	// 			})
+	// 			.style("stroke", "grey")
+	// 			.style("stroke-width", 0.3);
+	// 		svg.append('g').attr("class", "y axis")
+	// 			.call(yAxisdown)
+	// 			.selectAll('test').style('font-size', '11px');
+	// 		svg.append('g').attr("class", "x axis")
+	// 			.attr("transform", "translate(0, "+(currentHeight+span)+")")
+	// 			.call(xAxis).selectAll('text').remove();
+	// 		svg.append("text").attr("text-anchor", "middle")
+	// 			.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+	// 			.text("Down-regulated DEG");
+	// 		currentHeight += span+10;
+	// 		//twoside
+	// 		var y = d3.scale.linear().range([currentHeight+span, currentHeight]);
+	// 		var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
+	// 		y.domain([0, d3.max(data.data, function(d){return -Math.log10(d[2])})]);
+    //
+	// 		var bartwo = svg.selectAll('rect.two').data(data.data.filter(function(d){if(d[0]=="DEG.twoside"){return d;}})).enter()
+	// 			.append("rect").attr("class", "bar")
+	// 			.attr("x", function(d){return data.order.two[d[1]]*cellsize;})
+	// 			.attr("width", cellsize-1)
+	// 			.attr("y", function(d){return y(-Math.log10(d[2]))})
+	// 			.attr("height", function(d){return height-y(-Math.log10(d[2]));})
+	// 			.style("fill", function(d){
+	// 				if(d[3]>0.05){return "#5668f4";}
+	// 				else{return "#c00";}
+	// 			})
+	// 			.style("stroke", "grey")
+	// 			.style("stroke-width", 0.3);
+	// 		svg.append("text").attr("text-anchor", "middle")
+	// 			.attr("transform", "translate("+(width+margin.right/2)+","+(currentHeight+span/2)+")rotate(90)")
+	// 			.text("DEG (both side)");
+    //
+	// 		svg.append('g').attr("class", "x axis")
+	// 			.attr("transform", "translate(0,"+height+")")
+	// 			.call(xAxis).selectAll('text').remove();
+    //
+	// 		svg.append('g').attr("class", "y axis")
+	// 			.call(yAxis)
+	// 			.selectAll('test').style('font-size', '11px');
+	// 		svg.append("text").attr("text-anchor", "middle")
+	// 			.attr("transform", "translate("+(-margin.left/2+5)+","+height/2+")rotate(-90)")
+	// 			.text("-log 10 P-value");
+	// 		svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+	// 		svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+	// 		svg.selectAll('text').style('font-family', 'sans-serif');
+    //
+	// 		function sortOptions(type){
+	// 			if(type=="alph"){
+	// 				barup.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+	// 				bardown.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+	// 				bartwo.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.alph[d[1]]*cellsize;});
+	// 				xLabels.transition().duration(1000)
+	// 					.attr("transform", function(d){
+	// 						return "translate("+(data.order.alph[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+	// 					});
+	// 			}else if(type=="up"){
+	// 				barup.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+	// 				bardown.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+	// 				bartwo.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.up[d[1]]*cellsize;});
+	// 				xLabels.transition().duration(1000)
+	// 					.attr("transform", function(d){
+	// 						return "translate("+(data.order.up[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+	// 					});
+	// 			}else if(type=="down"){
+	// 				barup.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+	// 				bardown.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+	// 				bartwo.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.down[d[1]]*cellsize;});
+	// 				xLabels.transition().duration(1000)
+	// 					.attr("transform", function(d){
+	// 						return "translate("+(data.order.down[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+	// 					});
+	// 			}else if(type=="two"){
+	// 				barup.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+	// 				bardown.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+	// 				bartwo.transition().duration(1000)
+	// 					.attr("x", function(d){return data.order.two[d[1]]*cellsize;});
+	// 				xLabels.transition().duration(1000)
+	// 					.attr("transform", function(d){
+	// 						return "translate("+(data.order.two[d]*cellsize+((cellsize-1)/2)+3)+","+(height+10)+")rotate(-70)";
+	// 					});
+	// 			}
+	// 		}
+	// 		d3.select('#DEGorder').on("change", function(){
+	// 			var type = $('#DEGorder').val();
+	// 			sortOptions(type);
+	// 		});
+	// 	}
+	// });
 }
 
 function GeneSet(id){
@@ -1237,4 +1216,13 @@ function GeneTable(id){
 		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 		"iDisplayLength": 10
 	});
+}
+
+function DownloadFiles(){
+	var check = false;
+	$('#downFileCheck input').each(function(){
+		if($(this).is(":checked")==true){check=true; break;}
+	})
+	if(check){$('#download').prop('disabled', false)}
+	else{$('#download').prop('disabled', true)}
 }

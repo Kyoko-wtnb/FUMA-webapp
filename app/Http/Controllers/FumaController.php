@@ -68,7 +68,7 @@ class FumaController extends Controller
 		}
     }
 
-    public function DTfileServerSide(Request $request){
+	public function DTfileServerSide(Request $request){
 		$id = $request->input('id');
 		$prefix = $request -> input('prefix');
 		$fin = $request -> input('infile');
@@ -87,7 +87,7 @@ class FumaController extends Controller
 		$script = storage_path().'/scripts/dt.py';
 		$out = shell_exec("python $script $filedir $fin $draw $cols $order_column $order_dir $start $length $search");
 		echo $out;
-    }
+	}
 
 	public function imgdown(Request $request){
 		$svg = $request->input('data');
@@ -100,11 +100,7 @@ class FumaController extends Controller
 
 		$svg = preg_replace("/\),rotate/", ")rotate", $svg);
 		$svg = preg_replace("/,skewX\(.+?\),scale\(.+?\)/", "", $svg);
-		if($prefix=="gwas"){
-			$fileName .= "_FUMAgwas".$id;
-		}else{
-			$fileName .= "_FUMAjob".$id;
-		}
+		$fileName .= "_FUMA_".$prefix.$id;
 		if($type=="svg"){
 			file_put_contents($svgfile, $svg);
 			$outfile .= $fileName.'.svg';

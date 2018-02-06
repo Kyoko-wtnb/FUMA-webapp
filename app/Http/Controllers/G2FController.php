@@ -62,10 +62,43 @@ class G2FController extends Controller
 	}
 
 	public function filedown(Request $request){
-		$file = $request -> input('file');
-		$id = $request -> input('id');
-		$filedir = config('app.jobdir').'/gene2func/'.$id.'/'.$file;
-		return response() -> download($filedir);
+		$id = $request->input('id');
+		$prefix = $request->input('prefix');
+		$filedir = config('app.jobdir').'/gene2func/'.$id.'/';
+		$files = [];
+		if($request->has('summaryfile')){$files[] = "summary.txt";}
+		if($request->has('paramfile')){$files[] = "params.config";}
+		if($request->has('geneIDfile')){$files[] = "geneIDs.txt";}
+		if($request->has('expfile')){
+			$tmp = File::glob($filedir."*_exp.txt");
+			for($i=0; $i<count($tmp); $i++){
+				$files[] = preg_replace("/.*\/(.*_exp.txt)/", "$1", $tmp[$i]);
+			}
+		}
+		if($request->has('DEGfile')){
+			$tmp = File::glob($filedir."*_DEG.txt");
+			for($i=0; $i<count($tmp); $i++){
+				$files[] = preg_replace("/.*\/(.*_DEG.txt)/", "$1", $tmp[$i]);
+			}
+		}
+		if($request->has('gsfile')){$files[] = "GS.txt";}
+
+		$zip = new \ZipArchive();
+		if($prefix=="gwas/g2f"){
+			$zipfile = $filedir."FUMA_gene2func_gwas".$id.".zip";
+		}else{
+			$zipfile = $filedir."FUMA_gene2func".$id.".zip";
+		}
+		if(File::exists($zipfile)){
+			File::delete($zipfile);
+		}
+		$zip -> open($zipfile, \ZipArchive::CREATE);
+		$zip->addFile(storage_path().'/README_g2f', "README_g2f");
+		foreach($files as $f){
+			$zip->addFile($filedir.$f, $f);
+		}
+		$zip -> close();
+		return response() -> download($zipfile);
 	}
 
 	public function gene2funcSubmit(Request $request){
@@ -116,6 +149,8 @@ class G2FController extends Controller
 			$request -> file('bkgenesfile') -> move($filedir, "bkgenes.txt");
 		}
 
+		$gene_exp = implode(":", $request->input("gene_exp"));
+
 		if($request -> has('MHC')){
 			$MHC = 1;
 		}else{
@@ -136,6 +171,7 @@ class G2FController extends Controller
 		File::append($paramfile, "gval=$gval\n");
 		File::append($paramfile, "bkgtype=$bkgtype\n");
 		File::append($paramfile, "bkgval=$bkgval\n");
+		File::append($paramfile, "gene_exp=$gene_exp\n");
 		File::append($paramfile, "MHC=$MHC\n");
 		File::append($paramfile, "adjPmeth=$adjPmeth\n");
 		File::append($paramfile, "adjPcut=$adjPcut\n");
@@ -149,6 +185,7 @@ class G2FController extends Controller
 			'bkgtype' => $bkgtype,
 			'bkgval' => $bkgval,
 			// 'Xchr' => $Xchr,
+			'gene_exp' => $gene_exp,
 			'MHC' => $MHC,
 			'adjPmeth' => $adjPmeth,
 			'adjPcut' => $adjPcut,
@@ -209,6 +246,7 @@ class G2FController extends Controller
 			$bkgtype="select";
 			$params = parse_ini_file($s2gfiledir.'params.config', false, INI_SCANNER_RAW);
 			// $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
+			$gene_exp = $params['gene_exp'];
 			$MHC = $params['exMHC'];
 			$bkgval = $params['genetype'];
 			$adjPmeth = "fdr_bh";
@@ -238,6 +276,7 @@ class G2FController extends Controller
 			File::append($paramfile, "bkgtype=$bkgtype\n");
 			File::append($paramfile, "bkgval=$bkgval\n");
 			File::append($paramfile, "MHC=$MHC\n");
+			File::append($paramfile, "gene_exp=$gene_exp\n");
 			File::append($paramfile, "adjPmeth=$adjPmeth\n");
 			File::append($paramfile, "adjPcut=$adjPcut\n");
 			File::append($paramfile, "minOverlap=$minOverlap\n");
@@ -249,7 +288,7 @@ class G2FController extends Controller
 				'gval' => $gval,
 				'bkgtype' => $bkgtype,
 				'bkgval' => $bkgval,
-				// 'Xchr' => $Xchr,
+				'gene_exp' => $gene_exp,
 				'MHC' => $MHC,
 				'adjPmeth' => $adjPmeth,
 				'adjPcut' => $adjPcut,
@@ -260,6 +299,50 @@ class G2FController extends Controller
 			$jobID = $checkExists->jobID;
 			return redirect("gene2func/".$jobID);
 		}
+	}
+
+	public function paramTable(Request $request){
+		$id = $request -> input('id');
+		$filedir = config('app.jobdir').'/gene2func/'.$id.'/';
+		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
+		$out = [];
+		foreach($params as $key=>$value){
+			$out[] = [$key, $value];
+		}
+		return json_encode($out);
+    }
+
+	public function sumTable(Request $request){
+		$id = $request -> input('id');
+		$filedir = config('app.jobdir').'/gene2func/'.$id.'/';
+		$lines = file($filedir."summary.txt");
+		$out = [];
+		foreach($lines as $l){
+			$l = preg_split("/\t/", chop($l));
+			$out[] = [$l[0], $l[1]];
+		}
+		return json_encode($out);
+	}
+
+	public function expDataOption(Request $request){
+		$id = $request -> input('id');
+		$filedir = config('app.jobdir').'/gene2func/'.$id.'/';
+		$params = parse_ini_file($filedir.'params.config', false, INI_SCANNER_RAW);
+		return $params['gene_exp'];
+	}
+
+	public function expPlot($prefix, $id, $dataset){
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
+		$script = storage_path()."/scripts/g2f_expPlot.py";
+	    $data = shell_exec("python $script $filedir $dataset");
+		return $data;
+	}
+
+	public function DEGPlot($prefix, $id){
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
+		$script = storage_path()."/scripts/g2f_DEGPlot.py";
+	    $data = shell_exec("python $script $filedir");
+		return $data;
 	}
 
 	public function geneTable(Request $request){
@@ -293,65 +376,6 @@ class G2FController extends Controller
 			return json_encode($json);
 		}else{
 			return '{"data": []}';
-		}
-	}
-
-	public function DEGPlot($type, $jobID){
-		$filedir = config('app.jobdir').'/gene2func/'.$jobID.'/';
-		$file = "";
-		if($type=="general"){
-			$file = $filedir."DEGgeneral.txt";
-		}else{
-			$file = $filedir."DEG.txt";
-		}
-		if(file_exists($file)){
-			$f = fopen($file, 'r');
-			fgetcsv($f, 0, "\t");
-			$data = [];
-			$upp = [];
-			$downp = [];
-			$twop = [];
-			$alph = [];
-			$i = 0;
-			while($row=fgetcsv($f, 0, "\t")){
-				$p[$row[1]] = $row[4];
-				$data[] = [$row[0], $row[1], $row[4], $row[5]];
-				if($row[0]=="DEG.up"){
-					$upp[$row[1]] = $row[4];
-					$alph[$row[1]] = $i;
-					$i++;
-				}else if($row[0]=="DEG.down"){
-					$downp[$row[1]] = $row[4];
-				}else{
-					$twop[$row[1]] = $row[4];
-				}
-			}
-			asort($upp);
-			asort($downp);
-			asort($twop);
-			$order_up = [];
-			$order_down = [];
-			$order_two = [];
-			$i = 0;
-			foreach ($upp as $key => $value) {
-				$order_up[$key] = $i;
-				$i++;
-			}
-			$i = 0;
-			foreach ($downp as $key => $value) {
-				$order_down[$key] = $i;
-				$i++;
-			}
-			$i = 0;
-			foreach ($twop as $key => $value) {
-				$order_two[$key] = $i;
-				$i++;
-			}
-
-			$r = ["data"=>$data, "order"=>["up"=>$order_up, "down"=>$order_down, "two"=>$order_two, "alph"=>$alph]];
-			return json_encode($r);
-		}else{
-			return;
 		}
 	}
 
