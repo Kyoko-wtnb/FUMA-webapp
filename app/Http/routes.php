@@ -34,57 +34,69 @@ Route::auth();
 
 Route::get('browse', function(){
 	$gwasID = null;
-	return view('pages.browse', ['gwasID' => $gwasID]);
+	return view('pages.browse', ['id'=>$gwasID, 'page'=>'browse', 'prefix'=>'gwas']);
 });
 
 Route::get('browse/getGwasList', 'BrowseController@getGwasList');
 
 Route::post('browse/getParams', 'BrowseController@getParams');
 
-Route::get('browse/manhattan/{type}/{id}/{file}', 'BrowseController@manhattan');
+Route::get('browse/manhattan/{prefix}/{id}/{file}', 'FumaController@manhattan');
 
-Route::get('browse/QQplot/{type}/{id}/{plot}', 'BrowseController@QQplot');
+Route::get('browse/QQplot/{prefix}/{id}/{plot}', 'FumaController@QQplot');
 
-Route::get('browse/MAGMAtsplot/{type}/{prefix}/{id}', 'BrowseController@MAGMAtsplot');
+Route::get('browse/MAGMA_expPlot/{prefix}/{id}', 'FumaController@MAGMA_expPlot');
 
-Route::post('browse/DTfile', 'BrowseController@DTfile');
+Route::post('browse/DTfile', 'FumaController@DTfile');
 
-Route::post('browse/paramTable', 'BrowseController@paramTable');
+Route::post('browse/paramTable', 'FumaController@paramTable');
 
-Route::post('browse/sumTable', 'BrowseController@sumTable');
+Route::post('browse/sumTable', 'FumaController@sumTable');
 
-Route::post('browse/DTfileServerSide', 'BrowseController@DTfileServerSide');
+Route::post('browse/DTfileServerSide', 'FumaController@DTfileServerSide');
 
-Route::get('browse/d3text/{prefix}/{id}/{file}', 'BrowseController@d3js_textfile');
+Route::get('browse/d3text/{prefix}/{id}/{file}', 'FumaController@d3text');
 
-Route::post('browse/locusPlot', "BrowseController@locusPlot");
+Route::get('browse/g2f_d3text/{prefix}/{id}/{file}', 'FumaController@g2f_d3text');
 
-Route::post('browse/circos_chr', 'BrowseController@circos_chr');
+Route::post('browse/locusPlot', "FumaController@locusPlot");
 
-Route::get('browse/circos_image/{prefix}/{id}/{file}', 'BrowseController@circos_image');
+Route::post('browse/circos_chr', 'FumaController@circos_chr');
 
-Route::post('browse/circosDown', 'BrowseController@circosDown');
+Route::get('browse/circos_image/{prefix}/{id}/{file}', 'FumaController@circos_image');
+
+Route::post('browse/circosDown', 'FumaController@circosDown');
 
 Route::post('browse/filedown', 'BrowseController@filedown');
 
-Route::post('browse/g2fFileDown', 'BrowseController@g2fFileDown');
+// Route::post('browse/g2fFileDown', 'BrowseController@g2fFileDown');
 
 Route::post('browse/imgdown', 'BrowseController@imgdown');
 
-Route::post('browse/annotPlot', 'BrowseController@annotPlot');
+Route::post('browse/annotPlot', 'FumaController@annotPlot');
 
-Route::post('browse/annotPlot/getData', 'BrowseController@annotPlotGetData');
+Route::post('browse/annotPlot/getData', 'FumaController@annotPlotGetData');
 
-Route::post('browse/annotPlot/getGenes', 'BrowseController@annotPlotGetGenes');
+Route::post('browse/annotPlot/getGenes', 'FumaController@annotPlotGetGenes');
 
-Route::get('browse/legendText/{file}', 'BrowseController@legendText');
+Route::get('browse/legendText/{file}', 'FumaController@legendText');
 
-Route::get('browse/DEGPlot/{type}/{jobID}', 'BrowseController@DEGPlot');
+Route::post('browse/g2f_paramTable', 'FumaController@g2f_paramTable');
 
-Route::post('browse/geneTable', 'BrowseController@geneTable');
+Route::post('browse/g2f_sumTable', 'FumaController@g2f_sumTable');
+
+Route::post('browse/expDataOption', 'FumaController@expDataOption');
+
+Route::get('browse/expPlot/{prefix}/{id}/{dataset}', 'FumaController@expPlot');
+
+Route::get('browse/DEGPlot/{prefix}/{id}', 'FumaController@DEGPlot');
+
+Route::post('browse/geneTable', 'FumaController@geneTable');
+
+Route::post('browse/g2f_filedown', 'FumaController@g2f_filedown');
 
 Route::get('browse/{gwasID}', function($gwasID){
-	return view('pages.browse', ['gwasID' => $gwasID]);
+	return view('pages.browse', ['id'=>$gwasID, 'page'=>'browse', 'prefix'=>'gwas']);
 });
 
 // ********************** Middleware auth group************************
@@ -92,7 +104,7 @@ Route::group(['middleware'=>'auth'], function(){
 	// ********************** SNP2GENE ************************
 	Route::get('snp2gene', function(){
 		$jobID = null;
-		return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]);
+		return view('pages.snp2gene', ['id'=>$jobID, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
 	});
 
 	Route::get('snp2gene/getJobList/{email?}/{limit?}', 'S2GController@getJobList');
@@ -121,37 +133,37 @@ Route::group(['middleware'=>'auth'], function(){
 
 	// Route::post('snp2gene/jobInfo', 'JsController@jobInfo');
 
-	Route::get('snp2gene/manhattan/{prefix}/{id}/{file}', 'S2GController@manhattan');
+	Route::get('snp2gene/manhattan/{prefix}/{id}/{file}', 'FumaController@manhattan');
 
-	Route::get('snp2gene/QQplot/{prefix}/{id}/{plot}', 'S2GController@QQplot');
+	Route::get('snp2gene/QQplot/{prefix}/{id}/{plot}', 'FumaController@QQplot');
 
-	Route::get('snp2gene/MAGMA_expPlot/{prefix}/{id}', 'S2GController@MAGMA_expPlot');
+	Route::get('snp2gene/MAGMA_expPlot/{prefix}/{id}', 'FumaController@MAGMA_expPlot');
 
-	Route::post('snp2gene/paramTable', 'S2GController@paramTable');
+	Route::post('snp2gene/paramTable', 'FumaController@paramTable');
 
-	Route::post('snp2gene/sumTable', 'S2GController@sumTable');
+	Route::post('snp2gene/sumTable', 'FumaController@sumTable');
 
-	Route::post('snp2gene/locusPlot', "S2GController@locusPlot");
+	Route::post('snp2gene/locusPlot', "FumaController@locusPlot");
 
-	Route::get('snp2gene/d3text/{prefix}/{id}/{file}', 'FumaController@d3js_textfile');
+	Route::get('snp2gene/d3text/{prefix}/{id}/{file}', 'FumaController@d3text');
 
-	Route::get('snp2gene/legendText/{file}', 'S2GController@legendText');
+	Route::get('snp2gene/legendText/{file}', 'FumaController@legendText');
 
-	Route::post('snp2gene/annotPlot', 'S2GController@annotPlot');
+	Route::post('snp2gene/annotPlot', 'FumaController@annotPlot');
 
-	Route::post('snp2gene/annotPlot/getData', 'S2GController@annotPlotGetData');
+	Route::post('snp2gene/annotPlot/getData', 'FumaController@annotPlotGetData');
 
-	Route::post('snp2gene/annotPlot/getGenes', 'S2GController@annotPlotGetGenes');
+	Route::post('snp2gene/annotPlot/getGenes', 'FumaController@annotPlotGetGenes');
 
 	Route::post('snp2gene/filedown', 'S2GController@filedown');
 
 	// Route::post('snp2gene/geneTable', 'JsController@geneTable');
 
-	Route::post('snp2gene/circos_chr', 'S2GController@circos_chr');
+	Route::post('snp2gene/circos_chr', 'FumaController@circos_chr');
 
-	Route::get('snp2gene/circos_image/{prefix}/{id}/{file}', 'S2GController@circos_image');
+	Route::get('snp2gene/circos_image/{prefix}/{id}/{file}', 'FumaController@circos_image');
 
-	Route::post('snp2gene/circosDown', 'S2GController@circosDown');
+	Route::post('snp2gene/circosDown', 'FumaController@circosDown');
 
 	Route::post('snp2gene/deleteJob', 'S2GController@deleteJob');
 
@@ -161,7 +173,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 	// ********************** GENE2FUNC ************************
 	Route::get('gene2func', function(){
-		return view('pages.gene2func', ['status'=>'new', 'id'=>'none']);
+		return view('pages.gene2func', ['status'=>'new', 'id'=>'none', 'page'=>'gene2func', 'prefix'=>'gene2func']);
 	});
 
 	Route::get('gene2func/getG2FJobList', 'G2FController@getJobList');
@@ -172,25 +184,25 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('gene2func/geneSubmit', 'G2FController@snp2geneGeneQuery');
 
-	Route::post('gene2func/filedown', 'G2FController@filedown');
+	Route::post('gene2func/g2f_filedown', 'FumaController@g2f_filedown');
 
-	Route::post('gene2func/paramTable', 'G2FController@paramTable');
+	Route::post('gene2func/g2f_paramTable', 'FumaController@g2f_paramTable');
 
-	Route::post('gene2func/sumTable', 'G2FController@sumTable');
+	Route::post('gene2func/g2f_sumTable', 'FumaController@g2f_sumTable');
 
-	Route::post('gene2func/expDataOption', 'G2FController@expDataOption');
+	Route::post('gene2func/expDataOption', 'FumaController@expDataOption');
 
-	Route::get('gene2func/expPlot/{prefix}/{id}/{dataset}', 'G2FController@expPlot');
+	Route::get('gene2func/expPlot/{prefix}/{id}/{dataset}', 'FumaController@expPlot');
 
-	Route::get('gene2func/DEGPlot/{prefix}/{id}', 'G2FController@DEGPlot');
+	Route::get('gene2func/DEGPlot/{prefix}/{id}', 'FumaController@DEGPlot');
 
-	Route::post('gene2func/geneTable', 'G2FController@geneTable');
+	Route::post('gene2func/geneTable', 'FumaController@geneTable');
 
-	Route::get('gene2func/d3text/{prefix}/{id}/{file}', 'FumaController@d3js_textfile');
+	Route::get('gene2func/g2f_d3text/{prefix}/{id}/{file}', 'FumaController@g2f_d3text');
 
-	Route::get('gene2func/DEGPlot/{type}/{jobID}', 'G2FController@DEGPlot');
+	// Route::get('gene2func/DEGPlot/{type}/{jobID}', 'FumaController@DEGPlot');
 
-	Route::get('gene2func/ExpTsPlot/{type}/{jobID}', 'G2FController@ExpTsPlot');
+	// Route::get('gene2func/ExpTsPlot/{type}/{jobID}', 'G2FController@ExpTsPlot');
 
 	Route::get('gene2func/{jobID}', 'G2FController@authcheck');
 

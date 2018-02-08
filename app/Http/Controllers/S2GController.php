@@ -35,9 +35,9 @@ class S2GController extends Controller
 		$email = $this->user->email;
 		$check = DB::table('SubmitJobs')->where('jobID', $jobID)->first();
 		if($check->email==$email){
-			return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'jobquery']);
+			return view('pages.snp2gene', ['id'=>$jobID, 'status'=>'jobquery', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 		}else{
-			return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>null]);
+			return view('pages.snp2gene', ['id'=>$jobID, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
 		}
 	}
 
@@ -137,7 +137,7 @@ class S2GController extends Controller
 			$ciMap = $params['ciMap'];
 		}
 		$magma = $params['magma'];
-		return "$filedir:$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol:$magma";
+		return "$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol:$magma";
 	}
 
 	public function newJob(Request $request){
@@ -146,19 +146,19 @@ class S2GController extends Controller
 			$type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
 			if($type != "text/plain" && $type != "application/zip" && $type != "application/x-gzip"){
 				$jobID = null;
-				return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatGWAS']);
+				return view('pages.snp2gene', ['id' => $jobID, 'status'=>'fileFormatGWAS', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 			}
 		}
 		if($request -> hasFile('leadSNPs')){
 			if(mime_content_type($_FILES["leadSNPs"]["tmp_name"])!="text/plain"){
 				$jobID = null;
-				return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatLead']);
+				return view('pages.snp2gene', ['id' => $jobID, 'status'=>'fileFormatLead', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 			}
 		}
 		if($request -> hasFile('regions')){
 			if(mime_content_type($_FILES["regions"]["tmp_name"])!="text/plain"){
 				$jobID = null;
-				return view('pages.snp2gene', ['jobID' => $jobID, 'status'=>'fileFormatRegions']);
+				return view('pages.snp2gene', ['id' => $jobID, 'status'=>'fileFormatRegions', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 			}
 		}
 
@@ -912,275 +912,12 @@ class S2GController extends Controller
 		return json_encode($rows);
 	}
 
-	public function circos_chr(Request $request){
-		$id = $request->input("id");
-		$prefix = $request->input("prefix");
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
-		$files = File::glob($filedir."circos_chr*.png");
-		for($i=0; $i<count($files); $i++){
-			$files[$i] = preg_replace('/.+\/circos_chr(\d+)\.png/', '$1', $files[$i]);
-		}
-		$files = implode(":", $files);
-		return $files;
-	}
-
-	public function circos_image($prefix, $id, $file){
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
-		$f = File::get($filedir.$file);
-		$type = File::mimeType($filedir.$file);
-
-		return response($f)->header("Content-Type", $type);
-	}
-
-	public function circosDown(Request $request){
-		$id = $request->input('id');
-		$prefix = $request->input('prefix');
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
-		$type = $request->input('type');
-		$zip = new \ZipArchive();
-		if($prefix=="gwas"){
-			$zipfile = $filedir."FUMA_gwas".$id."_circos_".$type.".zip";
-		}else{
-			$zipfile = $filedir."FUMA_job".$id."_circos_".$type.".zip";
-		}
-
-		$files = File::glob($filedir."*.".$type);
-		for($i=0; $i<count($files); $i++){
-			$files[$i] = preg_replace("/.+\/(\w+\.$type)/", '$1', $files[$i]);
-		}
-
-		if($type=="conf"){
-			$tmp = File::glob($filedir."*.txt");
-			foreach($tmp as $f){
-				$f = preg_replace("/.+\/(\w+\.txt)/", '$1', $f);
-				$files[] = $f;
-			}
-		}
-
-		$zip -> open($zipfile, \ZipArchive::CREATE);
-        foreach($files as $f){
-          $zip->addFile($filedir.$f, $f);
-        }
-        $zip -> close();
-        return response() -> download($zipfile);
-	}
-
 	public function deleteJob(Request $request){
 		$jobID = $request->input('jobID');
 		File::deleteDirectory(config('app.jobdir').'/jobs/'.$jobID);
 		DB::table('SubmitJobs')->where('jobID', $jobID)->delete();
 		return;
 	}
-
-	public function paramTable(Request $request){
-		$filedir = $request -> input('filedir');
-
-		$table = '<table class="table table-striped" style="width: 100%; margin-left: 10px; margin-right: 10px;text-align: right;"><tbody>';
-		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
-
-		foreach($params as $key=>$value){
-			$table .= "<tr><td>".$key.'</td><td style="word-break: break-all;">'.$value."</td></tr>";
-		}
-
-		$table .= "</tbody></table>";
-		return $table;
-    }
-
-	public function sumTable(Request $request){
-		$filedir = $request -> input('filedir');
-		$table = '<table class="table table-bordered" style="width:auto;margin-right:auto; margin-left:auto; text-align: right;"><tbody>';
-		$lines = file($filedir."summary.txt");
-		foreach($lines as $l){
-			$line = preg_split("/[\t]/", chop($l));
-			$table .= "<tr><td>".$line[0]."</td><td>".$line[1]."</td></tr>";
-		}
-		$table .= "</tbody></table>";
-
-		return $table;
-	}
-
-	public function locusPlot(Request $request){
-      $id = $request->input('id');
-	  $prefix = $request->input('prefix');
-      $type = $request->input('type');
-      $rowI = $request->input('rowI');
-      $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-
-      $script = storage_path()."/scripts/locusPlot.py";
-      $out = shell_exec("python $script $filedir $rowI $type");
-      return $out;
-    }
-
-	public function manhattan($prefix, $id, $file){
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-
-		$f = $filedir.$file;
-		if($file == "manhattan.txt"){
-			if(file_exists($f)){
-				$file = fopen($f, 'r');
-				$header = fgetcsv($file, 0, "\t");
-				$all_rows = [];
-				while($row = fgetcsv($file, 0, "\t")){
-					$row[0] = (int)$row[0];
-					$row[1] = (int)$row[1];
-					$row[2] = (float)$row[2];
-					$all_rows[] = $row;
-				}
-				return json_encode($all_rows);
-			}
-		}else if($file == "magma.genes.out"){
-			if(file_exists($f)){
-				$file = fopen($f, 'r');
-				$header = fgetcsv($file, 0, "\t");
-				$all_rows = array();
-				while($row = fgetcsv($file, 0, "\t")){
-					if($row[1]=="X" | $row[1]=="x"){
-						$row[1]=23;
-					}
-					$row[1] = (int)$row[1];
-					$row[2] = (int)$row[2];
-					$row[3] = (int)$row[3];
-					$row[8] = (float)$row[8];
-					$all_rows[] = array($row[1], $row[2], $row[3], $row[8], $row[9]);
-				}
-				return json_encode($all_rows);
-			}
-		}
-    }
-
-	public function QQplot($prefix, $id, $plot){
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-
-		if(strcmp($plot,"SNP")==0){
-			$file=$filedir."QQSNPs.txt";
-			if(file_exists($file)){
-				$f = fopen($file, 'r');
-				$all_row = array();
-				$head = fgetcsv($f, 0, "\t");
-				while($row = fgetcsv($f, 0, "\t")){
-					$all_row[] = array_combine($head, $row);
-				}
-				return json_encode($all_row);
-			}
-		}else if(strcmp($plot,"Gene")==0){
-			$file=$filedir."magma.genes.out";
-			if(file_exists($file)){
-				$f = fopen($file, 'r');
-				$obs = array();
-				$exp = array();
-				$c = 0;
-				fgetcsv($f, 0, "\t");
-				while($row = fgetcsv($f, 0, "\t")){
-					$c++;
-					$obs[] = -log10($row[8]);
-				}
-				sort($obs);
-				$step = (1-1/$c)/$c;
-				$head = ["obs", "exp", "n"];
-				$all_row = array();
-				for($i=0; $i<$c; $i++){
-					$all_row[] = array_combine($head, [$obs[$i], -log10(1-$i*$step), $i+1]);
-				}
-				return json_encode($all_row);
-			}
-		}
-	}
-
-	public function MAGMA_expPlot($prefix, $jobID){
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$jobID.'/';
-		$script = storage_path()."/scripts/magma_expPlot.py";
-	    $data = shell_exec("python $script $filedir");
-		return $data;
-	}
-
-	public function annotPlot(Request $request){
-		$id = $request->input('id');
-		$prefix = $request->input('prefix');
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		$type = $request -> input('annotPlotSelect');
-		$rowI = $request -> input('annotPlotRow');
-
-		$GWAS=0;
-		$CADD=0;
-		$RDB=0;
-		$Chr15=0;
-		$eqtl=0;
-		$ci=0;
-		if($request -> has('annotPlot_GWASp')){$GWAS=1;}
-		if($request -> has('annotPlot_CADD')){$CADD=1;}
-		if($request -> has('annotPlot_RDB')){$RDB=1;}
-		if($request -> has('annotPlot_Chrom15')){
-			$Chr15=1;
-			$temp = $request -> input('annotPlotChr15Ts');
-			$Chr15cells = [];
-			foreach($temp as $ts){
-				if($ts != "null"){
-					$Chr15cells[] = $ts;
-				}
-			}
-			$Chr15cells = implode(":", $Chr15cells);
-		}else{
-			$Chr15cells="NA";
-		}
-		if($request -> has('annotPlot_eqtl')){$eqtl=1;}
-		if($request -> has('annotPlot_ci')){$ci=1;}
-
-		return view('pages.annotPlot', ['id'=>$id, 'prefix'=>$prefix, 'type'=>$type, 'rowI'=>$rowI,
-			'GWASplot'=>$GWAS, 'CADDplot'=>$CADD, 'RDBplot'=>$RDB, 'eqtlplot'=>$eqtl,
-			'ciplot'=>$ci, 'Chr15'=>$Chr15, 'Chr15cells'=>$Chr15cells]);
-	}
-
-	public function annotPlotGetData(Request $request){
-		$id = $request->input("id");
-		$prefix = $request->input("prefix");
-		$type = $request->input("type");
-		$rowI = $request->input("rowI");
-		$GWASplot = $request->input("GWASplot");
-		$CADDplot = $request->input("CADDplot");
-		$RDBplot = $request->input("RDBplot");
-		$eqtlplot = $request->input("eqtlplot");
-		$ciplot = $request->input("ciplot");
-		$Chr15 = $request->input("Chr15");
-		$Chr15cells = $request->input("Chr15cells");
-
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-
-		$script = storage_path()."/scripts/annotPlot.py";
-	    $data = shell_exec("python $script $filedir $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells");
-		return $data;
-	}
-
-	public function annotPlotGetGenes(Request $request){
-		$id = $request->input("id");
-		$prefix = $request->input("prefix");
-		$chrom = $request->input("chrom");
-		$eqtlplot = $request->input("eqtlplot");
-		$ciplot = $request->input("ciplot");
-		$xMin = $request->input("xMin");
-		$xMax = $request->input("xMax");
-		$eqtlgenes = $request->input("eqtlgenes");
-
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-
-		$script = storage_path()."/scripts/annotPlot.R";
-		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot");
-		$data = explode("\n", $data);
-		$data = $data[count($data)-1];
-		return $data;
-	}
-
-	public function legendText($file){
-		$f = storage_path().'/legends/'.$file;
-		if(file_exists($f)){
-			$file = fopen($f, 'r');
-			$header = fgetcsv($file, 0, "\t");
-			$all_rows = array();
-			while($row = fgetcsv($file, 0, "\t")){
-				$all_rows[] = array_combine($header, $row);
-			}
-			return json_encode($all_rows);
-		}
-    }
 
 	public function filedown(Request $request){
 		$id = $request->input('id');

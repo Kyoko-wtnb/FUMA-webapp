@@ -34,9 +34,9 @@ class G2FController extends Controller
 		$email = $this->user->email;
 		$check = DB::table('gene2func')->where('jobID', $jobID)->first();
 		if($check->email==$email){
-			return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID]);
+			return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID, 'page'=>'gene2func', 'prefix'=>'gene2func']);
 		}else{
-			return view('pages.gene2func', ['status'=>null, 'id'=>$jobID]);
+			return view('pages.gene2func', ['status'=>null, 'id'=>$jobID, 'page'=>'gene2func', 'prefix'=>'gene2func']);
 		}
 	}
 
@@ -59,46 +59,6 @@ class G2FController extends Controller
 		File::deleteDirectory(config('app.jobdir').'/gene2func/'.$jobID);
 		DB::table('gene2func')->where('jobID', $jobID)->delete();
 		return;
-	}
-
-	public function filedown(Request $request){
-		$id = $request->input('id');
-		$prefix = $request->input('prefix');
-		$filedir = config('app.jobdir').'/gene2func/'.$id.'/';
-		$files = [];
-		if($request->has('summaryfile')){$files[] = "summary.txt";}
-		if($request->has('paramfile')){$files[] = "params.config";}
-		if($request->has('geneIDfile')){$files[] = "geneIDs.txt";}
-		if($request->has('expfile')){
-			$tmp = File::glob($filedir."*_exp.txt");
-			for($i=0; $i<count($tmp); $i++){
-				$files[] = preg_replace("/.*\/(.*_exp.txt)/", "$1", $tmp[$i]);
-			}
-		}
-		if($request->has('DEGfile')){
-			$tmp = File::glob($filedir."*_DEG.txt");
-			for($i=0; $i<count($tmp); $i++){
-				$files[] = preg_replace("/.*\/(.*_DEG.txt)/", "$1", $tmp[$i]);
-			}
-		}
-		if($request->has('gsfile')){$files[] = "GS.txt";}
-
-		$zip = new \ZipArchive();
-		if($prefix=="gwas/g2f"){
-			$zipfile = $filedir."FUMA_gene2func_gwas".$id.".zip";
-		}else{
-			$zipfile = $filedir."FUMA_gene2func".$id.".zip";
-		}
-		if(File::exists($zipfile)){
-			File::delete($zipfile);
-		}
-		$zip -> open($zipfile, \ZipArchive::CREATE);
-		$zip->addFile(storage_path().'/README_g2f', "README_g2f");
-		foreach($files as $f){
-			$zip->addFile($filedir.$f, $f);
-		}
-		$zip -> close();
-		return response() -> download($zipfile);
 	}
 
 	public function gene2funcSubmit(Request $request){
@@ -192,7 +152,7 @@ class G2FController extends Controller
 			'minOverlap' => $minOverlap
 		]);
 
-		return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]);
+		return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID, 'page'=>'gene2func', 'prefix'=>'gene2func']);
 	}
 
 	public function geneQuery(Request $request){
@@ -246,7 +206,7 @@ class G2FController extends Controller
 			$bkgtype="select";
 			$params = parse_ini_file($s2gfiledir.'params.config', false, INI_SCANNER_RAW);
 			// $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
-			$gene_exp = $params['gene_exp'];
+			$gene_exp = $params['magma_exp'];
 			$MHC = $params['exMHC'];
 			$bkgval = $params['genetype'];
 			$adjPmeth = "fdr_bh";
@@ -294,88 +254,10 @@ class G2FController extends Controller
 				'adjPcut' => $adjPcut,
 				'minOverlap' => $minOverlap
 			]);
-			return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID]);
+			return view('pages.gene2func', ['status'=>'query', 'id'=>$jobID, 'page'=>'gene2func', 'prefix'=>'gene2func']);
 		}else{
 			$jobID = $checkExists->jobID;
 			return redirect("gene2func/".$jobID);
-		}
-	}
-
-	public function paramTable(Request $request){
-		$id = $request -> input('id');
-		$filedir = config('app.jobdir').'/gene2func/'.$id.'/';
-		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
-		$out = [];
-		foreach($params as $key=>$value){
-			$out[] = [$key, $value];
-		}
-		return json_encode($out);
-    }
-
-	public function sumTable(Request $request){
-		$id = $request -> input('id');
-		$filedir = config('app.jobdir').'/gene2func/'.$id.'/';
-		$lines = file($filedir."summary.txt");
-		$out = [];
-		foreach($lines as $l){
-			$l = preg_split("/\t/", chop($l));
-			$out[] = [$l[0], $l[1]];
-		}
-		return json_encode($out);
-	}
-
-	public function expDataOption(Request $request){
-		$id = $request -> input('id');
-		$filedir = config('app.jobdir').'/gene2func/'.$id.'/';
-		$params = parse_ini_file($filedir.'params.config', false, INI_SCANNER_RAW);
-		return $params['gene_exp'];
-	}
-
-	public function expPlot($prefix, $id, $dataset){
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		$script = storage_path()."/scripts/g2f_expPlot.py";
-	    $data = shell_exec("python $script $filedir $dataset");
-		return $data;
-	}
-
-	public function DEGPlot($prefix, $id){
-		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		$script = storage_path()."/scripts/g2f_DEGPlot.py";
-	    $data = shell_exec("python $script $filedir");
-		return $data;
-	}
-
-	public function geneTable(Request $request){
-		$jobID = $request->input('id');
-		$filedir = config('app.jobdir').'/gene2func/'.$jobID.'/';
-		if(file_exists($filedir."geneTable.txt")){
-			$f = fopen($filedir."geneTable.txt", 'r');
-			$head = fgetcsv($f, 0, "\t");
-			$head[] = "GeneCard";
-			$all_rows = [];
-			while($row = fgetcsv($f, 0, "\t")){
-				if(strcmp($row[3], "NA")!=0){
-					$row[3] = '<a href="https://www.omim.org/entry/'.$row[3].'" target="_blank">'.$row[3].'</a>';
-				}
-				if(strcmp($row[5], "NA")!=0){
-					$db = explode(":", $row[5]);
-					$row[5] = "";
-					foreach ($db as $i){
-						if(strlen($row[5])==0){
-							$row[5] = '<a href="https://www.drugbank.ca/drugs/'.$i.'" target="_blank">'.$i.'</a>';
-						}else{
-							$row[5] .= ', <a href="https://www.drugbank.ca/drugs/'.$i.'" target="_blank">'.$i.'</a>';
-						}
-					}
-				}
-				$row[] = '<a href="http://www.genecards.org/cgi-bin/carddisp.pl?gene='.$row[2].'" target="_blank">GeneCard</a>';
-				$all_rows[] = array_combine($head, $row);
-			}
-
-			$json = array('data'=>$all_rows);
-			return json_encode($json);
-		}else{
-			return '{"data": []}';
 		}
 	}
 

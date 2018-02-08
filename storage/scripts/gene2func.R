@@ -129,7 +129,11 @@ if(length(which(toupper(bkgenes) %in% toupper(ENSG$external_gene_name)))>0){
 	bkgenes <- ENSG$ensembl_gene_id[ENSG$entrezID%in%bkgenes]
 }
 summary <- rbind(summary, c("Number of background genes with recognised Ensembl ID", as.character(length(bkgenes))))
-summary <- rbind(summary, c("Background genes without recognised Ensembl ID", paste(tmp, collapse=":")))
+if(bkgtype=="select"){
+	summary <- rbind(summary, c("Background genes without recognised Ensembl ID", ""))
+}else{
+	summary <- rbind(summary, c("Background genes without recognised Ensembl ID", paste(tmp, collapse=":")))
+}
 summary <- rbind(summary, c("Number of unique entrez ID of input genes", as.character(length(unique(geneIDs$entrez)))))
 summary <- rbind(summary, c("Number of unique entrez ID of background genes", as.character(length(unique(ENSG$entrezID[ENSG$ensembl_gene_id%in%bkgenes])))))
 

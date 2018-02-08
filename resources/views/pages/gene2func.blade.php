@@ -32,10 +32,12 @@ var storage_path = "<?php echo storage_path();?>";
 var subdir = "{{ Config::get('app.subdir') }}";
 var jobdir = "{{ Config::get('app.jobdir') }}";
 var status = "{{$status}}";
-var jobID = "{{$id}}";
+var id = "{{$id}}";
+var page = "{{$page}}";
 var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
+<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}"></script>
 <script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}"></script>
 @stop
 @section('content')
@@ -48,7 +50,7 @@ var loggedin = "{{ Auth::check() }}";
 			<li class="active"><a href="#newquery">New Query<i class="sub_icon fa fa-upload"></i></a></li>
 			<li class="active"><a href="#queryhistory">Query History<i class="sub_icon fa fa-history"></i></a></li>
 			<div id="resultSide">
-				<li><a href="#summaryPanel">Summary<i class="sub_icon fa fa-table"></i></a></li>
+				<li><a href="#g2f_summaryPanel">Summary<i class="sub_icon fa fa-table"></i></a></li>
 				<li><a href="#expPanel">Heatmap<i class="sub_icon fa fa-th"></i></a></li>
 				<li><a href="#tsEnrichBarPanel">Tissue specificity<i class="sub_icon fa fa-bar-chart"></i></a></li>
 				<li><a href="#GeneSetPanel">Gene sets<i class="sub_icon fa fa-bar-chart"></i></a></li>
@@ -222,176 +224,11 @@ var loggedin = "{{ Auth::check() }}";
 
 			<!-- results panel -->
 			<div id="results">
-				<!-- Summary -->
-				<div id="summaryPanel" class="sidePanel container" style="padding-top:50px;">
-					<h4>Summary of input genes</h4>
-					<div id="summaryTable">
-					</div>
-					<br/>
-
-					<h4>Download files</h4>
-					<div id="downloads">
-						<form action="filedown" method="post" target="_blank">
-							<input type="hidden" name="_token" value="{{ csrf_token() }}">
-							<input type="hidden" name="id" value="<?php echo $id;?>"/>
-							<input type="hidden" name="prefix" value="gene2func"/>
-							<div id="downFileCheck">
-								<input type="checkbox" name="paramfile" id="paramfile" checked onchange="DownloadFiles();">Parameter settings</br>
-								<input type="checkbox" name="summaryfile" id="summaryfile" checked onchange="DownloadFiles();">Summary of input genes</br>
-								<input type="checkbox" name="geneIDfile" id="geneIDfile" checked onchange="DownloadFiles();">IDs of input genes (including Ensembl ID, entrez ID and gene symbol)<br/>
-								<input type="checkbox" name="expfile" id="expfile" checked onchange="DownloadFiles();">Data for expression heatmap of user selected gene expression data sets</br>
-								<input type="checkbox" name="DEGfile" id="DEGfile" checked onchange="DownloadFiles();">Tissue specificity restuls (enrichment test results of DEG sets for user selected expression data sets)</br>
-								<input type="checkbox" name="gsfile" id="gsfile" checked onchange="DownloadFiles();">Gene set analysis results (only include significnat gene sets) </br>
-							</div>
-							<span class="form-inline">
-								<input class="btn btn-xs" type="submit" name="download" id="download" value="Download files"/>
-								<tab><a id="allfiles"> Select All </a>
-								<tab><a id="clearfiles"> Clear</a>
-							</span>
-							<br/>
-						</form>
-					</div>
-
-					<br/>
-					<h4>Parameters</h4>
-					<div id="paramTable">
-					</div>
-				</div>
-				<!-- Expression heatmap -->
-				<div id="expPanel" class="sidePanel container" style="padding-top:50px;">
-					<!-- <div id="expHeat" style='overflow:auto; width:1010px; height:450px;'></div> -->
-					<h4>Gene expression heatmap</h4>
-					<span class="form-inline">
-						Data set:
-						<select id="gene_exp_data" class="form-control" style="width: auto;">
-						</select>
-					</span><br/><br/>
-					<span class="form-inline">
-						Expression Value:
-						<select id="expval" class="form-control" style="width: auto;">
-							<option value="log2" selected>Average expression per label (log2 transformed)</option>
-							<option value="norm">Average of normalized expression per label (zero mean across samples)</option>
-						</select>
-						<a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="
-							<b>Average expression per lavel</b>:
-							This is an average of log2 transformed expresion value (e.g. RPKM and TPM) per label (e.g. tissue type or developemental stage).
-							RPKM and TPM were wisolized at 50.
-							Darker red means higher expression of that gene, compared to a darker blue color.<br/>
-							<b>Average of normalized expression per label</b>:
-							Average value of the <u>relative</u> expression value (zero mean normalization of log2 transformed expression).
-							Darker red means higher relative expression of that gene in label X, compared to a darker blue color in the same label.<br/>
-							">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</span>
-					<br/>
-					<span class="form-inline">
-						Order genes by:
-						<select id="geneSort" class="form-control" style="width: auto;">
-							<option value="clst">Cluster</option>
-							<option value="alph" selected>Alphabetical order</option>
-						</select>
-						<tab>
-						Order tissues by:
-						<select id="tsSort" class="form-control" style="width: auto;">
-							<option value="clst">Cluster</option>
-							<option value="alph" selected>Alphabetical order</option>
-						</select>
-					</span><br/><br/>
-					Download the plot as
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","png");'>PNG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","jpeg");'>JPG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","svg");'>SVG</button>
-					<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","pdf");'>PDF</button>
-
-					<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-						<input type="hidden" name="dir" id="expHeatDir" val=""/>
-						<input type="hidden" name="id" id="expHeatJobID" val=""/>
-						<input type="hidden" name="data" id="expHeatData" val=""/>
-						<input type="hidden" name="type" id="expHeatType" val=""/>
-						<input type="hidden" name="fileName" id="expHeatFileName" val=""/>
-						<input type="submit" id="expHeatSubmit" class="ImgDownSubmit"/>
-					</form>
-					<div id="expHeat"></div>
-					<div id="expBox"></div>
-					<br/>
-				</div>
-
-				<!-- Tissue specificity bar chart -->
-				<div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50px;">
-					<h4>Differrentially expressed genes
-						<a class="infoPop" data-toggle="popover" title="Enrichment in DEG sets"
-							data-content="Pre-calculated differentially expressed genes (DEG) sets were created for each of expression data set.
-							DEG sets are defined by a two-sided t-tests per label versus all remaining (tissue types or developmental stages).
-							Genes with a Conferroni corrected p-value < 0.05 and absolute log fold change ≥ 0.58 are selected as DEG.
-							For the signed DEG, the direction of expression was taken intoc account
-							(i.e. a up-regulated DEG set contains all genes that are significantly overexpressed in sample with that label compared to other samples).
-							The -log10(P values) in the graph refer to the probability of the hypergeomteric test.">
-							<i class="fa fa-question-circle-o fa-lg"></i>
-						</a>
-					</h4>
-					<span class="info"><i class="fa fa-info"></i>
-						Significantly enriched DEG sets (P<sub>bon</sub> &lt; 0.05) are highlighted in red.
-					</span><br/><br/>
-					<div id="DEGPlot">
-						<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
-							<input type="hidden" name="_token" value="{{ csrf_token() }}">
-							<input type="hidden" name="dir" id="DEGDir" val=""/>
-							<input type="hidden" name="id" id="DEGJobID" val=""/>
-							<input type="hidden" name="data" id="DEGData" val=""/>
-							<input type="hidden" name="type" id="DEGType" val=""/>
-							<input type="hidden" name="fileName" id="DEGFileName" val=""/>
-							<input type="submit" id="DEGSubmit" class="ImgDownSubmit"/>
-						</form>
-						<br/>
-						<span class="form-inline">
-							Order tissue by :
-							<select id="DEGorder" class="form-control" style="width: auto;">
-								<option value="alph">Alphabetical</option>
-								<option value="up">up-regulated DEG P-value</option>
-								<option value="down">down-regulated DEG P-value</option>
-								<option value="two" selected>two-side DEG P-value</option>
-							</select>
-						</span>
-					</div>
-				</div>
-
-				<!-- GeneSet enrichment -->
-				<div id="GeneSetPanel"  class="sidePanel container" style="padding-top:50px;">
-					<h4>Enrichment of input genes in Gene Sets</h4>
-					<form action="fileDown" method="post" target="_blank">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-						<input type="hidden" name="id" value="{{$id}}"/>
-						<input type="hidden" name="file" value="GS.txt"/>
-						<input type="submit" class="btn btn-xs" id="GSdown" name="GSdown" value="Download text file">
-					</form>
-					<br/><br/>
-					<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/gene2func/imgdown">
-						<input type="hidden" name="_token" value="{{ csrf_token() }}">
-						<input type="hidden" name="dir" id="GSDir" val=""/>
-						<input type="hidden" name="id" id="GSJobID" val=""/>
-						<input type="hidden" name="data" id="GSData" val=""/>
-						<input type="hidden" name="type" id="GSType" val=""/>
-						<input type="hidden" name="fileName" id="GSFileName" val=""/>
-						<input type="submit" id="GSSubmit" class="ImgDownSubmit"/>
-					</form>
-					<div id="GeneSet"></div>
-				</div>
-
-				<!-- Gene Table -->
-				<div id="GeneTablePanel" class="sidePanel container" style="padding-top:50px;">
-					<h4>Links to external databases</h4>
-					<table id="GeneTable" class="display dt-body-center compact" width="100%" cellspacing="0" style="display: block; overflow-x: auto;">
-						<thead>
-							<tr>
-								<th>ENSG</th><th>entrezID</th><th>symbol</th><th>OMIM</th><th>UniProtID</th><th>DrugBank</th><th>GeneCards</th>
-							</tr>
-						</thead>
-						<tbody></tbody>
-					</table>
-				  <br/>
-				</div>
+				@include('gene2func.summary')
+				@include('gene2func.exp_heat')
+				@include('gene2func.DEG')
+				@include('gene2func.genesets')
+				@include('gene2func.geneTable')
 			</div>
 		</div>
 	</div>
