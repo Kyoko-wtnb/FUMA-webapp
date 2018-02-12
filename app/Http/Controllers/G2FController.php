@@ -90,7 +90,7 @@ class G2FController extends Controller
 			$gval = implode(':', $gval);
 		}else{
 			$gtype = "file";
-			$gval = "genesQuery.txt";
+			$gval = $_FILES["genesfile"]["name"];
 			$request -> file('genesfile')->move($filedir, "genesQuery.txt");
 		}
 
@@ -105,7 +105,7 @@ class G2FController extends Controller
 			$bkgval = implode(':', $bkgval);
 		}else{
 			$bkgtype ="file";
-			$bkgval = "bkgenes.txt";
+			$bkgval = $_FILES["bkgenesfile"]["name"];
 			$request -> file('bkgenesfile') -> move($filedir, "bkgenes.txt");
 		}
 

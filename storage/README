@@ -1,8 +1,9 @@
-README of output files from FUMA web application
+README of output files (SNP2GENE) from FUMA web application
 
 Author: Kyoko Watanabe (k.watanabe@vu.nl)
 Version: 1.0.0 (2 Feb 2017)
 Version: 1.1.2 (27 Apr 2017)
+Version: 1.3.0 (12 Feb 2018)
 
 This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
@@ -18,8 +19,8 @@ chr : chromosome of top lead SNP
 pos : position of top lead SNP on hg19
 p : P-value of top lead SNP (from the input file).
 start : Start position of the locus
-end : End postion of the locus
-nSNPs : The number of unique canidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+end : End position of the locus
+nSNPs : The number of unique candidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
 nGWASSNPs : The number of the GWAS-tagged candidate SNPs within the genomic locus. This is a subset of "nSNPs".
 nIndSigSNPs : The number of the independent significant SNPs in the genomic locus (r2 < user defined parameter)
 IndSigSNPs : rsID of independent significant SNPs in the genomic locus
@@ -74,7 +75,7 @@ r2 : The maximum r2 of the SNP with one of the independent significant SNP (this
 IndSigSNP : rsID of a independent significant SNP which has the maximum r2 of the SNP.
 Genomic locus : Index of the genomic risk loci matching with "GenomicRiskLoci.txt".
 nearestGene : The nearest Gene of the SNP based on ANNOVAR annotations.
-	Note that ANNOVAR annotates "consequence" function by prioritizing the most deleterious annotation for SNPs which are locating a genomic region where multiple genes are obverlapped.
+	Note that ANNOVAR annotates "consequence" function by prioritising the most deleterious annotation for SNPs which are locating a genomic region where multiple genes are overlapped.
 	Genes are encoded in symbol, if it is available, otherwise Ensembl ID.
 	Genes include all transcripts from Ensembl gene build 85 including non-protein coding genes and RNAs.
 dist : Distance to the nearest gene. SNPs which are locating in the gene body or 1kb up- or down-stream of TSS or TES have 0.
@@ -83,8 +84,8 @@ CADD : CADD score which is computed based on 63 annotations. The higher score, t
 RDB : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.
 minChrState : The minimum 15-core chromatin state across 127 tissue/cell type.
 commonChrState : The most common 15-core chromatin state across 127 tissue/cell types.
-posMapFilt : Whether the SNP was used for positional mapping or not. 1 is used, otherwise 0. When positiona mapping is not performed, all SNPs have 0.
-eqtlMapFilt : Whether the SNP was used for eqtl mapping or not. 1 is used, otherwise 0. When eqtl mapping is not performed, all SNPs have 0.
+posMapFilt : Whether the SNP was used for positional mapping or not. 1 is used, otherwise 0. When positional mapping is not performed, all SNPs have 0.
+eqtlMapFilt : Whether the SNP was used for eqtl mapping or not. 1 is used, otherwise 0. When eQTL mapping is not performed, all SNPs have 0.
 
 ######################
 # ld.txt
@@ -115,11 +116,11 @@ Exon : Index of exon
 uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
 CADD : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al. (2014).
 RDB : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.
-E001~E129 : Chromatin state predicted by ChrHMM.
+E001~E129 : Chromatin state predicted by ChromHMM.
 
 ######################
 # genes.txt
-# The list of genes mapped by SNPs in snps.txt based on the user defined mapping prameters.
+# The list of genes mapped by SNPs in snps.txt based on the user defined mapping parameters.
 # Columns with posMap or eqtlMap in the parentheses are only available when positional or eQTL mapping is performed, respectively.
 ######################
 Gene : ENSG ID
@@ -284,12 +285,15 @@ MHCopt : "annot" to exclude MHC region only from SNP2GENE annotation, "magma" to
 extMHC : user defined MHC region if provided, NA otherwise
 genetype : All selected gene type.
 leadP : the maximum threshold of P-value to be lead SNP
-r2 : the minimum threshold for SNPs to ne in LD of the lead SNPs
+r2 : the minimum threshold of SNPs to be in LD of the lead SNPs
 gwasP : the maximum threshold of P-value to be candidate SNP
 pop : The population of reference panel
 MAF : the minimum minor allele frequency based on 1000 genome reference of given population
 Incl1KGSNPs : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise
 mergeDist : The maximum distance between LD blocks to merge into interval
+[magma]
+magma : 1 to perform MAGMA, 0 otherwise
+magma_exp : Data sets for magma gene expression analysis.
 [posMap]
 posMap : 1 to perform positional mapping, 0 otherwise
 posMapWindow : 1 to perform positional mapping based on distance to the genes, 0 otherwise
@@ -312,7 +316,7 @@ eqtlMapChr15Max : The maximum 15-core chromatin state
 eqtlMapChr15Meth : The method of chromatin state filtering
 [ciMap]
 ciMap : 1 to perform chromatin interaction mapping, 0 otherwise
-ciMapBuildin : Selected buildin chromatin interaction data
+ciMapBuiltin : Selected builtin chromatin interaction data
 ciMapFileN : The number of uploaded chromatin interaction matrices
 ciMapFiles: File names of uploaded chromatin interaction matrices
 ciMapFDR : The FDR threshold of chromatin interactions
@@ -344,7 +348,7 @@ When genotype data is available, we recommend to re-run MAGMA locally with genot
   GO terms consists of three categories, biological processes (bp), cellular components (cc) and molecular functions (mf).
   All parameters were set as default (competitive test).
   magma.sets.out: output of gene-set analysis containing P-value per gene set
-  magma.setgenes.out: output of gene-set analysis containing all genes in each significant gene sets. This file is only available when there is significant gene sets after bonferroni correction.
+  magma.setgenes.out: output of gene-set analysis containing all genes in each significant gene sets. This file is only available when there is significant gene sets after Bonferroni correction.
 3. Tissue expression analysis
   Gene expression data sets were obtained from one of the following, GTEx v6, GTEx v7 and BrainSpan.
   MAGMA gene-property test was performed for average gene-expression per category (e.g. tissue type or developmental stage) conditioning on average expression across all categories (one-side).
