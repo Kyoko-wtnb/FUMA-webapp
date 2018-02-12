@@ -283,15 +283,15 @@ def main():
 	ENSG = cfg.get("data", "ENSG")
 	datadir = cfg.get("CI", "CIdata")
 	reg_datadir = cfg.get("CI", "RoadmapData")
-	ciMapBuildin = param.get("ciMap", "ciMapBuildin")
-	if ciMapBuildin=="NA":
-		ciMapBuildin = ["NA"]
+	ciMapBuiltin = param.get("ciMap", "ciMapBuiltin")
+	if ciMapBuiltin=="NA":
+		ciMapBuiltin = ["NA"]
 	else:
-		ciMapBuildin = ciMapBuildin.split(":")
+		ciMapBuiltin = ciMapBuiltin.split(":")
 
-	if "all" in ciMapBuildin:
+	if "all" in ciMapBuiltin:
 		tmp = glob.glob(datadir+"/HiC/GSE87112/*.txt.gz")
-		ciMapBuildin = [x.replace(datadir+"/", "") for x in tmp]
+		ciMapBuiltin = [x.replace(datadir+"/", "") for x in tmp]
 	ciMapFileN = int(param.get("ciMap", "ciMapFileN"))
 	if ciMapFileN > 0:
 		ciMapFiles = param.get("ciMap", "ciMapFiles")
@@ -347,8 +347,8 @@ def main():
 					insnps += x.split(";")
 				regions = regions+unique(tmp_ci[:,1])
 
-	if ciMapBuildin[0] != "NA":
-		for f in ciMapBuildin:
+	if ciMapBuiltin[0] != "NA":
+		for f in ciMapBuiltin:
 			print f
 			c = re.match(r"(.+?)\/(.+?)\/(.+?)\.txt.gz", f)
 			tmp_ci = mapToCI(snps, gl, datadir+"/"+f, ciMapFDR, c.group(1), c.group(2), c.group(3), genes)

@@ -424,17 +424,17 @@ class S2GController extends Controller
 		$ciMapFiles = "NA";
 		if($request->has('ciMap')){
 			$ciMap = 1;
-			if($request->has('ciMapBuildin')){
-				$temp = $request->input('ciMapBuildin');
-				$ciMapBuildin = [];
+			if($request->has('ciMapBuiltin')){
+				$temp = $request->input('ciMapBuiltin');
+				$ciMapBuiltin = [];
 				foreach($temp as $dat){
 					if($dat != "null"){
-						$ciMapBuildin[] = $dat;
+						$ciMapBuiltin[] = $dat;
 					}
 				}
-				$ciMapBuildin = implode(":", $ciMapBuildin);
+				$ciMapBuiltin = implode(":", $ciMapBuiltin);
 			}else{
-				$ciMapBuildin = "NA";
+				$ciMapBuiltin = "NA";
 			}
 
 			$ciMapFileN = (int)$request->input("ciFileN");
@@ -480,7 +480,7 @@ class S2GController extends Controller
 			if($request->has('ciMapPromFilt')){$ciMapPromFilt = 1;}
 			else{$ciMapPromFilt=0;}
 		}else{
-			$ciMapBuildin = "NA";
+			$ciMapBuiltin = "NA";
 			$ciMapFDR = "NA";
 			$ciMapPromWindow="NA";
 			$ciMapRoadmap="NA";
@@ -598,7 +598,7 @@ class S2GController extends Controller
 
 		File::append($paramfile, "\n[ciMap]\n");
 		File::append($paramfile, "ciMap=$ciMap\n");
-		File::append($paramfile, "ciMapBuildin=$ciMapBuildin\n");
+		File::append($paramfile, "ciMapBuiltin=$ciMapBuiltin\n");
 		File::append($paramfile, "ciMapFileN=$ciMapFileN\n");
 		File::append($paramfile, "ciMapFiles=$ciMapFiles\n");
 		File::append($paramfile, "ciMapFDR=$ciMapFDR\n");
@@ -748,17 +748,17 @@ class S2GController extends Controller
 		$ciMapFiles = "NA";
 		if($request->has('geneMap_ciMap')){
 			$ciMap = 1;
-			if($request->has('geneMap_ciMapBuildin')){
-				$temp = $request->input('geneMap_ciMapBuildin');
-				$ciMapBuildin = [];
+			if($request->has('geneMap_ciMapBuiltin')){
+				$temp = $request->input('geneMap_ciMapBuiltin');
+				$ciMapBuiltin = [];
 				foreach($temp as $dat){
 					if($dat != "null"){
-						$ciMapBuildin[] = $dat;
+						$ciMapBuiltin[] = $dat;
 					}
 				}
-				$ciMapBuildin = implode(":", $ciMapBuildin);
+				$ciMapBuiltin = implode(":", $ciMapBuiltin);
 			}else{
-				$ciMapBuildin = "NA";
+				$ciMapBuiltin = "NA";
 			}
 
 			$ciMapFileN = (int)$request->input("ciFileN");
@@ -804,7 +804,7 @@ class S2GController extends Controller
 			if($request->has('geneMap_ciMapPromFilt')){$ciMapPromFilt = 1;}
 			else{$ciMapPromFilt=0;}
 		}else{
-			$ciMapBuildin = "NA";
+			$ciMapBuiltin = "NA";
 			$ciMapFDR = "NA";
 			$ciMapPromWindow="NA";
 			$ciMapRoadmap="NA";
@@ -883,7 +883,7 @@ class S2GController extends Controller
 
 		File::append($paramfile, "\n[ciMap]\n");
 		File::append($paramfile, "ciMap=$ciMap\n");
-		File::append($paramfile, "ciMapBuildin=$ciMapBuildin\n");
+		File::append($paramfile, "ciMapBuiltin=$ciMapBuiltin\n");
 		File::append($paramfile, "ciMapFileN=$ciMapFileN\n");
 		File::append($paramfile, "ciMapFiles=$ciMapFiles\n");
 		File::append($paramfile, "ciMapFDR=$ciMapFDR\n");

@@ -133,7 +133,7 @@ function setParams(data){
 	$('#gwasP').val(data.gwasP);
 	$('#refpanel').val(data.refpanel+"/"+data.pop);
 	if(data.Incl1KGSNPs=="1"){$('#KGSNPs').val("Yes")}
-	else($('#KGSNPs'.val("No")))
+	else($('#KGSNPs').val("No"))
 	$('#maf').val(data.MAF);
 	$('#mergeDist').val(data.mergeDist);
 
@@ -221,9 +221,9 @@ function setParams(data){
 		}else{
 			$('#chMap').prop('checked', false);
 		}
-		if(data.ciMapBuildin!="NA"){
-			var ts = data.ciMapBuildin.split(":");
-			$('#ciMapBuildin option').each(function(){
+		if(data.ciMapBuiltin!="NA"){
+			var ts = data.ciMapBuiltin.split(":");
+			$('#ciMapBuiltin option').each(function(){
 				if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
 				else{$(this).prop('selected', false);}
 			});
@@ -855,7 +855,7 @@ function CheckAll(){
 		$('.ciMapOptions').show();
 		$('#ciMapOptFilt').show();
 		var cidata = 0;
-		$('#ciMapBuildin option').each(function(){
+		$('#ciMapBuiltin option').each(function(){
 			if($(this).is(":checked")==true){cidata++;}
 		});
 		if(cidata>0){

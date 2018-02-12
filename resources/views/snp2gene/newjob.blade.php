@@ -167,8 +167,8 @@
 					</td>
 					<td>
 						<select class="form-control" id="KGSNPs" name="KGSNPs">
-							<option selected>Yes</option>
-							<option>No</option>
+							<option selected value="Yes">Yes</option>
+							<option value="No">No</option>
 						</select>
 					</td>
 					<td>
@@ -1035,7 +1035,7 @@
 					<td></td>
 				</tr>
 				<tr class="ciMapOptions">
-					<td>Buildin chromatin interaction data
+					<td>Builtin chromatin interaction data
 						<a class="infoPop" data-toggle="popover" title="Buildin Hi-C data" data-content="Hi-C datasets of 21 tissue and cell types from GSE87112 are selectabe as buildin data. Multiple tissue and cell types can be selected.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
@@ -1043,7 +1043,7 @@
 					<td>
 						<span class="multiSelect">
 							<a style="float:right; padding-right:20px;">clear</a><br/>
-							<select multiple class="form-control" id="ciMapBuildin" name="ciMapBuildin[]" size="10" onchange="CheckAll();">
+							<select multiple class="form-control" id="ciMapBuiltin" name="ciMapBuiltin[]" size="10" onchange="CheckAll();">
 								<option value="all">All</option>
 								<option value="HiC/GSE87112/Adrenal.txt.gz">HiC(GSE87112) Adrenal</option>
 								<option value="HiC/GSE87112/Aorta.txt.gz">HiC(GSE87112) Aorta</option>

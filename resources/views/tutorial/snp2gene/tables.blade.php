@@ -292,7 +292,7 @@
 			<li><strong>eqtlMapChr15Meth</strong> : The method of chromatin state filtering</li>
 			[ciMap]
 			<li><strong>ciMap</strong> : 1 to perform chromatin interaction mapping, 0 otherwise</li>
-			<li><strong>ciMapBuildin</strong> : Selected buildin chromatin interaction data</li>
+			<li><strong>ciMapBuiltin</strong> : Selected builtin chromatin interaction data</li>
 			<li><strong>ciMapFileN</strong> : The number of uploaded chromatin interaction matrices</li>
 			<li><strong>ciMapFiles</strong>: File names of uploaded chromatin interaction matrices</li>
 			<li><strong>ciMapFDR</strong> : The FDR threshold of chromatin interactions</li>
