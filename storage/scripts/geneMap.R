@@ -6,15 +6,15 @@ library(kimisc)
 args <- commandArgs(TRUE)
 filedir <- args[1]
 if(grepl("\\/$", filedir)==F){
-	filedir <- paste(filedir, '/', sep="")
+	filedir <- paste0(filedir, '/')
 }
 
 ##### get config parameters #####
 curfile <- thisfile()
-source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
-config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
+source(paste0(dirname(curfile), '/ConfigParser.R'))
+config <- ConfigParser(file=paste0(dirname(curfile),'/app.config'))
 
-params <- ConfigParser(file=paste(filedir, 'params.config', sep=""))
+params <- ConfigParser(file=paste0(filedir, 'params.config'))
 
 genetype <- params$params$genetype
 exMHC <- as.numeric(params$params$exMHC)
@@ -49,7 +49,6 @@ if("ciMap" %in% names(params)){
 	ciMap <- 0
 }
 
-
 if(posMapWindowSize=="NA"){
 	posMapWindowSize <- NA
 }else{
@@ -75,12 +74,12 @@ if(exMHC==1){
 }
 
 ##### read files #####
-snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
+snps <- fread(paste0(filedir, "snps.txt"), data.table=F)
 snps$posMapFilt <- 0
 snps$eqtlMapFilt <- 0
 snps$ciMapFilt <- 0
-annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
-ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
+annot <- fread(paste0(filedir, "annot.txt"), data.table=F)
+ld <- fread(paste0(filedir, "ld.txt"), data.table=F)
 genes <- c()
 
 ##### positional mapping #####
@@ -124,7 +123,7 @@ if(posMap==1){
 		rm(epi, temp)
 	}
 	if(is.na(posMapWindowSize)){
-		annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
+		annov <- fread(paste0(filedir, "annov.txt"), data.table=F)
 		annov <- annov[annov$gene %in% ENSG$ensembl_gene_id & annov$uniqID %in% tmp_snps$uniqID,]
 		posMapAnnot <- unique(unlist(strsplit(posMapAnnot, ":")))
 		annov <- annov[grepl(paste(posMapAnnot, collapse="|"), annov$annot),]
@@ -132,7 +131,9 @@ if(posMap==1){
 		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
 	}else{
 		annov <- apply(ENSG[,c(1,3:5)], 1, function(x){
-		  c<-as.numeric(ifelse(x[2]=="X", "23", x[2])); s<-as.numeric(x[3]); e<-as.numeric(x[4]);
+		  c<-as.numeric(ifelse(x[2]=="X", "23", x[2]))
+		  s<-as.numeric(x[3])
+		  e<-as.numeric(x[4])
 		  tmp <- tmp_snps$uniqID[which(tmp_snps$chr==c & tmp_snps$pos>s-posMapWindowSize & tmp_snps$pos<e+posMapWindowSize)]
 		  if(length(tmp)>0){cbind(tmp, rep(x[1], length(tmp)))}
 		})
@@ -150,7 +151,7 @@ if(posMap==1){
 
 ##### eqtl Mapping #####
 if(eqtlMap==1){
-	eqtl <- fread(paste(filedir, "eqtl.txt", sep=""), data.table=F)
+	eqtl <- fread(paste0(filedir, "eqtl.txt"), data.table=F)
 	if(nrow(eqtl)>0){
 		eqtl <- eqtl[eqtl$gene %in% ENSG$ensembl_gene_id,]
 		eqtl$chr <- snps$chr[match(eqtl$uniqID, snps$uniqID)]
@@ -199,14 +200,14 @@ if(eqtlMap==1){
 			genes <- c(genes, unique(eqtl$gene))
 			eqtlall$eqtlMapFilt[eqtlall$uniqID %in% eqtl$uniqID] <- 1
 		}
-		write.table(eqtlall, paste(filedir, "eqtl.txt", sep=""), quote=F, row.names=F, sep="\t")
+		write.table(eqtlall, paste0(filedir, "eqtl.txt"), quote=F, row.names=F, sep="\t")
 		snps$eqtlMapFilt[snps$uniqID %in% eqtl$uniqID] <- 1
 	}
 }
 
 ##### chromatin itneraction mapipng #####
 if(ciMap==1){
-	ci <- fread(paste(filedir, "ci.txt", sep=""), data.table=F)
+	ci <- fread(paste0(filedir, "ci.txt"), data.table=F)
 	cisnps <- c()
 	if(nrow(ci)>0){
 		ci$ciMapFilt <- 0
@@ -216,7 +217,7 @@ if(ciMap==1){
 		cisnps <- snps[snps$rsID %in% cisnps,]
 
 		if(ciMapEnhFilt==1){
-			cienh <- fread(paste(filedir, "ciSNPs.txt", sep=""), data.table=F)
+			cienh <- fread(paste0(filedir, "ciSNPs.txt"), data.table=F)
 			cisnps <- cisnps[cisnps$uniqID %in% cienh$uniqID,]
 		}
 		if(ciMapCADDth>0){
@@ -259,7 +260,7 @@ if(ciMap==1){
 		cicheck <- sapply(ci$SNPs, function(x){if(length(which(unlist(strsplit(x, ";")) %in% cisnps$rsID))>0){1}else{0}})
 		ci <- ci[cicheck==1,]
 		if(ciMapPromFilt==1){
-			ciprom <- fread(paste(filedir, "ciProm.txt", sep=""), data.table=F)
+			ciprom <- fread(paste0(filedir, "ciProm.txt"), data.table=F)
 			ci <- ci[ci$region2 %in% ciprom$region2,]
 			ciprom <- ciprom[ciprom$region2 %in% ci$region2,]
 
@@ -273,11 +274,11 @@ if(ciMap==1){
 		cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ";"))),]
 		snps$ciMapFilt[snps$uniqID %in% cisnps$uniqID] <- 1
 		ciall$ciMapFilt[ciall$tmpid %in% ci$tmpid] <- 1
-		write.table(ciall[,1:(ncol(ciall)-1)], paste(filedir, "ci.txt", sep=""), quote=F, row.names=F, sep="\t")
+		write.table(ciall[,1:(ncol(ciall)-1)], paste0(filedir, "ci.txt"), quote=F, row.names=F, sep="\t")
 	}
 }
 
-write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
+write.table(snps, paste0(filedir, "snps.txt"), quote=F, row.names=F, sep="\t")
 
 ##### create gene table #####
 geneTable <- ENSG[ENSG$ensembl_gene_id %in% genes,]
@@ -288,11 +289,11 @@ if(nrow(geneTable)>0){
 	geneTable <- geneTable[order(geneTable$chr),]
 
 	### gene scores
-	gene_scores <- fread(paste(config$data$geneScores, "/gene_scores.txt", sep=""), data.table=F)
+	gene_scores <- fread(paste0(config$data$geneScores, "/gene_scores.txt"), data.table=F)
 	geneTable <- cbind(geneTable, gene_scores[match(geneTable$ensg, gene_scores$ensg), 5:ncol(gene_scores)])
 
 	if(posMap==1){
-		geneTable$posMapSNPs <- sapply(geneTable$ensg, function(x){length(which(annov$gene==x))})
+		geneTable$posMapSNPs <- sapply(geneTable$ensg, function(x){length(unique(annov$uniqID[annov$gene==x]))})
 		geneTable$posMapMaxCADD <- sapply(geneTable$ensg, function(x){if(x %in% annov$gene){max(annot$CADD[annot$uniqID%in%annov$uniqID[annov$gene==x]])}else{0}})
 	}
 	if(eqtlMap==1){
@@ -369,7 +370,7 @@ if(nrow(geneTable)>0){
 		})
 	}
 
-	leadS <- fread(paste(filedir, "IndSigSNPs.txt", sep=""), data.table=F)
+	leadS <- fread(paste0(filedir, "IndSigSNPs.txt"), data.table=F)
 	geneTable$GenomicLocus <- NA
 	for(i in 1:nrow(geneTable)){
 		ls <- unlist(strsplit(geneTable$IndSigSNPs[i], ";"))
@@ -379,21 +380,21 @@ if(nrow(geneTable)>0){
 
 geneTable <- geneTable[order(geneTable$start),]
 geneTable <- geneTable[order(geneTable$chr),]
-write.table(geneTable, paste(filedir, "genes.txt", sep=""), quote=F, row.names=F, sep="\t")
+write.table(geneTable, paste0(filedir, "genes.txt"), quote=F, row.names=F, sep="\t")
 
 ##### output summary results #####
 summary <- data.frame(matrix(nrow=6, ncol=2))
 summary[,1] <- c("#Genomic risk loci", "#lead SNPs", "#Ind. Sig. SNPs",  "#candidate SNPs", "#candidate GWAS tagged SNPs", "#mapped genes")
-indS <- fread(paste(filedir, "IndSigSNPs.txt", sep=""), data.table=F)
-loci <- fread(paste(filedir, "GenomicRiskLoci.txt", sep=""), data.table=F)
-leadS <- fread(paste(filedir, "leadSNPs.txt", sep=""), data.table=F)
+indS <- fread(paste0(filedir, "IndSigSNPs.txt"), data.table=F)
+loci <- fread(paste0(filedir, "GenomicRiskLoci.txt"), data.table=F)
+leadS <- fread(paste0(filedir, "leadSNPs.txt"), data.table=F)
 summary[1,2] <- nrow(loci)
 summary[2,2] <- nrow(leadS)
 summary[3,2] <- nrow(indS)
 summary[4,2] <- nrow(snps)
 summary[5,2] <- length(which(!is.na(snps$gwasP)))
 summary[6,2] <- nrow(geneTable)
-write.table(summary, paste(filedir, "summary.txt", sep=""), quote=F, row.names=F, col.names=F, sep="\t")
+write.table(summary, paste0(filedir, "summary.txt"), quote=F, row.names=F, col.names=F, sep="\t")
 
 int.table <- data.frame(GenomicLocus=loci$GenomicLocus, label=NA, nSNPs=NA, size=NA, nGenes=NA, nWithinGene=NA)
 int.table$label <- paste(loci$chr, paste(loci$start, loci$end, sep="-"), sep=":")
@@ -418,4 +419,4 @@ for(i in 1:nrow(int.table)){
 	)))
 }
 
-write.table(int.table, paste(filedir, "interval_sum.txt", sep=""), quote=F, row.names=F, sep="\t")
+write.table(int.table, paste0(filedir, "interval_sum.txt"), quote=F, row.names=F, sep="\t")
