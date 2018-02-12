@@ -383,7 +383,9 @@ $(document).ready(function(){
 	        else{return "#383838"}
 	      });
 
-		// GWAS plot
+		/*---------------------------------------------
+  		| Plot GWAS P-value
+  		---------------------------------------------*/
 		if(GWASplot==1){
 			plotData.osnps.forEach(function(d){
 				d[1] = +d[1]; //pos
@@ -583,7 +585,9 @@ $(document).ready(function(){
 				.text("1000G SNPs");
 		}
 
-		// CADD plot
+		/*---------------------------------------------
+  		| Plot CADD
+  		---------------------------------------------*/
 		if(CADDplot==1){
 			var y = d3.scale.linear().range([caddTop+caddHeight, caddTop]);
 			var yAxis = d3.svg.axis().scale(y).orient("left");
@@ -666,7 +670,9 @@ $(document).ready(function(){
 				.selectAll('text').style('font-size', '11px');
 		}
 
-		//RDB Plot
+		/*---------------------------------------------
+  		| Plot RegulomeDB
+  		---------------------------------------------*/
 		if(RDBplot==1){
 			var y_element = ["1a", "1b", "1c", "1d", "1e", "1f", "2a", "2b" ,"2c", "3a", "3b", "4", "5", "6", "7"];
 			var y = d3.scale.ordinal().domain(y_element).rangePoints([rdbTop, rdbTop+rdbHeight]);
@@ -736,7 +742,9 @@ $(document).ready(function(){
 			RDBlegend();
 		}
 
-		// Chr15 plot
+		/*---------------------------------------------
+  		| Plot 15 core Chromatin state
+  		---------------------------------------------*/
 		if(Chr15==1){
 			plotData.Chr15.forEach(function(d){
 				d[1] = +d[1]; //start
@@ -867,7 +875,9 @@ $(document).ready(function(){
 			EIDlegend(y_element);
 		}
 
-		// eqtl plot
+		/*---------------------------------------------
+  		| Plot eQTLs
+  		---------------------------------------------*/
 		if(eqtlplot == 1){
 			if(plotData["eqtl"].length==0){
 				svg.append("text").attr("text-anchor", "middle")
@@ -879,6 +889,7 @@ $(document).ready(function(){
 				plotData.eqtl.forEach(function(d){
 					d[11] = +d[11]; //pos
 					d[5] = +d[5]; //p
+					d[7] = +d[7]; //FDR
 					d[13] = +d[13]; //eqtlMapFilt
 				});
 				var eqtlgenes = d3.set(plotData.eqtl.map(function(d){return d[12];})).values();
@@ -923,7 +934,7 @@ $(document).ready(function(){
 						.append("circle").attr("class", "eqtldot")
 						.attr("r", 3.5)
 						.attr("cx", function(d){return x(d[11]);})
-						.attr("cy", function(d){return y(-Math.log10(d[5]));})
+						.attr("cy", function(d){if(d[5]>=0){return y(-Math.log10(d[5]));}else{return y(-Math.log10(d[7]));}})
 						.style("fill", function(d){
 						  if(d[13]==0){
 						    return "grey";
@@ -970,7 +981,9 @@ $(document).ready(function(){
 			}
 		}
 
-		// chromatin interaction
+		/*---------------------------------------------
+  		| Plot chromatin interactions
+  		---------------------------------------------*/
 		if(ciplot == 1){
 			if(plotData["citypes"].length==0){
 

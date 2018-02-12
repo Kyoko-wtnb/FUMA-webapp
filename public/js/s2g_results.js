@@ -382,7 +382,7 @@ function MAGMA_expPlot(id){
 	d3.json(subdir+'/'+page+'/MAGMA_expPlot/'+prefix+"/"+id, function(data){
 		if(data==null || data==undefined || data.lenght==0){
 			$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
-			+' MAGMA was not able to perform.</span><br/></div>');
+			+' There was an error, MAGMA was not able to perform.</span><br/></div>');
 		}else{
 			data.forEach(function(d){
 				d[2] = +d[2]; //P-value
