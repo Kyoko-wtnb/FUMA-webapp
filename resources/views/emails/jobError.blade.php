@@ -29,7 +29,7 @@
 		Please refer <a href="http://fuma.ctglab.nl/tutorial#prepare-input-files">Tutorial<a/> for detilas.<br/>';
 	}else if($status==5){
 		echo ' (Error from lead SNPs and candidate SNPs identification / <span style="color:blue;"><strong>No significant SNPs were identified</strong></span>)<br/>
-		This error can occur when no candidate SNPs were identified. Note that indels are excluded in the current FUMA.
+		This error can occur when no candidate SNPs were identified. Note that indels are included in the FUMA from v1.3.0 but both alleles need to match exactly with selected reference panel.
 		MHC region is also excluded by default.
 		1. If there is no significant hit at your defined P-value cutoff for lead SNPs and GWAS tagged SNPs,
 		you can try to use a less stringent P-value threshold or provide predefined lead SNPs.

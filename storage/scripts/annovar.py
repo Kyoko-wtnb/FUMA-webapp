@@ -39,7 +39,6 @@ def getAnnov(snps, chrom, annovin, dbSNP):
 				continue
 			if int(l[1]) in spos:
 				j = bisect_left(pos, l[1])
-				#j = np.where(snps[:,3].astype(int)==int(l[1]))[0][0]
 				if l[3] == str(snps[j,4]):
 					annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], l[3], snps[j,5]])
 				elif l[3] == str(snps[j,5]):
@@ -53,7 +52,7 @@ def getAnnov(snps, chrom, annovin, dbSNP):
 			cur_end = end
 	snps = snps[ArrayNotIn(snps[:,3], checked)]
 	for l in snps:
-		annov.append([str(chrom).replace('23', 'X'), l[3], l[3], l[4], l[5]])
+		annov.append([str(chrom).replace('23', 'X'), l[3], str(int(l[3])+len(l[4])-1), l[4], l[5]])
 
 	annov = np.array(annov)
 	annov = annov[annov[:,1].argsort()]

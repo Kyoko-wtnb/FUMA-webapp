@@ -8,9 +8,11 @@
 		Every row should contain information on one SNP.
 		An input GWAS summary statistics file could contain only subset of SNPs (e.g. SNPs of interest for your study to annotate them),
 		but in this case, results of MAGMA will not be relevant anymore.
-		Please note that in the current version indels and variants which do not exists in the 1000 genomes reference panel (Phase3) will not be included in any analyses.<br/>
+		Please note that variants which do not exists in the selected reference panel will not be included in any analyses.<br/>
 		<span class="info"><i class="fa fa-info"></i>
-			Indels and variants which do no exists in 1000 genomes reference panle (Phase3) will be removed from any analyses.
+			For indels, both alleles need to be matched exactly with reference panel to be included in the ananlysis.
+			For example, an indel rs144029872 needs to be encoded with AG/A (the order of alleles does not matter),
+			anything else such as G/- or I2/D will not match wich the selected reference panel.
 		</span>
 	</p>
 	<p><strong>Mandatory columns</strong><br/>
@@ -27,7 +29,7 @@
 		Alleles are not mandatory but if only one allele is provided, that is considered to be the effect allele.
 		When two alleles are provided, the effect allele will be defined depending on column name.
 		If alleles are not provided, they will be extracted from the dbSNP build 146 and minor alleles will be assumed to be the effect alleles.
-		Effect and non-effect alleles are not distinguished during annotations, but used for alignment with eQTLs. 
+		Effect and non-effect alleles are not distinguished during annotations, but used for alignment with eQTLs.
 		Whenever alleles are provided, they are matched with dbSNP build 146 if extraction of rsID, chromosome or position is necessary.<br/>
 		Alleles are case insensitive.
 	</p>
