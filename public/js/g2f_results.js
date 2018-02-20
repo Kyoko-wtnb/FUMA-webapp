@@ -453,7 +453,7 @@ function GeneSet(id){
 			'Oncogenetic_signatures' : 'Oncogenetic signatures (MsigDB v5.2 c6)',
 			'Immunologic_signatures' : 'Immunologic signatures (MsigDB v5.2 c7)',
 			'Wikipathways' : 'WikiPathways (Curated version 20161010)',
-			'GWAScatalog' : 'GWAS catalog (reported genes, ver. e85 20160927)'
+			'GWAScatalog' : 'GWAS catalog (reported genes, ver. e91 20180206)'
 		};
 	d3.json(subdir+'/'+page+'/g2f_d3text/'+prefix+'/'+id+'/GS.txt', function(data){
 		if(data == undefined || data == null){

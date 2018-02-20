@@ -41,6 +41,8 @@
 				<br/>
 				<strong>Minor update 2</strong>: A summary page is added to the GENE2FUNC results page.
 				<br/>
+				<strong>Minor update 3</strong>: GWAS catalog is updated to version e91_2018-02-06.
+				<br/>
 			</td>
 		</tr>
 		<tr>

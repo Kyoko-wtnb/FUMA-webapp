@@ -285,7 +285,7 @@ function setParams(data){
 			$('#magma').prop('checked', true)
 			var ds = data.magma_exp.split(":");
 			$('#magma_exp option').each(function(){
-				if(ds.indexOf($(this).val())){$(this).prop('selected', true)}
+				if(ds.indexOf($(this).val())>=0){$(this).prop('selected', true)}
 				else{$(this).prop('selected', false)}
 			})
 		}
