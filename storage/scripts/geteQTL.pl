@@ -43,15 +43,44 @@ foreach my $t (@tempts){
 	}
 }
 if($all==1){
-	my @temp = `ls $gtexdir/*.sig.txt.gz`;
+	my @temp = `ls $qtldir/GTEx/v6/*.sig.txt.gz`;
 	chomp @temp;
 	foreach my $f (@temp){
-		$f =~ /$gtexdir\/(.+)\.sig\.txt\.gz/;
-		push @ts, "GTEx_".$1;
+		$f =~ /v6\/(.+)\.sig\.txt\.gz/;
+		push @ts, "GTEx_v6_".$1;
+
+	}
+	@temp = `ls $qtldir/GTEx/v7/*.sig.txt.gz`;
+	chomp @temp;
+	foreach my $f (@temp){
+		$f =~ /v7\/(.+)\.sig\.txt\.gz/;
+		push @ts, "GTEx_v7_".$1;
+
+	}
+	@temp = `ls $qtldir/BRAINEAC/*.txt.gz`;
+	chomp @temp;
+	foreach my $f (@temp){
+		$f =~ /BRAINEAC\/(.+)\.txt\.gz/;
+		push @ts, "BRAINEAC_".$1;
+
+	}
+	@temp = `ls $qtldir/Muther/*.txt.gz`;
+	chomp @temp;
+	foreach my $f (@temp){
+		$f =~ /Muther\/(.+)\.txt\.gz/;
+		push @ts, "Muther_".$1;
+
+	}
+	@temp = `ls $qtldir/CMC/*.txt.gz`;
+	chomp @temp;
+	foreach my $f (@temp){
+		$f =~ /CMC\/(.+)\.txt\.gz/;
+		push @ts, "CMC_".$1;
 
 	}
 	push @ts, "BloodeQTL_BloodeQTL";
 	push @ts, "BIOSQTL_BIOS_eQTL_geneLevel";
+	push @ts, "xQTLServer_xQTLServer_eQTLs";
 }else{
 	@ts = split(/:/, $tsall);
 }
@@ -96,17 +125,17 @@ while(<IN>){
 }
 close IN;
 open(OUT, ">$out") or die "Cannot open $out\n";
-print OUT "uniqID\tdb\ttissue\tgene\ttestedAllele\tp\ttz\tFDR\n";
+print OUT "uniqID\tdb\ttissue\tgene\ttestedAllele\tp\tsigned_stats\tFDR\n";
 
 foreach my $s (keys %db){
 	my @files = split(/:/, $db{$s});
 	if($s eq "GTEx"){
 		foreach my $f (@files){
-			my $file = "$gtexdir/".$f;
-			$f =~ /(.+)\.txt.gz/;
-			my $ts = $1;
-			my $f2 = $ts.".sig.txt.gz";
-			my $file2 = "$gtexdir/".$f2;
+			$f =~ /(^.+?)_(.+).txt.gz/;
+			my $ver = $1;
+			my $ts = $2;
+			my $file = "$qtldir/$s/$ver/".$ts.".txt.gz";
+			my $file2 = "$qtldir/$s/$ver/".$ts.".sig.txt.gz";
 			foreach my $lid (sort {$a<=>$b} keys %Loci){
 				my $chr = $Loci{$lid}{"chr"};
 				my $start = $Loci{$lid}{"start"};
@@ -117,7 +146,7 @@ foreach my $s (keys %db){
 					foreach my $l (@eqtlsig){
 						my @line = split(/\s/, $l);
 						my $id = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
-						print OUT "$id\t$s\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t$line[7]\n" if(exists $SNPs{$lid}{$id});
+						print OUT "$id\t$s"."_$ver"."\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t$line[7]\n" if(exists $SNPs{$lid}{$id});
 					}
 				}else{
 					my @eqtlsig = split(/\n/, `tabix $file2 $chr:$start-$end`);
@@ -134,7 +163,7 @@ foreach my $s (keys %db){
 						my $id = join(":", ($line[0], $line[1], sort($line[2], $line[3])));
 						if(exists $SNPs{$lid}{$id}){
 							$line[4] =~ s/(ENSG\d+).\d+/$1/;
-							print OUT "$id\t$s\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t";
+							print OUT "$id\t$s"."_$ver"."\t$ts\t$line[4]\t$line[3]\t$line[6]\t$line[5]\t";
 							if(exists $sig{$id}{$line[4]}){print OUT $sig{$id}{$line[4]}, "\n"}
 							else{print OUT "NA\n"}
 						}
@@ -154,13 +183,13 @@ foreach my $s (keys %db){
 				my @eqtl = split(/\n/, `tabix $file $chr:$start-$end`);
 				foreach my $l (@eqtl){
 					my @line = split(/\s/, $l);
-					if($sigonly){next if($line[7]>=0.05)}
-					else{next if($line[6]>=$eqtlP)}
+					if($sigonly){next if($line[7]>=0.05 || $line[7]<0)} #exclude ones with -9
+					else{next if($line[6]>=$eqtlP || $line[6]<0)} #eclude ones with -9
 					my $id = join(":", $line[0], $line[1], sort($line[2], $line[3]));
 					if(exists $SNPs{$lid}{$id}){
-						if($s eq "BRAINEAC"){
+						if($s eq "BRAINEAC" || $s eq "xQTLServer"){
 							print OUT join("\t", ($id, $s, $ts, $line[4], "NA", $line[6], $line[5], $line[7])), "\n";
-							#tested allele was not defined in the original file of BRAINEAC
+							#tested allele was not defined in the original file of BRAINEAC, xQTLServer
 						}else{
 							print OUT join("\t", ($id, $s, $ts, $line[4], $line[3], $line[6], $line[5], $line[7])), "\n";
 						}

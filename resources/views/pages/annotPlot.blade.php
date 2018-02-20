@@ -65,14 +65,25 @@ var Chr15cells = "{{$Chr15cells}}";
 			</form>    <div id="annotPlot"></div>
 			<br/>
 			<div id="load" style="text-align:center;"></div>
-			<div id="RDBlegend"></div>
-			*External link to RegulomeDB from SNP table (when one of the SNPs is clicked) will open a new tab.
-			rsID does not always match since RegulomeDB used dbSNP build 141 (the rsID in FUMA is dbSNP build 146).
-			Genomic position (bp on hg19) shown in the link of RegulomeDB is the position shown in the SNP table - 1, since RegulomeDB used 0 based corrdinate.
+			<div>
+				<h4>Regulome DB</h4>
+				<div id="RDBlegend"></div>
+				*External link to RegulomeDB from SNP table (when one of the SNPs is clicked) will open a new tab.
+				rsID does not always match since RegulomeDB used dbSNP build 141 (the rsID in FUMA is dbSNP build 146).
+				Genomic position (bp on hg19) shown in the link of RegulomeDB is the position shown in the SNP table - 1, since RegulomeDB used 0 based corrdinate.
+			</div>
 			<br/>
-			<div id="EIDlegend"></div>
-			*When 15-core chromatin state is included in the plot and >30 cell types are selected, the labels of Y-axis are omitted.
-			The order of the cell types is same as the table above.
+			<div>
+				<h4>15-core chromatin state</h4>
+				<div id="EIDlegend"></div>
+				*When 15-core chromatin state is included in the plot and >30 cell types are selected, the labels of Y-axis are omitted.
+				The order of the cell types is same as the legend table.
+			</div>
+			<br/>
+			<div>
+				<h4>eQTLs</h4>
+				The color of eQTLs are arbitrary. When P-value is not available (i.e. for CMC eQTLs), -log10 FDR is plotted in stead of P-value.
+			</div>
 			<br/>
 			<div id="SNPlegend">
 				<h4>SNPs colored grey in the plots</h4>

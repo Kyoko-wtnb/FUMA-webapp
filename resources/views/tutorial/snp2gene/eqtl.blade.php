@@ -1,6 +1,5 @@
 <h3 id="eQTLs">eQTLs</h3>
-FUMA contains several data sources of eQTL information, and can include more sources when available.
-Each data source is described in more detail in this section.
+FUMA contains several data sources of eQTLs and each data source is described in this section.
 <h4><strong>eQTL data sources</strong></h4>
 <div style="padding-left: 40px;">
 	<h4><strong>1. GTEx v6</strong></h4>
@@ -10,12 +9,13 @@ Each data source is described in more detail in this section.
 		for significant SNP-gene association based on permutation, and
 		<span style="color: blue;">GTEx_Analysis_V6_all-snp-gene-associations.tar</span> for every SNP-gene association test (including non-significant paris)
 		were downloaded.<br/>
-		GTEx eQTL v6 contains 44 different tissue types across 23 general tissue types.
+		GTEx eQTL v6 contains 44 different tissue types across 30 general tissue types.
 	</p>
 	<p><strong>Description</strong><br/>
 		FUMA contains all SNP-gene pairs of cis-eQTL including non-significant association.
-		Significant eQTLs are defined as FDR &le; 0.05.
-		The gene FDR is pre-calculated by GTEx and every gene-tissue pair has a defined P-value threshold for eQTLs based on permutation.
+		Significant eQTLs are defined as FDR (gene q-value) &le; 0.05.
+		The gene FDR is pre-calculated by GTEx and every gene-tissue pair has a defined P-value threshold for eQTLs based on permutation.<br/>
+		Signed statistics is t-statistics.
 	</p>
 	<p><strong>Samples</strong><br/>
 		<div class="panel panel-default">
@@ -23,7 +23,9 @@ Each data source is described in more detail in this section.
 				<a href="#gtexTable" data-toggle="collapse">GTEx eQTL tissue types and sample size</a><br/>
 			</div>
 			<div id="gtexTable" class="panel-body collapse">
-				<span class="info"><i class="fa fa-info"></i> The table contains the list of tissue types available in GTEx v6 for cis-eQTL (only tissues with genotyped sample size &ge; 70).</span>
+				<span class="info"><i class="fa fa-info"></i>
+					The table contains the list of tissue types available in GTEx v6 for cis-eQTL (only tissues with genotyped sample size &ge; 70).
+				</span>
 				<table class="table table-bordered">
 					<thead>
 						<th>General tissue type</th>
@@ -49,8 +51,6 @@ Each data source is described in more detail in this section.
 						<tr><td>Brain</td><td>Brain Hypothalamus</td><td>81</td></tr>
 						<tr><td>Brain</td><td>Brain Nucleus accumbens basal ganglia</td><td>93</td></tr>
 						<tr><td>Brain</td><td>Brain Putamen basal ganglia</td><td>82</td></tr>
-						<tr><td>Brain</td><td>Brain Spinal cord cervical c-1</td><td>59</td></tr>
-						<tr><td>Brain</td><td>Brain Substantia nigra</td><td>56</td></tr>
 						<tr><td>Breast</td><td>Breast Mammary Tissue</td><td>183</td></tr>
 						<tr><td>Colon</td><td>Colon Sigmoid</td><td>124</td></tr>
 						<tr><td>Colon</td><td>Colon Transverse</td><td>169</td></tr>
@@ -67,7 +67,6 @@ Each data source is described in more detail in this section.
 						<tr><td>Pancreas</td><td>Pancreas</td><td>149</td></tr>
 						<tr><td>Pituitary</td><td>Pituitary</td><td>87</td></tr>
 						<tr><td>Prostate</td><td>Prostate</td><td>87</td></tr>
-						<tr><td>Salivary Gland</td><td>Minor Salivary Gland</td><td>51</td></tr>
 						<tr><td>Skin</td><td>Cells Transformed fibroblasts</td><td>272</td></tr>
 						<tr><td>Skin</td><td>Skin Not Sun Exposed Suprapubic</td><td>196</td></tr>
 						<tr><td>Skin</td><td>Skin Sun Exposed Lower leg</td><td>302</td></tr>
@@ -82,7 +81,7 @@ Each data source is described in more detail in this section.
 				</table>
 			</div>
 		</div>
-	</p>
+	</p><br/>
 
 	<h4><strong>2. Blood eQTL browser (Westra et al. 2013)</strong></h4>
 	<p><strong>Data source</strong><br/>
@@ -90,7 +89,8 @@ Each data source is described in more detail in this section.
 	</p>
 	<p><strong>Description</strong><br/>
 		The data only include eQTLs with FDR &le; 0.5.
-		Genes in the original files were mapped to Ensembl ID in which genes are removed if they are not mapped to Ensembl ID.
+		Genes in the original files were mapped to Ensembl ID in which genes are removed if they are not mapped to Ensembl ID.<br/>
+		Signed statistics is Z-score.
 	</p>
 	<p><strong>Samples</strong><br/>
 		5,311 peripheral blood samples from 7 studies (<a href="https://www.ncbi.nlm.nih.gov/pubmed/3991562">Westra et al. 2013</a>).
@@ -102,7 +102,8 @@ Each data source is described in more detail in this section.
 		<span style="color:blue;">Cis-eQTLs Gene-level all primary effects</span> was downloaded which includes all SNP-gene pairs with FDR &le; 0.05.
 	</p>
 	<p><strong>Description</strong><br/>
-		The data only include eQTLs with FDR &le; 0.05.
+		The data only include eQTLs with FDR &le; 0.05.<br/>
+		Signed statistics is beta.
 	</p>
 	<p><strong>Samples</strong><br/>
 		2,116 whole peripheral blood samples of healthy adults from 4 Durch cohorts (<a href="https://www.ncbi.nlm.nih.gov/pubmed/27918533">Zhernakova et al. 2017</a>).
@@ -114,10 +115,13 @@ Each data source is described in more detail in this section.
 	</p>
 	<p><strong>Description</strong><br/>
 		The data include all eQTLs with nominal P-value < 0.05.
-		Since tested allele was not provided in the original data source, minor alleles in 1000 genome phase 3 are asigned as tested alleles.
-		eQTLs were identified for each of the following 10 brain regions and based on averaged expression across them.<br/>
+		Since tested allele was not provided in the original data source, minor alleles in 1000 genome phase 3 are asigned as tested alleles.<br/>
+		Signed statistics is t-statistics.<br/>
+		eQTLs were identified for each of the following 10 brain regions and based on averaged expression across all of them.<br/>
 		<span class="info"><i class="fa fa-info"></i>
-			Since tested allele was not provided in the original data source, assigned "NA" in the result table.
+			Alignment of risk increasing allele and eQTL tested allele was not performed for this datasource,
+			since tested allele is not available in the original data source
+			(replaced with "NA" in the result table).
 		</span>
 		<ul>
 			<li>Cerebellar cortex</li>
@@ -135,7 +139,161 @@ Each data source is described in more detail in this section.
 	<p><strong>Samples</strong><br/>
 		134 neuropathologically confirmed control individuals of European descent from <a target="_blank" href="https://ukbec.wordpress.com/">UK Brain Expression Consortium</a>
 		(<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/25174004">Ramasamy et al. 2014</a>).
+	</p><br/>
+
+	<h4><strong>5. GTEx v7</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="http://www.gtexportal.org/home/datasets">http://www.gtexportal.org/home/datasets</a>.
+		Under the section of GTEx V7, from single tissue eQTL data both <span style="color: blue;">GTEx_analysis_v7_eQTLs.tar.gz</span>
+		for significant SNP-gene association based on permutation, and
+		<span style="color: blue;">GTEx_Analysis_v7_all_associations.tar.gz</span> for every SNP-gene association test (including non-significant paris)
+		were downloaded.<br/>
+		GTEx eQTL v6 contains 48 different tissue types across 30 general tissue types.
 	</p>
+	<p><strong>Description</strong><br/>
+		FUMA contains all SNP-gene pairs of cis-eQTL including non-significant association.
+		Significant eQTLs are defined as FDR (gene q-value) &le; 0.05.
+		The gene FDR is pre-calculated by GTEx and every gene-tissue pair has a defined P-value threshold for eQTLs based on permutation.<br/>
+		Signed statistics is slope.
+	</p>
+	<p><strong>Samples</strong><br/>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a href="#gtexTable_v7" data-toggle="collapse">GTEx eQTL tissue types and sample size</a><br/>
+			</div>
+			<div id="gtexTable_v7" class="panel-body collapse">
+				<span class="info"><i class="fa fa-info"></i>
+					The table contains the list of tissue types available in GTEx v7 for cis-eQTL (only tissues with genotyped sample size &ge; 70).
+				</span>
+				<table class="table table-bordered">
+					<thead>
+						<th>General tissue type</th>
+						<th>Tissue type</th>
+						<th>Genotyped sample size</th>
+					</thead>
+					<tbody>
+						<tr><td>Adipose Tissue</td><td>Adipose Subcutaneous</td><td>385</td></tr>
+						<tr><td>Adipose Tissue</td><td>Adipose Visceral Omentum</td><td>313</td></tr>
+						<tr><td>Adrenal Gland</td><td>Adrenal Gland</td><td>175</td></tr>
+						<tr><td>Blood</td><td>Cells EBV-transformed lymphocytes</td><td>117</td></tr>
+						<tr><td>Blood</td><td>Whole Blood</td><td>369</td></tr>
+						<tr><td>Blood Vessel</td><td>Artery Aorta</td><td>267</td></tr>
+						<tr><td>Blood Vessel</td><td>Artery Coronary</td><td>152</td></tr>
+						<tr><td>Blood Vessel</td><td>Artery Tibial</td><td>388</td></tr>
+						<tr><td>Brain</td><td>Brain Amygdala</td><td>88</td></tr>
+						<tr><td>Brain</td><td>Brain Anterior cingulate cortex BA24</td><td>109</td></tr>
+						<tr><td>Brain</td><td>Brain Caudate basal ganglia</td><td>144</td></tr>
+						<tr><td>Brain</td><td>Brain Cerebellar Hemisphere</td><td>125</td></tr>
+						<tr><td>Brain</td><td>Brain Cerebellum</td><td>154</td></tr>
+						<tr><td>Brain</td><td>Brain Cortex</td><td>136</td></tr>
+						<tr><td>Brain</td><td>Brain Frontal Cortex BA9</td><td>118</td></tr>
+						<tr><td>Brain</td><td>Brain Hippocampus</td><td>111</td></tr>
+						<tr><td>Brain</td><td>Brain Hypothalamus</td><td>108</td></tr>
+						<tr><td>Brain</td><td>Brain Nucleus accumbens basal ganglia</td><td>130</td></tr>
+						<tr><td>Brain</td><td>Brain Putamen basal ganglia</td><td>111</td></tr>
+						<tr><td>Brain</td><td>Brain Spinal cord cervical c-1</td><td>83</td></tr>
+						<tr><td>Brain</td><td>Brain Substantia nigra</td><td>80</td></tr>
+						<tr><td>Breast</td><td>Breast Mammary Tissue</td><td>251</td></tr>
+						<tr><td>Colon</td><td>Colon Sigmoid</td><td>203</td></tr>
+						<tr><td>Colon</td><td>Colon Transverse</td><td>246</td></tr>
+						<tr><td>Esophagus</td><td>Esophagus Gastroesophageal Junction</td><td>213</td></tr>
+						<tr><td>Esophagus</td><td>Esophagus Mucosa</td><td>358</td></tr>
+						<tr><td>Esophagus</td><td>Esophagus Muscularis</td><td>335</td></tr>
+						<tr><td>Heart</td><td>Heart Atrial Appendage</td><td>264</td></tr>
+						<tr><td>Heart</td><td>Heart Left Ventricle</td><td>272</td></tr>
+						<tr><td>Liver</td><td>Liver</td><td>153</td></tr>
+						<tr><td>Lung</td><td>Lung</td><td>383</td></tr>
+						<tr><td>Muscle</td><td>Muscle Skeletal</td><td>491</td></tr>
+						<tr><td>Nerve</td><td>Nerve Tibial</td><td>361</td></tr>
+						<tr><td>Ovary</td><td>Ovary</td><td>122</td></tr>
+						<tr><td>Pancreas</td><td>Pancreas</td><td>220</td></tr>
+						<tr><td>Pituitary</td><td>Pituitary</td><td>157</td></tr>
+						<tr><td>Prostate</td><td>Prostate</td><td>132</td></tr>
+						<tr><td>Salivary Gland</td><td>Minor Salivary Gland</td><td>85</td></tr>
+						<tr><td>Skin</td><td>Cells Transformed fibroblasts</td><td>300</td></tr>
+						<tr><td>Skin</td><td>Skin Not Sun Exposed Suprapubic</td><td>335</td></tr>
+						<tr><td>Skin</td><td>Skin Sun Exposed Lower leg</td><td>414</td></tr>
+						<tr><td>Small Intestine</td><td>Small Intestine Terminal Ileum</td><td>122</td></tr>
+						<tr><td>Spleen</td><td>Spleen</td><td>146</td></tr>
+						<tr><td>Stomach</td><td>Stomach</td><td>237</td></tr>
+						<tr><td>Testis</td><td>Testis</td><td>225</td></tr>
+						<tr><td>Thyroid</td><td>Thyroid</td><td>399</td></tr>
+						<tr><td>Uterus</td><td>Uterus</td><td>101</td></tr>
+						<tr><td>Vagina</td><td>Vagina</td><td>106</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</p><br/>
+
+	<h4><strong>6. MuTHER (Grundberg et al. 2012)</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="http://www.muther.ac.uk/">http://www.muther.ac.uk/</a>.
+	</p>
+	<p><strong>Description</strong><br/>
+		Chromosome coordinate was lifted over to hg19 from hg18 using liftOver software.
+		Gene names are mapped to Ensembl ID (excluded genes which are not mapped to ENSG ID).
+		Since only tested allele was provided, other allele was extracted from 1000G EUR population.
+		FDR (or any corrected P-value) was not availabe in the original data (in the FUMA, FDR column was replaced with -9).
+		<br/>
+		Signed statistics is beta.
+		<br/>
+		<span class="info"><i class="fa fa-info"></i>
+			Since FDR is not available, MuTHER eQTLs can be only used when P-value threshold provided by user,
+			not "only significant snp-gene pairs" option.
+		</span>
+	</p>
+	<p><strong>Samples</strong><br/>
+		856 female individuals of European descent recruited from
+		the TwinsUK Adult twin registory (<a href="https://www.ncbi.nlm.nih.gov/pubmed/22941192">Grundberg et al. 2012</a>).
+		<ul>
+			<li>Adipose (N=855)</li>
+			<li>Skin (N=847)</li>
+			<li>LCL (N=837)</li>
+		</ul>
+	</p><br/>
+
+	<h4><strong>7. xQTLServer (Ng et al. 2017)</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="http://mostafavilab.stat.ubc.ca/xqtl/">http://mostafavilab.stat.ubc.ca/xqtl/</a>.
+	</p>
+	<p><strong>Description</strong><br/>
+		Gene names are mapped to Ensembl ID (excluded genes which are not mapped to ENSG ID).
+		Since alleles were not available in the origina data, extracted from 1000G EUR population based on chromosome coordinate.
+		FDR was not provided in the original data souce, but the FDR column was replaced with Bonferoni corrected p-value,
+		as it was used in the original study (corrected for all tested SNP-gege pairs 60,456,556).
+		<br/>
+		Signed statistics is not available.
+		<br/>
+		<span class="info"><i class="fa fa-info"></i>
+			Alignment of risk increasing allele and eQTL tested allele was not performed for this datasource,
+			since tested allele and signed statistics are not available in the original data source
+			(replaced with "NA" in the result table).
+		</span>
+	</p>
+	<p><strong>Samples</strong><br/>
+		494 dorsolateral prefrontal cortex samples (<a href="https://www.ncbi.nlm.nih.gov/pubmed/28869584">Ng et al. 2017</a>).
+	</p><br/>
+
+	<h4><strong>8. CommonMind Consortium (Fromer et al. 2016)</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="https://www.synapse.org//#!Synapse:syn5585484">https://www.synapse.org//#!Synapse:syn5585484</a>.
+		Both eQTLs with and without SVA are included.
+	</p>
+	<p><strong>Description</strong><br/>
+		Publicly availabe eQTLs from CMC (without application) is binned by FDR.
+		Therefore, nominal P-value is not available (replaced with -9).
+		FDR was binned into the following four groups, &lt;0.2, &lt;0.1, &lt;0.05 and &lt;0.01.
+		As numeric value is required for filtering during SNP2GENE process, those categorical values are replaced with
+		0.199, 0.099, 0.049 and 0.009 respectively.
+		<br/>
+		Signed statistics is not available but since expressed increasing allele was provided, signed_stats column is replaced with 1.
+		<br/>
+		Trans eQTLs are also availabel for CMC data set (as a separated option from cis-eQTLs).
+	</p>
+	<p><strong>Samples</strong><br/>
+		Post-mortem brain samples from 467 Caucaisan individuals (209 with SCZ, 206 controls and 52 AFF cases; <a href="https://www.ncbi.nlm.nih.gov/pubmed/27668389">Fromer et al. 2016</a>).
+	</p><br/>
 </div>
 <br/>
 <h4><strong>Alignment of risk increasing allele in GWAS and tested allele of eQTLs</strong></h4>

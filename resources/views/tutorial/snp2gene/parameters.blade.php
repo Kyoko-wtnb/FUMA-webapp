@@ -273,6 +273,8 @@
 				<td>Tissue types</td>
 				<td>Mandatory if <code>eQTL mapping</code> is CHECKED</td>
 				<td>All available tissue types with data sources are shown in the select boxes.
+					From FUMA v1.3.0, GTEx v7 became available but GTEx v6 are kept available.
+					Therefore, when "all" is selected, both GTEx v6 and v7 are used for mapping.
 					For detail of eQTL data resources, please refer to the <a href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">eQTL</a> section in this tutorial.
 				</td>
 				<td>Multiple selection</td>
@@ -577,7 +579,7 @@
 			<tr>
 				<td>Exclude MHC region</td>
 				<td>Optional</td>
-				<td>Check if you want to exclude the MHC region or not. The default region is defined as between "MOG" and "COL11A2" genes.</td>
+				<td>Check if you want to exclude the MHC region. The default region is defined as between "MOG" and "COL11A2" genes.</td>
 				<td>Check</td>
 				<td>Checked</td>
 			</tr>
@@ -603,7 +605,46 @@
 </div>
 
 <div style="margin-left: 40px;">
-	<h4><strong>6. Title of job submission</strong></h4>
+	<h4><strong>6. MAGMA analysis</strong></h4>
+	<p>
+		MAGMA gene and gene-set analyses are performed for the input summary statistics by default,
+		but user can also select to omit MAGMA process that reduce the run time of SNP2GENE process.
+		Gene expression data sets for MAGMA gene expression ananlysis can be also selected from here.
+	</p>
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>Parameter</th>
+				<th>Mandatory</th>
+				<th>Description</th>
+				<th>Type</th>
+				<th>Default</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Perform MAGMA</td>
+				<td>Optional</td>
+				<td>UNCHECK to OMIT MAGMA ananlyses.</td>
+				<td>Check</td>
+				<td>Checked</td>
+			</tr>
+			<tr>
+				<td>MAGMA gene expression analysis</td>
+				<td>Mandatory when <code>MAGMA</code> is active.</td>
+				<td>Gene expression data sets used for MAGMA gene-property analysis to test
+					positive associaiton between genetic associations and gene expression in a given label.
+				</td>
+				<td>Select</td>
+				<td>GTEx v6</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+</div>
+
+<div style="margin-left: 40px;">
+	<h4><strong>7. Title of job submission</strong></h4>
 	<p>
 		Title of job submission can be provided at above the "Submit Job" button.
 		This is not mandatory but this would be usefull to keep track your jobs.

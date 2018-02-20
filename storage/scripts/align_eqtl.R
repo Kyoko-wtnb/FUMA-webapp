@@ -26,7 +26,7 @@ if(nrow(eqtl)>0){
 
 	if(length(!is.na(tmp$RiskIncAllele))>0){
 		eqtl$RiskIncAllele <- tmp$RiskIncAllele[match(eqtl$uniqID, tmp$uniqID)]
-		eqtl$alignedDirection <- ifelse(eqtl$testedAllele==eqtl$RiskIncAllele, eqtl$tz, -1*eqtl$tz)
+		eqtl$alignedDirection <- ifelse(eqtl$testedAllele==eqtl$RiskIncAllele, eqtl$signed_stats, -1*eqtl$signed_stats)
 		eqtl$alignedDirection[!is.na(eqtl$alignedDirection)] <- ifelse(eqtl$alignedDirection[!is.na(eqtl$alignedDirection)] > 0, "+", "-")
 	}
 }else{

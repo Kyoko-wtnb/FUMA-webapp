@@ -49,6 +49,7 @@ my $magmain = $filedir."magma.input";
 my $magmafiles = $cfg->param('magma.magmafiles');
 my $ref = "$magmafiles/g1000_".lc($pop);
 my $magma = $cfg->param('magma.magmadir');
+my @magma_exp = split(/:/, $params->param('magma.magma_exp'));
 
 if(defined $N){
 	if($MHC eq "1"){
@@ -92,9 +93,11 @@ system "mv ".$filedir."temp.txt ".$filedir."magma.genes.out";
 # MAGMA gene set
 system "$magma/magma --gene-results $filedir"."magma.genes.raw --set-annot $magmafiles/magma_GS.txt --out $filedir"."magma";
 # MAGMA gene expression
-system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/gtex.avg.log2RPKM.ts.txt onesided=greater condition=Average --out $filedir"."magma_exp";
-system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/gtex.avg.log2RPKM.ts.general.txt onesided=greater condition=Average --out $filedir"."magma_exp_general";
-#remove extra magma log files
-system "rm $filedir"."magma*.log";
+foreach my $f (@magma_exp){
+	my @tmp = split(/\//, $f);
+	my $out = $tmp[$#tmp];
+	print $out;
+	system "$magma/magma --gene-results $filedir"."magma.genes.raw --gene-covar $magmafiles/$f.txt onesided=greater condition=Average --out $filedir"."magma_exp_$out";
+}
 
 system "Rscript $dir/magma_gene.R $filedir";

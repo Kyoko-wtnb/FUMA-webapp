@@ -14,13 +14,8 @@ def ArrayIn(a1, a2):
 	return results
 
 def ArrayNotIn(a1, a2):
-    temp = np.where(np.in1d(a1, a2))[0]
-    a1 = range(0, len(a1))
-    results = []
-    for i in a1:
-        if i not in temp:
-            results.append(i)
-    return results
+    tmp = np.where(np.in1d(a1, a2))[0]
+    return list(set(range(0,len(a1)))-set(tmp))
 
 start = timeit.default_timer()
 

@@ -99,9 +99,9 @@
 
 			<p><h4><strong>2. Results</strong></h4>
 				Once genes are submitted, four extra side bars are shown.<br/>
-				<strong>Gene Expression</strong>: An interactive heatmap of gene expression in 53 tissue types from GTEx v6.<br/>
-				<!-- <strong>Tissue Specificity</strong>: Bar plots for enrichment test of differentially expressed genes and tissue expressed genes. Two different hypotheses are tested here. See <a href="{{ Config::get('app.subdir') }}/tutorial#g2fOutputs">GENE2FUNC Outputs</a> section for details.<br/> -->
-				<strong>Tissue Specificity</strong>: Bar plots for enrichment test of differentially expressed genes in a certain tissue type compare to all others. See <a href="{{ Config::get('app.subdir') }}/tutorial#g2fOutputs">GENE2FUNC Outputs</a> section for details.<br/>
+				<strong>Gene Expression</strong>: An interactive heatmap of gene expression of user selected data sets.<br/>
+				<strong>Tissue Specificity</strong>: Bar plots for enrichment test of differentially expressed genes in a certain label compared to all other samples for a use selected data sets.
+				See <a href="{{ Config::get('app.subdir') }}/tutorial#g2fOutputs">GENE2FUNC Outputs</a> section for details.<br/>
 				<strong>Gene Sets</strong>: Plots and tables of enriched gene sets.<br/>
 				<strong>Gene Table</strong>: Table of input genes with links to external databases; OMIM, Drugbank and GeneCards.<br/>
 				Further details are provided in the <a class="inpage" href="{{ Config::get('app.subdir') }}/tutorial#g2fOutputs">GENE2FUNC Outputs</a> section of  this tutorial.<br/><br/>

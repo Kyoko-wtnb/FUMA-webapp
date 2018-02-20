@@ -17,6 +17,35 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>21 Feb 2018</td>
+			<td>v1.3.0</td>
+			<td><strong>Major update 1</strong>: The following 4 eQTL data sets are added, GTEx v7, MuTHER, CommonMind Consortium and xQTLServer.
+				Each data set has different description for tested allele, P-value and FDR.
+				Please check <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">Tutorial</a> for details before start using these new data sets.
+				To be able to replicate previous results, GTEx v6 eQTLs are also kept as options.
+				Because of this, when "all" is selected for eQTL mapping, both GTEx v6 and GTEx v7 are going to be used.
+				To avoid this, please manually check data sets.
+				<br/>
+				<strong>Major update 2</strong>: Indels are now included in the 1000 genome ference.
+				Note that only bi-allelic SNPs and indels are available in FUMA.
+				<br/>
+				<strong>Major update 3</strong>: GTEx v7 and BrainSpan gene expression data sets were
+				added to MAGMA gene expression analysis in SNP2GENE and DEG enrichment analysis in GENE2FUNC.
+				<br/>
+				<strong>Major update 4</strong>: For existing SNP2GENE jobs, it is possible to re-performe
+				gene mapping with different parameters from v1.3.0.
+				Please check <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#geneMap">Tutorial</a> for details.
+				<br/>
+				<strong>Minor update 1</strong>: For SNP2GENE job submission, previous parameter setting
+				can be loaded by selecting job ID.
+				<br/>
+				<strong>Minor update 2</strong>: A summary page is added to the GENE2FUNC results page.
+				<br/>
+				<strong>Minor update 3</strong>: GWAS catalog is updated to version e91_2018-02-06.
+				<br/>
+			</td>
+		</tr>
+		<tr>
 			<td>20 Dec 2017</td>
 			<td>v1.2.8</td>
 			<td>
