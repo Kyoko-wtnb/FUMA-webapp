@@ -26,13 +26,13 @@
 				Because of this, when "all" is selected for eQTL mapping, both GTEx v6 and GTEx v7 are going to be used.
 				To avoid this, please manually check data sets.
 				<br/>
-				<strong>Major update 2</strong>: Indels are now included in the 1000 genome ference.
+				<strong>Major update 2</strong>: Indels are now included in the 1000 genome reference.
 				Note that only bi-allelic SNPs and indels are available in FUMA.
 				<br/>
 				<strong>Major update 3</strong>: GTEx v7 and BrainSpan gene expression data sets were
 				added to MAGMA gene expression analysis in SNP2GENE and DEG enrichment analysis in GENE2FUNC.
 				<br/>
-				<strong>Major update 4</strong>: For existing SNP2GENE jobs, it is possible to re-performe
+				<strong>Major update 4</strong>: For existing SNP2GENE jobs, it is possible to re-perform
 				gene mapping with different parameters from v1.3.0.
 				Please check <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#geneMap">Tutorial</a> for details.
 				<br/>
@@ -49,7 +49,7 @@
 			<td>20 Dec 2017</td>
 			<td>v1.2.8</td>
 			<td>
-				Positional maping based on distance between SNPs and genes has been improved.
+				Positional mapping based on distance between SNPs and genes has been improved.
 				It was purely based on the distance annotated by ANNOVAR until v1.2.7, however,
 				ANNOVAR only annotate intergenic SNPs to two closet genes.
 				From v1.2.8, distance between SNPs to genes are checked independently from ANNOVAR.
@@ -62,9 +62,9 @@
 			<td>11 Dec 2017</td>
 			<td>v1.2.7</td>
 			<td>
-				Filtering of chromain interactions in circos plot has been updated.
-				Only chroamtin interactions (orange links) and eQTLs (green links) used for mapping are isplayed in circos plot from this version.
-				If you wish to update circos plot of existing SNP2GENE job, please contact developper with your jobID.
+				Filtering of chromatin interactions in circos plot has been updated.
+				Only chromatin interactions (orange links) and eQTLs (green links) used for mapping are displayed in circos plot from this version.
+				If you wish to update circos plot of existing SNP2GENE job, please contact developer with your jobID.
 			</td>
 		</tr>
 		<tr>
@@ -74,7 +74,7 @@
 				Minor bug in chromatin interaction mapping was fixed.
 				Chromatin interaction mapping has been missed some interactions that are overlapping with risk loci.
 				<span style="color:red;">If you have any SNP2GENE job with chromatin interaction mapping submitted before 1st of September 2017,
-				it's stongly recommended to re-submit jobs or please contact developper to update the results.</span>
+				it's strongly recommended to re-submit jobs or please contact developer to update the results.</span>
 			</td>
 		</tr>
 		<tr>
@@ -83,7 +83,7 @@
 			<td>
 				GWAScatalog has been updated to release e89 2017-08-15.
 				Please be aware that jobs submitted to SNP2GENE before 22th August 2017 used previous version (e85 2016-09-27).
-				If you wish to update GWAScatalog results for your SNP2GENE jobs, please contact developper with jobID.
+				If you wish to update GWAScatalog results for your SNP2GENE jobs, please contact developer with jobID.
 			</td>
 		</tr>
 		<tr>
@@ -93,7 +93,7 @@
 				Build in Hi-C data is obtained from <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112" target="_blank">GSE87112</a> and user can also provide custom chromatin interaction data.
 				<a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Tutorial</a> for details.<br/>
 				<strong>Major update 2</strong>: "Browse examples" page is newly added which does not require registration/login.
-				In the page, pre-computed results can be borwsed with full features (e.g. interactive plots and download).<br/>
+				In the page, pre-computed results can be browsed with full features (e.g. interactive plots and download).<br/>
 				<strong>Minor updates</strong>: SNP2GENE process is improved.
 				eQTLs are aligned with the risk increasing alleles in the input GWAS file (see <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#eQTLs">Tutorial</a> for details).
 				To avoid confusion, allele names in the SNPs table were updated to non_efefct_allele/effect_allele from ref/alt.

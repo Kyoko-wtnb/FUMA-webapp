@@ -123,7 +123,7 @@ $(document).ready(function(){
 
 		gene_exp = gene_exp.split(":");
 		$('#gene_exp option').each(function(){
-			if(gene_exp.indexOf($(this).val())){$(this).prop("selected", true)}
+			if(gene_exp.indexOf($(this).val())>=0){$(this).prop("selected", true)}
 			else{$(this).prop("selected", false)}
 		})
 

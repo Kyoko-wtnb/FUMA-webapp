@@ -929,7 +929,9 @@ $(document).ready(function(){
 				for(i=0; i<eqtlgenes.length; i++){
 					var y = d3.scale.linear().range([eqtlTop+55*i+50, eqtlTop+55*i]);
 					var yAxis = d3.svg.axis().scale(y).orient("left").ticks(4);
-					y.domain([0, d3.max(plotData.eqtl, function(d){return -Math.log10(d[5])})+0.5]);
+					var yMax = d3.max(plotData.eqtl, function(d){return -Math.log10(d[5])})
+					if(yMax==undefined){yMax=d3.max(plotData.eqtl, function(d){return -Math.log10(d[7])})}
+					y.domain([0, yMax+0.5]);
 					svg.selectAll("dot").data(plotData.eqtl.filter(function(d){if(d[12]===eqtlgenes[i]){return d}})).enter()
 						.append("circle").attr("class", "eqtldot")
 						.attr("r", 3.5)

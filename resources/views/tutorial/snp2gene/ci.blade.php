@@ -1,12 +1,12 @@
 <h3 id="chromatin-interactions">Chromatin interaction data and mapping</h3>
 In this section, build in chromatin interaction data, file format of custom chromatin interaction matrices and
 details of chromatin interaction mapping are described.
-Since chromatin interaction mapping is more complecated than other two mappings (positional and eQTL), please read this section carefully.
+Since chromatin interaction mapping is more complicated than other two mappings (positional and eQTL), please read this section carefully.
 <div style="padding-left: 40px;">
 	<h4><strong>Terminology</strong></h4>
 	<p>
 		<strong style="color:red">Region 1</strong><br/>
-		One end of a signifincat interaction which overlap with one of the candidate SNPs (independent significant SNPs and SNPs which are in LD of them).
+		One end of a significant interaction which overlap with one of the candidate SNPs (independent significant SNPs and SNPs which are in LD of them).
 		This region is always overlap with one of the genomic risk loci identified by FUMA.<br/>
 		<strong style="color:red">Region 2</strong><br>
 		Another end of the significant interaction.
@@ -77,7 +77,7 @@ Since chromatin interaction mapping is more complecated than other two mappings 
 			The column of FDR will be used to filter interaction by the user defined threshold.
  		</span><br/>
 		<span class="info"><i class="fa fa-info"></i>
-			The maximum size of each file is 600Mb. If the file is larget than this, please filter interactions or split them into multiple files.
+			The maximum size of each file is 600Mb. If the file is larger than this, please filter interactions or split them into multiple files.
 		</span><br/>
 		<br/>
 		<strong>2. Data types</strong><br/>
@@ -86,10 +86,10 @@ Since chromatin interaction mapping is more complecated than other two mappings 
 		<br/><br/>
 		<strong>3. Filtering of chromatin interactions</strong><br/>
 		The 7th column (FDR) will be used to filter interactions.
-		To prevent from this filtering, either set filtering threfhold to 1 or assign 0 to the FDR column.
+		To prevent from this filtering, either set filtering threshold to 1 or assign 0 to the FDR column.
 		Technically, the 7th column does not have to be FDR but any other scores.
-		When one prefers to use different score or nominal P-value, that is also possible by setting propoer filtering threhold.
-		Note that, interactions will be filtered on which have score less than or equal to the threhold.
+		When one prefers to use different score or nominal P-value, that is also possible by setting proper filtering threshold.
+		Note that, interactions will be filtered on which have score less than or equal to the threshold.
 		<br/>
 	</p>
 	<h4><strong>Enhancer and promoter regions</strong></h4>
@@ -98,13 +98,13 @@ Since chromatin interaction mapping is more complecated than other two mappings 
 		Those regions were predicted using DNase peaks and core 15-state chromatin state model.
 		Please refer <a target="_blank" href="http://egg2.wustl.edu/roadmap/web_portal/DNase_reg.html#delieation">here</a> for details. <br/>
 		For selected epigenomes, enhancer regions are annotated to region 1 and promoter regions are annotated to region 2.
-		Dyadic enhancer/promoter reions are annoated for both. <br/>
+		Dyadic enhancer/promoter regions are annotated for both. <br/>
 		Annotated enhancer and promoter regions can be used to filter SNPs or mapped genes which is described in the next section.
 	</p>
 	<h4><strong>Chromatin interaction mapping</strong></h4>
 	<p><strong>1. Basic mapping (without filtering)</strong><br/>
 		Chromatin interaction mapping is performed with significant chromatin interactions at the user defined threshold.
-		Regions 2 is mapped to genes whoes promoter regions (250bp up- and 50bp down-stream of the TSS by default) are overlapped with the region 2.
+		Regions 2 is mapped to genes whose promoter regions (250bp up- and 50bp down-stream of the TSS by default) are overlapped with the region 2.
 		Those genes were considered as mapped by candidate SNPs which are overlapped with region 1.<br/>
 		In the case there is not genes in region 2, those interactions are not mapped to any genes.<br/>
 		<img src="{{ URL::asset('/image/ciMap1.png') }}" style="width: 60%; align: middle;">
@@ -115,13 +115,13 @@ Since chromatin interaction mapping is more complecated than other two mappings 
 		<img src="{{ URL::asset('/image/ciMap2.png') }}" style="width: 60%; align: middle;">
 		<br/><br/>
 		<strong>3. Promoter filtering</strong><br/>
-		When promoters are annotated to region 2, user can select the option to limit the chromatin interaction mapping to only genes whoes promoter regions are overlapped with annotated promoter regions of selected epigenomes.
+		When promoters are annotated to region 2, user can select the option to limit the chromatin interaction mapping to only genes whose promoter regions are overlapped with annotated promoter regions of selected epigenomes.
 		Note that, in the result table, all significant interactions are included but not all are necessary mapped to genes.<br/>
 		<img src="{{ URL::asset('/image/ciMap3.png') }}" style="width: 60%; align: middle;">
 		<br/><br/>
 		<span class="info"><i class="fa fa-info"></i>
-			In very rare cares, when the promoter filtering is activated, genes whoes promoter regions (250bp up- and 500bp down-stream of TSS) do not overlap with region 2 but do overlap with promoters from Roadmap that are overlapping with region 2 are mapped.
-			In this case, thene genes are not in "ci.txt" file but in "ciProm.txt" file which can be linked to "ci.txt" by region 2.
+			In very rare cares, when the promoter filtering is activated, genes whose promoter regions (250bp up- and 500bp down-stream of TSS) do not overlap with region 2 but do overlap with promoters from Roadmap that are overlapping with region 2 are mapped.
+			In this case, these genes are not in "ci.txt" file but in "ciProm.txt" file which can be linked to "ci.txt" by region 2.
 		</span>
 	</p>
 </div>

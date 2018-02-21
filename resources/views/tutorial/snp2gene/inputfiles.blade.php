@@ -10,14 +10,14 @@
 		but in this case, results of MAGMA will not be relevant anymore.
 		Please note that variants which do not exists in the selected reference panel will not be included in any analyses.<br/>
 		<span class="info"><i class="fa fa-info"></i>
-			For indels, both alleles need to be matched exactly with reference panel to be included in the ananlysis.
+			For indels, both alleles need to be matched exactly with reference panel to be included in the analysis.
 			For example, an indel rs144029872 needs to be encoded with AG/A (the order of alleles does not matter),
-			anything else such as G/- or I2/D will not match wich the selected reference panel.
+			anything else such as G/- or I2/D will not match with the selected reference panel.
 		</span>
 	</p>
 	<p><strong>Mandatory columns</strong><br/>
 		The input file must include a P-value and either an rsID or chromosome index + genetic position on hg19 reference genome.
-		Whenevr rsID is provided, it is updated to dbSNP build 146.
+		Whenever rsID is provided, it is updated to dbSNP build 146.
 		When either chromosome or position is missing, they are extracted from dbSNP build 146 based on rsID.
 		When rsID is missing, it is extracted from dbSNP build 146 based on chromosome and position.
 		When all of them (rsID, chromosome and position) are provided, they are kept as input except rsID which is updated to dbSNP build 146.<br/>
@@ -52,8 +52,8 @@
 		Extra columns will be ignored.<br/>
 		Rows that start with "#" will be ignored.<br/>
 		<span class="info"><i class="fa fa-info"></i> Column  "N" is described in the <a href="{{ Config::get('app.subdir') }}/tutorial#parameters">Parameters</a> section.</span><br/>
-		<span class="info"><i class="fa fa-info"></i> Be carefull with the alleles header in which A1 is defined as effect allele by default. Please specify both effect and non-effect allele column to avoid mislabeling.<br/>
-			If wrong labels are proveded for alleles, it does not affect any annotation and prioritization results. It does however affect eQTLs results (alignment of risk increasing allele of GWAS and tested allele of eQTLs).
+		<span class="info"><i class="fa fa-info"></i> Be careful with the alleles header in which A1 is defined as effect allele by default. Please specify both effect and non-effect allele column to avoid mislabeling.<br/>
+			If wrong labels are provided for alleles, it does not affect any annotation and prioritization results. It does however affect eQTLs results (alignment of risk increasing allele of GWAS and tested allele of eQTLs).
 			Be aware of that when you interpret results.
 		</span><br/>
 	</p>
@@ -101,9 +101,9 @@
 <div style="margin-left: 40px;">
 	<h4><strong>3. Pre-defined genomic region</strong></h4>
 	<p>This is an optional input file.
-		This option would be useful when you have already done some followup analyses of your GWAS and are interested in specific genomic regions.
+		This option would be useful when you have already done some follow-up analyses of your GWAS and are interested in specific genomic regions.
 		When pre-defined genomic region is provided, regardless of parameters, only lead SNPs and SNPs in LD with them within provided regions will be reported in outputs.<br/>
-		If you want to analyse only specific genomic regions, the input file should have the following 3 columns:<br/>
+		If you want to analyze only specific genomic regions, the input file should have the following 3 columns:<br/>
 	</p>
 	<ul>
 		<li><strong>chr</strong> : chromosome</li>

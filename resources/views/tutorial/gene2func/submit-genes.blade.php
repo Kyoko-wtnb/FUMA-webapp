@@ -10,13 +10,13 @@
 	<img src="{!! URL::asset('/image/snp2genejump.png') !!}" style="width:70%"/><br/>
 	<br/>
 	<h4><strong>Option 2. Use a list of genes of interest</strong></h4>
-	<p>To analyse a custome list of genes, you have to prepare a list of genes as either ENSG ID, entrez ID or gene symbol.
+	<p>To analyze a custom list of genes, you have to prepare a list of genes as either ENSG ID, entrez ID or gene symbol.
 		Genes can be provided in the text are (one gene per line) or by uploading a file in the left panel. When you upload a file, genes have to be in the first column with a header.
 		Header can be anything (even just a new line is fine) but FUMA will start reading your genes from the second row.
 	</p>
-	<p>To analyse your genes, you need to specify background genes, which are used in the 2x2 enrichment tests.
+	<p>To analyze your genes, you need to specify background genes, which are used in the 2x2 enrichment tests.
 		You can choose from the provided gene types.
-		Alternatively, you can provide a custome list of background genes.
+		Alternatively, you can provide a custom list of background genes.
 		Please provide this list either in the text area or by uploading a file of the right panel.
 		File format should be the same as described for genes of interest.
 	</p>

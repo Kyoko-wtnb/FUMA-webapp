@@ -18,9 +18,9 @@ var loggedin = "{{ Auth::check() }}";
 		</thead>
 		<tbody>
 			<tr>
-				<td>1000 genoms progect Phase 3</td>
+				<td>1000 genoms project Phase 3</td>
 				<td>
-					Reference panel used to compute r2 and MAF.
+					Reference panel used to compute r<sup>2</sup> and MAF.
 				</td>
 				<td style="word-wrap:break-word;word-break:break-all;">
 					Info: <a href="http://www.internationalgenome.org/" target="_blank">http://www.internationalgenome.org/</a><br/>
@@ -71,7 +71,7 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 				<td>5 December 2016</td>
 				<td>
-					Kicher, M., et al. 2014. A general framework for estimating the relative pathgeneticity of human genetic variants. <i>Nat. Genet.</i> <b>46</b>, 310-315.<br/>
+					Kicher, M., et al. 2014. A general framework for estimating the relative pathogeneticity of human genetic variants. <i>Nat. Genet.</i> <b>46</b>, 310-315.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/24487276" target="_blank">PMID:24487276</a>
 				</td>
 			</tr>
@@ -84,13 +84,13 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 				<td>5 December 2016</td>
 				<td>
-					Boyle, AP., et al. 2012. Annotation of functional variation in persoanl genomes using RegulomeDB. <i>Genome Res.</i> <b>22</b>, 1790-7.<br/>
+					Boyle, AP., et al. 2012. Annotation of functional variation in personal genomes using RegulomeDB. <i>Genome Res.</i> <b>22</b>, 1790-7.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/22955989" target="_blank">PMID:22955989</a>
 				</td>
 			</tr>
 			<tr>
 				<td>15-core chromatin state</td>
-				<td>Chromatin state for 127 epigenomes was lerned by ChromHMM derived from 5 chromatin markers (H3K4me3, H3K4me1, H3K36me3, H3K27me3, H3K9me3).</td>
+				<td>Chromatin state for 127 epigenomes was learned by ChromHMM derived from 5 chromatin markers (H3K4me3, H3K4me1, H3K36me3, H3K27me3, H3K9me3).</td>
 				<td style="word-break: break-all;">
 					Info: <a href="http://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html" target="_blank">http://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html</a><br/>
 					Data: <a href="http://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/coreMarks/jointModel/final/all.mnemonics.bedFiles.tgz" target="_blank">http://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/coreMarks/jointModel/final/all.mnemonics.bedFiles.tgz</a>
@@ -116,7 +116,7 @@ var loggedin = "{{ Auth::check() }}";
 					GTEx Consortium. 2015. Human genomics, The genotype-tissue expression (GTEx) pilot analysis: multitissue gene regulation in humans. <i>Science.</i> <b>348</b>, 648-60.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/25954001" target="_blank">PMID:25954001</a>
 					<br/>
-					GTEx Consortium. 2017. Genetic effets on gene expression across human tissues. <i>Nature.</i> <b>550</b>, 204-213.<br/>
+					GTEx Consortium. 2017. Genetic effects on gene expression across human tissues. <i>Nature.</i> <b>550</b>, 204-213.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/29022597" target="_blank">PMID:29022597</a>
 				</td>
 			</tr>

@@ -51,7 +51,7 @@
 			<tr>
 				<td>Pre-defined lead SNPs</td>
 				<td>Optional</td>
-				<td>Optional pre-defined lead SNPs. The file should have 3 coulmns, rsID, chromsome and position.</td>
+				<td>Optional pre-defined lead SNPs. The file should have 3 columns, rsID, chromsome and position.</td>
 				<td>File upload</td>
 				<td>none</td>
 			</tr>
@@ -98,9 +98,9 @@
 				<td>The total number of individuals in the GWAS or the number of individuals per SNP.
 					This is only used for MAGMA to compute the gene-based P-values.
 					For total sample size, input should be an integer.
-					When the input file of GWAS summary statistics contains a column of sample size per SNP, the colum nname can be provided in the second text box.<br/>
+					When the input file of GWAS summary statistics contains a column of sample size per SNP, the column namecan be provided in the second text box.<br/>
 					<span class="info"><i class="fa fa-info"></i> When column name is provided, please make sure that the column only contains integers (no float or scientific notation).
-						If there are any float values, they will be rouded up by FUMA.
+						If there are any float values, they will be rounded up by FUMA.
 					</span>
 				</td>
 				<td>Integer or text</td>
@@ -110,7 +110,7 @@
 			<tr>
 				<td>Maximum lead SNP P-value (&le;)</td>
 				<td>Mandatory</td>
-				<td>FUMA identifies lead SNPs wiht P-value less than or equal to this threshold and independent from each other.
+				<td>FUMA identifies lead SNPs with P-value less than or equal to this threshold and independent from each other.
 				</td>
 				<td>numeric</td>
 				<td>5e-8</td>
@@ -122,7 +122,7 @@
 				<td>Minimum r<sup>2</sup> (&ge;)</td>
 				<td>Mandatory</td>
 				<td>The minimum r<sup>2</sup> for determining LD with independent genome-wide significant SNPs, which is used to determine the borders of the genomic risk loci.
-					SNPs with r<sup>2</sup> &ge; uder defined threshold with any of the detected independent significant SNPs will be included for further annotations and are used fro gene prioritization.
+					SNPs with r<sup>2</sup> &ge; user defined threshold with any of the detected independent significant SNPs will be included for further annotations and are used fro gene prioritization.
 					Note that the identification of independent lead SNPs is independent from this and is based on fized r<sup>2</sup> of 0.1.
 				</td>
 				<td>numeric</td>
@@ -135,7 +135,7 @@
 				<td>Maximum GWAS P-value (&le;)</td>
 				<td>Mandatory</td>
 				<td>This is the P-value threshold for candidate SNPs in LD of independent significant SNPs.
-					This will be applied only for GWAS-tagged SNPs as SNPs which do not exist in the GWAS input but are extracted from 1000 genoms reference do not have P-value.
+					This will be applied only for GWAS-tagged SNPs as SNPs which do not exist in the GWAS input but are extracted from 1000 genomes reference do not have P-value.
 				</td>
 				<td>numeric</td>
 				<td>0.05</td>
@@ -224,10 +224,10 @@
 			<tr>
 				<td>Distance to genes or functional consequences of SNPs on genes to map</td>
 				<td>Mandatory if positional mapping is activated.</td>
-				<td>Positional mappiing criterion either map SNPs to genes based on phisical distances or functional consequences of SNPs on genes. <br/>
+				<td>Positional mapping criterion either map SNPs to genes based on physical distances or functional consequences of SNPs on genes. <br/>
 					When maximum distance is provided SNPs are mapped to genes based on the distance given the user defined maximum distance.
 					Alternatively, specific functional consequences of SNPs on genes can be selected which filtered SNPs to map to genes.
-					Note that when functional consequences are selected, all SNPs are locating on the gene body (distance 0) except upstream and downstream SNPs whic hare up to 1kb apart from TSS or TSE. <br/>
+					Note that when functional consequences are selected, all SNPs are locating on the gene body (distance 0) except upstream and downstream SNPs which are up to 1kb apart from TSS or TSE. <br/>
 					<span class="info"><i class="fa fa-info"></i>
 						When the maximum distance is set at > 0kb and < 1kb all upstream and downstream SNPs are included since the actual distance is not provided by ANNOVAR.
 						Therefore, the maximum distance > 0kb and < 1kb is same as the maximum distance 1 kb.
@@ -325,10 +325,10 @@
 				<td>-</td>
 			</tr>
 			<tr>
-				<td>Buildin chromatin interaction data</td>
+				<td>Builtin chromatin interaction data</td>
 				<td>Optional</td>
 				<td>Build in chromatin interaction data can be selected in this option.
-					Details of available build in data are available in the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial.
+					Details of available build in data are available in the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chromatin interactions</a> section in this tutorial.
 				</td>
 				<td>Multiple selection</td>
 				<td>none</td>
@@ -337,11 +337,11 @@
 			<tr>
 				<td>Custom chromatin interaction matrices</td>
 				<td>Optional</td>
-				<td>In addition to build in chroatin interaction data, user can upload custome data.
+				<td>In addition to build in chromatin interaction data, user can upload custom data.
 					The data should be pre-computed chromatin loops with significance (ideally FDR but another score can be used, see the Chromatin interactions section for details).
 					The file should be gzipped and named as "(name-of-data).txt.gz". Multiple files can be uploaded.
 					For each data, user can also provide data type, such as Hi-C, ChIA-PET or C5 which is not mandatory but will be used in the result table and regional plot.
-					The file format is described in the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial.<br/>
+					The file format is described in the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chromatin interactions</a> section in this tutorial.<br/>
 					<span class="info"><i class="fa fa-info"></i>
 						Please avoid uploading more than one file with identical file names. In that case, the files are overwited by the last uploaded one.
 					</span>
@@ -352,11 +352,11 @@
 			</tr>
 			<tr>
 				<td>FDR threshold (&le;)</td>
-				<td>Mandatory if <code>chromatin iteraction mapping</code> is CHECKED</td>
-				<td>FDR threshold for signficant loops.
+				<td>Mandatory if <code>chromatin interaction mapping</code> is CHECKED</td>
+				<td>FDR threshold for significant loops.
 					The default value is set at 1e-6 which is suggested by <a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/27851967">Schmitt et al. (2016)</a><br/>
 					<span class="info"><i class="fa fa-info"></i>
-						This threshold will be applied both build in and user uploaded chroamtin loops.
+						This threshold will be applied both build in and user uploaded chromatin loops.
 					</span>
 				</td>
 				<td>Numeric</td>
@@ -367,12 +367,12 @@
 			</tr>
 			<tr>
 				<td>Promoter region window</td>
-				<td>Mandatory if <code>chromatin iteraction mapping</code> is CHECKED</td>
-				<td>Promoter regions of genes to map in significantly interacting regions.
+				<td>Mandatory if <code>chromatin interaction mapping</code> is CHECKED</td>
+				<td>Promoter regions of genes to map in significantly interactiong regions.
 					The input format should be "(upstream bp)-(donwstream bp)" from transcription start site (TSS).
 					For example, the default "250-500" means that promoter regions are defined as 250bp upstream and 500bp downstream of the TSS.
-					By the chromatin interaction mapping, genes whoes user defined promoter regions are overlapped with the singificantly interacting regions will be mapped.
-					Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial for details.
+					By the chromatin interaction mapping, genes whose user defined promoter regions are overlapped with the significantly interactiong regions will be mapped.
+					Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chromatin interactions</a> section in this tutorial for details.
 				</td>
 				<td>text</td>
 				<td>250-500</td>
@@ -383,9 +383,9 @@
 			<tr>
 				<td>Annotate enhancer/promoter regions (Roadmap 111 epigenomes)</td>
 				<td>Optional</td>
-				<td>Predicted enhancer and promoter regions from Roadmap epigenomics project for 111 epigenomes can be annotated to significantly interactin regions.
+				<td>Predicted enhancer and promoter regions from Roadmap epigenomics project for 111 epigenomes can be annotated to significantly interaction regions.
 					If any epigenome is not selected, enhancer and promoter regions are not annotated.
-					Annoated enhancer/promoter regions can be used to filter SNPs and mapped genes in the next two options.
+					Annotated enhancer/promoter regions can be used to filter SNPs and mapped genes in the next two options.
 				</td>
 				<td>Multiple selection</td>
 				<td>none</td>
@@ -396,7 +396,7 @@
 				<td>Optional</td>
 				<td>This option is only available when at least one epigenome is selected in the previous option to annotate enhancer/promoter regions.
 					When this option is checked, SNPs are filtered on such that overlap with one of the annotated enhancer regions for chromatin interaction mapping.
-					Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial for details.
+					Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chromatin interactions</a> section in this tutorial for details.
 				</td>
 				<td>Check</td>
 				<td>Unchecked</td>
@@ -406,8 +406,8 @@
 				<td>Filter genes by promoters</td>
 				<td>Optional</td>
 				<td>This option is only available when at least one epigenome is selected in the previous option to annotate enhancer/promoter regions.
-					When this option is checked, chromatin interaction mapping is only performed for genes whoes promoter regions are overlap with one of the annotated promoter regions.
-					Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chroamtin interactions</a> section in this tutorial for details.
+					When this option is checked, chromatin interaction mapping is only performed for genes whose promoter regions are overlap with one of the annotated promoter regions.
+					Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chromatin interactions</a> section in this tutorial for details.
 				</td>
 				<td>Check</td>
 				<td>Unchecked</td>
@@ -439,7 +439,7 @@
 				This applies to selected SNPs in LD with independent significant SNPs that are used to prioritize genes.
 				CADD score is the score of deleteriousness of SNPs predicted by 63 functional annotations.
 				12.37 is the threshold to be deleterious suggested by Kicher et al (2014).
-				Plesase refer to the original publication for details from <a href="{{ Config::get('app.subdir') }}/links">links</a>.
+				Please refer to the original publication for details from <a href="{{ Config::get('app.subdir') }}/links">links</a>.
 			</td>
 			<td>Check</td>
 			<td>Unchecked</td>
@@ -461,7 +461,7 @@
 			<td>Check if you want to perform filtering of SNPs by RegulomeDB score.
 				This applies to selected SNPs in LD with independent significant SNPs that are used to prioritize genes.
 				RegulomeDB score is a categorical score representing regulatory functionality of SNPs based on eQTLs and chromatin marks.
-				Plesase refer to the original publication for details from <a href="{{ Config::get('app.subdir') }}/links">links</a>.
+				Please refer to the original publication for details from <a href="{{ Config::get('app.subdir') }}/links">links</a>.
 			</td>
 			<td>Check</td>
 			<td>Unchecked</td>
@@ -586,7 +586,7 @@
 			<tr>
 				<td>Options for excluding MHC region</td>
 				<td>Optional</td>
-				<td>MHC region can be excluded only from either anotations or MAGMA gene analysis, or from both by selecting this option.</td>
+				<td>MHC region can be excluded only from either annotations or MAGMA gene analysis, or from both by selecting this option.</td>
 				<td>Select</td>
 				<td>Only from annotations</td>
 			</tr>
@@ -609,7 +609,7 @@
 	<p>
 		MAGMA gene and gene-set analyses are performed for the input summary statistics by default,
 		but user can also select to omit MAGMA process that reduce the run time of SNP2GENE process.
-		Gene expression data sets for MAGMA gene expression ananlysis can be also selected from here.
+		Gene expression data sets for MAGMA gene expression analysis can be also selected from here.
 	</p>
 	<table class="table table-bordered">
 		<thead>
@@ -625,7 +625,7 @@
 			<tr>
 				<td>Perform MAGMA</td>
 				<td>Optional</td>
-				<td>UNCHECK to OMIT MAGMA ananlyses.</td>
+				<td>UNCHECK to OMIT MAGMA analyses.</td>
 				<td>Check</td>
 				<td>Checked</td>
 			</tr>
@@ -633,7 +633,7 @@
 				<td>MAGMA gene expression analysis</td>
 				<td>Mandatory when <code>MAGMA</code> is active.</td>
 				<td>Gene expression data sets used for MAGMA gene-property analysis to test
-					positive associaiton between genetic associations and gene expression in a given label.
+					positive association between genetic associations and gene expression in a given label.
 				</td>
 				<td>Select</td>
 				<td>GTEx v6</td>
@@ -647,6 +647,6 @@
 	<h4><strong>7. Title of job submission</strong></h4>
 	<p>
 		Title of job submission can be provided at above the "Submit Job" button.
-		This is not mandatory but this would be usefull to keep track your jobs.
+		This is not mandatory but this would be useful to keep track your jobs.
 	</p>
 </div>
