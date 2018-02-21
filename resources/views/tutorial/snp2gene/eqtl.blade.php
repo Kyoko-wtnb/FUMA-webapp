@@ -106,7 +106,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		Signed statistics is beta.
 	</p>
 	<p><strong>Samples</strong><br/>
-		2,116 whole peripheral blood samples of healthy adults from 4 Durch cohorts (<a href="https://www.ncbi.nlm.nih.gov/pubmed/27918533">Zhernakova et al. 2017</a>).
+		2,116 whole peripheral blood samples of healthy adults from 4 Dutch cohorts (<a href="https://www.ncbi.nlm.nih.gov/pubmed/27918533">Zhernakova et al. 2017</a>).
 	</p><br/>
 
 	<h4><strong>4. BRAINEAC</strong></h4>
@@ -115,11 +115,11 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	</p>
 	<p><strong>Description</strong><br/>
 		The data include all eQTLs with nominal P-value < 0.05.
-		Since tested allele was not provided in the original data source, minor alleles in 1000 genome phase 3 are asigned as tested alleles.<br/>
+		Since tested allele was not provided in the original data source, minor alleles in 1000 genome phase 3 are assigned as tested alleles.<br/>
 		Signed statistics is t-statistics.<br/>
 		eQTLs were identified for each of the following 10 brain regions and based on averaged expression across all of them.<br/>
 		<span class="info"><i class="fa fa-info"></i>
-			Alignment of risk increasing allele and eQTL tested allele was not performed for this datasource,
+			Alignment of risk increasing allele and eQTL tested allele was not performed for this data source,
 			since tested allele is not available in the original data source
 			(replaced with "NA" in the result table).
 		</span>
@@ -146,7 +146,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		eQTL data was downloaded from <a href="http://www.gtexportal.org/home/datasets">http://www.gtexportal.org/home/datasets</a>.
 		Under the section of GTEx V7, from single tissue eQTL data both <span style="color: blue;">GTEx_analysis_v7_eQTLs.tar.gz</span>
 		for significant SNP-gene association based on permutation, and
-		<span style="color: blue;">GTEx_Analysis_v7_all_associations.tar.gz</span> for every SNP-gene association test (including non-significant paris)
+		<span style="color: blue;">GTEx_Analysis_v7_all_associations.tar.gz</span> for every SNP-gene association test (including non-significant pairs)
 		were downloaded.<br/>
 		GTEx eQTL v6 contains 48 different tissue types across 30 general tissue types.
 	</p>
@@ -245,7 +245,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	</p>
 	<p><strong>Samples</strong><br/>
 		856 female individuals of European descent recruited from
-		the TwinsUK Adult twin registory (<a href="https://www.ncbi.nlm.nih.gov/pubmed/22941192">Grundberg et al. 2012</a>).
+		the TwinsUK Adult twin registry (<a href="https://www.ncbi.nlm.nih.gov/pubmed/22941192">Grundberg et al. 2012</a>).
 		<ul>
 			<li>Adipose (N=855)</li>
 			<li>Skin (N=847)</li>
@@ -259,14 +259,14 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	</p>
 	<p><strong>Description</strong><br/>
 		Gene names are mapped to Ensembl ID (excluded genes which are not mapped to ENSG ID).
-		Since alleles were not available in the origina data, extracted from 1000G EUR population based on chromosome coordinate.
-		FDR was not provided in the original data souce, but the FDR column was replaced with Bonferoni corrected p-value,
-		as it was used in the original study (corrected for all tested SNP-gege pairs 60,456,556).
+		Since alleles were not available in the original data, extracted from 1000G EUR population based on chromosome coordinate.
+		FDR was not provided in the original data source, but the FDR column was replaced with Bonferoni corrected p-value,
+		as it was used in the original study (corrected for all tested SNP-gene pairs 60,456,556).
 		<br/>
 		Signed statistics is not available.
 		<br/>
 		<span class="info"><i class="fa fa-info"></i>
-			Alignment of risk increasing allele and eQTL tested allele was not performed for this datasource,
+			Alignment of risk increasing allele and eQTL tested allele was not performed for this data source,
 			since tested allele and signed statistics are not available in the original data source
 			(replaced with "NA" in the result table).
 		</span>
@@ -281,7 +281,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		Both eQTLs with and without SVA are included.
 	</p>
 	<p><strong>Description</strong><br/>
-		Publicly availabe eQTLs from CMC (without application) is binned by FDR.
+		Publicly available eQTLs from CMC (without application) is binned by FDR.
 		Therefore, nominal P-value is not available (replaced with -9).
 		FDR was binned into the following four groups, &lt;0.2, &lt;0.1, &lt;0.05 and &lt;0.01.
 		As numeric value is required for filtering during SNP2GENE process, those categorical values are replaced with
@@ -289,10 +289,10 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		<br/>
 		Signed statistics is not available but since expressed increasing allele was provided, signed_stats column is replaced with 1.
 		<br/>
-		Trans eQTLs are also availabel for CMC data set (as a separated option from cis-eQTLs).
+		Trans eQTLs are also available for CMC data set (as a separated option from cis-eQTLs).
 	</p>
 	<p><strong>Samples</strong><br/>
-		Post-mortem brain samples from 467 Caucaisan individuals (209 with SCZ, 206 controls and 52 AFF cases; <a href="https://www.ncbi.nlm.nih.gov/pubmed/27668389">Fromer et al. 2016</a>).
+		Post-mortem brain samples from 467 Caucasian individuals (209 with SCZ, 206 controls and 52 AFF cases; <a href="https://www.ncbi.nlm.nih.gov/pubmed/27668389">Fromer et al. 2016</a>).
 	</p><br/>
 </div>
 <br/>

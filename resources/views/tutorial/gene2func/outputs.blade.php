@@ -3,14 +3,14 @@
 	<h4><strong>1. Summary of input genes and download files</strong></h4>
 	<p>
 		1) <strong>Summary of input genes</strong><br/>
-		The table summarized the input genes and backgroud genes.
+		The table summarized the input genes and background genes.
 		Input genes which are not used in the GENE2FUNC analyses due to lack of matching gene ID
 		are also listed.
 		Since the primary gene ID of FUMA is Ensembl ID and not all Ensembl IDs are mapped to unique
 		entrez ID (NCBI gene ID), the number of unique entrez ID can be smaller than the number of
 		input genes with Ensembl ID.
 		Ensembl ID is used for expression heatmap and tissue specificity analyses,
-		and entrez ID is used for gene set ehrichment analysis.
+		and entrez ID is used for gene set enrichment analysis.
 		<br/>
 		2) <strong>Download files</strong><br/>
 		Results of GENE2FUNC can be downloaded as text file from here.
@@ -29,9 +29,9 @@
 		for GTEx v6 and BrainSapn, TPM (Transcripts Per Million) for GTEx v7.
 		This allows for comparison across labels and genes.
 		Hence, cells filled in red represent higher expression compared to cells filled in blue across genes and labels.<br/>
-		2) <strong>Average of normarized experssion per label</strong><br/>
+		2) <strong>Average of normalized expression per label</strong><br/>
 		This is the average of normalized expression (zero mean across samples)
-		following to winsolization at 50 and log 2 transformation of the expression avlue with pseudocount 1.
+		following to winsorization at 50 and log 2 transformation of the expression value with pseudocount 1.
 		This allows comparison of gene expression across labels (horizontal comparison) within a gene.
 		Thus expression values of different genes within a label (vertical comparison) are not comparable.
 		Hence, cells filled in red represents higher expression of the genes in
@@ -39,8 +39,8 @@
 		higher expression compared to other genes.
 	</p>
 	<p>
-		Labels (columns) and genes (rows) can be ordered by alphabetically or cluster (hierarchial clustering).
-		Hierarchial clustering is performed using python scipy package (using "average" method).<br/>
+		Labels (columns) and genes (rows) can be ordered by alphabetically or cluster (hierarchical  clustering).
+		Hierarchical  clustering is performed using python scipy package (using "average" method).<br/>
 		The heatmap is downloadable in several file formats. Note that the image will be downloaded as displayed.
 	</p>
 	<img src="{!! URL::asset('/image/gene2funcHeatmap.png') !!}" style="width:60%"/>
@@ -53,10 +53,10 @@
 		<br/>
 		<strong>Differentially Expressed Gene (DEG) Sets</strong><br/>
 		DEG sets were pre-calculated by performing two-sided t-test for any one of labels against all others.
-		For this, expresstion values were normalized (zero-mean) following to a log 2 transformation of expression value (EPKM or TPM).
+		For this, expression values were normalized (zero-mean) following to a log 2 transformation of expression value (EPKM or TPM).
 		Genes which with P-value &le; 0.05 after Bonferroni correction and absolute log fold change &ge; 0.58 were
 		defined as differentially expressed genes in a given label compared to others.
-		On top of DEG, up-regrated DEG and down-regulated DEG were also pre-calculated by taking sign of t-statistics into account.
+		On top of DEG, up-regulated DEG and down-regulated DEG were also pre-calculated by taking sign of t-statistics into account.
 		<br/><br/>
 	</p>
 	<p>

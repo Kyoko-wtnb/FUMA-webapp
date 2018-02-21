@@ -9,15 +9,15 @@
 			<li><strong>pos</strong> : position of top lead SNP on hg19</li>
 			<li><strong>P-value</strong> : P-value of top lead SNP (from the input file).</li>
 			<li><strong>start</strong> : Start position of the locus</li>
-			<li><strong>end</strong> : End postion of the locus</li>
-			<li><strong>nSNPs</strong> : The number of unique canidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+			<li><strong>end</strong> : End position of the locus</li>
+			<li><strong>nSNPs</strong> : The number of unique candidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
 				Candidate SNPs are all SNPs that are in LD (give user-defined r<sup>2</sup>) with any of independent significant SNPs and either have a P-value below the user defined threshold or are only available in 1000G.
 			</li>
-			<li><strong>nGWASSNPs</strong> : The number of unique GWAS-tagged candidate SNPs in the genomic locus which is available in the GWAS summarys statistics input file. This is a subset of "nSNPs".</li>
+			<li><strong>nGWASSNPs</strong> : The number of unique GWAS-tagged candidate SNPs in the genomic locus which is available in the GWAS summary statistics input file. This is a subset of "nSNPs".</li>
 			<li><strong>nIndSigSNPs</strong> : The number of the independent (at user defined r<sup>2</sup>) significant SNPs in the genomic locus.</li>
 			<li><strong>IndSigSNPs</strong> : rsID of the independent significant SNPs in the genomic locus.</li>
 			<li><strong>nLeadSNPs</strong> : The number of lead SNPs in the genomic locus.
-				Lead SNPs are are subset of independent significant SNPs at r<sup>2</sup> 0.1.</li>
+				Lead SNPs are subset of independent significant SNPs at r<sup>2</sup> 0.1.</li>
 			<li><strong>LeadSNPs</strong> : rsID of lead SNPs in the genomic locus.</li>
 		</ul>
 	</li>
@@ -85,7 +85,7 @@
 			<li><strong>nearestGene</strong> : The nearest Gene of the SNP based on ANNOVAR annotations.
 				Note that ANNOVAR annotates "consequence" function by prioritizing the most deleterious annotaion for SNPs which are locating a genomic region where multiple genes are obverlapped.
 				Genes are ecoded in symbol, if it is available otherwise Ensembl ID.
-				Genes include all transcripts from Ensembl gene build 85 includeing non-protein coding genes and RNAs.</li>
+				Genes include all transcripts from Ensembl gene build 85 including non-protein coding genes and RNAs.</li>
 			<li><strong>dist</strong> : Distance to the nearest gene. SNPs which are locating in the gene body or 1kb up- or down-stream of TSS or TES have 0.</li>
 			<li><strong>func</strong> : Functional consequence of the SNP on the gene obtained from ANNOVAR. For exonic SNPs, detailed annotation (e.g. non-synonymous, stop gain and so on) is available in the ANNOVAR table (annov.txt).</li>
 			<li><strong>CADD</strong> : CADD score which is computed based on 63 annotations. The higher the score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al (2014).</li>
@@ -173,7 +173,7 @@
 	</li>
 </ul>
 <ul>
-	<li><p>Chromatin interaction (Chromaint interactions tab)</p>
+	<li><p>Chromatin interaction (Chromatin interactions tab)</p>
 		<p>This file is only available when chromatin interaction mapping is performed.
 		The file contains significant interactions of user defined data or user uploaded data filtered.
 		</p>
