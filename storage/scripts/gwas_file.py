@@ -299,6 +299,8 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and eacol i
 # if both chr and pos are provided
 elif chrcol is not None and poscol is not None:
 	dbSNPfile = cfg.get('data', 'dbSNP')
+	refpanel = cfg.get('data', 'refgenome')+"/"+param.get('params', 'refpanel')
+	pop = param.get('params', 'pop')
 
 	##### tabix dbSNP to get rsID nad alleles #####
 	def Tabix (chrom, start ,end, snps):
@@ -307,15 +309,14 @@ elif chrcol is not None and poscol is not None:
 		poss = set(snps[:, poscol].astype(int))
 		pos = snps[:, poscol].astype(int)
 
-		tbfile = dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz"
-		tb = tabix.open(tbfile)
-		temp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
-
 		out = open(outSNPs, 'a+')
 
 		# when rsID is the only missing column, keep all SNPs in input file
 		# assigned rsID for only SNPs that exists in dbSNP
 		if neacol is not None and eacol is not None:
+			tbfile = dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz"
+			tb = tabix.open(tbfile)
+			temp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
 			dbSNP = []
 			for l in temp:
 				dbSNP.append(l)
@@ -352,8 +353,11 @@ elif chrcol is not None and poscol is not None:
 						out.write("\t"+l[Ncol])
 					out.write("\n")
 
-		# when one of the alleles need to be extracted, only SNPs exist in dbSNP will be recoded in the output
+		# when one of the alleles need to be extracted, get from the selected population
 		else:
+			tbfile = refpanel+"/"+pop+"/"+pop+".chr"+str(chrom)+".frq.gz"
+			tb = tabix.open(tbfile)
+			temp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
 			for l in temp:
 				if int(l[1]) in poss:
 				    j = bisect_left(pos, int(l[1]))

@@ -40,11 +40,11 @@ def getAnnov(snps, chrom, annovin, dbSNP):
 			if int(l[1]) in spos:
 				j = bisect_left(pos, l[1])
 				if l[3] == str(snps[j,4]):
-					annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], l[3], snps[j,5]])
+					annov.append([str(chrom).replace('23', 'X'), snps[j,3], str(int(snps[j,3])+len(l[3])-1), l[3], snps[j,5]])
 				elif l[3] == str(snps[j,5]):
-					annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], l[3], snps[j,4]])
+					annov.append([str(chrom).replace('23', 'X'), snps[j,3], str(int(snps[j,3])+len(l[3])-1), l[3], snps[j,4]])
 				else:
-					annov.append([str(chrom).replace('23', 'X'), snps[j,3], snps[j,3], snps[j,4], snps[j,5]])
+					annov.append([str(chrom).replace('23', 'X'), snps[j,3], str(int(snps[j,3])+len(snps[j,4])-1), snps[j,4], snps[j,5]])
 				checked.append(str(snps[j,3]))
 		cur_start = cur_end+1
 		cur_end = cur_start + 100000
