@@ -36,9 +36,9 @@ var id = "{{$id}}";
 var page = "{{$page}}";
 var loggedin = "{{ Auth::check() }}";
 </script>
-<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
-<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}"></script>
-<script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}"></script>
+<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?130"></script>
+<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?130"></script>
+<script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}?130"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">
