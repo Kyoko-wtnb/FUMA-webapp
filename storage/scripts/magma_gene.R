@@ -18,7 +18,7 @@ write.table(magma, paste(filedir, "magma.genes.out", sep=""), quote=F, row.names
 
 magmaset <- fread(paste(filedir, "magma.sets.out", sep=""), data.table=F)
 magmaset$Pbon <- p.adjust(magmaset$P)
-magmaset <- magmaset[order(magmaset$Pbon),]
+magmaset <- magmaset[order(magmaset$P),]
 magmaset <- subset(magmaset, select=c("FULL_NAME", "NGENES", "BETA", "BETA_STD", "SE", "P", "Pbon"))
 if(length(which(magmaset$Pbon<0.05))<10){
   magmaset <- magmaset[1:10,]

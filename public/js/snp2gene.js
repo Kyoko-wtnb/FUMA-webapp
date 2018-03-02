@@ -224,12 +224,12 @@ $(document).ready(function(){
 	}
 
 	// download file selection
-	$('#allfiles').on('click', function(){
+	$('.allfiles').on('click', function(){
 		$('#downFileCheck input').each(function(){
 			$(this).prop("checked", true);
 		});
 	});
-	$('#clearfiles').on('click', function(){
+	$('.clearfiles').on('click', function(){
 		$('#downFileCheck input').each(function(){
 			$(this).prop("checked", false);
 		});
