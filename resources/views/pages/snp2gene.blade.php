@@ -36,7 +36,7 @@ var loggedin = "{{ Auth::check() }}";
 <script type="text/javascript" src="{!! URL::asset('js/NewJobParameters.js') !!}?130"></script>
 <script type="text/javascript" src="{!! URL::asset('js/geneMapParameters.js') !!}?130"></script>
 <script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?130"></script>
-<script type="text/javascript" src="{!! URL::asset('js/snp2gene.js') !!}?130"></script>
+<script type="text/javascript" src="{!! URL::asset('js/snp2gene.js') !!}?1301"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">

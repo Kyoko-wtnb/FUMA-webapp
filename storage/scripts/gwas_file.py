@@ -10,6 +10,7 @@ import time
 from bisect import bisect_left
 import tabix
 import csv
+import subprocess
 
 ##### Return index of a1 which exists in a2 #####
 def ArrayIn(a1, a2):
@@ -589,6 +590,11 @@ elif chrcol is None or poscol is None:
 		if len(gwas)==0:
 			break
 	out.close()
+
+##### check output file #####
+wc = int(subprocess.check_output("wc -l "+filedir+"input.snps", shell=True).split()[0])
+if wc < 2:
+	sys.exit("There was no SNPs remained after formatting the input summary statistics.")
 
 ##### total time #####
 print time.time()-start
