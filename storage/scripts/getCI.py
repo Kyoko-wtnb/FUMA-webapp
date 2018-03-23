@@ -27,6 +27,10 @@ def ArrayIn(a1, a2):
 	results = np.where(np.in1d(a1, a2))[0]
 	return results
 
+def ArrayNotIn(a1, a2):
+    tmp = np.where(np.in1d(a1, a2))[0]
+    return list(set(range(0,len(a1)))-set(tmp))
+
 def getSNPs(filedir):
 	snps = pd.read_table(filedir+"snps.txt", sep="\t")
 	snpshead = list(snps.columns.values)
@@ -58,7 +62,7 @@ def getGenes(genes, start, end):
 
 def mapToCI(snps, gl, f, ciMapFDR, dt, DB, ts, genes):
 	s = time.time()
-	chunks = pd.read_table(f, comment="#", delim_whitespace=True, chunksize=10000)
+	chunks = pd.read_table(f, comment="#", header=0, delim_whitespace=True, chunksize=10000, dtype=str)
 	mapdat = []
 	for tmp in chunks:
 		tmp = np.array(tmp)
@@ -74,10 +78,16 @@ def mapToCI(snps, gl, f, ciMapFDR, dt, DB, ts, genes):
 
 	print "Significant interactions: "+str(len(mapdat))
 
-	if isinstance(mapdat[0,0], str):
-		mapdat[:,0] = [int(re.sub(r'X|x', '23', x.replace("chr",""))) for x in mapdat[:,0]]
-	if isinstance(mapdat[0,3], str):
-		mapdat[:,3] = [int(re.sub(r'X|x', '23', x.replace("chr",""))) for x in mapdat[:,3]]
+	mapdat[:,0] = [re.sub(r'X|x', '23', x.replace("chr","")) for x in mapdat[:,0]]
+	mapdat[:,3] = [re.sub(r'X|x', '23', x.replace("chr","")) for x in mapdat[:,3]]
+
+	mapdat = mapdat[ArrayNotIn(mapdat[:,0], ['Y', 'y', 'MT', 'mt'])]
+	mapdat = mapdat[ArrayNotIn(mapdat[:,3], ['Y', 'y', 'MT', 'mt'])]
+	tmp = []
+	for l in mapdat:
+		tmp.append([int(l[0]), int(l[1]), int(l[2]), int(l[3]), int(l[4]), int(l[5]), float(l[6])])
+	mapdat = np.array(tmp)
+	tmp = None
 
 	### filter interaction based on risk loci
 	chrdat1 = {}
