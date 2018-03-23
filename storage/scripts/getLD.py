@@ -323,7 +323,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							if not checkall:
 								continue
 
-						if float(gwas_in[jgwas, pcol])>=gwasP:
+						### do not filter on P-value for provided lead SNPs
+						if not uid==l_uid and float(gwas_in[jgwas, pcol])>=gwasP:
 							continue
 
 						ld.append([l_uid, uid, ld_tmp[ild, 2]])
@@ -636,6 +637,9 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 			GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
 			nonGWASSNPs = unique(nonGWASSNPs)
 			GWASSNPs = unique(GWASSNPs)
+			if len(snps_tmp)==0:
+				print rsIDs
+				print uid
 			start = min(snps_tmp[:,3].astype(int))
 			end = max(snps_tmp[:,3].astype(int))
 			if start <= int(loci[iloci][7]) or start-int(loci[iloci][7])<params.mergeDist:
@@ -763,14 +767,14 @@ def main():
 	regions = None
 	if params.regions:
 		regions = pd.read_table(params.regions, comment="#", delim_whitespace=True)
-		regions = regions.as_matrix()
+		regions = np.array(regions)
 
 	##### lead SNPs file #####
 	# 0: rsID, 1: chr, 2: pos
 	inleadSNPs = None
 	if params.leadSNPs:
 		inleadSNPs = pd.read_table(params.leadSNPs, comment="#", delim_whitespace=True)
-		inleadSNPs = inleadSNPs.as_matrix()
+		inleadSNPs = np.array(inleadSNPs)
 		#inleadSNPs = rsIDup(inleadSNPs, 0, params.dbSNPfile)
 
 	##### get row index for each chromosome #####
