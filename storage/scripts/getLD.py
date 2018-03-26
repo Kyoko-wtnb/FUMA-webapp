@@ -854,7 +854,7 @@ def main():
 		sys.exit("No candidate SNP was identified")
 
 	##### ANNOVAR #####
-	os.system(os.path.dirname(os.path.realpath(__file__))+"/annovar.py "+filedir)
+	os.system("python "+os.path.dirname(os.path.realpath(__file__))+"/annovar.py "+filedir)
 
 	print "getLD.py run time: "+str(time.time()-starttime)
 
