@@ -21,7 +21,7 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
-<link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
+<link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}?130">
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 <script type="text/javascript">
 $.ajaxSetup({
@@ -188,7 +188,7 @@ var loggedin = "{{ Auth::check() }}";
 
 				<div id="checkGenes"></div>
 				<div id="checkBkGenes"></div>
-				<input type="submit" value="Submit" class="btn" id="geneSubmit" name="geneSubmit"/><br/><br/>
+				<input type="submit" value="Submit" class="btn btn-default" id="geneSubmit" name="geneSubmit"/><br/><br/>
 				{!! Form::close() !!}
 			</div>
 
@@ -199,7 +199,7 @@ var loggedin = "{{ Auth::check() }}";
 						Gene query history
 					</div>
 					<div class="panel-body">
-						<button class="btn btn-sm" id="deleteJob" name="deleteJob" style="float:right; margin-right:20px;">Delete selected jobs</button>
+						<button class="btn btn-default btn-sm" id="deleteJob" name="deleteJob" style="float:right; margin-right:20px;">Delete selected jobs</button>
 						<table class="table">
 							<thead>
 								<tr>

@@ -13,10 +13,10 @@
 			</a>
 			</h4>
 			Download the plot as
-			<button class="btn btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","png");'>PNG</button>
-			<button class="btn btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","jpeg");'>JPG</button>
-			<button class="btn btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","svg");'>SVG</button>
-			<button class="btn btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","pdf");'>PDF</button>
+			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","png");'>PNG</button>
+			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","jpeg");'>JPG</button>
+			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","svg");'>SVG</button>
+			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","pdf");'>PDF</button>
 
 			<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/{{$page}}/imgdown">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -39,10 +39,10 @@
 		</a>
 		</h4>
 		Download the plot as
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("lociPlot","png");'>PNG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("lociPlot","jpeg");'>JPG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("lociPlot","svg");'>SVG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("lociPlot","pdf");'>PDF</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("lociPlot","png");'>PNG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("lociPlot","jpeg");'>JPG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("lociPlot","svg");'>SVG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("lociPlot","pdf");'>PDF</button>
 
 		<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/{{$page}}/imgdown">
 			<input type="hidden" name="_token" value="{{ csrf_token() }}">

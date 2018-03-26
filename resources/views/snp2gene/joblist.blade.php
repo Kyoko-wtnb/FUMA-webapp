@@ -5,7 +5,7 @@
 	        <div class="panel-title">List of Jobs <tab><a id="refreshTable"><i class="fa fa-refresh"></i></a></div>
 	    </div>
 	    <div class="panel-body">
-			<button class="btn btn-sm" id="deleteJob" name="deleteJob" style="float:right; margin-right:20px;">Delete selected jobs</button>
+			<button class="btn btn-default btn-sm" id="deleteJob" name="deleteJob" style="float:right; margin-right:20px;">Delete selected jobs</button>
 			<table class="table">
 				<thead>
 					<tr>
@@ -33,7 +33,7 @@
 			<form action="{{ Config::get('app.subdir') }}/gene2func/geneSubmit" method="post" target="_blank">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
 				<input type="hidden" id="g2fSubmitJobID" name="jobID" value=""/>
-				<input type="submit" class="btn" id="g2fSubmitBtn" name="g2fSubmitBtn">
+				<input type="submit" class="btn btn-default" id="g2fSubmitBtn" name="g2fSubmitBtn">
 			</form>
 	    </div>
 	</div>

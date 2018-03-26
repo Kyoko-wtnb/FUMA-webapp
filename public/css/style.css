@@ -56,8 +56,12 @@ img.footerimg{
   color: #fff;
 }
 
-.btn.active, .btn:active{
-  background-color: #b3b3cc;
+.btn-default{
+	background-color: #ECF0F1 !important;
+}
+
+.btn-default:active{
+  background-color: #B3B6B7 !important;
 }
 
 tab {
