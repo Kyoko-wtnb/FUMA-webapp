@@ -99,7 +99,7 @@
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">
 					<input type="hidden" name="jobID" value="{{$id}}"/>
 					<span class="form-inline">
-						<input type="submit" class="btn" id="geneQuerySubmit" name="geneQuerySubmit" value="Use mapped genes for GENE2FUNC (open new tab)">
+						<input type="submit" class="btn btn-default" id="geneQuerySubmit" name="geneQuerySubmit" value="Use mapped genes for GENE2FUNC (open new tab)">
 						<a class="infoPop" data-toggle="popover" data-content="This is linked to GENE2FUNC process. All genes in the table below will be used. You can manually submit selected genes later on. This will open new tab.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
@@ -159,9 +159,9 @@
 				<br/>
 				<h4>Circos plots of chromatin interactions and eQTLs</h4>
 				Download circos plots (all displayed chromosomes) as
-				<button class="btn btn-xs circosDown" onclick='circosDown("png");'>PNG</button>
-				<button class="btn btn-xs circosDown" onclick='circosDown("svg");'>SVG</button>
-				<button class="btn btn-xs circosDown" onclick='circosDown("conf");'>Circos config files</button>
+				<button class="btn btn-default btn-xs circosDown" onclick='circosDown("png");'>PNG</button>
+				<button class="btn btn-default btn-xs circosDown" onclick='circosDown("svg");'>SVG</button>
+				<button class="btn btn-default btn-xs circosDown" onclick='circosDown("conf");'>Circos config files</button>
 
 				<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/{{$page}}/circosDown">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -446,7 +446,7 @@
 						<div id="check_ci_annotPlot"><tab><input type="checkbox" name="annotPlot_ci" id="annotPlot_ci" checked/>Chromatin interaction<br/></div>
 						<br/>
 						<span class="form-inline">
-							<input class="btn" type="submit" name="submit" id= "annotPlotSubmit" value="Plot">
+							<input class="btn btn-default" type="submit" name="submit" id= "annotPlotSubmit" value="Plot">
 							<span id="CheckAnnotPlotOpt"></span>
 						</span>
 					</form>

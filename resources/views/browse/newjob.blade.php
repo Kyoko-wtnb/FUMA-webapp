@@ -1068,7 +1068,7 @@
 					</td>
 					<td>
 						<span id="ciFiles"></span><br/>
-						<button type="button" class="btn btn-xs" id="ciFileAdd">add file</button>
+						<button type="button" class="btn btn-default btn-xs" id="ciFileAdd">add file</button>
 						<input type="hidden" value="0" id="ciFileN" name="ciFileN">
 					</td>
 					<td>
@@ -1662,7 +1662,7 @@
 		</span>
 	</span><br/><br/>
 
-	<input class="btn" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
+	<input class="btn btn-default" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
 	<span style="color: red; font-size:18px;">
 		<i class="fa fa-exclamation-triangle"></i> After submitting, please wait a couple of seconds until the file is uploaded, and do not move away from the submission page.
 	</span>

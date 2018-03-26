@@ -20,7 +20,7 @@
 				<input type="checkbox" name="gsfile" id="gsfile" checked onchange="DownloadFiles();">Gene set analysis results (only include significnat gene sets) </br>
 			</div>
 			<span class="form-inline">
-				<input class="btn btn-xs" type="submit" name="download" id="download" value="Download files"/>
+				<input class="btn btn-default btn-xs" type="submit" name="download" id="download" value="Download files"/>
 				<tab><a class="allfiles"> Select All </a>
 				<tab><a class="clearfiles"> Clear</a>
 			</span>

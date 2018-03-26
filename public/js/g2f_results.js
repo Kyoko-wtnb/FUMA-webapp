@@ -249,10 +249,10 @@ function tsEnrich(id){
 
 				// img download buttons
 				$('#'+ds+'Panel').append('<div id="'+ds+'Plot">Download the plot as '
-					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","png");'+"'"+'>PNG</button> '
-					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","jpeg");'+"'"+'>JPG</button> '
-					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","svg");'+"'"+'>SVG</button> '
-					+'<button class="btn btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","pdf");'+"'"+'>PDF</button></div>'
+					+'<button class="btn btn-default btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","png");'+"'"+'>PNG</button> '
+					+'<button class="btn btn-default btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","jpeg");'+"'"+'>JPG</button> '
+					+'<button class="btn btn-default btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","svg");'+"'"+'>SVG</button> '
+					+'<button class="btn btn-default btn-xs ImgDown" onclick='+"'"+'DEGImgDown("'+ds+'","pdf");'+"'"+'>PDF</button></div>'
 				);
 
 				// plot
@@ -500,12 +500,12 @@ function GeneSet(id){
 						+category[i]+'Panel"><p><a onclick="GeneSetPlot('+"'"+category[i]+"'"+');">Plot</a> / <a onclick="GeneSetTable('+
 						"'"+category[i]+"'"+');">Table</a></p></div></div>';
 					$('#GeneSet').append(panel);
-					// $('#'+category[i]+"Panel").append('<button class="btn btn-xs ImgDown" id="'+category[i]+'Img" style="float:right; margin-right:100px;">Download PNG</button>');
+					// $('#'+category[i]+"Panel").append('<button class="btn btn-default btn-xs ImgDown" id="'+category[i]+'Img" style="float:right; margin-right:100px;">Download PNG</button>');
 					$('#'+category[i]+"Panel").append('<div id="'+category[i]+'Plot">Download the plot as '
-						+'<button class="btn btn-xs ImgDown" onclick='+"'"+'GSImgDown("'+category[i]+'","png");'+"'"+'>PNG</button> '
-						+'<button class="btn btn-xs ImgDown" onclick='+"'"+'GSImgDown("'+category[i]+'","jpeg");'+"'"+'>JPG</button> '
-						+'<button class="btn btn-xs ImgDown" onclick='+"'"+'GSImgDown("'+category[i]+'","svg");'+"'"+'>SVG</button> '
-						+'<button class="btn btn-xs ImgDown" onclick='+"'"+'GSImgDown("'+category[i]+'","pdf");'+"'"+'>PDF</button> '
+						+'<button class="btn btn-default btn-xs ImgDown" onclick='+"'"+'GSImgDown("'+category[i]+'","png");'+"'"+'>PNG</button> '
+						+'<button class="btn btn-default btn-xs ImgDown" onclick='+"'"+'GSImgDown("'+category[i]+'","jpeg");'+"'"+'>JPG</button> '
+						+'<button class="btn btn-default btn-xs ImgDown" onclick='+"'"+'GSImgDown("'+category[i]+'","svg");'+"'"+'>SVG</button> '
+						+'<button class="btn btn-default btn-xs ImgDown" onclick='+"'"+'GSImgDown("'+category[i]+'","pdf");'+"'"+'>PDF</button> '
 						+'<div id="'+category[i]+'" style="overflow: auto; width: 100%;"></div></div>'
 						+'<div id="'+category[i]+'Table"></div>');
 

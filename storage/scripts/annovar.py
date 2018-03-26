@@ -96,7 +96,7 @@ def main():
 	os.system(annov+"/annotate_variation.pl -out "+annovout+" -build hg19 "+annovin+" "+humandb+"/ -dbtype ensGene")
 	annov1 = filedir+"annov.variant_function"
 	annov2 = filedir+"annov.txt"
-	os.system(os.path.dirname(os.path.realpath(__file__))+"/annov_geneSNPs.pl "+annov1+" "+annov2)
+	os.system("perl "+os.path.dirname(os.path.realpath(__file__))+"/annov_geneSNPs.pl "+annov1+" "+annov2)
 	os.system("rm "+filedir+"annov.*function "+filedir+"annov.log")
 
 if __name__ == "__main__": main()

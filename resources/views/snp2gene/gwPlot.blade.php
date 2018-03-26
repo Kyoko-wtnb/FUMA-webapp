@@ -9,10 +9,10 @@
 			For plotting, overlapping data points are not drawn (filtering was performed only for SNPs with P-value &ge; 1e-5, see tutorial for details).
 		</span><br/><br/>
 		Download the plot as
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","png");'>PNG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","jpeg");'>JPG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","svg");'>SVG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("manhattan","pdf");'>PDF</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("manhattan","png");'>PNG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("manhattan","jpeg");'>JPG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("manhattan","svg");'>SVG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("manhattan","pdf");'>PDF</button>
 
 		<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/{{$page}}/imgdown">
 			<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -34,10 +34,10 @@
 		</span><br/><br/>
 		<span id="geneManhattanDesc"></span><br/><br/>
 		Download the plot as
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","png");'>PNG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","jpeg");'>JPG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","svg");'>SVG</button>
-		<button class="btn btn-xs ImgDown" onclick='ImgDown("geneManhattan","pdf");'>PDF</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("geneManhattan","png");'>PNG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("geneManhattan","jpeg");'>JPG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("geneManhattan","svg");'>SVG</button>
+		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("geneManhattan","pdf");'>PDF</button>
 
 		<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/{{$page}}/imgdown">
 			<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -65,10 +65,10 @@
 					For plotting purposes, overlapping data points are not drawn (filtering was performed only for SNPs with P-value &ge; 1e-5, see tutorial for details).
 				</span><br/><br/>
 				Download the plot as
-				<button class="btn btn-xs ImgDown" onclick='ImgDown("QQplot","png");'>PNG</button>
-				<button class="btn btn-xs ImgDown" onclick='ImgDown("QQplot","jpeg");'>JPG</button>
-				<button class="btn btn-xs ImgDown" onclick='ImgDown("QQplot","svg");'>SVG</button>
-				<button class="btn btn-xs ImgDown" onclick='ImgDown("QQplot","pdf");'>PDF</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("QQplot","png");'>PNG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("QQplot","jpeg");'>JPG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("QQplot","svg");'>SVG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("QQplot","pdf");'>PDF</button>
 
 				<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/{{$page}}/imgdown">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -90,10 +90,10 @@
 					<br/>
 				</span><br/><br/>
 				Download the plot as
-				<button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","png");'>PNG</button>
-				<button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","jpeg");'>JPG</button>
-				<button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","svg");'>SVG</button>
-				<button class="btn btn-xs ImgDown" onclick='ImgDown("geneQQplot","pdf");'>PDF</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("geneQQplot","png");'>PNG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("geneQQplot","jpeg");'>JPG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("geneQQplot","svg");'>SVG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("geneQQplot","pdf");'>PDF</button>
 
 				<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/{{$page}}/imgdown">
 					<input type="hidden" name="_token" value="{{ csrf_token() }}">

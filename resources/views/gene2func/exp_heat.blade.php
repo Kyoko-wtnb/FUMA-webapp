@@ -40,10 +40,10 @@
 		</select>
 	</span><br/><br/>
 	Download the plot as
-	<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","png");'>PNG</button>
-	<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","jpeg");'>JPG</button>
-	<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","svg");'>SVG</button>
-	<button class="btn btn-xs ImgDown" onclick='ImgDown("expHeat","pdf");'>PDF</button>
+	<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("expHeat","png");'>PNG</button>
+	<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("expHeat","jpeg");'>JPG</button>
+	<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("expHeat","svg");'>SVG</button>
+	<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("expHeat","pdf");'>PDF</button>
 
 	<form method="post" target="_blank" action="{{ Config::get('app.subdir') }}/{{$page}}/imgdown">
 		<input type="hidden" name="_token" value="{{ csrf_token() }}">

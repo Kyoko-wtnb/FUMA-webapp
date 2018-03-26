@@ -263,7 +263,7 @@ function getJobList(){
 				var g2fbutton = 'Not available';
 				if(val.status == 'OK'){
 					val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">Go to results</a>';
-					g2fbutton = '<button class="btn btn-xs" value="'+val.jobID+'" onclick="g2fbtn('+val.jobID+');">GENE2FUNC</button>';
+					g2fbutton = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="g2fbtn('+val.jobID+');">GENE2FUNC</button>';
 				}else if(val.status == 'ERROR:005'){
 					val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">ERROR:005</a>';
 				}

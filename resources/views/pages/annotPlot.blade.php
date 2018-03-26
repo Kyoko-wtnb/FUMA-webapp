@@ -1,7 +1,7 @@
 <!-- <html> -->
 @extends('layouts.simple')
 @section('head')
-<link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}">
+<link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}?130">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
@@ -49,10 +49,10 @@ var Chr15cells = "{{$Chr15cells}}";
 			</span><br/>
 			<a id="plotclear" style="position: absolute;right: 30px;">Clear</a><br/>
 			Download the plot as
-			<button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","png");'>PNG</button>
-			<button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","jpeg");'>JPG</button>
-			<button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","svg");'>SVG</button>
-			<button class="btn btn-xs ImgDown" onclick='ImgDown("annotPlot","pdf");'>PDF</button>
+			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("annotPlot","png");'>PNG</button>
+			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("annotPlot","jpeg");'>JPG</button>
+			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("annotPlot","svg");'>SVG</button>
+			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("annotPlot","pdf");'>PDF</button>
 
 			<form method="post" target="_blank" action="imgdown">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
