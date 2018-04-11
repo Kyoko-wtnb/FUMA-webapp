@@ -151,6 +151,9 @@
 							<option value="1KG/Phase3/AFR">1000G Phase3 AFR</option>
 							<option value="1KG/Phase3/SAS">1000G Phase3 SAS</option>
 							<option value="1KG/Phase3/EAS">1000G Phase3 EAS</option>
+							<option value="UKB/release1/WBrits_10k">UKB release1 White British</option>
+							<option value="UKB/release2/WBrits_10k">UKB release2 White British</option>
+							<option value="UKB/release2/EUR_10k">UKB release2 European</option>
 						</select>
 					</td>
 					<td>
@@ -160,13 +163,15 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Include 1000 genome variant (non-GWAS tagged SNPs in LD)
-						<a class="infoPop" data-toggle="popover" title="1000G SNPs" data-content="Select ‘yes’ if you want to include SNPs that are not available in the GWAS output but are available in 1000G. Including these SNPs may provide information on functional variants in LD with the lead SNP.">
+					<td>Include variants in reference panel (non-GWAS tagged SNPs in LD)
+						<a class="infoPop" data-toggle="popover" title="Variants in reference" data-content="Select ‘yes’
+						if you want to include SNPs that are not available in the GWAS output but are available in the selected reference panel.
+						Including these SNPs may provide information on functional variants in LD with the lead SNP.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
 					<td>
-						<select class="form-control" id="KGSNPs" name="KGSNPs">
+						<select class="form-control" id="refSNPs" name="refSNPs">
 							<option selected value="Yes">Yes</option>
 							<option value="No">No</option>
 						</select>
@@ -1637,6 +1642,23 @@
 						<span class="form-inline">
 							<input type="checkbox" class="form-check-input" name="magma" id="magma" checked onchange="CheckAll();">
 						</span>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Gene window
+						<a class="infoPop" data-toggle="popover" title="MAGMA gene window" data-content="The window size of genes to assign SNPs. e.g. 5kb option means SNPs within 5kb from both start and end of the gene are assigned to that gene.">
+							<i class="fa fa-question-circle-o fa-lg"></i>
+						</a>
+					</td>
+					<td>
+						<select class="form-control" id="magma_window" name="magma_window">
+							<option selected value="0">0 kb</option>
+							<option value="5">5 kb</option>
+							<option value="10">10 kb</option>
+							<option value="15">15 kb</option>
+							<option value="20">20 kb</option>
+						</select>
 					</td>
 					<td></td>
 				</tr>

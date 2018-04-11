@@ -14,7 +14,7 @@
 				<!-- local_start -->
 				<li class="{{ Request::is('/') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/">Home</a></li>
 				<li class="{{ Request::is('tutorial') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/tutorial">Tutorial</a></li>
-				<li class="{{ Request::is('browse*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/browse">Browse Examples</a></li>
+				<li class="{{ Request::is('browse*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/browse">Browse Public Results</a></li>
 				<li class="{{ Request::is('snp2gene*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a></li>
 				<li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a></li>
 				<li class="{{ Request::is('links') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/links">Links</a></li>

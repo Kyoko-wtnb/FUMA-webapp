@@ -49,6 +49,7 @@ my $magmain = $filedir."magma.input";
 my $magmafiles = $cfg->param('magma.magmafiles');
 my $ref = "$magmafiles/g1000_".lc($pop);
 my $magma = $cfg->param('magma.magmadir');
+my $magma_window = $params->param('magma.magma_window');
 my @magma_exp = split(/:/, $params->param('magma.magma_exp'));
 
 if(defined $N){

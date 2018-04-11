@@ -331,7 +331,7 @@ function tsEnrich(id){
 					.attr("y", function(d){return ydown(-Math.log10(d[3]))})
 					.attr("height", function(d){return ydown(0)-ydown(-Math.log10(d[3]));})
 					.style("fill", function(d){
-						if(d[3]>0.05){return "#5668f4";}
+						if(d[3]>0.05/label.length){return "#5668f4";}
 						else{return "#c00";}
 					})
 					.style("stroke", "grey")
@@ -361,7 +361,7 @@ function tsEnrich(id){
 					.attr("y", function(d){return y(-Math.log10(d[3]))})
 					.attr("height", function(d){return y(0)-y(-Math.log10(d[3]));})
 					.style("fill", function(d){
-						if(d[3]>0.05){return "#5668f4";}
+						if(d[3]>0.05/label.length){return "#5668f4";}
 						else{return "#c00";}
 					})
 					.style("stroke", "grey")

@@ -18,8 +18,14 @@ use JavaScript;
 class BrowseController extends Controller
 {
 	public function getGwasList(){
-		$results = DB::table('BrowseGwas')->get();
+		$results = DB::select('SELECT id, title, author, email, phenotype, publication, sumstats_link, sumstats_ref, notes, created_at, update_at FROM PublicResults ORDER BY ID DESC');
 		return response()->json($results);
+	}
+
+	public function checkG2F(Request $request){
+		$id = $request->input('id');
+		$results = collect(DB::select('SELECT g2f_jobID FROM PublicResults WHERE id=?', [$id]))->first();
+		return $results->g2f_jobID;
 	}
 
 	public function getParams(Request $request){
@@ -101,13 +107,6 @@ class BrowseController extends Controller
       $zip -> close();
       return response() -> download($zipfile);
     }
-
-	// public function g2fFileDown(Request $request){
-    //   $file = $request -> input('file');
-    //   $id = $request -> input('id');
-    //   $filedir = config('app.jobdir').'/gwas/'.$id.'/g2f/'.$file;
-    //   return response() -> download($filedir);
-    // }
 
 	public function imgdown(Request $request){
       $svg = $request->input('data');

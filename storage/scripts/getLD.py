@@ -33,7 +33,7 @@ class getParams:
 		refpanel = param_cfg.get('params', 'refpanel')
 		pop = param_cfg.get('params', 'pop')
 		leadP = float(param_cfg.get('params', 'leadP'))
-		KGSNPs = int(param_cfg.get('params', 'Incl1KGSNPs')) #1 to add, 0 to not add
+		refSNPs = int(param_cfg.get('params', 'refSNPs')) #1 to add, 0 to not add
 		gwasP = float(param_cfg.get('params', 'gwasP'))
 		maf = float(param_cfg.get('params', 'MAF'))
 		r2 = float(param_cfg.get('params', 'r2'))
@@ -85,7 +85,7 @@ class getParams:
 		self.refpanel = refpanel
 		self.pop = pop
 		self.leadP = leadP
-		self.KGSNPs = KGSNPs #1 to add, 0 to not add
+		self.refSNPs = refSNPs #1 to add, 0 to not add
 		self.gwasP = gwasP
 		self.maf = maf
 		self.r2 = r2
@@ -161,7 +161,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 	refpanel = params.refpanel
 	pop = params.pop
 	leadP = params.leadP
-	KGSNPs = params.KGSNPs
+	refSNPs = params.refSNPs
 	gwasP = params.gwasP
 	maf = params.maf
 	r2 = params.r2
@@ -344,7 +344,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 						canSNPs.append(snp)
 						GWASSNPs += 1
 					## process SNPs whic do not exist in input file
-					elif KGSNPs==1:
+					elif refSNPs==1:
 						a = [m[3], m[4]]
 						a.sort()
 						tmp_uid = ":".join([m[0], m[1]]+a)
@@ -407,6 +407,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				lead_maf = False
 				check_id = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 				for m in check_id:
+					print m
 					a = [m[3], m[4]]
 					a.sort()
 					tmp_uid = ":".join([m[0], m[1]]+a)
@@ -489,7 +490,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							canSNPs.append(snp)
 							GWASSNPs += 1
 						## process SNPs do not exist in input file
-						elif KGSNPs==1:
+						elif refSNPs==1:
 							a = [m[3], m[4]]
 							a.sort()
 							tmp_uid = ":".join([m[0], m[1]]+a)

@@ -52,6 +52,8 @@ var loggedin = "{{ Auth::check() }}";
 				<li><a href="#summaryTable">Summary of results<i class="sub_icon fa fa-bar-chart"></i></a></li>
 				<li><a href="#tables">Results<i class="sub_icon fa fa-table"></i></a></li>
 				<li><a href="#downloads">Download<i class="sub_icon fa fa-download"></i></a></li>
+			</div>
+			<div id="resultsSideG2F">
 				<span style="padding-left:10px;font-size:14px;"><b>GENE2FUNC</b></span>
 				<li><a href="#g2f_summaryPanel">Summary<i class="sub_icon fa fa-table"></i></a></li>
 				<li><a href="#expPanel">Heatmap<i class="sub_icon fa fa-th"></i></a></li>

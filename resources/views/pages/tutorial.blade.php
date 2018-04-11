@@ -79,6 +79,7 @@ $(document).ready(function(){
 				<a href="#outputs">Outputs</a>
 				<a href="#table-columns">Table columns</a>
 				<a href="#geneMap">Redo gene mapping</a>
+				<a href="#refpanel">Reference panel</a>
 				<a href="#magma">MAGMA</a>
 				<a href="#riskloci">Risk loci and lead SNPs</a>
 				<a href="#eQTLs">eQTLs</a>
@@ -125,6 +126,8 @@ $(document).ready(function(){
 					@include('tutorial.snp2gene.tables')
 					<br/>
 					@include('tutorial.snp2gene.geneMap')
+					<br/>
+					@include('tutorial.snp2gene.refpanel')
 					<br/>
 					@include('tutorial.snp2gene.magma')
 					<br/>

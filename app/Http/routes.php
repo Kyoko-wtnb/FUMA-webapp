@@ -39,6 +39,8 @@ Route::get('browse', function(){
 
 Route::get('browse/getGwasList', 'BrowseController@getGwasList');
 
+Route::post('browse/checkG2F', 'BrowseController@checkG2F');
+
 Route::post('browse/getParams', 'BrowseController@getParams');
 
 Route::get('browse/manhattan/{prefix}/{id}/{file}', 'FumaController@manhattan');
@@ -170,6 +172,10 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::post('snp2gene/imgdown', 'FumaController@imgdown');
 
 	Route::get('snp2gene/{jobID}', 'S2GController@authcheck');
+
+	Route::post('snp2gene/checkPublish', 'S2GController@checkPublish');
+
+	Route::post('snp2gene/publish', 'S2GController@publish');
 
 	// ********************** GENE2FUNC ************************
 	Route::get('gene2func', function(){

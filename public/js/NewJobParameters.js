@@ -1105,22 +1105,26 @@ function CheckAll(){
 	if($('#magma').is(':checked')){
 		$(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-check"></i> OK. MAGMA will be performed.</div></td>');
+		$(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-check"></i> OK.</div></td>');
 		var ds = 0;
 		$('#magma_exp option').each(function(){
 			if($(this).is(":selected")){ds++;}
 		});
 		if(ds==0){
-			$(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			$(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-ban"></i> Please select at least one data set.</div></td>');
 			submit=false;
 		}else{
-			$(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			$(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-check"></i> OK.</div></td>');
 		}
 	}else{
 		$(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-exclamation-circle"></i> Optional. MAGMA results will not be available.</div></td>');
 		$(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+		$(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
 	}
 

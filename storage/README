@@ -20,7 +20,7 @@ pos : position of top lead SNP on hg19
 p : P-value of top lead SNP (from the input file).
 start : Start position of the locus
 end : End position of the locus
-nSNPs : The number of unique candidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+nSNPs : The number of unique candidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are available in the use selected reference panel).
 nGWASSNPs : The number of the GWAS-tagged candidate SNPs within the genomic locus. This is a subset of "nSNPs".
 nIndSigSNPs : The number of the independent significant SNPs in the genomic locus (r2 < user defined parameter)
 IndSigSNPs : rsID of independent significant SNPs in the genomic locus
@@ -289,7 +289,7 @@ r2 : the minimum threshold of SNPs to be in LD of the lead SNPs
 gwasP : the maximum threshold of P-value to be candidate SNP
 pop : The population of reference panel
 MAF : the minimum minor allele frequency based on 1000 genome reference of given population
-Incl1KGSNPs : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise
+refSNPs : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise
 mergeDist : The maximum distance between LD blocks to merge into interval
 [magma]
 magma : 1 to perform MAGMA, 0 otherwise

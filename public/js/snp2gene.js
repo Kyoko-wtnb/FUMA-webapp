@@ -64,19 +64,6 @@ $(document).ready(function(){
 		});
 	});
 
-	// $(".CanvDown").on('click', function(){
-	// 	var id = $(this).attr("id");
-	// 	id = id.replace("CanvasDown", "");
-	// 	var url = $('#'+id+'PNG img').attr("src");
-	// 	var a = document.createElement('a');
-	// 	a.href = url;
-	// 	a.download = id+".png";
-	// 	document.body.appendChild(a);
-	// 	a.click();
-	// 	document.body.removeChild(a);
-	// 	// Canvas2Image.saveAsPNG(canvas);
-	// });
-
 	$('.level1').on('click', function(){
 		var cur = $(this);
 		var selected = $(this).is(":selected");
@@ -249,7 +236,52 @@ $(document).ready(function(){
 		}
 	});
 
+	$('#publishCancel').on('click', function(){
+		$('#modalPublish').modal('hide');
+	});
+
+	$('#publishSubmit').on('click', function(){
+		$.ajax({
+			url: subdir+'/'+page+'/publish',
+			type: 'POST',
+			data: {
+				jobID: $('#publish_s2g_jobID').val(),
+				g2f_jobID: $('#publish_g2f_jobID').val(),
+				title: $('#publish_title').val(),
+				author: $('#publish_author').val(),
+				email: $('#publish_email').val(),
+				publication: $('#publish_publication').val(),
+				sumstats_link: $('#publish_sumstats_link').val(),
+				sumstats_ref: $('#publish_sumstats_ref').val(),
+				notes: $('#publish_notes').val()
+			},
+			beforeSend: function(){
+				AjaxLoad();
+				$('#modalPublish').modal('hide');
+			},
+			error: function(){
+				alert('JQuery publish error');
+			},
+			success: function(){
+				$('#overlay').remove();
+				swal({
+					title: "The selected job has been published ",
+					type: "success",
+					showCancelButton: false,
+					closeOnConfirm: true,
+				});
+			}
+		});
+	});
 });
+
+function AjaxLoad(){
+	var over = '<div id="overlay"><div id="loading">'
+		+'<h4>Publishing the results</h4>'
+		+'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
+		+'</div></div>';
+	$(over).appendTo('body');
+}
 
 function getJobList(){
 	$('#joblist-panel table tbody')
@@ -261,15 +293,17 @@ function getJobList(){
 			items = '';
 			$.each( data, function( key, val ) {
 				var g2fbutton = 'Not available';
+				var publish = 'Not available';
 				if(val.status == 'OK'){
 					val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">Go to results</a>';
 					g2fbutton = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="g2fbtn('+val.jobID+');">GENE2FUNC</button>';
+					publish = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="publish('+val.jobID+');">Publish</button>';
 				}else if(val.status == 'ERROR:005'){
 					val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">ERROR:005</a>';
 				}
 				items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title
 					+"</td><td>"+val.created_at+"</td><td>"+val.status+"</td><td>"+g2fbutton
-					+'</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
+					+'</td><td>'+publish+'</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
 					+val.jobID+'"/></td></tr>';
 			});
 		}
@@ -284,4 +318,49 @@ function getJobList(){
 function g2fbtn(id){
 	$('#g2fSubmitJobID').val(id);
 	$('#g2fSubmitBtn').trigger('click');
+}
+
+function publish(id){
+	$.ajax({
+		url: subdir+"/"+page+"/checkPublish",
+		type: "POST",
+		data: {
+			id: id
+		},
+		error: function(){
+			alert("JQuery chechPublish error")
+		},
+		success: function(data){
+			data = JSON.parse(data);
+			if(data.publish==0){
+				$('#publish_s2g_jobID').val(id);
+				$('#publish_s2g_jobID_text').html(id);
+				if(data.g2f != undefined){
+					$('#publish_g2f_jobID').val(data.g2f);
+				}else{
+					$('#publish_g2f_jobID').val('');
+				}
+				$('#publish_title').val(data.title);
+				$('#publish_author').val(data.author);
+				$('#publish_email').val(data.email);
+				checkPublishInput()
+				$('#modalPublish').modal('show');
+			}else{
+				swal({
+					title: "Already published",
+					text: "The selected job is already published. Please contact the developper to modify/delete the published results.",
+					type: "warning",
+					showCancelButton: false,
+					closeOnConfirm: true,
+				});
+			}
+		}
+	})
+}
+
+function checkPublishInput(){
+	var submit = false;
+	if($('#publish_title').val().length>0 && $('#publish_author').val().length>0 && $('#publish_email').val().length>0){submit = true}
+	if(submit){$('#publishSubmit').prop('disabled', false)}
+	else{$('#publishSubmit').prop('disabled', true)}
 }

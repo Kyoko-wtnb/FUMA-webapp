@@ -315,9 +315,9 @@ class S2GController extends Controller
 		$refpanel = $request -> input('refpanel');
 		$pop = preg_replace('/.+\/.+\/(.+)/', '$1', $refpanel);
 		$refpanel = preg_replace('/(.+\/.+)\/.+/', '$1', $refpanel);
-		$KGSNPs = $request -> input('KGSNPs');
-		if(strcmp($KGSNPs, "Yes")==0){$KGSNPs=1;}
-		else{$KGSNPs=0;}
+		$refSNPs = $request -> input('refSNPs');
+		if(strcmp($refSNPs, "Yes")==0){$refSNPs=1;}
+		else{$refSNPs=0;}
 		$maf = $request -> input('maf');
 		$mergeDist = $request -> input('mergeDist');
 
@@ -518,9 +518,11 @@ class S2GController extends Controller
 
 		// MAGMA option
 		$magma = 0;
+		$magma_window = "NA";
 		$magma_exp = "NA";
 		if($request -> has('magma')){
 			$magma = 1;
+			$magma_window = $request->input("magma_window");
 			$magma_exp = implode(":", $request->input('magma_exp'));
 		}
 
@@ -567,11 +569,12 @@ class S2GController extends Controller
 		File::append($paramfile, "refpanel=$refpanel\n");
 		File::append($paramfile, "pop=$pop\n");
 		File::append($paramfile, "MAF=$maf\n");
-		File::append($paramfile, "Incl1KGSNPs=$KGSNPs\n");
+		File::append($paramfile, "refSNPs=$refSNPs\n");
 		File::append($paramfile, "mergeDist=$mergeDist\n");
 
 		File::append($paramfile, "\n[magma]\n");
 		File::append($paramfile, "magma=$magma\n");
+		File::append($paramfile, "magma_window=$magma_window\n");
 		File::append($paramfile, "magma_exp=$magma_exp\n");
 
 		File::append($paramfile, "\n[posMap]\n");
@@ -986,4 +989,57 @@ class S2GController extends Controller
 		return response() -> download($zipfile);
     }
 
+	public function checkPublish(Request $request){
+		$id = $request->input('id');
+		$out = [];
+		$out['publish'] = collect(DB::select('SELECT jobID FROM PublicResults WHERE jobID=?', [$id]))->count();
+		$check = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->count();
+		if($check>0){
+			$out['g2f'] = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->first()->jobID;
+		}
+		$out['author'] = $this->user->name;
+		$out['email'] = $this->user->email;
+		$out['title'] = collect(DB::select('SELECT title FROM SubmitJobs WHERE jobID=?', [$id]))->first()->title;
+		return json_encode($out);
+	}
+
+	public function publish(Request $request){
+		$date = date('Y-m-d');
+		$jobID = $request->input('jobID');
+		$g2f_jobID = $request->input('g2f_jobID');
+		$title = $request->input('title');
+		$author = $request->input('author');
+		$email = $request->input('email');
+		$pheno = $request->input('phenotype');
+		$publication = $request->input('publication');
+		$sumstats_link = $request->input('sumstats_link');
+		$sumstats_ref = $request->input('sumstats_ref');
+		$notes = $request->input('notes');
+
+		if(strlen($pheno)==0){$pheno='NA';}
+		if(strlen($publication)==0){$publicaton='NA';}
+		if(strlen($sumstats_link)==0){$sumstats_link='NA';}
+		if(strlen($sumstats_ref)==0){$sumstats_ref='NA';}
+		if(strlen($notes)==0){$notes='NA';}
+
+		DB::table('PublicResults')->insert(
+			['jobID'=>$jobID, 'g2f_jobID'=>$g2f_jobID, 'title'=>$title,
+			'author'=>$author, 'email'=>$email, 'phenotype'=>$pheno,
+			'publication'=>$publication, 'sumstats_link'=>$sumstats_link,
+			'sumstats_ref'=>$sumstats_ref, 'notes'=>$notes,
+			'created_at'=>$date, 'update_at'=>$date]
+		);
+
+		$id = collect(DB::select('SELECT id FROM PublicResults WHERE jobID=?', [$jobID]))->first()->id;
+		$filedir = config('app.jobdir').'/gwas/'.$id;
+		File::makeDirectory($filedir);
+		exec('cp '.config('app.jobdir').'/jobs/'.$jobID.'/* '.$filedir.'/');
+		exec('rm '.$filedir.'/*.zip');
+		if(strlen($g2f_jobID)>0){
+			File::makeDirectory($filedir.'/g2f');
+			exec('cp -r '.config('app.jobdir').'/gene2func/'.$g2f_jobID.'/* '.$filedir.'/g2f/');
+			exec('rm '.$filedir.'/g2f/*.zip');
+		}
+		return;
+	}
 }

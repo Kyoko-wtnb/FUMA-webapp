@@ -97,6 +97,5 @@ def main():
 	annov1 = filedir+"annov.variant_function"
 	annov2 = filedir+"annov.txt"
 	os.system("perl "+os.path.dirname(os.path.realpath(__file__))+"/annov_geneSNPs.pl "+annov1+" "+annov2)
-	os.system("rm "+filedir+"annov.*function "+filedir+"annov.log")
 
 if __name__ == "__main__": main()

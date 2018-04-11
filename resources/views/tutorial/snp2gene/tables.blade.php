@@ -10,7 +10,7 @@
 			<li><strong>P-value</strong> : P-value of top lead SNP (from the input file).</li>
 			<li><strong>start</strong> : Start position of the locus</li>
 			<li><strong>end</strong> : End position of the locus</li>
-			<li><strong>nSNPs</strong> : The number of unique candidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+			<li><strong>nSNPs</strong> : The number of unique candidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are available in the user selected reference panel).
 				Candidate SNPs are all SNPs that are in LD (give user-defined r<sup>2</sup>) with any of independent significant SNPs and either have a P-value below the user defined threshold or are only available in 1000G.
 			</li>
 			<li><strong>nGWASSNPs</strong> : The number of unique GWAS-tagged candidate SNPs in the genomic locus which is available in the GWAS summary statistics input file. This is a subset of "nSNPs".</li>
