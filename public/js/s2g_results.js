@@ -1,14 +1,5 @@
 function GWplot(id){
-	var chromSize = [249250621, 243199373, 198022430, 191154276, 180915260, 171115067,
-		159138663, 146364022, 141213431, 135534747, 135006516, 133851895, 115169878, 107349540,
-		102531392, 90354753, 81195210, 78077248, 63025520, 59128983, 48129895, 51304566, 155270560];
-	var chromStart = [];
-	chromStart.push(0);
-	for(var i=1; i<chromSize.length; i++){
-		chromStart.push(chromStart[i-1]+chromSize[i-1]);
-	}
-
-	var margin = {top:30, right: 30, bottom:50, left:50},
+	 margin = {top:30, right: 30, bottom:50, left:50},
 		width = 800,
 		height = 300;
 
@@ -27,17 +18,29 @@ function GWplot(id){
 	d3.json(subdir+'/'+page+'/manhattan/'+prefix+'/'+id+'/manhattan.txt', function(data){
 		// d3.tsv("/../IPGAP/sotrage/jobs/"+id+"/manhattan.txt", function(error, data){
 
+		var chromSize = []
+		for(var i=0; i<23; i++){chromSize.push(0)}
 		data.forEach(function(d){
 			d[0] = +d[0]; //chr
 			d[1] = +d[1]; // bp
 			d[2] = +d[2]; // p
+			if(chromSize[d[0]-1]<d[1]){chromSize[d[0]-1] = d[1]}
 		});
+		for(var i=0; i<23; i++){chromSize[i] *= 1.1}
 
 		var chr = d3.set(data.map(function(d){return d[0];})).values();
+		var chromStart = [];
+		chromStart.push(0);
+		for(var i=1; i<23; i++){
+			if(chr.indexOf(i.toString())>=0){
+				chromStart.push(chromStart[i-1]+chromSize[i-1]);
+			}else{
+				chromStart.push(chromStart[i-1])
+			}
+		}
 
-		var max_chr = chr.length;
 		var x = d3.scale.linear().range([0, width]);
-		x.domain([0, (chromStart[max_chr-1]+chromSize[max_chr-1])]);
+		x.domain([0, chromSize.reduce(function(a,b){return a+b;},0)]);
 		var xAxis = d3.svg.axis().scale(x).orient("bottom");
 		var y = d3.scale.linear().range([height, 0]);
 		var minP = d3.min(data, function(d){if(d[2]>1e-300){return d[2]}})
@@ -65,7 +68,8 @@ function GWplot(id){
 			.style("stroke", "red")
 			.style("stroke-dasharray", ("3,3"));
 		svg.append("g").attr("class", "x axis")
-			.attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
+			.attr("transform", "translate(0,"+height+")")
+			.call(xAxis).selectAll("text").remove();
 		svg.append("g").attr("class", "y axis").call(yAxis)
 			.selectAll('text')
 			.each(function(d){
@@ -89,7 +93,7 @@ function GWplot(id){
 		//Chr label
 		for(var i=0; i<chr.length; i++){
 			svg.append("text").attr("text-anchor", "middle")
-				.attr("transform", "translate("+x((chromStart[i]*2+chromSize[i])/2)+","+(height+20)+")")
+				.attr("transform", "translate("+x((chromStart[chr[i]-1]*2+chromSize[chr[i]-1])/2)+","+(height+20)+")")
 				.text(chr[i])
 				.style("font-size", "10px");
 		}
@@ -109,12 +113,16 @@ function GWplot(id){
 			$("#geneManhattan").html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
 			+' ERROR:002 MAGMA was not able to perform.</span><br/></div>');
 		}else{
+			var chromSize = []
+			for(var i=0; i<23; i++){chromSize.push(0)}
 			data.forEach(function(d){
 				d[0] = +d[0]; //chr
 				d[1] = +d[1]; //start
 				d[2] = +d[2]; //stop
 				d[3] = +d[3]; //p
+				if(chromSize[d[0]-1]<d[1]){chromSize[d[0]-1] = d[2]}
 			});
+			for(var i=0; i<23; i++){chromSize[i] *= 1.1}
 
 			var nSigGenes=0;
 			var sortedP = [];
@@ -131,9 +139,18 @@ function GWplot(id){
 			sortedP = sortedP.sort(function(a,b){return a-b;});
 			// var chr = d3.set(data.map(function(d){return d.CHR;})).values();
 			var chr = d3.set(data.map(function(d){return d[0];})).values();
-			var max_chr = chr.length;
+
+			var chromStart = [];
+			chromStart.push(0);
+			for(var i=1; i<23; i++){
+				if(chr.indexOf(i.toString())>=0){
+					chromStart.push(chromStart[i-1]+chromSize[i-1]);
+				}else{
+					chromStart.push(chromStart[i-1])
+				}
+			}
 			var x = d3.scale.linear().range([0, width]);
-			x.domain([0, (chromStart[max_chr-1]+chromSize[max_chr-1])]);
+			x.domain([0, chromSize.reduce(function(a,b){return a+b;},0)]);
 			var xAxis = d3.svg.axis().scale(x).orient("bottom");
 			var y = d3.scale.linear().range([height, 0]);
 			// y.domain([0, d3.max(data, function(d){return -Math.log10(d.P);})+1]);
@@ -161,14 +178,15 @@ function GWplot(id){
 				.style("stroke", "red")
 				.style("stroke-dasharray", ("3,3"));
 			svg2.append("g").attr("class", "x axis")
-				.attr("transform", "translate(0,"+height+")").call(xAxis).selectAll("text").remove();
+				.attr("transform", "translate(0,"+height+")")
+				.call(xAxis).selectAll("text").remove();
 			svg2.append("g").attr("class", "y axis").call(yAxis)
 				.selectAll('text').style('font-size', '11px');
 
 			//Chr label
 			for(var i=0; i<chr.length; i++){
 				svg2.append("text").attr("text-anchor", "middle")
-					.attr("transform", "translate("+x((chromStart[i]*2+chromSize[i])/2)+","+(height+20)+")")
+				.attr("transform", "translate("+x((chromStart[chr[i]-1]*2+chromSize[chr[i]-1])/2)+","+(height+20)+")")
 					.text(chr[i])
 					.style("font-size", "10px");
 			}
