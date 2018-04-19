@@ -13,6 +13,8 @@
 </footer>
 <script type="text/javascript" src="{!! URL::asset('js/sweetalert.min.js') !!}"></script>
 <link rel="stylesheet" href="{!! URL::asset('css/sweetalert.css') !!}">
+<script type="text/javascript" src="{!! URL::asset('js/HoldOn.min.js') !!}"></script>
+<link rel="stylesheet" href="{!! URL::asset('css/HoldOn.min.css') !!}">
 <script type="text/javascript" src="{!! URL::asset('js/fuma.js') !!}?130"></script>
 <script src="{!! URL::asset('js/google_analytics.js') !!}"></script>
 <link rel="icon" href="{!! URL::asset('image/FUMAicon.png') !!}">

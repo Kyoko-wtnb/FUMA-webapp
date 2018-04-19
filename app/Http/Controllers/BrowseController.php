@@ -29,8 +29,8 @@ class BrowseController extends Controller
 	}
 
 	public function getParams(Request $request){
-		$gwasID = $request->input('gwasID');
-		$filedir = config('app.jobdir').'/gwas/'.$gwasID.'/';
+		$id = $request->input('id');
+		$filedir = config('app.jobdir').'/public/'.$id.'/';
         $params = parse_ini_file($filedir."params.config");
         $posMap = $params['posMap'];
         $eqtlMap = $params['eqtlMap'];
@@ -88,8 +88,8 @@ class BrowseController extends Controller
       }
 
       $zip = new \ZipArchive();
-	  if($prefix=="gwas"){
-		  $zipfile = $filedir."FUMA_gwas".$id.".zip";
+	  if($prefix=="public"){
+		  $zipfile = $filedir."FUMA_public".$id.".zip";
 	  }else{
 		  $zipfile = $filedir."FUMA_job".$id.".zip";
 	  }
@@ -119,8 +119,8 @@ class BrowseController extends Controller
 
       $svg = preg_replace("/\),rotate/", ")rotate", $svg);
       $svg = preg_replace("/,skewX\(.+?\),scale\(.+?\)/", "", $svg);
-	  if($prefix=="gwas"){
-      	  $fileName .= "_FUMAgwas".$id;
+	  if($prefix=="public"){
+      	  $fileName .= "_FUMApublic".$id;
 	  }else{
 	      $fileName .= "_FUMAjob".$id;
 	  }
@@ -141,7 +141,7 @@ class BrowseController extends Controller
     }
 
 	public function DEGPlot($type, $jobID){
-      $filedir = config('app.jobdir').'/gwas/'.$jobID.'/g2f/';
+      $filedir = config('app.jobdir').'/public/'.$jobID.'/g2f/';
       $file = "";
       if($type=="general"){
         $file = $filedir."DEGgeneral.txt";
@@ -201,7 +201,7 @@ class BrowseController extends Controller
 
 	public function geneTable(Request $request){
       $jobID = $request->input('id');
-      $filedir = config('app.jobdir').'/gwas/'.$jobID.'/g2f/';
+      $filedir = config('app.jobdir').'/public/'.$jobID.'/g2f/';
       if(file_exists($filedir."geneTable.txt")){
         $f = fopen($filedir."geneTable.txt", 'r');
         $head = fgetcsv($f, 0, "\t");
@@ -257,8 +257,8 @@ class BrowseController extends Controller
 		if($request->has('gsfile')){$files[] = "GS.txt";}
 
 		$zip = new \ZipArchive();
-		if($prefix=="gwas/g2f"){
-			$zipfile = $filedir."FUMA_gene2func_gwas".$id.".zip";
+		if($prefix=="public/g2f"){
+			$zipfile = $filedir."FUMA_gene2func_public".$id.".zip";
 		}else{
 			$zipfile = $filedir."FUMA_gene2func".$id.".zip";
 		}

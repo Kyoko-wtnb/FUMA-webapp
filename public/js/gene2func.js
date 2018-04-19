@@ -149,10 +149,15 @@ $(document).ready(function(){
 				minOverlap: minOverlap
 			},
 			beforeSend: function(){
+				var options = {
+					theme: "sk-circle",
+					message: 'Running GENE2FUNC process. Please wait for amoment..'
+				}
+				HoldOn.open(options)
 				$('#resultSide').hide()
-				AjaxLoad();
 			},
 			success: function(){
+				HoldOn.close()
 			},
 			complete: function(){
 				window.location.href=subdir+'/gene2func/'+id;
@@ -235,15 +240,6 @@ function updateList(){
 			.empty()
 			.append(items);
 	});
-}
-
-function AjaxLoad(){
-	var over = '<div id="overlay"><div id="loading">'
-		+'<h4>Running gene test</h4>'
-		+'<p>Please wait for a moment (20-30 sec)</br>'
-		+'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
-		+'</div></div>';
-	$(over).appendTo('body');
 }
 
 function DownloadFiles(){

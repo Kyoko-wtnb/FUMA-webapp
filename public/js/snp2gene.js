@@ -256,14 +256,18 @@ $(document).ready(function(){
 				notes: $('#publish_notes').val()
 			},
 			beforeSend: function(){
-				AjaxLoad();
+				var options = {
+					theme: "sk-circle",
+					message: 'Publishing the result, please wait for a second.'
+				}
+				HoldOn.open(options);
 				$('#modalPublish').modal('hide');
 			},
 			error: function(){
 				alert('JQuery publish error');
 			},
 			success: function(){
-				$('#overlay').remove();
+				HoldOn.close()
 				swal({
 					title: "The selected job has been published ",
 					type: "success",
@@ -274,14 +278,6 @@ $(document).ready(function(){
 		});
 	});
 });
-
-function AjaxLoad(){
-	var over = '<div id="overlay"><div id="loading">'
-		+'<h4>Publishing the results</h4>'
-		+'<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>'
-		+'</div></div>';
-	$(over).appendTo('body');
-}
 
 function getJobList(){
 	$('#joblist-panel table tbody')

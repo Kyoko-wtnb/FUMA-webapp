@@ -153,7 +153,7 @@
 								Notes
 								<a class="infoPop" data-toggle="popover" data-content="
 								Please add any additional information here.
-								For example, when there are multiple summary statistics are available from the same study,
+								For example, when there are multiple summary statistics available from the same study,
 								you should specify which result this is refering to.">
 									<i class="fa fa-question-circle-o fa-lg"></i>
 								</a>

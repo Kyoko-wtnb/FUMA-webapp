@@ -1031,9 +1031,9 @@ class S2GController extends Controller
 		);
 
 		$id = collect(DB::select('SELECT id FROM PublicResults WHERE jobID=?', [$jobID]))->first()->id;
-		$filedir = config('app.jobdir').'/gwas/'.$id;
+		$filedir = config('app.jobdir').'/public/'.$id;
 		File::makeDirectory($filedir);
-		exec('cp '.config('app.jobdir').'/jobs/'.$jobID.'/* '.$filedir.'/');
+		exec('cp -r '.config('app.jobdir').'/jobs/'.$jobID.'/* '.$filedir.'/');
 		exec('rm '.$filedir.'/*.zip');
 		if(strlen($g2f_jobID)>0){
 			File::makeDirectory($filedir.'/g2f');

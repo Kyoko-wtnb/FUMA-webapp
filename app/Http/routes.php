@@ -33,8 +33,7 @@ Route::auth();
 // ********************** Browse ************************
 
 Route::get('browse', function(){
-	$gwasID = null;
-	return view('pages.browse', ['id'=>$gwasID, 'page'=>'browse', 'prefix'=>'gwas']);
+	return view('pages.browse', ['id'=>null, 'page'=>'browse', 'prefix'=>'public']);
 });
 
 Route::get('browse/getGwasList', 'BrowseController@getGwasList');
@@ -71,8 +70,6 @@ Route::post('browse/circosDown', 'FumaController@circosDown');
 
 Route::post('browse/filedown', 'BrowseController@filedown');
 
-// Route::post('browse/g2fFileDown', 'BrowseController@g2fFileDown');
-
 Route::post('browse/imgdown', 'BrowseController@imgdown');
 
 Route::post('browse/annotPlot', 'FumaController@annotPlot');
@@ -97,8 +94,8 @@ Route::post('browse/geneTable', 'FumaController@geneTable');
 
 Route::post('browse/g2f_filedown', 'FumaController@g2f_filedown');
 
-Route::get('browse/{gwasID}', function($gwasID){
-	return view('pages.browse', ['id'=>$gwasID, 'page'=>'browse', 'prefix'=>'gwas']);
+Route::get('browse/{id}', function($id){
+	return view('pages.browse', ['id'=>$id, 'page'=>'browse', 'prefix'=>'public']);
 });
 
 // ********************** Middleware auth group************************
@@ -127,13 +124,9 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('snp2gene/Error5', 'S2GController@Error5');
 
-	// Route::post('snp2gene/CandidateSelection', 'JobController@CandidateSelection');
-
 	Route::post('snp2gene/DTfile', 'FumaController@DTfile');
 
 	Route::post('snp2gene/DTfileServerSide', 'FumaController@DTfileServerSide');
-
-	// Route::post('snp2gene/jobInfo', 'JsController@jobInfo');
 
 	Route::get('snp2gene/manhattan/{prefix}/{id}/{file}', 'FumaController@manhattan');
 
@@ -158,8 +151,6 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::post('snp2gene/annotPlot/getGenes', 'FumaController@annotPlotGetGenes');
 
 	Route::post('snp2gene/filedown', 'S2GController@filedown');
-
-	// Route::post('snp2gene/geneTable', 'JsController@geneTable');
 
 	Route::post('snp2gene/circos_chr', 'FumaController@circos_chr');
 
@@ -205,10 +196,6 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::post('gene2func/geneTable', 'FumaController@geneTable');
 
 	Route::get('gene2func/g2f_d3text/{prefix}/{id}/{file}', 'FumaController@g2f_d3text');
-
-	// Route::get('gene2func/DEGPlot/{type}/{jobID}', 'FumaController@DEGPlot');
-
-	// Route::get('gene2func/ExpTsPlot/{type}/{jobID}', 'G2FController@ExpTsPlot');
 
 	Route::get('gene2func/{jobID}', 'G2FController@authcheck');
 

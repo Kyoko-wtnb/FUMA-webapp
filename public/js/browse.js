@@ -2,7 +2,7 @@ var sigSNPtable_selected=null;
 var leadSNPtable_selected=null;
 var lociTable_selected=null;
 var annotPlotSelected;
-var prefix = "gwas";
+var prefix = "public";
 var geneTable;
 var exp_data_title = {
 	'gtex_v7_ts_avg_log2TPM': 'GTEx v7 53 tissue types',
@@ -122,7 +122,7 @@ $(document).ready(function(){
 			url: subdir+'/'+page+'/getParams',
 			type: 'POST',
 			data:{
-				gwasID: id
+				id: id
 			},
 			error: function(){
 				alert("JobQuery getParams error");

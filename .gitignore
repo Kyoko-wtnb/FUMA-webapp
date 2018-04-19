@@ -3,6 +3,7 @@
 /storage/jobs/
 /storage/data/
 /storage/gwas/
+/storage/public/
 Homestead.yaml
 Homestead.json
 .env
