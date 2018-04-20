@@ -434,26 +434,26 @@ function GeneSet(id){
 			'Oncogenetic_signatures', 'Immunologic_signatures', 'Wikipathways',
 			'GWAScatalog'
 		];
-	var category_title = {'Hallmark_gene_sets' : 'Hallmark gene sets (MsigDB v5.2 h)',
-			'Positional_gene_sets' : 'Positional gene sets (MsigDB v5.2 c1)',
-			'Curetaed_gene_sets' : 'All curated gene sets (MsigDB v5.2 c2)',
-			'Chemical_and_Genetic_pertubation' : 'Chemical and Genetic pertubation gene sets (MsigDB v5.2 c2)',
-			'Canonical_Pathways' : 'All Canonical Pathways (MsigDB v5.2 c2)',
-			'BioCarta' : 'BioCarta (MsigDB v5.2 c2)',
-			'KEGG' : 'KEGG (MsigDB v5.2 c2)',
-			'Reactome' : 'Reactome (MsigDB v5.2 c2)',
-			'microRNA_targets' : 'microRNA targets (MsigDB v5.2 c3)',
-			'TF_targets' : 'TF targets (MsigDB v5.2 c3)',
-			'Computational_gene_sets' : 'All computational gene sets (MsigDB v5.2 c4)',
-			'Cancer_gene_neighborhoods' : 'Cancer gene neighborhoods (MsigDB v5.2 c4)',
-			'Cancer_modules' : 'Cancer gene modules (MsigDB v5.2 c4)',
-			'GO_bp' : 'GO biological processes (MsigDB v5.2 c5)',
-			'GO_cc' : 'GO cellular components (MsigDB v5.2 c5)',
-			'GO_mf' : 'GO molecular functions (MsigDB v5.2 c5)',
-			'Oncogenetic_signatures' : 'Oncogenetic signatures (MsigDB v5.2 c6)',
-			'Immunologic_signatures' : 'Immunologic signatures (MsigDB v5.2 c7)',
-			'Wikipathways' : 'WikiPathways (Curated version 20161010)',
-			'GWAScatalog' : 'GWAS catalog (reported genes, ver. e91 20180206)'
+	var category_title = {'Hallmark_gene_sets' : 'Hallmark gene sets (MsigDB h)',
+			'Positional_gene_sets' : 'Positional gene sets (MsigDB c1)',
+			'Curetaed_gene_sets' : 'All curated gene sets (MsigDB c2)',
+			'Chemical_and_Genetic_pertubation' : 'Chemical and Genetic pertubation gene sets (MsigDB c2)',
+			'Canonical_Pathways' : 'All Canonical Pathways (MsigDB c2)',
+			'BioCarta' : 'BioCarta (MsigDB c2)',
+			'KEGG' : 'KEGG (MsigDB c2)',
+			'Reactome' : 'Reactome (MsigDB c2)',
+			'microRNA_targets' : 'microRNA targets (MsigDB c3)',
+			'TF_targets' : 'TF targets (MsigDB c3)',
+			'Computational_gene_sets' : 'All computational gene sets (MsigDB c4)',
+			'Cancer_gene_neighborhoods' : 'Cancer gene neighborhoods (MsigDB c4)',
+			'Cancer_modules' : 'Cancer gene modules (MsigDB c4)',
+			'GO_bp' : 'GO biological processes (MsigDB c5)',
+			'GO_cc' : 'GO cellular components (MsigDB c5)',
+			'GO_mf' : 'GO molecular functions (MsigDB c5)',
+			'Oncogenetic_signatures' : 'Oncogenetic signatures (MsigDB c6)',
+			'Immunologic_signatures' : 'Immunologic signatures (MsigDB c7)',
+			'Wikipathways' : 'WikiPathways',
+			'GWAScatalog' : 'GWAS catalog reported genes'
 		};
 	d3.json(subdir+'/'+page+'/g2f_d3text/'+prefix+'/'+id+'/GS.txt', function(data){
 		if(data == undefined || data == null){
@@ -688,18 +688,16 @@ function GeneSet(id){
 
 					// Table
 					var table = '<table class="table table-bordered"><thead><td>GeneSet</td><td>N</td><td>n</td><td>P-value</td><td>adjusted P</td><td>genes</td></thead>';
-					if(category[i]=="GWAScatalog"){
-						tdata.forEach(function(d){
-							table += '<tr><td>'+d.GeneSet+'</td><td>'+d.N_genes+'</td><td>'+d.N_overlap
-								+'</td><td>'+Number(Number(d.p).toPrecision(3)).toExponential(2)+'</td><td>'+Number(Number(d.adjP).toPrecision(3)).toExponential(2)+'</td><td>'+d.genes.split(":").join(", ")+'</td></tr>';
-						});
-					}else{
-						tdata.forEach(function(d){
+					tdata.forEach(function(d){
+						if(d.link.length>0){
 							table += '<tr><td><a href="'+d.link+'" target="_blank">'+d.GeneSet+'</a></td><td>'+d.N_genes+'</td><td>'+d.N_overlap
 								+'</td><td>'+Number(Number(d.p).toPrecision(3)).toExponential(2)+'</td><td>'+Number(Number(d.adjP).toPrecision(3)).toExponential(2)+'</td><td>'+d.genes.split(":").join(", ")+'</td></tr>';
-						});
-					}
+						}else{
+							table += '<tr><td>'+d.GeneSet+'</td><td>'+d.N_genes+'</td><td>'+d.N_overlap
+								+'</td><td>'+Number(Number(d.p).toPrecision(3)).toExponential(2)+'</td><td>'+Number(Number(d.adjP).toPrecision(3)).toExponential(2)+'</td><td>'+d.genes.split(":").join(", ")+'</td></tr>';
 
+						}
+					});
 					table += '</table>'
 					$('#'+category[i]+"Table").html(table);
 				}

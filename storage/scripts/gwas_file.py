@@ -132,7 +132,7 @@ for i in range(0,len(header)):
 		checkedheader.append(becol)
 	elif secol == header[i].upper():
 		secol = i
-		checkedheader.append(becol)
+		checkedheader.append(secol)
 	elif Ncol == header[i].upper():
 		Ncol = i
 		checkedheader.append(Ncol)
