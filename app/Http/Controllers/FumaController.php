@@ -19,6 +19,17 @@ use Mail;
 
 class FumaController extends Controller
 {
+	public function appinfo(){
+		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$out["ver"] = $app_config['FUMA'];
+		$out["user"] = DB::table('users')->count();
+		$out["s2g"] = collect(DB::select("SELECT MAX(jobID) as max from SubmitJobs"))->first()->max;
+		$out["g2f"] = collect(DB::select("SELECT MAX(jobID) as max from gene2func"))->first()->max;
+		$out["run"] = collect(DB::select("SELECT COUNT(jobID) as count from SubmitJobs WHERE status='RUNNING'"))->first()->count;
+		$out["que"] = collect(DB::select("SELECT COUNT(jobID) as count from SubmitJobs WHERE status='QUEUED'"))->first()->count;
+		return json_encode($out);
+	}
+
 	public function DTfile(Request $request){
 		$id = $request -> input('id');
 		$prefix = $request -> input('prefix');

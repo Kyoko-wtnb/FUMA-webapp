@@ -121,11 +121,21 @@ class G2FController extends Controller
 		$adjPcut = $request -> input('adjPcut');
 		$minOverlap = $request -> input('minOverlap');
 
+		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+
 		// write parameters to config file
 		$paramfile = $filedir.'params.config';
 		File::put($paramfile, "[jobinfo]\n");
 		File::append($paramfile, "created_at=$date\n");
 		File::append($paramfile, "title=$title\n");
+
+		File::append($paramfile, "\n[version]\n");
+		File::append($paramfile, "FUMA=".$app_config['FUMA']."\n");
+		File::append($paramfile, "Ensembl=".$app_config['Ensembl']."\n");
+		File::append($paramfile, "MsigDB=".$app_config['MsigDB']."\n");
+		File::append($paramfile, "WikiPathways=".$app_config['WikiPathways']."\n");
+		File::append($paramfile, "GWAScatalog=".$app_config['GWAScatalog']."\n");
+
 		File::append($paramfile, "\n[params]\n");
 		File::append($paramfile, "gtype=$gtype\n");
 		File::append($paramfile, "gval=$gval\n");

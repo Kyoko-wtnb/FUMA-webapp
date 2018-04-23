@@ -19,6 +19,19 @@
 				<li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a></li>
 				<li class="{{ Request::is('links') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/links">Links</a></li>
 				<li class="{{ Request::is('updates') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/updates">Updates</a></li>
+				<li>
+					<a id="appInfo" class="infoPop" data-placement="bottom" data-toggle="popover" data-html="true"
+						title="FUMA information"
+						data-content='<div style="width:200px;">
+						Current FUMA verions: <span id="FUMAver"></span><br/>
+						Total users: <span id="FUMAuser"></span><br/>
+						Total SNP2GENE jobs: <span id="FUMAs2g"></span><br/>
+						Total GENE2FUNC jobs: <span id="FUMAg2f"></span><br/>
+						Currently running jobs: <span id="FUMArun"></span><br/>
+						Currently queued jobs: <span id="FUMAque"></span></div>'>
+						<i class="fa fa-info-circle fa-lg"></i>
+					</a>
+				</li>
 				<!-- local_end -->
 				<!-- Authentication Links -->
 				@if (Auth::guest())

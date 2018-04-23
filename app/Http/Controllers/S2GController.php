@@ -526,11 +526,20 @@ class S2GController extends Controller
 			$magma_exp = implode(":", $request->input('magma_exp'));
 		}
 
+		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+
 		// write parameter into a file
 		$paramfile = $filedir.'/params.config';
 		File::put($paramfile, "[jobinfo]\n");
 		File::append($paramfile, "created_at=$date\n");
 		File::append($paramfile, "title=$jobtitle\n");
+
+		File::append($paramfile, "\n[version]\n");
+		File::append($paramfile, "FUMA=".$app_config['FUMA']."\n");
+		File::append($paramfile, "Ensembl=".$app_config['Ensembl']."\n");
+		File::append($paramfile, "MAGMA=".$app_config['MAGMA']."\n");
+		File::append($paramfile, "GWAScatalog=".$app_config['GWAScatalog']."\n");
+		File::append($paramfile, "ANNOVAR=".$app_config['ANNOVAR']."\n");
 
 		File::append($paramfile, "\n[inputfiles]\n");
 		if($request -> hasFile('GWASsummary')){

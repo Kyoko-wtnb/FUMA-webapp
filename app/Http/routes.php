@@ -15,6 +15,8 @@ Route::get('/', function () {
 	return view('pages.home');
 });
 
+Route::get('appinfo', 'FumaController@appinfo');
+
 Route::get('tutorial', function(){
 	return view('pages.tutorial');
 });

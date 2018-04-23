@@ -133,7 +133,7 @@ function GWplot(id){
 			});
 			$('#topGenes').val(nSigGenes);
 
-			$('#geneManhattanDesc').html("Input SNPs were mapped to "+data.length+" protein coding genes (distance 0). "
+			$('#geneManhattanDesc').html("Input SNPs were mapped to "+data.length+" protein coding genes. "
 				+"Genome wide significance (red dashed line in the plot) was defined at P = 0.05/"+data.length+" = "+(0.05/data.length).toExponential(3)+".");
 
 			sortedP = sortedP.sort(function(a,b){return a-b;});
