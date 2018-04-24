@@ -91,6 +91,7 @@ $(document).ready(function(){
 				<a href="#submit-genes">Submit genes</a>
 				<a href="#g2fOutputs">Outputs</a>
 			</div>
+			<li class="active"><a href="#publish">Publish results<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 			<li class="active"><a href="#data-security">Data security<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 		</ul>
 	</div>
@@ -150,7 +151,7 @@ $(document).ready(function(){
 					@include('tutorial.gene2func.outputs')
 				</div>
 			</div>
-
+			@include('tutorial.publish')
 			@include('tutorial.data-security')
 		</div>
 	</div>

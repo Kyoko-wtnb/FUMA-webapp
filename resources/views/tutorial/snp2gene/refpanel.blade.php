@@ -9,11 +9,11 @@ In this section, each reference panel is described details.
 	<a target="_blank" href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/">ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/</a>.<br/>
 	Downloaded vcf files were split into 5 (super) populations based on panel file
 	(<a target="_blank" href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/integrated_call_samples_v3.20130502.ALL.panel">ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/integrated_call_samples_v3.20130502.ALL.panel</a>)
-	using vcftools (vcf-subset).
+	using PLINK.
 	Number of individuals per poplation is AFR: 661, AMR: 347, EAS: 504, EUR: 503 and SAS: 489.<br/>
-	Only bi-allelic SNPs with "PASS" were extracted per population using vcftools
-	(--remove-filtered-all, --min-allele 2, --max-allele 2) and manually excluding SNPs
-	with duplicated position.
+
+	Only bi-allelic SNPs with "PASS" were extracted per population using PLINK
+	(--biallelic-only) and manually excluding SNPs with duplicated position.
 	SNPs with MAF=0 were excluded.<br/>
 	MAF and pairwise LD were compued by PLINK (--r2 --ld-window 99999 --ld-window-r2 0.05).
 	<br/>

@@ -74,7 +74,7 @@
 							<td>Title<sup style="color:red;">*</sup>
 								<a class="infoPop" data-toggle="popover" data-content="
 								Please provide self-descriptive title for the job.
-								If the title is vague, the developper might contact you to provide a sufficient information.">
+								If the title is not clear enough, the developper might contact you to provide a sufficient information.">
 									<i class="fa fa-question-circle-o fa-lg"></i>
 								</a>
 							</td>
