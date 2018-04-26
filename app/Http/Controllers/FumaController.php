@@ -279,9 +279,11 @@ class FumaController extends Controller
 		$eqtlgenes = $request->input("eqtlgenes");
 
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
+		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
+		$ensembl = $params['ensembl'];
 
 		$script = storage_path()."/scripts/annotPlot.R";
-		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot");
+		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl");
 		$data = explode("\n", $data);
 		$data = $data[count($data)-1];
 		return $data;
@@ -419,6 +421,7 @@ class FumaController extends Controller
 			}
 		}
 		if($request->has('gsfile')){$files[] = "GS.txt";}
+		if($request->has('gtfile')){$files[] = "geneTable.txt";}
 
 		$zip = new \ZipArchive();
 		if($prefix=="public"){

@@ -299,6 +299,7 @@ class S2GController extends Controller
 		if($extMHC==null){$extMHC="NA";}
 
 		// gene type
+		$ensembl = $request -> input('ensembl');
 		$genetype = implode(":", $request -> input('genetype'));
 
 		// others
@@ -536,7 +537,6 @@ class S2GController extends Controller
 
 		File::append($paramfile, "\n[version]\n");
 		File::append($paramfile, "FUMA=".$app_config['FUMA']."\n");
-		File::append($paramfile, "Ensembl=".$app_config['Ensembl']."\n");
 		File::append($paramfile, "MAGMA=".$app_config['MAGMA']."\n");
 		File::append($paramfile, "GWAScatalog=".$app_config['GWAScatalog']."\n");
 		File::append($paramfile, "ANNOVAR=".$app_config['ANNOVAR']."\n");
@@ -570,7 +570,7 @@ class S2GController extends Controller
 		File::append($paramfile, "exMHC=$exMHC\n");
 		File::append($paramfile, "MHCopt=$MHCopt\n");
 		File::append($paramfile, "extMHC=$extMHC\n");
-		// File::append($paramfile, "include chromosome X\t$Xchr\n");
+		File::append($paramfile, "ensembl=$ensembl\n");
 		File::append($paramfile, "genetype=$genetype\n");
 		File::append($paramfile, "leadP=$leadP\n");
 		File::append($paramfile, "r2=$r2\n");

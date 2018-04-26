@@ -56,7 +56,7 @@ if(posMapWindowSize=="NA"){
 }
 
 ##### load ENSG genes #####
-ENSG <- fread(config$data$ENSG, data.table=F)
+ENSG <- fread(paste(config$data$ENSG, params$params$ensembl, config$data$ENSGfile, sep="/"), data.table=F)
 
 if(genetype!="all"){
 	genetype <- unique(unlist(strsplit(genetype, ":")))
@@ -281,8 +281,11 @@ if(ciMap==1){
 write.table(snps, paste0(filedir, "snps.txt"), quote=F, row.names=F, sep="\t")
 
 ##### create gene table #####
-geneTable <- ENSG[ENSG$ensembl_gene_id %in% genes,]
-colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "status", "type", "entrezID","HUGO")
+cols <- c("ensembl_gene_id", "external_gene_name", "chromosome_name",
+		"start_position", "end_position", "strand", "gene_biotype",
+		"entrezID", "hgnc_symbol")
+geneTable <- ENSG[ENSG$ensembl_gene_id %in% genes, cols]
+colnames(geneTable) <- c("ensg", "symbol", "chr", "start", "end", "strand", "type", "entrezID", "HUGO")
 if(nrow(geneTable)>0){
 	geneTable$chr <- as.numeric(ifelse(geneTable$chr=="X", "23", geneTable$chr))
 	geneTable <- geneTable[order(geneTable$start),]

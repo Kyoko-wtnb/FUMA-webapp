@@ -98,13 +98,12 @@ $(document).ready(function(){
 		var gval = fumaJS.gval;
 		var bkgtype = fumaJS.bkgtype;
 		var bkgval = fumaJS.bkgval;
-		// var Xchr = fumaJS.Xchr;
+		var ensembl = fumaJS.ensembl;
 		var gene_exp = fumaJS.gene_exp;
 		var MHC = fumaJS.MHC;
 		var adjPmeth = fumaJS.adjPmeth;
 		var adjPcut = fumaJS.adjPcut;
 		var minOverlap = fumaJS.minOverlap;
-		// $('#test').html("adjPmeth: "+adjPmeth);
 
 		if(gtype=="text"){
 			$('#genes').val(gval.replace(/:/g, '\n'));
@@ -120,6 +119,11 @@ $(document).ready(function(){
 		}else if(bkgtype == "text"){
 			$('#bkgenes').val(bkgval.replace(/:/g, '\n'));
 		}
+
+		$('#ensembl option').each(function(){
+			if($(this).val()==ensembl){$(this).prop("selected", true)}
+			else{$(this).prop("selected", false)}
+		})
 
 		gene_exp = gene_exp.split(":");
 		$('#gene_exp option').each(function(){
@@ -137,21 +141,12 @@ $(document).ready(function(){
 			url: "geneQuery",
 			type: "POST",
 			data: {
-				filedir: filedir,
-				gtype: gtype,
-				gval: gval,
-				bkgtype: bkgtype,
-				bkgval: bkgval,
-				gene_exp: gene_exp.join(":"),
-				MHC: MHC,
-				adjPmeth: adjPmeth,
-				adjPcut: adjPcut,
-				minOverlap: minOverlap
+				filedir: filedir
 			},
 			beforeSend: function(){
 				var options = {
 					theme: "sk-circle",
-					message: 'Running GENE2FUNC process. Please wait for amoment..'
+					message: 'Running GENE2FUNC process. Please wait for a moment..'
 				}
 				HoldOn.open(options)
 				$('#resultSide').hide()

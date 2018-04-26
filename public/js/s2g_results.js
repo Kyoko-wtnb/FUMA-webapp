@@ -745,7 +745,9 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 		error: function(){
 			alert("SNP table error");
 		},
-		// "order": [[2, 'asc'], [3, 'asc']],
+		"columnDefs":[
+			{type: "scientific", targets: 7}
+		],
 		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 		"iDisplayLength": 10
 	});
@@ -771,8 +773,8 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 
 	file = "genes.txt";
 	var table = "<thead><tr><th>Gene</th><th>Symbol</th><th>HUGO</th><th>entrezID</th><th>chr</th><th>start</th><th>end</th>";
-	table += "<th>strand</th><th>status</th><th>type</th><th>pLI</th><th>ncRVIS</th>";
-	var col = "ensg:symbol:HUGO:entrezID:chr:start:end:strand:status:type:pLI:ncRVIS";
+	table += "<th>strand</th><th>type</th><th>pLI</th><th>ncRVIS</th>";
+	var col = "ensg:symbol:HUGO:entrezID:chr:start:end:strand:type:pLI:ncRVIS";
 	if(posMap==1){
 		table += "<th>posMapSNPs</th><th>posMapMaxCADD</th>";
 		col += ":posMapSNPs:posMapMaxCADD";

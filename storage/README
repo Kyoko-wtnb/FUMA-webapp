@@ -131,7 +131,7 @@ chr : chromosome
 start : Starting position of the gene
 end : Ending position of the gene
 strand : Strand of the gene
-status : Status of the gene from Ensembl
+status : Status of the gene from Ensembl (not available for > v85)
 type : Gene biotype from Ensembl
 HUGO : HUGO (HGNC) gene symbol
 pLI : pLI score from ExAC database. The probability of being loss-of-function intolerant. The higher the score is, the more intolerant to loss-of-function mutations the gene is.

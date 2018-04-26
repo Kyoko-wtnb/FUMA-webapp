@@ -137,6 +137,14 @@ var loggedin = "{{ Auth::check() }}";
 						<h4>Other optional parameters</h4>
 						<tab>
 						<span class="form-inline">
+							Ensembl version:
+							<select class="form-control" id="ensembl" name="ensembl">
+								<option selected value="v92">v92</option>
+								<option value="v85">v85</option>
+							</select>
+						</span>
+						<tab>
+						<span class="form-inline">
 							Gene expression data sets:
 							<select multiple class="form-control" name="gene_exp[]" id="gene_exp">
 								<option value="GTEx/v7/gtex_v7_ts_avg_log2TPM">GTEx v7: 53 tissue types</option>

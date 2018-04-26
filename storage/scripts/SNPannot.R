@@ -6,13 +6,14 @@ filedir <- args[1]
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
+params <- ConfigParser(file=paste0(filedir, "params.config"))
 
 snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
 ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
 annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 annot <- annot[annot$uniqID %in% snps$uniqID,]
-ENSG <- fread(config$data$ENSG, data.table=F)
+ENSG <- fread(paste(config$data$ENSG, params$params$ensembl, config$data$ENSGfile, sep="/"), data.table=F)
 annov$symbol <- ENSG$external_gene_name[match(annov$gene, ENSG$ensembl_gene_id)]
 annov$symbol[is.na(annov$symbol)] <- annov$gene[is.na(annov$symbol)]
 annov$chr <- snps$chr[match(annov$uniqID, snps$uniqID)]

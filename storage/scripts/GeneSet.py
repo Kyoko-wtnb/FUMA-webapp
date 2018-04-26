@@ -76,7 +76,8 @@ def GeneSetTest(f):
 ##### config variables #####
 cfg = ConfigParser.ConfigParser()
 cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
-ensgfile = cfg.get('data', 'ENSG')
+ensgdir = cfg.get('data', 'ENSG')
+ensgfile = cfg.get('data', 'ENSGfile')
 gsdir = cfg.get('data', 'GeneSet')
 
 if len(sys.argv)<1:
@@ -92,6 +93,7 @@ gtype = param.get('params', 'gtype')
 gval = param.get('params', 'gval')
 bkgtype = param.get('params', 'bkgtype')
 bkgval = param.get('params', 'bkgval')
+ensg_v = param.get('params', 'ensembl')
 MHC = int(param.get('params', 'MHC')) #1 for exclude
 adjPmeth = param.get('params', 'adjPmeth')
 adjPcut = float(param.get('params', 'adjPcut'))
@@ -105,9 +107,10 @@ else:
 	genes = list(lines[:,0].astype(str))
 genes = [s.upper() for s in genes]
 
-ENSG = pd.read_table(ensgfile, delim_whitespace=True, dtype=str)
+ENSG = pd.read_table(ensgdir+"/"+ensg_v+"/"+ensgfile, delim_whitespace=True, dtype=str)
 ENSGheads = list(ENSG.columns.values)
 ENSG = np.array(ENSG)
+ENSG = ENSG[ENSG[:,ENSGheads.index("entrezID")]!="NA"]
 
 if bkgtype == "select":
 	bkgval = list(bkgval.split(":"))
@@ -166,11 +169,13 @@ files = glob.glob(gsdir+'/*.gmt')
 N = len(bkgenes)
 m = len(genes)
 
-tmp = Parallel(n_jobs=n_cores)(delayed(GeneSetTest)(f) for f in files)
+gs = Parallel(n_jobs=n_cores)(delayed(GeneSetTest)(f) for f in files)
 
 with open(filedir+"GS.txt", 'w') as out:
 	out.write("\t".join(["Category", "GeneSet", "N_genes", "N_overlap", "p", "adjP", "genes", "link"])+"\n")
 with open(filedir+"GS.txt", 'a') as out:
-	np.savetxt(out, np.array(tmp), fmt="%s", delimiter="\t")
+	for gs_tmp in gs:
+		if len(gs_tmp)>0:
+			np.savetxt(out, np.array(gs_tmp), fmt="%s", delimiter="\t")
 
 print time.time() - start

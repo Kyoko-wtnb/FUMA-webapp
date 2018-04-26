@@ -237,7 +237,7 @@ def main():
 	for c in chrom:
 		if len(genes)>0:
 			tmp_genes = genes[genes[:,2]==c]
-			tmp_genes = tmp_genes[:,[2,3,4,1,geneshead.index("GenomicLocus")]]
+			tmp_genes = tmp_genes[:,[geneshead.index("chr"),geneshead.index("start"),geneshead.index("end"),geneshead.index("symbol"),geneshead.index("GenomicLocus")]]
 			tmp_genes[:,4] = [int(x.split(":")[-1]) for x in tmp_genes[:,4].astype(str)]
 		else:
 			tmp_genes = []

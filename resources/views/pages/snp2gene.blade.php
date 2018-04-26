@@ -17,6 +17,7 @@
 <script type="text/javascript" src="//cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
 <script type="text/javascript" src="//cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/plug-ins/1.10.16/sorting/scientific.js"></script>
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>

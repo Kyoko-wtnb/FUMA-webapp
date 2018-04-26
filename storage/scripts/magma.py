@@ -42,6 +42,7 @@ def main():
 
 	refpanel = param_cfg.get('params', 'refpanel')
 	pop = param_cfg.get('params', 'pop')
+	ensg_v = param_cfg.get('params', 'ensembl')
 	magma_window = param_cfg.get('magma', 'magma_window')
 	magma_exp = param_cfg.get('magma', 'magma_exp').split(":")
 
@@ -62,7 +63,7 @@ def main():
 			command += " $6}else{print$1 "+'":"'+" $2 "+'":"'+" $4 "+'":"'+" $3"+'"\t"'+" $6}}'"
 			command += " | sort -u -k 1,1 > "+filedir+magma_file
 		os.system(command)
-		os.system(magmadir+"/magma --bfile "+magmafiles+"/"+refpanel+"/"+pop+" --pval "+filedir+magma_file+" N="+str(N)+" --gene-annot "+magmafiles+"/"+refpanel+"/"+pop+"_ENSG_w"+magma_window+".genes.annot --out "+filedir+"magma")
+		os.system(magmadir+"/magma --bfile "+magmafiles+"/"+refpanel+"/"+pop+" --pval "+filedir+magma_file+" N="+str(N)+" --gene-annot "+magmafiles+"/"+refpanel+"/"+pop+"_ENSG"+ensg_v+"_w"+magma_window+".genes.annot --out "+filedir+"magma")
 	else:
 		header = []
 		with open(filedir+snps_file, 'r') as fin:
@@ -79,7 +80,7 @@ def main():
 			command += " int($"+str(Ncol)+")}else{print$1 "+'":"'+" $2 "+'":"'+" $4 "+'":"'+" $3"+'"\t"'+" $6 "+'"\t"'+" int($"+str(Ncol)+")}}'"
 			command += " | sort -u -k 1,1 > "+filedir+magma_file
 		os.system(command)
-		os.system(magmadir+"/magma --bfile "+magmafiles+"/"+refpanel+"/"+pop+" --pval "+filedir+magma_file+" ncol=3 --gene-annot "+magmafiles+"/"+refpanel+"/"+pop+"_ENSG_w"+magma_window+".genes.annot --out "+filedir+"magma")
+		os.system(magmadir+"/magma --bfile "+magmafiles+"/"+refpanel+"/"+pop+" --pval "+filedir+magma_file+" ncol=3 --gene-annot "+magmafiles+"/"+refpanel+"/"+pop+"_ENSG"+ensg_v+"_w"+magma_window+".genes.annot --out "+filedir+"magma")
 
 	if not os.path.isfile(filedir+"magma.genes.out"):
 		sys.exit("MAGMA ERROR")

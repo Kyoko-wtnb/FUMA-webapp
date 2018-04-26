@@ -22,7 +22,7 @@ $(document).ready(function(){
 	//app info
 	$('#appInfo').on('click', function(){
 		$.ajax({
-			url: 'appinfo',
+			url: '/appinfo',
 			type: 'GET',
 			error: function(){
 				alert("appInfo error")

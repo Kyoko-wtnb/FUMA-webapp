@@ -58,7 +58,7 @@ gene_exp <- unlist(strsplit(params$params$gene_exp, ":"))
 MHC <- as.numeric(params$params$MHC)
 
 ##### all genes #####
-ENSG <- fread(config$data$ENSG, data.table=F)
+ENSG <- fread(paste(config$data$ENSG, params$params$ensembl, config$data$ENSGfile, sep="/") , data.table=F)
 
 ##### input genes #####
 ### input
@@ -99,9 +99,10 @@ if(MHC==1){
 geneIDs <- data.frame(input=genes)
 if(length(which(toupper(genes) %in% toupper(ENSG$external_gene_name)))>0){
 	colnames(geneIDs)[1] <- "symbol"
-	genes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name) %in% toupper(genes)]
 	geneIDs$ensg <- ENSG$ensembl_gene_id[match(toupper(geneIDs$symbol), toupper(ENSG$external_gene_name))]
+	geneIDs$ensg[is.na(geneIDs$ensg)] <- ENSG$ensembl_gene_id[match(toupper(geneIDs$symbol[is.na(geneIDs$ensg)]), ENSG$hgnc_symbol)]
 	geneIDs$entrez <- ENSG$entrezID[match(geneIDs$ensg, ENSG$ensembl_gene_id)]
+	genes <- geneIDs$ensg[!is.na(geneIDs$ensg)]
 }else if(length(which(toupper(genes) %in% toupper(ENSG$ensembl_gene_id)))>0){
 	colnames(geneIDs)[1] <- "ensg"
 	genes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(genes)]
@@ -119,8 +120,8 @@ summary <- rbind(summary, c("Number of input genes with recognised Ensembl ID", 
 summary <- rbind(summary, c("Input genes without recognised Ensembl ID", paste(geneIDs[!geneIDs$ensg%in%genes,1], collapse=":")))
 
 if(length(which(toupper(bkgenes) %in% toupper(ENSG$external_gene_name)))>0){
-	tmp <- bkgenes[!toupper(bkgenes)%in%toupper(ENSG$external_gene_name)]
-	bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name)%in%toupper(bkgenes)]
+	tmp <- bkgenes[!toupper(bkgenes)%in%toupper(ENSG$external_gene_name) & !toupper(bkgenes)%in%toupper(ENSG$hgnc_symbol)]
+	bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name)%in%toupper(bkgenes) | oupper(ENSG$hgnc_symbol)%in%toupper(bkgenes)]
 }else if(length(which(toupper(bkgenes) %in% toupper(ENSG$ensembl_gene_id)))>0){
 	tmp <- bkgenes[!toupper(bkgenes) %in% toupper(ENSG$ensembl_gene_id)]
 	bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(bkgenes)]
@@ -134,8 +135,8 @@ if(bkgtype=="select"){
 }else{
 	summary <- rbind(summary, c("Background genes without recognised Ensembl ID", paste(tmp, collapse=":")))
 }
-summary <- rbind(summary, c("Number of unique entrez ID of input genes", as.character(length(unique(geneIDs$entrez)))))
-summary <- rbind(summary, c("Number of unique entrez ID of background genes", as.character(length(unique(ENSG$entrezID[ENSG$ensembl_gene_id%in%bkgenes])))))
+summary <- rbind(summary, c("Number of input genes with unique entrez ID", as.character(length(unique(geneIDs$entrez)))))
+summary <- rbind(summary, c("Number of background genes with unique entrez ID", as.character(length(unique(ENSG$entrezID[ENSG$ensembl_gene_id%in%bkgenes])))))
 
 ##### write summary #####
 summary[summary[,2]=="", 2] <- "NA"
@@ -170,13 +171,10 @@ if(length(which(genes %in% bkgenes))>1){
 }
 
 geneTable <- ENSG[toupper(ENSG$ensembl_gene_id) %in% toupper(genes),]
-geneTable <- subset(geneTable, select=c("ensembl_gene_id", "entrezID", "external_gene_name"))
-colnames(geneTable) <- c("ensg", "entrezID", "symbol")
-load(paste(config$data$geneIDs, "/entrez2mim.RData", sep=""))
-
-load(paste(config$data$geneIDs, "/entrez2uniprot.RData", sep=""))
-geneTable$OMIM <- entrez2mim$mim[match(geneTable$entrezID, entrez2mim$entrezID)]
-geneTable$uniprotID <- entrez2uniprot$uniprotID[match(geneTable$entrezID, entrez2uniprot$entrezID)]
+geneTable <- subset(geneTable, select=c("ensembl_gene_id", "entrezID", "external_gene_name", "hgnc_symbol"))
+colnames(geneTable) <- c("ensg", "entrezID", "symbol", "hgnc_symbol")
+geneTable$OMIM <- ENSG$mim[match(geneTable$ensg, ENSG$ensembl_gene_id)]
+geneTable$uniprotID <- ENSG$uniprot[match(geneTable$ensg, ENSG$ensembl_gene_id)]
 geneTable$DrugBank <- NA
 load(paste(config$data$geneIDs, "/DrugBank.RData", sep=""))
 

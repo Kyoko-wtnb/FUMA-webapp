@@ -109,6 +109,7 @@ class G2FController extends Controller
 			$request -> file('bkgenesfile') -> move($filedir, "bkgenes.txt");
 		}
 
+		$ensembl = $request->input('ensembl');
 		$gene_exp = implode(":", $request->input("gene_exp"));
 
 		if($request -> has('MHC')){
@@ -131,7 +132,6 @@ class G2FController extends Controller
 
 		File::append($paramfile, "\n[version]\n");
 		File::append($paramfile, "FUMA=".$app_config['FUMA']."\n");
-		File::append($paramfile, "Ensembl=".$app_config['Ensembl']."\n");
 		File::append($paramfile, "MsigDB=".$app_config['MsigDB']."\n");
 		File::append($paramfile, "WikiPathways=".$app_config['WikiPathways']."\n");
 		File::append($paramfile, "GWAScatalog=".$app_config['GWAScatalog']."\n");
@@ -141,6 +141,7 @@ class G2FController extends Controller
 		File::append($paramfile, "gval=$gval\n");
 		File::append($paramfile, "bkgtype=$bkgtype\n");
 		File::append($paramfile, "bkgval=$bkgval\n");
+		File::append($paramfile, "ensembl=$ensembl\n");
 		File::append($paramfile, "gene_exp=$gene_exp\n");
 		File::append($paramfile, "MHC=$MHC\n");
 		File::append($paramfile, "adjPmeth=$adjPmeth\n");
@@ -154,7 +155,7 @@ class G2FController extends Controller
 			'gval' => $gval,
 			'bkgtype' => $bkgtype,
 			'bkgval' => $bkgval,
-			// 'Xchr' => $Xchr,
+			'ensembl' => $ensembl,
 			'gene_exp' => $gene_exp,
 			'MHC' => $MHC,
 			'adjPmeth' => $adjPmeth,
@@ -167,14 +168,6 @@ class G2FController extends Controller
 
 	public function geneQuery(Request $request){
 		$filedir = $request -> input('filedir');
-		$gtype = $request -> input('gtype');
-		$gval = $request -> input('gval');
-		$bkgtype = $request -> input('bkgtype');
-		$bkgval = $request -> input('bkgval');
-		$MHC = $request -> input('MHC');
-		$adjPmeth = $request -> input('adjPmeth');
-		$adjPcut = $request -> input('adjPcut');
-		$minOverlap = $request -> input('minOverlap');
 
 		$script = storage_path()."/scripts/gene2func.R";
 		exec("Rscript $script $filedir", $output, $error);
@@ -215,7 +208,7 @@ class G2FController extends Controller
 			$gtype="text";
 			$bkgtype="select";
 			$params = parse_ini_file($s2gfiledir.'params.config', false, INI_SCANNER_RAW);
-			// $Xchr = preg_split("/[\t]/", chop($params[9]))[1];
+			$ensembl = $params['ensembl'];
 			$gene_exp = $params['magma_exp'];
 			$MHC = $params['exMHC'];
 			$bkgval = $params['genetype'];
@@ -246,6 +239,7 @@ class G2FController extends Controller
 			File::append($paramfile, "bkgtype=$bkgtype\n");
 			File::append($paramfile, "bkgval=$bkgval\n");
 			File::append($paramfile, "MHC=$MHC\n");
+			File::append($paramfile, "ensembl=$ensembl\n");
 			File::append($paramfile, "gene_exp=$gene_exp\n");
 			File::append($paramfile, "adjPmeth=$adjPmeth\n");
 			File::append($paramfile, "adjPcut=$adjPcut\n");
@@ -258,6 +252,7 @@ class G2FController extends Controller
 				'gval' => $gval,
 				'bkgtype' => $bkgtype,
 				'bkgval' => $bkgval,
+				'ensembl' => $ensembl,
 				'gene_exp' => $gene_exp,
 				'MHC' => $MHC,
 				'adjPmeth' => $adjPmeth,
