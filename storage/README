@@ -4,6 +4,7 @@ Author: Kyoko Watanabe (k.watanabe@vu.nl)
 Version: 1.0.0 (2 Feb 2017)
 Version: 1.1.2 (27 Apr 2017)
 Version: 1.3.0 (21 Feb 2018)
+Version: 1.3.1 (27 Apr 2018)
 
 This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
@@ -343,7 +344,8 @@ When genotype data is available, we recommend to re-run MAGMA locally with genot
   magma.genes.out: output of gene analysis containing gene P-value
   magma.genes.raw: output of gene analysis which is used for gene-set analysis
 2. Gene-set analysis
-  Gene sets were obtained from MsigDB v5.2. Total of 10894 gene sets (Curated gene sets (4728) and GO terms (6166)) were tested.
+  Gene sets were obtained from MsigDB v5.2. Total 10894 gene sets (Curated gene sets: 4728, GO terms:6166) were tested.
+  From FUMA v1.3.1, gene sets were updated for MsigDB v6.1. Total 10655 gene sets (Curated gene sets: 4738, GO terms: 5917) were tested.
   Curated gene sets consists of 9 data resources including KEGG, Reactome and BioCarta (http://software.broadinstitute.org/gsea/msigdb/collection_details.jsp#C2 for details).
   GO terms consists of three categories, biological processes (bp), cellular components (cc) and molecular functions (mf).
   All parameters were set as default (competitive test).

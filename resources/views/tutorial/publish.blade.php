@@ -13,7 +13,9 @@
 			<h4><strong>2. Publish results</strong></h4>
 			You can publish your results from your job list on SNP2GENE page.
 			There is a "publish" button for each SNP2GENE job.<br/>
-			<!-- <img src="{!! URL::asset('/image/publish_btn.png') !!}" style="width:80%"/><br/> -->
+			<br/>
+			<img src="{!! URL::asset('/image/publish_btn.png') !!}" style="width:80%"/><br/>
+			<br/>
 			When you click the "publish" button, a popup will open where you can specify some features of the job.
 			Please fill the features in the table below as much as possible before submit your job.
 			<br/><br/>
@@ -105,7 +107,9 @@
 			<h4><strong>3. Check your published results</strong></h4>
 			Published job will be listed in the "Browse Public Results" page.
 			Please have a look at your published job to check if there is any problem.
-			<!-- <img src="{!! URL::asset('/image/publish_list.png') !!}" style="width:80%"/><br/> -->
+			<br/>
+			<img src="{!! URL::asset('/image/publish_list.png') !!}" style="width:80%"/><br/>
+			<br/>
 		</div>
 
 		<h3>Modify/delete published result</h3>

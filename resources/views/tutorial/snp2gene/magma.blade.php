@@ -23,6 +23,15 @@ In this section, reference panels and gene expression data sets are described de
 
 </div>
 
+<h4>Gene set analyses</h4>
+<div style="padding-left: 40px;">
+	In FUMA, curated gene sets (c2.all) and go terms (c5.bp, c5.cc and c5.mf) from MsigDB are tested.
+	For FUMA &le; v1.3.0, 10894 gene sets (curated gene sets: 4728, GO terms: 6166) from MsigdB v5.2 are used.
+	For FUMA &ge; v1.3.1, 10655 gene sets (curated gene sets: 4738, GO terms: 5917) from MsigDB v6.1 are used.
+	Bonferroni correction was performed for the all tested gene sets.
+	To customize, you can download the output file and select a specific gene sets.
+</div>
+
 <h4>Gene expression data sets</h4>
 <div style="padding-left: 40px;">
 	<h4><strong>1. GTEx v6</strong></h4>
