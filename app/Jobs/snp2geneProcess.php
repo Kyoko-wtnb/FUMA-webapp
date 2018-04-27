@@ -95,10 +95,10 @@ class snp2geneProcess extends Job implements ShouldQueue
 		exec("python $script $filedir");
 
 		if($params['magma']==1){
-			file_put_contents($logfile, "\n----- magma.pl -----\n", FILE_APPEND);
-			file_put_contents($errorfile, "\n----- magma.pl -----\n", FILE_APPEND);
-			$script = storage_path().'/scripts/magma.pl';
-			exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+			file_put_contents($logfile, "\n----- magma.py -----\n", FILE_APPEND);
+			file_put_contents($errorfile, "\n----- magma.py -----\n", FILE_APPEND);
+			$script = storage_path().'/scripts/magma.py';
+			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$errorout = file_get_contents($errorfile);
 				if(preg_match('/MAGMA ERROR/', $errorout)==1){

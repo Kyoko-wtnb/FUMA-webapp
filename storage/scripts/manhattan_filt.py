@@ -14,20 +14,25 @@ if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 
 GWAS = pd.read_table(filedir+"input.snps", sep="\s+", usecols=["chr", "bp", "p"], dtype="str")
+GWAS = np.array(GWAS)
 chrcol = 0
 poscol = 1
 pcol = 2
 
-GWAS = GWAS.as_matrix()
+## per chr size
+chroms = np.unique(GWAS[:,chrcol].astype(int))
+chrSize = [max(GWAS[GWAS[:,chrcol].astype(int)==x, poscol].astype(int)) for x in range(1,23) if x in chroms]
+
 width = 800 #px
 height = 300 #px
 minP = min(GWAS[GWAS[:,pcol].astype(float)>1e-300,pcol].astype(float))
 lowPs = len(np.where(GWAS[:,pcol].astype(float)==0)[0])
 yMax = -math.log10(minP)
-l = 3100000000/(width/2)
+l = sum(chrSize)/(width/2)
 h = yMax/(height/2)
 #print yMax
 outfile = open(filedir+"manhattan.txt", 'w')
+plotSNPs = [['chr', 'bp', 'p']]
 for chrom in range(1,24):
 	plotSNPs = []
 	if chrom==1:
@@ -73,21 +78,8 @@ for chrom in range(1,24):
 		outfile.write("\t".join(plotSNPs[0])+"\n")
 		plotSNPs = plotSNPs[1:]
 	plotSNPs = np.array(plotSNPs, dtype="object")
-	plotSNPs = plotSNPs[plotSNPs[:,1].argsort()]
+	plotSNPs = plotSNPs[plotSNPs[:,1].astype(int).argsort()]
 	for i in plotSNPs:
 		outfile.write("\t".join(i)+"\n")
 		#outfile.write("\t".join(i.astype(str))+"\n")
 	print "Chromosome ",chrom," done!!"
-
-
-#outfile.write("\t".join(plotSNPs[0])+"\n")
-#plotSNPs = plotSNPs[1:]
-#plotSNPs = np.array(plotSNPs)
-#plotSNPs[:,0] = plotSNPs[:,0].astype(int)
-#plotSNPs[:,1] = plotSNPs[:,1].astype(int)
-#plotSNPs = plotSNPs[plotSNPs[:,1].argsort()]
-#plotSNPs = plotSNPs[plotSNPs[:,0].argsort()]
-#plotSNPs = plotSNPs[np.argsort(plotSNPs[:,1])]
-#plotSNPs = plotSNPs[np.argsort(plotSNPs[:,0])]
-#for i in plotSNPs:
-#	outfile.write("\t".join(i.astype(str))+"\n")

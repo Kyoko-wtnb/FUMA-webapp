@@ -4,6 +4,7 @@ Author: Kyoko Watanabe (k.watanabe@vu.nl)
 Version: 1.0.0 (2 Feb 2017)
 Version: 1.1.2 (27 Apr 2017)
 Version: 1.3.0 (21 Feb 2018)
+Version: 1.3.1 (27 Apr 2018)
 
 This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
@@ -20,7 +21,7 @@ pos : position of top lead SNP on hg19
 p : P-value of top lead SNP (from the input file).
 start : Start position of the locus
 end : End position of the locus
-nSNPs : The number of unique candidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are extracted from 1000G).
+nSNPs : The number of unique candidate SNPs in the genomic locus, including non-GWAS-tagged SNPs (which are available in the use selected reference panel).
 nGWASSNPs : The number of the GWAS-tagged candidate SNPs within the genomic locus. This is a subset of "nSNPs".
 nIndSigSNPs : The number of the independent significant SNPs in the genomic locus (r2 < user defined parameter)
 IndSigSNPs : rsID of independent significant SNPs in the genomic locus
@@ -131,7 +132,7 @@ chr : chromosome
 start : Starting position of the gene
 end : Ending position of the gene
 strand : Strand of the gene
-status : Status of the gene from Ensembl
+status : Status of the gene from Ensembl (not available for > v85)
 type : Gene biotype from Ensembl
 HUGO : HUGO (HGNC) gene symbol
 pLI : pLI score from ExAC database. The probability of being loss-of-function intolerant. The higher the score is, the more intolerant to loss-of-function mutations the gene is.
@@ -289,7 +290,7 @@ r2 : the minimum threshold of SNPs to be in LD of the lead SNPs
 gwasP : the maximum threshold of P-value to be candidate SNP
 pop : The population of reference panel
 MAF : the minimum minor allele frequency based on 1000 genome reference of given population
-Incl1KGSNPs : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise
+refSNPs : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise
 mergeDist : The maximum distance between LD blocks to merge into interval
 [magma]
 magma : 1 to perform MAGMA, 0 otherwise
@@ -343,7 +344,8 @@ When genotype data is available, we recommend to re-run MAGMA locally with genot
   magma.genes.out: output of gene analysis containing gene P-value
   magma.genes.raw: output of gene analysis which is used for gene-set analysis
 2. Gene-set analysis
-  Gene sets were obtained from MsigDB v5.2. Total of 10894 gene sets (Curated gene sets (4728) and GO terms (6166)) were tested.
+  Gene sets were obtained from MsigDB v5.2. Total 10894 gene sets (Curated gene sets: 4728, GO terms:6166) were tested.
+  From FUMA v1.3.1, gene sets were updated for MsigDB v6.1. Total 10655 gene sets (Curated gene sets: 4738, GO terms: 5917) were tested.
   Curated gene sets consists of 9 data resources including KEGG, Reactome and BioCarta (http://software.broadinstitute.org/gsea/msigdb/collection_details.jsp#C2 for details).
   GO terms consists of three categories, biological processes (bp), cellular components (cc) and molecular functions (mf).
   All parameters were set as default (competitive test).

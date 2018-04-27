@@ -31,10 +31,10 @@ var page = "{{$page}}"
 var subdir = "{{ Config::get('app.subdir') }}";
 var loggedin = "{{ Auth::check() }}";
 </script>
-<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?130"></script>
-<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?130"></script>
-<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?130"></script>
-<script type="text/javascript" src="{!! URL::asset('js/browse.js') !!}?130"></script>
+<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
+<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?131"></script>
+<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?131"></script>
+<script type="text/javascript" src="{!! URL::asset('js/browse.js') !!}?131"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">
@@ -52,6 +52,8 @@ var loggedin = "{{ Auth::check() }}";
 				<li><a href="#summaryTable">Summary of results<i class="sub_icon fa fa-bar-chart"></i></a></li>
 				<li><a href="#tables">Results<i class="sub_icon fa fa-table"></i></a></li>
 				<li><a href="#downloads">Download<i class="sub_icon fa fa-download"></i></a></li>
+			</div>
+			<div id="resultsSideG2F">
 				<span style="padding-left:10px;font-size:14px;"><b>GENE2FUNC</b></span>
 				<li><a href="#g2f_summaryPanel">Summary<i class="sub_icon fa fa-table"></i></a></li>
 				<li><a href="#expPanel">Heatmap<i class="sub_icon fa fa-th"></i></a></li>

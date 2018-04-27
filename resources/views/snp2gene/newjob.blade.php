@@ -151,6 +151,9 @@
 							<option value="1KG/Phase3/AFR">1000G Phase3 AFR</option>
 							<option value="1KG/Phase3/SAS">1000G Phase3 SAS</option>
 							<option value="1KG/Phase3/EAS">1000G Phase3 EAS</option>
+							<option value="UKB/release1/WBrits_10k">UKB release1 White British</option>
+							<option value="UKB/release2/WBrits_10k">UKB release2 White British</option>
+							<option value="UKB/release2/EUR_10k">UKB release2 European</option>
 						</select>
 					</td>
 					<td>
@@ -160,13 +163,15 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Include 1000 genome variant (non-GWAS tagged SNPs in LD)
-						<a class="infoPop" data-toggle="popover" title="1000G SNPs" data-content="Select ‘yes’ if you want to include SNPs that are not available in the GWAS output but are available in 1000G. Including these SNPs may provide information on functional variants in LD with the lead SNP.">
+					<td>Include variants in reference panel (non-GWAS tagged SNPs in LD)
+						<a class="infoPop" data-toggle="popover" title="Variants in reference" data-content="Select ‘yes’
+						if you want to include SNPs that are not available in the GWAS output but are available in the selected reference panel.
+						Including these SNPs may provide information on functional variants in LD with the lead SNP.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
 					<td>
-						<select class="form-control" id="KGSNPs" name="KGSNPs">
+						<select class="form-control" id="refSNPs" name="refSNPs">
 							<option selected value="Yes">Yes</option>
 							<option value="No">No</option>
 						</select>
@@ -1553,6 +1558,20 @@
 		<div class="panel-body collapse" id="NewJobGenePanel">
 			<table class="table table-bordered inputTable" id="NewJobGene" style="width: auto;">
 				<tr>
+					<td>Ensembl version</td>
+					<td>
+						<select class="form-control" id="ensembl" name="ensembl">
+							<option selected value="v92">v92</option>
+							<option value="v85">v85</option>
+						</select>
+					</td>
+					<td>
+						<div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">
+							<i class="fa fa-check"></i> OK.
+						</div>
+					</td>
+				</tr>
+				<tr>
 					<td>Gene type
 						<a class="infoPop" data-toggle="popover" title="Gene Type" data-content="Setting gene type defines what kind of genes should be included in the gene prioritization. Gene type is based on gene biotype obtained from BioMart (Ensembl 85). By default, only protein-coding genes are used for mapping.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
@@ -1565,7 +1584,7 @@
 							<option selected value="protein_coding">Protein coding</option>
 							<option value="lincRNA:antisense:retained_intronic:sense_intronic:sense_overlapping:macro_lncRNA">lncRNA</option>
 							<option value="miRNA:piRNA:rRNA:siRNA:snRNA:snoRNA:tRNA:vaultRNA">ncRNA</option>
-							<option value="lincRNA:antisense:retained_intronic:sense_intronic:sense_overlapping:macro_lncRNA:miRNA:piRNA:rRNA:siRNA:snRNA:snoRNA:tRNA:vaultRNA:processed_transcript">Processed transcripts</option>
+							<option value="lincRNA:antisense:retained_intronic:sense_intronic:sense_overlapping:3prime_overlapping_ncrna:macro_lncRNA:miRNA:piRNA:rRNA:siRNA:snRNA:snoRNA:tRNA:vaultRNA:processed_transcript">Processed transcripts</option>
 							<option value="pseudogene:processed_pseudogene:unprocessed_pseudogene:polymorphic_pseudogene:IG_C_pseudogene:IG_D_pseudogene:ID_V_pseudogene:IG_J_pseudogene:TR_C_pseudogene:TR_D_pseudogene:TR_V_pseudogene:TR_J_pseudogene">Pseudogene</option>
 							<option value="IG_C_gene:TG_D_gene:TG_V_gene:IG_J_gene">IG genes</option>
 							<option value="TR_C_gene:TR_D_gene:TR_V_gene:TR_J_gene">TR genes</option>
@@ -1637,6 +1656,23 @@
 						<span class="form-inline">
 							<input type="checkbox" class="form-check-input" name="magma" id="magma" checked onchange="CheckAll();">
 						</span>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Gene window
+						<a class="infoPop" data-toggle="popover" title="MAGMA gene window" data-content="The window size of genes to assign SNPs. e.g. 5kb option means SNPs within 5kb from both start and end of the gene are assigned to that gene.">
+							<i class="fa fa-question-circle-o fa-lg"></i>
+						</a>
+					</td>
+					<td>
+						<select class="form-control" id="magma_window" name="magma_window">
+							<option selected value="0">0 kb</option>
+							<option value="5">5 kb</option>
+							<option value="10">10 kb</option>
+							<option value="15">15 kb</option>
+							<option value="20">20 kb</option>
+						</select>
 					</td>
 					<td></td>
 				</tr>

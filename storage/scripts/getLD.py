@@ -19,7 +19,7 @@ class getParams:
 		    print "prefedined lead SNPs are not provided"
 		    leadSNPs = None
 		else:
-		    print "predefined lead SNPs are procided"
+		    print "predefined lead SNPs are provided"
 		    leadSNPs = filedir+cfg.get('inputfiles', 'leadSNPs')
 		addleadSNPs = int(param_cfg.get('inputfiles', 'addleadSNPs')) #1 to add, 0 to not add
 		regions = param_cfg.get('inputfiles', 'regionsfile')
@@ -33,7 +33,7 @@ class getParams:
 		refpanel = param_cfg.get('params', 'refpanel')
 		pop = param_cfg.get('params', 'pop')
 		leadP = float(param_cfg.get('params', 'leadP'))
-		KGSNPs = int(param_cfg.get('params', 'Incl1KGSNPs')) #1 to add, 0 to not add
+		refSNPs = int(param_cfg.get('params', 'refSNPs')) #1 to add, 0 to not add
 		gwasP = float(param_cfg.get('params', 'gwasP'))
 		maf = float(param_cfg.get('params', 'MAF'))
 		r2 = float(param_cfg.get('params', 'r2'))
@@ -85,7 +85,7 @@ class getParams:
 		self.refpanel = refpanel
 		self.pop = pop
 		self.leadP = leadP
-		self.KGSNPs = KGSNPs #1 to add, 0 to not add
+		self.refSNPs = refSNPs #1 to add, 0 to not add
 		self.gwasP = gwasP
 		self.maf = maf
 		self.r2 = r2
@@ -161,7 +161,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 	refpanel = params.refpanel
 	pop = params.pop
 	leadP = params.leadP
-	KGSNPs = params.KGSNPs
+	refSNPs = params.refSNPs
 	gwasP = params.gwasP
 	maf = params.maf
 	r2 = params.r2
@@ -247,9 +247,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				continue # rsID of lead SNPs needs to be matched with the one in GWAS file
 
 			igwas = np.where(gwas_in[:,rsIDcol]==l[0])[0][0]
-			allele = [gwas_in[igwas, neacol], gwas_in[igwas, eacol]]
-			allele.sort()
-			l_uid = ":".join([str(gwas_in[igwas, chrcol]), str(gwas_in[igwas, poscol])]+allele)
+			l_uid = ":".join([str(gwas_in[igwas, chrcol]), str(gwas_in[igwas, poscol])]+sorted([gwas_in[igwas, neacol], gwas_in[igwas, eacol]]))
 			pos = int(l[2])
 
 			### check if the lead SNP meat other condition
@@ -258,9 +256,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			lead_maf = False
 			check_id = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 			for m in check_id:
-				a = [m[3], m[4]]
-				a.sort()
-				tmp_uid = ":".join([m[0], m[1]]+a)
+				tmp_uid = ":".join([m[0], m[1]]+sorted([m[3], m[4]]))
 				if tmp_uid == l_uid:
 					lead_id = True
 					if float(m[5]) >= maf:
@@ -302,20 +298,13 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 					if int(m[1]) in pos_set:
 						jgwas = bisect_left(posall, int(m[1]))
 
-						allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
-						allele.sort()
-						uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
-
-						a = [m[3], m[4]]
-						a.sort()
-						tmp_uid = ":".join([m[0], m[1]]+a)
+						uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+sorted([gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]))
+						tmp_uid = ":".join([m[0], m[1]]+sorted([m[3], m[4]]))
 						if uid != tmp_uid:
 							checkall = False
 							jgwas += 1
 							while int(m[1]) == gwas_in[jgwas, poscol]:
-								allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
-								allele.sort()
-								uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
+								uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+sorted([gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]))
 								if uid == tmp_uid:
 									checkall = True
 									break
@@ -344,10 +333,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 						canSNPs.append(snp)
 						GWASSNPs += 1
 					## process SNPs whic do not exist in input file
-					elif KGSNPs==1:
-						a = [m[3], m[4]]
-						a.sort()
-						tmp_uid = ":".join([m[0], m[1]]+a)
+					elif refSNPs==1:
+						tmp_uid = ":".join([m[0], m[1]]+sorted([m[3], m[4]]))
 						ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
 						if tmp_uid in checkeduid:
 							continue
@@ -396,9 +383,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			l = gwas_in[pi]
 			if float(l[pcol])>=leadP:
 				break
-			allele = [l[neacol], l[eacol]]
-			allele.sort()
-			l_uid = ":".join([str(l[chrcol]), str(l[poscol])]+allele)
+			l_uid = ":".join([str(l[chrcol]), str(l[poscol])]+sorted([l[neacol], l[eacol]]))
 			if not l_uid in checkeduid:
 				pos = l[poscol]
 				### check if the SNP meat other condition
@@ -407,9 +392,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				lead_maf = False
 				check_id = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 				for m in check_id:
-					a = [m[3], m[4]]
-					a.sort()
-					tmp_uid = ":".join([m[0], m[1]]+a)
+					tmp_uid = ":".join([m[0], m[1]]+sorted([m[3], m[4]]))
 					if tmp_uid == l_uid:
 						lead_id = True
 						if float(m[5]) >= maf:
@@ -449,21 +432,13 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 						## process SNPs exist in input file
 						if int(m[1]) in pos_set:
 							jgwas = bisect_left(posall, int(m[1]))
-
-							allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
-							allele.sort()
-							uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
-
-							a = [m[3], m[4]]
-							a.sort()
-							tmp_uid = ":".join([m[0], m[1]]+a)
+							uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+sorted([gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]))
+							tmp_uid = ":".join([m[0], m[1]]+sorted([m[3], m[4]]))
 							if uid != tmp_uid:
 								checkall = False
 								jgwas += 1
 								while int(m[1]) == gwas_in[jgwas, poscol]:
-									allele = [gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]
-									allele.sort()
-									uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+allele)
+									uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+sorted([gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]))
 									if uid == tmp_uid:
 										checkall = True
 										break
@@ -489,10 +464,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							canSNPs.append(snp)
 							GWASSNPs += 1
 						## process SNPs do not exist in input file
-						elif KGSNPs==1:
-							a = [m[3], m[4]]
-							a.sort()
-							tmp_uid = ":".join([m[0], m[1]]+a)
+						elif refSNPs==1:
+							tmp_uid = ":".join([m[0], m[1]]+sorted([m[3], m[4]]))
 							ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
 							if tmp_uid in checkeduid:
 								continue
@@ -553,9 +526,7 @@ def getAnnot(snps, annot_dir):
 			tb = tabix.open(annotfile)
 			annot_tb = tb.querys(str(chrom)+":"+str(ranges[i][0])+"-"+str(ranges[i][1]))
 			for l in annot_tb:
-				a = [l[2], l[3]]
-				a.sort()
-				uid = ":".join([l[0], l[1]]+a)
+				uid = ":".join([l[0], l[1]]+sorted([l[2], l[3]]))
 				if uid in suid:
 					j = bisect_left(tmp[:,0], uid)
 					tmp_out.append([tmp[j,2], tmp[j,3], uid]+l[4:])
@@ -637,9 +608,6 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 			GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
 			nonGWASSNPs = unique(nonGWASSNPs)
 			GWASSNPs = unique(GWASSNPs)
-			if len(snps_tmp)==0:
-				print rsIDs
-				print uid
 			start = min(snps_tmp[:,3].astype(int))
 			end = max(snps_tmp[:,3].astype(int))
 			if start <= int(loci[iloci][7]) or start-int(loci[iloci][7])<params.mergeDist:

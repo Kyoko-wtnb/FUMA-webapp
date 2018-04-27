@@ -79,6 +79,7 @@ $(document).ready(function(){
 				<a href="#outputs">Outputs</a>
 				<a href="#table-columns">Table columns</a>
 				<a href="#geneMap">Redo gene mapping</a>
+				<a href="#refpanel">Reference panel</a>
 				<a href="#magma">MAGMA</a>
 				<a href="#riskloci">Risk loci and lead SNPs</a>
 				<a href="#eQTLs">eQTLs</a>
@@ -90,6 +91,7 @@ $(document).ready(function(){
 				<a href="#submit-genes">Submit genes</a>
 				<a href="#g2fOutputs">Outputs</a>
 			</div>
+			<li class="active"><a href="#publish">Publish results<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 			<li class="active"><a href="#data-security">Data security<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 		</ul>
 	</div>
@@ -126,6 +128,8 @@ $(document).ready(function(){
 					<br/>
 					@include('tutorial.snp2gene.geneMap')
 					<br/>
+					@include('tutorial.snp2gene.refpanel')
+					<br/>
 					@include('tutorial.snp2gene.magma')
 					<br/>
 					@include('tutorial.snp2gene.riskloci')
@@ -147,7 +151,7 @@ $(document).ready(function(){
 					@include('tutorial.gene2func.outputs')
 				</div>
 			</div>
-
+			@include('tutorial.publish')
 			@include('tutorial.data-security')
 		</div>
 	</div>

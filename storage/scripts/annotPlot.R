@@ -10,13 +10,14 @@ eqtlgenes <- args[5]
 eqtlgenes = unlist(strsplit(eqtlgenes, ":"))
 eqtlplot <- as.numeric(args[6])
 ciplot <- as.numeric(args[7])
+ensg_v <- args[8]
 
 
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
-ENSG <- fread(config$data$ENSG, data.table=F)
+ENSG <- fread(paste(config$data$ENSG, ensg_v, config$data$ENSGfile, sep="/"), data.table=F)
 
 ENSG <- ENSG[ENSG$chromosome_name==chr,]
 g <- ENSG$ensembl_gene_id[(ENSG$start_position <= xmin & ENSG$end_position>=xmax)
@@ -44,7 +45,8 @@ g <- unique(c(g, ENSG$ensembl_gene_id[
 
 rm(ENSG)
 library(biomaRt)
-ensembl <- useMart(biomart = "ENSEMBL_MART_ENSEMBL", host="grch37.ensembl.org", path="/biomart/martservice", dataset="hsapiens_gene_ensembl")
+#ensembl <- useMart(biomart = "ENSEMBL_MART_ENSEMBL", host="grch37.ensembl.org", path="/biomart/martservice", dataset="hsapiens_gene_ensembl")
+ensembl <- useEnsembl(biomart="ensembl", dataset="hsapiens_gene_ensembl", GRCh=37, version=ensg_v)
 exons <- getBM(attributes = c("ensembl_gene_id", "external_gene_name", "start_position", "end_position", "strand", "gene_biotype", "exon_chrom_start", "exon_chrom_end"), filter="ensembl_gene_id", values=g, mart = ensembl)
 genes <- unique(exons[,1:6])
 genes <- genes[order(genes$start_position),]

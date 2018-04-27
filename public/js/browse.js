@@ -2,7 +2,7 @@ var sigSNPtable_selected=null;
 var leadSNPtable_selected=null;
 var lociTable_selected=null;
 var annotPlotSelected;
-var prefix = "gwas";
+var prefix = "public";
 var geneTable;
 var exp_data_title = {
 	'gtex_v7_ts_avg_log2TPM': 'GTEx v7 53 tissue types',
@@ -35,6 +35,7 @@ $(document).ready(function(){
 
 	// hide side and panels
 	$('#resultsSide').hide();
+	$('#resultsSideG2F').hide();
 	$('#annotPlotPanel').hide();
 
 	// hide submit buttons for imgDown
@@ -50,17 +51,6 @@ $(document).ready(function(){
 			$(this).children('i').attr('class', 'fa fa-chevron-up');
 		}
 	});
-
-	// $('#allfiles').on('click', function(){
-	// 	$('#downFileCheck input').each(function(){
-	// 		$(this).prop("checked", true);
-	// 	});
-	// });
-	// $('#clearfiles').on('click', function(){
-	// 	$('#downFileCheck input').each(function(){
-	// 		$(this).prop("checked", false);
-	// 	});
-	// });
 
 	// disable job submission
 	$('#SubmitNewJob').prop('disabled', true);
@@ -101,10 +91,26 @@ $(document).ready(function(){
 
 	// load results
 	if(id.length>0){
-		loadResults();
+		var g2f=0;
+		$.ajax({
+			url: subdir+'/'+page+'/checkG2F',
+			type: 'POST',
+			data:{
+				id: id,
+			},
+			error: function(){
+				alert('checkG2F error');
+			},
+			success: function(data){
+				if(data.length>0){g2f = 1;}
+			},
+			complete: function(){
+				loadResults(g2f);
+			}
+		})
 	}
 
-	function loadResults(){
+	function loadResults(g2f){
 		var posMap;
 		var eqtlMap;
 		var ciMap;
@@ -116,7 +122,7 @@ $(document).ready(function(){
 			url: subdir+'/'+page+'/getParams',
 			type: 'POST',
 			data:{
-				gwasID: id
+				id: id
 			},
 			error: function(){
 				alert("JobQuery getParams error");
@@ -138,16 +144,19 @@ $(document).ready(function(){
 				MAGMAresults(id);
 				ciMapCircosPlot(id, ciMap);
 				showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, secol);
-				summaryTable(id);
-				paramTable(id);
-				expHeatMap(id);
-				tsEnrich(id);
-				GeneSet(id);
-				GeneTable(id);
-				$('#gene_exp_data').on('change', function(){
-					expHeatPlot(id, $('#gene_exp_data').val())
-				})
 				$('#resultsSide').show();
+				if(g2f==1){
+					summaryTable(id);
+					paramTable(id);
+					expHeatMap(id);
+					tsEnrich(id);
+					GeneSet(id);
+					GeneTable(id);
+					$('#gene_exp_data').on('change', function(){
+						expHeatPlot(id, $('#gene_exp_data').val())
+					})
+					$('#resultsSideG2F').show();
+				}
 			}
 		});
 	}
@@ -170,20 +179,27 @@ function getGwasList(){
 	  .empty()
 	  .append('<tr><td colspan="6" style="text-align:center;">Retrieving data</td></tr>');
 
-  $.getJSON( subdir + "/browse/getGwasList", function( data ) {
-	  var items = '<tr><td colspan="6" style="text-align: center;">No Available GWAS Found</td></tr>';
-	  if(data.length){
-		  items = '';
-		  $.each( data, function( key, val ) {
-			  val.title = '<a href="'+subdir+'/browse/'+val.gwasID+'">'+val.title+'</a>';
-			  items = items + "<tr><td>"+val.gwasID+"</td><td>"+val.title+"</td><td>"+val.PMID+"</td><td>"+val.year
-				+"</td><td>"+val.created_at+"</td><td>"+val.updated_at+"</td></tr>";
-		  });
-	  }
+	$.getJSON( subdir + "/browse/getGwasList", function( data ) {
+		var items = '<tr><td colspan="6" style="text-align: center;">No Available GWAS Found</td></tr>';
+		if(data.length){
+			items = '';
+			$.each( data, function( key, val ) {
+				val.title = '<a href="'+subdir+'/browse/'+val.id+'">'+val.title+'</a>';
+				if(val.sumstats_link != "NA"){
+					val.sumstats_link = '<a href="'+val.sumstats_link+'" target="_blank">'+val.sumstats_link+'</a>'
+				}
+				items = items + "<tr><td>"+val.id+"</td><td>"+val.title+"</td><td>"+val.author+"</td><td>"
+					+val.email+"</td><td>"+val.phenotype+"</td><td>"+val.publication+"</td>"
+					+'<td style="word-wrap:break-word;word-break:break-all;">'
+					+val.sumstats_link+"</td><td>"+val.sumstats_ref+"</td><td>"+val.notes+"</td><td>"
+					+val.created_at+"</td><td>"+val.update_at+"</td></tr>";
+			});
+		}
 
-	  // Put list in table
-	  $('#GwasList table tbody')
-		  .empty()
-		  .append(items);
-  });
+		// Put list in table
+		$('#GwasList table tbody')
+			.empty()
+			.append(items);
+		$('#GwasList table').DataTable({"stripeClasses": [], select: false, order: [[0, 'desc']],});
+	});
 }

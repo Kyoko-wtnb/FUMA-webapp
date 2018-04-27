@@ -1,5 +1,7 @@
 @extends('layouts.master')
 @section('head')
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
   var loggedin = "{{ Auth::check() }}";
 </script>
@@ -16,6 +18,32 @@
 		</tr>
 	</thead>
     <tbody>
+		<tr>
+			<td>27 Apr 2018</td>
+			<td>v1.3.1</td>
+			<td>
+				<strong>Major update 1</strong>: UK Biobank reference panel has been added.
+				There are three types of reference panels are avilalbe for UKB;
+				release 1 white biritish, release 2 white british and release 2 European.
+				Each reference panle consists of randonly selected 10,000 subjects.
+				MAGMA reference was created for each of these population by further randomly selected 1,000 subject
+				since the run time is very long by using 10K subjects.
+				Please check <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#refpanel">Tutorial</a> for details.
+				<br/>
+				<strong>Major update 2</strong>: You can now publish your FUMA results to public to allow other users can browse your results.
+				The browse page does not require users to login which makes it possible to share your results to larger population in an easy way!!
+				Please check <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#publish">Tutorial</a> for details.
+				<br/>
+				<strong>Minor update 1</strong>: Emsemble v92 genes are now availalbe for both SNP2GENE and GENE2FUNC.
+				Ensembl v85 can be selected from the option, but the default is updated to v92.
+				<br/>
+				<strong>Minor update 2</strong>: MsigDB is updated to v6.1 and WikiPathways is updated to 20180410.
+				<br/>
+				<strong>Minor update 3</strong>: An info tab is added to the header (<i class="fa fa-info-circle"></i>).
+				You can check the current version of FUMA and how many jobs are currently running/queued.
+				<br/>
+			</td>
+		</tr>
 		<tr>
 			<td>21 Feb 2018</td>
 			<td>v1.3.0</td>

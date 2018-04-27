@@ -80,7 +80,7 @@ def main ():
 		"UpGene", "DownGene", "SNP_Gene_ID", "UpGeneDist", "DownGeneDist", "Strongest",
 		"SNPs", "marged", "SNP_ID_cur", "Context", "intergenic", "RiskAF", "P",
 		"Pmlog", "Ptext", "OrBeta", "95CI", "Platform", "CNV"])+"\n")
-	with open(filedir+"gwascatalog.txt", 'a') as o:
-		np.savetxt(o, out, fmt="%s", delimiter="\t")
+		for l in out:
+			o.write("\t".join([str(x) for x in l])+"\n")
 
 if __name__ == "__main__": main()

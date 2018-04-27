@@ -18,6 +18,26 @@ $(document).ready(function(){
 		timer.stop();
 		timer.start();
 	}
+
+	//app info
+	$('#appInfo').on('click', function(){
+		$.ajax({
+			url: '/appinfo',
+			type: 'GET',
+			error: function(){
+				alert("appInfo error")
+			},
+			success: function(data){
+				data = JSON.parse(data)
+				$('#FUMAver').html(data.ver);
+				$('#FUMAuser').html(data.user);
+				$('#FUMAs2g').html(data.s2g);
+				$('#FUMAg2f').html(data.g2f);
+				$('#FUMArun').html(data.run);
+				$('#FUMAque').html(data.que);
+			}
+		})
+	})
 });
 
 function InactivityTimer(path, delay){

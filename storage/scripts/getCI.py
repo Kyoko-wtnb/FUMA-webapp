@@ -290,7 +290,6 @@ def main():
 	param.read(filedir+'params.config')
 
 	##### get parameters #####
-	ENSG = cfg.get("data", "ENSG")
 	datadir = cfg.get("CI", "CIdata")
 	reg_datadir = cfg.get("CI", "RoadmapData")
 	ciMapBuiltin = param.get("ciMap", "ciMapBuiltin")
@@ -315,13 +314,15 @@ def main():
 	promoter = [int(x) for x in promoter.split("-")]
 	genetype = param.get("params", "genetype")
 	genetype = list(genetype.split(":"))
+	ensg_v = param.get("params", "ensembl")
 
 	snps, gl = getSNPs(filedir)
 
 	##### get genes #####
-	genes = pd.read_table(ENSG, sep="\t")
+	genes = pd.read_table(cfg.get("data", "ENSG")+"/"+ensg_v+"/"+cfg.get("data", "ENSGfile"), sep="\t")
+	genes_header = list(genes.columns.values)
 	genes = np.array(genes)
-	genes = genes[:, [0,2,3,4,5,7]]
+	genes = genes[:, [genes_header.index("ensembl_gene_id"), genes_header.index("chromosome_name"), genes_header.index("start_position"), genes_header.index("end_position"), genes_header.index("strand"), genes_header.index("gene_biotype")]]
 	genes[:,1] = [int(str(x).replace("X", "23")) for x in genes[:,1]]
 	if "all" not in genetype:
 		genes = genes[ArrayIn(genes[:,5], genetype)]

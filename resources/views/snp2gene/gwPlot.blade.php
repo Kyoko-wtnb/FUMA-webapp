@@ -112,7 +112,7 @@
 		<br/><br/>
 		<h4 style="color: #00004d">MAGMA Gene-Set Analysis</h4>
 		<span class="info"><i class="fa fa-info"></i>
-			MAGMA gene-set analysis is performed for curated gene sets and GO terms obtained from MsigDB (total of 10894 gene sets).<br/>
+			MAGMA gene-set analysis is performed for curated gene sets and GO terms obtained from MsigDB (see <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#magma">here</a> for details).<br/>
 			The table displays the top the 10 significant gene sets with a maximum of P<sub>bon</sub> < 0.05.
 			Full results are downloadable from "Download" tab. <br/>
 			Note that MAGMA gene-set analyses uses the full distribution of SNP p-values and is different from a pathway enrichment test as implemented in GENE2FUNC that only tests for enrichment of prioritized genes.

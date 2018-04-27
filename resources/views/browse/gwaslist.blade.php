@@ -1,34 +1,43 @@
-<div id="GwasList" class="sidePanel container" style="min-height:100vh;">
-    <h3>Browse Example FUMA Results</h3>
-	<div style="padding:50px;">
+<div id="GwasList" class="sidePanel container" style="min-height:80vh;">
+    <h3>Browse Public Results</h3>
+	<div style="padding:30px;">
 		<p>
-			A few example GWAS results can be browsed without registoratioin/login in this page.
-			Please select one of the listed GWAS below to display results. 
-			Both SNP2GENE and GENE2FUNC results are displayed in the same page, althoug they will be separted when you submit your own jobs.
-			All features, such as interactive plots, downloading results and images are available.
-			However, submission of a new job is disabled. Parameters are also not changeable.
-			Please register/login to submit your own job.
+			You can browse FUMA results which are shared in public by users.
+			Registration is not required to browse public results.
+			Please contact author of the submitted job for any question regarding
+			the resuls.<br/>
+			If you want to modify/delete your published results, please contact the developper directry.
+			Only requests from a matched email address will be processed.
+			Please also inform the developper when the publication become available
+			if it was not available or only preprint was available at the time when you shared
+			your results.
 		</p>
 	</div>
     <div class="panel panel-default">
         <div class="panel-heading">
-            <div class="panel-title">List of available GWAS <tab></div>
+            <div class="panel-title">List of public results <tab></div>
         </div>
         <div class="panel-body">
-	      	<table class="table">
+			<span class="info"><i class="fa fa-info"></i> Click a title to browse the results.</span><br/><br/>
+	      	<table class="display compact dt-body-right dt-head-center" width="100%" cellspacing="0" style="display: block; overflow-x: auto; font-size:14px;">
 	            <thead>
 	                <tr>
 	                    <th>ID</th>
-	                    <th>Title</th>
-						<th>PMID</th>
-						<th>Year</th>
-	                    <th>Created date</th>
-	                    <th>Last update</th>
+						<th>title</th>
+						<th>author</th>
+						<th>email</th>
+						<th>phenotype</th>
+						<th>publication</th>
+						<th>sumstats</th>
+						<th>sumstats reference</th>
+						<th>notes</th>
+	                    <th>created date</th>
+	                    <th>last update</th>
 	                </tr>
 	            </thead>
 	            <tbody>
 	                <tr>
-	                    <td colspan="6" style="text-align:center;">Retrieving data</td>
+	                    <td colspan="11" style="text-align:center;">Retrieving data</td>
 	                </tr>
 	            </tbody>
 	        </table>

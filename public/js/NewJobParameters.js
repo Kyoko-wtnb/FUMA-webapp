@@ -132,8 +132,8 @@ function setParams(data){
 	$('r2').val(data.r2);
 	$('#gwasP').val(data.gwasP);
 	$('#refpanel').val(data.refpanel+"/"+data.pop);
-	if(data.Incl1KGSNPs=="1"){$('#KGSNPs').val("Yes")}
-	else($('#KGSNPs').val("No"))
+	if(data.refSNPs=="1"){$('#refSNPs').val("Yes")}
+	else($('#refSNPs').val("No"))
 	$('#maf').val(data.MAF);
 	$('#mergeDist').val(data.mergeDist);
 
@@ -267,6 +267,10 @@ function setParams(data){
 	}
 
 	// gene type
+	$('#ensembl option').each(function(){
+		if($(this).val()==data.ensembl){$(this).prop('selected', true)}
+		else{$(this).prop('selected', false)}
+	})
 	$('#genetype option').each(function(){
 		if($(this).val().indexOf(data.genetype)>=0){$(this).prop('selected', true);}
 		else{$(this).prop('selected', false);}
@@ -283,6 +287,10 @@ function setParams(data){
 	if(data["magma"]!=undefined){
 		if(data.magma=="1"){
 			$('#magma').prop('checked', true)
+			$('#magma_window option').each(function(){
+				if($(this).val()==data.magma_window){$(this).prop('selected', true)}
+				else{$(this).prop('selected', false)}
+			})
 			var ds = data.magma_exp.split(":");
 			$('#magma_exp option').each(function(){
 				if(ds.indexOf($(this).val())>=0){$(this).prop('selected', true)}
@@ -1105,22 +1113,26 @@ function CheckAll(){
 	if($('#magma').is(':checked')){
 		$(table.rows[0].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-check"></i> OK. MAGMA will be performed.</div></td>');
+		$(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-check"></i> OK.</div></td>');
 		var ds = 0;
 		$('#magma_exp option').each(function(){
 			if($(this).is(":selected")){ds++;}
 		});
 		if(ds==0){
-			$(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			$(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-ban"></i> Please select at least one data set.</div></td>');
 			submit=false;
 		}else{
-			$(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			$(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-check"></i> OK.</div></td>');
 		}
 	}else{
 		$(table.rows[0].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-exclamation-circle"></i> Optional. MAGMA results will not be available.</div></td>');
 		$(table.rows[1].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
+		$(table.rows[2].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
 	}
 

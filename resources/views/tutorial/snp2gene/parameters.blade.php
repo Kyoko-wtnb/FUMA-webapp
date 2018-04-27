@@ -127,8 +127,8 @@
 				</td>
 				<td>numeric</td>
 				<td>0.6</td>
-				<td><span style="color:red;">higher</span>: decrease #candidate SNPs and increase #lead SNPs.<br/>
-					<span style="color: blue;">lower</span>: increase #candidate SNPs and decrease #lead SNPs.
+				<td><span style="color:red;">higher</span>: decrease #candidate SNPs and increase #independent significant SNPs.<br/>
+					<span style="color: blue;">lower</span>: increase #candidate SNPs and decrease #independent significant SNPs.
 				</td>
 			</tr>
 			<tr>
@@ -144,19 +144,24 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Population</td>
+				<td>Reference panel</td>
 				<td>Mandatory</td>
-				<td>The population of reference panel to compute r<sup>2</sup> and MAF.
-					Currently five populations are available from 1000 genomes Phase 3.
+				<td>The reference panel to compute r<sup>2</sup> and MAF.
+					Five populations from 1000 genomes Phase 3 and
+					3 different versions of UK Biobank are available.
+					See <a href="{{ Config::get('app.subdir') }}/tutorial#refpanel">here</a> for details.
 				</td>
 				<td>Select</td>
-				<td>EUR</td>
+				<td>1000G Phase EUR</td>
 				<td>-</td>
 			</tr>
 			<tr>
-				<td>Include 1000 genomes reference variants</td>
+				<td>Include varians from reference panel</td>
 				<td>Mandatory</td>
-				<td>If Yes, all SNPs in strong LD with any of independent significant SNPs including non-GWAS-tagged SNPs will be included and used for gene prioritization.</td>
+				<td>If Yes, all SNPs in strong LD with any of independent significant SNPs
+					including non-GWAS-tagged SNPs will be included and used for
+					gene mapping.
+				</td>
 				<td>Yes/No</td>
 				<td>Yes</td>
 				<td>-</td>
@@ -625,9 +630,20 @@
 			<tr>
 				<td>Perform MAGMA</td>
 				<td>Optional</td>
-				<td>UNCHECK to OMIT MAGMA analyses.</td>
+				<td>UNCHECK to SKIP MAGMA analyses.</td>
 				<td>Check</td>
 				<td>Checked</td>
+			</tr>
+			<tr>
+				<td>MAGMA gene annotation window</td>
+				<td>Mandatory when <code>MAGMA</code> is active.</td>
+				<td>The window of the genes to assign SNPs (symmetric).
+					e.g. when 5kb is selected, SNPs within 5kb window of a gene (both side)
+					will be assigned to that gene. 
+					The option is available fomt 0, 5, 10, 15, 20kb window.
+				</td>
+				<td>Select</td>
+				<td>0kb from both side of the genes</td>
 			</tr>
 			<tr>
 				<td>MAGMA gene expression analysis</td>

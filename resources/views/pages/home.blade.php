@@ -37,7 +37,8 @@ $(document).ready(function(){
 		You can browse example results of FUMA for a few GWAS from <a href="{{ Config::get('app.subdir') }}/browse">Browse Examples</a> without registration or login.
 	</p>
 	<p>
-		Please post any questions, suggestions and bug reports on Google Forum: <a target="_blank" href="https://groups.google.com/forum/#!forum/fuma-gwas-users">FUMA GWAS users</a>.
+		Please post any questions, suggestions and bug reports on Google Forum: <a target="_blank" href="https://groups.google.com/forum/#!forum/fuma-gwas-users">FUMA GWAS users</a>.<br/>
+		If you would like to be in the mailing list, please send an email to k.watanabe@vu.nl. Only major updates will be announced through email (low trafic).
 	</p>
 	<p>
 		<strong>Citation:</strong><br/>
@@ -46,7 +47,7 @@ $(document).ready(function(){
 		<a target="_blank" href="https://www.nature.com/articles/s41467-017-01261-5">https://www.nature.com/articles/s41467-017-01261-5</a>
 		<br>
 		Depending on which results you are going to report, please also cite the original study of data sources/tools used in FUMA
-		(references are available at <a href="{{ Config::get('app.subdir') }}/links">Links</a>).
+		(references are available <a href="{{ Config::get('app.subdir') }}/links">here</a>).
 	</p>
 	<br/>
 

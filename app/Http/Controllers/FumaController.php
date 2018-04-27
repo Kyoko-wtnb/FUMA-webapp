@@ -19,6 +19,17 @@ use Mail;
 
 class FumaController extends Controller
 {
+	public function appinfo(){
+		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$out["ver"] = $app_config['FUMA'];
+		$out["user"] = DB::table('users')->count();
+		$out["s2g"] = collect(DB::select("SELECT MAX(jobID) as max from SubmitJobs"))->first()->max;
+		$out["g2f"] = collect(DB::select("SELECT MAX(jobID) as max from gene2func"))->first()->max;
+		$out["run"] = collect(DB::select("SELECT COUNT(jobID) as count from SubmitJobs WHERE status='RUNNING'"))->first()->count;
+		$out["que"] = collect(DB::select("SELECT COUNT(jobID) as count from SubmitJobs WHERE status='QUEUED'"))->first()->count;
+		return json_encode($out);
+	}
+
 	public function DTfile(Request $request){
 		$id = $request -> input('id');
 		$prefix = $request -> input('prefix');
@@ -268,9 +279,11 @@ class FumaController extends Controller
 		$eqtlgenes = $request->input("eqtlgenes");
 
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
+		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
+		$ensembl = $params['ensembl'];
 
 		$script = storage_path()."/scripts/annotPlot.R";
-		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot");
+		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl");
 		$data = explode("\n", $data);
 		$data = $data[count($data)-1];
 		return $data;
@@ -315,8 +328,8 @@ class FumaController extends Controller
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/circos/';
 		$type = $request->input('type');
 		$zip = new \ZipArchive();
-		if($prefix=="gwas"){
-			$zipfile = $filedir."FUMA_gwas".$id."_circos_".$type.".zip";
+		if($prefix=="public"){
+			$zipfile = $filedir."FUMA_public".$id."_circos_".$type.".zip";
 		}else{
 			$zipfile = $filedir."FUMA_job".$id."_circos_".$type.".zip";
 		}
@@ -388,7 +401,7 @@ class FumaController extends Controller
 		$id = $request->input('id');
 		$prefix = $request->input('prefix');
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		if($prefix=="gwas"){
+		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
 		$files = [];
@@ -408,10 +421,11 @@ class FumaController extends Controller
 			}
 		}
 		if($request->has('gsfile')){$files[] = "GS.txt";}
+		if($request->has('gtfile')){$files[] = "geneTable.txt";}
 
 		$zip = new \ZipArchive();
-		if($prefix=="gwas"){
-			$zipfile = $filedir."FUMA_gene2func_gwas".$id.".zip";
+		if($prefix=="public"){
+			$zipfile = $filedir."FUMA_gene2func_public".$id.".zip";
 		}else{
 			$zipfile = $filedir."FUMA_gene2func".$id.".zip";
 		}
@@ -429,7 +443,7 @@ class FumaController extends Controller
 
 	public function g2f_d3text($prefix, $id, $file){
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		if($prefix=="gwas"){
+		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
 		$f = $filedir.$file;
@@ -448,7 +462,7 @@ class FumaController extends Controller
 		$id = $request -> input('id');
 		$prefix = $request -> input('prefix');
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		if($prefix=="gwas"){
+		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
 		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
@@ -463,7 +477,7 @@ class FumaController extends Controller
 		$id = $request -> input('id');
 		$prefix = $request -> input('prefix');
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		if($prefix=="gwas"){
+		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
 
@@ -480,7 +494,7 @@ class FumaController extends Controller
 		$id = $request -> input('id');
 		$prefix = $request -> input('prefix');
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		if($prefix=="gwas"){
+		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
 		$params = parse_ini_file($filedir.'params.config', false, INI_SCANNER_RAW);
@@ -489,7 +503,7 @@ class FumaController extends Controller
 
 	public function expPlot($prefix, $id, $dataset){
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		if($prefix=="gwas"){
+		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
 		$script = storage_path()."/scripts/g2f_expPlot.py";
@@ -499,7 +513,7 @@ class FumaController extends Controller
 
 	public function DEGPlot($prefix, $id){
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		if($prefix=="gwas"){
+		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
 		$script = storage_path()."/scripts/g2f_DEGPlot.py";
@@ -511,7 +525,7 @@ class FumaController extends Controller
 		$id = $request->input('id');
 		$prefix = $request->input('prefix');
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		if($prefix=="gwas"){
+		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
 		if(file_exists($filedir."geneTable.txt")){

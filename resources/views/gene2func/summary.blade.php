@@ -18,6 +18,7 @@
 				<input type="checkbox" name="expfile" id="expfile" checked onchange="DownloadFiles();">Data for expression heatmap of user selected gene expression data sets</br>
 				<input type="checkbox" name="DEGfile" id="DEGfile" checked onchange="DownloadFiles();">Tissue specificity restuls (enrichment test results of DEG sets for user selected expression data sets)</br>
 				<input type="checkbox" name="gsfile" id="gsfile" checked onchange="DownloadFiles();">Gene set analysis results (only include significnat gene sets) </br>
+				<input type="checkbox" name="gtfile" id="gtfile" checked onchange="DownloadFiles();">Gene table with multiple externam IDs </br>
 			</div>
 			<span class="form-inline">
 				<input class="btn btn-default btn-xs" type="submit" name="download" id="download" value="Download files"/>
