@@ -30,7 +30,7 @@ var ciplot = parseInt("{{$ciplot}}");
 var Chr15 = parseInt("{{$Chr15}}");
 var Chr15cells = "{{$Chr15cells}}";
 </script>
-<script type="text/javascript" src="{!! URL::asset('js/annotPlot.js') !!}?130"></script>
+<script type="text/javascript" src="{!! URL::asset('js/annotPlot.js') !!}?131"></script>
 @stop
 @section('content')
 <canvas id="canvas" style="display:none;"></canvas>

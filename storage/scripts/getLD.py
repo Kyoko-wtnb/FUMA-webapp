@@ -247,7 +247,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 				continue # rsID of lead SNPs needs to be matched with the one in GWAS file
 
 			igwas = np.where(gwas_in[:,rsIDcol]==l[0])[0][0]
-			l_uid = ":".join([str(gwas_in[igwas, chrcol]), str(gwas_in[igwas, poscol])]+sorted([igwas, neacol], gwas_in[igwas, eacol]]))
+			l_uid = ":".join([str(gwas_in[igwas, chrcol]), str(gwas_in[igwas, poscol])]+sorted([gwas_in[igwas, neacol], gwas_in[igwas, eacol]]))
 			pos = int(l[2])
 
 			### check if the lead SNP meat other condition

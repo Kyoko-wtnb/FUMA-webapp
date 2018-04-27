@@ -36,9 +36,9 @@ var id = "{{$id}}";
 var page = "{{$page}}";
 var loggedin = "{{ Auth::check() }}";
 </script>
-<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?130"></script>
-<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?130"></script>
-<script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}?130"></script>
+<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
+<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?131"></script>
+<script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}?131"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">
@@ -142,7 +142,7 @@ var loggedin = "{{ Auth::check() }}";
 								<option selected value="v92">v92</option>
 								<option value="v85">v85</option>
 							</select>
-						</span>
+						</span><br/>
 						<tab>
 						<span class="form-inline">
 							Gene expression data sets:

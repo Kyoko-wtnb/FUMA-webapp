@@ -1026,7 +1026,7 @@ class S2GController extends Controller
 		$notes = $request->input('notes');
 
 		if(strlen($pheno)==0){$pheno='NA';}
-		if(strlen($publication)==0){$publicaton='NA';}
+		if(strlen($publication)==0){$publication='NA';}
 		if(strlen($sumstats_link)==0){$sumstats_link='NA';}
 		if(strlen($sumstats_ref)==0){$sumstats_ref='NA';}
 		if(strlen($notes)==0){$notes='NA';}

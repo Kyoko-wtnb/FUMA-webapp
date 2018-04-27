@@ -5,13 +5,14 @@ filedir <- args[1]
 if(grepl("\\/$", filedir)==F){
   filedir <- paste(filedir, '/', sep="")
 }
+ensg_v <- args[2]
 
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
 magma <- fread(paste(filedir, "magma.genes.out", sep=""), data.table=F)
-ENSG <- fread(config$data$ENSG, data.table=F)
+ENSG <- fread(paste0(config$data$ENSG, "/", ensg_v, "/", config$data$ENSGfile), data.table=F)
 
 magma$SYMBOL <- ENSG$external_gene_name[match(magma$GENE, ENSG$ensembl_gene_id)]
 write.table(magma, paste(filedir, "magma.genes.out", sep=""), quote=F, row.names=F, sep="\t")

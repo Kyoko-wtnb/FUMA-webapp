@@ -96,6 +96,6 @@ def main():
 		out = tmp[len(tmp)-1]
 		os.system(magmadir+"/magma --gene-results "+filedir+"magma.genes.raw --gene-covar "+magmafiles+"/"+f+".txt onesided=greater condition=Average --out "+filedir+"magma_exp_"+out)
 
-	os.system("Rscript "+os.path.dirname(os.path.realpath(__file__))+"/magma_gene.R "+filedir)
+	os.system("Rscript "+os.path.dirname(os.path.realpath(__file__))+"/magma_gene.R "+filedir+" "+ensg_v)
 
 if __name__=="__main__": main()
