@@ -356,7 +356,7 @@ def main():
 					np.savetxt(o, tmp_ci, delimiter="\t", fmt="%s")
 				for x in tmp_ci[:,8]:
 					insnps += x.split(";")
-				regions = regions+unique(tmp_ci[:,1])
+				regions = regions+unique(tmp_ci[:,2])
 
 	if ciMapBuiltin[0] != "NA":
 		for f in ciMapBuiltin:
@@ -368,7 +368,7 @@ def main():
 					np.savetxt(o, tmp_ci, delimiter="\t", fmt="%s")
 				for x in tmp_ci[:,8]:
 					insnps += x.split(";")
-				regions = regions+unique(tmp_ci[:,1])
+				regions = regions+unique(tmp_ci[:,2])
 
 	insnps = np.unique(insnps)
 	for i in range(1,24):

@@ -19,6 +19,15 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>2 May 2018</td>
+			<td>v1.3.1b</td>
+			<td>
+				Minor bug in chromatin interaction mapping has been fixed.
+				This missed some promoter annotations in region2 which might has caused over filtering of chromatin interactions.
+				This affects the mapped genes only when you activate the filtering based on promoter in chromatin interaction mapping.
+			</td>
+		</tr>
+		<tr>
 			<td>27 Apr 2018</td>
 			<td>v1.3.1</td>
 			<td>
