@@ -1,5 +1,6 @@
 library(data.table)
 library(kimisc)
+library(GenomicRanges)
 args <- commandArgs(TRUE)
 filedir <- args[1]
 
@@ -18,13 +19,15 @@ annov$symbol <- ENSG$external_gene_name[match(annov$gene, ENSG$ensembl_gene_id)]
 annov$symbol[is.na(annov$symbol)] <- annov$gene[is.na(annov$symbol)]
 annov$chr <- snps$chr[match(annov$uniqID, snps$uniqID)]
 annov$pos <- snps$pos[match(annov$uniqID, snps$uniqID)]
-tmp <- merge(aggregate(dist ~ uniqID, annov, min), annov, by=c("dist", "uniqID"))
-tmp2 <- aggregate(symbol ~ uniqID, tmp, paste, collapse=":")
-snps$nearestGene <- tmp2$symbol[match(snps$uniqID, tmp2$uniqID)]
-tmp2 <- aggregate(dist ~ uniqID, tmp, min)
-snps$dist <- tmp2$dist[match(snps$uniqID, tmp2$uniqID)]
-tmp2 <- aggregate(annot ~ uniqID, tmp, paste, collapse=":")
-snps$func <- tmp2$annot[match(snps$uniqID, tmp2$uniqID)]
+
+genes_gr <- with(ENSG, GRanges(seqnames=chromosome_name, IRanges(start=start_position, end=end_position)))
+snps_gr <- with(snps, GRanges(seqname=chr, IRanges(start=pos, end=pos)))
+nearest <- distanceToNearest(snps_gr, genes_gr, select="all", ignore.strand=TRUE)
+nearest <- as.data.frame(nearest)
+snps$nearestGene <- with(nearest, aggregate(subjectHits, list(queryHits), function(x){paste(ENSG$external_gene_name[x], collapse=":")}))$x
+snps$dist <- with(nearest, aggregate(distance, list(queryHits), function(x){paste(x, collapse=":")}))$x
+tmp <- with(annov, aggregate(annot, list(uniqID), function(x){paste(unique(x), collapse=":")}))
+snps$func <- tmp$x[match(snps$uniqID, tmp$Group.1)]
 snps$CADD <- annot$CADD[match(snps$uniqID, annot$uniqID)]
 snps$RDB <- annot$RDB[match(snps$uniqID, annot$uniqID)]
 snps$RDB[snps$RDB==""] <- NA
