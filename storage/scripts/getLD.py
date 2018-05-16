@@ -235,6 +235,9 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 
 	ldfile = refgenome_dir+"/"+refpanel+'/'+pop+"/"+pop+".chr"+str(chrom)+".ld.gz"
 	maffile = refgenome_dir+"/"+refpanel+'/'+pop+"/"+pop+".chr"+str(chrom)+".frq.gz"
+	if not os.path.isfile(maffile) or not os.path.isfile(ldfile):
+		print "Reference file does not exist for chr: "+str(chrom)
+		return [], [], []
 
 	rsIDset = set(gwas_in[:, rsIDcol])
 	checkeduid = set()
@@ -594,8 +597,6 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 			start = min(snps[n,3].astype(int))
 			end = max(snps[n,3].astype(int))
 			loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ";".join(inInd), str(len(inLead)), ";".join(inLead)])
-			print "print 1: "+str(gidx)
-			print loci[len(loci)-1]
 		else:
 			rsIDs = list(leadSNPs[i,6].split(";"))
 			uid = list(snps[ArrayIn(snps[:,1], rsIDs),0])
@@ -650,8 +651,6 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 						if uid2gl[key]==gidx+1:
 							uid2gl[key] -= 1
 					gidx -= 1
-				print "print 2: "+str(gidx)
-				print loci[len(loci)-1]
 			else:
 				gidx += 1
 				iloci += 1
@@ -672,8 +671,6 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 				start = min(snps[n,3].astype(int))
 				end = max(snps[n,3].astype(int))
 				loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ";".join(inInd), str(len(inLead)), ";".join(inLead)])
-				print "print 3: "+str(gidx)
-				print loci[len(loci)-1]
 	loci = np.array(loci)
 	gidx += 1
 	return loci, uid2gl, gidx

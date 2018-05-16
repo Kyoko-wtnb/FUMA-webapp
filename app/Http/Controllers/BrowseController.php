@@ -67,7 +67,7 @@ class BrowseController extends Controller
 		  if(File::exists($filedir."ci.txt")){
 			  $files[] = "ci.txt";
 			  $files[] = "ciSNPs.txt";
-			  $files[] = "ciGenes.txt";
+			  $files[] = "ciProm.txt";
 		  }
 	  }
       // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
