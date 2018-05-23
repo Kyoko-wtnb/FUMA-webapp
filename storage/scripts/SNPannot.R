@@ -10,7 +10,6 @@ config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 params <- ConfigParser(file=paste0(filedir, "params.config"))
 
 snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
-ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
 annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 annot <- annot[annot$uniqID %in% snps$uniqID,]
@@ -31,8 +30,8 @@ snps$func <- tmp$x[match(snps$uniqID, tmp$Group.1)]
 snps$CADD <- annot$CADD[match(snps$uniqID, annot$uniqID)]
 snps$RDB <- annot$RDB[match(snps$uniqID, annot$uniqID)]
 snps$RDB[snps$RDB==""] <- NA
-snps$minChrState <- apply(annot[,4:ncol(annot)], 1, min)
-snps$commonChrState <- apply(annot[,4:ncol(annot)], 1, function(x){names(sort(table(x), decreasing=T))[1]})
+snps$minChrState[match(annot$uniqID, snps$uniqID)] <- apply(annot[,4:ncol(annot)], 1, min)
+snps$commonChrState[match(annot$uniqID, snps$uniqID)] <- apply(annot[,4:ncol(annot)], 1, function(x){names(sort(table(x), decreasing=T))[1]})
 write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
 write.table(annov, paste(filedir, "annov.txt", sep=""), quote=F, row.names=F, sep="\t")
 
