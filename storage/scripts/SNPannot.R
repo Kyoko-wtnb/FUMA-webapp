@@ -23,8 +23,12 @@ genes_gr <- with(ENSG, GRanges(seqnames=chromosome_name, IRanges(start=start_pos
 snps_gr <- with(snps, GRanges(seqname=chr, IRanges(start=pos, end=pos)))
 nearest <- distanceToNearest(snps_gr, genes_gr, select="all", ignore.strand=TRUE)
 nearest <- as.data.frame(nearest)
-snps$nearestGene <- with(nearest, aggregate(subjectHits, list(queryHits), function(x){paste(ENSG$external_gene_name[x], collapse=":")}))$x
-snps$dist <- with(nearest, aggregate(distance, list(queryHits), function(x){paste(x, collapse=":")}))$x
+tmp <- with(nearest, aggregate(subjectHits, list(queryHits), function(x){paste(ENSG$external_gene_name[x], collapse=":")}))
+snps$nearestGene <- NA
+snps$nearestGene[tmp$Group.1] <- tmp$x
+tmp <- with(nearest, aggregate(distance, list(queryHits), function(x){paste(x, collapse=":")}))
+snps$dist <- NA
+snps$dist[tmp$Gourp.1] <- tmp$x
 tmp <- with(annov, aggregate(annot, list(uniqID), function(x){paste(unique(x), collapse=":")}))
 snps$func <- tmp$x[match(snps$uniqID, tmp$Group.1)]
 snps$CADD <- annot$CADD[match(snps$uniqID, annot$uniqID)]
