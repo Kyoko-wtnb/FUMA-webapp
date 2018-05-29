@@ -310,7 +310,6 @@ if(nrow(geneTable)>0){
 	geneTable <- cbind(geneTable, gene_scores[match(geneTable$ensg, gene_scores$ensg), 5:ncol(gene_scores)])
 
 	if(posMap==1){
-		print("posMapInfo")
 		tmp <- data.frame(table(annov$gene))
 		geneTable$posMapSNPs <- tmp$Freq[match(geneTable$ensg, tmp$Var1)]
 		geneTable$posMapSNPs[is.na(geneTable$posMapSNPs)] <- 0
@@ -320,7 +319,6 @@ if(nrow(geneTable)>0){
 		geneTable$posMapMaxCADD[is.na(geneTable$posMapMaxCADD)] <- 0
 	}
 	if(eqtlMap==1){
-		print("eqtlMapInfo")
 		tmp <- unique(eqtl[,c("uniqID", "gene")])
 		tmp <- data.frame(table(tmp$gene))
 		geneTable$eqtlMapSNPs <- tmp$Freq[match(geneTable$ensg, tmp$Var1)]
@@ -337,7 +335,6 @@ if(nrow(geneTable)>0){
 		geneTable$eqtlDirection <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
 	}
 	if(ciMap==1){
-		print("ciMapInfo")
 		geneTable$ciMap <- "No"
 		geneTable$ciMapts <- NA
 		if(nrow(ci)>0){
@@ -349,7 +346,6 @@ if(nrow(geneTable)>0){
 			geneTable$ciMapts <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
 		}
 	}
-	print("GWAS SNPs")
 	ld <- ld[ld$SNP2 %in% snps$uniqID[which(snps$posMapFilt==1 | snps$eqtlMapFilt==1 | snps$ciMapFilt==1)],]
 	ld$SNP1 <- snps$rsID[match(ld$SNP1, snps$uniqID)]
 	dup <- unique(ld$SNP2[duplicated(ld$SNP2)])

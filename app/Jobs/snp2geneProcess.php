@@ -237,10 +237,10 @@ class snp2geneProcess extends Job implements ShouldQueue
 		}
 
 		if($params['ciMap']==1){
-			file_put_contents($logfile, "\n----- getCI.py -----\n", FILE_APPEND);
-			file_put_contents($errorfile, "\n----- getCI.py -----\n", FILE_APPEND);
-			$script = storage_path().'/scripts/getCI.py';
-			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+			file_put_contents($logfile, "\n----- getCI.R -----\n", FILE_APPEND);
+			file_put_contents($errorfile, "\n----- getCI.R -----\n", FILE_APPEND);
+			$script = storage_path().'/scripts/getCI.R';
+			exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$this->rmFiles($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
