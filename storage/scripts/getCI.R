@@ -49,7 +49,7 @@ genes$prom_end <- with(genes, ifelse(strand==1, start_position+promoter[2], end_
 genes$chromosome_name[genes$chromosome_name=="X"] <- 23
 
 ##### map chromatin interactions to SNPs #####
-loci_gr <- with(loci, GRanges(seqnames=chr, IRanges(start=start, end=end))) 
+loci_gr <- with(loci, GRanges(seqnames=chr, IRanges(start=start, end=end)))
 snps_gr <- with(snps, GRanges(seqnames=chr, IRanges(start=pos, end=pos)))
 genes_gr <- with(genes, GRanges(seqnames=chromosome_name, IRanges(start=prom_start, end=prom_end)))
 ci <- data.frame()
@@ -145,8 +145,8 @@ overlap <- findOverlaps(ci_gr, genes_gr)
 tmp_genes <- aggregate(subjectHits(overlap), list(queryHits(overlap)), function(x){paste(genes$ensembl_gene_id[x], collapse=":")})
 ci$genes <- NA
 ci$genes[tmp_genes$Group.1] <- tmp_genes$x
-ci$region1 <- gsub(" ", "", apply(ci[,2:4], 1, function(x){paste0(x[1], ":", x[2], "_", x[3])}))
-ci$region2 <- gsub(" ", "", apply(ci[,5:7], 1, function(x){paste0(x[1], ":", x[2], "_", x[3])}))
+ci$region1 <- gsub(" ", "", apply(ci[,2:4], 1, function(x){paste0(x[1], ":", x[2], "-", x[3])}))
+ci$region2 <- gsub(" ", "", apply(ci[,5:7], 1, function(x){paste0(x[1], ":", x[2], "-", x[3])}))
 
 ##### annotate enhancers for SNPs #####
 print("Annotating enhancers...")
@@ -218,7 +218,7 @@ reg <- unique(reg)
 if(nrow(reg)>0){
 	colnames(reg) <- c("chr", "start", "end", "eid")
 	reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
-	if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}	
+	if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
 	if(nrow(reg)==0){next}
 	reg$start <- reg$start+1
 	reg$end <- reg$end+1
@@ -248,7 +248,7 @@ reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
 if(nrow(reg)>0){
 	colnames(reg) <- c("chr", "start", "end", "eid")
 	reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
-	if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}	
+	if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
 	if(nrow(reg)==0){next}
 	reg$start <- reg$start+1
 	reg$end <- reg$end+1
