@@ -17,7 +17,7 @@ ENSG <- fread(paste0(config$data$ENSG, "/", ensg_v, "/", config$data$ENSGfile), 
 magma$SYMBOL <- ENSG$external_gene_name[match(magma$GENE, ENSG$ensembl_gene_id)]
 write.table(magma, paste(filedir, "magma.genes.out", sep=""), quote=F, row.names=F, sep="\t")
 
-magmaset <- fread(paste(filedir, "magma.sets.out", sep=""), data.table=F)
+magmaset <- fread(paste(filedir, "magma.sets.out", sep=""), skip=3, data.table=F)
 magmaset$Pbon <- p.adjust(magmaset$P)
 magmaset <- magmaset[order(magmaset$P),]
 magmaset <- subset(magmaset, select=c("FULL_NAME", "NGENES", "BETA", "BETA_STD", "SE", "P", "Pbon"))

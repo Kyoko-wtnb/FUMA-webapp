@@ -516,7 +516,7 @@ function GeneSet(id){
 					var ngs = gs.length;
 					var barplotwidth = 150;
 
-					var margin = {top: 40, right: 10, bottom: 80, left: Math.max(gs_max*6, 80)},
+					var margin = {top: 40, right: 10, bottom: 80, left: Math.max(gs_max*7, 80)},
 						width = barplotwidth*2+10+(Math.max(genes.length,6)*15),
 						height = 15*ngs;
 					var svg = d3.select('#'+category[i]).append('svg')

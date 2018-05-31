@@ -1,5 +1,6 @@
 library(data.table)
 library(kimisc)
+library(GenomicRanges)
 args <- commandArgs(TRUE)
 filedir <- args[1]
 
@@ -9,7 +10,6 @@ config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 params <- ConfigParser(file=paste0(filedir, "params.config"))
 
 snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
-ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
 annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 annot <- annot[annot$uniqID %in% snps$uniqID,]
@@ -18,18 +18,24 @@ annov$symbol <- ENSG$external_gene_name[match(annov$gene, ENSG$ensembl_gene_id)]
 annov$symbol[is.na(annov$symbol)] <- annov$gene[is.na(annov$symbol)]
 annov$chr <- snps$chr[match(annov$uniqID, snps$uniqID)]
 annov$pos <- snps$pos[match(annov$uniqID, snps$uniqID)]
-tmp <- merge(aggregate(dist ~ uniqID, annov, min), annov, by=c("dist", "uniqID"))
-tmp2 <- aggregate(symbol ~ uniqID, tmp, paste, collapse=":")
-snps$nearestGene <- tmp2$symbol[match(snps$uniqID, tmp2$uniqID)]
-tmp2 <- aggregate(dist ~ uniqID, tmp, min)
-snps$dist <- tmp2$dist[match(snps$uniqID, tmp2$uniqID)]
-tmp2 <- aggregate(annot ~ uniqID, tmp, paste, collapse=":")
-snps$func <- tmp2$annot[match(snps$uniqID, tmp2$uniqID)]
+
+genes_gr <- with(ENSG, GRanges(seqnames=chromosome_name, IRanges(start=start_position, end=end_position)))
+snps_gr <- with(snps, GRanges(seqname=chr, IRanges(start=pos, end=pos)))
+nearest <- distanceToNearest(snps_gr, genes_gr, select="all", ignore.strand=TRUE)
+nearest <- as.data.frame(nearest)
+tmp <- with(nearest, aggregate(subjectHits, list(queryHits), function(x){paste(ENSG$external_gene_name[x], collapse=":")}))
+snps$nearestGene <- NA
+snps$nearestGene[tmp$Group.1] <- tmp$x
+tmp <- with(nearest, aggregate(distance, list(queryHits), function(x){paste(x, collapse=":")}))
+snps$dist <- NA
+snps$dist[tmp$Group.1] <- tmp$x
+tmp <- with(annov, aggregate(annot, list(uniqID), function(x){paste(unique(x), collapse=":")}))
+snps$func <- tmp$x[match(snps$uniqID, tmp$Group.1)]
 snps$CADD <- annot$CADD[match(snps$uniqID, annot$uniqID)]
 snps$RDB <- annot$RDB[match(snps$uniqID, annot$uniqID)]
 snps$RDB[snps$RDB==""] <- NA
-snps$minChrState <- apply(annot[,4:ncol(annot)], 1, min)
-snps$commonChrState <- apply(annot[,4:ncol(annot)], 1, function(x){names(sort(table(x), decreasing=T))[1]})
+snps$minChrState[match(annot$uniqID, snps$uniqID)] <- apply(annot[,4:ncol(annot)], 1, min)
+snps$commonChrState[match(annot$uniqID, snps$uniqID)] <- apply(annot[,4:ncol(annot)], 1, function(x){names(sort(table(x), decreasing=T))[1]})
 write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
 write.table(annov, paste(filedir, "annov.txt", sep=""), quote=F, row.names=F, sep="\t")
 

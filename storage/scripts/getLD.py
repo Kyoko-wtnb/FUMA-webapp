@@ -235,6 +235,9 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 
 	ldfile = refgenome_dir+"/"+refpanel+'/'+pop+"/"+pop+".chr"+str(chrom)+".ld.gz"
 	maffile = refgenome_dir+"/"+refpanel+'/'+pop+"/"+pop+".chr"+str(chrom)+".frq.gz"
+	if not os.path.isfile(maffile) or not os.path.isfile(ldfile):
+		print "Reference file does not exist for chr: "+str(chrom)
+		return [], [], []
 
 	rsIDset = set(gwas_in[:, rsIDcol])
 	checkeduid = set()
@@ -644,6 +647,10 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 					for i in range(0, iloci+1):
 						tmp_loci.append(loci[i])
 					loci = tmp_loci
+					for key in uid2gl:
+						if uid2gl[key]==gidx+1:
+							uid2gl[key] -= 1
+					gidx -= 1
 			else:
 				gidx += 1
 				iloci += 1

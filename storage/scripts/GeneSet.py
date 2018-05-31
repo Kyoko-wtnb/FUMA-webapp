@@ -131,6 +131,13 @@ if MHC == 1:
 else:
 	MHC = True
 
+### remove MHC region
+if not MHC:
+	print "Excluding genes in MHC regions"
+	mhc_start = int(ENSG[ENSG[:,ENSGheads.index("external_gene_name")]=="MOG",ENSGheads.index("start_position")][0])
+	mhc_end = int(ENSG[ENSG[:,ENSGheads.index("external_gene_name")]=="COL11A2",ENSGheads.index("start_position")][0])
+	ENSG = ENSG[np.where((ENSG[:,ENSGheads.index("chromosome_name")]!="6")|(ENSG[:,ENSGheads.index("end_position")].astype(int)<=mhc_start)|(ENSG[:,ENSGheads.index("start_position")].astype(int)>=mhc_end))]
+
 ## genes ID
 Type = 0
 if len(ArrayIn(genes, ENSG[:,ENSGheads.index("external_gene_name")]))>0:

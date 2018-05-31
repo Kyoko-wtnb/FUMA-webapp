@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>29 May 2018</td>
+			<td>v1.3.2</td>
+			<td>
+				Some scripts have been optimized. Chromatin interaction mapping with large number of SNPs is now much faster than before.
+			</td>
+		</tr>
+		<tr>
 			<td>2 May 2018</td>
 			<td>v1.3.1b</td>
 			<td>
