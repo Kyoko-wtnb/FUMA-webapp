@@ -140,6 +140,7 @@ if(posMap==1){
 		genes_gr <- with(ENSG, GRanges(seqnames=chromosome_name, IRanges(start=start_position-posMapWindowSize, end=end_position+posMapWindowSize)))
 		overlap <- findOverlaps(snps_gr, genes_gr)
 		annov <- data.frame(uniqID=snps$uniqID[queryHits(overlap)], gene=ENSG$ensembl_gene_id[subjectHits(overlap)], stringsAsFactors=F)
+		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
 	}
 	genes <- c(genes, unique(annov$gene))
 	annov <- unique(annov)
@@ -273,21 +274,21 @@ if(ciMap==1){
 		ci <- ci[!is.na(ci$genes),]
 		if(nrow(ci)>0){
 			genes <- c(genes, unique(unlist(strsplit(ci$genes, ":"))))
+			cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ";"))),]
+			tmp_ci <- unique(ci[,c("region1", "genes")])
+			tmp_ci <- unique(do.call(rbind,apply(tmp_ci, 1, function(x){data.frame(region1=x[1], gene=unlist(strsplit(x[2], ":")))})))
+			tmp_ci$region1 <- as.character(tmp_ci$region1)
+			tmp_ci$gene <- as.character(tmp_ci$gene)
+			ci_reg1 <- data.frame(t(matrix(as.numeric(unlist(strsplit(unlist(strsplit(tmp_ci$region1, ":")), "-"))), nrow=3)))
+			colnames(ci_reg1) <- c("chr", "start", "end")
+			ci_reg1_gr <- with(ci_reg1, GRanges(seqnames=chr, IRanges(start=start, end=end)))
+			snps_gr <- with(cisnps, GRanges(seqname=chr, IRanges(start=pos, end=pos)))
+			overlap <- findOverlaps(ci_reg1_gr, snps_gr)
+			ci_snps_genes <- unique(data.frame(gene=tmp_ci$gene[queryHits(overlap)], uniqID=cisnps$uniqID[subjectHits(overlap)], stringsAsFactors=F))
 		}
-		cisnps <- cisnps[cisnps$rsID %in% unique(unlist(strsplit(ci$SNPs, ";"))),]
 		snps$ciMapFilt[snps$uniqID %in% cisnps$uniqID] <- 1
 		ciall$ciMapFilt[ciall$tmpid %in% ci$tmpid] <- 1
 		write.table(ciall[,1:(ncol(ciall)-1)], paste0(filedir, "ci.txt"), quote=F, row.names=F, sep="\t")
-		tmp_ci <- unique(ci[,c("region1", "genes")])
-		tmp_ci <- unique(do.call(rbind,apply(tmp_ci, 1, function(x){data.frame(region1=x[1], gene=unlist(strsplit(x[2], ":")))})))
-		tmp_ci$region1 <- as.character(tmp_ci$region1)
-		tmp_ci$gene <- as.character(tmp_ci$gene)
-		ci_reg1 <- data.frame(t(matrix(as.numeric(unlist(strsplit(unlist(strsplit(tmp_ci$region1, ":")), "-"))), nrow=3)))
-		colnames(ci_reg1) <- c("chr", "start", "end")
-		ci_reg1_gr <- with(ci_reg1, GRanges(seqnames=chr, IRanges(start=start, end=end)))
-		snps_gr <- with(cisnps, GRanges(seqname=chr, IRanges(start=pos, end=pos)))
-		overlap <- findOverlaps(ci_reg1_gr, snps_gr)
-		ci_snps_genes <- unique(data.frame(gene=tmp_ci$gene[queryHits(overlap)], uniqID=cisnps$uniqID[subjectHits(overlap)], stringsAsFactors=F))
 	}
 }
 
@@ -310,29 +311,48 @@ if(nrow(geneTable)>0){
 	geneTable <- cbind(geneTable, gene_scores[match(geneTable$ensg, gene_scores$ensg), 5:ncol(gene_scores)])
 
 	if(posMap==1){
-		tmp <- data.frame(table(annov$gene))
-		geneTable$posMapSNPs <- tmp$Freq[match(geneTable$ensg, tmp$Var1)]
-		geneTable$posMapSNPs[is.na(geneTable$posMapSNPs)] <- 0
-		annov$CADD <- annot$CADD[match(annov$uniqID, annot$uniqID)]
-		tmp <- with(annov[!is.na(annov$CADD),], aggregate(CADD, list(gene), max))
-		geneTable$posMapMaxCADD <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
-		geneTable$posMapMaxCADD[is.na(geneTable$posMapMaxCADD)] <- 0
+		geneTable$posMapSNPs <- 0
+		geneTable$posMapMaxCADD  <- 0
+		if(nrow(annov)>0){
+			tmp <- data.frame(table(annov$gene))
+			geneTable$posMapSNPs <- tmp$Freq[match(geneTable$ensg, tmp$Var1)]
+			geneTable$posMapSNPs[is.na(geneTable$posMapSNPs)] <- 0
+			annov$CADD <- annot$CADD[match(annov$uniqID, annot$uniqID)]
+			if(length(which(!is.na(annov$CADD)))>0){
+				tmp <- with(annov[!is.na(annov$CADD),], aggregate(CADD, list(gene), max))
+				geneTable$posMapMaxCADD <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
+				geneTable$posMapMaxCADD[is.na(geneTable$posMapMaxCADD)] <- 0
+			}
+		}
 	}
 	if(eqtlMap==1){
-		tmp <- unique(eqtl[,c("uniqID", "gene")])
-		tmp <- data.frame(table(tmp$gene))
-		geneTable$eqtlMapSNPs <- tmp$Freq[match(geneTable$ensg, tmp$Var1)]
-		geneTable$eqtlMapSNPs[is.na(geneTable$eqtlMapSNPs)] <- 0
-		tmp <- with(eqtl[!is.na(eqtl$p),], aggregate(p, list(gene), min))
-		geneTable$eqtlMapminP <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
-		tmp <- with(eqtl[!is.na(eqtl$FDR),], aggregate(FDR, list(gene), min))
-		geneTable$eqtlMapminQ <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
-		eqtl$tissue[grepl("GTEx", eqtl$db)] <- paste(eqtl$db[grepl("GTEx", eqtl$db)], eqtl$tissue[grepl("GTEx", eqtl$db)], sep="_")
-		tmp <- unique(eqtl[,c("tissue", "gene")])
-		tmp <- with(tmp, aggregate(tissue, list(gene), paste, collapse=":"))
-		geneTable$eqtlMapts <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
-		tmp <- with(eqtl[!is.na(eqtl$alignedDirection),], aggregate(alignedDirection, list(gene), function(x){names(sort(table(x), decreasing=T))[1]}))
-		geneTable$eqtlDirection <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
+		geneTable$eqtlMapSNPs <- 0
+		geneTable$eqtlMapminP <- NA
+		geneTable$eqtlMapminQ <- NA
+		geneTable$eqtlMapts <- NA
+		geneTable$eqtlDirection <- NA
+		if(nrow(eqtl)>0){
+			tmp <- unique(eqtl[,c("uniqID", "gene")])
+			tmp <- data.frame(table(tmp$gene))
+			geneTable$eqtlMapSNPs <- tmp$Freq[match(geneTable$ensg, tmp$Var1)]
+			geneTable$eqtlMapSNPs[is.na(geneTable$eqtlMapSNPs)] <- 0
+			if(length(which(!is.na(eqtl$p)))>0){
+				tmp <- with(eqtl[!is.na(eqtl$p),], aggregate(p, list(gene), min))
+				geneTable$eqtlMapminP <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
+			}
+			if(length(which(!is.na(eqtl$FDR)))>0){
+				tmp <- with(eqtl[!is.na(eqtl$FDR),], aggregate(FDR, list(gene), min))
+				geneTable$eqtlMapminQ <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
+			}
+			eqtl$tissue[grepl("GTEx", eqtl$db)] <- paste(eqtl$db[grepl("GTEx", eqtl$db)], eqtl$tissue[grepl("GTEx", eqtl$db)], sep="_")
+			tmp <- unique(eqtl[,c("tissue", "gene")])
+			tmp <- with(tmp, aggregate(tissue, list(gene), paste, collapse=":"))
+			geneTable$eqtlMapts <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
+			if(length(which(!is.na(eqtl$alignedDirection)))>0){
+				tmp <- with(eqtl[!is.na(eqtl$alignedDirection),], aggregate(alignedDirection, list(gene), function(x){names(sort(table(x), decreasing=T))[1]}))
+				geneTable$eqtlDirection <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
+			}
+		}
 	}
 	if(ciMap==1){
 		geneTable$ciMap <- "No"
@@ -351,49 +371,63 @@ if(nrow(geneTable)>0){
 	dup <- unique(ld$SNP2[duplicated(ld$SNP2)])
 	isSNPs <- ld[!ld$SNP2%in%dup,2:1]
 	colnames(isSNPs) <- c("uniqID", "IndSigSNPs")
-	tmp <- with(ld[ld$SNP2%in%dup,], aggregate(SNP1, list(SNP2), paste, collapse=";"))
-	colnames(tmp) <- c("uniqID", "IndSigSNPs")
-	isSNPs <- rbind(isSNPs, tmp)
-	rm(ld, dup)
+	if(length(dup)>0){
+		tmp <- with(ld[ld$SNP2%in%dup,], aggregate(SNP1, list(SNP2), paste, collapse=";"))
+		colnames(tmp) <- c("uniqID", "IndSigSNPs")
+		isSNPs <- rbind(isSNPs, tmp)
+	}
+
 	geneTable$minGwasP <- NA
 	geneTable$IndSigSNPs <- NA
 	tmp_table <- data.frame(ensg=geneTable$ensg, posMapP=NA, posMapISNPs=NA, posMapLocus=NA,
 		eqtlMapP=NA, eqtlMapISNPs=NA, eqtlMapLocus=NA,
 		ciMapP=NA, ciMapISNPs=NA, ciMapLocus=NA, stringsAsFactors=F)
 	if(posMap==1){
-		annov$gwasP <- snps$gwasP[match(annov$uniqID, snps$uniqID)]
-		tmp <- with(annov[!is.na(annov$gwasP),], aggregate(gwasP, list(gene), min))
-		tmp_table$posMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
-		annov$IndSigSNPs <- isSNPs$IndSigSNPs[match(annov$uniqID, isSNPs$uniqID)]
-		tmp <- unique(annov[,c("gene", "IndSigSNPs")])
-		tmp <- with(unique(annov[!is.na(annov$IndSigSNPs),c("gene", "IndSigSNPs")]), aggregate(IndSigSNPs, list(gene), paste, collapse=";"))
-		tmp_table$posMapISNPs <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
-		annov$GenomicLocus <- snps$GenomicLocus[match(annov$uniqID, snps$uniqID)]
-		tmp <- with(unique(annov[,c("gene", "GenomicLocus")]), aggregate(GenomicLocus, list(gene), paste, collapse=":"))
-		tmp_table$posMapLocus <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+		if(nrow(annov)>0){
+			annov$gwasP <- snps$gwasP[match(annov$uniqID, snps$uniqID)]
+			if(length(which(!is.na(annov$gwasP)))>0){
+				tmp <- with(annov[!is.na(annov$gwasP),], aggregate(gwasP, list(gene), min))
+				tmp_table$posMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+			}
+			annov$IndSigSNPs <- isSNPs$IndSigSNPs[match(annov$uniqID, isSNPs$uniqID)]
+			tmp <- unique(annov[,c("gene", "IndSigSNPs")])
+			tmp <- with(unique(annov[!is.na(annov$IndSigSNPs),c("gene", "IndSigSNPs")]), aggregate(IndSigSNPs, list(gene), paste, collapse=";"))
+			tmp_table$posMapISNPs <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+			annov$GenomicLocus <- snps$GenomicLocus[match(annov$uniqID, snps$uniqID)]
+			tmp <- with(unique(annov[,c("gene", "GenomicLocus")]), aggregate(GenomicLocus, list(gene), paste, collapse=":"))
+			tmp_table$posMapLocus <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+		}
 	}
 	if(eqtlMap==1){
-		tmp_eqtl <- unique(eqtl[,c("gene", "uniqID")])
-		tmp_eqtl$gwasP <- snps$gwasP[match(tmp_eqtl$uniqID, snps$uniqID)]
-		tmp <- with(tmp_eqtl[!is.na(tmp_eqtl$gwasP),], aggregate(gwasP, list(gene), min))
-		tmp_table$eqtlMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
-		tmp_eqtl$IndSigSNPs <- isSNPs$IndSigSNPs[match(tmp_eqtl$uniqID, isSNPs$uniqID)]
-		tmp <- with(unique(tmp_eqtl[!is.na(tmp_eqtl$IndSigSNPs), c("gene", "IndSigSNPs")]), aggregate(IndSigSNPs, list(gene), paste, collapse=";"))
-		tmp_table$eqtlMapISNPs <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
-		tmp_eqtl$GenomicLocus <- snps$GenomicLocus[match(tmp_eqtl$uniqID, snps$uniqID)]
-		tmp <- with(unique(tmp_eqtl[,c("gene", "GenomicLocus")]), aggregate(GenomicLocus, list(gene), paste, collapse=":"))
-		tmp_table$eqtlMapLocus <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+		if(nrow(eqtl)>0){
+			tmp_eqtl <- unique(eqtl[,c("gene", "uniqID")])
+			tmp_eqtl$gwasP <- snps$gwasP[match(tmp_eqtl$uniqID, snps$uniqID)]
+			if(length(which(!is.na(eqtl$gwasP)))>0){
+				tmp <- with(tmp_eqtl[!is.na(tmp_eqtl$gwasP),], aggregate(gwasP, list(gene), min))
+				tmp_table$eqtlMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+			}
+			tmp_eqtl$IndSigSNPs <- isSNPs$IndSigSNPs[match(tmp_eqtl$uniqID, isSNPs$uniqID)]
+			tmp <- with(unique(tmp_eqtl[!is.na(tmp_eqtl$IndSigSNPs), c("gene", "IndSigSNPs")]), aggregate(IndSigSNPs, list(gene), paste, collapse=";"))
+			tmp_table$eqtlMapISNPs <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+			tmp_eqtl$GenomicLocus <- snps$GenomicLocus[match(tmp_eqtl$uniqID, snps$uniqID)]
+			tmp <- with(unique(tmp_eqtl[,c("gene", "GenomicLocus")]), aggregate(GenomicLocus, list(gene), paste, collapse=":"))
+			tmp_table$eqtlMapLocus <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+		}
 	}
 	if(ciMap==1){
-		ci_snps_genes$gwasP <- snps$gwasP[match(ci_snps_genes$uniqID, snps$uniqID)]
-		tmp <- with(ci_snps_genes[!is.na(ci_snps_genes$gwasP),], aggregate(gwasP, list(gene), min))
-		tmp_table$ciMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
-		ci_snps_genes$IndSigSNPs <- isSNPs$IndSigSNPs[match(ci_snps_genes$uniqID, isSNPs$uniqID)]
-		tmp <- with(unique(ci_snps_genes[,c("gene", "IndSigSNPs")]), aggregate(IndSigSNPs, list(gene), paste, collapse=":"))
-		tmp_table$ciMapISNPs <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
-		ci_snps_genes$GenomicLocus <- snps$GenomicLocus[match(ci_snps_genes$uniqID, snps$uniqID)]
-		tmp <- with(unique(ci_snps_genes[,c("gene", "GenomicLocus")]), aggregate(GenomicLocus, list(gene), paste, collapse=":"))
-		tmp_table$ciMapLocus <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+		if(nrow(ci)>0){
+			ci_snps_genes$gwasP <- snps$gwasP[match(ci_snps_genes$uniqID, snps$uniqID)]
+			if(length(which(!is.na(ci_snps_genes$gwasP)))>0){
+				tmp <- with(ci_snps_genes[!is.na(ci_snps_genes$gwasP),], aggregate(gwasP, list(gene), min))
+				tmp_table$ciMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+			}
+			ci_snps_genes$IndSigSNPs <- isSNPs$IndSigSNPs[match(ci_snps_genes$uniqID, isSNPs$uniqID)]
+			tmp <- with(unique(ci_snps_genes[,c("gene", "IndSigSNPs")]), aggregate(IndSigSNPs, list(gene), paste, collapse=":"))
+			tmp_table$ciMapISNPs <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+			ci_snps_genes$GenomicLocus <- snps$GenomicLocus[match(ci_snps_genes$uniqID, snps$uniqID)]
+			tmp <- with(unique(ci_snps_genes[,c("gene", "GenomicLocus")]), aggregate(GenomicLocus, list(gene), paste, collapse=":"))
+			tmp_table$ciMapLocus <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
+		}
 	}
 	geneTable$minGwasP <- apply(tmp_table[,c("posMapP", "eqtlMapP", "ciMapP")], 1, min, na.rm=T)
 	geneTable$minGwasP[geneTable$minGwasP<0 | geneTable$minGwasP>1] <- NA
