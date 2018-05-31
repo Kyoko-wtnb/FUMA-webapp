@@ -14,4 +14,4 @@ K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma. Functional mapping an
 FUMA web application is based on [Laravel PHP Framework](https://laravel.com/docs/5.4).
 
 ## License
-The FUMA is open source online web tool licensed under the [MIT license](http://opensource.org/licenses/MIT).
+The FUMA is open source online web tool licensed under the license [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
