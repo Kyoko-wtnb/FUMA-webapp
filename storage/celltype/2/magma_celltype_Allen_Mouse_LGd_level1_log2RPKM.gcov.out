@@ -1,0 +1,13 @@
+# MEAN_SAMPLE_SIZE = 350000
+# TOTAL_GENES = 14757
+# CONDITIONED_COVAR = Average
+# CONDITIONED_INTERNAL = genesize, log_genesize, genedensity, log_genedensity, inverse_mac, log_inverse_mac
+COVAR                      OBS_GENES       BETA   BETA_STD         SE            P
+Chrna6                         14757  -0.000411   -0.00128     0.0114      0.51435
+Dlx5                           14757    -0.0133    -0.0409     0.0121      0.86337
+Gad2                           14757     -0.012    -0.0371     0.0134      0.81584
+Micro                          14757    0.00671     0.0148    0.00613      0.13671
+Olig1                          14757   -0.00417    -0.0107    0.00761      0.70837
+OPC                            14757   -0.00253   -0.00622    0.00877      0.61353
+Outlier                        14757      0.015     0.0233     0.0128      0.11938
+Slc17a6                        14757   0.000129   0.000407    0.00932       0.4945
