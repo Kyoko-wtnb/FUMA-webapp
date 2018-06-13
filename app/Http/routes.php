@@ -205,4 +205,22 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('gene2func/imgdown', 'FumaController@imgdown');
 
+	// ********************** Cell Type ************************
+	Route::get('celltype', function(){
+		$jobID = null;
+		return view('pages.celltype', ['id'=>$jobID, 'page'=>'celltype', 'prefix'=>'celltype']);
+	});
+
+	Route::post('celltype/getS2GIDs', 'CellController@getS2GIDs');
+
+	Route::post('celltype/checkMagmaFile', 'CellController@checkMagmaFile');
+
+	Route::get('celltype/getJobList', 'CellController@getJobList');
+
+	Route::post('celltype/deleteJob', 'CellController@deleteJob');
+
+	Route::post('celltype/submit', 'CellController@newJob');
+
+	#Route::get('celltype/{jobID}', 'CellController@authcheck');
+
 });
