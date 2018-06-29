@@ -104,8 +104,7 @@ Route::get('browse/{id}', function($id){
 Route::group(['middleware'=>'auth'], function(){
 	// ********************** SNP2GENE ************************
 	Route::get('snp2gene', function(){
-		$jobID = null;
-		return view('pages.snp2gene', ['id'=>$jobID, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
+		return view('pages.snp2gene', ['id'=>null, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
 	});
 
 	Route::get('snp2gene/getJobList/{email?}/{limit?}', 'S2GController@getJobList');
@@ -207,8 +206,7 @@ Route::group(['middleware'=>'auth'], function(){
 
 	// ********************** Cell Type ************************
 	Route::get('celltype', function(){
-		$jobID = null;
-		return view('pages.celltype', ['id'=>$jobID, 'page'=>'celltype', 'prefix'=>'celltype']);
+		return view('pages.celltype', ['id'=>null, 'status'=>null, 'page'=>'celltype', 'prefix'=>'celltype']);
 	});
 
 	Route::post('celltype/getS2GIDs', 'CellController@getS2GIDs');
@@ -221,6 +219,16 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('celltype/submit', 'CellController@newJob');
 
-	#Route::get('celltype/{jobID}', 'CellController@authcheck');
+	Route::get('celltype/{jobID}', 'CellController@authcheck');
+
+	Route::get('celltype/checkJobStatus/{jobID}', 'CellController@checkJobStatus');
+
+	Route::post('celltype/getFileList', 'CellController@getFileList');
+
+	Route::post('celltype/filedown', 'CellController@filedown');
+
+	Route::post('celltype/getPlotData', 'CellController@getPlotData');
+
+	Route::post('celltype/imgdown', 'FumaController@imgdown');
 
 });

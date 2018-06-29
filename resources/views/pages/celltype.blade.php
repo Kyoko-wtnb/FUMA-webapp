@@ -20,6 +20,7 @@ $.ajaxSetup({
 	headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
 });
 var id = "{{$id}}";
+var status = "{{$status}}";
 var page = "{{$page}}";
 var prefix = "{{$prefix}}";
 var subdir = "{{ Config::get('app.subdir') }}";
@@ -40,7 +41,7 @@ var loggedin = "{{ Auth::check() }}";
 			<li class="active"><a href="#joblist">My Jobs<i class="sub_icon fa fa-history"></i></a></li>
 			<li class="active"><a href="#DIY">Do It Yourself<i class="sub_icon fa fa-wrench"></i></a></li>
 			<div id="resultSide">
-				<li><a href="#Summary">Summary<i class="sub_icon fa fa-table"></i></a></li>
+				<!-- <li><a href="#Summary">Summary<i class="sub_icon fa fa-table"></i></a></li> -->
 				<li><a href="#result">Results<i class="sub_icon fa fa-bar-chart"></i></a></li>
 			</div>
 		</ul>
@@ -233,7 +234,6 @@ var loggedin = "{{ Auth::check() }}";
 			<div id="DIY" class="sidePanel container" style="padding-top:50px;">
 				<h4>Do It Yourself</h4>
 			</div>
-	        @include('celltype.summary')
 			@include('celltype.result')
 		</div>
 	</div>

@@ -3,14 +3,31 @@ $(document).ready(function(){
 	// hide submit buttons for imgDown
 	$('.ImgDownSubmit').hide();
 	$('#cellSubmit').attr("disabled", true);
+	$('#resultSide').hide();
 
 	// hash activate
 	var hashid = window.location.hash;
-	if(hashid==""){
+	if(hashid=="" && status.length==0){
 		$('a[href="#newJob"]').trigger('click');
+	}else if(hashid==""){
+		$('a[href="#result"]').trigger('click');
 	}else{
 		$('a[href="'+hashid+'"]').trigger('click');
 	}
+
+	// download file selection
+	$('.allfiles').on('click', function(){
+		$('#downFileCheck input').each(function(){
+			$(this).prop("checked", true);
+		});
+		DownloadFiles();
+	});
+	$('.clearfiles').on('click', function(){
+		$('#downFileCheck input').each(function(){
+			$(this).prop("checked", false);
+		});
+		DownloadFiles();
+	});
 
 	getJobList();
 	$('#refreshTable').on('click', function(){
@@ -65,6 +82,26 @@ $(document).ready(function(){
 			}
 		});
 	});
+
+	if(status.length==0){
+	}else{
+		var jobStatus;
+		$.get({
+			url: subdir+'/'+page+'/checkJobStatus/'+id,
+			error: function(){
+				alert("ERROR: checkJobStatus")
+			},
+			success: function(data){
+				jobStatus = data;
+			},
+			complete: function(){
+				if(jobStatus=="OK"){
+					$('#resultSide').show();
+					loadResults(id);
+				}
+			}
+		});
+	}
 });
 
 function CheckInput(){

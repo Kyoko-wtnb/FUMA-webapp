@@ -51,7 +51,7 @@ class celltypeProcess extends Job implements ShouldQueue
 			DB::table('celltype') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR']);
 			if($email!=null){
-				$this->sendJobCompMail($email, $title, $jobID, 'error');
+				$this->sendJobCompMail($email, $title, $jobID, 'ERROR');
 				return;
 			}
 		}else{

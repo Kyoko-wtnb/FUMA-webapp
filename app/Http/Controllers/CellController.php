@@ -14,8 +14,7 @@ use Auth;
 use Storage;
 use File;
 use fuma\User;
-use fuma\Jobs\snp2geneProcess;
-use fuma\Jobs\geneMapProcess;
+use fuma\Jobs\celltypeProcess;
 
 class CellController extends Controller
 {
@@ -27,6 +26,25 @@ class CellController extends Controller
 
 		// Store user
 		$this->user = Auth::user();
+    }
+
+	public function authcheck($jobID){
+		$email = $this->user->email;
+		$check = DB::table('celltype')->where('jobID', $jobID)->first();
+		if($check->email==$email){
+			return view('pages.celltype', ['id'=>$jobID, 'status'=>'jobquery', 'page'=>'celltype', 'prefix'=>'celltype']);
+		}else{
+			return view('pages.celltype', ['id'=>null, 'status'=>null, 'page'=>'celltype', 'prefix'=>'celltype']);
+		}
+	}
+
+	public function checkJobStatus($jobID){
+        $job = DB::table('celltype')->where('jobID', $jobID)
+            ->where('email', $this->user->email)->first();
+        if(! $job){
+            return "Notfound";
+        }
+        return $job->status;
     }
 
 	public function getS2GIDs(){
@@ -142,5 +160,47 @@ class CellController extends Controller
 		File::append($paramfile, "datasets=$ds\n");
 
 		return redirect("/celltype#joblist");
+	}
+
+	public function getFileList(Request $request){
+		$jobID = $request->input('id');
+		$filedir = config('app.jobdir').'/celltype/'.$jobID;
+		$files = glob($filedir."/*.gcov.out");
+		for($i=0; $i<count($files); $i++){
+			$files[$i] = preg_replace("/.+magma_celltype_(.+).gcov.out/", "$1", $files[$i]);
+		}
+		return json_encode($files);
+	}
+
+	public function filedown(Request $request){
+		$id = $request->input('id');
+		$prefix = $request->input('prefix');
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
+		$prefix = $request->input('files');
+		$files = [];
+		for($i=0; $i<count($prefix); $i++){
+			$files[] = 'magma_celltype_'.$prefix[$i].'.gcov.out';
+			$files[] = 'magma_celltype_'.$prefix[$i].'.log';
+		}
+		$zip = new \ZipArchive();
+		$zipfile = $filedir."FUMA_celltype".$id.".zip";
+		if(File::exists($zipfile)){
+			File::delete($zipfile);
+		}
+		$zip -> open($zipfile, \ZipArchive::CREATE);
+		// $zip->addFile(storage_path().'/README', "README");
+		foreach($files as $f){
+			$zip->addFile($filedir.$f, $f);
+		}
+		$zip -> close();
+		return response() -> download($zipfile);
+	}
+
+	public function getPlotData(Request $request){
+		$id = $request->input('id');
+		$filedir = config('app.jobdir').'/celltype/'.$id.'/';
+		$script = storage_path().'/scripts/celltypePlotData.py';
+		$json = shell_exec("python $script $filedir");
+		return $json;
 	}
 }
