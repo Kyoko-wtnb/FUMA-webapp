@@ -365,7 +365,8 @@ class FumaController extends Controller
 		$outfile = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
 		$svg = preg_replace("/\),rotate/", ")rotate", $svg);
-		$svg = preg_replace("/,skewX\(.+?\),scale\(.+?\)/", "", $svg);
+		$svg = preg_replace("/,skewX\(.+?\)/", "", $svg);
+		$svg = preg_replace("/,scale\(.+?\)/", "", $svg);
 		$fileName .= "_FUMA_".$prefix.$id;
 		if($type=="svg"){
 			file_put_contents($svgfile, $svg);
