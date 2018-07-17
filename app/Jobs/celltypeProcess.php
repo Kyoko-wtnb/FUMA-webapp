@@ -34,12 +34,13 @@ class celltypeProcess extends Job implements ShouldQueue
      */
     public function handle(){
 		// Update status
+		$email = $this->user->email;
 		$jobID = $this->jobID;
 		$started_at = date("Y-m-d H:i:s");
 		DB::table('celltype') -> where('jobID', $jobID)
-			-> update(['status'=>'RUNNING']);
+			->update(['status'=>'RUNNING']);
 		$title = DB::table('celltype') -> where('jobID', $jobID)
-			->first() ->title;
+			->first()->title;
 
 		$filedir = config('app.jobdir').'/celltype/'.$jobID.'/';
 		$logfile = $filedir."job.log";
@@ -65,9 +66,10 @@ class celltypeProcess extends Job implements ShouldQueue
     }
 
 	public function sendJobCompMail($email, $title, $jobID, $status){
+		$user = $this->user;
 		if($status=="error"){
 			$data = [
-				'jobtitle'=>$jobtitle,
+				'jobtitle'=>$title,
 				'jobID'=>$jobID,
 			];
 			Mail::send('emails.cellJobError', $data, function($m) use($user){
@@ -76,7 +78,7 @@ class celltypeProcess extends Job implements ShouldQueue
 			});
 		}else{
 			$data = [
-				'jobtitle'=>$jobtitle,
+				'jobtitle'=>$title,
 				'jobID'=>$jobID,
 			];
 			Mail::send('emails.cellJobComplete', $data, function($m) use($user){

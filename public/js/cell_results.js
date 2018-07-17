@@ -61,7 +61,7 @@ function Plot(data){
 				d[1] = +d[1];
 				if(d[0].length>max_label){max_label = d[0].length;}
 			})
-			margin.bottom = Math.max(max_label*5.5, 100);
+			margin.bottom = Math.max(max_label*6.5, 100);
 			var cellwidth = 1000/tdata.length;
 			if(cellwidth>15){cellwidth=15;}
 			else if(cellwidth<8){cellwidth=8;}
@@ -137,7 +137,7 @@ function Plot(data){
 				if(d[0].length>max_label){max_label = d[0].length;}
 			})
 		}
-		margin.bottom = Math.max(max_label*5.5, 100);
+		margin.bottom = Math.max(max_label*6.5, 100);
 		for(var i = 0; i < Object.keys(data.short).length; i++){
 			if(i%2 == 0){
 				idx += 1;

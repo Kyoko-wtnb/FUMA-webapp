@@ -27,7 +27,8 @@ def main():
 	param_cfg.read(filedir+'params.config')
 
 	##### Map to ENSG ID #####
-	if param_cfg.get('params', 'ensg_id')==1:
+	if param_cfg.get('params', 'ensg_id')=="0":
+		print "Mapping genes to ENSG ID..."
 		os.system("Rscript "+os.path.dirname(os.path.realpath(__file__))+"/magma_raw_ensg.R "+filedir)
 
 	##### MAGMA #####
@@ -38,6 +39,8 @@ def main():
 		command = magmadir+"/magma --gene-results "+filedir+"magma.genes.raw"
 		command += " --gene-covar "+magmafiles+"/celltype/"+ds+".txt condition=Average onesided=greater"
 		command += " --out "+filedir+"magma_celltype_"+ds
-		os.system(command)
+		res = os.system(command)
+		if res!=0:
+			sys.exit("MAGMA ERROR")
 
 if __name__=="__main__": main()
