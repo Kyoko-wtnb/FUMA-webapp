@@ -111,11 +111,9 @@ class S2GController extends Controller
     public function checkJobStatus($jobID){
         $job = SubmitJob::where('jobID', $jobID)
             ->where('email', $this->user->email)->first();
-
         if( ! $job ){
             return "Notfound";
         }
-
         return $job->status;
     }
 

@@ -2,6 +2,7 @@
 @section('head')
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
 <script type="text/javascript">
 var loggedin = "{{ Auth::check() }}";
@@ -91,6 +92,7 @@ $(document).ready(function(){
 				<a href="#submit-genes">Submit genes</a>
 				<a href="#g2fOutputs">Outputs</a>
 			</div>
+			<li><a href="#celltype">Cell type<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 			<li class="active"><a href="#publish">Publish results<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 			<li class="active"><a href="#data-security">Data security<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 		</ul>
@@ -151,6 +153,7 @@ $(document).ready(function(){
 					@include('tutorial.gene2func.outputs')
 				</div>
 			</div>
+			@include('tutorial.celltype')
 			@include('tutorial.publish')
 			@include('tutorial.data-security')
 		</div>

@@ -215,11 +215,13 @@ $(document).ready(function(){
 		$('#downFileCheck input').each(function(){
 			$(this).prop("checked", true);
 		});
+		DownloadFiles();
 	});
 	$('.clearfiles').on('click', function(){
 		$('#downFileCheck input').each(function(){
 			$(this).prop("checked", false);
 		});
+		DownloadFiles();
 	});
 
 	// annotPlot Chr15 tissue selection clear click

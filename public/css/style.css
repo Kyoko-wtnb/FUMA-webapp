@@ -43,6 +43,13 @@ img.footerimg{
   color: #fff;
 }
 
+.codebox {
+    background-color:#e6e6e6;
+    padding:15px;
+    font-size:0.9em;
+    display: inline-block;
+}
+
 .btn-default{
 	background-color: #ECF0F1 !important;
 }
