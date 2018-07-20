@@ -8,6 +8,10 @@ var loggedin = "{{ Auth::check() }}";
 @stop
 @section('content')
 <div class="container" style="padding-top: 50px;">
+	<div class="alert alert-warning">
+		<i class="fa fa-exclamation-triangle"></i>
+		For scRNA-seq datasets in cell type analysis section, please see <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#celltype">tutorial for links and references.</a>
+	</div>
 	<table class="table table-bordered">
 		<thead>
 			<tr>

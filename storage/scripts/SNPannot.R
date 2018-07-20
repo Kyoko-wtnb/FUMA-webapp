@@ -19,6 +19,7 @@ annov$symbol[is.na(annov$symbol)] <- annov$gene[is.na(annov$symbol)]
 annov$chr <- snps$chr[match(annov$uniqID, snps$uniqID)]
 annov$pos <- snps$pos[match(annov$uniqID, snps$uniqID)]
 
+ENSG$chromosome_name[ENSG$chromosome_name=="X"] <- 23
 genes_gr <- with(ENSG, GRanges(seqnames=chromosome_name, IRanges(start=start_position, end=end_position)))
 snps_gr <- with(snps, GRanges(seqname=chr, IRanges(start=pos, end=pos)))
 nearest <- distanceToNearest(snps_gr, genes_gr, select="all", ignore.strand=TRUE)

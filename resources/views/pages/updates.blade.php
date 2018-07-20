@@ -19,6 +19,15 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>22 July 2018</td>
+			<td>v1.3.3</td>
+			<td>
+				Cell type specificity analysis based on scRNA-seq datasets using MAGMA is now available.
+				This is currently a beta version, further improvement of plots and additional info
+				will be available soon.
+			</td>
+		</tr>
+		<tr>
 			<td>29 May 2018</td>
 			<td>v1.3.2</td>
 			<td>

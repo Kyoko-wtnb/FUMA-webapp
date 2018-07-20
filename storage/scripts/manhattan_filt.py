@@ -21,7 +21,7 @@ pcol = 2
 
 ## per chr size
 chroms = np.unique(GWAS[:,chrcol].astype(int))
-chrSize = [max(GWAS[GWAS[:,chrcol].astype(int)==x, poscol].astype(int)) for x in range(1,23) if x in chroms]
+chrSize = [max(GWAS[GWAS[:,chrcol].astype(int)==x, poscol].astype(int)) for x in range(1,24) if x in chroms]
 
 width = 800 #px
 height = 300 #px

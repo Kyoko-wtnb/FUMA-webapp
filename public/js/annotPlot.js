@@ -582,7 +582,7 @@ $(document).ready(function(){
 			svg.append("text").attr("text-anchor", "middle")
 				.attr("transform", "translate("+(-margin.left/2)+", -15)")
 				.style("font-size", "8px")
-				.text("1000G SNPs");
+				.text("ref SNPs");
 		}
 
 		/*---------------------------------------------
