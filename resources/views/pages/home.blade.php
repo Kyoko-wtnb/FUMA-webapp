@@ -34,7 +34,7 @@ $(document).ready(function(){
 		To submit your own GWAS, login is required for security reason.
 		If you have't registered yet, you can do from <a href="{{ url('/register') }}">here</a>.
 		<br/>
-		You can browse example results of FUMA for a few GWAS from <a href="{{ Config::get('app.subdir') }}/browse">Browse Examples</a> without registration or login.
+		You can browse public results of FUMA (including example jobs) from <a href="{{ Config::get('app.subdir') }}/browse">Browse Public Results</a> without registration or login.
 	</p>
 	<p>
 		Please post any questions, suggestions and bug reports on Google Forum: <a target="_blank" href="https://groups.google.com/forum/#!forum/fuma-gwas-users">FUMA GWAS users</a>.<br/>
@@ -47,7 +47,8 @@ $(document).ready(function(){
 		<a target="_blank" href="https://www.nature.com/articles/s41467-017-01261-5">https://www.nature.com/articles/s41467-017-01261-5</a>
 		<br>
 		Depending on which results you are going to report, please also cite the original study of data sources/tools used in FUMA
-		(references are available <a href="{{ Config::get('app.subdir') }}/links">here</a>).
+		(references are available at <a href="{{ Config::get('app.subdir') }}/links">links</a> or
+		<a href="{{ Config::get('app.subdir') }}/tutorial#celltype">tutorial for the cell type specificity analysis</a> for scRNA-seq data).
 	</p>
 	<br/>
 
