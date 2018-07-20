@@ -23,13 +23,66 @@ In this section, reference panels and gene expression data sets are described de
 
 </div>
 
+<h4>Gene analysis</h4>
+<div style="padding-left: 40px;">
+	Gene analysis is performed with default parameters (SNP-wide mean model) with the user selected reference panel.<br/>
+	The command FUMA uses is the following.<br/>
+	<code class="codebox">
+		magma --bfile [path to the selected referebce panel] \<br/>
+		<tab>--pval [magma input gile] ncol=3 (or N=[total sample size]) \<br/>
+		<tab>--gene-annot [path to the annotation file with use selected window size] \<br/>
+		<tab>--out [output file]
+	</code>
+
+</div>
+
 <h4>Gene set analyses</h4>
 <div style="padding-left: 40px;">
 	In FUMA, curated gene sets (c2.all) and go terms (c5.bp, c5.cc and c5.mf) from MsigDB are tested.
 	For FUMA &le; v1.3.0, 10894 gene sets (curated gene sets: 4728, GO terms: 6166) from MsigdB v5.2 are used.
 	For FUMA &ge; v1.3.1, 10655 gene sets (curated gene sets: 4738, GO terms: 5917) from MsigDB v6.1 are used.
 	Bonferroni correction was performed for the all tested gene sets.
-	To customize, you can download the output file and select a specific gene sets.
+	To customize, you can download the output file and select a specific gene sets.<br/>
+	<br/>
+	Gene set analysis is perfromed by the following command.<br/>
+	<code class="codebox">
+		magma --gene-results [path to]/magma.genes.raw \</br>
+		<tab>--set-annot [path to gene set file] \</br>
+		<tab>--out [output file]
+	</code>
+</div>
+
+<h4>Gene property analysis for tissue specificity</h4>
+<div style="padding-left: 40px;">
+	To identify tissue specificity of the pehnotype, FUMA performes MAGMA gene-property analyses to test
+	relationships between tissue specific gene expreission profiles and disease-gene associations.
+	The gene-property abakysis is based on the regression model,
+
+	$$Z \sim \beta_0 + E_t\beta_E + A\beta_A + B\beta_B + \epsilon$$
+
+	where \(Z\) is a gene-based Z-score converted from the gene-based P-value,
+	\(B\) is a matrix of several techinical confounders included by default.
+
+	\(E_t\) is the gene expression value of a testing tissue type c and \(A\) is the
+	average expression across tissue types in a data set, defined as follows:
+
+	$$E_t = \sum_{i}^{n} log_2(e_i + 1)/n$$
+	$$A = \sum_{j \in T}^{N} E_j/N$$
+
+	where \(n\) is the number of samples in tissue type t, \(e_i\) is the expression value
+	of a sample in the tissye type t (e.g. RPKM count or TPM),
+	\(N\) is the number of tissue types in a data set
+	and \(T = \{tissue\ type\ 1, tissue\ type\ 2, ..., tissue\ type\ N\}\).
+	We performed a one-sided test (\(\beta_E>0\)) which is essentially testing
+	the positive relationship between tissue specificity and genetic association
+	of genes.<br/>
+	<br/>
+	MAGMA gene-property analysis is run with the following command, <br/>
+	<code class="codebox">
+		magma --gene-results [input file name].genes.raw \<br/>
+		<tab>--gene-covar [file name of selected RNA-seq data set] onesided=greater condition=Average \<br/>
+		<tab>--out [output file name]
+	</code>
 </div>
 
 <h4>Gene expression data sets</h4>

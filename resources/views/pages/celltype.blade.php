@@ -51,8 +51,9 @@ var loggedin = "{{ Auth::check() }}";
 		<div class="alert alert-warning" style="text-align:center;">
 			Welcome to the FUMA cell type specificity analyses.
 			This is still a BETA version.
-			We will improve plots in the next version.
-			Please imform any bugs on the google group.
+			We will improve plots in the next version.<br/>
+			Please check the original study for the abbreviation of cell types, we will add them to our website as soon as possible.<br/>
+			Please inform any bug at the Google Forum.
 		</div>
 		<div class="page-content inset">
 			<div id="newJob" class="sidePanel container" style="padding-top:50px;">
