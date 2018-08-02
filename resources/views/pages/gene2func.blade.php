@@ -116,13 +116,13 @@ var loggedin = "{{ Auth::check() }}";
 								</select>
 								<br/>
 								2. Paste custom list of backbround genes
-								<a class="infoPop" data-toggle="popover" data-content="Please pasge gene per line. ENSG ID, entrez ID and gene symbol are acceptable.">
+								<a class="infoPop" data-toggle="popover" data-content="Please paste gene per line. ENSG ID, entrez ID and gene symbol are acceptable.">
 									<i class="fa fa-question-circle-o fa-lg"></i>
 								</a><br/>
 								<textarea id="bkgenes" name="bkgenes" rows="5" cols="50" placeholder="Please enter each gene per line here." onkeyup="checkInput();" oninput="checkInput()"></textarea><br/>
 								<br/>
 								3. Upload a file with a custom list of background genes
-								<a class="infoPop" data-toggle="popover" data-content="The first column shoud be the genes without header. Extra columns will be ignored. ENSG ID, entrez ID and gene symbol are acceptable.">
+								<a class="infoPop" data-toggle="popover" data-content="The first column should be the genes without header. Extra columns will be ignored. ENSG ID, entrez ID and gene symbol are acceptable.">
 									<i class="fa fa-question-circle-o fa-lg"></i>
 								</a>
 								<tab><input class="form-control-file" type="file" name="bkgenesfile" id="bkgenesfile" onchange="checkInput()"/>

@@ -51,14 +51,14 @@
 			<tr>
 				<td>Pre-defined lead SNPs</td>
 				<td>Optional</td>
-				<td>Optional pre-defined lead SNPs. The file should have 3 columns, rsID, chromsome and position.</td>
+				<td>Optional pre-defined lead SNPs. The file should have 3 columns, rsID, chromosome and position.</td>
 				<td>File upload</td>
 				<td>none</td>
 			</tr>
 			<tr>
 				<td>Identify additional lead SNPs</td>
 				<td>Optional only when predefined lead SNPs are provided</td>
-				<td>If this option is CHECKED, FUMA will identify additional independent lead SNPs after defininig the LD block for pre-defined lead SNPs.
+				<td>If this option is CHECKED, FUMA will identify additional independent lead SNPs after defining the LD block for pre-defined lead SNPs.
 					Otherwise, only given lead SNPs and SNPs in LD of them will be used for further annotations.
 				</td>
 				<td>Check</td>
@@ -98,7 +98,7 @@
 				<td>The total number of individuals in the GWAS or the number of individuals per SNP.
 					This is only used for MAGMA to compute the gene-based P-values.
 					For total sample size, input should be an integer.
-					When the input file of GWAS summary statistics contains a column of sample size per SNP, the column namecan be provided in the second text box.<br/>
+					When the input file of GWAS summary statistics contains a column of sample size per SNP, the column name can be provided in the second text box.<br/>
 					<span class="info"><i class="fa fa-info"></i> When column name is provided, please make sure that the column only contains integers (no float or scientific notation).
 						If there are any float values, they will be rounded up by FUMA.
 					</span>
@@ -123,7 +123,7 @@
 				<td>Mandatory</td>
 				<td>The minimum r<sup>2</sup> for determining LD with independent genome-wide significant SNPs, which is used to determine the borders of the genomic risk loci.
 					SNPs with r<sup>2</sup> &ge; user defined threshold with any of the detected independent significant SNPs will be included for further annotations and are used fro gene prioritization.
-					Note that the identification of independent lead SNPs is independent from this and is based on fized r<sup>2</sup> of 0.1.
+					Note that the identification of independent lead SNPs is independent from this and is based on fixed r<sup>2</sup> of 0.1.
 				</td>
 				<td>numeric</td>
 				<td>0.6</td>
@@ -156,7 +156,7 @@
 				<td>-</td>
 			</tr>
 			<tr>
-				<td>Include varians from reference panel</td>
+				<td>Include variants from reference panel</td>
 				<td>Mandatory</td>
 				<td>If Yes, all SNPs in strong LD with any of independent significant SNPs
 					including non-GWAS-tagged SNPs will be included and used for
@@ -185,8 +185,9 @@
 				<td>Mandatory</td>
 				<td>This is the maximum distance between LD blocks of independent significant SNPs to merge into a single genomic locus.
 					When this is set at 0, only physically overlapping LD blocks are merged.
-					Defining genomic loci does not affect identifying which SNPs fulfill selection criteria to be used for annotation and prioritization.
-					It will only result in a different number of reported risk loci, which can be desired when certain loci are partly overlapping or physically very close.        </td>
+					Defining genomic loci does not affect identifying which SNPs fulfil selection criteria to be used for annotation and prioritization.
+					It will only result in a different number of reported risk loci, which can be desired when certain loci are partly overlapping or physically very close.
+				</td>
 				<td>numeric</td>
 				<td>250kb</td>
 				<td><span style="color:red;">higher</span>: decrease #genomic loci.<br/>
@@ -266,7 +267,7 @@
 				<td>eQTL mapping</td>
 				<td>Optional</td>
 				<td>Check this option to perform eQTL mapping.
-					eQTL mapping will map SNPs to genes which likely affect expression of thoses genes up to 1 Mb (cis-eQTL).
+					eQTL mapping will map SNPs to genes which likely affect expression of those genes up to 1 Mb (cis-eQTL).
 					eQTLs are highly tissue specific and tissue types can be selected in the following option.
 					eQTL mapping can be used together with positional mapping.
 				</td>
@@ -348,7 +349,7 @@
 					For each data, user can also provide data type, such as Hi-C, ChIA-PET or C5 which is not mandatory but will be used in the result table and regional plot.
 					The file format is described in the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chromatin interactions</a> section in this tutorial.<br/>
 					<span class="info"><i class="fa fa-info"></i>
-						Please avoid uploading more than one file with identical file names. In that case, the files are overwited by the last uploaded one.
+						Please avoid uploading more than one file with identical file names. In that case, the files are over-written by the last uploaded one.
 					</span>
 				</td>
 				<td>File upload (multiple)</td>
@@ -373,10 +374,10 @@
 			<tr>
 				<td>Promoter region window</td>
 				<td>Mandatory if <code>chromatin interaction mapping</code> is CHECKED</td>
-				<td>Promoter regions of genes to map in significantly interactiong regions.
+				<td>Promoter regions of genes to map in significantly interacting regions.
 					The input format should be "(upstream bp)-(donwstream bp)" from transcription start site (TSS).
 					For example, the default "250-500" means that promoter regions are defined as 250bp upstream and 500bp downstream of the TSS.
-					By the chromatin interaction mapping, genes whose user defined promoter regions are overlapped with the significantly interactiong regions will be mapped.
+					By the chromatin interaction mapping, genes whose user defined promoter regions are overlapped with the significantly interacting regions will be mapped.
 					Please refer the <a href="{{ Config::get('app.subdir') }}/tutorial#chromatin-interactions">Chromatin interactions</a> section in this tutorial for details.
 				</td>
 				<td>text</td>
@@ -639,8 +640,8 @@
 				<td>Mandatory when <code>MAGMA</code> is active.</td>
 				<td>The window of the genes to assign SNPs (symmetric).
 					e.g. when 5kb is selected, SNPs within 5kb window of a gene (both side)
-					will be assigned to that gene. 
-					The option is available fomt 0, 5, 10, 15, 20kb window.
+					will be assigned to that gene.
+					The option is available from 0, 5, 10, 15, 20kb window.
 				</td>
 				<td>Select</td>
 				<td>0kb from both side of the genes</td>

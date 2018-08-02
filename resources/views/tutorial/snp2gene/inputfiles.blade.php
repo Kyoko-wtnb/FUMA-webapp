@@ -4,7 +4,7 @@
 	<p>GWAS summary statistics is a mandatory input of <strong>SNP2GENE</strong> process.
 		FUMA accept various types of format. For example, PLINK, SNPTEST and METAL output formats can be used as it is.
 		For other formats, column names can be provided.
-		Input files should be prepared in asci txt or (preferably) gzipped or zipped.
+		Input files should be prepared in ascii txt or (preferably) gzipped or zipped.
 		Every row should contain information on one SNP.
 		An input GWAS summary statistics file could contain only subset of SNPs (e.g. SNPs of interest for your study to annotate them),
 		but in this case, results of MAGMA will not be relevant anymore.

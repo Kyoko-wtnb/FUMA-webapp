@@ -70,7 +70,7 @@ var Chr15cells = "{{$Chr15cells}}";
 				<div id="RDBlegend"></div>
 				*External link to RegulomeDB from SNP table (when one of the SNPs is clicked) will open a new tab.
 				rsID does not always match since RegulomeDB used dbSNP build 141 (the rsID in FUMA is dbSNP build 146).
-				Genomic position (bp on hg19) shown in the link of RegulomeDB is the position shown in the SNP table - 1, since RegulomeDB used 0 based corrdinate.
+				Genomic position (bp on hg19) shown in the link of RegulomeDB is the position shown in the SNP table - 1, since RegulomeDB used 0 based coordinate.
 			</div>
 			<br/>
 			<div>
@@ -88,13 +88,13 @@ var Chr15cells = "{{$Chr15cells}}";
 			<div id="SNPlegend">
 				<h4>SNPs colored grey in the plots</h4>
 				<strong>GWAS P-value</strong>: SNPs which are not in LD of any of significant independent lead SNPs in the selected region are colored grey.<br/>
-				<strong>CADD score</strong>: Only SNPs which are in LD of any of significant independet lead SNPs are displayed in the plot.
+				<strong>CADD score</strong>: Only SNPs which are in LD of any of significant independent lead SNPs are displayed in the plot.
 				Of those SNPs, SNPs which did not used for mapping (SNPs that were filtered by user defined parameters) are colored grey.<br/>
 				When positional mapping is performed, SNPs used for positional mapping are always colored non-grey colors.<br/>
 				When eQTL mapping is performed and eQTLs are plotted, SNPs used for eQTL mapping are also colored non-grey colors.
 				If the option of eQTLs is not selected for the plot, SNPs which are not used for other mappings are colored grey even if they are used for eQTL mapping.<br/>
-				When chromatin interaction maping is performed and chromatin interactions are plotted, SNPs used for chromatin interaction mapping are also colored non-grey colors.
-				If the option of chromatin interactions is not selected for the plot, SNPs which are not used for other mappins are colored grey even if they are used for chromatin interaction mapping.<br/>
+				When chromatin interaction mapping is performed and chromatin interactions are plotted, SNPs used for chromatin interaction mapping are also colored non-grey colors.
+				If the option of chromatin interactions is not selected for the plot, SNPs which are not used for other mappings are colored grey even if they are used for chromatin interaction mapping.<br/>
 				<strong>RegulomeDB score</strong>: Same as CADD score.<br/>
 				<strong>eQTLs</strong>: When eQTL mapping was performed and if there is any eQTL in the selected region, all eQTLs with user defined P-value threshold and tissue types are displayed.
 				Of those eQTLs, eQTLs which did not used for eQTL mapping (eQTLs that were filtered by user defined parameters) are colored grey.<br/>
@@ -103,8 +103,8 @@ var Chr15cells = "{{$Chr15cells}}";
 			<div id="GeneLegnd">
 				<h4>Color-code for genes</h4>
 				<strong>Red</strong> : Mapped genes. Genes mapped by positional mapping are always colored red.
-				Genes mapped by eQTL mapping are colore red only when the option of eQTLs is selected for the plot, oetherwise those genes are considered as non-mapped genes.
-				Genes mapped by chromatin interaction are colored red only when the option of chroamtin interactions is selected for the plot, otherwise those genes are considered as non-mapped genes.<br/>
+				Genes mapped by eQTL mapping are colore red only when the option of eQTLs is selected for the plot, otherwise those genes are considered as non-mapped genes.
+				Genes mapped by chromatin interaction are colored red only when the option of chromatin interactions is selected for the plot, otherwise those genes are considered as non-mapped genes.<br/>
 				<strong>Blue</strong> : Non-mapped protein-coding genes.<br/>
 				<strong>Dark grey</strong> : Non-mapped non-coding genes.<br/>
 			</div>

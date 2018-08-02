@@ -14,9 +14,9 @@
 						<th>Submit date</th>
 						<th>Status
 							<a class="infoPop" data-toggle="popover" data-html="true" data-content="<b>NEW: </b>The job has been submitted.<br/>
-								<b>QUEUED</b>: The job has beed dispatched to queue.<br/><b>RUNNING</b>: The job is running.<br/>
+								<b>QUEUED</b>: The job has been dispatched to queue.<br/><b>RUNNING</b>: The job is running.<br/>
 								<b>Go to results</b>: The job has been completed. This is linked to result page.<br/>
-								<b>ERROR</b>: An error occured durting the process. Please refer email for detail message.">
+								<b>ERROR</b>: An error occurred during the process. Please refer email for detail message.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</th>
@@ -74,7 +74,7 @@
 							<td>Title<sup style="color:red;">*</sup>
 								<a class="infoPop" data-toggle="popover" data-content="
 								Please provide self-descriptive title for the job.
-								If the title is not clear enough, the developper might contact you to provide a sufficient information.">
+								If the title is not clear enough, the developer might contact you to provide a sufficient information.">
 									<i class="fa fa-question-circle-o fa-lg"></i>
 								</a>
 							</td>
@@ -115,7 +115,7 @@
 								This is the publication where the selected SNP2GENE job is described (not the reference to the summary statistics).
 								This can be any format as long as users are able to find the publication.
 								Please provide PubMed ID if possible (e.g. PMID: 29184056).
-								If you don't have publication yet, please let the developper know once the publication becomes available.
+								If you don't have publication yet, please let the developer know once the publication becomes available.
 								You can also provide preprint DOI.
 								">
 									<i class="fa fa-question-circle-o fa-lg"></i>
@@ -140,7 +140,7 @@
 							<td>Reference of summary statistics
 								<a class="infoPop" data-toggle="popover" data-content="
 								This should be the original publication of the summary statistics.
-								This can be same as the pulication above when a new GWAS result is prensented in the publication.">
+								This can be same as the publication above when a new GWAS result is presented in the publication.">
 									<i class="fa fa-question-circle-o fa-lg"></i>
 								</a>
 							</td>
@@ -154,7 +154,7 @@
 								<a class="infoPop" data-toggle="popover" data-content="
 								Please add any additional information here.
 								For example, when there are multiple summary statistics available from the same study,
-								you should specify which result this is refering to.">
+								you should specify which result this is referring to.">
 									<i class="fa fa-question-circle-o fa-lg"></i>
 								</a>
 								<br/>

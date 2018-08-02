@@ -234,7 +234,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		Chromosome coordinate was lifted over to hg19 from hg18 using liftOver software.
 		Gene names are mapped to Ensembl ID (excluded genes which are not mapped to ENSG ID).
 		Since only tested allele was provided, other allele was extracted from 1000G EUR population.
-		FDR (or any corrected P-value) was not availabe in the original data (in the FUMA, FDR column was replaced with -9).
+		FDR (or any corrected P-value) was not available in the original data (in the FUMA, FDR column was replaced with -9).
 		<br/>
 		Signed statistics is beta.
 		<br/>
@@ -260,7 +260,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	<p><strong>Description</strong><br/>
 		Gene names are mapped to Ensembl ID (excluded genes which are not mapped to ENSG ID).
 		Since alleles were not available in the original data, extracted from 1000G EUR population based on chromosome coordinate.
-		FDR was not provided in the original data source, but the FDR column was replaced with Bonferoni corrected p-value,
+		FDR was not provided in the original data source, but the FDR column was replaced with Bonferroni corrected p-value,
 		as it was used in the original study (corrected for all tested SNP-gene pairs 60,456,556).
 		<br/>
 		Signed statistics is not available.

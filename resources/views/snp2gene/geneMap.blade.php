@@ -47,9 +47,9 @@
 				<tr class="posMapOptions">
 					<td>Distance to genes or <br>functional consequences of SNPs on genes to map
 						<a class="infoPop" data-toggle="popover" title="Positional mapping" data-content="
-							Positional mapping can be performed purly based on the phisical distance between SNPs and genes by providing the maximum distance.
+							Positional mapping can be performed purly based on the physical distance between SNPs and genes by providing the maximum distance.
 							Optionally, functional consequences of SNPs on genes can be selected to map only specific SNPs such as SNPs locating on exonic regions.
-							Note that when functional consequnces are selected, only SNPs locationg on the gene body (distance 0) are mapped to genes except upstream and downstream SNPs which are up to 1kb apart from TSS or TES.">
+							Note that when functional consequences are selected, only SNPs location on the gene body (distance 0) are mapped to genes except upstream and downstream SNPs which are up to 1kb apart from TSS or TES.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
@@ -83,7 +83,7 @@
 					<tr>
 						<td rowspan="2">CADD</td>
 						<td>Perform SNPs filtering based on CADD score.
-							<a class="infoPop" data-toggle="popover" title="CADD score filtering" data-content="Please check this option to filter SNPs based on CADD score and spacify minimum score in the box below.">
+							<a class="infoPop" data-toggle="popover" title="CADD score filtering" data-content="Please check this option to filter SNPs based on CADD score and specify minimum score in the box below.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -92,7 +92,7 @@
 					</tr>
 					<tr>
 						<td>Minimum CADD score (&ge;)
-							<a class="infoPop" data-toggle="popover" title="CADD score" data-content="CADD score is the score of deleteriousness of SNPs. The heigher, the more deleterious. 12.37 is the suggestive threshold to be deleterious. Coding SNPs tend to have high score than non-coding SNPs.">
+							<a class="infoPop" data-toggle="popover" title="CADD score" data-content="CADD score is the score of deleteriousness of SNPs. The higher, the more deleterious. 12.37 is the suggestive threshold to be deleterious. Coding SNPs tend to have high score than non-coding SNPs.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -111,7 +111,7 @@
 					</tr>
 					<tr>
 						<td>Maximum RegulomeDB score (categorical)
-							<a class="infoPop" data-toggle="popover" title="RegulomeDB score" data-content="RegulomeDB score is a categorical score to represent regulatory function of SNPs based on eQTLs and epigenome information. '1a' is the most likely functional and 7 is the least liekly. Some SNPs have 'NA' which are not assigned any score.">
+							<a class="infoPop" data-toggle="popover" title="RegulomeDB score" data-content="RegulomeDB score is a categorical score to represent regulatory function of SNPs based on eQTLs and epigenome information. '1a' is the most likely functional and 7 is the least likely. Some SNPs have 'NA' which are not assigned any score.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -330,7 +330,7 @@
 					</tr>
 					<tr>
 						<td>15-core chromatin state filtering method
-							<a class="infoPop" data-toggle="popover" title="Filtering method for chromatin state" data-content="When multiple tissye/cell types are selected, SNPs will be kept if they have chromatin state lower than the threshold in any of, majority of or all of selected tissue/cell types.">
+							<a class="infoPop" data-toggle="popover" title="Filtering method for chromatin state" data-content="When multiple tissue/cell types are selected, SNPs will be kept if they have chromatin state lower than the threshold in any of, majority of or all of selected tissue/cell types.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -367,7 +367,7 @@
 				</tr>
 				<tr class="eqtlMapOptions">
 					<td>Tissue types
-						<a class="infoPop" data-toggle="popover" title="Tissue types of eQTLs" data-content="This is mandatory parameter for eQTL mapping. Currentlly 44 tissue types from GTEx and two large scale eQTL study of blood cell are available.">
+						<a class="infoPop" data-toggle="popover" title="Tissue types of eQTLs" data-content="This is mandatory parameter for eQTL mapping. Currently 44 tissue types from GTEx and two large scale eQTL study of blood cell are available.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
@@ -580,7 +580,7 @@
 					<tr>
 						<td rowspan="2">CADD</td>
 						<td>Perform SNPs filtering based on CADD score.
-							<a class="infoPop" data-toggle="popover" title="CADD score filtering" data-content="Please check this option to filter SNPs based on CADD score and spacify minimum score in the box below.">
+							<a class="infoPop" data-toggle="popover" title="CADD score filtering" data-content="Please check this option to filter SNPs based on CADD score and specify minimum score in the box below.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -589,7 +589,7 @@
 					</tr>
 					<tr>
 						<td>Minimum CADD score (&ge;)
-							<a class="infoPop" data-toggle="popover" title="CADD score" data-content="CADD score is the score of deleteriousness of SNPs. The heigher, the more deleterious. 12.37 is the suggestive threshold to be deleterious. Coding SNPs tend to have high score than non-coding SNPs.">
+							<a class="infoPop" data-toggle="popover" title="CADD score" data-content="CADD score is the score of deleteriousness of SNPs. The higher, the more deleterious. 12.37 is the suggestive threshold to be deleterious. Coding SNPs tend to have high score than non-coding SNPs.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -608,7 +608,7 @@
 					</tr>
 					<tr>
 						<td>Maximum RegulomeDB score (categorical)
-							<a class="infoPop" data-toggle="popover" title="RegulomeDB score" data-content="RegulomeDB score is a categorical score to represent regulatory function of SNPs based on eQTLs and epigenome information. '1a' is the most likely functional and 7 is the least liekly. Some SNPs have 'NA' which are not assigned any score.">
+							<a class="infoPop" data-toggle="popover" title="RegulomeDB score" data-content="RegulomeDB score is a categorical score to represent regulatory function of SNPs based on eQTLs and epigenome information. '1a' is the most likely functional and 7 is the least likely. Some SNPs have 'NA' which are not assigned any score.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -826,7 +826,7 @@
 					</tr>
 					<tr>
 						<td>15-core chromatin state filtering method
-							<a class="infoPop" data-toggle="popover" title="Filtering method for chromatin state" data-content="When multiple tissye/cell types are selected, SNPs will be kept if they have chromatin state lower than the threshold in any of, majority of or all of selected tissue/cell types.">
+							<a class="infoPop" data-toggle="popover" title="Filtering method for chromatin state" data-content="When multiple tissue/cell types are selected, SNPs will be kept if they have chromatin state lower than the threshold in any of, majority of or all of selected tissue/cell types.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -863,7 +863,7 @@
 				</tr>
 				<tr class="ciMapOptions">
 					<td>Builtin chromatin interaction data
-						<a class="infoPop" data-toggle="popover" title="Buildin Hi-C data" data-content="Hi-C datasets of 21 tissue and cell types from GSE87112 are selectabe as buildin data. Multiple tissue and cell types can be selected.">
+						<a class="infoPop" data-toggle="popover" title="Buildin Hi-C data" data-content="Hi-C datasets of 21 tissue and cell types from GSE87112 are selectable as build-in data. Multiple tissue and cell types can be selected.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
@@ -900,8 +900,8 @@
 				</tr>
 				<tr class="ciMapOptions">
 					<td>Custom chromatin interaction matrices
-						<a class="infoPop" data-toggle="popover" title="Custome chromatin interaction matrices"
-							data-content="Please upload files of custome chromatin interaction matrices (significant loops). The input files have to follow the specific format. Please refer the tutorial for details. THe file name should be '(Name_of_the_data).txt.gz' in which (Name_of_the_data) will be used in the results table.">
+						<a class="infoPop" data-toggle="popover" title="Custom chromatin interaction matrices"
+							data-content="Please upload files of custom chromatin interaction matrices (significant loops). The input files have to follow the specific format. Please refer the tutorial for details. The file name should be '(Name_of_the_data).txt.gz' in which (Name_of_the_data) will be used in the results table.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
@@ -914,7 +914,7 @@
 				</tr>
 				<tr class="ciMapOptions">
 					<td>FDR threshold
-						<a class="infoPop" data-toggle="popover" title="FDR threshold for significant interaction" data-content="Significane of interaction for buildin Hi-C datasets are computed by Fit-Hi-C (see tutorial for details). The default threshold is FDR &le; 1e-6 as suggested by Schmit et al. (2016).">
+						<a class="infoPop" data-toggle="popover" title="FDR threshold for significant interaction" data-content="Significance of interaction for build-in Hi-C datasets are computed by Fit-Hi-C (see tutorial for details). The default threshold is FDR &le; 1e-6 as suggested by Schmit et al. (2016).">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
@@ -926,7 +926,7 @@
 				<tr class="ciMapOptions">
 					<td>Promoter region window
 						<a class="infoPop" data-toggle="popover" title="Promoter region window" data-content="The window of promoter regions are used to overlap TSS of genes with significantly interacted regions with risk loci.
-							By default, promoter region is defined as 250bp upstream and 500bp downsteram of TSS. Genes whoes promoter regions are overlapped with the interacted region are used for gene mapping.">
+							By default, promoter region is defined as 250bp upstream and 500bp downstream of TSS. Genes whose promoter regions are overlapped with the interacted region are used for gene mapping.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
@@ -940,7 +940,7 @@
 				<tr class="ciMapOptions">
 					<td>Annotate enhancer/promoter regions (Roadmap 111 epigenomes)
 						<a class="infoPop" data-toggle="popover" title="Enhancer/promoter regions" data-content="Enhancers are annotated to overlapped candidate SNPs which are also overlapped with significant chromatin interactions (region 1).
-							Promoters are annotated to regions which are significantly ineracted with risk loci (region 2). Dyadic enhancer/promoter regions are annotated for both. Please refer the tutorial for detils.">
+							Promoters are annotated to regions which are significantly interacted with risk loci (region 2). Dyadic enhancer/promoter regions are annotated for both. Please refer the tutorial for details.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
@@ -1107,8 +1107,8 @@
 				</tr>
 				<tr class="ciMapOptions">
 					<td>Filter genes by promoters
-						<a class="infoPop" data-toggle="popover" title="Filter genes by promoters" data-content="Only map to genes whoes promoter regions are overlap with promoters of selected epigenomes. Please select at least one epigenome to enable this option.
-							If this option is not checked, all genes whose promoter reions are overlapped with the interacted regions are mapped.">
+						<a class="infoPop" data-toggle="popover" title="Filter genes by promoters" data-content="Only map to genes whose promoter regions are overlap with promoters of selected epigenomes. Please select at least one epigenome to enable this option.
+							If this option is not checked, all genes whose promoter regions are overlapped with the interacted regions are mapped.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
@@ -1127,7 +1127,7 @@
 					<tr>
 						<td rowspan="2">CADD</td>
 						<td>Perform SNPs filtering based on CADD score.
-							<a class="infoPop" data-toggle="popover" title="CADD score filtering" data-content="Please check this option to filter SNPs based on CADD score and spacify minimum score in the box below.">
+							<a class="infoPop" data-toggle="popover" title="CADD score filtering" data-content="Please check this option to filter SNPs based on CADD score and specify minimum score in the box below.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -1136,7 +1136,7 @@
 					</tr>
 					<tr>
 						<td>Minimum CADD score (&ge;)
-							<a class="infoPop" data-toggle="popover" title="CADD score" data-content="CADD score is the score of deleteriousness of SNPs. The heigher, the more deleterious. 12.37 is the suggestive threshold to be deleterious. Coding SNPs tend to have high score than non-coding SNPs.">
+							<a class="infoPop" data-toggle="popover" title="CADD score" data-content="CADD score is the score of deleteriousness of SNPs. The higher, the more deleterious. 12.37 is the suggestive threshold to be deleterious. Coding SNPs tend to have high score than non-coding SNPs.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -1155,7 +1155,7 @@
 					</tr>
 					<tr>
 						<td>Maximum RegulomeDB score (categorical)
-							<a class="infoPop" data-toggle="popover" title="RegulomeDB score" data-content="RegulomeDB score is a categorical score to represent regulatory function of SNPs based on eQTLs and epigenome information. '1a' is the most likely functional and 7 is the least liekly. Some SNPs have 'NA' which are not assigned any score.">
+							<a class="infoPop" data-toggle="popover" title="RegulomeDB score" data-content="RegulomeDB score is a categorical score to represent regulatory function of SNPs based on eQTLs and epigenome information. '1a' is the most likely functional and 7 is the least likely. Some SNPs have 'NA' which are not assigned any score.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
@@ -1354,7 +1354,7 @@
 					</tr>
 					<tr>
 						<td>15-core chromatin state filtering method
-							<a class="infoPop" data-toggle="popover" title="Filtering method for chromatin state" data-content="When multiple tissye/cell types are selected, SNPs will be kept if they have chromatin state lower than the threshold in any of, majority of or all of selected tissue/cell types.">
+							<a class="infoPop" data-toggle="popover" title="Filtering method for chromatin state" data-content="When multiple tissue/cell types are selected, SNPs will be kept if they have chromatin state lower than the threshold in any of, majority of or all of selected tissue/cell types.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
