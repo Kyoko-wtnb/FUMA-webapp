@@ -46,7 +46,7 @@
 <p><strong>MAGMA Tissue Expression Analysis (<span style="color: blue;">FUMA v1.1.0</span>)</strong><br/>
 	To test the (positive) relationship between highly expressed genes in a specific tissue and genetic associations, gene-property analysis is performed using average expression of genes per tissue type as a gene covariate.
 	Gene expression values are log2 transformed average RPKM per tissue type after winsorized at 50 based on GTEx RNA-seq data. Tissue expression analysis is performed for 30 general tissue types and 53 specific tissue types separately.
-	MAGMA was performed using the result of gene analysis (gene-based P-value) and tested for oneside (greater) with conditioning on average expression across all tissue types.
+	MAGMA was performed using the result of gene analysis (gene-based P-value) and tested for one side (greater) with conditioning on average expression across all tissue types.
 </p>
 <br/>
 <img src="{!! URL::asset('/image/snp2geneGWplot.png') !!}" style="width:80%"/><br/><br/>

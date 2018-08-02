@@ -7,8 +7,8 @@
 
 		<div class="col-md-7 col-xs-7 col-sm-7" style="text-align:center;">
 			<h4><span style="color: #00004d">Functional consequences of SNPs on genes</span>
-			<a class="infoPop" data-toggle="popover" data-content="The histogram displays the number of SNPs (all SNPs in LD of lead SNPs) which have corresponding functional annotaiton assigned by ANNOVAR.
-				SNPs which have more than one dirrent annotations are counted for each annotation.">
+			<a class="infoPop" data-toggle="popover" data-content="The histogram displays the number of SNPs (all SNPs in LD of lead SNPs) which have corresponding functional annotation assigned by ANNOVAR.
+				SNPs which have more than one different annotations are counted for each annotation.">
 				<i class="fa fa-question-circle-o fa-lg"></i>
 			</a>
 			</h4>
@@ -34,7 +34,7 @@
 	<br/>
 	<div style="text-align:center;">
 		<h4><span style="color: #00004d">Summary per genomic risk locus</span>
-		<a class="infoPop" data-toggle="popover" data-content="The histgrams dispaly summary results per genomic locus. Note that genomic loci could contain more than one independent lead SNPs.">
+		<a class="infoPop" data-toggle="popover" data-content="The histograms display summary results per genomic locus. Note that genomic loci could contain more than one independent lead SNPs.">
 			<i class="fa fa-question-circle-o fa-lg"></i>
 		</a>
 		</h4>

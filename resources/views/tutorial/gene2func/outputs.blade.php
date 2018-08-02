@@ -3,7 +3,7 @@
 	<h4><strong>1. Summary of input genes and download files</strong></h4>
 	<p>
 		1) <strong>Summary of input genes</strong><br/>
-		The table summarized the input genes and background genes.
+		The table summarised the input genes and background genes.
 		Input genes which are not used in the GENE2FUNC analyses due to lack of matching gene ID
 		are also listed.
 		Since the primary gene ID of FUMA is Ensembl ID and not all Ensembl IDs are mapped to unique

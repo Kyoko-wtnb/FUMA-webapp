@@ -38,7 +38,7 @@ $(document).ready(function(){
 	</p>
 	<p>
 		Please post any questions, suggestions and bug reports on Google Forum: <a target="_blank" href="https://groups.google.com/forum/#!forum/fuma-gwas-users">FUMA GWAS users</a>.<br/>
-		If you would like to be in the mailing list, please send an email to k.watanabe@vu.nl. Only major updates will be announced through email (low trafic).
+		If you would like to be in the mailing list, please send an email to k.watanabe@vu.nl. Only major updates will be announced through email (low traffic).
 	</p>
 	<p>
 		<strong>Citation:</strong><br/>

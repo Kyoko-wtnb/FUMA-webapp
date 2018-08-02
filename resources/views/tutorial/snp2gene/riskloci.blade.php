@@ -1,5 +1,5 @@
 <h3 id="riskloci">Risk loci and lead SNPs</h3>
-In this section, "Genomic risk locai", "lead SNPs" and
+In this section, "Genomic risk loci", "lead SNPs" and
 "Independent significant SNPs (Ind. sig. SNPs)" are explained in more detail.
 <div style="padding-left: 40px">
 	<h4><strong>1. Independent significant SNPs (Ind. sig. SNPs)</strong></h4>
@@ -26,7 +26,7 @@ In this section, "Genomic risk locai", "lead SNPs" and
 	Then, ind. sig. SNPs which are closer than the user defined distance (250 kb by default) are merged into one genomic risk locus.
 	The distance between two LD blocks of two ind. sig. SNPs is the distance between the closest SNPs
 	(which are in LD of the ind. sig. SNPs at user defined r<sup>2</sup>) from each LD block.<br/>
-	Each locus is represented by the top lead SNP which has the minimum P-value in tha locus.
+	Each locus is represented by the top lead SNP which has the minimum P-value in the locus.
 	<h4><strong>4. Candidate SNPs (SNPs in LD of ind. sig. SNPs)</strong></h4>
 	Candidate SNPs are SNPs that are in LD with any of the ind. sig. SNPs at the user defined r<sup>2</sup>.
 	Candidate SNPs, together with the ind. sig. SNPs, are the SNPs that are used to prioritize genes.

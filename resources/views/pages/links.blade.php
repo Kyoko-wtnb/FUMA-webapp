@@ -34,7 +34,7 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 				<td>5 December 2016</td>
 				<td>
-					1000 Genomes Project Consortium, et al. 2015. Aglobal reference for human genetic variation. <i>Nature.</i> <b>526</b>, 68-74.<br/>
+					1000 Genomes Project Consortium, et al. 2015. A global reference for human genetic variation. <i>Nature.</i> <b>526</b>, 68-74.<br/>
 				<a href="https://www.ncbi.nlm.nih.gov/pubmed/26432245" target="_blank">PMID:26432245</a>
 				</td>
 			</tr>

@@ -14,8 +14,8 @@
 			<option value="norm">Average of normalized expression per label (zero mean across samples)</option>
 		</select>
 		<a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="
-			<b>Average expression per lavel</b>:
-			This is an average of log2 transformed expresion value (e.g. RPKM and TPM) per label (e.g. tissue type or developemental stage).
+			<b>Average expression per label</b>:
+			This is an average of log2 transformed expression value (e.g. RPKM and TPM) per label (e.g. tissue type or developmental stage).
 			RPKM and TPM were wisolized at 50.
 			Darker red means higher expression of that gene, compared to a darker blue color.<br/>
 			<b>Average of normalized expression per label</b>:

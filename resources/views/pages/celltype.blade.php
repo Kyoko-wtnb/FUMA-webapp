@@ -63,7 +63,7 @@ var loggedin = "{{ Auth::check() }}";
 						<h4>MAGMA gene analysis result</h4>
 						1. Select from existing SNP2GENE job<br/>
 						<span class="info"><i class="fa fa-info"></i>
-							You can only select one of the succeeded SNP2GENE jobs in your acount.<br/>
+							You can only select one of the succeeded SNP2GENE jobs in your account.<br/>
 							When you select a job ID, FUMA will automatically check if MAGMA was performed in the selected job.
 						</span>
 						<select class="form-control" id="s2gID" name="s2gID" onchange="CheckInput();">
@@ -71,7 +71,7 @@ var loggedin = "{{ Auth::check() }}";
 						<br/>
 						2. Upload your own genes.raw file<br/>
 						<span class="info"><i class="fa fa-info"></i>
-							You can only upload a file with extention "genes.raw"
+							You can only upload a file with extension "genes.raw"
 							which is an output of MAGMA gene analysis.
 						</span>
 						<input type="file" class="form-control-file" name="genes_raw" id="genes_raw" onchange="CheckInput();"/>

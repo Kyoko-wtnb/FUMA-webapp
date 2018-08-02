@@ -6,7 +6,7 @@
 			<h4><strong>1. Prepare jobs in SNP2GENE and GENE2FUNC</strong></h4>
 			You can publish any of existing SNP2GENE job in your account but only
 			the ones without any error.
-			MAGMA results are optional but it's highly recomennded to include them too.
+			MAGMA results are optional but it's highly recommended to include them too.
 			You can also publish GENE2FUNC results together with SNP2GENE results only if
 			the GENE2FUNC job is performed for mapped genes from the corresponding SNP2GENE job.
 
@@ -44,9 +44,9 @@
 						<td>Title</td>
 						<td>
 							Title of the published job should be self-descriptive,
-							althought it is auto filled by the title of the selected SNP2GENE job.
+							although it is auto filled by the title of the selected SNP2GENE job.
 							If the title is not clear enough,
-							the developper might contact you to provide a sufficient information.
+							the developer might contact you to provide a sufficient information.
 						</td>
 					</tr>
 					<tr>
@@ -76,7 +76,7 @@
 							This is the publication where the selected SNP2GENE job is described (not the reference to the summary statistics).
 							This can be any format as long as users are able to find the publication.
 							Please provide PubMed ID if possible (e.g. PMID: 29184056).
-							If you don't have publication yet, please let the developper know once the publication becomes available.
+							If you don't have publication yet, please let the developer know once the publication becomes available.
 							You can also provide preprint DOI.
 						</td>
 					</tr>
@@ -90,7 +90,7 @@
 						<td>Reference of summary statistics</td>
 						<td>
 							This should be the original publication of the summary statistics.
-							This can be same as the pulication above when a new GWAS result is prensented in the publication.
+							This can be same as the publication above when a new GWAS result is presented in the publication.
 						</td>
 					</tr>
 					<tr>
@@ -98,7 +98,7 @@
 						<td>
 							You can provide any additional information here (max 300 characters).
 							For example, when there are multiple summary statistics available from the same study,
-							you should specify which result this is refering to.
+							you should specify which result this is referring to.
 						</td>
 					</tr>
 				</tbody>
@@ -114,20 +114,20 @@
 
 		<h3>Modify/delete published result</h3>
 		<div style="margin-left: 40px;">
-			Modification and deletion of published jobs are only possible by the developper.
-			If you need to modify/delete any of your published job, please contact the developper
+			Modification and deletion of published jobs are only possible by the developer.
+			If you need to modify/delete any of your published job, please contact the developer
 			(Kyoko Watanabe: k.watanabe@vu.nl) by the matched email.
 			Please also provide id of the published job together.<br/>
 			<span class="info"><i class="fa fa-info"></i> Modification/deletion is only processed when
 			the request is made from the matched email address.</span>
 		</div>
 
-		<h3>Users' reponsibility</h3>
+		<h3>Users' responsibility</h3>
 		<div style="margin-left: 40px;">
 			We do not take any responsibility for your publihed results.
 			Any question specific to a published result from other users
 			is required to answer by the user who published the result
-			not the FUMA developper.
+			not the FUMA developer.
 		</div>
 
 		<h3>What other users can do?</h3>

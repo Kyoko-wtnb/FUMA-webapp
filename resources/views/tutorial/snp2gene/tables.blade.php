@@ -83,7 +83,7 @@
 			<li><strong>IndSigSNP</strong> : rsID of the independent significant SNP which has the maximum r2 with the SNP.</li>
 			<li><strong>Genomic locus</strong> : Index of the genomic risk loci matching with "Genomic risk loci" table.</li>
 			<li><strong>nearestGene</strong> : The nearest Gene of the SNP based on ANNOVAR annotations.
-				Note that ANNOVAR annotates "consequence" function by prioritizing the most deleterious annotaion for SNPs which are locating a genomic region where multiple genes are obverlapped.
+				Note that ANNOVAR annotates "consequence" function by prioritizing the most deleterious annotation for SNPs which are locating a genomic region where multiple genes are obverlapped.
 				Genes are ecoded in symbol, if it is available otherwise Ensembl ID.
 				Genes include all transcripts from Ensembl gene build 85 including non-protein coding genes and RNAs.</li>
 			<li><strong>dist</strong> : Distance to the nearest gene. SNPs which are locating in the gene body or 1kb up- or down-stream of TSS or TES have 0.</li>
@@ -92,7 +92,7 @@
 			<li><strong>RDB</strong> : RegulomeDB score which is a categorical score (from 1a to 7). 1a is the highest score for SNPs with the most biological evidence to be a regulatory element.</li>
 			<li><strong>minChrState</strong> : The minimum 15-core chromatin state across 127 tissue/cell type.</li>
 			<li><strong>commonChrState</strong> : The most common 15-core chromatin state across 127 tissue/cell types.</li>
-			<li><strong>posMapFilt</strong> : Whether the SNP was used for eqtl mapping or not. 1 is used, otherwise 0. When eqtl mapping is not performed, all SNPs have 0.</li>
+			<li><strong>posMapFilt</strong> : Whether the SNP was used for eQTL mapping or not. 1 is used, otherwise 0. When eqtl mapping is not performed, all SNPs have 0.</li>
 		</ul>
 	</li>
 	<span class="info"><i class="fa fa-info"></i>
@@ -265,7 +265,7 @@
 			<li><strong>extMHC</strong> : user defined MHC region if provided, NA otherwise</li>
 			<li><strong>genetype</strong> : All selected gene type.</li>
 			<li><strong>leadP</strong> : the maximum threshold of P-value to be lead SNP</li>
-			<li><strong>r2</strong> : the minimum threshold for SNPs to ne in LD of the lead SNPs</li>
+			<li><strong>r2</strong> : the minimum threshold for SNPs to be in LD of the lead SNPs</li>
 			<li><strong>gwasP</strong> : the maximum threshold of P-value to be candidate SNP</li>
 			<li><strong>pop</strong> : The population of reference panel</li>
 			<li><strong>MAF</strong> : the minimum minor allele frequency based on 1000 genome reference of given population</li>

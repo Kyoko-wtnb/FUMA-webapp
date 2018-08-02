@@ -1,14 +1,14 @@
 <div id="celltype" class="sidePanel container" style="padding-top:50px;">
 	<h2>Cell type specificity analyses with scRNA-seq</h2>
 	<div style="margin-left: 40px;">
-		<h3>How to perfoem cell type specificity analysis on FUMA</h3>
+		<h3>How to perform cell type specificity analysis on FUMA</h3>
 		We use MAGMA gene-property analysis to test cell type specificity of phenotype with GWAS summary statistics.
 		As an input, it requires XXX.genes.raw file from MAGMA gene analysis.
 		You can either select your existing SNP2GENE job or upload MAGMA output file you run by yourself.
 		FUMA uses Ensembl gene ID for all scRNA-seq data.
 		If the input file contains different gene ID or gene symbols, FUMA will map to Ensembl gene ID.
 		To do so, please uncheck the option right below the file selection, "Ensembl gene ID is used in the provided file.".
-		Otherwise MAGMA will resutn an error due to mismatch of gene ID.
+		Otherwise MAGMA will result in an error due to mismatch of gene ID.
 		<br/>
 
 		<h3>MAGMA gene-property analysis with scRNA-seq</h3>
@@ -19,7 +19,7 @@
 		$$Z \sim \beta_0 + E_c\beta_E + A\beta_A + B\beta_B + \epsilon$$
 
 		where \(Z\) is a gene-based Z-score converted from the gene-based P-value,
-		\(B\) is a matrix of several techinical confounders included by default.
+		\(B\) is a matrix of several technical confounders included by default.
 
 		\(E_c\) is the gene expression value of a testing cell type c and \(A\) is the
 		average expression across cell types in a data set, defined as follows:
@@ -39,7 +39,7 @@
 		where tissue specific expression was used instead of cell specific expression.<br/>
 		<br/>
 		The file format of scRNA-seq data set is, Ensembl gene ID in the first column with column name "GENE",
-		N columns for per cell type exverage expression and average expression across
+		N columns for per cell type average expression and average expression across
 		cell types with column name "Average".
 		MAGMA gene-property analysis is run with the following command, <br/>
 		<code class="codebox">
@@ -50,10 +50,10 @@
 		<br/>
 
 		<h3>Data sets</h3>
-		Each data set available on FUMA is described detils.
+		Each data set available on FUMA is described details.
 		Scripts for pre-processing are available on github repository at
 		<a target="_blank" href="https://github.com/Kyoko-wtnb/FUMA_scRNA_data">https://github.com/Kyoko-wtnb/FUMA_scRNA_data</a>.
-		Processed data can be also downloaded from thie repostitory (so you can run it by yourself!!).
+		Processed data can be also downloaded from this repository (so you can run it by yourself!!).
 		<br/>
 		Pre-process was performed as the following steps. Please see each script for more details.
 		<ol>
@@ -83,7 +83,7 @@
 			<thead>
 				<th>Data name</th>
 				<th>Link</th>
-				<th>Descriotion</th>
+				<th>Description</th>
 				<th>Reference</th>
 				<th>Last update</th>
 			</thead>
@@ -105,7 +105,7 @@
 						In total, 13 data sets were created (1 for cell types from all tissues/organs together and 12 for each tissue/organ separately).
 					</td>
 					<td>The Tabula Muris Consortium et al. 2018.
-						Single-cell transcriptomic characterization of 20 organs and tissues from individual mice creates a Tabula Mruis.
+						Single-cell transcriptomic characterization of 20 organs and tissues from individual mice creates a Tabula Muris.
 						<i>bioRxiv.</i>
 						<a target="_blank" href="https://www.biorxiv.org/content/early/2018/03/29/237446">doi: httos://doi.org/10.1101/237446</a>
 					</td>
@@ -119,7 +119,7 @@
 					</td>
 					<td>Multiple tissues/organs of mouse samples.<br/>
 						A file "Figure2-batch-removed.txt.gz" was used in which batch was removed and
-						cells were alread QCed.
+						cells were already QCed.
 						61,637 cells were available and not additional filtering was performed.
 						From 25,133 genes, 15,640 genes were mapped to hs ENSG ID.
 						In total 37 data sets were created as the following;
@@ -127,7 +127,7 @@
 						2) only adult mouse samples (437 cell types from 18 tissue),
 						3) only embryo samples (including fetal tissues, 137 cell types),
 						4) only neonatal samples (108 cell types),
-						5-37) per tissue per sample type (adult, emmbryo, neonatal and cell line, 33 combinatioin in total).
+						5-37) per tissue per sample type (adult, embryo, neonatal and cell line, 33 combination in total).
 					</td>
 					<td>Han et al. 2018.
 						Mapping the Mouse Cell Atlas by Microwell-Seq. <i>Cell.</i> <b>172</b>, 1091-1107.<br/>
@@ -143,12 +143,12 @@
 						VISp: <a target="_blank" href="https://portals.broadinstitute.org/single_cell#study-a-transcriptomic-taxonomy-of-adult-mouse-lateral-geniculate-complex-lgd">https://portals.broadinstitute.org/single_cell#study-a-transcriptomic-taxonomy-of-adult-mouse-lateral-geniculate-complex-lgd</a>
 					</td>
 					<td>Mouse brain samples.<br/>
-						For each data, level 1 and level 2 cell types were procesed separately.
+						For each data, level 1 and level 2 cell types were processed separately.
 						<b>ALM</b>: 1,301 cells were available. From 45,764 genes, 16,068 genes were mapped to unique hs ENSG ID.<br/>
 						<b>LGp</b>: Cells with label "Outlier" were excluded. From 1,827 cells, 1,810 cell were used. From 45,761 genes, 15,837 genes were mapped to unique hs ENSG ID.<br/>
 						<b>VISp</b>: 1,679 cells were available. From 24,057 genes, 15,097 genes were mapped to unique hs ENSG ID.
 					</td>
-					<td>(For VISp dat set)<br/>
+					<td>(For VISp data set)<br/>
 						Tasic et al. 2016. Adult mouse cortical cell taxonomy revealed by single cell transcriptomics.
 						<i>Nat. Neurosci.</i> <b>19</b>, 335-346.<br/>
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/26727548">PMID: 26727548</a>
@@ -163,7 +163,7 @@
 					<td>Mouse brain samples.<br/>
 						"Metacells" data downloaded from DropViz website was used
 						which is the aggregated data per 565 sub-cluster not the individual cell level UMI counts.
-						The UMI was the sum of all the cells in a subcluster, tehrefore we converted to CPM.
+						The UMI was the sum of all the cells in a subcluster, therefore we converted to CPM.
 						In the annotation of each sub-cluster, "class" column was used as level 1 cell type and subcluster was used as level 2.
 						From 32,307 genes, 16,097 genes were mapped to hs ENSG ID.
 					</td>
@@ -182,10 +182,10 @@
 					</td>
 					<td>Human and mouse brain samples.<br/>
 						<b>Human</b>: Expression data was downloaded from GTEx website (also available from Broadinstitute Single Cell Portal).
-						Cells with cluter 1-14 or 16 were used since those clusters were assigned in the original study.
+						Cells with cluster 1-14 or 16 were used since those clusters were assigned in the original study.
 						The cell type label was manually assigned to the cluster index based on the figure 2a in the original paper.
 						From 14,963 cells, 14,137 cells were used. From 32,111 genes, 31,852 genes were mapped to ENSG ID.<br/>
-						<b>Mouse</b>: Cells with label "Unclassified", "Doublets" or "ChP" were excluded as they are not assigned in the orignal study.
+						<b>Mouse</b>: Cells with label "Unclassified", "Doublets" or "ChP" were excluded as they are not assigned in the original study.
 						From 13,313 cells, 11,148 cells were used. From 17,3080 genes, 13,335 genes were mapped to hs ENSG ID.
 					</td>
 					<td>Habib et al. 2017. Massively parallel single-nucleus RNA-seq with DroNc-seq.
@@ -217,11 +217,11 @@
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59739">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE59739</a>
 					</td>
 					<td>Mouse brain samples (dorsal root ganglion L4-L6 from 6-8 weeks old mice).<br/>
-						Expression data was obtained from GEO and annotaion of each cell was extracted from family soft file.
+						Expression data was obtained from GEO and annotation of each cell was extracted from family soft file.
 						Cells with label NF, NP, PEP or TH in Level 1 cell types were used to be consistent with the original study.
 						From 865 cells in the expression data, 622 cells were used.
 						From 25,333 genes, 15,084 genes were mapped to hs ENSG ID.
-						Per cell type average exoression was computed for level 1, 2 and 3 separately.
+						Per cell type average expression was computed for level 1, 2 and 3 separately.
 					</td>
 					<td>Usoskin et al. 2015. Unbiased classification of sensory neuron types by large-scale single-cell RNS sequencing.
 						<i>Nat. Neurosci.</i> <b>18</b>, 145-153.<br/>
@@ -266,12 +266,12 @@
 					<td style="word-wrap:break-word;word-break:break-all;">
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE78845">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE78845</a>
 					</td>
-					<td>Mouse brain samples (stellate and throacic sympathetic ganglia from postnatal day 27-33 mice).<br/>
-						Cells with label "unclissified" were excluded.
+					<td>Mouse brain samples (stellate and thoracic sympathetic ganglia from postnatal day 27-33 mice).<br/>
+						Cells with label "unclassified" were excluded.
 						From 298 cells, 213 cells were used.
 						From 16,892 genes, 13,804 genes were mapped to hs ENSG ID.
 					</td>
-					<td>Furlan et al. 2016. Visceral motor neuron diversity delineates a cellular bisis for nipple-and plio-erection muscle control.
+					<td>Furlan et al. 2016. Visceral motor neuron diversity delineates a cellular basis for nipple-and plio-erection muscle control.
 						<i>Nat. Neurosci.</i> <b>19</b>, 1331-1340.<br/>
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/27571008">https://www.ncbi.nlm.nih.gov/pubmed/27571008</a>
 					</td>
@@ -282,10 +282,10 @@
 					<td style="word-wrap:break-word;word-break:break-all;">
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE76381">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE76381</a>
 					</td>
-					<td> Human brain samples (vetral midbtain from 6-11 weeks embryos) and mouse brain samples (ventral midbrain from E11.5-E18.5 embryos).<br/>
-						Only humna embryo (1,977 cells) and mouse embryo (1,907 cells) data set were used.
+					<td> Human brain samples (ventral midbrain from 6-11 weeks embryos) and mouse brain samples (ventral midbrain from E11.5-E18.5 embryos).<br/>
+						Only human embryo (1,977 cells) and mouse embryo (1,907 cells) data set were used.
 						Cells with label "Unk" (unknown) were excluded.
-						For human, from 1,977 cells, 1695 celll were used. From 19,531 genes, 16,885 genes were mapped to ENSG ID.
+						For human, from 1,977 cells, 1695 cell were used. From 19,531 genes, 16,885 genes were mapped to ENSG ID.
 						For mouse, from 1,907 cells, 1,518 cells were used. From 24,378 genes, 15,826 genes were mapped to hs ENSG ID.
 					</td>
 					<td>La Manno et al. 2016. Molecular diversity of midbrain development in mouse, human, and stem cells.
@@ -319,12 +319,12 @@
 					<td style="word-wrap:break-word;word-break:break-all;">
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE101601">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE101601</a>
 					</td>
-					<td>Human brain samples (Temporal cortex from post-mortem samples) and mouse brain smaples (Somatosensory cortex from postnatal days 21-37 mice).<br/>
+					<td>Human brain samples (Temporal cortex from post-mortem samples) and mouse brain samples (Somatosensory cortex from postnatal days 21-37 mice).<br/>
 						Human (2,028 cells) and mouse (2,192 cells) data sets were processed separately.
 						For human, from 28,274 genes, 21,459 genes were mapped to ENSG ID.
 						For mouse, from 24,339 genes, 15,826 genes were mapped to hs ENSG ID.
 					</td>
-					<td>Hochgerner et al. 2017. STRT-seq-2i: dual-index 5' single cell and nucleus RNA0seq on an addressable microwell array.
+					<td>Hochgerner et al. 2017. STRT-seq-2i: dual-index 5' single cell and nucleus RNA-seq on an addressable microwell array.
 						<i>Sci. Rep.</i> <b>7</b>: 16327.<br/>
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/29180631">PMID: 29180631</a>
 					</td>
@@ -337,11 +337,11 @@
 					</td>
 					<td>Mouse brain samples (hypothalamus from postnatal days 14-28 mice).<br/>
 						Only 2881 cells were available in the expression file,
-						though it was mentioned that 3131 cells in the paper.
+						though it was mentioned that 3131 cells in the original paper.
 						From 24,341 genes, 15,826 genes were mapped to hs ENSG ID.
 						Per cell type average expression was computed for level 1 and 2 separately.
 						Level 2 label was only available for neurons.
-						From 898 neurons, 126 cells with lebel 2 label "uc" (unclassified) were excluded.
+						From 898 neurons, 126 cells with level 2 label "uc" (unclassified) were excluded.
 					</td>
 					<td>Romanov et al. 2017. Molecular interrogation of hypothalamic organization reveals distinct dopamine neuronal subtypes.
 						<i>Nat. Neurosci.</i> <b>20</b>, 176-188.<br/>
@@ -354,7 +354,7 @@
 					<td style="word-wrap:break-word;word-break:break-all;">
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE67602">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE67602</a>
 					</td>
-					<td>Mouse epidemis from dorsal skin (~8 weeks).<br/>
+					<td>Mouse epidermis from dorsal skin (~8 weeks).<br/>
 						1,422 cells were available. From 25,932 genes, 15,802 genes were mapped to hs ENSG.
 					</td>
 					<td>Joost et al. 2016. Single-cell transcriptomics reveals that differentiation and spatial signatures shape epidermal and hair follicle heterogeneity.
@@ -368,7 +368,7 @@
 					<td style="word-wrap:break-word;word-break:break-all;">
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103840">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103840</a>
 					</td>
-					<td>Mouse brain samples (dorsal horn fomr 3-4 weeks old mice).<br/>
+					<td>Mouse brain samples (dorsal horn from 3-4 weeks old mice).<br/>
 						1,545 cells were available. From 24,378 genes, 15,826 genes were mapped to hs ENSG ID.
 					</td>
 					<td>Haring et al. 2018. Neuronal atlas of the dorsal horn defines its architecture and links sensory input to transcriptional cell types.
@@ -382,7 +382,7 @@
 					<td style="word-wrap:break-word;word-break:break-all;">
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87544">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87544</a>
 					</td>
-					<td>Mouse brain samples (hypothalamus fomr 8-10 weeks l=old mice).<br/>
+					<td>Mouse brain samples (hypothalamus from 8-10 weeks l=old mice).<br/>
 						From 14,437 cells, 6,507 cells with condition "Normal" were extracted.
 						Cells with label "zothers" were further excluded resulted in 5,350 cells.
 						To be consistent with the original study, cells with <=2000 genes expressed (0 expression) were excluded.
@@ -409,7 +409,7 @@
 						<b>GSE98816</b>: 3,186 cells were available. From 19,937 genes, 15,302 genes were mapped to hs ENSG ID.<br/>
 						<b>GSE92235</b>: 1,504 cells were available. From 21,948 genes, 15,801 genes were mapped to hs ENSG ID.
 					</td>
-					<td>Vanlandewijck et al. 2018. A molecular atlas of cell types and xonation in the brain vasculature.
+					<td>Vanlandewijck et al. 2018. A molecular atlas of cell types and zonation in the brain vasculature.
 						<i>Nature.</i> <b>554</b>, 475-480.<br/>
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/29443965">PMID: 29443965</a>
 					</td>
@@ -425,7 +425,7 @@
 						Cells with label "unsure" was defined as "PP" in the original study.
 						From 23,465 genes, 20,706 genes were mapped to hs ENSG ID.
 					</td>
-					<td>Enge et al. 2017. Single-cell analysis of human pancreas reveals transcriptional signatures of aging and somatic mutation patterns.
+					<td>Enge et al. 2017. Single-cell analysis of human pancreas reveals transcriptional signatures of ageing and somatic mutation patterns.
 						<i>Cell.</i> <b>171</b>, 321-330.<br/>
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/28965763">PMID: 28965763</a>
 					</td>
@@ -455,7 +455,7 @@
 					</td>
 					<td>Mouse brain samples (striatum from 5-7 weeks old mice).<br/>
 						Only microfluid data was used since FACS data was limited to neurons.
-						From 1,208 cells, 705 cells from icrofluid were used.
+						From 1,208 cells, 705 cells from microfluid were used.
 						From 18,840 genes, 14,189 genes were mapped to hs ENSG ID.
 					</td>
 					<td>Gokce et al. 2016. Cellular taxonomy of the mouse striatum as revealed by single-cell RNA-seq.
@@ -473,7 +473,7 @@
 						957 cells were available.
 						From, 20.689 genes, 17,035 genes were mapped to hs ENSG ID.
 					</td>
-					<td>Breton et al. 2016. Human dendritic cells (DCs) are derived from distinct circulating precursors that are precomited to become CD1c+ or CD141+ DCs.
+					<td>Breton et al. 2016. Human dendritic cells (DCs) are derived from distinct circulating precursors that are precommitted to become CD1c+ or CD141+ DCs.
 						<i>J. Exp. Med.</i> <b>213</b>, 2861-2870.<br/>
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/27864467">PMID: 27864467</a>
 					</td>
@@ -485,7 +485,7 @@
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100597">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE100597</a>
 					</td>
 					<td>Mouse embryos (E3.5, E4.5, E5.5 and E6.5).<br/>
-						Develpmental stage was used as cell label.
+						Developmental stage was used as cell label.
 						721 cells were available. From 24,83 genes, 14,513 genes were mapped to hs ENSG ID.
 					</td>
 					<td>Mohammed et al. 20174. Single-cell landscape of transcriptional heterogeneity and cell fate decisions during mouse early gastrulation.
@@ -551,7 +551,7 @@
 						<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE67835">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE67835</a>
 					</td>
 					<td>Human brain samples (cortex from adult and fetal samples).<br/>
-						Two data sets with and wihtout fetal sample were created.
+						Two data sets with and without fetal sample were created.
 						466 cells were available (of which 135 cells were fetal samples).
 						From 22,088 genes, 19,749 genes were mapped to ENSG ID.
 					</td>
