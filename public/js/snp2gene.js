@@ -91,6 +91,7 @@ $(document).ready(function(){
 		cur.prev().prop('selected', total);
 	});
 
+	console.log(status)
 	if(status.length==0){
 	}else if(status=="fileFormatGWAS"){
 		$('a[href="#newJob"]').trigger('click');
@@ -107,6 +108,13 @@ $(document).ready(function(){
 		$('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
 		+'<b>Provided file (Pre-defined genomic regions) format was not valid. Only plain text files (with any extention) is acceptable.</b>'
 		+'</div>');
+	}else if(status=="FullJobs"){
+		swal({
+			title: "To many jobs",
+			text: "You have more than 50 jobs queued/running. To aboid the FUMA server to be occupied by a single user, please wait until some of your jobs are done. Thank you for your cooperation.",
+			type: "warning",
+			closeOnConfirm: true,
+		});
 	}else{
 		$('#annotPlotSubmit').attr("disabled", true);
 		$('#CheckAnnotPlotOpt').html('<div class="alert alert-danger">Please select either lead SNP or genomic risk loci to plot. If you haven\'t selected any row, please click one of the row of lead SNP or genomic risk loci table.</div>');

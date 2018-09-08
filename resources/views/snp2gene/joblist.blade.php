@@ -41,7 +41,7 @@
 </div>
 
 <!-- Modal for publish results -->
-<div class="modal fade", id="modalPublish" rolw="dialog">
+<div class="modal fade" id="modalPublish" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header"><h4><strong>Publish your results</strong></h4></div>

@@ -156,7 +156,7 @@ if(nrow(ci)==0){
 	if(length(queryHits(overlap))==0){
 		tmp_genes <- data.frame(Group.1=NA, x=NA)
 	}else if(length(queryHits(overlap))==1){
-		tmp_genes <- data.frame(Group.1=queryHits(overlap), x=genes$ensembl_gene_id[subjectHits(overlp)], stringsAsFactors=F)
+		tmp_genes <- data.frame(Group.1=queryHits(overlap), x=genes$ensembl_gene_id[subjectHits(overlap)], stringsAsFactors=F)
 	}else{
 		tmp_genes <- aggregate(subjectHits(overlap), list(queryHits(overlap)), function(x){paste(genes$ensembl_gene_id[x], collapse=":")})
 	}

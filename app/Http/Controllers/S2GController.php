@@ -139,31 +139,34 @@ class S2GController extends Controller
 	}
 
 	public function newJob(Request $request){
+		$date = date('Y-m-d H:i:s');
+		$jobID;
+		$filedir;
+		$email = $this->user->email;
+		// $njobs = collect(DB::select('SELECT jobID FROM SubmitJobs WHERE email=? AND (status="NEW" OR status="QUEUED" OR status="RUNNING")', [$email]))->count();
+		// if($njobs>10){
+		// 	return view('pages.snp2gene', ['id' => null, 'status'=>'FullJobs', 'page'=>'snp2gene', 'prefix'=>'jobs']);
+		// }
 		// check file type
 		if($request -> hasFile('GWASsummary')){
 			$type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
 			if($type != "text/plain" && $type != "application/zip" && $type != "application/x-gzip"){
 				$jobID = null;
-				return view('pages.snp2gene', ['id' => $jobID, 'status'=>'fileFormatGWAS', 'page'=>'snp2gene', 'prefix'=>'jobs']);
+				return view('pages.snp2gene', ['id' => null, 'status'=>'fileFormatGWAS', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 			}
 		}
 		if($request -> hasFile('leadSNPs')){
 			if(mime_content_type($_FILES["leadSNPs"]["tmp_name"])!="text/plain"){
 				$jobID = null;
-				return view('pages.snp2gene', ['id' => $jobID, 'status'=>'fileFormatLead', 'page'=>'snp2gene', 'prefix'=>'jobs']);
+				return redirect('pages.snp2gene')->with(['id' => null, 'status'=>'fileFormatLead', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 			}
 		}
 		if($request -> hasFile('regions')){
 			if(mime_content_type($_FILES["regions"]["tmp_name"])!="text/plain"){
 				$jobID = null;
-				return view('pages.snp2gene', ['id' => $jobID, 'status'=>'fileFormatRegions', 'page'=>'snp2gene', 'prefix'=>'jobs']);
+				return view('pages.snp2gene', ['id' => null, 'status'=>'fileFormatRegions', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 			}
 		}
-
-		$date = date('Y-m-d H:i:s');
-		$jobID;
-		$filedir;
-		$email = $this->user->email;
 
 		if($request->has("NewJobTitle")){
 			$jobtitle = $request -> input('NewJobTitle');
