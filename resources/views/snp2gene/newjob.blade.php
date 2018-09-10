@@ -1668,10 +1668,15 @@
 					<td>
 						<select class="form-control" id="magma_window" name="magma_window">
 							<option selected value="0">0 kb</option>
+							<option value="1">1 kb</option>
 							<option value="5">5 kb</option>
 							<option value="10">10 kb</option>
 							<option value="15">15 kb</option>
 							<option value="20">20 kb</option>
+							<option value="25">25 kb</option>
+							<option value="30">30 kb</option>
+							<option value="40">40 kb</option>
+							<option value="50">50 kb</option>
 						</select>
 					</td>
 					<td></td>

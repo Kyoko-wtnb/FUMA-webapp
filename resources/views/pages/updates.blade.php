@@ -19,6 +19,14 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>11 Sep 2018</td>
+			<td>v1.3.3b</td>
+			<td>
+				As requested, addition options for window size of MAGMA gene analysis have been added.
+				In the new version, 0, 1, 5, 10, 15, 20, 25, 30, 40 and 50kb (both sides) are available.
+			</td>
+		</tr>
+		<tr>
 			<td>22 July 2018</td>
 			<td>v1.3.3</td>
 			<td>

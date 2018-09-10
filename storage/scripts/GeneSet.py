@@ -107,7 +107,7 @@ else:
 	genes = list(lines[:,0].astype(str))
 genes = [s.upper() for s in genes]
 
-ENSG = pd.read_table(ensgdir+"/"+ensg_v+"/"+ensgfile, delim_whitespace=True, dtype=str)
+ENSG = pd.read_table(ensgdir+"/"+ensg_v+"/"+ensgfile, sep="\t", dtype=str)
 ENSGheads = list(ENSG.columns.values)
 ENSG = np.array(ENSG)
 ENSG = ENSG[ENSG[:,ENSGheads.index("entrezID")]!="NA"]
