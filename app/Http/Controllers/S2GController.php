@@ -324,15 +324,21 @@ class S2GController extends Controller
 		$mergeDist = $request -> input('mergeDist');
 
 		// positional mapping
-		if($request -> has('posMap')){$posMap=1;}
-		else{$posMap=0;}
-		if($request -> has('posMapWindow')){
-		$posMapWindowSize=$request -> input('posMapWindow');
 		$posMapAnnot="NA";
-		}else{
 		$posMapWindowSize="NA";
-		$posMapAnnot=implode(":",$request -> input('posMapAnnot'));
+		if($request -> has('posMap')){
+			$posMap=1;
+			if($request -> has('posMapWindow')){
+				$posMapWindowSize=$request -> input('posMapWindow');
+				$posMapAnnot="NA";
+			}else{
+				$posMapWindowSize="NA";
+				$posMapAnnot=implode(":",$request -> input('posMapAnnot'));
+			}
+		}else{
+			$posMap=0;
 		}
+
 		if($request -> has('posMapCADDcheck')){
 			$posMapCADDth = $request -> input('posMapCADDth');
 		}else{

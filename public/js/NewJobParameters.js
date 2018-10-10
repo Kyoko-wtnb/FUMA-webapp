@@ -272,7 +272,7 @@ function setParams(data){
 		else{$(this).prop('selected', false)}
 	})
 	$('#genetype option').each(function(){
-		if($(this).val().indexOf(data.genetype)>=0){$(this).prop('selected', true);}
+		if(data.genetype.indexOf($(this).val())>=0){$(this).prop('selected', true);}
 		else{$(this).prop('selected', false);}
 	});
 	// MHC region
