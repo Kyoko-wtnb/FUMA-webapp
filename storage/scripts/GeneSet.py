@@ -122,8 +122,8 @@ elif bkgtype == "text":
 	bkgenes = [s.upper() for s in bkgenes]
 else:
 	lines = pd.read_table(filedir+bkgval, header=None, delim_whitespace=True, dtype=str)
-	lines = np.array(lines)
-	bkgenes = lsit(lines[:,0].astype(str))
+	lines = np.array(lines)[:,0]
+	bkgenes = list([str(s) for s in lines])
 	bkgenes = [s.upper() for s in bkgenes]
 
 if MHC == 1:
