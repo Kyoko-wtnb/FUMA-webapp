@@ -194,6 +194,20 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
+				<td>eQTLGen</td>
+				<td>Meta-analysis of cis and trans eQTLs based on 37 data sets (in total of 31,684 individuals).</td>
+				<td>
+					Info: <a href="http://www.eqtlgen.org/index.html" target="_blank">http://www.eqtlgen.org/index.html</a><br/>
+					Data: <a href="https://molgenis26.gcc.rug.nl/downloads/eqtlgen/cis-eqtl/cis-eQTLs_full_20180905.txt.gz" target="_blank">https://molgenis26.gcc.rug.nl/downloads/eqtlgen/cis-eqtl/cis-eQTLs_full_20180905.txt.gz</a>,
+					<a href="https://molgenis26.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/trans-eQTL_significant_20181017.txt.gz" target="_blank">https://molgenis26.gcc.rug.nl/downloads/eqtlgen/trans-eqtl/trans-eQTL_significant_20181017.txt.gz</a>
+				</td>
+				<td>20 Oct 2018</td>
+				<td>
+					Vosa et al. 2018. Unraveling the polygenic architecture of complex traits using blood eQTL meta-analysis. <i>bioRxiv</i><br/>
+					<a href="https://www.biorxiv.org/content/early/2018/10/19/447367" target="_blank">https://doi.org/10.1101/447367</a>
+				</td>
+			</tr>
+			<tr>
 				<td>BrainSpan</td>
 				<td>Gene expression data of developmental brain samples.</td>
 				<td>
