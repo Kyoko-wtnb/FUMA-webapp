@@ -19,6 +19,15 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>22 Oct 2018</td>
+			<td>v1.3.3c</td>
+			<td>
+				Cis- and trans-eQTLs from eQTLGen are now available for eQTL mapping.
+				The eQTLGen is a meta-analysis of 37 datasets with in total of 31,684 individuals.
+				To annotate new eQTLs for your existing SNP2GENE jobs, you can use "re-do gene mapping" option.
+			</td>
+		</tr>
+		<tr>
 			<td>11 Sep 2018</td>
 			<td>v1.3.3b</td>
 			<td>
