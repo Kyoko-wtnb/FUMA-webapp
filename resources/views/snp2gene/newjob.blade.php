@@ -554,6 +554,9 @@
 							<a style="float:right; padding-right:20px;">clear</a><br/>
 							<select multiple class="form-control" id="eqtlMapTs" name="eqtlMapTs[]" size="10" onchange="CheckAll();">
 								<option value="all">All</option>
+								<option class="level1" value="null">eQTLGen (2)</option>
+								<option class="level2" value='eQTLGen_eQTLGen_cis_eQTLs'>eQTLGen cis-eQTLs</option>
+								<option class="level2" value='eQTLGen_eQTLGen_trans_eQTLs'>eQTLGen trans-eQTLs</option>
 								<option class="level1" value="null">Blood eQTLs (2)</option>
 								<option class="level2" value='BloodeQTL_BloodeQTL'>Westra et al. (2013) Blood eQTL Browser</option>
 								<option class="level2" value='BIOSQTL_BIOS_eQTL_geneLevel'>Zhernakova et al. (2017) BIOS QTL Browser</option>

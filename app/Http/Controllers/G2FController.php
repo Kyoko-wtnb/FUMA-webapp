@@ -91,7 +91,7 @@ class G2FController extends Controller
 		}else{
 			$gtype = "file";
 			$gval = $_FILES["genesfile"]["name"];
-			$request -> file('genesfile')->move($filedir, "genesQuery.txt");
+			$request -> file('genesfile')->move($filedir, $_FILES["genesfile"]["name"]);
 		}
 
 		if($request -> has('genetype')){
@@ -106,7 +106,7 @@ class G2FController extends Controller
 		}else{
 			$bkgtype ="file";
 			$bkgval = $_FILES["bkgenesfile"]["name"];
-			$request -> file('bkgenesfile') -> move($filedir, "bkgenes.txt");
+			$request -> file('bkgenesfile') -> move($filedir, $_FILES["bkgenesfile"]["name"]);
 		}
 
 		$ensembl = $request->input('ensembl');

@@ -294,6 +294,28 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	<p><strong>Samples</strong><br/>
 		Post-mortem brain samples from 467 Caucasian individuals (209 with SCZ, 206 controls and 52 AFF cases; <a href="https://www.ncbi.nlm.nih.gov/pubmed/27668389">Fromer et al. 2016</a>).
 	</p><br/>
+
+	<h4><strong>9. eQTLGen (Vosa et al. 2018)</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="http://www.eqtlgen.org/index.html">http://www.eqtlgen.org/index.html</a>.
+		For cis-eQTLs, <span style="color:blue">cis-eQTLs_full_20180905.txt.gz</span>,
+		for trans-eQTLs, <span style="color:blue">trans-eQTL_significant_20181017.txt.gz</span> was used.
+	</p>
+	<p><strong>Description</strong><br/>
+		Full summary statistics were downloaded.
+		For cis-eQTLs, full summary statistics was downloaded.
+		In the dataset, every SNP-gene pair with a distance &lt;1Mb from the center of the gene and tested in at least 2 cohorts was included.
+		For trans-eQTLs, only significant eQTLs were included in FUMA since the cross-mapping effects were not filtered in the downloadable full summary statistics.
+		In the original study, every SNP-gene pair with a distance &gt;5Mb and tested in at least 2 cohorts was included.
+		FDR was estimated based on permutations.
+		Please refer the original study for more details (<a href="https://www.biorxiv.org/content/early/2018/10/19/447367">Vosa et al. 2018</a>).
+		Ensembl gene ID is used as provided in the original file.
+		<br/>
+		Signed statistics is z-statistics.
+	</p>
+	<p><strong>Samples</strong><br/>
+		Meta-analysis of cis-/trans-eQTLs from 37 datasets with a total of 31,684 individuals.
+	</p><br/>
 </div>
 <br/>
 <h4><strong>Alignment of risk increasing allele in GWAS and tested allele of eQTLs</strong></h4>
