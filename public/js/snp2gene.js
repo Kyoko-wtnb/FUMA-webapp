@@ -260,6 +260,7 @@ $(document).ready(function(){
 				title: $('#publish_title').val(),
 				author: $('#publish_author').val(),
 				email: $('#publish_email').val(),
+				phenotype: $('#publish_phenotype').val(),
 				publication: $('#publish_publication').val(),
 				sumstats_link: $('#publish_sumstats_link').val(),
 				sumstats_ref: $('#publish_sumstats_ref').val(),
