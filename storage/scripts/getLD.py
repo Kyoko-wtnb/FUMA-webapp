@@ -440,7 +440,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							if uid != tmp_uid:
 								checkall = False
 								jgwas += 1
-								while jgwas < len(gwas_in) < int(m[1]) == gwas_in[jgwas, poscol]:
+								while jgwas < len(gwas_in) and int(m[1]) == gwas_in[jgwas, poscol]:
 									uid = ":".join([str(gwas_in[jgwas, chrcol]), str(gwas_in[jgwas, poscol])]+sorted([gwas_in[jgwas, neacol], gwas_in[jgwas, eacol]]))
 									if uid == tmp_uid:
 										checkall = True

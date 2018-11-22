@@ -18,8 +18,8 @@ In this section, each reference panel is described details.
 	MAF and pairwise LD were computed by PLINK (--r2 --ld-window 99999 --ld-window-r2 0.05).
 	<br/>
 
-	<h4><strong>2. UK Biobank release1</strong></h4>
-	Genotype data was obtained under application ID 1640.
+	<h4><strong>2. UK Biobank release 1</strong></h4>
+	Genotype data was obtained under application ID 16406.
 	10,000 white british individuals were randomly selected to create reference panel.<br/>
 	<span class="info"><i class="fa fa-info"></i> Chromosome X is not available for this reference panel</span>.<br/>
 	Only bi-allelic SNPs with imputation INFO score > 0.9 were extracted by PLINK (--biallelic-only) and manually excluding
@@ -28,8 +28,8 @@ In this section, each reference panel is described details.
 	MAF and pairwise LD were computed by PLINK (--r2 --ld-window 99999 --ld-window-r2 0.05).
 	<br/>
 
-	<h4><strong>3. UK Biobank release2</strong></h4>
-	Genotype data was obtained under application ID 1640.
+	<h4><strong>3. UK Biobank release 2</strong></h4>
+	Genotype data was obtained under application ID 16406.
 	SNPs imputed based on UK10K/1000G were excluded (only SNPs imputed based on HRC were included).
 	For release 2, two reference panels were created;
 	white british and european individuals projected onto 1000G population.
