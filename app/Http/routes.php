@@ -109,6 +109,8 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::get('snp2gene/getJobList/{email?}/{limit?}', 'S2GController@getJobList');
 
+	Route::get('snp2gene/getPublicIDs', 'S2GController@getPublicIDs');
+
 	Route::post('snp2gene/newJob', 'S2GController@newJob');
 
 	Route::post('snp2gene/getjobIDs', 'S2GController@getjobIDs');
@@ -168,6 +170,8 @@ Route::group(['middleware'=>'auth'], function(){
 	Route::post('snp2gene/checkPublish', 'S2GController@checkPublish');
 
 	Route::post('snp2gene/publish', 'S2GController@publish');
+	Route::post('snp2gene/updatePublicRes', 'S2GController@updatePublicRes');
+	Route::post('snp2gene/deletePublicRes', 'S2GController@deletePublicRes');
 
 	// ********************** GENE2FUNC ************************
 	Route::get('gene2func', function(){
