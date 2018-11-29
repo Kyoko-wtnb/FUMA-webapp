@@ -7,7 +7,7 @@
 			You can publish any of existing SNP2GENE job in your account but only
 			the ones without any error.
 			MAGMA results are optional but it's highly recommended to include them too.
-			You can also publish GENE2FUNC results together with SNP2GENE results only if
+			You can also publish GENE2FUNC results together with SNP2GENE results if
 			the GENE2FUNC job is performed for mapped genes from the corresponding SNP2GENE job.
 
 			<h4><strong>2. Publish results</strong></h4>
@@ -114,17 +114,22 @@
 
 		<h3>Modify/delete published result</h3>
 		<div style="margin-left: 40px;">
-			Modification and deletion of published jobs are only possible by the developer.
-			If you need to modify/delete any of your published job, please contact the developer
-			(Kyoko Watanabe: k.watanabe@vu.nl) by the matched email.
+			Modification and deletion of published jobs can be done by similar way as publishing the job.
+			From the SNP2GENE job list, the published jobs now have "edit" button instead of "publish" button.
+			By clicking this, you can update the features listed above or delete the published job.
+			Note that deleting the published job does not delete the job from your account.
+			At the same time, when you delete the original job from your account, it does not delete the corresponding published job.
+			If you want to modify/delete published job whose original job is deleted from your account,
+			please contact to the FUMA developer, (Kyoko Watanabe: k.watanabe@vu.nl).
 			Please also provide id of the published job together.<br/>
-			<span class="info"><i class="fa fa-info"></i> Modification/deletion is only processed when
-			the request is made from the matched email address.</span>
+			<span class="info"><i class="fa fa-info"></i> Modification/deletion is only possible when the user is logged in
+				with the same email address as the entry.
+			</span>
 		</div>
 
 		<h3>Users' responsibility</h3>
 		<div style="margin-left: 40px;">
-			We do not take any responsibility for your publihed results.
+			We do not take any responsibility for your published results.
 			Any question specific to a published result from other users
 			is required to answer by the user who published the result
 			not the FUMA developer.

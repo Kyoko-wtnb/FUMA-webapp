@@ -4,13 +4,10 @@
 		<p>
 			You can browse FUMA results which are shared in public by users.
 			Registration is not required to browse public results.
-			Please contact author of the submitted job for any question regarding
-			the resuls.<br/>
-			If you want to modify/delete your published results, please contact the developper directry.
-			Only requests from a matched email address will be processed.
-			Please also inform the developper when the publication become available
-			if it was not available or only preprint was available at the time when you shared
-			your results.
+			Please contact the author of the submitted entry for any question regarding
+			the results.<br/>
+			If you want to modify/delete your published results, please login to your account and go to the SNP2GENE job list page.
+			You can modify/delete the information of publicly available results from the corresponding SNP2GENE job.
 		</p>
 	</div>
     <div class="panel panel-default">

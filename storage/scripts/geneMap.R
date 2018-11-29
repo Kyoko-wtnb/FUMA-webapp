@@ -402,7 +402,7 @@ if(nrow(geneTable)>0){
 		if(nrow(eqtl)>0){
 			tmp_eqtl <- unique(eqtl[,c("gene", "uniqID")])
 			tmp_eqtl$gwasP <- snps$gwasP[match(tmp_eqtl$uniqID, snps$uniqID)]
-			if(length(which(!is.na(eqtl$gwasP)))>0){
+			if(length(which(!is.na(tmp_eqtl$gwasP)))>0){
 				tmp <- with(tmp_eqtl[!is.na(tmp_eqtl$gwasP),], aggregate(gwasP, list(gene), min))
 				tmp_table$eqtlMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
 			}
@@ -430,7 +430,7 @@ if(nrow(geneTable)>0){
 		}
 	}
 	geneTable$minGwasP <- apply(tmp_table[,c("posMapP", "eqtlMapP", "ciMapP")], 1, min, na.rm=T)
-	geneTable$minGwasP[geneTable$minGwasP<0 | geneTable$minGwasP>1] <- NA
+	geneTable$minGwasP[which(geneTable$minGwasP<0 | geneTable$minGwasP>1)] <- NA
 	geneTable$IndSigSNPs <- apply(tmp_table[,c("posMapISNPs", "eqtlMapISNPs", "ciMapISNPs")], 1, function(x){paste(unique(unlist(strsplit(x[!is.na(x)], ";"))), collapse=";")})
 	geneTable$GenomicLocus <- apply(tmp_table[,c("posMapLocus", "eqtlMapLocus", "ciMapLocus")], 1, function(x){paste(sort(as.numeric(unique(unlist(strsplit(x, ":"))))), collapse=":")})
 }

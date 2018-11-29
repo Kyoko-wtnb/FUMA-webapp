@@ -56,7 +56,20 @@ class S2GController extends Controller
 		$this->queueGeneMap();
 
 		return response()->json($results);
+    }
 
+	public function getPublicIDs(){
+		$email = $this->user->email;
+
+		$results = array();
+		if($email){
+		    $rows = DB::select('SELECT jobID from PublicResults WHERE email=?', [$email]);
+			foreach($rows as $r){
+				$results[] = (int) $r->jobID;
+			}
+		}
+
+		return response()->json($results);
     }
 
 	public function getjobIDs(){
@@ -1009,14 +1022,19 @@ class S2GController extends Controller
 		$id = $request->input('id');
 		$out = [];
 		$out['publish'] = collect(DB::select('SELECT jobID FROM PublicResults WHERE jobID=?', [$id]))->count();
-		$check = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->count();
-		if($check>0){
-			$out['g2f'] = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->first()->jobID;
+		if($out['publish']==0){
+			$check = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->count();
+			if($check>0){
+				$out['g2f'] = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->first()->jobID;
+			}
+			$out['author'] = $this->user->name;
+			$out['email'] = $this->user->email;
+			$out['title'] = collect(DB::select('SELECT title FROM SubmitJobs WHERE jobID=?', [$id]))->first()->title;
+			return json_encode($out);
+		}else{
+				$out['entry'] = collect(DB::select('SELECT * FROM PublicResults WHERE jobID=?', [$id]))->first();
+				return json_encode($out);
 		}
-		$out['author'] = $this->user->name;
-		$out['email'] = $this->user->email;
-		$out['title'] = collect(DB::select('SELECT title FROM SubmitJobs WHERE jobID=?', [$id]))->first()->title;
-		return json_encode($out);
 	}
 
 	public function publish(Request $request){
@@ -1056,6 +1074,49 @@ class S2GController extends Controller
 			exec('cp -r '.config('app.jobdir').'/gene2func/'.$g2f_jobID.'/* '.$filedir.'/g2f/');
 			exec('rm '.$filedir.'/g2f/*.zip');
 		}
+		return;
+	}
+
+	public function updatePublicRes(Request $request){
+		$date = date('Y-m-d');
+		$jobID = $request->input('jobID');
+		$update = array();
+		$update['g2f_jobID'] = $request->input('g2f_jobID');
+		$update['title'] = $request->input('title');
+		$update['author'] = $request->input('author');
+		$update['email'] = $request->input('email');
+		$update['phenotype'] = $request->input('phenotype');
+		$update['publication'] = $request->input('publication');
+		$update['sumstats_link'] = $request->input('sumstats_link');
+		$update['sumstats_ref'] = $request->input('sumstats_ref');
+		$update['notes'] = $request->input('notes');
+
+		if(strlen($update['phenotype'])==0){$pheno='NA';}
+		if(strlen($update['publication'])==0){$publication='NA';}
+		if(strlen($update['sumstats_link'])==0){$sumstats_link='NA';}
+		if(strlen($update['sumstats_ref'])==0){$sumstats_ref='NA';}
+		if(strlen($update['notes'])==0){$notes='NA';}
+
+		$current = collect(DB::select('SELECT g2f_jobID,title,author,email,phenotype,publication,sumstats_link,sumstats_ref,notes FROM PublicResults WHERE jobID=?', [$jobID]))->first();
+		$updated = false;
+		foreach($current as $k=>$v){
+			if($v != $update[$k]){
+				DB::table('PublicResults')->where('jobID', $jobID)->update([$k=>$update[$k]]);
+				$updated = true;
+			}
+		}
+		if($updated){
+			DB::table('PublicResults')->where('jobID', $jobID)->update(['update_at'=>$date]);
+		}
+		return;
+	}
+
+	public function deletePublicRes(Request $request){
+		$jobID = $request->input('jobID');
+		$id = collect(DB::select('SELECT id FROM PublicResults WHERE jobID=?', [$jobID]))->first()->id;
+		$filedir = config('app.jobdir').'/public/'.$id;
+		DB::table('PublicResults')->where('jobID', $jobID)->delete();
+		File::deletedirectory($filedir);
 		return;
 	}
 }

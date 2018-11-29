@@ -44,7 +44,7 @@
 <div class="modal fade" id="modalPublish" role="dialog">
 	<div class="modal-dialog">
 		<div class="modal-content">
-			<div class="modal-header"><h4><strong>Publish your results</strong></h4></div>
+			<div class="modal-header"><h4><strong id="modalTitle">Publish your results</strong></h4></div>
 			<div class="modal-body">
 				<table class="table table-bordered">
 					<thead>
@@ -168,6 +168,8 @@
 				</table>
 				<span style="color:red;"><sup>*</sup>Required input</span><br/><br/>
 				<button class="btn btn-default btn-sm" id="publishSubmit">Submit</button>
+				<button class="btn btn-default btn-sm" id="publishUpdate">Update</button>
+				<button class="btn btn-default btn-sm" id="publishDelete">Delete</button>
 				<button class="btn btn-default btn-sm" id="publishCancel">Cancel</button>
 			</div>
 		</div>

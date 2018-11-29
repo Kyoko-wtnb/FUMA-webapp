@@ -91,7 +91,6 @@ $(document).ready(function(){
 		cur.prev().prop('selected', total);
 	});
 
-	console.log(status)
 	if(status.length==0){
 	}else if(status=="fileFormatGWAS"){
 		$('a[href="#newJob"]').trigger('click');
@@ -288,37 +287,124 @@ $(document).ready(function(){
 			}
 		});
 	});
+
+	$('#publishUpdate').on('click', function(){
+		$.ajax({
+			url: subdir+'/'+page+'/updatePublicRes',
+			type: 'POST',
+			data: {
+				jobID: $('#publish_s2g_jobID').val(),
+				g2f_jobID: $('#publish_g2f_jobID').val(),
+				title: $('#publish_title').val(),
+				author: $('#publish_author').val(),
+				email: $('#publish_email').val(),
+				phenotype: $('#publish_phenotype').val(),
+				publication: $('#publish_publication').val(),
+				sumstats_link: $('#publish_sumstats_link').val(),
+				sumstats_ref: $('#publish_sumstats_ref').val(),
+				notes: $('#publish_notes').val()
+			},
+			beforeSend: function(){
+				var options = {
+					theme: "sk-circle",
+					message: 'Updating the public result, please wait for a second.'
+				}
+				HoldOn.open(options);
+				$('#modalPublish').modal('hide');
+			},
+			error: function(){
+				alert('JQuery update error');
+			},
+			success: function(){
+				HoldOn.close()
+				swal({
+					title: "The selected job has been update ",
+					type: "success",
+					showCancelButton: false,
+					closeOnConfirm: true,
+				});
+			}
+		});
+	});
+
+	$('#publishDelete').on('click', function(){
+		swal({
+			title: "Are you sure?",
+			text: "Do you really want to delete the public results for the selected job?",
+			type: "warning",
+			showCancelButton: true,
+			closeOnConfirm: true,
+		}, function(isConfirm){
+			if (isConfirm){
+				$.ajax({
+					url: subdir+'/'+page+'/deletePublicRes',
+					type: 'POST',
+					data: {
+						jobID: $('#publish_s2g_jobID').val()
+					},
+					beforeSend: function(){
+						var options = {
+							theme: "sk-circle",
+							message: 'Deleting the public result, please wait for a second.'
+						}
+						HoldOn.open(options);
+						$('#modalPublish').modal('hide');
+					},
+					error: function(){
+						alert('JQuery delete error');
+					},
+					success: function(){
+						HoldOn.close()
+						swal({
+							title: "The selected job has been deleted ",
+							type: "success",
+							showCancelButton: false,
+							closeOnConfirm: true,
+						});
+					}
+				});
+			}
+		});
+
+	});
 });
 
 function getJobList(){
 	$('#joblist-panel table tbody')
 		.empty()
 		.append('<tr><td colspan="6" style="text-align:center;">Retrieving data</td></tr>');
-	$.getJSON( subdir + '/'+page+'/getJobList', function( data ){
-		var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
-		if(data.length){
-			items = '';
-			$.each( data, function( key, val ) {
-				var g2fbutton = 'Not available';
-				var publish = 'Not available';
-				if(val.status == 'OK'){
-					val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">Go to results</a>';
-					g2fbutton = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="g2fbtn('+val.jobID+');">GENE2FUNC</button>';
-					publish = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="publish('+val.jobID+');">Publish</button>';
-				}else if(val.status == 'ERROR:005'){
-					val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">ERROR:005</a>';
-				}
-				items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title
-					+"</td><td>"+val.created_at+"</td><td>"+val.status+"</td><td>"+g2fbutton
-					+'</td><td>'+publish+'</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
-					+val.jobID+'"/></td></tr>';
-			});
-		}
+	$.getJSON(subdir+'/'+page+'/getJobList',function( data ){
+		$.getJSON(subdir+'/'+page+'/getPublicIDs', function(pids){
+			var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
+			if(data.length){
+				items = '';
+				$.each( data, function( key, val ) {
+					var g2fbutton = 'Not available';
+					var publish = 'Not available';
+					if(pids.indexOf(val.jobID)>=0){
+						val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">Go to results</a>';
+						g2fbutton = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="g2fbtn('+val.jobID+');">GENE2FUNC</button>';
+						publish = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="checkPublish('+val.jobID+');">Edit</button>';
+					}else if(val.status == 'OK'){
+						val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">Go to results</a>';
+						g2fbutton = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="g2fbtn('+val.jobID+');">GENE2FUNC</button>';
+						publish = '<button class="btn btn-default btn-xs" value="'+val.jobID+'" onclick="checkPublish('+val.jobID+');">Publish</button>';
+					}else if(val.status == 'ERROR:005'){
+						val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">ERROR:005</a>';
+					}
 
-		// Put list in table
-		$('#joblist-panel table tbody')
-			.empty()
-			.append(items);
+					items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title
+						+"</td><td>"+val.created_at+"</td><td>"+val.status+"</td><td>"+g2fbutton
+						+'</td><td>'+publish+'</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
+						+val.jobID+'"/></td></tr>';
+				});
+			}
+
+			// Put list in table
+			$('#joblist-panel table tbody')
+				.empty()
+				.append(items);
+		});
 	});
 }
 
@@ -327,7 +413,7 @@ function g2fbtn(id){
 	$('#g2fSubmitBtn').trigger('click');
 }
 
-function publish(id){
+function checkPublish(id){
 	$.ajax({
 		url: subdir+"/"+page+"/checkPublish",
 		type: "POST",
@@ -340,34 +426,65 @@ function publish(id){
 		success: function(data){
 			data = JSON.parse(data);
 			if(data.publish==0){
-				$('#publish_s2g_jobID').val(id);
-				$('#publish_s2g_jobID_text').html(id);
-				if(data.g2f != undefined){
-					$('#publish_g2f_jobID').val(data.g2f);
-				}else{
-					$('#publish_g2f_jobID').val('');
-				}
-				$('#publish_title').val(data.title);
-				$('#publish_author').val(data.author);
-				$('#publish_email').val(data.email);
-				checkPublishInput()
-				$('#modalPublish').modal('show');
+				publish(id, data);
 			}else{
-				swal({
-					title: "Already published",
-					text: "The selected job is already published. Please contact the developper to modify/delete the published results.",
-					type: "warning",
-					showCancelButton: false,
-					closeOnConfirm: true,
-				});
+				edit(id, data);
 			}
 		}
-	})
+	});
+}
+
+function publish(id, data){
+	$('#publish_s2g_jobID').val(id);
+	$('#publish_s2g_jobID_text').html(id);
+	if(data.g2f != undefined){
+		$('#publish_g2f_jobID').val(data.g2f);
+	}else{
+		$('#publish_g2f_jobID').val('');
+	}
+	$('#publish_title').val(data.title);
+	$('#publish_author').val(data.author);
+	$('#publish_email').val(data.email);
+	checkPublishInput()
+	$('#publishSubmit').show();
+	$('#publishUpdate').hide();
+	$('#publishDelete').hide();
+	$('#modalTitle').html("Publish your results");
+	$('#modalPublish').modal('show');
+}
+
+function edit(id, data){
+	$('#publish_s2g_jobID').val(id);
+	$('#publish_s2g_jobID_text').html(id);
+	if(data.entry.g2f_jobID != undefined){
+		$('#publish_g2f_jobID').val(data.entry.g2f_jobID);
+	}else{
+		$('#publish_g2f_jobID').val('');
+	}
+	$('#publish_title').val(data.entry.title);
+	$('#publish_author').val(data.entry.author);
+	$('#publish_email').val(data.entry.email);
+	$('#publish_phenotype').val(data.entry.phenotype);
+	$('#publish_publication').val(data.entry.publication);
+	$('#publish_sumstats_link').val(data.entry.sumstats_link);
+	$('#publish_sumstats_ref').val(data.entry.sumstats_ref);
+	$('#publish_notes').val(data.entry.notes);
+	checkPublishInput()
+	$('#publishSubmit').hide();
+	$('#publishUpdate').show();
+	$('#publishDelete').show();
+	$('#modalTitle').html("Edit your public results");
+	$('#modalPublish').modal('show');
 }
 
 function checkPublishInput(){
 	var submit = false;
 	if($('#publish_title').val().length>0 && $('#publish_author').val().length>0 && $('#publish_email').val().length>0){submit = true}
-	if(submit){$('#publishSubmit').prop('disabled', false)}
-	else{$('#publishSubmit').prop('disabled', true)}
+	if(submit){
+		$('#publishSubmit').prop('disabled', false)
+		$('#publishUpdate').prop('disabled', false)
+	}else{
+		$('#publishSubmit').prop('disabled', true)
+		$('#publishUpdate').prop('disabled', true)
+	}
 }
