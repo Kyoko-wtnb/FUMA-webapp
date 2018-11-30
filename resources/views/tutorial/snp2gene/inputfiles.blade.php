@@ -17,11 +17,10 @@
 	</p>
 	<p><strong>Mandatory columns</strong><br/>
 		The input file must include a P-value and either an rsID or chromosome index + genetic position on hg19 reference genome.
-		Whenever rsID is provided, it is updated to dbSNP build 146.
 		When either chromosome or position is missing, they are extracted from dbSNP build 146 based on rsID.
+		In this case, input rsID is updated to dbSNP build 146.
 		When rsID is missing, it is extracted from dbSNP build 146 based on chromosome and position.
-		When all of them (rsID, chromosome and position) are provided, they are kept as input except rsID which is updated to dbSNP build 146.<br/>
-		The column of chromosome can be a string like "chr1" or just an integer like 1.
+		The column of chromosome can be a string such as "chr1" or just an integer such as 1.
 		When "chr" is attached, this will be removed in output files.
 		When the input file contains chromosome X, this will be encoded as chromosome 23, however, the input file can contain "X".
 	</p>
