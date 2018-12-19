@@ -10,6 +10,19 @@ config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 params <- ConfigParser(file=paste0(filedir, "params.config"))
 
 snps <- fread(paste(filedir, "snps.txt", sep=""), data.table=F)
+
+##### re-count SNPs per IndSig SNPs #####
+# temporal solution until bug is solved in getLD.py
+indS <- fread(paste(filedir, "IndSigSNPs.txt", sep=""), data.table=F)
+ld <- fread(paste(filedir, "ld.txt", sep=""), data.table=F)
+tmp <- with(ld, aggregate(SNP2, list(SNP1), length))
+indS$nSNPs <- tmp$x[match(indS$uniqID, tmp$Group.1)]
+tmp <- with(ld[ld$SNP2 %in% snps$uniqID[!is.na(snps$gwasP)],], aggregate(SNP2, list(SNP1), length))
+indS$nGWASSNPs <- tmp$x[match(indS$uniqID, tmp$Group.1)]
+write.table(indS, paste(filedir, "IndSigSNPs.txt", sep=""), quote=F, row.names=F, sep="\t")
+rm(indS, ld)
+#####
+
 annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
 annot <- annot[annot$uniqID %in% snps$uniqID,]
