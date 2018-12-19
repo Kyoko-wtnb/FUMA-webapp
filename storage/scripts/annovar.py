@@ -32,15 +32,23 @@ def getAnnov(snps, chrom, annovin, dbSNP):
 	cur_end = start + 100000
 	if cur_end>end:
 		cur_end = end
-	while cur_start < end:
+	while cur_start <= end:
 		maf = tb.querys(str(chrom)+":"+str(cur_start)+"-"+str(cur_end))
 		for l in maf:
 			if l[1] in checked:
 				continue
 			if int(l[1]) in spos:
 				j = bisect_left(pos, l[1])
-				if ":".join(sorted([l[3],l[4]])) != ":".join(sorted([snps[j,2],snps[j,3]])):
-					continue
+				if "," in l[4]:
+					allele2 = l[4].split(",")
+					alleles = []
+					for a2 in allele2:
+						alleles.append(":".join(sorted([l[3],a2])))
+					if ":".join(sorted([snps[j,4],snps[j,5]])) not in alleles:
+						continue
+				else:
+					if ":".join(sorted([l[3],l[4]])) != ":".join(sorted([snps[j,4],snps[j,5]])):
+						continue
 				if l[3] == str(snps[j,4]):
 					annov.append([str(chrom).replace('23', 'X'), snps[j,3], str(int(snps[j,3])+len(l[3])-1), l[3], snps[j,5]])
 				elif l[3] == str(snps[j,5]):

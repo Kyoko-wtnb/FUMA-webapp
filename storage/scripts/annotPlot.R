@@ -18,6 +18,7 @@ source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
 ENSG <- fread(paste(config$data$ENSG, ensg_v, config$data$ENSGfile, sep="/"), data.table=F)
+ENSG$chromosome_name[ENSG$chromosome_name=="X"] <- 23
 
 ENSG <- ENSG[ENSG$chromosome_name==chr,]
 g <- ENSG$ensembl_gene_id[(ENSG$start_position <= xmin & ENSG$end_position>=xmax)

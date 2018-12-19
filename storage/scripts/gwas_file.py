@@ -237,11 +237,11 @@ paramout.close()
 # when all columns are provided
 # In this case, if the rsID columns is wrongly labeled, it will be problem later (not checked here)
 if chrcol is not None and poscol is not None and rsIDcol is not None and eacol is not None and neacol is not None:
-	dbSNPfile = cfg.get('data', 'dbSNP')
-	rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
-	rsID = np.array(rsID)
-	rsIDs = set(rsID[:,0])
-	rsID = rsID[rsID[:,0].argsort()]
+	# dbSNPfile = cfg.get('data', 'dbSNP')
+	# rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
+	# rsID = np.array(rsID)
+	# rsIDs = set(rsID[:,0])
+	# rsID = rsID[rsID[:,0].argsort()]
 
 	out = open(outSNPs, 'w')
 	out.write("chr\tbp\tnon_effect_allele\teffect_allele\trsID\tp")
@@ -269,9 +269,9 @@ if chrcol is not None and poscol is not None and rsIDcol is not None and eacol i
 			continue
 		if float(l[pcol])==0 and re.match("^0", l[pcol]):
 			continue
-		if l[rsIDcol] in rsIDs:
-			j = bisect_left(rsID[:,0], l[rsIDcol])
-			l[rsIDcol] = rsID[j,1]
+		# if l[rsIDcol] in rsIDs:
+		# 	j = bisect_left(rsID[:,0], l[rsIDcol])
+		# 	l[rsIDcol] = rsID[j,1]
 		l[chrcol] = l[chrcol].replace("chr", "").replace("CHR", "")
 		if re.match("x", l[chrcol], re.IGNORECASE):
 			l[chrcol] = '23'
