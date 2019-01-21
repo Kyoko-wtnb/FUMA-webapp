@@ -35,12 +35,23 @@ def main():
 	magmafiles = cfg.get('magma', 'magmafiles')
 	magmadir = cfg.get('magma', 'magmadir')
 	datasets = param_cfg.get('params', 'datasets').split(":")
+
+	### Step 1
 	for ds in datasets:
 		command = magmadir+"/magma --gene-results "+filedir+"magma.genes.raw"
-		command += " --gene-covar "+magmafiles+"/celltype/"+ds+".txt condition=Average onesided=greater"
+		command += " --gene-covar "+magmafiles+"/celltype/"+ds+".txt"
+		command += " --model condition-hide=Average direction=greater"
 		command += " --out "+filedir+"magma_celltype_"+ds
 		res = os.system(command)
 		if res!=0:
 			sys.exit("MAGMA ERROR")
+
+	### Step 2 and 3
+	if param_cfg.get('params', 'step2')=="1":
+		step2 = param_cfg.get('params', 'step2')
+		step3 = param_cfg.get('params', 'step3')
+		adjPmeth = param_cfg.get('params', 'adhPmeth')
+
+		
 
 if __name__=="__main__": main()

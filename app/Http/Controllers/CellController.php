@@ -106,8 +106,13 @@ class CellController extends Controller
 		$s2gID = $request->input('s2gID');
 		$ensg = 0;
 		if($request->has('ensg_id')){$ensg=1;}
-		if($s2gID>0){$ensg=0;}
+		if($s2gID>0){$ensg=1;}
 		$ds = implode(":", $request -> input('cellDataSets'));
+		$adjPmeth = $request -> input('adjPmeth');
+		$step2 = 0;
+		if($request->has('step2')){$step2=1;}
+		$step3 = 0;
+		if($request->has('step3')){$step3=1;}
 		if($request->has("title")){
 			$title = $request -> input('title');
 		}else{
@@ -158,6 +163,9 @@ class CellController extends Controller
 		File::append($paramfile, "inputfile=$inputfile\n");
 		File::append($paramfile, "ensg_id=$ensg\n");
 		File::append($paramfile, "datasets=$ds\n");
+		File::append($paramfile, "adjPmeth=$adjPmeth\n");
+		File::append($paramfile, "step2=$step2\n");
+		File::append($paramfile, "step3=$step3\n");
 
 		return redirect("/celltype#joblist");
 	}
