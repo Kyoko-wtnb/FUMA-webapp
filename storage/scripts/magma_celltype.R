@@ -51,6 +51,7 @@ step1_command <- paste0(magmadir, "/magma --gene-results ", filedir, "magma.gene
 step1_command <- sapply(datasets, function(x){gsub("\\[ds\\]", x, step1_command)})
 write.table(step1_command, paste0(filedir, "step1.sh"), quote=F, row.names=F, col.names=F)
 system(paste0("bash ", filedir, "step1.sh"))
+rm(step1_command)
 
 ##### Step 2 and 3 #####
 if(step2==1){
@@ -67,8 +68,9 @@ if(step2==1){
 		else{step1 <- rbind(step1, tmp)}
 	}
 	step1$P.adj <- p.adjust(step1$P, method=adjPmeth)
-	step1 <- step1[step1$P.adj<0.05,]
-
+	step1 <- step1[which(step1$P.adj<0.05),]
+  rm(tmp)
+  
 	if(nrow(step1)>0){
 		step2_ds <- table(step1$ds)
 		if(length(which(step2_ds>1))==0){
@@ -84,12 +86,14 @@ if(step2==1){
 			}
 			write.table(step2_command, paste0(filedir, "step2.sh"), quote=F, row.names=F, col.names=F)
 			system(paste0("bash ", filedir, "step2.sh"))
+			rm(step2_command)
 			step1$cond_state <- NA
 			step1$cond_state[step1$ds %in% names(step2_ds)[step2_ds==1]] <- "single"
 			step1$cond_cell_type <- NA
 			step2_out <- data.frame()
 			for(ds in names(step2_ds)[step2_ds>1]){
 			  tmp.sig <- step1[step1$ds==ds,]
+			  #!!! if the file doesn't exist
 			  tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_step2_", ds, ".gsa.out"), data.table=F)
 			  if("FULL_NAME" %in% colnames(tmp)){
 			    tmp$VARIABLE <- tmp$FULL_NAME
@@ -107,6 +111,7 @@ if(step2==1){
 			    top.check <- c()
 			    for(m in unique(tmp$MODEL[tmp$VARIABLE==top])){
 			      t <- tmp[tmp$MODEL==m,]
+			      if(all(is.na(t$P))){next}
 			      if((t$PS[2]>=0.2 & t$PS[1]<0.2)){
 			        top.check <- c(top.check, t$VARIABLE[2])
 			      }
@@ -240,6 +245,7 @@ if(step2==1){
 			    step1$cond_cell_type[step1$ds==ds] <- tmp.sig$cond_cell_type
 			}
 		}
+		rm(tmp, tmp.sig, t)
 		step1_out <- step1[,-2]
 		step1_out <- step1_out[,c(7,1:6,8:10)]
 		colnames(step1_out)[1:2] <- c("Dataset", "Cell_type")
@@ -249,6 +255,7 @@ if(step2==1){
 		colnames(step2_out)[1:2] <- c("Dataset", "Cell_type")
 		step2_out$MODEL <- rep(1:(nrow(step2_out)/2), each=2)
 		write.table(step2_out, paste0(filedir, "magma_celltype_step2.txt"), quote=F, row.names=F, sep="\t")
+		rm(step1_out)
 	}
 	
 	if(step3==1){
@@ -265,27 +272,35 @@ if(step2==1){
 	      for(tmp_ds in avg_ds){
 	        tmp_exp <- fread(paste0(magmafiles, "/celltype/", tmp_ds, ".txt"), data.table=F)
 	        exp$tmp <- tmp_exp$Average[match(exp$GENE, tmp_exp$GENE)]
-	        colnames(exp)[ncol(exp)] <- paste0(tmp_ds, "_Average")
+	        rm(tmp_exp)
+	        colnames(exp)[ncol(exp)] <- paste0(tmp_ds, ":Average")
+	        write.table(exp[!is.na(exp[,ncol(exp)]),], paste0(filedir, "step3_avg_exp.txt"), quote=F, row.names=F, sep="\t")
+	        step3_command <- paste0(magmadir, "/magma --gene-results ", filedir, "magma.genes.raw",
+	                                " --gene-covar ", filedir, "step3_avg_exp.txt max-miss=0.1 --model condition-hide=Average joint-pairs",
+	                                " --out ", filedir, "magma_celltype_step3_avg")
+	        res <- system(step3_command, ignore.stdout = T)
+	        if(res>0){
+	          #!!! implement for error
+	          print(paste("error: ", i, tmp_ds))
+	        }else{
+	          tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_step3_avg.gsa.out"), data.table=F)
+	          if("FULL_NAME" %in% colnames(tmp)){
+	            tmp$VARIABLE <- tmp$FULL_NAME
+	            tmp <- tmp[,-ncol(tmp)]
+	          }
+	          tmp <- tmp[tmp$MODEL %in% tmp$MODEL[tmp$VARIABLE==step1$VARIABLE[i]],]
+	          tmp$ds <- ds
+	          tmp$cond_ds <- NA
+	          tmp$cond_ds[seq(1,nrow(tmp),2)] <- sub(":Average", "", tmp$VARIABLE[seq(2,nrow(tmp),2)])
+	          tmp <- tmp[tmp$VARIABLE==step1$VARIABLE[i],]
+	          if(nrow(step3_avg)==0){step3_avg <- tmp}
+	          else{step3_avg <- rbind(step3_avg, tmp)}
+	          exp <- exp[,-ncol(exp)]
+	        }
 	      }
-	      write.table(exp, paste0(filedir, "step3_avg_exp.txt"), quote=F, row.names=F, sep="\t")
-	      step3_command <- paste0(magmadir, " --gene-results ", filedir, "magma.genes.raw",
-	                              " --gene-covar ", filedir, "step3_avg_exp.txt max-miss=0.1 --model condition-hide=Average joint-pairs",
-	                              " --out ", filedir, "magma_celltype_step3_avg")
-	      system(step3_command)
-	      tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_step3_avg.gsa.out"), data.table=F)
-	      if("FULL_NAME" %in% colnames(tmp)){
-	        tmp$VARIABLE <- tmp$FULL_NAME
-	        tmp <- tmp[,-ncol(tmp)]
-	      }
-        tmp <- tmp[tmp$MODEL %in% tmp$MODEL[tmp$VARIABLE==step1$VARIABLE[i]],]
-        tmp$ds <- ds
-        tmp$cond_ds <- NA
-        tmp$cond_ds[seq(1,nrow(tmp),2)] <- sub("_Average", "", tmp$VARIABLE[seq(2,nrow(tmp),2)])
-        tmp <- tmp[tmp$VARIABLE==step1$VARIABLE[i],]
-        if(nrow(step3_avg)==0){step3_avg <- tmp}
-        else{step3_avg <- rbind(step3_avg, tmp)}
 	    }
-	    system(paste0("rm ", filedir, "/step3_ave_exp.txt"))
+	    rm(exp)
+	    system(paste0("rm ", filedir, "step3_avg_exp.txt"))
 	    ### pair-wise conditional analyses
 	    step3_cond <- data.frame()
 	    for(i in 1:(length(step3_ds)-1)){
@@ -299,28 +314,39 @@ if(step2==1){
 	        exp2 <- exp2[,c("GENE", step1$VARIABLE[step1$ds==ds2], "Average")]
 	        colnames(exp2)[2:ncol(exp2)] <- paste(ds2, colnames(exp2)[2:ncol(exp2)], sep=":")
 	        exp <- cbind(exp1, exp2[match(exp1$GENE, exp2$GENE), -1])
+	        exp <- exp[!is.na(exp[,ncol(exp)]),]
+	        rm(exp2)
 	        cond <- colnames(exp)[2:ncol(exp)]
 	        cond_avg <- cond[grepl("Average", cond)]
 	        cond <- cond[!grepl("Average", cond)]
 	        write.table(exp, paste0(filedir, "step3_exp.txt"), quote=F, row.names=F, sep="\t")
-	        step3_command <- paste0(magmadir, " --gene-results ", filedir, "magma.genes.raw",
+	        rm(exp)
+	        step3_command <- paste0(magmadir, "/magma --gene-results ", filedir, "magma.genes.raw",
 	                                " --gene-covar ", filedir, "step3_exp.txt max-miss=0.1 --model condition-hide=",paste(cond_avg, collapse = ",")," joint-pairs",
 	                                " --out ", filedir, "magma_celltype_step3")
-	        system(step3_command)
-	        tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_step3.gsa.out"), data.table=F)
-	        if("FULL_NAME" %in% colnames(tmp)){
-	          tmp$VARIABLE <- tmp$FULL_NAME
-	          tmp <- tmp[,-ncol(tmp)]
+	        res <- system(step3_command, ignore.stdout = T)
+	        if(res>0){
+	          tmp <- step1[c(i,j),1:8]
+	          tmp$MODEL <-1
+	          tmp[,3:7] <- NA
+	          tmp <- tmp[,c(1:2,9,3:8)]
+	        }else{
+	          tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_step3.gsa.out"), data.table=F)
+	          if("FULL_NAME" %in% colnames(tmp)){
+	            tmp$VARIABLE <- tmp$FULL_NAME
+	            tmp <- tmp[,-ncol(tmp)]
+	          }
+	          tmp$ds <- sub("(.+):.+", "\\1", tmp$VARIABLE)
+	          tmp$VARIABLE <- sub(".+:(.+)", "\\1", tmp$VARIABLE)
+	          check.model <- with(tmp, aggregate(ds, list(MODEL), function(x){length(unique(x))}))
+	          tmp <- tmp[tmp$MODEL %in% check.model$Group.1[check.model$x==2],]
 	        }
-	        tmp$ds <- sub("(.+):.+", "\\1", tmp$VARIABLE)
-	        tmp$VARIABLE <- sub(".+:(.+)", "\\1", tmp$VARIABLE)
-	        check.model <- with(tmp, aggregate(ds, list(MODEL), function(x){length(unique(x))}))
-	        tmp <- tmp[tmp$MODEL %in% check.model$Group.1[check.model$x==2],]
 	        if(nrow(step3_cond)==0){step3_cond <- tmp}
 	        else{step3_cond <- rbind(step3_cond, tmp)}
 	      }
 	    }
 	    system(paste0("rm ", filedir, "/step3_exp.txt"))
+	    rm(exp1)
 	    
 	    ### add within dataset conditional analyses
 	    step3_cond <- step3_cond[,-2]
