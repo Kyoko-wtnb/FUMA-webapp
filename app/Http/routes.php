@@ -227,11 +227,15 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::get('celltype/checkJobStatus/{jobID}', 'CellController@checkJobStatus');
 
-	Route::post('celltype/getFileList', 'CellController@getFileList');
+	Route::post('celltype/checkFileList', 'CellController@checkFileList');
+
+	Route::post('celltype/getDataList', 'CellController@getDataList');
 
 	Route::post('celltype/filedown', 'CellController@filedown');
 
-	Route::post('celltype/getPlotData', 'CellController@getPlotData');
+	Route::post('celltype/getPerDatasetData', 'CellController@getPerDatasetData');
+
+	Route::post('celltype/getStepPlotData', 'CellController@getStepPlotData');
 
 	Route::post('celltype/imgdown', 'FumaController@imgdown');
 

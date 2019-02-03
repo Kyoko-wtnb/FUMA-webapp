@@ -52,25 +52,29 @@ step1_command <- sapply(datasets, function(x){gsub("\\[ds\\]", x, step1_command)
 write.table(step1_command, paste0(filedir, "step1.sh"), quote=F, row.names=F, col.names=F)
 system(paste0("bash ", filedir, "step1.sh"))
 rm(step1_command)
+### multple testing correction
+step1 <- data.frame()
+for(ds in datasets){
+	tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_", ds, ".gsa.out"), data.table=F)
+	if("FULL_NAME" %in% colnames(tmp)){
+		tmp$VARIABLE <- tmp$FULL_NAME
+		tmp <- tmp[,-ncol(tmp)]
+	}
+	tmp <- tmp[order(tmp$P),]
+	tmp$ds <- ds
+	tmp$P.adj.pds <- p.adjust(tmp$P, method=adjPmeth)
+	if(nrow(step1)==0){step1 <- tmp}
+	else{step1 <- rbind(step1, tmp)}
+}
+step1$P.adj <- p.adjust(step1$P, method=adjPmeth)
+tmp_out <- step1[,c("ds", "VARIABLE", "NGENES", "BETA", "BETA_STD", "SE", "P", "P.adj.pds", "P.adj")]
+colnames(tmp_out)[1:2] <- c("Dataset", "Cell_type")
+write.table(tmp_out, paste0(filedir, "magma_celltype_step1.txt"), quote=F, row.names=F, sep="\t")
+rm(tmp_out)
 
 ##### Step 2 and 3 #####
 if(step2==1){
-	step1 <- data.frame()
-	for(ds in datasets){
-		tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_", ds, ".gsa.out"), data.table=F)
-		if("FULL_NAME" %in% colnames(tmp)){
-			tmp$VARIABLE <- tmp$FULL_NAME
-			tmp <- tmp[,-ncol(tmp)]
-		}
-		tmp <- tmp[order(tmp$P),]
-		tmp$ds <- ds
-		if(nrow(step1)==0){step1 <- tmp}
-		else{step1 <- rbind(step1, tmp)}
-	}
-	step1$P.adj <- p.adjust(step1$P, method=adjPmeth)
 	step1 <- step1[which(step1$P.adj<0.05),]
-  rm(tmp)
-  
 	if(nrow(step1)>0){
 		step2_ds <- table(step1$ds)
 		if(length(which(step2_ds>1))==0){
@@ -247,8 +251,9 @@ if(step2==1){
 		}
 		rm(tmp, tmp.sig, t)
 		step1_out <- step1[,-2]
-		step1_out <- step1_out[,c(7,1:6,8:10)]
+		step1_out <- step1_out[,c(7,1:6,8:11)]
 		colnames(step1_out)[1:2] <- c("Dataset", "Cell_type")
+		step1_out$step3 <- with(step1_out, ifelse(grepl("drop", cond_state), 0, 1))
 		write.table(step1_out, paste0(filedir, "step1_2_summary.txt"), quote=F, row.names=F, sep="\t")
 		step2_out <- step2_out[,-2]
 		step2_out <- step2_out[,c(10,1:9)]
@@ -257,7 +262,7 @@ if(step2==1){
 		write.table(step2_out, paste0(filedir, "magma_celltype_step2.txt"), quote=F, row.names=F, sep="\t")
 		rm(step1_out)
 	}
-	
+
 	if(step3==1){
 	  if(length(unique(step1$ds))>0){
 	    step1 <- step1[!grepl("drop", step1$cond_state),]
@@ -347,7 +352,7 @@ if(step2==1){
 	    }
 	    system(paste0("rm ", filedir, "/step3_exp.txt"))
 	    rm(exp1)
-	    
+
 	    ### add within dataset conditional analyses
 	    step3_cond <- step3_cond[,-2]
 	    step3_cond <- step3_cond[,c(8,1:7)]
@@ -363,7 +368,7 @@ if(step2==1){
 	      }
 	    }
 	    step3_cond$MODEL <- rep(1:(nrow(step3_cond)/2), each=2)
-	    
+
 	    step3_cond$label <- paste(step3_cond$Dataset, step3_cond$Cell_type, sep=":")
 	    step3_cond$label[seq(1,nrow(step3_cond),2)] <- paste(step3_cond$Dataset[seq(2,nrow(step3_cond),2)], step3_cond$label[seq(1,nrow(step3_cond),2)], sep=":")
 	    step3_cond$label[seq(2,nrow(step3_cond),2)] <- paste(step3_cond$Dataset[seq(1,nrow(step3_cond),2)], step3_cond$label[seq(2,nrow(step3_cond),2)], sep=":")
@@ -372,7 +377,7 @@ if(step2==1){
 	    colnames(tmp) <- paste0("CDM.", colnames(tmp))
 	    step3_cond <- cbind(step3_cond[,-ncol(step3_cond)], tmp)
 	    step3_cond$Marginal.P <- step1$P[match(paste(step3_cond$Dataset, step3_cond$Cell_type, sep=":"), paste(step1$ds, step1$VARIABLE, sep=":"))]
-	    step3_cond$PS <- -log10(step3_cond$P)/-log10(with(step3_cond, ifelse(is.na(CDM.P), Marginal.P, CDM.P)))
+		step3_cond$PS <- -log10(step3_cond$P)/-log10(with(step3_cond, ifelse(is.na(CDM.P), Marginal.P, CDM.P)))
 	    write.table(step3_cond, paste0(filedir, "magma_celltype_step3.txt"), quote=F, row.names=F, sep="\t")
 	  }
 	}
