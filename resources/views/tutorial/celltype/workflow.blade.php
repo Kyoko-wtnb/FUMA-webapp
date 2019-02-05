@@ -265,7 +265,7 @@ systematically compare cell type associations across datasets using conditional 
 			however, step 3 is not relevant in this case as they are exactly the same cell type.
 			When step 3 is activated, FUMA will still perform all possible pair of
 			significant cell types across datasets.
-			However the pair of exact same cell type will result in collinearity.
+			However the pair of exact same cell type will be collinear (MAGMA outputs NA for such pairs).
 		</span>
 	</p>
 </div>

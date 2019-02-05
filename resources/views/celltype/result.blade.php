@@ -40,10 +40,10 @@
 		    </div>
 		    <div class="panel-body">
 				Download the plot as
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("perDatasetPlot","png");'>PNG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("perDatasetPlot","jpeg");'>JPG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("perDatasetPlot","svg");'>SVG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("perDatasetPlot","pdf");'>PDF</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDownDS("perDatasetPlot","png");'>PNG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDownDS("perDatasetPlot","jpeg");'>JPG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDownDS("perDatasetPlot","svg");'>SVG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDownDS("perDatasetPlot","pdf");'>PDF</button>
 				<br/><br/>
 				<span class="form-inline">
 					Dataset :
@@ -76,11 +76,17 @@
 		        <div class="panel-title">Significant cell types across datasets (Step 1)</div>
 		    </div>
 		    <div class="panel-body">
+				<span class="info"><i class="fa fa-info"></i>
+					The plot is only displayed when there is at least one significant cell type after
+					multiple testing correction across datasets.
+					Bars are colored by dataset.
+				</span>
+				<br/>
 				Download the plot as
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step1Plot","png");'>PNG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step1Plot","jpeg");'>JPG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step1Plot","svg");'>SVG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step1Plot","pdf");'>PDF</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step1Plot", "step1", "png");'>PNG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step1Plot", "step1","jpeg");'>JPG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step1Plot", "step1","svg");'>SVG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step1Plot", "step1","pdf");'>PDF</button>
 				<br/><br/>
 				<span class="form-inline">
 					Order cell type by :
@@ -98,11 +104,17 @@
 		        <div class="panel-title">Independent cell type associations based on within-dataset conditional analyses (Step 2)</div>
 		    </div>
 		    <div class="panel-body">
+				<span class="info"><i class="fa fa-info"></i>
+					The plot is only displayed when there is at least one significant cell type after
+					multiple testing correction across datasets.
+					Bars are colored by dataset.
+				</span>
+				<br/>
 				Download the plot as
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step2Plot","png");'>PNG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step2Plot","jpeg");'>JPG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step2Plot","svg");'>SVG</button>
-				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step2Plot","pdf");'>PDF</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step2Plot", "step2","png");'>PNG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step2Plot", "step2","jpeg");'>JPG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step2Plot", "step2","svg");'>SVG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step2Plot", "step2","pdf");'>PDF</button>
 				<br/><br/>
 				<span class="form-inline">
 					Order cell type by :
@@ -120,6 +132,21 @@
 		        <div class="panel-title">Pair-wise cross-datasets conditional analyses (Step 3)</div>
 		    </div>
 		    <div class="panel-body">
+				<span class="info"><i class="fa fa-info"></i>
+					The plot is only displayed when there is at least one significant cell type after
+					multiple testing correction across datasets.
+					The heatmap is asymmetric; a cell on row i and column j is cross-datasets (CD) proportional significance (PS)
+					of cell type j conditioning on cell type i.
+					Each cell is colored by PS with upper limit 1, where PS>1 is represented by double stars.
+					Star represents pair of cell types which are collinear.
+					Top bar plot represent marginal P-value of the cell type on X-axis.
+				</span>
+				Download the plot as
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step3Plot", "step3","png");'>PNG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step3Plot", "step3","jpeg");'>JPG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step3Plot", "step3","svg");'>SVG</button>
+				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step3Plot", "step3","pdf");'>PDF</button>
+				<br/><br/>
 				<span class="form-inline">
 					Order cell type by :
 					<select id="celltype_order_panel4" class="form-control" style="width: auto;">

@@ -269,7 +269,7 @@ function PlotStep1(data){
 			svg.append('rect')
 				.attr("x", width+20).attr("y", cur_height)
 				.attr("height", 10).attr("width", 10)
-				.style("fill", d3.hsl(ds.indexOf(d)*360/ds.length,1,.3))
+				.style("fill", d3.hsl(ds.indexOf(d)*360/ds.length,1,.5))
 				.style("stroke", "grey")
 				.attr("stroke-width", 0.2);
 			svg.append("text")
@@ -288,7 +288,7 @@ function PlotStep1(data){
 			.attr("width", cellwidth-1)
 			.attr("height", function(d){return height - y(-Math.log10(d[2]));})
 			.style("fill", function(d){
-				return(d3.hsl(ds.indexOf(d[0])*360/ds.length,1,.3))
+				return(d3.hsl(ds.indexOf(d[0])*360/ds.length,1,.5))
 			})
 			.style("stroke", "grey")
 			.attr("stroke-width", 0.2);
@@ -389,7 +389,7 @@ function PlotStep2(data){
 			svg.append('rect')
 				.attr("x", width+20).attr("y", cur_height)
 				.attr("height", 10).attr("width", 10)
-				.style("fill", d3.hsl(ds.indexOf(d)*360/ds.length,1,.3))
+				.style("fill", d3.hsl(ds.indexOf(d)*360/ds.length,1,.5))
 				.style("stroke", "grey")
 				.attr("stroke-width", 0.2);
 			svg.append("text")
@@ -408,7 +408,7 @@ function PlotStep2(data){
 			.attr("width", cellwidth-1)
 			.attr("height", function(d){return height - y(-Math.log10(d[2]));})
 			.style("fill", function(d){
-				return(d3.hsl(ds.indexOf(d[0])*360/ds.length,1,.3))
+				return(d3.hsl(ds.indexOf(d[0])*360/ds.length,1,.5))
 			})
 			.style("stroke", "grey")
 			.attr("stroke-width", 0.2);
@@ -508,7 +508,7 @@ function PlotStep3(data, step2){
 			svg.append('rect')
 				.attr("x", width+20).attr("y", cur_height)
 				.attr("height", 10).attr("width", 10)
-				.style("fill", d3.hsl(ds.indexOf(d)*360/ds.length,1,.3))
+				.style("fill", d3.hsl(ds.indexOf(d)*360/ds.length,1,.5))
 				.style("stroke", "grey")
 				.attr("stroke-width", 0.2);
 			svg.append("text")
@@ -564,7 +564,7 @@ function PlotStep3(data, step2){
 			.attr("width", cellsize-1)
 			.attr("height", function(d){return bar_height - y(-Math.log10(d[2]));})
 			.style("fill", function(d){
-				return(d3.hsl(ds.indexOf(d[0])*360/ds.length,1,.3))
+				return(d3.hsl(ds.indexOf(d[0])*360/ds.length,1,.5))
 			})
 			.style("stroke", "grey")
 			.attr("stroke-width", 0.2);
@@ -679,6 +679,15 @@ function ImgDown(plot, name, type){
 	$('#celltypeType').val(type);
 	$('#celltypeID').val(id);
 	$('#celltypeFileName').val(name);
+	$('#celltypeDir').val(prefix);
+	$('#celltypeSubmit').trigger('click');
+}
+
+function ImgDownDS(plot, type){
+	$('#celltypeData').val($('#'+plot).html());
+	$('#celltypeType').val(type);
+	$('#celltypeID').val(id);
+	$('#celltypeFileName').val($('#dataset_select').val());
 	$('#celltypeDir').val(prefix);
 	$('#celltypeSubmit').trigger('click');
 }

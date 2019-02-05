@@ -204,6 +204,7 @@ class CellController extends Controller
 
 		$checked = $request->input('files');
 		$files = [];
+		$files[] = "params.config";
 
 		if(in_array("step1", $checked)){
 			$ds = explode(":", $params['datasets']);
@@ -218,6 +219,7 @@ class CellController extends Controller
 					$files[] = "magma_celltype_".$ds[$i].".log";
 				}
 			}
+			$files[] = "magma_celltype_step1.txt";
 		}
 		if(in_array("step1_2", $checked)){
 			$files[] = "step1_2_summary.txt";
@@ -235,7 +237,7 @@ class CellController extends Controller
 			File::delete($zipfile);
 		}
 		$zip -> open($zipfile, \ZipArchive::CREATE);
-		// $zip->addFile(storage_path().'/README', "README");
+		$zip->addFile(storage_path().'/README_cell', "README_cell");
 		foreach($files as $f){
 			if(FILE::exists($filedir.$f)){
 				$zip->addFile($filedir.$f, $f);
