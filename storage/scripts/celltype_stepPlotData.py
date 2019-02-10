@@ -50,6 +50,13 @@ def main():
 	data2[:,4] = range(len(data2))
 	data2 = data2[np.lexsort((data2[:,2], data2[:,0]))]
 	data2[:,5] = range(len(data2))
+	data2[:,1] = [re.sub(r'^ +', '', x) for x in data2[:,1]]
+	## duplicated cell types
+	check = []
+	for i in range(len(data2)):
+		if data2[i,1] in check:
+			data2[i:,1] = [" "+x if x==data2[i,1] else x for x in data2[i:,1]]
+		check.append(data2[i,1])
 
 	data3 = []
 	if os.path.exists(filedir+"magma_celltype_step3.txt"):

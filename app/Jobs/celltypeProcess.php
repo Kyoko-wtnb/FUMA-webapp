@@ -46,8 +46,8 @@ class celltypeProcess extends Job implements ShouldQueue
 		$logfile = $filedir."job.log";
 		$errorfile = $filedir."error.log";
 
-		$script = storage_path().'/scripts/magma_celltype.py';
-		exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+		$script = storage_path().'/scripts/magma_celltype.R';
+		exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
 			DB::table('celltype') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR']);

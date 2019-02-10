@@ -80,6 +80,7 @@ if(step2==1){
 		if(length(which(step2_ds>1))==0){
 			step1$cond_state <- "single"
 			step1$cond_cell_type <- NA
+			step2_out <- data.frame()
 		}else{
 			step2_command <- c()
 			for(ds in names(step2_ds)[step2_ds>1]){
@@ -255,11 +256,13 @@ if(step2==1){
 		colnames(step1_out)[1:2] <- c("Dataset", "Cell_type")
 		step1_out$step3 <- with(step1_out, ifelse(grepl("drop", cond_state), 0, 1))
 		write.table(step1_out, paste0(filedir, "step1_2_summary.txt"), quote=F, row.names=F, sep="\t")
-		step2_out <- step2_out[,-2]
-		step2_out <- step2_out[,c(10,1:9)]
-		colnames(step2_out)[1:2] <- c("Dataset", "Cell_type")
-		step2_out$MODEL <- rep(1:(nrow(step2_out)/2), each=2)
-		write.table(step2_out, paste0(filedir, "magma_celltype_step2.txt"), quote=F, row.names=F, sep="\t")
+		if(nrow(step2_out)>0){
+		  step2_out <- step2_out[,-2]
+		  step2_out <- step2_out[,c(10,1:9)]
+		  colnames(step2_out)[1:2] <- c("Dataset", "Cell_type")
+		  step2_out$MODEL <- rep(1:(nrow(step2_out)/2), each=2)
+		  write.table(step2_out, paste0(filedir, "magma_celltype_step2.txt"), quote=F, row.names=F, sep="\t")
+		}
 		rm(step1_out)
 	}
 
@@ -359,7 +362,7 @@ if(step2==1){
 	    colnames(step3_cond)[1:2] <- c("Dataset", "Cell_type")
 	    for(ds in step3_ds){
 	      if(length(which(step1$ds==ds))>1){
-	        tmp <- step2_out[step2_out$Dataset==ds & step2_out$Cell_type %in% step1$VARIABLE,]
+	        tmp <- step2_out[step2_out$Dataset==ds & step2_out$Cell_type %in% step1$VARIABLE[step1$ds==ds],]
 	        tmp.model <- table(tmp$MODEL)
 	        tmp <- tmp[tmp$MODEL %in% names(tmp.model)[tmp.model==2],]
 	        if(nrow(tmp)>0){
