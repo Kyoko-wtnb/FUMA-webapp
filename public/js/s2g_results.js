@@ -710,17 +710,21 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 		+"<tr>"
 		+"<th>uniqID</th><th>rsID</th><th>chr</th><th>pos</th><th>non_effect_allele</th><th>effect_allele</th><th>MAF</th><th>gwasP</th>";
 	var cols = "uniqID:rsID:chr:pos:non_effect_allele:effect_allele:MAF:gwasP";
+	var cadd_col = 14;
 	if(orcol!="NA"){
 		table += "<th>OR</th>";
 		cols += ":or";
+		cadd_col += 1;
 	}
 	if(becol!="NA"){
 		table += "<th>Beta</th>";
 		cols += ":beta";
+		cadd_col += 1;
 	}
 	if(secol!="NA"){
 		table += "<th>SE</th>";
 		cols += ":se";
+		cadd_col += 1;
 	}
 	table +="<th>Genomic Locus</th><th>r2</th><th>IndSigSNP</th><th>Nearest gene</th><th>dist</th><th>position</th><th>CADD</th><th>RDB</th><th>minChrState(127)</th><th>commonChrState(127)</th>"
 		+"</tr>"
@@ -746,7 +750,8 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 			alert("SNP table error");
 		},
 		"columnDefs":[
-			{type: "scientific", targets: 7}
+			{type: "scientific", targets: 7},
+			{type: "num", targets: cadd_col}
 		],
 		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 		"iDisplayLength": 10
