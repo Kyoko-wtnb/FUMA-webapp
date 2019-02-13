@@ -141,6 +141,7 @@
 					Star represents pair of cell types which are collinear.
 					Top bar plot represent marginal P-value of the cell type on X-axis.
 				</span>
+				<br/>
 				Download the plot as
 				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step3Plot", "step3","png");'>PNG</button>
 				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("step3Plot", "step3","jpeg");'>JPG</button>

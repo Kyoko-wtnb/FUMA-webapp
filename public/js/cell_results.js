@@ -231,14 +231,17 @@ function PlotStep1(data){
 	}else{
 		$('#step1Plot').html("")
 		var max_label = 0;
+		var max_ds = 0;
 		data.forEach(function(d){
 			d[2] = +d[2]; //P
 			d[3] = +d[3]; //step3 retained
 			d[4] = +d[4]; //p-value order
 			d[5] = +d[5]; //p-value pre dataset order
 			if(d[1].length>max_label){max_label = d[1].length;}
+			if(d[0].length>max_ds){max_ds = d[0].length;}
 		})
 		margin.bottom = Math.max(max_label*6.5, 100);
+		margin.right = Math.max(max_ds*6.5, 250);
 		var ds = d3.set(data.map(function(d){return d[0];})).values();
 		var cellwidth = 1000/data.length;
 		if(cellwidth>15){cellwidth=15;}
@@ -351,14 +354,17 @@ function PlotStep2(data){
 	}else{
 		$('#step2Plot').html("")
 		var max_label = 0;
+		var max_ds = 0;
 		data.forEach(function(d){
 			d[2] = +d[2]; //P
 			d[3] = +d[3]; //step3 retained
 			d[4] = +d[4]; //p-value order
 			d[5] = +d[5]; //p-value pre dataset order
 			if(d[1].length>max_label){max_label = d[1].length;}
+			if(d[0].length>max_ds){max_ds = d[0].length;}
 		})
 		margin.bottom = Math.max(max_label*6.5, 100);
+		margin.right = Math.max(max_ds*6.5, 250);
 		var ds = d3.set(data.map(function(d){return d[0];})).values();
 		var cellwidth = 1000/data.length;
 		if(cellwidth>15){cellwidth=15;}
@@ -467,6 +473,7 @@ function PlotStep3(data, step2){
 	}else{
 		$('#step3Plot').html("")
 		var max_label = 0;
+		var max_ds = 0;
 		data.forEach(function(d){
 			d[3] = +d[3]; // PS
 		})
@@ -476,9 +483,11 @@ function PlotStep3(data, step2){
 			d[4] = +d[4]; //p-value order
 			d[5] = +d[5]; //p-value pre dataset order
 			if(d[1].length>max_label){max_label = d[1].length;}
+			if(d[0].length>max_ds){max_ds = d[0].length;}
 		})
 		margin.bottom = Math.max(max_label*6.5, 100);
 		margin.left = Math.max(max_label*8, 100);
+		margin.right = Math.max(max_ds*6.5, 250);
 		var ds = d3.set(step2.map(function(d){return d[0];})).values();
 		var ct = d3.set(step2.map(function(d){return d[1];})).values();
 		var cellsize = 1000/step2.length;
@@ -601,8 +610,8 @@ function PlotStep3(data, step2){
 			.selectAll("rect.cell").data(data).enter()
 			.append("rect")
 			.attr("width", cellsize).attr("height", cellsize)
-			.attr("x", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize})
-			.attr("y", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+heatmap_top})
+			.attr("x", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize})
+			.attr("y", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+heatmap_top})
 			.style("fill", function(d){
 				if(d[3]<0){return "grey"}
 				else if(d[3]>1){return colorScale(1)}
@@ -612,16 +621,16 @@ function PlotStep3(data, step2){
 		var star1 = svg.append("g").attr("class", "star1")
 			.selectAll("star1").data(data.filter(function(d){if(d[3]<0){return d}})).enter()
 			.append("text")
-			.attr("x", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+cellsize*0.35})
-			.attr("y", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+cellsize*0.8+heatmap_top})
+			.attr("x", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+cellsize*0.35})
+			.attr("y", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+cellsize*0.8+heatmap_top})
 			.text("*")
 			.attr('dy', function(){if(cellsize==20){return ".1em"}else{return ".2em"}});
 		//PS>1
 		var star2 = svg.append("g").attr("class", "star2")
 			.selectAll("star2").data(data.filter(function(d){if(d[3]>1){return d}})).enter()
 			.append("text")
-			.attr("x", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+cellsize*0.35})
-			.attr("y", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+cellsize*0.8+heatmap_top})
+			.attr("x", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+cellsize*0.35})
+			.attr("y", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+cellsize*0.8+heatmap_top})
 			.text("**")
 			.attr('dy', function(){if(cellsize==20){return ".1em"}else{return ".2em"}});
 		// diagonal
@@ -649,14 +658,14 @@ function PlotStep3(data, step2){
 			rowLabels.transition().duration(1000)
 				.attr("y", function(d){return d[order_i]*cellsize+((cellsize-1)/2)+3+heatmap_top})
 			heatmap.transition().duration(1000)
-				.attr("x", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize})
-				.attr("y", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+heatmap_top});
+				.attr("x", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize})
+				.attr("y", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+heatmap_top});
 			star1.transition().duration(1000)
-				.attr("x", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+cellsize*0.35})
-				.attr("y", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+cellsize*0.8+heatmap_top});
+				.attr("x", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+cellsize*0.35})
+				.attr("y", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+cellsize*0.8+heatmap_top});
 			star2.transition().duration(1000)
-				.attr("x", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+cellsize*0.35})
-				.attr("y", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+cellsize*0.8+heatmap_top});
+				.attr("x", function(d){return step2[ct.indexOf(d[2])][order_i]*cellsize+cellsize*0.35})
+				.attr("y", function(d){return step2[ct.indexOf(d[1])][order_i]*cellsize+cellsize*0.8+heatmap_top});
 		}
 		d3.select('#celltype_order_panel4').on("change", function(){
 			sortOptions4($('#celltype_order_panel4').val());
