@@ -18,7 +18,9 @@ $(document).ready(function(){
 	// download file selection
 	$('.allfiles').on('click', function(){
 		$('#downFileCheck input').each(function(){
-			$(this).prop("checked", true);
+			if(!$(this).is(':disabled')){
+				$(this).prop("checked", true);
+			}
 		});
 		DownloadFiles();
 	});

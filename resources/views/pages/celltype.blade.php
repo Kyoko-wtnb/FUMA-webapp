@@ -48,13 +48,6 @@ var loggedin = "{{ Auth::check() }}";
 	</div>
 
 	<div id="page-content-wrapper">
-		<div class="alert alert-warning" style="text-align:center;">
-			Welcome to the FUMA cell type specificity analyses.
-			This is still a BETA version.
-			We will improve plots in the next version.<br/>
-			Please check the original study for the abbreviation of cell types, we will add them to our website as soon as possible.<br/>
-			Please inform any bug at the Google Forum.
-		</div>
 		<div class="page-content inset">
 			<div id="newJob" class="sidePanel container" style="padding-top:50px;">
 				{!! Form::open(array('url' => 'celltype/submit', 'files'=>true, 'novalidate'=>'novalidate')) !!}
@@ -91,6 +84,19 @@ var loggedin = "{{ Auth::check() }}";
 						<h4>Single-cell expression data sets</h4>
 						Select single-cell expression data sets to perform MAGMA gene-property analysis
 						<select multiple size="10" class="form-control" id="cellDataSets" name="cellDataSets[]" onchange="CheckInput();">
+							<option value="Allen_Human_LGN_level1">Allen_Human_LGN_level1</option>
+							<option value="Allen_Human_LGN_level2">Allen_Human_LGN_level2</option>
+							<option value="Allen_Human_MTG_level1">Allen_Human_MTG_level1</option>
+							<option value="Allen_Human_MTG_level2">Allen_Human_MTG_level2</option>
+							<option value="Allen_Mouse_ALM2_level1">Allen_Mouse_ALM2_level1</option>
+							<option value="Allen_Mouse_ALM2_level2">Allen_Mouse_ALM2_level2</option>
+							<option value="Allen_Mouse_ALM2_level3">Allen_Mouse_ALM2_level3</option>
+							<option value="Allen_Mouse_LGd2_level1">Allen_Mouse_LGd2_level1</option>
+							<option value="Allen_Mouse_LGd2_level2">Allen_Mouse_LGd2_level2</option>
+							<option value="Allen_Mouse_LGd2_level3">Allen_Mouse_LGd2_level3</option>
+							<option value="Allen_Mouse_VISp2_level1">Allen_Mouse_VISp2_level1</option>
+							<option value="Allen_Mouse_VISp2_level2">Allen_Mouse_VISp2_level2</option>
+							<option value="Allen_Mouse_VISp2_level3">Allen_Mouse_VISp2_level3</option>
 							<option value="Allen_Mouse_ALM_level1">Allen_Mouse_ALM_level1</option>
 							<option value="Allen_Mouse_ALM_level2">Allen_Mouse_ALM_level2</option>
 							<option value="Allen_Mouse_LGd_level1">Allen_Mouse_LGd_level1</option>
@@ -99,6 +105,8 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="Allen_Mouse_VISp_level2">Allen_Mouse_VISp_level2</option>
 							<option value="DroNc_Human_Hippocampus">DroNc_Human_Hippocampus</option>
 							<option value="DroNc_Mouse_Hippocampus">DroNc_Mouse_Hippocampus</option>
+							<option value="DropViz_all_level1">DropViz_all_level1</option>
+							<option value="DropViz_all_level2">DropViz_all_level2</option>
 							<option value="DropViz_CB_level1">DropViz_CB_level1</option>
 							<option value="DropViz_CB_level2">DropViz_CB_level2</option>
 							<option value="DropViz_ENT_level1">DropViz_ENT_level1</option>
@@ -117,8 +125,6 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="DropViz_STR_level2">DropViz_STR_level2</option>
 							<option value="DropViz_TH_level1">DropViz_TH_level1</option>
 							<option value="DropViz_TH_level2">DropViz_TH_level2</option>
-							<option value="DropViz_all_level1">DropViz_all_level1</option>
-							<option value="DropViz_all_level2">DropViz_all_level2</option>
 							<option value="GSE100597_Mouse_Embryo">GSE100597_Mouse_Embryo</option>
 							<option value="GSE104276_Human_Prefrontal_cortex_all_ages">GSE104276_Human_Prefrontal_cortex_all_ages</option>
 							<option value="GSE104276_Human_Prefrontal_cortex_per_ages">GSE104276_Human_Prefrontal_cortex_per_ages</option>
@@ -127,6 +133,8 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="GSE67835_Human_Cortex_woFetal">GSE67835_Human_Cortex_woFetal</option>
 							<option value="GSE81547_Human_Pancreas">GSE81547_Human_Pancreas</option>
 							<option value="GSE82187_Mouse_Striatum">GSE82187_Mouse_Striatum</option>
+							<option value="GSE84133_Human_Pancreas">GSE84133_Human_Pancreas</option>
+							<option value="GSE84133_Mouse_Pancreas">GSE84133_Mouse_Pancreas</option>
 							<option value="GSE87544_Mouse_Hypothalamus">GSE87544_Mouse_Hypothalamus</option>
 							<option value="GSE89164_Mouse_Hindbrain">GSE89164_Mouse_Hindbrain</option>
 							<option value="GSE89232_Human_Blood">GSE89232_Human_Blood</option>
@@ -160,6 +168,7 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="Linnarsson_MouseBrainAtlas_level6_rank2">Linnarsson_MouseBrainAtlas_level6_rank2</option>
 							<option value="Linnarsson_MouseBrainAtlas_level6_rank3">Linnarsson_MouseBrainAtlas_level6_rank3</option>
 							<option value="Linnarsson_MouseBrainAtlas_level6_rank4">Linnarsson_MouseBrainAtlas_level6_rank4</option>
+							<option value="MouseCellAtlas_all">MouseCellAtlas_all</option>
 							<option value="MouseCellAtlas_Adult_all">MouseCellAtlas_Adult_all</option>
 							<option value="MouseCellAtlas_Bladder">MouseCellAtlas_Bladder</option>
 							<option value="MouseCellAtlas_Bone_Marrow">MouseCellAtlas_Bone_Marrow</option>
@@ -196,28 +205,31 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="MouseCellAtlas_Thymus">MouseCellAtlas_Thymus</option>
 							<option value="MouseCellAtlas_Trophoblast_Stem_Cell">MouseCellAtlas_Trophoblast_Stem_Cell</option>
 							<option value="MouseCellAtlas_Uterus">MouseCellAtlas_Uterus</option>
-							<option value="MouseCellAtlas_all">MouseCellAtlas_all</option>
+							<option value="PBMC_10x_68k">PBMC_10x_68k</option>
+							<option value="TabulaMuris_FACS_all">TabulaMuris_FACS_all</option>
 							<option value="TabulaMuris_FACS_Aorta">TabulaMuris_FACS_Aorta</option>
 							<option value="TabulaMuris_FACS_Bladder">TabulaMuris_FACS_Bladder</option>
-							<option value="TabulaMuris_FACS_Brain_Microglia">TabulaMuris_FACS_Brain_Microglia</option>
-							<option value="TabulaMuris_FACS_Brain_Neurons">TabulaMuris_FACS_Brain_Neurons</option>
-							<option value="TabulaMuris_FACS_Colon">TabulaMuris_FACS_Colon</option>
+							<option value="TabulaMuris_FACS_Brain">TabulaMuris_FACS_Brain</option>
+							<option value="TabulaMuris_FACS_Brain_Myeloid">TabulaMuris_FACS_Brain_Myeloid</option>
+							<option value="TabulaMuris_FACS_Brain_Non-Myeloid">TabulaMuris_FACS_Brain_Non-Myeloid</option>
+							<option value="TabulaMuris_FACS_Brain_all">TabulaMuris_FACS_Brain_all</option>
 							<option value="TabulaMuris_FACS_Diaphragm">TabulaMuris_FACS_Diaphragm</option>
 							<option value="TabulaMuris_FACS_Fat">TabulaMuris_FACS_Fat</option>
 							<option value="TabulaMuris_FACS_Heart">TabulaMuris_FACS_Heart</option>
 							<option value="TabulaMuris_FACS_Kidney">TabulaMuris_FACS_Kidney</option>
+							<option value="TabulaMuris_FACS_Large_Intestine">TabulaMuris_FACS_Large_Intestine</option>
+							<option value="TabulaMuris_FACS_Limb_Muscle">TabulaMuris_FACS_Limb_Muscle</option>
 							<option value="TabulaMuris_FACS_Liver">TabulaMuris_FACS_Liver</option>
 							<option value="TabulaMuris_FACS_Lung">TabulaMuris_FACS_Lung</option>
-							<option value="TabulaMuris_FACS_Mammary">TabulaMuris_FACS_Mammary</option>
+							<option value="TabulaMuris_FACS_Mammary_Gland">TabulaMuris_FACS_Mammary_Gland</option>
 							<option value="TabulaMuris_FACS_Marrow">TabulaMuris_FACS_Marrow</option>
-							<option value="TabulaMuris_FACS_Muscle">TabulaMuris_FACS_Muscle</option>
 							<option value="TabulaMuris_FACS_Pancreas">TabulaMuris_FACS_Pancreas</option>
 							<option value="TabulaMuris_FACS_Skin">TabulaMuris_FACS_Skin</option>
 							<option value="TabulaMuris_FACS_Spleen">TabulaMuris_FACS_Spleen</option>
 							<option value="TabulaMuris_FACS_Thymus">TabulaMuris_FACS_Thymus</option>
 							<option value="TabulaMuris_FACS_Tongue">TabulaMuris_FACS_Tongue</option>
 							<option value="TabulaMuris_FACS_Trachea">TabulaMuris_FACS_Trachea</option>
-							<option value="TabulaMuris_FACS_all">TabulaMuris_FACS_all</option>
+							<option value="TabulaMuris_droplet_all">TabulaMuris_droplet_all</option>
 							<option value="TabulaMuris_droplet_Bladder">TabulaMuris_droplet_Bladder</option>
 							<option value="TabulaMuris_droplet_Heart">TabulaMuris_droplet_Heart</option>
 							<option value="TabulaMuris_droplet_Kidney">TabulaMuris_droplet_Kidney</option>
@@ -230,15 +242,50 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="TabulaMuris_droplet_Thymus">TabulaMuris_droplet_Thymus</option>
 							<option value="TabulaMuris_droplet_Tongue">TabulaMuris_droplet_Tongue</option>
 							<option value="TabulaMuris_droplet_Trachea">TabulaMuris_droplet_Trachea</option>
-							<option value="TabulaMuris_droplet_all">TabulaMuris_droplet_all</option>
 						</select>
 					</div>
 				</div>
-				<div class="form-inline">
-					Title:
-					<input type="text" class="form-control" id="title" name="title"/>
-					<span class="info"><i class="fa fa-info"></i> Optional</span>
+				<div class="panel panel-default">
+					<div class="panel-body" style="padding-bottom: 10;">
+						<h4>Other options</h4>
+						<div class="form-inline">
+							Multiple test correction method:
+							<select class="form-control" id="adjPmeth" name="adjPmeth" style="width:auto;">
+								<option selected value="bonferroni">Bonferroni</option>
+								<option value="BH">Benjamini-Hochberg (FDR)</option>
+								<option value="BY">Benjamini-Yekutieli</option>
+								<option value="holm">Holm</option>
+								<option value="hochberg">Hochberg</option>
+								<option value="hommel">Hommel</option>
+							</select>
+						</div>
+						<br/>
+						<input type="checkbox" id="step2" name="step2"> Perform step 2 (per dataset conditional analysis)
+						if there is more then one significant cell type per dataset.
+						<a class="infoPop" data-toggle="popover" data-content="Step 2 in the workflow is per dataset conditional analysis.
+						When there are more than one significant cell types from the same dataset, FUMA will perform pair-wise conditional analyses for all possible pairs of
+						significant cell types within the dataset. Based on this, forward selection will be performed to identify independent signals.
+						See tutorial for details.">
+							<i class="fa fa-question-circle-o fa-lg"></i>
+						</a>
+						<br/>
+						<input type="checkbox" id="step3" name="step3"> Perform step 3 (cross-datasets conditional analysis)
+						if there is significant cell types from more than one dataset.
+						<a class="infoPop" data-toggle="popover" data-content="Step 3 in the workflow is cross-datasets conditional analysis.
+						When there are significant cell types from more than one dataset, FUMA will perform pair-wise conditional analyses for all possible pairs of
+						significant cell types across datasets. See tutorial for details.">
+							<i class="fa fa-question-circle-o fa-lg"></i>
+						</a>
+						<br/>
+						<br/>
+						<div class="form-inline">
+							Title:
+							<input type="text" class="form-control" id="title" name="title"/>
+							<span class="info"><i class="fa fa-info"></i> Optional</span>
+						</div>
+					</div>
 				</div>
+
 				<br/>
 				<div id="CheckInput"></div>
 				<input type="submit" value="Submit" class="btn btn-default" id="cellSubmit" name="cellSubmit"/><br/><br/>
