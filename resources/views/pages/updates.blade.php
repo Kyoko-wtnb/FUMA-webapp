@@ -43,6 +43,14 @@
 			</td>
 		</tr>
 		<tr>
+			<td>19 Dec 2018</td>
+			<td>v1.3.3d</td>
+			<td>
+				Minor bugs have been fixed.
+				Bugs include mis-alignment of alleles in ANNOVAR and mis-count of SNPs in LD per independent significant SNPs.
+			</td>
+		</tr>
+		<tr>
 			<td>22 Oct 2018</td>
 			<td>v1.3.3c</td>
 			<td>
