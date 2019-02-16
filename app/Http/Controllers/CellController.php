@@ -106,8 +106,13 @@ class CellController extends Controller
 		$s2gID = $request->input('s2gID');
 		$ensg = 0;
 		if($request->has('ensg_id')){$ensg=1;}
-		if($s2gID>0){$ensg=0;}
+		if($s2gID>0){$ensg=1;}
 		$ds = implode(":", $request -> input('cellDataSets'));
+		$adjPmeth = $request -> input('adjPmeth');
+		$step2 = 0;
+		if($request->has('step2')){$step2=1;}
+		$step3 = 0;
+		if($request->has('step3')){$step3=1;}
 		if($request->has("title")){
 			$title = $request -> input('title');
 		}else{
@@ -158,48 +163,104 @@ class CellController extends Controller
 		File::append($paramfile, "inputfile=$inputfile\n");
 		File::append($paramfile, "ensg_id=$ensg\n");
 		File::append($paramfile, "datasets=$ds\n");
+		File::append($paramfile, "adjPmeth=$adjPmeth\n");
+		File::append($paramfile, "step2=$step2\n");
+		File::append($paramfile, "step3=$step3\n");
 
 		return redirect("/celltype#joblist");
 	}
 
-	public function getFileList(Request $request){
-		$jobID = $request->input('id');
-		$filedir = config('app.jobdir').'/celltype/'.$jobID;
-		$files = glob($filedir."/*.gcov.out");
-		for($i=0; $i<count($files); $i++){
-			$files[$i] = preg_replace("/.+magma_celltype_(.+).gcov.out/", "$1", $files[$i]);
+	public function checkFileList(Request $request){
+		$id = $request->input('id');
+		$filedir = config('app.jobdir').'/celltype/'.$id;
+		$params = parse_ini_file($filedir."/params.config", false, INI_SCANNER_RAW);
+		if($params['MAGMA']=="v1.06"){
+			$step1 = count(glob($filedir."/*.gcov.out"));
+			$step1_2 = 0;
+			$step2 = 0;
+			$step3 = 0;
+		}else{
+			$step1 = count(glob($filedir."/*.gsa.out"));
+			$step1_2 = (int) File::exists($filedir."/step1_2_summary.txt");
+			$step2 = (int) File::exists($filedir."/magma_celltype_step2.txt");
+			$step3 = (int) File::exists($filedir."/magma_celltype_step3.txt");
 		}
-		return json_encode($files);
+		return json_encode([$step1, $step1_2, $step2, $step3]);
+	}
+
+	public function getDataList(Request $request){
+		$id = $request->input('id');
+		$filedir = config('app.jobdir').'/celltype/'.$id;
+		$params = parse_ini_file($filedir."/params.config", false, INI_SCANNER_RAW);
+		$ds = explode(":", $params['datasets']);
+		return json_encode($ds);
 	}
 
 	public function filedown(Request $request){
 		$id = $request->input('id');
 		$prefix = $request->input('prefix');
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
-		$prefix = $request->input('files');
+		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
+
+		$checked = $request->input('files');
 		$files = [];
-		for($i=0; $i<count($prefix); $i++){
-			$files[] = 'magma_celltype_'.$prefix[$i].'.gcov.out';
-			$files[] = 'magma_celltype_'.$prefix[$i].'.log';
+		$files[] = "params.config";
+
+		if(in_array("step1", $checked)){
+			$ds = explode(":", $params['datasets']);
+			if($params['MAGMA']=="v1.06"){
+				for($i=0; $i<count($ds); $i++){
+					$files[] = "magma_celltype_".$ds[$i].".gcov.out";
+					$files[] = "magma_celltype_".$ds[$i].".log";
+				}
+			}else{
+				for($i=0; $i<count($ds); $i++){
+					$files[] = "magma_celltype_".$ds[$i].".gsa.out";
+					$files[] = "magma_celltype_".$ds[$i].".log";
+				}
+			}
+			$files[] = "magma_celltype_step1.txt";
 		}
+		if(in_array("step1_2", $checked)){
+			$files[] = "step1_2_summary.txt";
+		}
+		if(in_array("step2", $checked)){
+			$files[] = "magma_celltype_step2.txt";
+		}
+		if(in_array("step3", $checked)){
+			$files[] = "magma_celltype_step3.txt";
+		}
+
 		$zip = new \ZipArchive();
 		$zipfile = $filedir."FUMA_celltype".$id.".zip";
 		if(File::exists($zipfile)){
 			File::delete($zipfile);
 		}
 		$zip -> open($zipfile, \ZipArchive::CREATE);
-		// $zip->addFile(storage_path().'/README', "README");
+		$zip->addFile(storage_path().'/README_cell', "README_cell");
 		foreach($files as $f){
-			$zip->addFile($filedir.$f, $f);
+			if(FILE::exists($filedir.$f)){
+				$zip->addFile($filedir.$f, $f);
+			}
 		}
 		$zip -> close();
 		return response() -> download($zipfile);
 	}
 
-	public function getPlotData(Request $request){
+	public function getPerDatasetData(Request $request){
 		$id = $request->input('id');
+		$ds = $request->input('ds');
 		$filedir = config('app.jobdir').'/celltype/'.$id.'/';
-		$script = storage_path().'/scripts/celltypePlotData.py';
+		$script = storage_path().'/scripts/celltype_perDatasetPlotData.py';
+		$json = shell_exec("python $script $filedir $ds");
+		return $json;
+	}
+
+	public function getStepPlotData(Request $request){
+		$id = $request->input('id');
+		$ds = $request->input('ds');
+		$filedir = config('app.jobdir').'/celltype/'.$id.'/';
+		$script = storage_path().'/scripts/celltype_stepPlotData.py';
 		$json = shell_exec("python $script $filedir");
 		return $json;
 	}

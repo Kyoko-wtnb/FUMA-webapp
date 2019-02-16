@@ -402,6 +402,7 @@ elif chrcol is not None and poscol is not None:
 	head = list(tmp.columns.values)
 	tmp = np.array(tmp)
 	tmp[:,chrcol] = [x.replace("chr", "").replace("CHR", "") for x in tmp[:,chrcol]]
+	tmp[:,chrcol] = [x.replace("x", "23").replace("X", "23") for x in tmp[:,chrcol]]
 	tmp = tmp[np.lexsort((tmp[:,poscol].astype(int), tmp[:,chrcol].astype(int)))]
 	with open(gwas, 'w') as o:
 		o.write(" ".join(head)+"\n")

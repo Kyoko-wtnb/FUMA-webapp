@@ -5,6 +5,7 @@ Version: 1.0.0 (2 Feb 2017)
 Version: 1.1.2 (27 Apr 2017)
 Version: 1.3.0 (21 Feb 2018)
 Version: 1.3.1 (27 Apr 2018)
+Version: 1.3.4 (8 Feb 2019)
 
 This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
@@ -334,18 +335,21 @@ ciMapChr15Meth : The method of chromatin state filtering
 ######################
 # MAGMA outputs
 ######################
-MAGMA gene analysis and gene-set analysis were performed with MAGMA v1.6.
+MAGMA gene analysis and gene-set analysis were performed with MAGMA v1.06.
+From FUMA v1.3.4, MAGMA was updated to v1.07. This does not change the analyses but file format and the extension of the outputs for
+gene-set and gene-property were updated. Please refer to the MAGMA tutorial for details.
 Reference genome is 1000 genomes phase 3.
 The MAGMA output from FUMA is based on summary statistics.
 When genotype data is available, we recommend to re-run MAGMA locally with genotype data.
 1. Gene analysis
-  SNPs are mapped to 19436 protein coding genes (with unique ensembl ID) if SNPs are located within gene body.
+  SNPs are mapped to the protein coding genes with user selected window size (with unique ensembl ID).
   All parameters were set as default (SNP-wise (mean) model for gene test).
   magma.genes.out: output of gene analysis containing gene P-value
   magma.genes.raw: output of gene analysis which is used for gene-set analysis
 2. Gene-set analysis
   Gene sets were obtained from MsigDB v5.2. Total 10894 gene sets (Curated gene sets: 4728, GO terms:6166) were tested.
   From FUMA v1.3.1, gene sets were updated for MsigDB v6.1. Total 10655 gene sets (Curated gene sets: 4738, GO terms: 5917) were tested.
+  From FUMA v1.3.4, gene sets were updated for MsigDB v6.2. Total 10678 gene sets (Curated gene sets: 4761, GO terms: 5917) were tested.
   Curated gene sets consists of 9 data resources including KEGG, Reactome and BioCarta (http://software.broadinstitute.org/gsea/msigdb/collection_details.jsp#C2 for details).
   GO terms consists of three categories, biological processes (bp), cellular components (cc) and molecular functions (mf).
   All parameters were set as default (competitive test).

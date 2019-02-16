@@ -94,7 +94,7 @@ def main():
 	for f in magma_exp:
 		tmp = f.split("/")
 		out = tmp[len(tmp)-1]
-		os.system(magmadir+"/magma --gene-results "+filedir+"magma.genes.raw --gene-covar "+magmafiles+"/"+f+".txt onesided=greater condition=Average --out "+filedir+"magma_exp_"+out)
+		os.system(magmadir+"/magma --gene-results "+filedir+"magma.genes.raw --gene-covar "+magmafiles+"/"+f+".txt --model direction=greater condition-hide=Average --out "+filedir+"magma_exp_"+out)
 
 	os.system("Rscript "+os.path.dirname(os.path.realpath(__file__))+"/magma_gene.R "+filedir+" "+ensg_v)
 

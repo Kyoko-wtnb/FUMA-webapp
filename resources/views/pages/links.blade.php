@@ -49,10 +49,10 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>MAGMA</td>
+				<td>MAGMA v1.07</td>
 				<td>Used for gene analysis and gene-set analysis.</td>
 				<td>Info and download: <a target="_blank" href="https://ctg.cncr.nl/software/magma">https://ctg.cncr.nl/software/magma</a></td>
-				<td>30 Jan 2017</td>
+				<td>13 Feb 2019</td>
 				<td>
 					de Leeuw, C., et al. 2015. MAGMA: Generalized gene-set analysis of GWAS data. <i>PLoS Comput. Biol.</i> <b>11</b>, DOI:10.1371/journal.pcbi.1004219. <br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4401657/" target="_blank">PMCID:PMC4401657</a>
@@ -230,6 +230,18 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
+				<td>Giusti-Rodriguez et al. 2019 (Hi-C)</td>
+				<td>Hi-C data (significant loops) of adult and fetal cortex.
+					Only significant loops after Bonferroni correction (Pbon < 0.001) are available.
+				</td>
+				<td>The data was kindly shared by Patric F. Sullivan.</td>
+				<td>13 Feb 2019</td>
+				<td>
+					Giusti-Rodriguez, P. et al. 2019. Using three-dimentional regulatory chromatin interactions from adult and fetal cortex to interpret genetic results for psychiatric disorders and cognitive traits. <i>bioRxiv.</i><br/>
+					<a href="https://www.biorxiv.org/content/10.1101/406330v2" target="_blank">https://doi.org/10.1101/406330</a>
+				</td>
+			</tr>
+			<tr>
 				<td>Enhancer and promoter regions</td>
 				<td>Predicted enhancer and promoter regions (including dyadic) from Roadmap Epigenomics Projects. 111 epigenomes are available.</td>
 				<td>Info: <a href="http://egg2.wustl.edu/roadmap/web_portal/DNase_reg.html" target="_blank">http://egg2.wustl.edu/roadmap/web_portal/DNase_reg.html</a><br/>
@@ -244,36 +256,36 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>MsigDB v6.1</td>
+				<td>MsigDB v6.2</td>
 				<td>Collection of publicly available gene sets. Data sets include e.g. KEGG, Reactome, BioCarta, GO terms and so on.</td>
 				<td>Info and data: <a href="http://software.broadinstitute.org/gsea/msigdb" target="_blank">http://software.broadinstitute.org/gsea/msigdb</a></td>
-				<td>27 April 2018</td>
+				<td>13 Feb 2019</td>
 				<td>
 					Liberzon, A. et al. 2011. Molecular signatures database (MSigDB) 3.0. <i>Bioinformatics.</i> <b>27</b>, 1739-40.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/21546393" target="_blank">PMID:21546393</a>
 				</td>
 			</tr>
 			<tr>
-				<td>WikiPathways</td>
+				<td>WikiPathways v20190110</td>
 				<td>The curated biological pathways.</td>
 				<td style="word-break: break-all;">
 					Info: <a href="http://wikipathways.org/index.php/WikiPathways" target="_blank">http://wikipathways.org/index.php/WikiPathways</a><br/>
 					Data: <a href=">http://data.wikipathways.org/20161110/gmt/wikipathways-20161110-gmt-Homo_sapiens.gmt" target="_blank">http://data.wikipathways.org/20161110/gmt/wikipathways-20161110-gmt-Homo_sapiens.gmt</a>
 				</td>
-				<td>5 December 2016</td>
+				<td>13 Feb 2019</td>
 				<td>
 					Kutmon, M., et al. 2016. WikiPathways: capturing the full diversity of pahtway knowledge. <i>Nucleic Acids Res.</i> <b>44</b>, 488-494.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/26481357" target="_blank">PMID:26481357</a>
 				</td>
 			</tr>
 			<tr>
-				<td>GWAS-catalog e91 2018-02-06</td>
+				<td>GWAS-catalog e93 2019-01-11</td>
 				<td>A database of reported snp-trait associations.</td>
 				<td>
 					Info: <a href="https://www.ebi.ac.uk/gwas/" target="_blank">https://www.ebi.ac.uk/gwas/</a><br/>
 					Data: <a href="https://www.ebi.ac.uk/gwas/docs/downloads" target="_blank">https://www.ebi.ac.uk/gwas/docs/downloads</a>
 				</td>
-				<td>12 February 2018</td>
+				<td>13 February 2019</td>
 				<td>
 					MacArthur, J., et al. 2016. The new NHGRI-EBI Catalog of published genome-wide association studies (GWAS Catalog). <i>Nucleic Acids Res.</i> pii:gkw1133.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/27899670" target="_blank">PMID:27899670</a>

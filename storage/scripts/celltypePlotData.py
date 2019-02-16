@@ -24,6 +24,9 @@ def main():
 	param.optionxform = str
 	param.read(filedir+'params.config')
 	prefix = param.get('params', 'datasets').split(":")
+	suffix = ".gsa.out"
+	if param.get('version', 'MAGMA')=="v1.06":
+		suffix = ".gcov.out"
 
 	##### output variables
 	long = {}
@@ -33,7 +36,7 @@ def main():
 	##### process per file
 	for pre in prefix:
 		tmp = []
-		with open(filedir+"magma_celltype_"+pre+".gcov.out", 'r') as fin:
+		with open(filedir+"magma_celltype_"+pre+suffix, 'r') as fin:
 			line = fin.readline()
 			while re.match(r'^#', line): line = fin.readline()
 			for l in fin:
@@ -44,6 +47,7 @@ def main():
 		tmp = tmp[tmp[:,1].astype(float).argsort()]
 		tmp = np.c_[tmp, range(len(tmp))]
 		tmp = [list(x) for x in tmp]
+
 		if len(tmp)>25:
 			long.update({len(long):{'name':pre, 'n':len(tmp), 'data':tmp}})
 		else:

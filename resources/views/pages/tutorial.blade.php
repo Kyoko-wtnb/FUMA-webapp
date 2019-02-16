@@ -93,6 +93,13 @@ $(document).ready(function(){
 				<a href="#g2fOutputs">Outputs</a>
 			</div>
 			<li><a href="#celltype">Cell type<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
+			<div class="subside" id="celltypesub">
+				<a href="#cell_submit">Submit jobs</a>
+				<a href="#basemodel">Base model</a>
+				<a href="#workflow">3-step workflow</a>
+				<!-- <a href="#cell_outputs">Outputs</a> -->
+				<a href="#datasets">scRNA data sets</a>
+			</div>
 			<li class="active"><a href="#publish">Publish results<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 			<li class="active"><a href="#data-security">Data security<span class="sub_icon glyphicon glyphicon-info-sign"></span></a></li>
 		</ul>
@@ -153,7 +160,21 @@ $(document).ready(function(){
 					@include('tutorial.gene2func.outputs')
 				</div>
 			</div>
-			@include('tutorial.celltype')
+			<div id="celltype" class="sidePanel container" style="padding-top:50px;">
+				<h2>Cell type specificity analyses with scRNA-seq</h2>
+				<div style="margin-left: 40px;">
+					@include('tutorial.celltype.submit')
+					<br/>
+					@include('tutorial.celltype.basemodel')
+					<br/>
+					@include('tutorial.celltype.workflow')
+					<br/>
+					<!-- @include('tutorial.celltype.output') -->
+					<br/>
+					@include('tutorial.celltype.datasets')
+				</div>
+			</div>
+
 			@include('tutorial.publish')
 			@include('tutorial.data-security')
 		</div>

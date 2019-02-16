@@ -1074,6 +1074,8 @@
 								<option value="HiC/GSE87112/Neural_Progenitor_Cell.txt.gz">HiC(GSE87112) Neural_Progenitor_Cell</option>
 								<option value="HiC/GSE87112/Trophoblast-like_Cell.txt.gz">HiC(GSE87112) Trophoblast-like_Cell</option>
 								<option value="HiC/GSE87112/hESC.txt.gz">HiC(GSE87112) hESC</option>
+								<option value="HiC/Giusti-Rodriguez_et_al_2019/Adult_Cortex.txt.gz">HiC(Giusti-Rodriguez et al. 2019) Adult cortex</option>
+								<option value="HiC/Giusti-Rodriguez_et_al_2019/Fetal_Cortex.txt.gz">HiC(Giusti-Rodriguez et al. 2019) Fetal cortex</option>
 							</select>
 						</span>
 					</td>

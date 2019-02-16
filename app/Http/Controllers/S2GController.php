@@ -678,14 +678,18 @@ class S2GController extends Controller
 		system("rm -r $filedir/circos");
 
 		// positional mapping
-		if($request -> has('geneMap_posMap')){$posMap=1;}
-		else{$posMap=0;}
-		if($request -> has('geneMap_posMapWindow')){
-		$posMapWindowSize=$request -> input('geneMap_posMapWindow');
-		$posMapAnnot="NA";
-		}else{
+		$posMap = 0;
 		$posMapWindowSize="NA";
-		$posMapAnnot=implode(":",$request -> input('geneMap_posMapAnnot'));
+		$posMapAnnot="NA";
+		if($request -> has('geneMap_posMap')){
+			$posMap=1;
+			if($request -> has('geneMap_posMapWindow')){
+				$posMapWindowSize=$request -> input('geneMap_posMapWindow');
+				$posMapAnnot="NA";
+			}else{
+				$posMapWindowSize="NA";
+				$posMapAnnot=implode(":",$request -> input('geneMap_posMapAnnot'));
+			}
 		}
 		if($request -> has('geneMap_posMapCADDcheck')){
 			$posMapCADDth = $request -> input('geneMap_posMapCADDth');
@@ -981,11 +985,17 @@ class S2GController extends Controller
 		if($request -> has('gwascatfile')){$files[] = "gwascatalog.txt";}
 		if($request -> has('magmafile')){
 			$files[] = "magma.genes.out";
+			$files[] = "magma.genes.raw";
 			if(File::exists($filedir."magma.sets.out")){
-				$files[] = "magma.genes.raw";
 				$files[] = "magma.sets.out";
 				if(File::exists($filedir."magma.setgenes.out")){
 					$files[] = "magma.setgenes.out";
+				}
+			}
+			if(File::exists($filedir."magma.gsa.out")){
+				$files[] = "magma.gsa.out";
+				if(File::exists($filedir."magma.gsa.sets.genes.out")){
+					$files[] = "magma.gsa.sets.genes.out";
 				}
 			}
 			if(File::exists($filedir."magma_exp.gcov.out")){
@@ -993,6 +1003,10 @@ class S2GController extends Controller
 				$files[] = "magma_exp_general.gcov.out";
 			}
 			$tmp = File::glob($filedir."magma_exp_*.gcov.out");
+			for($i=0; $i<count($tmp); $i++){
+				$files[] = preg_replace("/.+\/(magma_exp_*)/", '$1', $tmp[$i]);
+			}
+			$tmp = File::glob($filedir."magma_exp_*.gsa.out");
 			for($i=0; $i<count($tmp); $i++){
 				$files[] = preg_replace("/.+\/(magma_exp_*)/", '$1', $tmp[$i]);
 			}

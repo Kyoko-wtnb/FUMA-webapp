@@ -162,7 +162,7 @@ if bkgtype != "select":
 		bkgenes = list(ENSG[ArrayIn(ENSG[:,ENSGheads.index("entrezID")], bkgenes),ENSGheads.index("entrezID")])
 bkgenes = np.array(bkgenes)
 bkgenes = np.unique(bkgenes)
-
+bkgenes = bkgenes[ArrayIn(bkgenes, ENSG[:,ENSGheads.index("entrezID")])]
 genes = genes[ArrayIn(genes, bkgenes)]
 
 if len(genes)==0:

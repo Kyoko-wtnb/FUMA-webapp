@@ -19,6 +19,38 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>17 Feb 2019</td>
+			<td>v1.3.4</td>
+			<td>
+				<strong>Major update 1</strong>: Cell type specificity analysis was updated to 3 step workflow.
+				The workflow consist of 1) per dataset cell type analysis, 2) within dataset conditional analysis and
+				3) across datasets conditional analysis.
+				Additional datasets were curated in addition to ones available from v1.3.3.
+				Please check <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#workflow">Tutorial</a> for details.
+				<br/>
+				<strong>Minor update 1</strong>: MAGMA was updated to v1.07 to facilitate conditional analyses
+				in cell type specificity analysis.
+				This does not affect results of SNP2GENE MAGMA analyses, however the extension of gene-set/gene-property analysis
+				has been changed to XXX.gsa.out.
+				<br/>
+				<strong>Minor update 2</strong>: GWAS catalog was updated to e93 2019-01-11.
+				<br/>
+				<strong>Minor update 3</strong>: MsigDB was updated to v6.2.
+				<br/>
+				<strong>Minor update 4</strong>: WikiPathways was updated to v20190110.
+				<br/>
+				<strong>Minor update 5</strong>: Additional HiC datasets (adult and fetal cortex samples) were added to the chromatin interaction mapping.
+			</td>
+		</tr>
+		<tr>
+			<td>19 Dec 2018</td>
+			<td>v1.3.3d</td>
+			<td>
+				Minor bugs have been fixed.
+				Bugs include mis-alignment of alleles in ANNOVAR and mis-count of SNPs in LD per independent significant SNPs.
+			</td>
+		</tr>
+		<tr>
 			<td>22 Oct 2018</td>
 			<td>v1.3.3c</td>
 			<td>
