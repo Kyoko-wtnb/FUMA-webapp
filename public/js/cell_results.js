@@ -86,7 +86,8 @@ function PlotPerDataset(data){
 	if($('#celltype_order_panel1').val()=="alph"){order_i = 4;}
 
 	if(data.length==0){
-		$('#perDatasetPlot').html("No data found for the selected dataset.")
+		$('#perDatasetPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+		+' No data found for the selected dataset.</span><br/></div>');
 	}else{
 		$('#perDatasetPlot').html("")
 		var max_label = 0;
@@ -227,7 +228,8 @@ function PlotStep1(data){
 	if($('#celltype_order_panel2').val()=="p"){order_i = 4;}
 
 	if(data.length==0){
-		$('#step1Plot').html("Either there was no significant cell type or no data avilable.")
+		$('#step1Plot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+		+' Either there was no significant cell type or no data was available.</span><br/></div>');
 	}else{
 		$('#step1Plot').html("")
 		var max_label = 0;
@@ -350,7 +352,8 @@ function PlotStep2(data){
 	if($('#celltype_order_panel3').val()=="p"){order_i = 4;}
 
 	if(data.length==0){
-		$('#step2Plot').html("Either there was no significant cell type or step 2 was not performed.")
+		$('#step2Plot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+		+' Either there was no significant cell type or step 2 was not performed.</span><br/></div>');
 	}else{
 		$('#step2Plot').html("")
 		var max_label = 0;
@@ -469,7 +472,8 @@ function PlotStep3(data, step2){
 	if($('#celltype_order_panel4').val()=="p"){order_i = 4;}
 
 	if(data.length==0){
-		$('#step3Plot').html("Either there was no significant cell type or step 3 was not performed.")
+		$('#step3Plot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+		+' Either there was no significant cell type or step 3 was not performed.</span><br/></div>');
 	}else{
 		$('#step3Plot').html("")
 		var max_label = 0;
