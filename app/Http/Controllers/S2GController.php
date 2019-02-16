@@ -678,14 +678,18 @@ class S2GController extends Controller
 		system("rm -r $filedir/circos");
 
 		// positional mapping
-		if($request -> has('geneMap_posMap')){$posMap=1;}
-		else{$posMap=0;}
-		if($request -> has('geneMap_posMapWindow')){
-		$posMapWindowSize=$request -> input('geneMap_posMapWindow');
-		$posMapAnnot="NA";
-		}else{
+		$posMap = 0;
 		$posMapWindowSize="NA";
-		$posMapAnnot=implode(":",$request -> input('geneMap_posMapAnnot'));
+		$posMapAnnot="NA";
+		if($request -> has('geneMap_posMap')){
+			$posMap=1;
+			if($request -> has('geneMap_posMapWindow')){
+				$posMapWindowSize=$request -> input('geneMap_posMapWindow');
+				$posMapAnnot="NA";
+			}else{
+				$posMapWindowSize="NA";
+				$posMapAnnot=implode(":",$request -> input('geneMap_posMapAnnot'));
+			}
 		}
 		if($request -> has('geneMap_posMapCADDcheck')){
 			$posMapCADDth = $request -> input('geneMap_posMapCADDth');

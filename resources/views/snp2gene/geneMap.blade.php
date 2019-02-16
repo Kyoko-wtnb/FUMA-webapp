@@ -2,8 +2,8 @@
 	{!! Form::open(array('url' => 'snp2gene/geneMap', 'files' => true, 'novalidate'=>'novalidate')) !!}
 	<h4 style="color: #00004d">Select jobID of your existing jobs to re-perform gene mapping with different settings.</h4>
 	Re-dogin gene mapping does not require to upload any of input file, instead the selected job is duplicated
-	with new jobID and performe gene mapping can be performed with different parameter settings.
-	Only parameters of gene mapings can be modified, other parameters such as P-value and r2 for
+	with new jobID and perform gene mapping can be performed with different parameter settings.
+	Only parameters of gene mappings can be modified, other parameters such as P-value and r2 for
 	defining independent significant SNPs are fixed.
 	<br/>
 	<span class="info"><i class="fa fa-info"></i>
@@ -896,6 +896,8 @@
 								<option value="HiC/GSE87112/Neural_Progenitor_Cell.txt.gz">HiC(GSE87112) Neural_Progenitor_Cell</option>
 								<option value="HiC/GSE87112/Trophoblast-like_Cell.txt.gz">HiC(GSE87112) Trophoblast-like_Cell</option>
 								<option value="HiC/GSE87112/hESC.txt.gz">HiC(GSE87112) hESC</option>
+								<option value="HiC/Giusti-Rodriguez_et_al_2019/Adult_Cortex.txt.gz">HiC(Giusti-Rodriguez et al. 2019) Adult cortex</option>
+								<option value="HiC/Giusti-Rodriguez_et_al_2019/Fetal_Cortex.txt.gz">HiC(Giusti-Rodriguez et al. 2019) Fetal cortex</option>
 							</select>
 						</span>
 					</td>
