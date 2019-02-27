@@ -19,6 +19,14 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>28 Feb 2019</td>
+			<td>v1.3.4b</td>
+			<td>
+				MAGMA reference panels were modified. There were mil-filtering of some SNPs in the pre-process (only for UK biobank references).
+				This might cause different results of MAGMA gene, gene-set and gene-property analyses.
+			</td>
+		</tr>
+		<tr>
 			<td>17 Feb 2019</td>
 			<td>v1.3.4</td>
 			<td>
