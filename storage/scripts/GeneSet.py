@@ -39,7 +39,7 @@ def hypTest(l, c):
 	gin = genes[ArrayIn(genes, g)]
 	x = len(gin)
 	if x>0:
-		p = stats.hypergeom.sf(x, N ,n, m)
+		p = stats.hypergeom.sf(x-1, N, n, m)
 		gin = ENSG[ArrayIn(ENSG[:,ENSGheads.index("entrezID")], gin),ENSGheads.index("external_gene_name")]
 		if len(l)>3:
 			return([c, l[0], n, x, p, 1.0, ":".join(gin.astype(str)), l[1]])

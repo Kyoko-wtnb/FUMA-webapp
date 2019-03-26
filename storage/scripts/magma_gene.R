@@ -20,7 +20,7 @@ write.table(magma, paste(filedir, "magma.genes.out", sep=""), quote=F, row.names
 if(file.exists(paste0(filedir, "magma.gsa.out"))){
   magmaset <- fread(paste0(filedir, "magma.gsa.out"), skip=3, data.table=F)
 }else{
-  magmaset <- fread(paste0(filedir, "magma.gcov.out"), skip=3, data.table=F)
+  magmaset <- fread(paste0(filedir, "magma.sets.out"), skip=3, data.table=F)
 }
 
 magmaset$Pbon <- p.adjust(magmaset$P)
