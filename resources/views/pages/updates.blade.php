@@ -19,6 +19,16 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>26 Mar 2019</td>
+			<td>v1.3.4c</td>
+			<td>
+				Minor bug update on GENE2FUNC gene set enrichment test.
+				It has been testing P(X>x), but now it tests P(X&ge;x).
+				This change will affect the results of "Tissue specificity" and "Gene sets" in GENE2FUNC process.
+				If you wish to update the existing job, please contact developer.
+			</td>
+		</tr>
+		<tr>
 			<td>28 Feb 2019</td>
 			<td>v1.3.4b</td>
 			<td>
