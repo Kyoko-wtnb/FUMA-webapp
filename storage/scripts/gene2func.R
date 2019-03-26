@@ -27,7 +27,7 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", file){
 		temp[j,3] <- x
 		temp[j,6] <- paste(genes[which(genes %in% GSgenes)], collapse=":")
 		if(x==0){temp[j,4]<-1}
-		else{temp$p[j] <- phyper(x, n, N-n, m, lower.tail = F)}
+		else{temp$p[j] <- phyper(x-1, n, N-n, m, lower.tail = F)}
 	}
 	temp[,5] <- p.adjust(temp$p, method=adjP.method)
 
