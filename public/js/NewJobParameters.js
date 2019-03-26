@@ -129,7 +129,7 @@ function setParams(data){
 		$('#N').val(data.N);
 	}
 	$('#leadP').val(data.leadP);
-	$('r2').val(data.r2);
+	$('#r2').val(data.r2);
 	$('#gwasP').val(data.gwasP);
 	$('#refpanel').val(data.refpanel+"/"+data.pop);
 	if(data.refSNPs=="1"){$('#refSNPs').val("Yes")}
