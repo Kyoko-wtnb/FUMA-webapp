@@ -28,7 +28,7 @@ var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
 <script type="text/javascript" src="{!! URL::asset('js/cell_results.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/celltype.js') !!}?131"></script>
+<script type="text/javascript" src="{!! URL::asset('js/celltype.js') !!}?134"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">
