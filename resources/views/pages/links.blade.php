@@ -283,7 +283,7 @@ var loggedin = "{{ Auth::check() }}";
 				<td>A database of reported snp-trait associations.</td>
 				<td>
 					Info: <a href="https://www.ebi.ac.uk/gwas/" target="_blank">https://www.ebi.ac.uk/gwas/</a><br/>
-					Data: <a href="https://www.ebi.ac.uk/gwas/docs/downloads" target="_blank">https://www.ebi.ac.uk/gwas/docs/downloads</a>
+					Data: <a href="https://www.ebi.ac.uk/gwas/downloads" target="_blank">https://www.ebi.ac.uk/gwas/downloads</a>
 				</td>
 				<td>13 February 2019</td>
 				<td>
