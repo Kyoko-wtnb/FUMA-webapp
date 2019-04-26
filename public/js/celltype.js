@@ -107,13 +107,20 @@ $(document).ready(function(){
 });
 
 function CheckInput(){
-	check = true;
-	s2gID = $('#s2gID').val();
-	fileName = $('#genes_raw').val();
-	ds = 0;
-	$('#cellDataSets option').each(function(){
-		if($(this).is(":selected")){ds++;}
-	});
+	var check = true;
+	var s2gID = $('#s2gID').val();
+	var fileName = $('#genes_raw').val();
+	var ds = $("#cellDataSets :selected").length;
+
+	// If all datasets are selected, not allow step 2 and step 3
+	var all = $("#cellDataSets :not(:selected)").length;
+	if(all==0){
+		$('#step2').prop('checked', false).prop('disabled', true);
+		$('#step3').prop('checked', false).prop('disabled', true);
+	}else{
+		$('#step2').prop('disabled', false);
+		$('#step3').prop('disabled', false);
+	}
 
 	if(s2gID==0 && fileName.length==0){
 		check = false;

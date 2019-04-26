@@ -82,7 +82,19 @@ var loggedin = "{{ Auth::check() }}";
 				<div class="panel panel-default">
 					<div class="panel-body" style="padding-bottom: 10;">
 						<h4>Single-cell expression data sets</h4>
-						Select single-cell expression data sets to perform MAGMA gene-property analysis
+						Select single-cell expression data sets to perform MAGMA gene-property analysis<br/>
+						<span class="info"><i class="fa fa-info"></i>
+							You should not select all datasets if you want to perform step 2 and 3 of the workflow
+							due to the duplicated cell types in multiple datasets from the same data resource.
+							For example, Tabula Muris FACS data have one dataset with all cell types from all tissues and
+							other datasets for each tissue separately.
+							Therefore, "endothelial cell" in Lung sample in the dataset with all tissues is
+							exactly the same as "endothelial cell" in Lung dataset.
+							This applies to data resource with multiple levels, where level 1 cell types include level 2 cell types.
+							In addition, step 2 is only performed after multiple testing correction across all the cell types tested in the step 1
+							regardless of duplications of the cell types.
+							It is strongly recommended to carefully select datasets to test beforehand.
+						</span>
 						<select multiple size="10" class="form-control" id="cellDataSets" name="cellDataSets[]" onchange="CheckInput();">
 							<option value="Allen_Human_LGN_level1">Allen_Human_LGN_level1</option>
 							<option value="Allen_Human_LGN_level2">Allen_Human_LGN_level2</option>
@@ -212,7 +224,6 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="TabulaMuris_FACS_Brain">TabulaMuris_FACS_Brain</option>
 							<option value="TabulaMuris_FACS_Brain_Myeloid">TabulaMuris_FACS_Brain_Myeloid</option>
 							<option value="TabulaMuris_FACS_Brain_Non-Myeloid">TabulaMuris_FACS_Brain_Non-Myeloid</option>
-							<option value="TabulaMuris_FACS_Brain_all">TabulaMuris_FACS_Brain_all</option>
 							<option value="TabulaMuris_FACS_Diaphragm">TabulaMuris_FACS_Diaphragm</option>
 							<option value="TabulaMuris_FACS_Fat">TabulaMuris_FACS_Fat</option>
 							<option value="TabulaMuris_FACS_Heart">TabulaMuris_FACS_Heart</option>
@@ -276,6 +287,10 @@ var loggedin = "{{ Auth::check() }}";
 						significant cell types across datasets. See tutorial for details.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
+						<br/>
+						<span class="info"><i class="fa fa-info"></i>
+							Step 2 and 3 options are disabled when all scRNA datasets are selected.
+						</span>
 						<br/>
 						<br/>
 						<div class="form-inline">
