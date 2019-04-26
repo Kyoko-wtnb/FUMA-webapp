@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>26 Apr 2019</td>
+			<td>v1.3.4d</td>
+			<td>
+				Script for cell type specificity analysis has been optimised and minor bugs are fixed.
+			</td>
+		</tr>
+		<tr>
 			<td>26 Mar 2019</td>
 			<td>v1.3.4c</td>
 			<td>
