@@ -93,10 +93,10 @@ if(posMap==1){
 	print("Performing posMap...")
 	tmp_snps <- snps
 	if(posMapCADDth>0){
-		tmp_snps <- tmp_snps[tmp_snps$CADD>=posMapCADDth,]
+		tmp_snps <- tmp_snps[which(tmp_snps$CADD>=posMapCADDth),]
 	}
 	if(posMapRDBth!="NA"){
-		tmp_snps <- tmp_snps[tmp_snps$RDB<=posMapRDBth,]
+		tmp_snps <- tmp_snps[which(tmp_snps$RDB<=posMapRDBth),]
 	}
 	if(posMapChr15!="NA"){
 		if(grepl("all", posMapChr15)){
@@ -136,10 +136,10 @@ if(posMap==1){
 		annov <- annov[grepl(paste(posMapAnnot, collapse="|"), annov$annot),]
 		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
 	}else{
-		snps_gr <- with(snps, GRanges(seqnames=chr, IRanges(start=pos, end=pos)))
+		snps_gr <- with(tmp_snps, GRanges(seqnames=chr, IRanges(start=pos, end=pos)))
 		genes_gr <- with(ENSG, GRanges(seqnames=chromosome_name, IRanges(start=start_position-posMapWindowSize, end=end_position+posMapWindowSize)))
 		overlap <- findOverlaps(snps_gr, genes_gr)
-		annov <- data.frame(uniqID=snps$uniqID[queryHits(overlap)], gene=ENSG$ensembl_gene_id[subjectHits(overlap)], stringsAsFactors=F)
+		annov <- data.frame(uniqID=tmp_snps$uniqID[queryHits(overlap)], gene=ENSG$ensembl_gene_id[subjectHits(overlap)], stringsAsFactors=F)
 		snps$posMapFilt[snps$uniqID %in% annov$uniqID] <- 1
 	}
 	genes <- c(genes, unique(annov$gene))

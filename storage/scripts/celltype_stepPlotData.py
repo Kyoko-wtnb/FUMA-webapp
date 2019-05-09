@@ -63,7 +63,7 @@ def main():
 		data3 = pd.read_table(filedir+"magma_celltype_step3.txt", header=0, usecols=["Dataset", "Cell_type", "PS"])
 		data3["PS"] = data3["PS"].fillna(-1)
 		data3 = np.array(data3)
-		data2_label = np.c_[data2[:,1], [":".join(l) for l in data2[:,0:2]]]
+		data2_label = np.c_[data2[:,1], [":".join([l[0], l[1].replace(" ", "")]) for l in data2[:,0:2]]]
 		tmp_label = [":".join(l) for l in data3[:,0:2]]
 		data3[:,1] = data2_label[[list(data2_label[:,1]).index(x) for x in tmp_label],0]
 		x = ["NA"]*len(data3)
