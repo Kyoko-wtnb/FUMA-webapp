@@ -92,7 +92,8 @@ if(ciMapFileN > 0){
 		}
 	}
 }
-if(!is.na(ciMapBuiltin[1])){
+
+if(ciMapBuiltin[1]!="NA"){
 	for(f in ciMapBuiltin){
 		print(f)
 		ci_tmp <- fread(input=paste0("gzip -cd ", datadir, "/", f), data.table=F)
