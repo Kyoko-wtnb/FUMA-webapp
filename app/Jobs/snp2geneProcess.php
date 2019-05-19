@@ -220,10 +220,10 @@ class snp2geneProcess extends Job implements ShouldQueue
 		#$script = storage_path().'/scripts/getExAC.pl';
 		#exec("perl $script $filedir");
 		if($params['eqtlMap']==1){
-			file_put_contents($logfile, "\n----- geteQTL.pl -----\n", FILE_APPEND);
-			file_put_contents($errorfile, "\n----- geteQTL.pl -----\n", FILE_APPEND);
-			$script = storage_path().'/scripts/geteQTL.pl';
-			exec("perl $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+			file_put_contents($logfile, "\n----- geteQTL.py -----\n", FILE_APPEND);
+			file_put_contents($errorfile, "\n----- geteQTL.py -----\n", FILE_APPEND);
+			$script = storage_path().'/scripts/geteQTL.py';
+			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$this->rmFiles($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)

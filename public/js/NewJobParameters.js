@@ -18,11 +18,25 @@ $(document).ready(function(){
 	CheckAll();
 	$('#fileCheck').html("<br/><div class='alert alert-danger'>GWAS summary statistics is a mandatory input.</div>");
 
+	// $('.multiSelect.clear').on('click',function(){
+	// 	var selection = $(this).siblings("select").attr("id");
+	// 	$("#"+selection+" option").each(function(){
+	// 		$(this).prop('selected', false);
+	// 	});
+	// 	CheckAll();
+	// });
+
 	$('.multiSelect a').on('click',function(){
 		var selection = $(this).siblings("select").attr("id");
-		$("#"+selection+" option").each(function(){
-			$(this).prop('selected', false);
-		});
+		if($(this).hasClass('all')){
+			$("#"+selection+" option").each(function(){
+				$(this).prop('selected', true);
+			});
+		}else if($(this).hasClass('clear')){
+			$("#"+selection+" option").each(function(){
+				$(this).prop('selected', false);
+			});
+		}
 		CheckAll();
 	});
 

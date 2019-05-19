@@ -127,6 +127,7 @@ close IN;
 open(OUT, ">$out") or die "Cannot open $out\n";
 print OUT "uniqID\tdb\ttissue\tgene\ttestedAllele\tp\tsigned_stats\tFDR\n";
 
+### PsychENCODE alleles NA
 foreach my $s (keys %db){
 	my @files = split(/:/, $db{$s});
 	if($s eq "GTEx"){
