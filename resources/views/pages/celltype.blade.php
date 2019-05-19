@@ -96,6 +96,10 @@ var loggedin = "{{ Auth::check() }}";
 							It is strongly recommended to carefully select datasets to test beforehand.
 						</span>
 						<select multiple size="10" class="form-control" id="cellDataSets" name="cellDataSets[]" onchange="CheckInput();">
+							<option value="PsychENCODE_Developmental">PsychENCODE_Developmental</option>
+							<option value="PsychENCODE_Adult">PsychENCODE_Adult</option>
+							<option value="GSE97478_Mouse_Striatum_Cortex">GSE97478_Mouse_Striatum_Cortex</option>
+							<option value="GSE106707_Mouse_Striatum_Cortex">GSE106707_Mouse_Striatum_Cortex</option>
 							<option value="Allen_Human_LGN_level1">Allen_Human_LGN_level1</option>
 							<option value="Allen_Human_LGN_level2">Allen_Human_LGN_level2</option>
 							<option value="Allen_Human_MTG_level1">Allen_Human_MTG_level1</option>

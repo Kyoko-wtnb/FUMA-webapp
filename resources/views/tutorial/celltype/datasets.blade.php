@@ -626,5 +626,48 @@ Pre-process was performed as the following steps. Please see each script for mor
 			</td>
 			<td>4 Feb 2019</td>
 		</tr>
+		<tr>
+			<td>PsychENCODE</td>
+			<td style="word-wrap:break-word;word-break:break-all;">
+				<a target="_blank" href="http://resource.psychencode.org/">
+					http://resource.psychencode.org/
+				</a>
+			</td>
+			<td>
+				Human developmental and adult brain samples.<br/>
+				For developmental dataset, 4,249 cells were available.
+				For adult dataset, from 27,412 cells, 32 cells with cell type label NA were excluded,
+				resulted in 27,380 cells.
+				From 15,086 and 17,176 genes, 15,019 and 16,243 genes were mapped to unique ENSG ID for developmental and adult datasets, respectively.
+			</td>
+			<td>Wang. et al. 2018. Comprehensive functional genomic resource and integrative model for the human brain.
+				<i>Science.</i> <b>362</b>, eaat8464.<br/>
+				<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/30545857">PMID: 30545857</a>
+			</td>
+			<td>19 May 2019</td>
+		</tr>
+		<tr>
+			<td>GSE97478, GSE106707</td>
+			<td style="word-wrap:break-word;word-break:break-all;">
+				<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE97478">
+					https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE97478
+				</a><br/>
+				<a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE106707">
+					https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE106707
+				</a>
+			</td>
+			<td>
+				Mouse striatum and cortex samples.<br/>
+				<strong>GSE97478</strong>: 1,122 cells were available.
+				From 12,936 genes, 11,299 genes were mapped to unique hs ENSG ID.<br/>
+				<strong>GSE106707</strong>: 3,417 cells were available.
+				From 10,002 genes, 8,940 genes were mapped to unique hs ENSG ID.
+			</td>
+			<td>Muoz-Manchado. et al. 2018. Diversity of interneurons in the dorsal striatum revealed by single-cell RNA sequencing and PatchSeq.
+				<i>Cell Rep.</i> <b>24</b>, 2179-2190.e7.<br/>
+				<a target="_blank" href="https://www.ncbi.nlm.nih.gov/pubmed/30134177">PMID: 30134177</a>
+			</td>
+			<td>19 May 2019</td>
+		</tr>
 	</tbody>
 </table>
