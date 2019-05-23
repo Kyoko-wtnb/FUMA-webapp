@@ -316,6 +316,8 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	<p><strong>Samples</strong><br/>
 		Meta-analysis of cis-/trans-eQTLs from 37 datasets with a total of 31,684 individuals.
 	</p><br/>
+
+	<h4><strong>10. PsychENCODE</strong></h4>
 </div>
 <br/>
 <h4><strong>Alignment of risk increasing allele in GWAS and tested allele of eQTLs</strong></h4>
