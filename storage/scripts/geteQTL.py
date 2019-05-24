@@ -97,3 +97,5 @@ for li in range(len(loci)):
 		eqtls['tissue'] = ts
 		eqtls = eqtls[["uniqID", "ds", "tissue", "gene", "ta", "p", "stats", "fdr"]]
 		eqtls.to_csv(fout, header=False, index=False, mode='a', na_rep="NA", sep="\t", float_format="%.5f")
+
+os.system("Rscript "+os.path.dirname(os.path.realpath(__file__))+"/align_eqtl.R "+filedir)
