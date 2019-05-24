@@ -763,6 +763,19 @@ class S2GController extends Controller
 			$posMapChr15Max = "NA";
 			$posMapChr15Meth = "NA";
 		}
+		$posMapAnnoDs = $request -> input('geneMap_posMapAnnoDs');
+		if(count($posMapAnnoDs)==0){
+			$posMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($posMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
+				}
+			}
+			$posMapAnnoDs = implode(":", $temp);
+		}
+		$posMapAnnoMeth = $request -> input('geneMap_posMapAnnoMeth');
 
 		// eqtl mapping
 		if($request -> has('geneMap_eqtlMap')){
@@ -822,6 +835,19 @@ class S2GController extends Controller
 			$eqtlMapChr15Max = "NA";
 			$eqtlMapChr15Meth = "NA";
 		}
+		$eqtlMapAnnoDs = $request -> input('geneMap_eqtlMapAnnoDs');
+		if(count($eqtlMapAnnoDs)==0){
+			$eqtlMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($eqtlMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
+				}
+			}
+			$eqtlMapAnnoDs = implode(":", $temp);
+		}
+		$eqtlMapAnnoMeth = $request -> input('geneMap_eqtlMapAnnoMeth');
 
 		// chromatin interaction mapping
 		$ciMap = 0;
@@ -920,6 +946,19 @@ class S2GController extends Controller
 			$ciMapChr15Max = "NA";
 			$ciMapChr15Meth = "NA";
 		}
+		$ciMapAnnoDs = $request -> input('geneMap_ciMapAnnoDs');
+		if(count($ciMapAnnoDs)==0){
+			$ciMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($ciMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
+				}
+			}
+			$ciMapAnnoDs = implode(":", $temp);
+		}
+		$ciMapAnnoMeth = $request -> input('geneMap_ciMapAnnoMeth');
 
 		// write parameter into a file
 		$paramfile = $filedir.'/params.config';
@@ -950,6 +989,8 @@ class S2GController extends Controller
 		File::append($paramfile, "posMapChr15=$posMapChr15\n");
 		File::append($paramfile, "posMapChr15Max=$posMapChr15Max\n");
 		File::append($paramfile, "posMapChr15Meth=$posMapChr15Meth\n");
+		File::append($paramfile, "posMapAnnoDs=$posMapAnnoDs\n");
+		File::append($paramfile, "posMapAnnoMeth=$posMapAnnoMeth\n");
 
 		File::append($paramfile, "\n[eqtlMap]\n");
 		File::append($paramfile, "eqtlMap=$eqtlMap\n");
@@ -961,6 +1002,8 @@ class S2GController extends Controller
 		File::append($paramfile, "eqtlMapChr15=$eqtlMapChr15\n");
 		File::append($paramfile, "eqtlMapChr15Max=$eqtlMapChr15Max\n");
 		File::append($paramfile, "eqtlMapChr15Meth=$eqtlMapChr15Meth\n");
+		File::append($paramfile, "eqtlMapAnnoDs=$eqtlMapAnnoDs\n");
+		File::append($paramfile, "eqtlMapAnnoMeth=$eqtlMapAnnoMeth\n");
 
 		File::append($paramfile, "\n[ciMap]\n");
 		File::append($paramfile, "ciMap=$ciMap\n");
@@ -977,6 +1020,8 @@ class S2GController extends Controller
 		File::append($paramfile, "ciMapChr15=$ciMapChr15\n");
 		File::append($paramfile, "ciMapChr15Max=$ciMapChr15Max\n");
 		File::append($paramfile, "ciMapChr15Meth=$ciMapChr15Meth\n");
+		File::append($paramfile, "ciMapAnnoDs=$ciMapAnnoDs\n");
+		File::append($paramfile, "ciMapAnnoMeth=$ciMapAnnoMeth\n");
 		return redirect("/snp2gene#joblist-panel");
 	}
 
