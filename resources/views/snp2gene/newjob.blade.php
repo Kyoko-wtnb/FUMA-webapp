@@ -1494,24 +1494,23 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td>Gene window
-						<a class="infoPop" data-toggle="popover" title="MAGMA gene window" data-content="The window size of genes to assign SNPs. e.g. 5kb option means SNPs within 5kb from both start and end of the gene are assigned to that gene.">
+					<td>Gene windows
+						<a class="infoPop" data-toggle="popover" title="MAGMA gene window" data-content="The window size of genes to assign SNPs.
+						To set same window size for both up- and downstream, provide one value.
+						To set different window sizes for up- and downstream, provide two values separated by comma.
+						e.g. 2,1 will set 2kb upstream and 1kb downstream.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
 					<td>
-						<select class="form-control" id="magma_window" name="magma_window">
-							<option selected value="0">0 kb</option>
-							<option value="1">1 kb</option>
-							<option value="5">5 kb</option>
-							<option value="10">10 kb</option>
-							<option value="15">15 kb</option>
-							<option value="20">20 kb</option>
-							<option value="25">25 kb</option>
-							<option value="30">30 kb</option>
-							<option value="40">40 kb</option>
-							<option value="50">50 kb</option>
-						</select>
+						<span class="form-inline">
+							<input type="number" class="form-control" id="magma_window" name="magma_window" value="0" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();">
+							kb<br/>
+							<span class="info"><i class="fa fa-info"></i>
+								One value will set same window size both sides, two values separated by comma will set different window sizes for up- and downstream.
+								e.g. 2,1 will set window sizes 2kb upstream and 1kb downstream of the genes.
+							</span>
+						</span>
 					</td>
 					<td></td>
 				</tr>

@@ -43,11 +43,25 @@ def main():
 	refpanel = param_cfg.get('params', 'refpanel')
 	pop = param_cfg.get('params', 'pop')
 	ensg_v = param_cfg.get('params', 'ensembl')
-	magma_window = param_cfg.get('magma', 'magma_window')
+	magma_window = param_cfg.get('magma', 'magma_window').replace(" ","")
 	magma_exp = param_cfg.get('magma', 'magma_exp').split(":")
 
 	magma_file = "magma.input"
 	snps_file = "input.snps"
+
+	### gene annotation
+	## create annotation file if necessary
+	annot_file = magmafiles+"/"+refpanel+"/"+pop+"_ENSG"+ensg_v+"_w"+magma_window.replace(",", "_")+".genes.annot"
+	if not os.path.isfile(annot_file):
+		if "," in magma_window:
+			w = magma_window
+		else:
+			w = magma_window+","+magma_window
+		command = magmadir+"/magma --annotate window="+w
+		command += " --snp-loc "+magmafiles+"/"+refpanel+"/"+pop+".bim"
+		command += " --gene-loc "+magmafiles+"/ENSG"+ensg_v+".coding.genes.txt"
+		command += " --out "+magmafiles+"/"+refpanel+"/"+pop+"_ENSG"+ensg_v+"_w"+magma_window.replace(",", "_")
+		os.system(command)
 
 	### MAGMA gene analysis
 	command = "awk 'NR>=2' "+filedir+snps_file
@@ -63,7 +77,11 @@ def main():
 			command += " $6}else{print$1 "+'":"'+" $2 "+'":"'+" $4 "+'":"'+" $3"+'"\t"'+" $6}}'"
 			command += " | sort -u -k 1,1 > "+filedir+magma_file
 		os.system(command)
-		os.system(magmadir+"/magma --bfile "+magmafiles+"/"+refpanel+"/"+pop+" --pval "+filedir+magma_file+" N="+str(N)+" --gene-annot "+magmafiles+"/"+refpanel+"/"+pop+"_ENSG"+ensg_v+"_w"+magma_window+".genes.annot --out "+filedir+"magma")
+		command = magmadir+"/magma --bfile "+magmafiles+"/"+refpanel+"/"+pop
+		command += " --pval "+filedir+magma_file+" N="+str(N)
+		command += " --gene-annot "+annot_file
+		command += " --out "+filedir+"magma"
+		os.system(command)
 	else:
 		header = []
 		with open(filedir+snps_file, 'r') as fin:
@@ -80,7 +98,11 @@ def main():
 			command += " int($"+str(Ncol)+")}else{print$1 "+'":"'+" $2 "+'":"'+" $4 "+'":"'+" $3"+'"\t"'+" $6 "+'"\t"'+" int($"+str(Ncol)+")}}'"
 			command += " | sort -u -k 1,1 > "+filedir+magma_file
 		os.system(command)
-		os.system(magmadir+"/magma --bfile "+magmafiles+"/"+refpanel+"/"+pop+" --pval "+filedir+magma_file+" ncol=3 --gene-annot "+magmafiles+"/"+refpanel+"/"+pop+"_ENSG"+ensg_v+"_w"+magma_window+".genes.annot --out "+filedir+"magma")
+		command = magmadir+"/magma --bfile "+magmafiles+"/"+refpanel+"/"+pop
+		command += " --pval "+filedir+magma_file+" ncol=3"
+		command += " --gene-annot "+annot_file
+		command += " --out "+filedir+"magma"
+		os.system(command)
 
 	if not os.path.isfile(filedir+"magma.genes.out"):
 		sys.exit("MAGMA ERROR")
@@ -89,12 +111,19 @@ def main():
 	os.system("mv "+filedir+"temp.txt "+filedir+"magma.genes.out")
 
 	### MAGMA gene set analysis
-	os.system(magmadir+"/magma --gene-results "+filedir+"magma.genes.raw --set-annot "+magmafiles+"/magma_GS.txt --out "+filedir+"magma")
+	command = magmadir+"/magma --gene-results "+filedir+"magma.genes.raw"
+	command += " --set-annot "+magmafiles+"/magma_GS.txt"
+	command += " --out "+filedir+"magma"
+	os.system(command)
 	### MAGMA gene expression analyses
 	for f in magma_exp:
 		tmp = f.split("/")
 		out = tmp[len(tmp)-1]
-		os.system(magmadir+"/magma --gene-results "+filedir+"magma.genes.raw --gene-covar "+magmafiles+"/"+f+".txt --model direction=greater condition-hide=Average --out "+filedir+"magma_exp_"+out)
+		command = magmadir+"/magma --gene-results "+filedir+"magma.genes.raw"
+		command += " --gene-covar "+magmafiles+"/"+f+".txt"
+		command += " --model direction=greater condition-hide=Average"
+		command += " --out "+filedir+"magma_exp_"+out
+		os.system(command)
 
 	os.system("Rscript "+os.path.dirname(os.path.realpath(__file__))+"/magma_gene.R "+filedir+" "+ensg_v)
 
