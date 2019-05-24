@@ -48,7 +48,7 @@ fout = filedir+"eqtl.txt"
 
 ##### write header for output file #####
 with open(fout, 'w+') as fo:
-	fo.write("uniqID\tbp\ttissue\tgene\ttestedAllele\tp\tsigned_stats\tFDR\n")
+	fo.write("uniqID\tdb\ttissue\tgene\ttestedAllele\tp\tsigned_stats\tFDR\n")
 
 ##### Process per locus #####
 loci = pd.read_csv(floci, sep="\t", usecols=[0,3,6,7], header=0)
@@ -60,8 +60,8 @@ for li in range(len(loci)):
 	end = loci.iloc[li,3]
 
 	for feqtl in eqtlds:
-		reg = re.match(r'(.+\/)(.+).txt.gz', feqtl)
-		ds = reg.group(1)
+		reg = re.match(r'(.+)\/(.+).txt.gz', feqtl)
+		db = reg.group(1)
 		ts = reg.group(2)
 		tb = tabix.open(qtldir+"/"+feqtl)
 		eqtls = []
@@ -73,27 +73,25 @@ for li in range(len(loci)):
 		eqtls = eqtls[eqtls.iloc[:,1].astype('int').isin(snps[snps.iloc[:,1]==chrom].iloc[:,2])]
 		if len(eqtls)==0: continue
 
-		### change dtype
-		eqtls.iloc[:,0:2] = eqtls.iloc[:,0:2].apply(pd.to_numeric, downcast='integer', axis=1)
-		eqtls.iloc[:,6:] = eqtls.iloc[:,6:].apply(pd.to_numeric, errors='coerce', axis=1)
-
 		### filter by P/FDR
+		#eqtls.iloc[:,6:] = eqtls.iloc[:,6:].apply(pd.to_numeric, errors='coerce', axis=1)
 		if sigonly == 1:
-			eqtls = eqtls[eqtls.iloc[:,8]<0.05]
+			eqtls = eqtls[pd.to_numeric(eqtls.iloc[:,8], errors='coerce')<0.05]
 		else:
-			eqtls = eqtls[eqtls.iloc[:,7]<eqtlP]
+			eqtls = eqtls[pd.to_numeric(eqtls.iloc[:,7], errors='coerce')<eqtlP]
 		if len(eqtls)==0: continue
 
 		### assign uniqID
 		## if eQTLs do not have alleles, take uniqID from snps
 		## For multi allelic SNPs, duplicated eQTLs (for later use in gene mapping)
+		eqtls.iloc[:,0:2] = eqtls.iloc[:,0:2].apply(pd.to_numeric, downcast='integer', axis=1)
 		if eqtls.iloc[0,2]=="NA" or eqtls.iloc[0,2]=="NA":
 			eqtls = eqtls.merge(snps[snps.iloc[:,1]==chrom].iloc[:,[0,2]], on="pos", how="left")
 		else:
 			eqtls.iloc[:,2:4] = eqtls.iloc[:,2:4].apply(np.sort, axis=1, result_type='broadcast')
 			eqtls['uniqID'] = eqtls.iloc[:,0].astype('str')+":"+eqtls.iloc[:,1].astype('str')+":"+eqtls.iloc[:,2]+":"+eqtls.iloc[:,3]
 		eqtls = eqtls[eqtls.uniqID.isin(snps.uniqID)]
-		eqtls['ds'] = ds
+		eqtls['db'] = db
 		eqtls['tissue'] = ts
-		eqtls = eqtls[["uniqID", "ds", "tissue", "gene", "ta", "p", "stats", "fdr"]]
+		eqtls = eqtls[["uniqID", "db", "tissue", "gene", "ta", "p", "stats", "fdr"]]
 		eqtls.to_csv(fout, header=False, index=False, mode='a', na_rep="NA", sep="\t", float_format="%.5f")
