@@ -499,7 +499,7 @@ def getAnnot(snps, annot_dir):
 	out = []
 	### process per chromosome
 	for chrom in chroms:
-		annotfile = annot_dir+"/chr"+str(chrom)+".annot.txt.gz"
+		annotfile = annot_dir+"/chr"+str(chrom)+".annot.gz"
 
 		tmp = snps[snps[:,2].astype(int)==chrom]
 		if len(tmp)==0:
@@ -720,7 +720,7 @@ def main():
 	with open(snpsout, 'w') as o:
 		o.write(ohead)
 
-	tmp = subprocess.check_output('gzip -cd '+params.annot_dir+'/chr1.annot.txt.gz | head -1', shell=True)
+	tmp = subprocess.check_output('gzip -cd '+params.annot_dir+'/chr1.annot.gz | head -1', shell=True)
 	tmp = tmp.strip().split()
 
 	ohead = "\t".join(["uniqID"]+tmp[4:])

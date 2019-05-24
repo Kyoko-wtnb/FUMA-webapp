@@ -303,7 +303,7 @@ elif chrcol is not None and poscol is not None:
 	refpanel = cfg.get('data', 'refgenome')+"/"+param.get('params', 'refpanel')
 	pop = param.get('params', 'pop')
 
-	##### tabix dbSNP to get rsID nad alleles #####
+	##### tabix refpanel to get rsID and alleles #####
 	def Tabix (chrom, start ,end, snps):
 		snps = np.array(snps)
 
@@ -313,37 +313,48 @@ elif chrcol is not None and poscol is not None:
 		out = open(outSNPs, 'a+')
 
 		# when rsID is the only missing column, keep all SNPs in input file
-		# assigned rsID for only SNPs that exists in dbSNP
+		# assigned rsID from the selected reference panel
+		# if rsID is not available, replace with uniqID
 		if neacol is not None and eacol is not None:
-			tbfile = dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz"
+			tbfile = refpanel+"/"+pop+"/"+pop+".chr"+str(chrom)+".rsID.gz"
 			tb = tabix.open(tbfile)
-			temp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
-			dbSNP = []
-			for l in temp:
-				dbSNP.append(l)
-			dbSNP = np.array(dbSNP)
-			if len(dbSNP)==0:
-				out.close()
-				return
-			poss = set(dbSNP[:,1].astype(int))
-			pos = dbSNP[:,1].astype(int)
+			refSNP = []
+			for l in tb.querys(str(chrom)+":"+str(start)+"-"+str(end)):
+				refSNP.append(l)
+			refSNP = np.array(refSNP)
+			poss = set(refSNP[:,1].astype(int))
+			pos = refSNP[:,1].astype(int)
 			for l in snps:
+				uid = ":".join([l[chrcol], l[poscol]]+sorted([l[neacol].upper(), l[eacol].upper()]))
 				if int(l[poscol]) in poss:
 					j = bisect_left(pos, int(l[poscol]))
-					out.write("\t".join([dbSNP[j,0],dbSNP[j,1], l[neacol].upper(), l[eacol].upper(), dbSNP[j,2], l[pcol]]))
-					if orcol is not None:
-						out.write("\t"+l[orcol])
-					if becol is not None:
-						out.write("\t"+l[becol])
-					if secol is not None:
-						out.write("\t"+l[secol])
-					if Ncol is not None:
-						out.write("\t"+l[Ncol])
-					out.write("\n")
+					while refSNP[j,1] == int(l[poscol]):
+						if uid == refSNP[j,2]: break
+						j += 1
+					if uid == refSNP[j,2]:
+						out.write("\t".join([refSNP[j,0], refSNP[j,1], l[neacol].upper(), l[eacol].upper(), refSNP[j,3], l[pcol]]))
+						if orcol is not None:
+							out.write("\t"+l[orcol])
+						if becol is not None:
+							out.write("\t"+l[becol])
+						if secol is not None:
+							out.write("\t"+l[secol])
+						if Ncol is not None:
+							out.write("\t"+l[Ncol])
+						out.write("\n")
+					else:
+						out.write("\t".join([l[chrcol],l[poscol], l[neacol].upper(), l[eacol].upper(), uid, l[pcol]]))
+						if orcol is not None:
+							out.write("\t"+l[orcol])
+						if becol is not None:
+							out.write("\t"+l[becol])
+						if secol is not None:
+							out.write("\t"+l[secol])
+						if Ncol is not None:
+							out.write("\t"+l[Ncol])
+						out.write("\n")
 				else:
-					a = [l[neacol], l[eacol]]
-					a.sort()
-					out.write("\t".join([l[chrcol],l[poscol], l[neacol].upper(), l[eacol].upper(), ":".join([l[chrcol], l[poscol]]+a), l[pcol]]))
+					out.write("\t".join([l[chrcol],l[poscol], l[neacol].upper(), l[eacol].upper(), uid, l[pcol]]))
 					if orcol is not None:
 						out.write("\t"+l[orcol])
 					if becol is not None:
