@@ -14,10 +14,20 @@ Since chromatin interaction mapping is more complicated than other two mappings 
 		Region 2 could also be overlapped with one of the genomic risk loci.<br/>
 		<img src="{{ URL::asset('/image/ciMapTerm.png') }}" style="width: 70%; align: middle;">
 	</p>
+	<h4><strong>Direction of interactions</strong></h4>
+	<p>
+		Input files of chromatin interaction consist of 7 columns:
+		chr1, start1, end1, chr2, start2, end2, FDR (or other score).
+		For loops identified by HiC, there is no directionality, i.e. both directions (chr1:start1-end1 <-> chr2:start2-end2)
+		were considered regardless of the order in the file.
+		For enhancer-promoter (EP) links, only one way (enhancer -> promoter) is considered for the mapping.
+		The directionality is specified for each dataset below.
+	</p>
 	<h4><strong>Build in chromatin interaction data</strong></h4>
 	<p><strong>1. Hi-C of 21 tissue/cell types from <a target="_blank" href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112">GSE87112</a>.</strong><br/>
 		Pre-processed significant loops computed by Fit-Hi-C were obtained from GSE87112.
 		Loops were filtered at FDR 0.05. For mapping, loops can be further filter by the user defined FDR threshold.
+		Both directions are considered.
 		Available tissue/cell types are listed below.<br/>
 		<ul>
 			<li>Adrenal</li>
@@ -42,6 +52,29 @@ Since chromatin interaction mapping is more complicated than other two mappings 
 			<li>Trophoblast-like Cell</li>
 			<li>hESC</li>
 		</ul>
+	</p>
+	<p>
+		<strong>2. Hi-C loops from Giusti-Rodriguez et al. 2019</strong><br/>
+		Pre-processed enhancer-promoter and promoter-promoter interactions based on
+		HiC data for adult and fetal human brain samples.
+		The data was provided by Prof. Patric F. Sullivan.
+		Only significant interaction with P < 2.31e-11 (after Bonferroni correction) were included.
+		Both directions are considered.
+	</p>
+	<p>
+		<strong>3. Enhancer-Promoter links based on Hi-C from PsychENCODE</strong><br/>
+		The data was downloaded from <a target="_blank" href="http://resource.psychencode.org/">PsychENCODE resource</a>
+		(file: INT-16_HiC_EP_linkages.csv).<br/>
+		Promoter regions were defined as 1000 around the provided TSS site.
+		Since there is no P-value/FDR/score, all interactions were assigned to 0.
+		Only one way (enhancer -> promoter) is considered.
+	</p>
+	<p>
+		<strong>4. Enhancer-Promoter correlations from FANTOM5</strong>
+		The data was downloaded from <a target="_blank" href="http://slidebase.binf.ku.dk/human_enhancers/presets">FANTOM5 human Enhancer Tracks</a>
+		(file: hg19_enhancer_promoter_correlations_distances_cell_type.txt and
+		hg19_enhancer_promoter_correlations_distances_organ.txt).
+		Only one way (enhancer -> promoter) is considered.
 	</p>
 	<h4><strong>Custom chromatin interaction matrices file format</strong></h4>
 	<p><strong>1. Input file format</strong><br/>
@@ -71,7 +104,11 @@ Since chromatin interaction mapping is more complicated than other two mappings 
 			Chromosome can be coded as string like "chr1" and "chrX" which will be converted into integer.
 		</span><br/>
 		<span class="info"><i class="fa fa-info"></i>
-			Order of region 1 and region 2 does not matter. Inter-chromosomal interactions can be encoded in the same file by specifying chromosome of region 1 and region 2.
+			Order of regions does not matter, unless a word "oneway" is in the file name (e.g. hic_loops_oneway.txt.gz).
+			In that case only one direction (1st region -> 2nd region) is considered.
+		</span><br/>
+		<span class="info"><i class="fa fa-info"></i>
+			Inter-chromosomal interactions can be encoded in the same file by specifying chromosome of region 1 and region 2.
 		</span><br/>
 		<span class="info"><i class="fa fa-info"></i>
 			The column of FDR will be used to filter interaction by the user defined threshold.
