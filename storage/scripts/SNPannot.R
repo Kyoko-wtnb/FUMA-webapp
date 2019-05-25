@@ -59,7 +59,7 @@ if(params$posMap$posMapAnnoDs!="NA" | params$eqtlMap$eqtlMapAnnoDs!="NA" | param
 	annot_ds <- annot_ds[annot_ds!="NA"]
 	bed_out <- data.frame()
 	for(ds in annot_ds){
-		bed <- fread(input=paste0("gzip -cd ", config$data$annot_bed, "/", ds), header=F, data.table=F)[,1:3]
+		bed <- fread(cmd=paste0("gzip -cd ", config$data$annot_bed, "/", ds), header=F, data.table=F)[,1:3]
 		colnames(bed) <- c("chr", "start", "end")
 		bed <- with(bed, GRanges(seqnames=chr, IRanges(start=start+1, end=end)))
 		o <- findOverlaps(snps_gr, bed)
@@ -77,7 +77,17 @@ if(params$posMap$posMapAnnoDs!="NA" | params$eqtlMap$eqtlMapAnnoDs!="NA" | param
 	write.table(annot, paste0(filedir, "annot.txt"), quote=F, row.names=F, sep="\t")
 }
 
+ref.count <- fread(paste0(config$data$refgenome, "/", params$params$refpanel, "/", params$params$pop, "/", params$params$pop, ".annov.count"), data.table=F)
+colnames(ref.count)[2:3] <- c("ref.count", "ref.prop")
+#ref.count <- cbind(ref.count, annov.table[match(ref.count$annot, annov.table$annot),-1])
 annov <- unique(annov[,c(1,3)])
-annov.table <- table(annov$annot)
-annov.table <- data.frame(annot=names(annov.table), count = as.numeric(annov.table))
-write.table(annov.table, paste(filedir, "snpsannot.txt", sep=""), quote=F, row.names=F, sep="\t")
+annov.table <- table(annov$annot[!is.na(annov$annot)])
+ref.count$count <- ifelse(ref.count$annot %in% names(annov.table), as.numeric(annov.table[ref.count$annot]), 0)
+ref.count$prop <- ref.count$count/sum(ref.count$count)
+ref.count$enrichment <- ref.count$prop/ref.count$ref.prop
+N <- sum(ref.count$ref.count)
+n <- sum(ref.count$count)
+ref.count$fisher.P <- apply(ref.count[,c(2,4)], 1, function(x){
+	fisher.test(matrix(c(as.numeric(x[2]), n-as.numeric(x[2]), as.numeric(x[1])-as.numeric(x[2]), N-n-as.numeric(x[1])), ncol=2))$p.value
+})
+write.table(ref.count, paste(filedir, "annov.stats.txt", sep=""), quote=F, row.names=F, sep="\t")

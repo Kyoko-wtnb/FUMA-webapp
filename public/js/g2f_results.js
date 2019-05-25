@@ -309,7 +309,7 @@ function tsEnrich(id){
 				bars.push(barup);
 				svg.append('g').attr("class", "y axis")
 					.call(yAxisup)
-					.selectAll('test').style('font-size', '11px');
+					.selectAll('text').style('font-size', '11px');
 				svg.append('g').attr("class", "x axis")
 					.attr("transform", "translate(0,"+(currentHeight+span)+")")
 					.call(xAxis).selectAll('text').remove();
