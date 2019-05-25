@@ -110,6 +110,24 @@ class G2FController extends Controller
 		}
 
 		$ensembl = $request->input('ensembl');
+
+		$gsFileN = (int)$request -> input('gsFileN');
+		$gsFiles = "NA";
+		if($gsFileN>0){
+			$gsFiles = [];
+			$n = 1;
+			while(count($gsFiles)<$gsFileN){
+				$id = (string) $n;
+				if($request->hasFile("gsFile".$id)){
+					$tmp_filename = $_FILES["gsFile".$id]["name"];
+					$request -> file("gsFile".$id)->move($filedir, $tmp_filename);
+					$gsFiles[] = $tmp_filename;
+				}
+				$n++;
+			}
+			$gsFiles = implode(":", $gsFiles);
+		}
+
 		$gene_exp = implode(":", $request->input("gene_exp"));
 
 		if($request -> has('MHC')){
@@ -142,6 +160,8 @@ class G2FController extends Controller
 		File::append($paramfile, "bkgtype=$bkgtype\n");
 		File::append($paramfile, "bkgval=$bkgval\n");
 		File::append($paramfile, "ensembl=$ensembl\n");
+		File::append($paramfile, "gsFileN=$gsFileN\n");
+		File::append($paramfile, "gsFiles=$gsFiles\n");
 		File::append($paramfile, "gene_exp=$gene_exp\n");
 		File::append($paramfile, "MHC=$MHC\n");
 		File::append($paramfile, "adjPmeth=$adjPmeth\n");
@@ -240,6 +260,8 @@ class G2FController extends Controller
 			File::append($paramfile, "bkgval=$bkgval\n");
 			File::append($paramfile, "MHC=$MHC\n");
 			File::append($paramfile, "ensembl=$ensembl\n");
+			File::append($paramfile, "gsFileN=0\n");
+			File::append($paramfile, "gsFiles=NA\n");
 			File::append($paramfile, "gene_exp=$gene_exp\n");
 			File::append($paramfile, "adjPmeth=$adjPmeth\n");
 			File::append($paramfile, "adjPcut=$adjPcut\n");

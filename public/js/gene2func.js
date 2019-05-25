@@ -22,6 +22,8 @@ $(document).ready(function(){
 		$('a[href="'+hashid+'"]').trigger('click');
 	}
 
+	updateList();
+
 	// gene type clear
 	$('#bkgeneSelectClear').on('click', function(){
 		$("#genetype option").each(function(){
@@ -42,7 +44,21 @@ $(document).ready(function(){
 		});
 	});
 
-	updateList();
+	$('#gsFileAdd').on('click',function(){
+		var n = 0;
+		$('.gsFileID').each(function(){
+			if(parseInt($(this).val()) > n){
+				n = parseInt($(this).val());
+			}
+		})
+		n += 1;
+		$('#gsFiles').append('<br/><span class="form-inline gsFile" style="padding-left: 40px;">'
+		+'File '+n
+		+': '+'<button type="button" class="btn btn-default btn-xs gsFileDel" onclick="gsFileDel(this)">delete</button>'
+		+'<input type="file" class="form-control-file gsMapFile" style="padding-left: 40px;" name="gsFile'+n+'" id="gsFile'+n
+		+'" onchange="gsFileCheck()">'
+		+'<input type="hidden" class="gsFileID" id="gsFileID'+n+'" name="gsFileID'+n+'" value="'+n+'"></span>');
+	})
 
 	$('#deleteJob').on('click', function(){
 		swal({
@@ -160,6 +176,20 @@ $(document).ready(function(){
 		});
 	}
 });
+
+function gsFileCheck(){
+	var nFiles = 0;
+	$('.gsMapFile').each(function(){
+		if($(this).val().length>0){
+			nFiles += 1;
+		}
+	})
+	$('#gsFileN').val(nFiles);
+}
+function gsFileDel(del){
+	$(del).parent().remove();
+	gsFileCheck();
+}
 
 // Plot donwload
 function ImgDown(name, type){

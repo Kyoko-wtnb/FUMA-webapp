@@ -461,7 +461,17 @@ function GeneSet(id){
 			+'The hypergeometric test is only performed if more than 2 genes are available.</div>');
 			$('#GSdown').attr("disabled", true);
 		}else{
+			tmp_category = d3.set(data.map(function(d){return d.Category})).values();
+			tmp_category.forEach(function(d){
+				if(category.indexOf(d)<0){category.push(d)}
+			})
+			console.log(category)
 			for(var i=0; i<category.length; i++){
+				// title
+				var title = category[i];
+				if(category_title[category[i]]!=undefined){
+					title = category_title[category[i]];
+				}
 				// extract data
 				var tdata=[];
 				data.forEach(function(d){
@@ -487,7 +497,7 @@ function GeneSet(id){
 				if(tdata.length==0){
 					var panel = $('<div class="panel panel-default" style="padding-top:0;"><div class="panel-heading" style="height: 35px;"><a href="#'
 						+category[i]+'Panel" data-toggle="collapse" style="color: black;">'
-						+category_title[category[i]]+'<tab>(0)</div><div class="panel-body collapse" id="'
+						+title+'<tab>(0)</div><div class="panel-body collapse" id="'
 						+category[i]+'Panel"><div id="'+category[i]+'" style="text-align: center;">No significant results</div><div id="'
 						+category[i]+'Table"></div></div></div>');
 					$('#GeneSet').append(panel);
@@ -496,7 +506,7 @@ function GeneSet(id){
 					// add div
 					var panel = '<div class="panel panel-default" style="padding-top:0;"><div class="panel-heading" style="height: 35px;"><a href="#'
 						+category[i]+'Panel" data-toggle="collapse" style="color: black;">'
-						+category_title[category[i]]+'<tab>('+tdata.length+')</div><div class="panel-body collapse" id="'
+						+title+'<tab>('+tdata.length+')</div><div class="panel-body collapse" id="'
 						+category[i]+'Panel"><p><a onclick="GeneSetPlot('+"'"+category[i]+"'"+');">Plot</a> / <a onclick="GeneSetTable('+
 						"'"+category[i]+"'"+');">Table</a></p></div></div>';
 					$('#GeneSet').append(panel);

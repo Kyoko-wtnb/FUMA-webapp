@@ -94,6 +94,8 @@ gval = param.get('params', 'gval')
 bkgtype = param.get('params', 'bkgtype')
 bkgval = param.get('params', 'bkgval')
 ensg_v = param.get('params', 'ensembl')
+nFiles = param.get('params', 'gsFileN')
+gsFiles = param.get('params', 'gsFiles')
 MHC = int(param.get('params', 'MHC')) #1 for exclude
 adjPmeth = param.get('params', 'adjPmeth')
 adjPcut = float(param.get('params', 'adjPcut'))
@@ -173,6 +175,10 @@ if len(genes)==1:
 ENSG = ENSG[ArrayIn(ENSG[:,ENSGheads.index("entrezID")], genes)]
 
 files = glob.glob(gsdir+'/*.gmt')
+if nFiles>0:
+	files += [filedir+x for x in gsFiles.split(":")]
+print files
+
 N = len(bkgenes)
 m = len(genes)
 

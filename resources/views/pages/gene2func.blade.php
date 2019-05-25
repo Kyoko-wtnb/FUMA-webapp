@@ -144,6 +144,13 @@ var loggedin = "{{ Auth::check() }}";
 							</select>
 						</span><br/>
 						<tab>
+						Custom gene set files:
+						<button type="button" class="btn btn-default btn-xs" id="gsFileAdd">add file</button>
+						<input type="hidden" value="0" id="gsFileN" name="gsFileN">
+						<span class="info"><i class="fa fa-info"></i>File is required to have GMT format with an extension ".gmt".</span>
+						<br/>
+						<span id="gsFiles"></span><br/>
+						<tab>
 						<span class="form-inline">
 							Gene expression data sets:
 							<select multiple class="form-control" name="gene_exp[]" id="gene_exp">
