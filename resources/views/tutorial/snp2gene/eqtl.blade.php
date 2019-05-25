@@ -1,4 +1,4 @@
-<h3 id="eQTLs">eQTLs</h3>
+P-value<h3 id="eQTLs">eQTLs</h3>
 FUMA contains several data sources of eQTLs and each data source is described in this section.
 <h4><strong>eQTL data sources</strong></h4>
 <div style="padding-left: 40px;">
@@ -234,7 +234,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		Chromosome coordinate was lifted over to hg19 from hg18 using liftOver software.
 		Gene names are mapped to Ensembl ID (excluded genes which are not mapped to ENSG ID).
 		Since only tested allele was provided, other allele was extracted from 1000G EUR population.
-		FDR (or any corrected P-value) was not available in the original data (in the FUMA, FDR column was replaced with -9).
+		FDR (or any corrected P-value) was not available in the original data (in the FUMA, FDR column was replaced with NA).
 		<br/>
 		Signed statistics is beta.
 		<br/>
@@ -282,7 +282,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	</p>
 	<p><strong>Description</strong><br/>
 		Publicly available eQTLs from CMC (without application) is binned by FDR.
-		Therefore, nominal P-value is not available (replaced with -9).
+		Therefore, nominal P-value is not available (replaced with NA).
 		FDR was binned into the following four groups, &lt;0.2, &lt;0.1, &lt;0.05 and &lt;0.01.
 		As numeric value is required for filtering during SNP2GENE process, those categorical values are replaced with
 		0.199, 0.099, 0.049 and 0.009 respectively.
@@ -316,6 +316,98 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	<p><strong>Samples</strong><br/>
 		Meta-analysis of cis-/trans-eQTLs from 37 datasets with a total of 31,684 individuals.
 	</p><br/>
+
+	<h4><strong>10. PsychENCODE (Wang et al. 2018)</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="http://resource.psychencode.org">http://resource.psychencode.org</a>.
+		Significant cis-eQTLs were obtained from <span style="color:blue"> DER-08a_hg19_eQTL.significant. </span>
+	</p>
+	<p><strong>Description</strong><br/>
+		The available eQTLs were filtered based on an FDR &lt;0.05 and an expression &gt;0.1 FPKM in at least 10 samples.
+		FDR was estimated using Bonferroni-correction.
+		Please refer the original study for more details (<a href="https://science.sciencemag.org/content/362/6420/eaat8464.full">Wang et al. 2018</a>).
+		Ensembl gene ID is used as provided in the original file.
+		<br/>
+		The signed statistics are betas.
+	</p>
+	<p><strong>Samples</strong><br/>
+		The eQTLs were identified from 1387 individuals.
+  <br/>
+	 <span class="info"><i class="fa fa-info"></i>
+		Alignment of risk increasing allele and eQTL tested allele was not performed for this data source,
+		since the tested alleles are not available in the original data source
+		(replaced with "NA" in the result table).
+	 </span>
+  </p><br/>
+
+	<h4><strong>11. DICE (Schmiedel et al. 2018)</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="https://dice-database.org/downloads#eqtl_download">https://dice-database.org/downloads#eqtl_download</a>.
+		The cis-eQTLs were obtained from the DICE eQTL section of the website.
+	</p>
+	<p><strong>Description</strong><br/>
+		Only significant eQTLs are present in the dataset. The available eQTLs were filtered based on an FDR &lt;0.05, a raw P-value of &lt;0.0001, and a TPM &gt;0.1 FPKM.
+		FDR was estimated using permutation. The P-value reported in the data is a raw P-value.
+		<br/>
+		Please refer the original study for more details (<a href="https://www.sciencedirect.com/science/article/pii/S009286741831331X?via%3Dihub">Schmiedel et al. 2018</a>).
+		Ensembl gene ID is used as provided in the original file.
+		<br/>
+		<strong>The cell types were:</strong>
+		<ul>
+			<li> Naive B-cells </li>
+			<li> Activated CD4 T cells </li>
+			<li> Naive CD4 T cells </li>
+			<li> Activated CD8 T cells </li>
+			<li> Naive CD8 T cells </li>
+			<li> Classical Monocytes </li>
+			<li> Non-classical Monocytes </li>
+			<li> NK cell, CD56dim CD16+ </li>
+			<li> TFH CD4 T cells </li>
+			<li> TH117 CD4 T cells </li>
+			<li> TH1 CD4 T cells </li>
+			<li> TH2 CD4 T cells </li>
+			<li> Memory TREG CD4 T cells </li>
+			<li> Naive  TREG CD4 T cells </li>
+    </ul>
+	</p>
+	<p><strong>Samples</strong><br/>
+				The eQTLs were identified in 13 immune cell types isolated from 106 leukapheresis samples provided by 91 healthy subjects.
+  <br/>
+			<span class="info"><i class="fa fa-info"></i>
+				Since FDR is not available, eQTLs can be only used when P-value threshold is provided by the user,
+				not "only significant snp-gene pairs" option.
+			</span>
+
+	</p><br/>
+
+	<h4><strong>12. van der Wijst scRNA-seq (van der Wijst et al. 2018)</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="https://molgenis26.target.rug.nl/downloads/scrna-seq/">https://molgenis26.target.rug.nl/downloads/scrna-seq/</a>.
+	</p>
+	<p><strong>Description</strong><br/>
+		The tested allele was specified in the data, but the other allele was not.
+		FDR was estimated using permutation.
+		Please refer the original study for more details (<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5905669/">van der Wijst et al. 2018</a>).
+		Ensembl gene ID is used as provided in the original file.
+		The summary statistics are Z scores.
+		<br/>
+		<strong>The cell types were:</strong>
+		<ul>
+			<li> B-cells </li>
+			<li> CD4 T cells </li>
+			<li> CD8 T cells </li>
+			<li> Peripheral blood mononuclear cells </li>
+			<li> Monocytes </li>
+			<li> Classical monocytes </li>
+			<li> Non-classical monocytes </li>
+			<li> NK cells </li>
+			<li> Dendritic cells </li>
+    </ul>
+	</p>
+	<p><strong>Samples</strong><br/>
+				The eQTLs were identified from 25,000 peripheral blood mononuclear cells (PBMCs) from 45 donors.
+	</p><br/>
+
 </div>
 <br/>
 <h4><strong>Alignment of risk increasing allele in GWAS and tested allele of eQTLs</strong></h4>
