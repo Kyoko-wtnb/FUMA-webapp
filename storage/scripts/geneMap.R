@@ -147,7 +147,7 @@ if(posMap==1){
 		tmp_snps <- tmp_snps[tmp_snps$uniqID %in% epi$uniqID[epi$epi<=posMapChr15Max],]
 		rm(epi, temp)
 	}
-	if(posMapAnnoDs!="NA"){
+	if(posMapAnnoDs!="NA" & posMapAnnoMeth!="NA"){
 		ds <- sub(".bed.gz", "", gsub("/", "_", unlist(strsplit(posMapAnnoDs, ":"))))
 		tmp_annot <- annot[match(tmp_snps$uniqID, annot$uniqID),ds]
 		if(posMapAnnoMeth=="any"){
@@ -224,7 +224,7 @@ if(eqtlMap==1){
 				eqtl <- eqtl[eqtl$uniqID %in% epi$uniqID[epi$epi<=eqtlMapChr15Max],]
 				rm(epi, temp)
 			}
-			if(eqtlMapAnnoDs!="NA"){
+			if(eqtlMapAnnoDs!="NA" & eqtlMapAnnoMeth!="NA"){
 				ds <- sub(".bed.gz", "", gsub("/", "_", unlist(strsplit(eqtlMapAnnoDs, ":"))))
 				tmp_annot <- annot[annot$uniqID %in% eqtl$uniqID, c("uniqID", ds)]
 				if(eqtlMapAnnoMeth=="any"){
@@ -297,7 +297,7 @@ if(ciMap==1){
 			cisnps <- cisnps[cisnps$uniqID %in% epi$uniqID[epi$epi<=ciMapChr15Max],]
 			rm(epi, temp)
 		}
-		if(ciMapAnnoDs!="NA"){
+		if(ciMapAnnoDs!="NA" & ciMapAnnoMeth!="NA"){
 			ds <- sub(".bed.gz", "", gsub("/", "_", unlist(strsplit(ciMapAnnoDs, ":"))))
 			tmp_annot <- annot[annot$uniqID %in% cisnps$uniqID,c("uniqID", ds)]
 			if(ciMapAnnoMeth=="any"){

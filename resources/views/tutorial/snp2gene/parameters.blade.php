@@ -530,6 +530,31 @@
 			<td>any</td>
 			<td>-</td>
 		</tr>
+		<tr>
+			<td>Annotation datasets</td>
+			<td>Optional</td>
+			<td>
+				Additional functional annotations can be annotated to candidate SNPs.
+				All available data are regional based annotation (bed file format).
+			</td>
+			<td>Multiple selection</td>
+			<td>none</td>
+			<td>-</td>
+		</tr>
+		<tr>
+			<td>Annotation filtering method</td>
+			<td>Mandatory if any of <code>Annotation datasets</code> is selected.</td>
+			<td>
+				By default, SNPs are not filtered by the annotations selected in <code>Annotation datasets</code>.
+				To filter SNPs based on the selected annotation, select this options from
+				<code>any</code> (filtered on SNPs which are overlapping with any selected annotations),
+				<code>majority</code> (filtered on SNPs which are overlapping with majority (&ge;50%) of selected annotations), or
+				<code>all</code> (filtered on SNPs which are overlapping with all of selected annotations).
+			</td>
+			<td>Selection</td>
+			<td>No filtering</td>
+			<td>-</td>
+		</tr>
 		</tbody>
 	</table>
 	<br/>

@@ -390,13 +390,15 @@
 					<tr>
 						<td>Annotation filtering method
 							<a class="infoPop" data-toggle="popover" title="Filtering method for annotations"
-							data-content="When multiple datasets are selected, SNPs will be kept if they are overlapped with any of, majority of or all of selected annotations.">
+							data-content="When multiple datasets are selected, SNPs will be kept if they are overlapped with any of, majority of or all of selected annotations
+							unless an option 'No filtering' is selected.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
 						<td>
 							<select  class="form-control" id="posMapAnnoMeth" name="posMapAnnoMeth">
-								<option selected value="any">any</option>
+								<option selected value="NA">No filtering (only annotate SNPs)</option>
+								<option value="any">any</option>
 								<option value="majority">majority</option>
 								<option value="all">all</option>
 							</select>
@@ -604,13 +606,15 @@
 					<tr>
 						<td>Annotation filtering method
 							<a class="infoPop" data-toggle="popover" title="Filtering method for annotations"
-							data-content="When multiple datasets are selected, SNPs will be kept if they are overlapped with any of, majority of or all of selected annotations.">
+							data-content="When multiple datasets are selected, SNPs will be kept if they are overlapped with any of, majority of or all of selected annotations
+							unless an option 'No filtering' is selected.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
 						<td>
 							<select  class="form-control" id="eqtlMapAnnoMeth" name="eqtlMapAnnoMeth">
-								<option selected value="any">any</option>
+								<option selected value="NA">No filtering (only annotate SNPs)</option>
+								<option value="any">any</option>
 								<option value="majority">majority</option>
 								<option value="all">all</option>
 							</select>
@@ -876,13 +880,15 @@
 					<tr>
 						<td>Annotation filtering method
 							<a class="infoPop" data-toggle="popover" title="Filtering method for annotations"
-							data-content="When multiple datasets are selected, SNPs will be kept if they are overlapped with any of, majority of or all of selected annotations.">
+							data-content="When multiple datasets are selected, SNPs will be kept if they are overlapped with any of, majority of or all of selected annotations
+							unless an option 'No filtering' is selected.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
 						</td>
 						<td>
 							<select  class="form-control" id="ciMapAnnoMeth" name="ciMapAnnoMeth">
-								<option selected value="any">any</option>
+								<option selected value="NA">No filtering (only annotate SNPs)</option>
+								<option value="any">any</option>
 								<option value="majority">majority</option>
 								<option value="all">all</option>
 							</select>
