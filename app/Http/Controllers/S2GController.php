@@ -1059,7 +1059,10 @@ class S2GController extends Controller
 		if($request -> has('locifile')){$files[] = "GenomicRiskLoci.txt";}
 		if($request -> has('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
 		if($request -> has('annovfile')){$files[] = "annov.txt"; $files[] = "annov.stats.txt";}
-		if($request -> has('annotfile')){$files[] = "annot.txt";}
+		if($request -> has('annotfile')){
+			$files[] = "annot.txt";
+			if(File::exists($filedir."annot.bed")){$files[] = "annot.bed";}
+		}
 		if($request -> has('genefile')){$files[] = "genes.txt";}
 		if($request -> has('eqtlfile')){
 			if(File::exists($filedir."eqtl.txt")){
