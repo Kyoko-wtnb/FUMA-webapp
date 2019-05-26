@@ -26,17 +26,17 @@ i = int(sys.argv[2])
 i = i
 Type = sys.argv[3]
 
-snps = pd.read_table(filedir+"snps.txt", sep="\t")
+snps = pd.read_csv(filedir+"snps.txt", sep="\t")
 snpshead = list(snps.columns.values)
 snps = snps.as_matrix()
-ld = pd.read_table(filedir+"ld.txt", sep="\t")
+ld = pd.read_csv(filedir+"ld.txt", sep="\t")
 ld = ld.as_matrix()
 
-ind = pd.read_table(filedir+"IndSigSNPs.txt", sep="\t")
+ind = pd.read_csv(filedir+"IndSigSNPs.txt", sep="\t")
 ind = ind.as_matrix()
-lead = pd.read_table(filedir+"leadSNPs.txt", sep="\t")
+lead = pd.read_csv(filedir+"leadSNPs.txt", sep="\t")
 lead = lead.as_matrix()
-loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
+loci = pd.read_csv(filedir+"GenomicRiskLoci.txt", sep="\t")
 loci = loci.as_matrix()
 
 if Type=="IndSigSNP":

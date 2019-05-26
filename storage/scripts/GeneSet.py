@@ -104,12 +104,12 @@ minOverlap = int(param.get('params', 'minOverlap'))
 if gtype == "text":
 	genes = gval.split(":")
 else:
-	lines = pd.read_table(filedir+gval, header=None, delim_whitespace=True, dtype=str)
+	lines = pd.read_csv(filedir+gval, header=None, delim_whitespace=True, dtype=str)
 	lines = np.array(lines)
 	genes = list(lines[:,0].astype(str))
 genes = [s.upper() for s in genes]
 
-ENSG = pd.read_table(ensgdir+"/"+ensg_v+"/"+ensgfile, sep="\t", dtype=str)
+ENSG = pd.read_csv(ensgdir+"/"+ensg_v+"/"+ensgfile, sep="\t", dtype=str)
 ENSGheads = list(ENSG.columns.values)
 ENSG = np.array(ENSG)
 ENSG = ENSG[ENSG[:,ENSGheads.index("entrezID")]!="NA"]
@@ -123,7 +123,7 @@ elif bkgtype == "text":
 	bkgenes = bkgval.split(":")
 	bkgenes = [s.upper() for s in bkgenes]
 else:
-	lines = pd.read_table(filedir+bkgval, header=None, delim_whitespace=True, dtype=str)
+	lines = pd.read_csv(filedir+bkgval, header=None, delim_whitespace=True, dtype=str)
 	lines = np.array(lines)[:,0]
 	bkgenes = list([str(s) for s in lines])
 	bkgenes = [s.upper() for s in bkgenes]

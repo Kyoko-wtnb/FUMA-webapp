@@ -21,7 +21,7 @@ def main():
 	if re.match(".+\/$", filedir) is None:
 		filedir += '/'
 
-	snps = pd.read_table(filedir+"input.snps", dtype=str)
+	snps = pd.read_csv(filedir+"input.snps", dtype=str, sep="\t")
 	snps = snps.dropna()
 	snps = np.array(snps)
 

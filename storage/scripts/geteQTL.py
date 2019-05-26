@@ -107,7 +107,7 @@ for li in range(len(loci)):
 			eqtls['uniqID'] = eqtls.iloc[:,0].astype('str')+":"+eqtls.iloc[:,1].astype('str')+":"+eqtls.iloc[:,2]+":"+eqtls.iloc[:,3]
 			eqtls = eqtls[eqtls.uniqID.isin(snps.uniqID)]
 
-		eqtls['ds'] = ds
+		eqtls['db'] = db
 		eqtls['tissue'] = ts
 		eqtls = eqtls[["uniqID", "db", "tissue", "gene", "ta", "p", "stats", "fdr"]]
 		eqtls.to_csv(fout, header=False, index=False, mode='a', na_rep="NA", sep="\t", float_format="%.5f")

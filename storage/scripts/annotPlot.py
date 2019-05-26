@@ -25,16 +25,16 @@ def unique(a):
 	return unique
 
 def getSNPs(filedir, i, Type, eqtlplot, ciplot):
-	snps = pd.read_table(filedir+"snps.txt", sep="\t")
+	snps = pd.read_csv(filedir+"snps.txt", sep="\t")
 	snpshead = list(snps.columns.values)
 	snps = snps.as_matrix()
-	ld = pd.read_table(filedir+"ld.txt", sep="\t")
+	ld = pd.read_csv(filedir+"ld.txt", sep="\t")
 	ld = ld.as_matrix()
-	ind = pd.read_table(filedir+"IndSigSNPs.txt", sep="\t")
+	ind = pd.read_csv(filedir+"IndSigSNPs.txt", sep="\t")
 	ind = ind.as_matrix()
-	lead = pd.read_table(filedir+"leadSNPs.txt", sep="\t")
+	lead = pd.read_csv(filedir+"leadSNPs.txt", sep="\t")
 	lead = lead.as_matrix()
-	loci = pd.read_table(filedir+"GenomicRiskLoci.txt", sep="\t")
+	loci = pd.read_csv(filedir+"GenomicRiskLoci.txt", sep="\t")
 	loci = loci.as_matrix()
 
 	if Type=="IndSigSNP":
@@ -110,7 +110,7 @@ def getCI(filedir, snps, ci, gl):
 	max_pos = max(snps[:,2])
 	chrom = int(snps[0,1])
 	if ci==1:
-		ci = pd.read_table(filedir+"ci.txt", sep="\t")
+		ci = pd.read_csv(filedir+"ci.txt", sep="\t")
 		ci = np.array(ci)
 		ci = ci[ci[:,0].astype(int)==gl]
 		ci = ci[ci[:,7]=="intra"]
@@ -159,7 +159,7 @@ def getCI(filedir, snps, ci, gl):
 
 		cireg = []
 		eid = []
-		cienh = pd.read_table(filedir+"ciSNPs.txt", sep="\t")
+		cienh = pd.read_csv(filedir+"ciSNPs.txt", sep="\t")
 		cienh = np.array(cienh)
 		if len(cienh)>0:
 			cienh = cienh[ArrayIn(cienh[:,1], inSNPs)]
@@ -167,7 +167,7 @@ def getCI(filedir, snps, ci, gl):
 			posmin = [int(x.split(":")[1].split("-")[0]) for x in cienh[:,4]]
 			posmax = [int(x.split(":")[1].split("-")[1]) for x in cienh[:,4]]
 			cireg = np.c_[posmin, posmax, cienh[:,5:7]]
-		ciprom = pd.read_table(filedir+"ciProm.txt", sep="\t")
+		ciprom = pd.read_csv(filedir+"ciProm.txt", sep="\t")
 		ciprom = np.array(ciprom)
 		if len(ciprom)>0:
 			ciprom = ciprom[ArrayIn(ciprom[:,0], ci[:,2])]
@@ -213,7 +213,7 @@ def getNonCandidateSNPs(filedir, snps, min_pos, max_pos):
 
 def getChr15(filedir, snps, Chr15, Chr15cells, chr15dir):
 	if int(Chr15)==1:
-		annot = pd.read_table(filedir+"annot.txt", sep="\t")
+		annot = pd.read_csv(filedir+"annot.txt", sep="\t")
 		annothead = list(annot.columns.values)
 		annot = annot.as_matrix()
 		annot = annot[ArrayIn(annot[:,0], snps[:,0])]
@@ -244,7 +244,7 @@ def getChr15(filedir, snps, Chr15, Chr15cells, chr15dir):
 
 def geteQTLs(filedir, snps, eqtlplot):
 	if eqtlplot==1:
-		eqtl = pd.read_table(filedir+"eqtl.txt", sep="\t")
+		eqtl = pd.read_csv(filedir+"eqtl.txt", sep="\t")
 		eqtlhead = list(eqtl.columns.values)
 		eqtl = eqtl.as_matrix()
 		eqtl = eqtl[ArrayIn(eqtl[:,0], snps[:,0])]

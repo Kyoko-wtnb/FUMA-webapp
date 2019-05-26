@@ -33,7 +33,7 @@ def main():
 	out = []
 	for f in files:
 		if suffix=="gsa":
-			header = pd.read_table(f, delim_whitespace=True, comment="#", dtype=str, header=0, nrows=1)
+			header = pd.read_csv(f, delim_whitespace=True, comment="#", dtype=str, header=0, nrows=1)
 			header = list(header.columns.values)
 			if "FULL_NAME" in header:
 				header = ["P", "FULL_NAME"]
@@ -42,7 +42,7 @@ def main():
 		else:
 			header = ["COVAR", "P"]
 
-		dat = pd.read_table(f, delim_whitespace=True, comment="#", dtype=str, usecols=header)
+		dat = pd.read_csv(f, delim_whitespace=True, comment="#", dtype=str, usecols=header)
 		dat = np.array(dat)
 		if "FULL_NAME" in header:
 			dat = dat[:,::-1]

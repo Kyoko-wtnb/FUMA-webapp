@@ -55,7 +55,7 @@ rm(step1_command)
 ### multple testing correction
 step1 <- data.frame()
 for(ds in datasets){
-	tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_", ds, ".gsa.out"), data.table=F)
+	tmp <- fread(cmd=paste0("grep -v '^#' ", filedir, "magma_celltype_", ds, ".gsa.out"), data.table=F)
 	if("FULL_NAME" %in% colnames(tmp)){
 		tmp$VARIABLE <- tmp$FULL_NAME
 		tmp <- tmp[,-ncol(tmp)]
@@ -99,7 +99,7 @@ if(step2==1){
 			for(ds in names(step2_ds)[step2_ds>1]){
 			  tmp.sig <- step1[step1$ds==ds,]
 			  #!!! if the file doesn't exist
-			  tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_step2_", ds, ".gsa.out"), data.table=F)
+			  tmp <- fread(cmd=paste0("grep -v '^#' ", filedir, "magma_celltype_step2_", ds, ".gsa.out"), data.table=F)
 			  if("FULL_NAME" %in% colnames(tmp)){
 			    tmp$VARIABLE <- tmp$FULL_NAME
 			    tmp <- tmp[,-ncol(tmp)]
@@ -296,7 +296,7 @@ if(step2==1){
 	          #!!! implement for error
 	          print(paste("error: Average ", ds1, ds2))
 	        }else{
-	          tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_step3_avg.gsa.out"), data.table=F)
+	          tmp <- fread(cmd=paste0("grep -v '^#' ", filedir, "magma_celltype_step3_avg.gsa.out"), data.table=F)
 	          if("FULL_NAME" %in% colnames(tmp)){
 	            tmp$VARIABLE <- tmp$FULL_NAME
 	            tmp <- tmp[,-ncol(tmp)]
@@ -321,7 +321,7 @@ if(step2==1){
 	          }
 	          tmp$MODEL <- rep(1:(nrow(tmp)/2), each=2)
 	        }else{
-	          tmp <- fread(input=paste0("grep -v '^#' ", filedir, "magma_celltype_step3.gsa.out"), data.table=F)
+	          tmp <- fread(cmd=paste0("grep -v '^#' ", filedir, "magma_celltype_step3.gsa.out"), data.table=F)
 	          if("FULL_NAME" %in% colnames(tmp)){
 	            tmp$VARIABLE <- tmp$FULL_NAME
 	            tmp <- tmp[,-ncol(tmp)]

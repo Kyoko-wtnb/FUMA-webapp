@@ -396,7 +396,8 @@ if(nrow(geneTable)>0){
 				geneTable$eqtlMapminQ <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
 			}
 			tmp <- unique(eqtl[,c("db", "tissue", "gene")])
-			tmp$tissue <- sub(".txt.gz","",paste(tmp$db, tmp$tissue, sep="/"))
+			tmp$tissue <- sub(".txt.gz","",tmp$tissue)
+			tmp$tissue <- ifelse(grepl(tmp$db, tmp$tissue), tmp$tissue, paste(tmp$db, tmp$tissue, sep="/"))
 			tmp <- with(tmp, aggregate(tissue, list(gene), paste, collapse=":"))
 			geneTable$eqtlMapts <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
 			if(length(which(!is.na(eqtl$alignedDirection)))>0){

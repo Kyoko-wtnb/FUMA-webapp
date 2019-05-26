@@ -13,7 +13,7 @@ filedir = sys.argv[1]
 if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 
-GWAS = pd.read_table(filedir+"input.snps", sep="\s+", usecols=["chr", "bp", "p"], dtype="str")
+GWAS = pd.read_csv(filedir+"input.snps", delim_whitespace=True, usecols=["chr", "bp", "p"], dtype="str")
 GWAS = np.array(GWAS)
 chrcol = 0
 poscol = 1

@@ -24,10 +24,10 @@ def main():
 		filedir += '/'
 
 	if os.path.exists(filedir+"step1_2_summary.txt"):
-		data1 = pd.read_table(filedir+"step1_2_summary.txt", header=0, usecols=["Dataset", "Cell_type", "P", "step3"])
+		data1 = pd.read_csv(filedir+"step1_2_summary.txt", header=0, sep="\t", usecols=["Dataset", "Cell_type", "P", "step3"])
 		data1 = np.array(data1)
 	else:
-		data1 = pd.read_table(filedir+"magma_celltype_step1.txt", header=0, usecols=["Dataset", "Cell_type", "P", "P.adj"])
+		data1 = pd.read_csv(filedir+"magma_celltype_step1.txt", header=0, sep="\t", usecols=["Dataset", "Cell_type", "P", "P.adj"])
 		data1 = np.array(data1)
 		data1 = data1[data1[:,3]<0.05,0:3]
 		data1 = np.c_[data1, [0]*len(data1)]
@@ -60,7 +60,7 @@ def main():
 
 	data3 = []
 	if os.path.exists(filedir+"magma_celltype_step3.txt"):
-		data3 = pd.read_table(filedir+"magma_celltype_step3.txt", header=0, usecols=["Dataset", "Cell_type", "PS"])
+		data3 = pd.read_csv(filedir+"magma_celltype_step3.txt", header=0, sep="\t", usecols=["Dataset", "Cell_type", "PS"])
 		data3["PS"] = data3["PS"].fillna(-1)
 		data3 = np.array(data3)
 		data2_label = np.c_[data2[:,1], [":".join([l[0], l[1].replace(" ", "")]) for l in data2[:,0:2]]]

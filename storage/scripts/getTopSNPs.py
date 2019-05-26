@@ -10,7 +10,7 @@ filedir = sys.argv[1]
 if re.match(".+\/$", filedir) is None:
 	filedir += '/'
 
-snps = pd.read_table(filedir+"input.snps", sep="\s+")
+snps = pd.read_csv(filedir+"input.snps", delim_whitespace=True)
 pcol = 5
 
 head = snps.columns.values

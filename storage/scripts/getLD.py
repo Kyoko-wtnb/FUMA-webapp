@@ -205,8 +205,8 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 			return [], [], []
 
 	### read gwas file for the current chromsome
-	gwas_in = pd.read_table(params.gwas, header=None, skiprows=gwasfile_chr[ichrom][1], nrows=gwasfile_chr[ichrom][2])
-	gwas_in = gwas_in.as_matrix()
+	gwas_in = pd.read_csv(params.gwas, header=None, sep="\t", skiprows=gwasfile_chr[ichrom][1], nrows=gwasfile_chr[ichrom][2])
+	gwas_in = np.array(gwas_in)
 
 	### exclude MHC region
 	if chrom == 6 and MHC == 1:
@@ -746,14 +746,14 @@ def main():
 	# 0: chr, 1: start, 2: end
 	regions = None
 	if params.regions:
-		regions = pd.read_table(params.regions, comment="#", delim_whitespace=True)
+		regions = pd.read_csv(params.regions, comment="#", delim_whitespace=True)
 		regions = np.array(regions)
 
 	##### lead SNPs file #####
 	# 0: rsID, 1: chr, 2: pos
 	inleadSNPs = None
 	if params.leadSNPs:
-		inleadSNPs = pd.read_table(params.leadSNPs, comment="#", delim_whitespace=True)
+		inleadSNPs = pd.read_csv(params.leadSNPs, comment="#", delim_whitespace=True)
 		inleadSNPs = np.array(inleadSNPs)
 		#inleadSNPs = rsIDup(inleadSNPs, 0, params.dbSNPfile)
 

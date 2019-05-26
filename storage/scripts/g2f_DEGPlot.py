@@ -29,7 +29,7 @@ def main():
 
 	out = []
 	for f in files:
-		dat = pd.read_table(f, delim_whitespace=True, comment="#", dtype=str, usecols=["Category", "GeneSet", "p"])
+		dat = pd.read_csv(f, sep="\t", comment="#", dtype=str, usecols=["Category", "GeneSet", "p"])
 		dat = np.array(dat)
 		c = re.match(r'.*\/(.*)_DEG.txt', f)
 		order_p = []

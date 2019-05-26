@@ -155,19 +155,19 @@ def main():
 	copyfile(circos_config+"/ticks.conf", filedir+"circos/ticks.conf")
 
 	##### risk loci #####
-	loci = pd.read_table(filedir+"GenomicRiskLoci.txt", delim_whitespace=True, header=0)
+	loci = pd.read_csv(filedir+"GenomicRiskLoci.txt", sep="\t", header=0)
 	loci = np.array(loci)
 	loci = loci[:,[0,2,3,4,6,7]] #loci,rsID,chr,pos,start,end
 
 	##### snps #####
-	snps = pd.read_table(filedir+"snps.txt", delim_whitespace=True, header=0)
+	snps = pd.read_csv(filedir+"snps.txt", sep="\t", header=0)
 	snpshead = list(snps.columns.values)
 	snps = np.array(snps)
 	snps = snps[:,[2,3,7,snpshead.index("r2")]]
 	snps = snps[np.where(np.isfinite(snps[:,2].astype(float)))]
 
 	##### 3D genome  #####
-	ci = pd.read_table(filedir+"ci.txt", delim_whitespace=True, header=0)
+	ci = pd.read_csv(filedir+"ci.txt", sep="\t", header=0)
 	ci = np.array(ci)
 	if len(ci)>0:
 		ci = ci[ci[:,10]==1,]
@@ -198,7 +198,7 @@ def main():
 		ci = ci_tmp
 
 	##### mapped genes #####
-	genes = pd.read_table(filedir+"genes.txt", delim_whitespace=True)
+	genes = pd.read_csv(filedir+"genes.txt", sep="\t")
 	geneshead = list(genes.columns.values)
 	genes = np.array(genes)
 
@@ -208,7 +208,7 @@ def main():
 	# 0:ensg, 1: P-value, 2: chr, 3: pos
 	# later exclude p-value column
 	if os.path.isfile(filedir+"eqtl.txt"):
-		eqtl = pd.read_table(filedir+"eqtl.txt", delim_whitespace=True, header=0)
+		eqtl = pd.read_csv(filedir+"eqtl.txt", sep="\t", header=0)
 		eqtl = np.array(eqtl)
 		if len(eqtl)>0:
 			eqtl = eqtl[eqtl[:,13]==1]

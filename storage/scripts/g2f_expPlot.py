@@ -32,7 +32,7 @@ def main():
 	out = {"data":[], "order_gene":{"alph":[], "clst":{"log2":[], "norm":[]}}, "order_label":{"alph":[], "clst":{"log2":[], "norm":[]}}}
 
 	##### log2 average #####
-	exp = pd.read_table(filedir+dataset+"_exp.txt", header=0)
+	exp = pd.read_csv(filedir+dataset+"_exp.txt", header=0, sep="\t")
 	label = list(exp.columns.values)[2:]
 	genes = np.array(exp.symbol)
 	exp = np.array(exp)[genes.argsort(),2:]
@@ -45,7 +45,7 @@ def main():
 	exp_table = np.c_[np.repeat(genes, len(label)), label*len(genes), np.reshape(exp, (1,len(genes)*len(label)))[0]]
 
 	##### norm average #####
-	exp = pd.read_table(filedir+dataset.replace("log2", "norm")+"_exp.txt", header=0)
+	exp = pd.read_csv(filedir+dataset.replace("log2", "norm")+"_exp.txt", header=0, sep="\t")
 	genes = np.array(exp.symbol)
 	exp = np.array(exp)[genes.argsort(),2:]
 	genes = genes[genes.argsort()]

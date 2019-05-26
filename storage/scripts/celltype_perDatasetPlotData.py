@@ -33,7 +33,7 @@ def main():
 	out_data = []
 
 	##### process per file
-	for chunk in pd.read_table(filedir+"magma_celltype_step1.txt", header=0, delim_whitespace=True, chunksize=5000):
+	for chunk in pd.read_csv(filedir+"magma_celltype_step1.txt", header=0, sep="\t", chunksize=5000):
 		chunk = np.array(chunk)
 		if len(out_data)>0:
 			out_data = np.r_[out_data, chunk[np.where(chunk[:,0]==ds)][:,[1,6,7,8]]]

@@ -62,14 +62,14 @@ leadfile = param.get('inputfiles', 'leadSNPsfile')
 regionfile = param.get('inputfiles', 'regionsfile')
 if leadfile != "NA":
 	leadfile = filedir+"input.lead"
-	tmp = pd.read_table(leadfile, sep="\t|\s+")
+	tmp = pd.read_csv(leadfile, delim_whitespace=true)
 	tmp = tmp.as_matrix()
 	if len(tmp)==0 or len(tmp[0])<3:
 		sys.exit("Input lead SNPs file does not have enought columns.")
 
 if regionfile != "NA":
 	regionfile = filedir+"input.regions"
-	tmp = pd.read_table(regionfile, sep="\t|\s+")
+	tmp = pd.read_csv(regionfile, delim_whitespace=true)
 	tmp = tmp.as_matrix()
 	if len(tmp)==0 or len(tmp[0])<3:
 		sys.exit("Input genomic region file does not have enought columns.")
@@ -238,7 +238,7 @@ paramout.close()
 # In this case, if the rsID columns is wrongly labeled, it will be problem later (not checked here)
 if chrcol is not None and poscol is not None and rsIDcol is not None and eacol is not None and neacol is not None:
 	# dbSNPfile = cfg.get('data', 'dbSNP')
-	# rsID = pd.read_table(dbSNPfile+"/RsMerge146.txt", header=None)
+	# rsID = pd.read_csv(dbSNPfile+"/RsMerge146.txt", header=None)
 	# rsID = np.array(rsID)
 	# rsIDs = set(rsID[:,0])
 	# rsID = rsID[rsID[:,0].argsort()]
@@ -409,7 +409,7 @@ elif chrcol is not None and poscol is not None:
 
 	##### sort input sum stats #####
 	# input.gwas will be overwrited
-	tmp = pd.read_table(gwas, comment="#", sep=delim, dtype=str)
+	tmp = pd.read_csv(gwas, comment="#", sep=delim, dtype=str)
 	head = list(tmp.columns.values)
 	tmp = np.array(tmp)
 	tmp[:,chrcol] = [x.replace("chr", "").replace("CHR", "") for x in tmp[:,chrcol]]
@@ -494,7 +494,7 @@ elif chrcol is not None and poscol is not None:
 elif chrcol is None or poscol is None:
 	print "Either chr or pos is not provided"
 	##### read input file #####
-	gwas = pd.read_table(gwas, comment="#", sep=delim, dtype=str)
+	gwas = pd.read_csv(gwas, comment="#", sep=delim, dtype=str)
 	gwas = gwas.as_matrix()
 	gwas = gwas[gwas[:,rsIDcol].argsort()]
 
@@ -532,7 +532,7 @@ elif chrcol is None or poscol is None:
 	##### process per chromosome #####
 	for chrom in range(1,24):
 		print "start chr"+str(chrom)
-		for chunk in pd.read_table(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", header=None, dtype=str, chunksize=10000):
+		for chunk in pd.read_csv(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", header=None, sep="\t", dtype=str, chunksize=10000):
 			chunk = np.array(chunk)
 			for l in chunk:
 				alt = l[4].split(",")

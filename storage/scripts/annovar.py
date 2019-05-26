@@ -87,11 +87,11 @@ def main():
 	humandb = cfg.get('annovar', 'humandb')
 
 	##### read files #####
-	snps = pd.read_table(filedir+"snps.txt", header=0, dtype=str)
+	snps = pd.read_csv(filedir+"snps.txt", header=0, dtype=str, sep="\t")
 	snpshead = list(snps.columns.values)
 	snps = np.array(snps)
 
-	loci = pd.read_table(filedir+"GenomicRiskLoci.txt", header=0, dtype=str)
+	loci = pd.read_csv(filedir+"GenomicRiskLoci.txt", header=0, dtype=str, sep="\t")
 	loci = np.array(loci)
 
 	idx = snpshead.index("GenomicLocus")
