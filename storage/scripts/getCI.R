@@ -57,7 +57,7 @@ if(ciMapFileN > 0){
 	for(f in ciMapFiles){
 		print(f)
 		tmp_f <- unlist(strsplit(f, "/"))
-		ci_tmp <- fread(input=paste0("gzip -cd ", filedir, tmp_f[length(tmp_f)]), data.table=F)
+		ci_tmp <- fread(cmd=paste0("gzip -cd ", filedir, tmp_f[length(tmp_f)]), data.table=F)
 		colnames(ci_tmp) <- c("chr1", "start1", "end1", "chr2", "start2", "end2", "FDR")
 		ci_tmp <- ci_tmp[ci_tmp$FDR<ciMapFDR,]
 		ci_tmp$chr1 <- sub("^chr", "", ci_tmp$chr1)
@@ -73,13 +73,15 @@ if(ciMapFileN > 0){
 				tmp <- data.frame(GenomicLocus=queryHits(overlap), ci_tmp[subjectHits(overlap),])
 				tmp_out <- tmp
 			}
-			ci2_gr <- with(ci_tmp, GRanges(seqname=chr2, IRanges(start=start2, end=end2)))
-			overlap <- findOverlaps(loci_gr, ci2_gr)
-			if(length(queryHits(overlap))>0){
-				tmp <- data.frame(GenomicLocus=queryHits(overlap), ci_tmp[subjectHits(overlap), c(4:6,1:3,7)])
-				colnames(tmp) <- c("GenomicLocus", "chr1", "start1", "end1", "chr2", "start2", "end2", "FDR")
-				if(nrow(tmp_out)==0){tmp_out <- tmp}
-				else{tmp_out <- rbind(tmp_out, tmp)}
+			if(!grepl("oneway", f)){
+				ci2_gr <- with(ci_tmp, GRanges(seqname=chr2, IRanges(start=start2, end=end2)))
+				overlap <- findOverlaps(loci_gr, ci2_gr)
+				if(length(queryHits(overlap))>0){
+					tmp <- data.frame(GenomicLocus=queryHits(overlap), ci_tmp[subjectHits(overlap), c(4:6,1:3,7)])
+					colnames(tmp) <- c("GenomicLocus", "chr1", "start1", "end1", "chr2", "start2", "end2", "FDR")
+					if(nrow(tmp_out)==0){tmp_out <- tmp}
+					else{tmp_out <- rbind(tmp_out, tmp)}
+				}
 			}
 		}
 		if(nrow(tmp_out)>0){
@@ -96,7 +98,7 @@ if(ciMapFileN > 0){
 if(ciMapBuiltin[1]!="NA"){
 	for(f in ciMapBuiltin){
 		print(f)
-		ci_tmp <- fread(input=paste0("gzip -cd ", datadir, "/", f), data.table=F)
+		ci_tmp <- fread(cmd=paste0("gzip -cd ", datadir, "/", f), data.table=F)
 		colnames(ci_tmp) <- c("chr1", "start1", "end1", "chr2", "start2", "end2", "FDR")
 		ci_tmp <- ci_tmp[ci_tmp$FDR<ciMapFDR,]
 		ci_tmp$chr1 <- sub("^chr", "", ci_tmp$chr1)
@@ -112,13 +114,15 @@ if(ciMapBuiltin[1]!="NA"){
 				tmp <- data.frame(GenomicLocus=queryHits(overlap), ci_tmp[subjectHits(overlap),])
 				tmp_out <- tmp
 			}
-			ci2_gr <- with(ci_tmp, GRanges(seqname=chr2, IRanges(start=start2, end=end2)))
-			overlap <- findOverlaps(loci_gr, ci2_gr)
-			if(length(queryHits(overlap))>0){
-				tmp <- data.frame(GenomicLocus=queryHits(overlap), ci_tmp[subjectHits(overlap), c(4:6,1:3,7)])
-				colnames(tmp) <- c("GenomicLocus", "chr1", "start1", "end1", "chr2", "start2", "end2", "FDR")
-				if(nrow(tmp_out)==0){tmp_out <- tmp}
-				else{tmp_out <- rbind(tmp_out, tmp)}
+			if(!grepl("oneway", f)){
+				ci2_gr <- with(ci_tmp, GRanges(seqname=chr2, IRanges(start=start2, end=end2)))
+				overlap <- findOverlaps(loci_gr, ci2_gr)
+				if(length(queryHits(overlap))>0){
+					tmp <- data.frame(GenomicLocus=queryHits(overlap), ci_tmp[subjectHits(overlap), c(4:6,1:3,7)])
+					colnames(tmp) <- c("GenomicLocus", "chr1", "start1", "end1", "chr2", "start2", "end2", "FDR")
+					if(nrow(tmp_out)==0){tmp_out <- tmp}
+					else{tmp_out <- rbind(tmp_out, tmp)}
+				}
 			}
 		}
 		if(nrow(tmp_out)>0){

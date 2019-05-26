@@ -25,7 +25,7 @@ rm(indS, ld)
 
 annov <- fread(paste(filedir, "annov.txt", sep=""), data.table=F)
 annot <- fread(paste(filedir, "annot.txt", sep=""), data.table=F)
-annot <- annot[annot$uniqID %in% snps$uniqID,]
+annot <- annot[match(snps$uniqID, annot$uniqID),]
 ENSG <- fread(paste(config$data$ENSG, params$params$ensembl, config$data$ENSGfile, sep="/"), data.table=F)
 annov$symbol <- ENSG$external_gene_name[match(annov$gene, ENSG$ensembl_gene_id)]
 annov$symbol[is.na(annov$symbol)] <- annov$gene[is.na(annov$symbol)]
@@ -50,10 +50,44 @@ snps$RDB <- annot$RDB[match(snps$uniqID, annot$uniqID)]
 snps$RDB[snps$RDB==""] <- NA
 snps$minChrState[match(annot$uniqID, snps$uniqID)] <- apply(annot[,4:ncol(annot)], 1, min)
 snps$commonChrState[match(annot$uniqID, snps$uniqID)] <- apply(annot[,4:ncol(annot)], 1, function(x){names(sort(table(x), decreasing=T))[1]})
-write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
 write.table(annov, paste(filedir, "annov.txt", sep=""), quote=F, row.names=F, sep="\t")
+write.table(snps, paste(filedir, "snps.txt", sep=""), quote=F, row.names=F, sep="\t")
 
+## additional annotation
+if(params$posMap$posMapAnnoDs!="NA" | params$eqtlMap$eqtlMapAnnoDs!="NA" | params$ciMap$ciMapAnnoDs!="NA"){
+	annot_ds <- unique(unlist(strsplit(c(params$posMap$posMapAnnoDs, params$eqtlMap$eqtlMapAnnoDs, params$ciMap$ciMapAnnoDs), ":")))
+	annot_ds <- annot_ds[annot_ds!="NA"]
+	bed_out <- data.frame()
+	for(ds in annot_ds){
+		bed <- fread(cmd=paste0("gzip -cd ", config$data$annot_bed, "/", ds), header=F, data.table=F)[,1:3]
+		colnames(bed) <- c("chr", "start", "end")
+		bed <- with(bed, GRanges(seqnames=chr, IRanges(start=start+1, end=end)))
+		o <- findOverlaps(snps_gr, bed)
+		if(length(o)>0){
+			annot$tmp <- ifelse(1:nrow(annot) %in% queryHits(o), 1, 0)
+			colnames(annot)[ncol(annot)] <- sub(".bed.gz", "", gsub("/", "_", ds))
+			bed <- as.data.frame(bed[subjectHits(o)])[,1:3]
+			colnames(bed) <- c("chr", "start", "end")
+			bed_out <- rbind(bed_out, data.frame(bed, dataset=sub(".bed.gz", "", ds)))
+		}
+	}
+	if(nrow(bed_out)>0){
+		write.table(bed_out, paste0(filedir, "annot.bed"), quote=F, row.names=F, sep="\t")
+	}
+	write.table(annot, paste0(filedir, "annot.txt"), quote=F, row.names=F, sep="\t")
+}
+
+ref.count <- fread(paste0(config$data$refgenome, "/", params$params$refpanel, "/", params$params$pop, "/", params$params$pop, ".annov.count"), data.table=F)
+colnames(ref.count)[2:3] <- c("ref.count", "ref.prop")
+#ref.count <- cbind(ref.count, annov.table[match(ref.count$annot, annov.table$annot),-1])
 annov <- unique(annov[,c(1,3)])
-annov.table <- table(annov$annot)
-annov.table <- data.frame(annot=names(annov.table), count = as.numeric(annov.table))
-write.table(annov.table, paste(filedir, "snpsannot.txt", sep=""), quote=F, row.names=F, sep="\t")
+annov.table <- table(annov$annot[!is.na(annov$annot)])
+ref.count$count <- ifelse(ref.count$annot %in% names(annov.table), as.numeric(annov.table[ref.count$annot]), 0)
+ref.count$prop <- ref.count$count/sum(ref.count$count)
+ref.count$enrichment <- ref.count$prop/ref.count$ref.prop
+N <- sum(ref.count$ref.count)
+n <- sum(ref.count$count)
+ref.count$fisher.P <- apply(ref.count[,c(2,4)], 1, function(x){
+	fisher.test(matrix(c(as.numeric(x[2]), n-as.numeric(x[2]), as.numeric(x[1])-as.numeric(x[2]), N-n-as.numeric(x[1])), ncol=2))$p.value
+})
+write.table(ref.count, paste(filedir, "annov.stats.txt", sep=""), quote=F, row.names=F, sep="\t")

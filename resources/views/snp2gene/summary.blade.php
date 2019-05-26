@@ -7,10 +7,16 @@
 
 		<div class="col-md-7 col-xs-7 col-sm-7" style="text-align:center;">
 			<h4><span style="color: #00004d">Functional consequences of SNPs on genes</span>
-			<a class="infoPop" data-toggle="popover" data-content="The histogram displays the number of SNPs (all SNPs in LD of lead SNPs) which have corresponding functional annotation assigned by ANNOVAR.
-				SNPs which have more than one different annotations are counted for each annotation.">
+			<a class="infoPop" data-toggle="popover" data-content="The histogram displays the proportion of SNPs (all SNPs in LD of Ind. sig. SNPs)
+				which have corresponding functional annotation assigned by ANNOVAR.
+				Bars are colored by log2(enrichment) relative to all SNPs in the selected reference panel.
+				See tutorial for more details.">
 				<i class="fa fa-question-circle-o fa-lg"></i>
 			</a>
+			<span class="into"><i class="fa fa-info"></i>
+				Statistics are available in "annov.stats.txt".
+				The file is downloadable from the "Download" tab.
+			</span>
 			</h4>
 			Download the plot as
 			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","png");'>PNG</button>

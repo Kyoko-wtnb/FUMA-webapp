@@ -916,45 +916,6 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
 		"iDisplayLength": 10
 	});
-  // file = "ExAC.txt";
-  // var eqtlTable = $('#exacTable').DataTable({
-  //   processing: true,
-  //   serverSide: false,
-  //   select: false,
-  //   ajax:{
-  //     url: 'DTfile',
-  //     type: "POST",
-  //     data: {
-  //       id: id,
-  // 	   prefix: prefix,
-  //       infile: file,
-  //     }
-  //   },
-  //   columns:[
-  //     {"data": "GenomicLocus", name:"GenomicLocus"},
-  //     {"data": "uniqID", name:"uniqID"},
-  //     {"data": "chr", name:"chr"},
-  //     {"data": "pos", name:"bp"},
-  //     {"data": "ref", name:"ref"},
-  //     {"data": "alt", name:"alt"},
-  //     {"data": "annot", name:"Annotation"},
-  //     {"data": "gene", name:"Gene"},
-  //     {"data": "MAF", name:"MAF"},
-  //     {"data": "MAF_FIN", name:"MAF(FIN)"},
-  //     {"data": "MAF_NFE", name:"MAF(NFE)"},
-  //     {"data": "MAF_AMR", name:"MAF(AMR)"},
-  //     {"data": "MAF_AFR", name:"MAF(AFR)"},
-  //     {"data": "MAF_EAS", name:"MAF(EAS)"},
-  //     {"data": "MAF_SAS", name:"MAF(SAS)"},
-  //     {"data": "MAF_OTH", name:"MAF(OTH)"},
-  //   ],
-  //   "order": [[2, 'asc'], [3, 'asc']],
-  //   "lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-  //   "iDisplayLength": 10,
-  //   dom: 'lBfrtip',
-  //   buttons: ['csv']
-  // });
-
 
 	$('#sigSNPtable tbody').on('click', 'tr', function(){
 		$('#plotClear').show();
@@ -1260,41 +1221,113 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 }
 
 function PlotSNPAnnot(id){
-	var file = "snpsannot.txt";
+	var file = "annov.stats.txt";
 
-	var margin = {top:20, right: 30, bottom:90, left:50},
+	var margin = {top:20, right: 80, bottom:90, left:40},
 		width = 500-margin.right - margin.left,
 		height = 250-margin.top - margin.bottom;
 
-	var x_element = ["intergenic", "downstream", "upstream", "UTR3", "UTR5", "intronic", "exonic", "ncRNA_intronic", "ncRNA_exonic", "NA"];
-	var x = d3.scale.ordinal().domain(x_element).rangeRoundBands([0,width], 0.1);
-	var y = d3.scale.linear().range([height, 0]);
-	var xAxis = d3.svg.axis().scale(x).orient("bottom");
-	var yAxis = d3.svg.axis().scale(y).orient("left");
-	var svg = d3.select('#snpAnnotPlot').append('svg')
-		.attr("width", width+margin.left+margin.right)
-		.attr("height", height+margin.top+margin.bottom)
-		.append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
-	var tip = d3.tip()
-		.attr('class', 'd3-tip')
-		.offset([-5, 0])
-		.html(function(d) {
-			return d.count;
-		})
-	svg.call(tip);
 	d3.json("d3text/"+prefix+"/"+id+"/"+file, function(data){
 		data.forEach(function(d){
-			d.count =+ d.count;
+			d.prop =+ d.prop;
+			d.enrichment =+ d.enrichment;
+			d['fisher.P'] =+ d['fisher.P']; // fisher.P
 		});
-		y.domain([0, d3.max(data, function(d){return d.count})]);
+		data.sort(function(a,b){
+			return b.prop-a.prop;
+		})
+		var max_e = d3.max(data, function(d){if(d.enrichment>0){return Math.log2(d.enrichment)}});
+		max_e = Math.ceil(max_e*100)/100
+		var min_e = d3.min(data, function(d){if(d.enrichment>0){return Math.log2(d.enrichment)}});
+		min_e = Math.ceil(min_e*100)/100
+		var colorScale = d3.scale.linear().domain([min_e, 0, max_e]).range(["#0000ff", "#ffffe6", "#ff0000"]);
+		var x_element = data.map(function(d){return d.annot;});
+		var x = d3.scale.ordinal().domain(x_element).rangeRoundBands([0,width], 0.1);
+		var y = d3.scale.linear().range([height, 0]);
+		var xAxis = d3.svg.axis().scale(x).orient("bottom");
+		var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
+		var svg = d3.select('#snpAnnotPlot').append('svg')
+			.attr("width", width+margin.left+margin.right)
+			.attr("height", height+margin.top+margin.bottom)
+			.append('g').attr("transform", "translate("+margin.left+","+margin.top+")");
+		var tip = d3.tip()
+			.attr('class', 'd3-tip')
+			.offset([-5, 0])
+			.html(function(d) {
+				return 'count: '+d.count
+				+'<br/>proportion: '+Number(d.prop).toPrecision(3)
+				+'<br/>enrichment: '+Number(d.enrichment).toPrecision(3)+'<br/>P: '+Number(Number(d['fisher.P']).toPrecision(3)).toExponential(2);
+			})
+		svg.call(tip);
+		y.domain([0, d3.max(data, function(d){return d.prop})*1.05]);
+		// legend
+		var t = [];
+		for(var i=0; i<15; i++){t.push(i);}
+		svg.append('text')
+			.attr("x", width+10)
+			.attr("y", 10)
+			.text("-log2(E)")
+			.style("font-size", "10px");
+		svg.selectAll(".legend").data(t).enter().append("g")
+			.append("rect")
+			.attr("class", 'legendRect')
+			.attr("x", width+10)
+			.attr("y", function(d){return (d-1)*5+18})
+			.attr("width", 20)
+			.attr("height", 5)
+			.attr("fill", function(d){return colorScale(max_e-d*((max_e-min_e)/(t.length-1)))});
+		svg.selectAll("text.legend").data([0,14]).enter().append("g")
+			.append("text")
+			.attr("text-anchor", "start")
+			.attr("class", "legenedText")
+			.attr("x", width+32)
+			.attr("y", function(d){return (d-1)*5+25})
+			.text(function(d){return Math.round((max_e-d*((max_e-min_e)/(t.length-1)))*100)/100})
+			.style("font-size", "10px");
+		svg.append("text")
+			.attr("x", width+10)
+			.attr("y", 105)
+			.text("* p<0.05")
+			.style("font-size", "10px")
+		svg.append("text")
+			.attr("x", width+10)
+			.attr("y", 120)
+			.text("** p<0.05/"+x_element.length)
+			.style("font-size", "10px")
+
+		// background bar for small proportion
+		svg.selectAll('.backbar').data(data).enter().append('rect').attr("class", "backbar")
+			.attr("x", function(d){return x(d.annot);})
+			.attr("width", x.rangeBand())
+			.attr("y", y(d3.max(data, function(d){return d.prop})/2))
+			.attr("height", height-y(d3.max(data, function(d){return d.prop})/2))
+			.attr("fill", "transparent")
+			.attr("opacity", 0)
+			.on("mouseover", tip.show)
+			.on("mouseout", tip.hide);
+
+		// plot main bar
 		svg.selectAll('.bar').data(data).enter().append('rect').attr("class", "bar")
 			.attr("x", function(d){return x(d.annot);})
 			.attr("width", x.rangeBand())
-			.attr("y", function(d){return y(d.count);})
-			.attr("height", function(d){return height-y(d.count);})
-			.attr("fill", "steelblue")
+			.attr("y", function(d){return y(d.prop);})
+			.attr("height", function(d){return height-y(d.prop);})
+			.attr("fill", function(d){return colorScale(Math.log2(d.enrichment))})
 			.on("mouseover", tip.show)
 			.on("mouseout", tip.hide);
+
+		// significance
+		svg.selectAll('text.p').data(data.filter(function(d){if(d['fisher.P']<0.05){return d}})).enter()
+			.append('text')
+			.attr("x", function(d){return x(d.annot)+(width*0.5/x_element.length)*0.7;})
+			.attr("y", function(d){return y(d.prop)*1.02;})
+			.attr("text-anchor", "start")
+			.text(function(d){
+				if(d['fisher.p']<0.05/x_element.length){return "**"}
+				else{return "*"}
+			});
+
+		// axis
 		svg.append('g').attr("class", "x axis")
 			.attr("transform", "translate(0,"+height+")")
 			.call(xAxis).selectAll('text')
@@ -1308,9 +1341,13 @@ function PlotSNPAnnot(id){
 			.attr("transform", "rotate(-90)")
 			.attr("dy", ".71em")
 			.style("text-anchor", "end");
+		svg.append("text").attr("text-anchor", "middle")
+			.attr("transform", "translate(-28,"+(height/2)+")rotate(-90)")
+			.text("Proportion");
 		svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
 		svg.selectAll('text').style('font-family', 'sans-serif');
 		svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
+
 	});
 }
 

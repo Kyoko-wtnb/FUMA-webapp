@@ -1,6 +1,6 @@
 <option class="level1" value="null">Adrenal (1)</option>
 <option class="level2" value="E080">E080 (Other) Fetal Adrenal Gland</option>
-<option class="level1" value="null">Blood (27)</option>
+<option class="level1" value="null">Blood (23)</option>
 <option class="level2" value="E029">E029 (HSC & B-cell) Primary monocytes from peripheral blood</option>
 <option class="level2" value="E030">E030 (HSC & B-cell) Primary neutrophils from peripheral blood</option>
 <option class="level2" value="E031">E031 (HSC & B-cell) Primary B cells from cord blood</option>
@@ -24,13 +24,7 @@
 <option class="level2" value="E050">E050 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Female</option>
 <option class="level2" value="E051">E051 (HSC & B-cell) Primary hematopoietic stem cells G-CSF-mobilized Male</option>
 <option class="level2" value="E062">E062 (Blood & T-cell) Primary mononuclear cells from peripheral blood</option>
-<option class="level2" value="E115">E115 (ENCODE2012) Dnd41 TCell Leukemia Cell Line</option>
-<option class="level2" value="E116">E116 (ENCODE2012) GM12878 Lymphoblastoid Cells</option>
-<option class="level2" value="E123">E123 (ENCODE2012) K562 Leukemia Cells</option>
-<option class="level2" value="E124">E124 (ENCODE2012) Monocytes-CD14+ RO01746 Primary Cells</option>
-<option class="level1" value="null">Bone (1)</option>
-<option class="level2" value="E129">E129 (ENCODE2012) Osteoblast Primary Cells</option>
-<option class="level1" value="null">Brain (13)</option>
+<option class="level1" value="null">Brain (12)</option>
 <option class="level2" value="E053">E053 (Neurosph) Cortex derived primary cultured neurospheres</option>
 <option class="level2" value="E054">E054 (Neurosph) Ganglion Eminence derived primary cultured neurospheres</option>
 <option class="level2" value="E067">E067 (Brain) Brain Angular Gyrus</option>
@@ -43,13 +37,9 @@
 <option class="level2" value="E074">E074 (Brain) Brain Substantia Nigra</option>
 <option class="level2" value="E081">E081 (Brain) Fetal Brain Male</option>
 <option class="level2" value="E082">E082 (Brain) Fetal Brain Female</option>
-<option class="level2" value="E125">E125 (ENCODE2012) NH-A Astrocytes Primary Cells</option>
-<option class="level1" value="null">Breast (3)</option>
+<option class="level1" value="null">Breast (2)</option>
 <option class="level2" value="E027">E027 (Epithelial) Breast Myoepithelial Primary Cells</option>
 <option class="level2" value="E028">E028 (Epithelial) Breast variant Human Mammary Epithelial Cells (vHMEC)</option>
-<option class="level2" value="E119">E119 (ENCODE2012) HMEC Mammary Epithelial Primary Cells</option>
-<option class="level1" value="null">Cervix (1)</option>
-<option class="level2" value="E117">E117 (ENCODE2012) HeLa-S3 Cervical Carcinoma Cell Line</option>
 <option class="level1" value="null">ESC (8)</option>
 <option class="level2" value="E001">E001 (ESC) ES-I3 Cells</option>
 <option class="level2" value="E002">E002 (ESC) ES-WA7 Cells</option>
@@ -102,23 +92,18 @@
 <option class="level2" value="E105">E105 (Heart) Right Ventricle</option>
 <option class="level1" value="null">Kidney (1)</option>
 <option class="level2" value="E086">E086 (Other) Fetal Kidney</option>
-<option class="level1" value="null">Liver (2)</option>
+<option class="level1" value="null">Liver (1)</option>
 <option class="level2" value="E066">E066 (Other) Liver</option>
-<option class="level2" value="E118">E118 (ENCODE2012) HepG2 Hepatocellular Carcinoma Cell Line</option>
-<option class="level1" value="null">Lung (5)</option>
+<option class="level1" value="null">Lung (3)</option>
 <option class="level2" value="E017">E017 (IMR90) IMR90 fetal lung fibroblasts Cell Line</option>
 <option class="level2" value="E088">E088 (Other) Fetal Lung</option>
 <option class="level2" value="E096">E096 (Other) Lung</option>
-<option class="level2" value="E114">E114 (ENCODE2012) A549 EtOH 0.02pct Lung Carcinoma Cell Line</option>
-<option class="level2" value="E128">E128 (ENCODE2012) NHLF Lung Fibroblast Primary Cells</option>
-<option class="level1" value="null">Muscle (7)</option>
+<option class="level1" value="null">Muscle (5)</option>
 <option class="level2" value="E052">E052 (Myosat) Muscle Satellite Cultured Cells</option>
 <option class="level2" value="E089">E089 (Muscle) Fetal Muscle Trunk</option>
 <option class="level2" value="E100">E100 (Muscle) Psoas Muscle</option>
 <option class="level2" value="E107">E107 (Muscle) Skeletal Muscle Male</option>
 <option class="level2" value="E108">E108 (Muscle) Skeletal Muscle Female</option>
-<option class="level2" value="E120">E120 (ENCODE2012) HSMM Skeletal Muscle Myoblasts Cells</option>
-<option class="level2" value="E121">E121 (ENCODE2012) HSMM cell derived Skeletal Muscle Myotubes Cells</option>
 <option class="level1" value="null">Muscle Leg (1)</option>
 <option class="level2" value="E090">E090 (Muscle) Fetal Muscle Leg</option>
 <option class="level1" value="null">Ovary (1)</option>
@@ -129,15 +114,13 @@
 <option class="level1" value="null">Placenta (2)</option>
 <option class="level2" value="E091">E091 (Other) Placenta</option>
 <option class="level2" value="E099">E099 (Other) Placenta Amnion</option>
-<option class="level1" value="null">Skin (8)</option>
+<option class="level1" value="null">Skin (6)</option>
 <option class="level2" value="E055">E055 (Epithelial) Foreskin Fibroblast Primary Cells skin01</option>
 <option class="level2" value="E056">E056 (Epithelial) Foreskin Fibroblast Primary Cells skin02</option>
 <option class="level2" value="E057">E057 (Epithelial) Foreskin Keratinocyte Primary Cells skin02</option>
 <option class="level2" value="E058">E058 (Epithelial) Foreskin Keratinocyte Primary Cells skin03</option>
 <option class="level2" value="E059">E059 (Epithelial) Foreskin Melanocyte Primary Cells skin01</option>
 <option class="level2" value="E061">E061 (Epithelial) Foreskin Melanocyte Primary Cells skin03</option>
-<option class="level2" value="E126">E126 (ENCODE2012) NHDF-Ad Adult Dermal Fibroblast Primary Cells</option>
-<option class="level2" value="E127">E127 (ENCODE2012) NHEK-Epidermal Keratinocyte Primary Cells</option>
 <option class="level1" value="null">Spleen (1)</option>
 <option class="level2" value="E113">E113 (Other) Spleen</option>
 <option class="level1" value="null">Stromal Connective (2)</option>
@@ -146,9 +129,8 @@
 <option class="level1" value="null">Thymus (2)</option>
 <option class="level2" value="E093">E093 (Thymus) Fetal Thymus</option>
 <option class="level2" value="E112">E112 (Thymus) Thymus</option>
-<option class="level1" value="null">Vascular (2)</option>
+<option class="level1" value="null">Vascular (1)</option>
 <option class="level2" value="E065">E065 (Heart) Aorta</option>
-<option class="level2" value="E122">E122 (ENCODE2012) HUVEC Umbilical Vein Endothelial Primary Cells</option>
 <option class="level1" value="null">iPSC (5)</option>
 <option class="level2" value="E018">E018 (iPSC) iPS-15b Cells</option>
 <option class="level2" value="E019">E019 (iPSC) iPS-18 Cells</option>

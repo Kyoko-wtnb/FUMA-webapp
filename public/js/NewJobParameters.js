@@ -191,6 +191,13 @@ function setParams(data){
 		$('#posMapChr15Max').val(data.posMapChr15Max);
 		$('#posMapChr15Meth').val(data.posMapChr15Meth);
 	}
+	if(data.posMapAnnoDs!=undefined){
+		$('#posMapAnnoDs option').each(function(){
+			if(data.posMapAnnoDs.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+			else{$(this).prop('selected', false);}
+		});
+		$('#posMapAnnoMeth').val(data.posMapAnnoMeth);
+	}
 
 	//eqtl map
 	if(data.eqtlMap == "1"){$('#eqtlMap').prop("checked", true)}
@@ -226,6 +233,13 @@ function setParams(data){
 		});
 		$('#eqtlMapChr15Max').val(data.eqtlMapChr15Max);
 		$('#eqtlMapChr15Meth').val(data.eqtlMapChr15Meth);
+	}
+	if(data.eqtlMapAnnoDs!=undefined){
+		$('#eqtlMapAnnoDs option').each(function(){
+			if(data.eqtlMapAnnoDs.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+			else{$(this).prop('selected', false);}
+		});
+		$('#eqtlMapAnnoMeth').val(data.eqtlMapAnnoMeth);
 	}
 	if(data.ciMap!=null){
 		if(data.ciMap=="1"){
@@ -276,6 +290,13 @@ function setParams(data){
 			$('#ciMapChr15Max').val(data.ciMapChr15Max);
 			$('#ciMapChr15Meth').val(data.ciMapChr15Meth);
 		}
+		if(data.ciMapAnnoDs!=undefined){
+			$('#ciMapAnnoDs option').each(function(){
+				if(data.ciMapAnnoDs.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+			$('#ciMapAnnoMeth').val(data.ciMapAnnoMeth);
+		}
 	}else{
 		$('#ciMap').prop('checked', false);
 	}
@@ -310,6 +331,8 @@ function setParams(data){
 				if(ds.indexOf($(this).val())>=0){$(this).prop('selected', true)}
 				else{$(this).prop('selected', false)}
 			})
+		}else{
+			$('#magma').prop('checked', false)
 		}
 	}
 
@@ -533,7 +556,7 @@ function CheckAll(){
 	}
 
   // Population is always OK [4]
-  // KGSNPs is always OK [5]
+  // refSNPs is always OK [5]
 
 	if($('#maf').val().length==0){
 		$(table.rows[6].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'

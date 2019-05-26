@@ -39,6 +39,19 @@ eqtlMapRDBth <- params$eqtlMap$eqtlMapRDBth
 eqtlMapChr15 <- params$eqtlMap$eqtlMapChr15
 eqtlMapChr15Max <- as.numeric(params$eqtlMap$eqtlMapChr15Max)
 eqtlMapChr15Meth <- params$eqtlMap$eqtlMapChr15Meth
+if("posMapAnnoDs" %in% names(params$posMap)){
+	posMapAnnoDs <- params$posMap$posMapAnnoDs
+	posMapAnnoMeth <- params$posMap$posMapAnnoMeth
+}else{
+	posMapAnnoDs <- "NA"
+}
+if("eqtlMapAnnoDs" %in% names(params$eqtlMap)){
+	eqtlMapAnnoDs <- params$eqtlMap$eqtlMapAnnoDs
+	eqtlMapAnnoMeth <- params$eqtlMap$eqtlMapAnnoMeth
+}else{
+	eqtlMapAnnoDs <- "NA"
+}
+
 if("ciMap" %in% names(params)){
 	ciMap <- as.numeric(params$ciMap$ciMap)
 	ciMapEnhFilt <- as.numeric(params$ciMap$ciMapEnhFilt)
@@ -48,9 +61,14 @@ if("ciMap" %in% names(params)){
 	ciMapChr15 <- params$ciMap$ciMapChr15
 	ciMapChr15Max <- as.numeric(params$ciMap$ciMapChr15Max)
 	ciMapChr15Meth <- params$ciMap$ciMapChr15Meth
+	if("ciMapAnnoDs" %in% names(params$ciMap)){
+		ciMapAnnoDs <- params$ciMap$ciMapAnnoDs
+		ciMapAnnoMeth <- params$ciMap$ciMapAnnoMeth
+	}
 }else{
 	ciMap <- 0
 }
+
 
 if(posMapWindowSize=="NA"){
 	posMapWindowSize <- NA
@@ -129,6 +147,17 @@ if(posMap==1){
 		tmp_snps <- tmp_snps[tmp_snps$uniqID %in% epi$uniqID[epi$epi<=posMapChr15Max],]
 		rm(epi, temp)
 	}
+	if(posMapAnnoDs!="NA" & posMapAnnoMeth!="NA"){
+		ds <- sub(".bed.gz", "", gsub("/", "_", unlist(strsplit(posMapAnnoDs, ":"))))
+		tmp_annot <- annot[match(tmp_snps$uniqID, annot$uniqID),ds]
+		if(posMapAnnoMeth=="any"){
+			tmp_snps <- tmp_snps[which(apply(tmp_annot[,-1], 1, sum)>0),]
+		}else if(posMapAnnoMeth=="majority"){
+			tmp_snps <- tmp_snps[which(apply(tmp_annot[,-1], 1, sum)/length(ds)>0.5),]
+		}else{
+			tmp_snps <- tmp_snps[which(apply(tmp_annot[,-1], 1, sum)==length(ds)),]
+		}
+	}
 	if(is.na(posMapWindowSize)){
 		annov <- fread(paste0(filedir, "annov.txt"), data.table=F)
 		annov <- annov[annov$gene %in% ENSG$ensembl_gene_id & annov$uniqID %in% tmp_snps$uniqID,]
@@ -195,6 +224,17 @@ if(eqtlMap==1){
 				eqtl <- eqtl[eqtl$uniqID %in% epi$uniqID[epi$epi<=eqtlMapChr15Max],]
 				rm(epi, temp)
 			}
+			if(eqtlMapAnnoDs!="NA" & eqtlMapAnnoMeth!="NA"){
+				ds <- sub(".bed.gz", "", gsub("/", "_", unlist(strsplit(eqtlMapAnnoDs, ":"))))
+				tmp_annot <- annot[annot$uniqID %in% eqtl$uniqID, c("uniqID", ds)]
+				if(eqtlMapAnnoMeth=="any"){
+					eqtl <- eqtl[eqtl$uniqID %in% tmp_annot$uniqID[which(apply(tmp_annot[,-1], 1, sum)>0)],]
+				}else if(eqtlMapAnnoMeth=="majority"){
+					eqtl <- eqtl[eqtl$uniqID %in% tmp_annot$uniqID[which(apply(tmp_annot[,-1], 1, sum)/length(ds)>0.5)],]
+				}else{
+					eqtl <- eqtl[eqtl$uniqID %in% tmp_annot$uniqID[which(apply(tmp_annot[,-1], 1, sum)==length(ds))],]
+				}
+			}
 			genes <- c(genes, unique(eqtl$gene))
 			eqtlall$eqtlMapFilt[eqtlall$uniqID %in% eqtl$uniqID] <- 1
 		}
@@ -256,6 +296,17 @@ if(ciMap==1){
 			epi$epi <- temp$epi[match(epi$uniqID, temp$uniqID)]
 			cisnps <- cisnps[cisnps$uniqID %in% epi$uniqID[epi$epi<=ciMapChr15Max],]
 			rm(epi, temp)
+		}
+		if(ciMapAnnoDs!="NA" & ciMapAnnoMeth!="NA"){
+			ds <- sub(".bed.gz", "", gsub("/", "_", unlist(strsplit(ciMapAnnoDs, ":"))))
+			tmp_annot <- annot[annot$uniqID %in% cisnps$uniqID,c("uniqID", ds)]
+			if(ciMapAnnoMeth=="any"){
+				cisnps <- cisnps[cisnps$uniqID %in% tmp_annot$uniqID[which(apply(tmp_annot[,-1], 1, sum)>0)],]
+			}else if(ciMapAnnoMeth=="majority"){
+				cisnps <- cisnps[cisnps$uniqID %in% tmp_annot$uniqID[which(apply(tmp_annot[,-1], 1, sum)/length(ds)>0.5)],]
+			}else{
+				cisnps <- cisnps[cisnps$uniqID %in% tmp_annot$uniqID[which(apply(tmp_annot[,-1], 1, sum)==length(ds))],]
+			}
 		}
 		ci_reg1 <- data.frame(t(matrix(as.numeric(unlist(strsplit(unlist(strsplit(ci$region1, ":")), "-"))), nrow=3)))
 		colnames(ci_reg1) <- c("chr", "start", "end")
