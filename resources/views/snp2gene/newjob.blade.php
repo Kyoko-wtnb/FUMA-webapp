@@ -129,11 +129,6 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td>r<sup>2</sup> threshold to define LD structure of lead SNPs (&ge;)</td>
-					<td><input type="number" class="form-control" id="r2" name="r2" value="0.6" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
-					<td></td>
-				</tr>
-				<tr>
 					<td>Maximum P-value cutoff (&lt;)
 						<a class="infoPop" data-toggle="popover" title="GWAS P-value cutoff" data-content="This threshold defines the maximum P-values of SNPs to be included in the annotation. Setting it at 1 means that all SNPs that are in LD with the lead SNP will be included in the annotation and prioritization even though they may not show a significant association with the phenotype. We advise to set this threshold at least at 0.05.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
@@ -143,17 +138,32 @@
 					<td></td>
 				</tr>
 				<tr>
+					<td>r<sup>2</sup> threshold to define independent significant SNPs (&ge;)</td>
+					<td><input type="number" class="form-control" id="r2" name="r2" value="0.6" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>2nd r<sup>2</sup> threshold to define lead SNPs (&ge;)
+						<a class="infoPop" data-toggle="popover" title="2nd r2 threshold" data-content="This is a r2 threshold for second clumping to define lead SNPs from independent significant SNPs.
+						When this value is same as 1st r2 threshold, lead SNPs are identical to independent significant SNPs.">
+							<i class="fa fa-question-circle-o fa-lg"></i>
+						</a>
+					</td>
+					<td><input type="number" class="form-control" id="r2_2" name="r2_2" value="0.1" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"></td>
+					<td></td>
+				</tr>
+				<tr>
 					<td>Reference panel population</td>
 					<td>
 						<select class="form-control" id="refpanel" name="refpanel">
-							<option selected value="1KG/Phase3/EUR">1000G Phase3 EUR</option>
-							<option value="1KG/Phase3/AMR">1000G Phase3 AMR</option>
+							<option value="1KG/Phase3/ALL">1000G Phase3 ALL</option>
 							<option value="1KG/Phase3/AFR">1000G Phase3 AFR</option>
-							<option value="1KG/Phase3/SAS">1000G Phase3 SAS</option>
+							<option value="1KG/Phase3/AMR">1000G Phase3 AMR</option>
 							<option value="1KG/Phase3/EAS">1000G Phase3 EAS</option>
-							<option value="UKB/release1/WBrits_10k">UKB release1 White British</option>
-							<option value="UKB/release2/WBrits_10k">UKB release2 White British</option>
-							<option value="UKB/release2/EUR_10k">UKB release2 European</option>
+							<option selected value="1KG/Phase3/EUR">1000G Phase3 EUR</option>
+							<option value="1KG/Phase3/SAS">1000G Phase3 SAS</option>
+							<option value="UKB/release2b/WBrits_10k">UKB release2b 10k White British</option>
+							<option value="UKB/release2b/EUR_10k">UKB release2b 10k European</option>
 						</select>
 					</td>
 					<td>
@@ -184,11 +194,11 @@
 				</tr>
 				<tr>
 					<td>Minimum Minor Allele Frequency (&ge;)
-						<a class="infoPop" data-toggle="popover" title="Minimum Minor Allele Frequency" data-content="This threshold defines the minimum MAF of the SNPs to be included in the annotation. MAFs are based on the selected reference population (1000G).">
+						<a class="infoPop" data-toggle="popover" title="Minimum Minor Allele Frequency" data-content="This threshold defines the minimum MAF of the SNPs to be included in the annotation. MAFs are based on the selected reference panel.">
 							<i class="fa fa-question-circle-o fa-lg"></i>
 						</a>
 					</td>
-					<td><input type="number" class="form-control" id="maf" name="maf" value="0.01" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
+					<td><input type="number" class="form-control" id="maf" name="maf" value="0" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
 					<td></td>
 				</tr>
 				<tr>

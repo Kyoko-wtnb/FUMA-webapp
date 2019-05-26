@@ -119,19 +119,6 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Minimum r<sup>2</sup> (&ge;)</td>
-				<td>Mandatory</td>
-				<td>The minimum r<sup>2</sup> for determining LD with independent genome-wide significant SNPs, which is used to determine the borders of the genomic risk loci.
-					SNPs with r<sup>2</sup> &ge; user defined threshold with any of the detected independent significant SNPs will be included for further annotations and are used fro gene prioritization.
-					Note that the identification of independent lead SNPs is independent from this and is based on fixed r<sup>2</sup> of 0.1.
-				</td>
-				<td>numeric</td>
-				<td>0.6</td>
-				<td><span style="color:red;">higher</span>: decrease #candidate SNPs and increase #independent significant SNPs.<br/>
-					<span style="color: blue;">lower</span>: increase #candidate SNPs and decrease #independent significant SNPs.
-				</td>
-			</tr>
-			<tr>
 				<td>Maximum GWAS P-value (&le;)</td>
 				<td>Mandatory</td>
 				<td>This is the P-value threshold for candidate SNPs in LD of independent significant SNPs.
@@ -144,11 +131,35 @@
 				</td>
 			</tr>
 			<tr>
+				<td>r<sup>2</sup> threshold for independent significant SNPs (&ge;)</td>
+				<td>Mandatory</td>
+				<td>The minimum r<sup>2</sup> for defining independent significant SNPs, which is used to determine the borders of the genomic risk loci.
+					SNPs with r<sup>2</sup> &ge; user defined threshold with any of the detected independent significant SNPs will be included for further annotations and are used fro gene prioritisation.
+				</td>
+				<td>numeric</td>
+				<td>0.6</td>
+				<td><span style="color:red;">higher</span>: decrease #candidate SNPs and increase #independent significant SNPs.<br/>
+					<span style="color: blue;">lower</span>: increase #candidate SNPs and decrease #independent significant SNPs.
+				</td>
+			</tr>
+			<tr>
+				<td>2nd r<sup>2</sup> threshold for lead SNPs (&ge;)</td>
+				<td>Mandatory</td>
+				<td>The minimum r<sup>2</sup> for defining lead SNPs, which is used for the second clumping (clumping of the independent significant SNPs).
+					Note that when this threshold is same as the first r<sup>2</sup> threshold, lead SNPs are identical to independent significant SNPs.
+				</td>
+				<td>numeric</td>
+				<td>0.1</td>
+				<td><span style="color:red;">higher</span>: increase #lead SNPs.<br/>
+					<span style="color: blue;">lower</span>: decrease #lead SNPs.
+				</td>
+			</tr>
+			<tr>
 				<td>Reference panel</td>
 				<td>Mandatory</td>
 				<td>The reference panel to compute r<sup>2</sup> and MAF.
 					Five populations from 1000 genomes Phase 3 and
-					3 different versions of UK Biobank are available.
+					3 versions of UK Biobank are available.
 					See <a href="{{ Config::get('app.subdir') }}/tutorial#refpanel">here</a> for details.
 				</td>
 				<td>Select</td>
@@ -169,13 +180,14 @@
 			<tr>
 				<td>Minimum MAF (&ge;)</td>
 				<td>Mandatory</td>
-				<td>The minimum Minor Allele Frequency to be included in annotation and prioritization.
-					MAF is computed based on 1000 genomes reference panel (Phase 3).
+				<td>The minimum Minor Allele Frequency to be included in annotation and prioritisation.
+					MAF is based the user selected reference panel.
 					This filter also applies to lead SNPs.
 					If there is any pre-defined lead SNPs with MAF less than this threshold, those SNPs will be skipped.
+					When this value is 0 (by default), SNPs with MAF>0 are considered.
 				</td>
 				<td>numeric</td>
-				<td>0.01</td>
+				<td>0</td>
 				<td><span style="color:red;">higher</span>: decrease #candidate SNPs.<br/>
 					<span style="color: blue;">lower</span>: increase #candidate SNPs.
 				</td>

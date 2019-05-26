@@ -506,25 +506,20 @@ function CheckAll(){
 		}
 	}
 
-	if($('#r2').val().length==0){
+	if($('#gwasP').val().length==0){
 		$(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-ban"></i> Invalid input</div></td>');
 		submit=false;
 		tablecheck=false;
 	}else{
-		if(isNaN($('#r2').val())){
+		if(isNaN($('#gwasP').val())){
 			$(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-ban"></i> Invalid input</div></td>');
 			submit=false;
 			tablecheck=false;
-		}else if($('#r2').val()>=0.05 && $('#r2').val()<=1){
+		}else if($('#gwasP').val()>=0 && $('#gwasP').val()<=1){
 			$(table.rows[2].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-check"></i> OK.</div></td>');
-		}else if($('#r2').val()<0.05){
-			$(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-				+'<i class="fa fa-ban"></i> The minimum r2 is 0.05.</div></td>');
-			submit=false;
-			tablecheck=false;
 		}else{
 			$(table.rows[2].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-ban"></i> Invalid input</div></td>');
@@ -533,22 +528,54 @@ function CheckAll(){
 		}
 	}
 
-	if($('#gwasP').val().length==0){
+	if($('#r2').val().length==0){
 		$(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-ban"></i> Invalid input</div></td>');
 		submit=false;
 		tablecheck=false;
 	}else{
-		if(isNaN($('#gwasP').val())){
+		if(isNaN($('#r2').val())){
 			$(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-ban"></i> Invalid input</div></td>');
 			submit=false;
 			tablecheck=false;
-		}else if($('#gwasP').val()>=0 && $('#gwasP').val()<=1){
+		}else if($('#r2').val()>=0.05 && $('#r2').val()<=1){
 			$(table.rows[3].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-check"></i> OK.</div></td>');
+		}else if($('#r2').val()<0.05){
+			$(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-ban"></i> The minimum r2 is 0.05.</div></td>');
+			submit=false;
+			tablecheck=false;
 		}else{
 			$(table.rows[3].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-ban"></i> Invalid input</div></td>');
+			submit=false;
+			tablecheck=false;
+		}
+	}
+
+	if($('#r2_2').val().length==0){
+		$(table.rows[4].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+			+'<i class="fa fa-ban"></i> Invalid input</div></td>');
+		submit=false;
+		tablecheck=false;
+	}else{
+		if(isNaN($('#r2_2').val())){
+			$(table.rows[4].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-ban"></i> Invalid input</div></td>');
+			submit=false;
+			tablecheck=false;
+		}else if($('#r2_2').val()>=0.05 && $('#r2_2').val()<=1){
+			$(table.rows[4].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-check"></i> OK.</div></td>');
+		}else if($('#r2_2').val()<0.05){
+			$(table.rows[4].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+				+'<i class="fa fa-ban"></i> The minimum r2 is 0.05.</div></td>');
+			submit=false;
+			tablecheck=false;
+		}else{
+			$(table.rows[4].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-ban"></i> Invalid input</div></td>');
 			submit=false;
 			tablecheck=false;

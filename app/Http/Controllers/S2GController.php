@@ -325,8 +325,9 @@ class S2GController extends Controller
 			$Ncol = $request->input('Ncol');
 		}
 		$leadP = $request -> input('leadP');
-		$r2 = $request -> input('r2');
 		$gwasP = $request -> input('gwasP');
+		$r2 = $request -> input('r2');
+		$r2_2 = $request -> input('r2_2');
 		$refpanel = $request -> input('refpanel');
 		$pop = preg_replace('/.+\/.+\/(.+)/', '$1', $refpanel);
 		$refpanel = preg_replace('/(.+\/.+)\/.+/', '$1', $refpanel);
@@ -632,8 +633,9 @@ class S2GController extends Controller
 		File::append($paramfile, "ensembl=$ensembl\n");
 		File::append($paramfile, "genetype=$genetype\n");
 		File::append($paramfile, "leadP=$leadP\n");
-		File::append($paramfile, "r2=$r2\n");
 		File::append($paramfile, "gwasP=$gwasP\n");
+		File::append($paramfile, "r2=$r2\n");
+		File::append($paramfile, "r2_2=$r2_2\n");
 		File::append($paramfile, "refpanel=$refpanel\n");
 		File::append($paramfile, "pop=$pop\n");
 		File::append($paramfile, "MAF=$maf\n");

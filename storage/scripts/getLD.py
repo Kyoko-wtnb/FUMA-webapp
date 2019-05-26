@@ -37,6 +37,10 @@ class getParams:
 		gwasP = float(param_cfg.get('params', 'gwasP'))
 		maf = float(param_cfg.get('params', 'MAF'))
 		r2 = float(param_cfg.get('params', 'r2'))
+		if param_cfg.has_option('params', 'r2_2'):
+			r2_2 = float(param_cfg.has_option('params', 'r2_2'))
+		else:
+			r2_2 = 0.1
 		mergeDist = int(param_cfg.get('params', 'mergeDist'))*1000
 		MHC = int(param_cfg.get('params', 'exMHC')) # 1 to exclude, 0 to not
 		extMHC = param_cfg.get('params', 'extMHC')
@@ -89,6 +93,7 @@ class getParams:
 		self.gwasP = gwasP
 		self.maf = maf
 		self.r2 = r2
+		self.r2_2 = r2_2
 		self.mergeDist = mergeDist
 		self.MHC = MHC # 1 to exclude, 0 to not
 		self.extMHC = extMHC
@@ -542,7 +547,7 @@ def getAnnot(snps, annot_dir):
 			out = np.r_[out, tmp_out]
 	return out
 
-##### defined lead SNPs from ind. sig. SNPs (r2 = 0.1)
+##### defined lead SNPs from ind. sig. SNPs
 def getLeadSNPs(chrom, snps, IndSigSNPs, params):
 	leadSNPs = []
 	checked = []
@@ -557,7 +562,7 @@ def getLeadSNPs(chrom, snps, IndSigSNPs, params):
 		inSNPs.append(snp[1])
 
 		for l in ld_tmp:
-			if float(l[6])<0.1:
+			if float(l[6])<params.r2_2:
 				continue
 			if int(l[1]) != int(snp[3]):
 				continue

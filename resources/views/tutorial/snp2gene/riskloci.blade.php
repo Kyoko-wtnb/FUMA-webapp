@@ -1,6 +1,10 @@
 <h3 id="riskloci">Risk loci and lead SNPs</h3>
 In this section, "Genomic risk loci", "lead SNPs" and
 "Independent significant SNPs (Ind. sig. SNPs)" are explained in more detail.
+<br/>
+<span class="info"><i class="fa fa-info"></i>
+	From FUMA v1.3.5, r<sup>2</sup> threshold for the second clumping can be provided by users.
+</span>
 <div style="padding-left: 40px">
 	<h4><strong>1. Independent significant SNPs (Ind. sig. SNPs)</strong></h4>
 	Ind. sig. SNPs are defined as SNPs that have a P-value &le; the user define threshold for genome-wide significance (5e-8 by default)
@@ -15,7 +19,7 @@ In this section, "Genomic risk loci", "lead SNPs" and
 	The higher the threshold for r<sup>2</sup>, the more SNPs are defined as ind. sig. SNPs.
 	At the same time, the number of SNPs in the LD with the ind. sig. SNPs (the candidate SNPs; which are the SNPs annotated in FUMA and used for gene prioritization) decreases.
 	<h4><strong>2. Lead SNPs</strong></h4>
-	Lead SNPs are defined as SNPs which are ind. sig. SNPs and are independent from each other at r<sup>2</sup> &lt; 0.1 (currently not adjustable).
+	Lead SNPs are defined as SNPs which are ind. sig. SNPs and are independent from each other at r<sup>2</sup> &lt; 0.1 (from v1.3.5, this value can be specified by users).
 	Therefore, lead SNPs are same as the SNPs clumped ind. sig. SNPs at the user defined P-value and r<sup>2</sup> = 0.1 by plink.<br/>
 	When r<sup>2</sup> is set at 0.1, lead SNPs are exactly the same as ind. sig. SNPs.
 	However, this will also result in selecting candidate SNPs that have r<sup>2</sup> above 0.1 with any of ind. sig. SNPs.
