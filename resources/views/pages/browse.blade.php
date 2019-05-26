@@ -32,9 +32,9 @@ var subdir = "{{ Config::get('app.subdir') }}";
 var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/browse.js?1.3.3d') !!}?131"></script>
+<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?135"></script>
+<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?135"></script>
+<script type="text/javascript" src="{!! URL::asset('js/browse.js') !!}?135"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">

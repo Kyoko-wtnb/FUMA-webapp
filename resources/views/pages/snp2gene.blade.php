@@ -34,10 +34,10 @@ var subdir = "{{ Config::get('app.subdir') }}";
 var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/NewJobParameters.js') !!}?133"></script>
-<script type="text/javascript" src="{!! URL::asset('js/geneMapParameters.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/snp2gene.js') !!}?133d"></script>
+<script type="text/javascript" src="{!! URL::asset('js/NewJobParameters.js') !!}?135"></script>
+<script type="text/javascript" src="{!! URL::asset('js/geneMapParameters.js') !!}?135"></script>
+<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?135"></script>
+<script type="text/javascript" src="{!! URL::asset('js/snp2gene.js') !!}?135"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">

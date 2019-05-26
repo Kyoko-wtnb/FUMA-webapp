@@ -21,7 +21,7 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
-<link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}?130">
+<link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}?135">
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 <script type="text/javascript">
 $.ajaxSetup({
@@ -37,8 +37,8 @@ var page = "{{$page}}";
 var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}?131"></script>
+<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?135"></script>
+<script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}?135"></script>
 @stop
 @section('content')
 <div id="wrapper" class="active">
