@@ -143,8 +143,9 @@ function setParams(data){
 		$('#N').val(data.N);
 	}
 	$('#leadP').val(data.leadP);
-	$('#r2').val(data.r2);
 	$('#gwasP').val(data.gwasP);
+	$('#r2').val(data.r2);
+	if(data.r2_2 != undefined){$('#r2_2').val(data.r2_2);}
 	$('#refpanel').val(data.refpanel+"/"+data.pop);
 	if(data.refSNPs=="1"){$('#refSNPs').val("Yes")}
 	else($('#refSNPs').val("No"))
@@ -184,10 +185,16 @@ function setParams(data){
 	if(data.posMapChr15!="NA"){
 		$('#posMapChe15check').porp("checked", true);
 		var cell = data.posMapChr15.split(":");
-		$('#posMapChr15Ts option').each(function(){
-			if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-			else{$(this).prop('selected', false);}
-		});
+		if(cell.indexOf("all")>=0){
+			$('#posMapChr15Ts option').each(function(){
+				$(this).prop('selected', true);
+			});
+		}else{
+			$('#posMapChr15Ts option').each(function(){
+				if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+		}
 		$('#posMapChr15Max').val(data.posMapChr15Max);
 		$('#posMapChr15Meth').val(data.posMapChr15Meth);
 	}
@@ -204,10 +211,16 @@ function setParams(data){
 	else{$('#eqtlMap').prop("checked", false)}
 	if(data.eqtlMaptss != "NA"){
 		var ts = data.eqtlMaptss.split(":");
-		$('#eqtlMapTs option').each(function(){
-			if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-			else{$(this).prop('selected', false);}
-		});
+		if(ts.indexOf("all")>=0){
+			$('#eqtlMapTs option').each(function(){
+				$(this).prop('selected', true);
+			});
+		}else{
+			$('#eqtlMapTs option').each(function(){
+				if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+		}
 		CheckAll();
 		if(data.eqtlMapSig=="1"){$('#sigeqtlCheck').prop("checked", true);}
 		else{$('#sigeqtlCheck').prop("checked", false);$('#eqtlP').val(data.eqtlMapP);}
@@ -227,10 +240,16 @@ function setParams(data){
 	if(data.eqtlMapChr15!="NA"){
 		$('#eqtlMapChr15check').prop("checked", true);
 		var cell = data.eqtlMapChr15.split(":");
-		$('#eqtlMapChr15Ts option').each(function(){
-			if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-			else{$(this).prop('selected', false);}
-		});
+		if(cell.indexOf("all")>=0){
+			$('#eqtlMapChr15Ts option').each(function(){
+				$(this).prop('selected', true);
+			});
+		}else{
+			$('#eqtlMapChr15Ts option').each(function(){
+				if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+		}
 		$('#eqtlMapChr15Max').val(data.eqtlMapChr15Max);
 		$('#eqtlMapChr15Meth').val(data.eqtlMapChr15Meth);
 	}
@@ -251,18 +270,30 @@ function setParams(data){
 		}
 		if(data.ciMapBuiltin!="NA"){
 			var ts = data.ciMapBuiltin.split(":");
-			$('#ciMapBuiltin option').each(function(){
-				if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-				else{$(this).prop('selected', false);}
-			});
+			if(ts.indexOf("all")>=0){
+				$('#ciMapBuiltin option').each(function(){
+					$(this).prop('selected', true);
+				});
+			}else{
+				$('#ciMapBuiltin option').each(function(){
+					if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+					else{$(this).prop('selected', false);}
+				});
+			}
 			CheckAll();
 		}
 		if(data.ciMapRoadmap!="NA"){
 			var cell = data.ciMapRoadmap.split(":");
-			$('#ciMapRoadmap option').each(function(){
-				if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-				else{$(this).prop('selected', false);}
-			});
+			if(cell.indexOf("all")>=0){
+				$('#ciMapRoadmap option').each(function(){
+					$(this).prop('selected', true);
+				});
+			}else{
+				$('#ciMapRoadmap option').each(function(){
+					if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+					else{$(this).prop('selected', false);}
+				});
+			}
 			CheckAll();
 		}
 		if(data.ciMapEnhFilt=="1"){$('#ciMapEnhFilt').prop('checked', true)}
@@ -322,10 +353,7 @@ function setParams(data){
 	if(data["magma"]!=undefined){
 		if(data.magma=="1"){
 			$('#magma').prop('checked', true)
-			$('#magma_window option').each(function(){
-				if($(this).val()==data.magma_window){$(this).prop('selected', true)}
-				else{$(this).prop('selected', false)}
-			})
+			$('#magma_window').val() = data.magma_window;
 			var ds = data.magma_exp.split(":");
 			$('#magma_exp option').each(function(){
 				if(ds.indexOf($(this).val())>=0){$(this).prop('selected', true)}

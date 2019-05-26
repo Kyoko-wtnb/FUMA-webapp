@@ -82,10 +82,16 @@ function geneMapSetParams(data){
 	if(data.posMapChr15!="NA"){
 		$('#geneMap_posMapChe15check').porp("checked", true);
 		var cell = data.posMapChr15.split(":");
-		$('#geneMap_posMapChr15Ts option').each(function(){
-			if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-			else{$(this).prop('selected', false);}
-		});
+		if(cell.indexOf("all")>=0){
+			$('#geneMap_posMapChr15Ts option').each(function(){
+				$(this).prop('selected', true);
+			});
+		}else{
+			$('#geneMap_posMapChr15Ts option').each(function(){
+				if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+		}
 		$('#geneMap_posMapChr15Max').val(data.posMapChr15Max);
 		$('#geneMap_posMapChr15Meth').val(data.posMapChr15Meth);
 	}
@@ -103,10 +109,17 @@ function geneMapSetParams(data){
 	else{$('#geneMap_eqtlMap').prop("checked", false)}
 	if(data.eqtlMaptss != "NA"){
 		var ts = data.eqtlMaptss.split(":");
-		$('#geneMap_eqtlMapTs option').each(function(){
-			if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-			else{$(this).prop('selected', false);}
-		});
+		if(ts.idexOf("all")>=0){
+			$('#geneMap_eqtlMapTs option').each(function(){
+				$(this).prop('selected', true);
+			});
+		}else{
+			$('#geneMap_eqtlMapTs option').each(function(){
+				if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+		}
+
 		geneMapCheckAll();
 		if(data.eqtlMapSig=="1"){$('#sigeqtlCheck').prop("checked", true);}
 		else{$('#sigeqtlCheck').prop("checked", false);$('#eqtlP').val(data.eqtlMapP);}
@@ -126,10 +139,16 @@ function geneMapSetParams(data){
 	if(data.eqtlMapChr15!="NA"){
 		$('#geneMap_eqtlMapChr15check').prop("checked", true);
 		var cell = data.eqtlMapChr15.split(":");
-		$('#geneMap_eqtlMapChr15Ts option').each(function(){
-			if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-			else{$(this).prop('selected', false);}
-		});
+		if(cell.indexOf("all")>=0){
+			$('#geneMap_eqtlMapChr15Ts option').each(function(){
+				$(this).prop('selected', true);
+			});
+		}else{
+			$('#geneMap_eqtlMapChr15Ts option').each(function(){
+				if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+				else{$(this).prop('selected', false);}
+			});
+		}
 		$('#geneMap_eqtlMapChr15Max').val(data.eqtlMapChr15Max);
 		$('#geneMap_eqtlMapChr15Meth').val(data.eqtlMapChr15Meth);
 	}
@@ -152,10 +171,16 @@ function geneMapSetParams(data){
 		}
 		if(data.ciMapBuiltin!="NA"){
 			var ts = data.ciMapBuiltin.split(":");
-			$('#geneMap_ciMapBuiltin option').each(function(){
-				if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-				else{$(this).prop('selected', false);}
-			});
+			if(ts.indexOf("all")>=0){
+				$('#geneMap_ciMapBuiltin option').each(function(){
+					$(this).prop('selected', true);
+				});
+			}else{
+				$('#geneMap_ciMapBuiltin option').each(function(){
+					if(ts.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+					else{$(this).prop('selected', false);}
+				});
+			}
 			geneMapCheckAll();
 		}
 		if(data.ciMapRoadmap!="NA"){
@@ -184,10 +209,16 @@ function geneMapSetParams(data){
 		if(data.ciMapChr15!="NA"){
 			$('#geneMap_ciMapChe15check').porp("checked", true);
 			var cell = data.ciMapChr15.split(":");
-			$('#geneMap_ciMapChr15Ts option').each(function(){
-				if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
-				else{$(this).prop('selected', false);}
-			});
+			if(cell.indexOf("all")>=0){
+				$('#geneMap_ciMapChr15Ts option').each(function(){
+					$(this).prop('selected', true);
+				});
+			}else{
+				$('#geneMap_ciMapChr15Ts option').each(function(){
+					if(cell.indexOf($(this).val())>=0){$(this).prop('selected', true);}
+					else{$(this).prop('selected', false);}
+				});
+			}
 			$('#geneMap_ciMapChr15Max').val(data.ciMapChr15Max);
 			$('#geneMap_ciMapChr15Meth').val(data.ciMapChr15Meth);
 		}
