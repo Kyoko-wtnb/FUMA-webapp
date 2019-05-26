@@ -3,6 +3,7 @@ README of output files (GENE2FUNC) from FUMA web application
 Author: Kyoko Watanabe (k.watanabe@vu.nl)
 Version: 1.3.0 (21 Feb 2018)
 Version: 1.3.1 (27 Apr 2018)
+Version: 1.3.5 (27 May 2019)
 
 This file contains description of columns for every downloadable file.
 
@@ -16,6 +17,9 @@ title : Job title
 [params]
 gtype : Either "text" (genes were provided in the text box) or "file" (genes were provided by uploading a file).
 gval : If gtype is text, input genes are listed separated by ":", otherwise input file name.
+ensembl : version of the Ensembl gene annotation
+gsFileN : Number of the user provided gene set files
+gsFile : Names of the user provided gene set files
 bkgtype : Either "text", "file" or "select" (selected from gene type, e.g. protein coding or ncRNA).
 	When GENE2FUNC was performed for a SNP2GENE job, this value is same as genetype parameter.
 bkgval : If bkgtype is text, input background genes are listed separated by ":", if bkgtype is file, the file name, otherwise selected gene type.

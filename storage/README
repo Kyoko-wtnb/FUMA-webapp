@@ -6,6 +6,7 @@ Version: 1.1.2 (27 Apr 2017)
 Version: 1.3.0 (21 Feb 2018)
 Version: 1.3.1 (27 Apr 2018)
 Version: 1.3.4 (8 Feb 2019)
+Version: 1.3.5 (27 May 2019)
 
 This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
@@ -119,6 +120,29 @@ uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where allele
 CADD : CADD score which is computed based on 67 annotations. The higher score, the more deleterious the SNP is. 12.37 is the suggested threshold by Kicher et al. (2014).
 RDB : RegulomeDB score which is the categorical score (from 1a to 7). 1a is the highest score that the SNP has the most biological evidence to be regulatory element.
 E001~E129 : Chromatin state predicted by ChromHMM.
+Others: When additional annotations are selected, each column represents one dataset. SNPs overlapping with the correspoinding annotation has 1, otherwise 0.
+
+######################
+# annot.bed
+# Additional annotations
+# This file is only available when at least one dataset is selected
+######################
+chr : chromosome
+start : start position of the annotation on hg19
+end : end position of the annotation on hg19
+dataset : name of the dataset
+
+######################
+# annov.stats.txt
+# Enrichment statistics for functional consequences of SNPs
+######################
+annot : Functional consequence of SNPs
+ref.count : Number of SNPs with the corresponding annotation in the user selected reference panel
+ref.prop : Proportion of SNPs with the corresponding annotation in the user selected reference panel
+count : Number of candidate SNPs with the corresponding annotation
+prop : Proportion of candidate SNPs with the corresponding annotation
+enrichment : prop / ref.prop. When this value is >1, the annotation is enriched, otherwise depleted.
+fisher.P : P-value from Fisher's exact test (two sided)
 
 ######################
 # genes.txt
@@ -287,8 +311,9 @@ MHCopt : "annot" to exclude MHC region only from SNP2GENE annotation, "magma" to
 extMHC : user defined MHC region if provided, NA otherwise
 genetype : All selected gene type.
 leadP : the maximum threshold of P-value to be lead SNP
-r2 : the minimum threshold of SNPs to be in LD of the lead SNPs
 gwasP : the maximum threshold of P-value to be candidate SNP
+r2 : the minimum threshold to define independent significant SNPs
+r2_2 : the minimum threshold to define lead SNPs
 pop : The population of reference panel
 MAF : the minimum minor allele frequency based on 1000 genome reference of given population
 refSNPs : 1 to include non-GWAS-tagged SNPs from reference panel, 0 otherwise
@@ -306,6 +331,8 @@ posMapRDBth : The minimum RegulomeDB score for SNP filtering
 posMapChr15 : Select tissue/cell types, NA otherwise
 posMapChr15Max : The maximum 15-core chromatin state
 posMapChr15Meth : The method of chromatin state filtering
+posMapAnnoDs : Datasets for additional annotations
+posMapAnnoMeth : The method of SNP filtering based on selected annotations
 [eqtlMap]
 eqtlMap : 1 to perform eQTL mapping, 0 otherwise
 eqtlMaptss : Selected tissue typed for eQTL mapping
@@ -316,6 +343,8 @@ eqtlMapRDBth : The minimum RegulomeDB score for SNP filtering
 eqtlMapChr15 : Select tissue/cell types, NA otherwise
 eqtlMapChr15Max : The maximum 15-core chromatin state
 eqtlMapChr15Meth : The method of chromatin state filtering
+eqtlMapAnnoDs : Datasets for additional annotations
+eqtlMapAnnoMeth : The method of SNP filtering based on selected annotations
 [ciMap]
 ciMap : 1 to perform chromatin interaction mapping, 0 otherwise
 ciMapBuiltin : Selected builtin chromatin interaction data
@@ -331,6 +360,8 @@ ciMapRDBth : The minimum RegulomeDB score for SNP filtering
 ciMapChr15 : Select tissue/cell types, NA otherwise
 ciMapChr15Max : The maximum 15-core chromatin state
 ciMapChr15Meth : The method of chromatin state filtering
+ciMapAnnoDs : Datasets for additional annotations
+ciMapAnnoMeth : The method of SNP filtering based on selected annotations
 
 ######################
 # MAGMA outputs
