@@ -10,5 +10,17 @@
 		<input type="hidden" name="fileName" id="GSFileName" val=""/>
 		<input type="submit" id="GSSubmit" class="ImgDownSubmit"/>
 	</form>
+	<span class="info"><i class="fa fa-info"></i>
+		Plots and tables only display gene sets with adjusted P-value < 0.05.
+		When adjusted P-value threshold is set to > 0.05, all results passed threshold are included in the GS.txt field
+		downloadable from "Summary" tab.
+	</span>
+	<br/>
+	<span class="info"><i class="fa fa-info"></i>
+		If there is no significant gene sets (adjusted P-value < 0.05) in user provided custom gene sets,
+		they are not displayed in this page, but all results passed threshold are included in the GS.txt field
+		downloadable from "Summary" tab.
+	</span>
+	<br/>
 	<div id="GeneSet"></div>
 </div>

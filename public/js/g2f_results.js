@@ -461,11 +461,14 @@ function GeneSet(id){
 			+'The hypergeometric test is only performed if more than 2 genes are available.</div>');
 			$('#GSdown').attr("disabled", true);
 		}else{
+			data.forEach(function(d){
+				d.adjP = +d.adjP;
+			});
 			tmp_category = d3.set(data.map(function(d){return d.Category})).values();
 			tmp_category.forEach(function(d){
 				if(category.indexOf(d)<0){category.push(d)}
 			})
-			console.log(category)
+			data = data.filter(function(d){if(d.adjP<0.05){return d}})
 			for(var i=0; i<category.length; i++){
 				// title
 				var title = category[i];
@@ -699,7 +702,7 @@ function GeneSet(id){
 					// Table
 					var table = '<table class="table table-bordered"><thead><td>GeneSet</td><td>N</td><td>n</td><td>P-value</td><td>adjusted P</td><td>genes</td></thead>';
 					tdata.forEach(function(d){
-						if(d.link.length>0){
+						if(d.link.length>0 & d.link.startsWith("http")){
 							table += '<tr><td><a href="'+d.link+'" target="_blank">'+d.GeneSet+'</a></td><td>'+d.N_genes+'</td><td>'+d.N_overlap
 								+'</td><td>'+Number(Number(d.p).toPrecision(3)).toExponential(2)+'</td><td>'+Number(Number(d.adjP).toPrecision(3)).toExponential(2)+'</td><td>'+d.genes.split(":").join(", ")+'</td></tr>';
 						}else{
