@@ -66,7 +66,7 @@ for li in range(len(loci)):
 		tb = tabix.open(qtldir+"/"+feqtl)
 		eqtls = []
 		for l in tb.querys(str(chrom)+":"+str(start)+"-"+str(end)):
-			eqtls.append(l)
+			eqtls.append(l[0:10])
 		eqtls = pd.DataFrame(eqtls, columns=['chr', 'pos', 'a1', 'a2', 'ta', 'gene', 'stats', 'p', 'fdr'])
 
 		### filter on eQTLs based on position
@@ -87,12 +87,29 @@ for li in range(len(loci)):
 		### assign uniqID
 		## if eQTLs do not have alleles, take uniqID from snps
 		## For multi allelic SNPs, duplicated eQTLs (for later use in gene mapping)
-		if eqtls.iloc[0,2]=="NA" or eqtls.iloc[0,2]=="NA":
+		if eqtls.iloc[0,2]=="NA" and eqtls.iloc[0,3]=="NA":
 			eqtls = eqtls.merge(snps[snps.iloc[:,1]==chrom].iloc[:,[0,2]], on="pos", how="left")
+			eqtls = eqtls[eqtls.uniqID.isin(snps.uniqID)]
+		elif eqtls.iloc[0,2]=="NA" or eqtls.iloc[0,3]=="NA":
+			snps['uniqID1'] = snps.uniqID.apply(lambda x: ":".join(x.split(":")[0:3]))
+			snps['uniqID2'] = snps.uniqID.apply(lambda x: ":".join(np.delete(x.split(":"),2)))
+			if eqtls.iloc[0,2]=="NA":
+				eqtls['uniqID1'] = eqtls.iloc[:,0].astype('str')+":"+eqtls.iloc[:,1].astype('str')+":"+eqtls.iloc[:,3]
+			else:
+				eqtls['uniqID1'] = eqtls.iloc[:,0].astype('str')+":"+eqtls.iloc[:,1].astype('str')+":"+eqtls.iloc[:,2]
+			tmp_eqtls = eqtls[eqtls.uniqID1.isin(snps.uniqID1)]
+			tmp_eqtls = tmp_eqtls.merge(snps[snps.uniqID1.isin(tmp_eqtls.uniqID1)].loc[:,["uniqID1", "uniqID"]], on="uniqID1", how="left")
+			tmp_eqtls = tmp_eqtls.drop(columns="uniqID1")
+			eqtls = eqtls[eqtls.uniqID1.isin(snps.uniqID2)]
+			eqtls = eqtls.merge(snps[snps.uniqID2.isin(eqtls.uniqID1)].loc[:,["uniqID2", "uniqID"]], left_on="uniqID1", right_on="uniqID2", how="left")
+			eqtls = eqtls.drop(columns=["uniqID1", "uniqID2"])
+			eqtls = eqtls.append(tmp_eqtls, ignore_index=True)
+			del tmp_eqtls
 		else:
 			eqtls.iloc[:,2:4] = eqtls.iloc[:,2:4].apply(np.sort, axis=1, result_type='broadcast')
 			eqtls['uniqID'] = eqtls.iloc[:,0].astype('str')+":"+eqtls.iloc[:,1].astype('str')+":"+eqtls.iloc[:,2]+":"+eqtls.iloc[:,3]
-		eqtls = eqtls[eqtls.uniqID.isin(snps.uniqID)]
+			eqtls = eqtls[eqtls.uniqID.isin(snps.uniqID)]
+
 		eqtls['ds'] = ds
 		eqtls['tissue'] = ts
 		eqtls = eqtls[["uniqID", "ds", "tissue", "gene", "ta", "p", "stats", "fdr"]]

@@ -1,3 +1,31 @@
+<option class="level1" value="null">PsychENCODE (1)</option>
+<option class="level2" value="PsychENCODE/PsychENCODE_eQTLs.txt.gz">PsychENCODE eQTLs</option>
+<option class="level1" value="null">van der Wijst et al. scRNA eQTLs (9)</option>
+<option class="level2" value="scRNA_eQTLs/B_cell.txt.gz">B cells</option>
+<option class="level2" value="scRNA_eQTLs/DC.txt.gz">Dendritic cells</option>
+<option class="level2" value="scRNA_eQTLs/NK.txt.gz">Natural Killer cells</option>
+<option class="level2" value="scRNA_eQTLs/Monocyte.txt.gz">Monocytes</option>
+<option class="level2" value="scRNA_eQTLs/Classical_Monocyte.txt.gz">Classical Monocyte</option>
+<option class="level2" value="scRNA_eQTLs/Non_classical_Monocyte.txt.gz">Non-classical Monocytes</option>
+<option class="level2" value="scRNA_eQTLs/T_CD4.txt.gz">CD4 T cells</option>
+<option class="level2" value="scRNA_eQTLs/T_CD8.txt.gz">CD8 T cells</option>
+<option class="level2" value="scRNA_eQTLs/PBMC.txt.gz">PBMC</option>
+<option class="lecel1" value="null">DICE (15)</option>
+<option class="level2" value="DICE/B_cell_naive.txt.gz">Naive B cells</option>
+<option class="level2" value="DICE/T_CD4_naive.txt.gz">Naive CD4 T cells</option>
+<option class="level2" value="DICE/T_CD4_naive_activated.txt.gz">Naive (activated) CD4 T cells</option>
+<option class="level2" value="DICE/T_CD8_naive.txt.gz">Naive CD8 T cells</option>
+<option class="level2" value="DICE/T_CD8_naive_activated.txt.gz">Naive (activated) CD8 T cells</option>
+<option class="level2" value="DICE/Monocyte_classical.txt.gz">Classical Monocytes</option>
+<option class="level2" value="DICE/Monocyte_non_classical.txt.gz">Non-classical Monocytes</option>
+<option class="level2" value="DICE/NK.txt.gz">Natual Killer cells</option>
+<option class="level2" value="DICE/T_CD4_TFH.txt.gz">TFH CD4 T cells</option>
+<option class="level2" value="DICE/T_CD4_TH1.txt.gz">TH1 CD4 T cells</option>
+<option class="level2" value="DICE/T_CD4_TH17.txt.gz">TH17 CD4 T cells</option>
+<option class="level2" value="DICE/T_CD4_TH1_17.txt.gz">TH1-17 CD4 T cells</option>
+<option class="level2" value="DICE/T_CD4_TH2.txt.gz">TH2 CD4 T cells</option>
+<option class="level2" value="DICE/T_CD4_memory_TREG.txt.gz">Memory TREG CD4 T cells</option>
+<option class="level2" value="DICE/T_CD4_naive_TREG.txt.gz">Naive TREG CD4 T cells</option>
 <option class="level1" value="null">eQTLGen (2)</option>
 <option class="level2" value='eQTLGen/eQTLGen_cis_eQTLs.txt.gz'>eQTLGen cis-eQTLs</option>
 <option class="level2" value='eQTLGen/eQTLGen_trans_eQTLs.txt.gz'>eQTLGen trans-eQTLs</option>
