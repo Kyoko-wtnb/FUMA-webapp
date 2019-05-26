@@ -10,7 +10,7 @@ var loggedin = "{{ Auth::check() }}";
 <div class="container" style="padding-top: 50px;">
 	<div class="alert alert-warning">
 		<i class="fa fa-exclamation-triangle"></i>
-		For scRNA-seq datasets in cell type analysis section, please see <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#celltype">tutorial for links and references.</a>
+		For scRNA-seq datasets in cell type analysis section, please see <a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#datasets">tutorial for links and references.</a>
 	</div>
 	<table class="table table-bordered">
 		<thead>
@@ -24,7 +24,7 @@ var loggedin = "{{ Auth::check() }}";
 		</thead>
 		<tbody>
 			<tr>
-				<td>1000 genoms project Phase 3</td>
+				<td>1000 Genome Project Phase 3</td>
 				<td>
 					Reference panel used to compute r<sup>2</sup> and MAF.
 				</td>
@@ -32,17 +32,17 @@ var loggedin = "{{ Auth::check() }}";
 					Info: <a href="http://www.internationalgenome.org/" target="_blank">http://www.internationalgenome.org/</a><br/>
 					Data: <a href="ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/" target="_blank">ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/</a>
 				</td>
-				<td>5 December 2016</td>
+				<td>27 May 2019</td>
 				<td>
 					1000 Genomes Project Consortium, et al. 2015. A global reference for human genetic variation. <i>Nature.</i> <b>526</b>, 68-74.<br/>
 				<a href="https://www.ncbi.nlm.nih.gov/pubmed/26432245" target="_blank">PMID:26432245</a>
 				</td>
 			</tr>
 			<tr>
-				<td>PLINK</td>
+				<td>PLINK v1.9</td>
 				<td>Used to compute r2 and MAF.</td>
 				<td>Info and download: <a href="https://www.cog-genomics.org/plink2" target="_target">https://www.cog-genomics.org/plink2</a></td>
-				<td>5 December 2016</td>
+				<td>27 May 2019</td>
 				<td>
 					Purcell, S., et al. 2007. PLINK: A tool set for whole-genome association and population-based linkage analyses. <i>Am. J. Hum. Genet.</i> <b>81</b>, 559-575.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/17701901" target="_blank">PMID:17701901</a>
@@ -69,13 +69,13 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>CADD v1.3</td>
+				<td>CADD v1.4</td>
 				<td>A deleterious score of variants computed by integrating 63 functional annotations. The higher the score, the more deleterious.</td>
 				<td>
 					Info: <a href="http://cadd.gs.washington.edu/" target="_blank">http://cadd.gs.washington.edu/</a><br/>
 					Data: <a href="http://cadd.gs.washington.edu/download" target="_blank">http://cadd.gs.washington.edu/download</a>
 				</td>
-				<td>5 December 2016</td>
+				<td>27 May 2019</td>
 				<td>
 					Kicher, M., et al. 2014. A general framework for estimating the relative pathogeneticity of human genetic variants. <i>Nat. Genet.</i> <b>46</b>, 310-315.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/24487276" target="_blank">PMID:24487276</a>
@@ -208,6 +208,61 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
+				<td>DICE</td>
+				<td>eQTLs of 15 types of immune cells.</td>
+				<td>
+					Info: <a target="_blank" href="https://dice-database.org/landing">https://dice-database.org/landing</a><br/>
+					Data: <a target="_blank" href="https://dice-database.org/downloads">https://dice-database.org/downloads</a>
+				</td>
+				<td>27 May 2019</td>
+				<td>
+					Schmiedel et al. 2018. Impact of genetic polymorphisms on human immune cell gene expression. <i>Cell</i> <b>175</b>, 1701-1715.e16.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/30449622" target="_blank">PMID:30449622</a>
+				</td>
+			</tr>
+			<tr>
+				<td>van der Wijst et al. scRNA eQTLs</td>
+				<td>eQTLs based on scRNA-seq of 9 cell types.</td>
+				<td>
+					Info and data: <a target="_blank" href="https://molgenis26.target.rug.nl/downloads/scrna-seq/">https://molgenis26.target.rug.nl/downloads/scrna-seq/</a>
+				</td>
+				<td>27 May 2019</td>
+				<td>
+					van der Wijst et al. 2018. Single-cell RNA sequencing identifies celltype-specific eQTLs and co-expression QTLs. <i>Nat. Genet.</i> <b>50</b>, 493-497.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/29610479" target="_blank">PMID:29610479</a>
+				</td>
+			</tr>
+			<tr>
+				<td>PsychENCODE</td>
+				<td>SNP annotations (enhancer, H3K27ac markers), eQTLs and HiC based enhancer-promoter interactions.</td>
+				<td>
+					Info and data: <a target="_blank" href="http://resource.psychencode.org/">http://resource.psychencode.org/</a>
+				</td>
+				<td>27 May 2019</td>
+				<td>
+					Wang et al. 2018. Comprehensive functional genomic resource and integrative model for the human brain. <i>Science</i> <b>14</b>, eaat8464.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/30545857" target="_blank">PMID:30545857</a>
+				</td>
+			</tr>
+			<tr>
+				<td>FANTOM5</td>
+				<td>SNP annotations (enhancer and promoter) and enhancer-promoter correlations.</td>
+				<td>
+					Info: <a target="_blank" href="http://fantom.gsc.riken.jp/5/">http://fantom.gsc.riken.jp/5/</a><br/>
+					Data: <a target="_blank" href="http://fantom.gsc.riken.jp/5/data/">http://fantom.gsc.riken.jp/5/data/</a>,
+					<a target="_blank" href="http://slidebase.binf.ku.dk/human_enhancers/presets">http://slidebase.binf.ku.dk/human_enhancers/presets</a>
+				</td>
+				<td>27 May 2019</td>
+				<td>
+					Andersson et al. 2014. An atlas of active enhancers across human cell types and tissues. <i>Nature</i> <b>507</b>, 455-461.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/24670763" target="_blank">PMID:24670763</a><br>
+					FANTOM Consortium. A promoter-level mammalian expression atlas. <i>Nature</i> <b>507</b>, 462-470.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/24670764" target="_blank">PMID:24670764</a><br>
+					Bertin et al. 2017. Linking FANTOM5 CAGE peaks to annotations with CAGEscan. <i>Sci. Data</i> <b>4</b>, 170147.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/28972578" target="_blank">PMID:28972578</a><br>
+				</td>
+			</tr>
+			<tr>
 				<td>BrainSpan</td>
 				<td>Gene expression data of developmental brain samples.</td>
 				<td>
@@ -279,13 +334,13 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>GWAS-catalog e93 2019-01-11</td>
+				<td>GWAS-catalog e96 2019-05-03</td>
 				<td>A database of reported snp-trait associations.</td>
 				<td>
 					Info: <a href="https://www.ebi.ac.uk/gwas/" target="_blank">https://www.ebi.ac.uk/gwas/</a><br/>
 					Data: <a href="https://www.ebi.ac.uk/gwas/downloads" target="_blank">https://www.ebi.ac.uk/gwas/downloads</a>
 				</td>
-				<td>13 February 2019</td>
+				<td>27 May 2019</td>
 				<td>
 					MacArthur, J., et al. 2016. The new NHGRI-EBI Catalog of published genome-wide association studies (GWAS Catalog). <i>Nucleic Acids Res.</i> pii:gkw1133.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/27899670" target="_blank">PMID:27899670</a>

@@ -19,6 +19,35 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>27 May 2019</td>
+			<td>v1.3.5</td>
+			<td>
+				<strong>Major update 1</strong>: Reference panels were updated to include as much as variants possible.
+				For 1000 Genome, new reference panel "ALL" was added.
+				UK Biobank reference panel was updated to release 2b (based on genotype data released in May 2018).
+				UK Biobank release 1 and release 2 reference panels are no longer available.
+				Please check <a a target="_blank" href="{{ Config::get('app.subdir') }}/tutorial#refpanel">Tutorial</a> for more details.
+				<br/>
+				<strong>Major update 2</strong>: New options for additional SNP annotations (genome based annotations provided as bed files) were added.
+				Annotations can be selected for each mapping separately.
+				Options can be selected to either only annotate SNPs or also filter based on the overlap of selected annotations.
+				<br/>
+				<strong>Major update 3</strong>: For GENE2FUNC, users can now provide custom gene sets in GMT format.
+				<br/>
+				<strong>Minor update 1</strong>: A threshold of r<sup>2</sup> for the second clumping to define lead SNPs was added as input parameter.
+				<br/>
+				<strong>Minor update 2</strong>: Additional data sets were added to eQTLs and chromatin interaction mappings.
+				<br/>
+				<strong>Minor update 3</strong>: Additional data sets were added to cell type analyses.
+				<br/>
+				<strong>Minor update 4</strong>: Enrichments of functional consequence of candidate SNPs are now tested against SNPs in the user selected reference panel.
+				<br/>
+				<strong>Minor update 5</strong>: GWAS catalog was updated to e96 2019-05-03.
+				<br/>
+				<strong>Minor update 6</strong>: Gene window size for MAGMA gene analysis can be specified for up- and downstream separately.
+			</td>
+		</tr>
+		<tr>
 			<td>26 Apr 2019</td>
 			<td>v1.3.4d</td>
 			<td>
