@@ -10,7 +10,7 @@
 <option class="level2" value="scRNA_eQTLs/T_CD4.txt.gz">CD4 T cells</option>
 <option class="level2" value="scRNA_eQTLs/T_CD8.txt.gz">CD8 T cells</option>
 <option class="level2" value="scRNA_eQTLs/PBMC.txt.gz">PBMC</option>
-<option class="lecel1" value="null">DICE (15)</option>
+<option class="level1" value="null">DICE (15)</option>
 <option class="level2" value="DICE/B_cell_naive.txt.gz">Naive B cells</option>
 <option class="level2" value="DICE/T_CD4_naive.txt.gz">Naive CD4 T cells</option>
 <option class="level2" value="DICE/T_CD4_naive_activated.txt.gz">Naive (activated) CD4 T cells</option>
@@ -33,9 +33,9 @@
 <option class="level2" value='BloodeQTL/BloodeQTL.txt.gz'>Westra et al. (2013) Blood eQTL Browser</option>
 <option class="level2" value='BIOSQTL/BIOS_eQTL_geneLevel.txt.gz'>Zhernakova et al. (2017) BIOS QTL Browser</option>
 <option class="level1" value="null">MuTHER (3)</option>
-<option class="level2" value='Muther/MuTHER_Adipose.txt.gz'>MuTHER Adipose</option>
-<option class="level2" value='Muther/MuTHER_LCL.txt.gz'>MuTHER LCL</option>
-<option class="level2" value='Muther/MuTHER_Skin.txt.gz'>MuTHER Skin</option>
+<option class="level2" value='MuTHER/MuTHER_Adipose.txt.gz'>MuTHER Adipose</option>
+<option class="level2" value='MuTHER/MuTHER_LCL.txt.gz'>MuTHER LCL</option>
+<option class="level2" value='MuTHER/MuTHER_Skin.txt.gz'>MuTHER Skin</option>
 <option class="level1" value="null">xQTLServer (1)</option>
 <option class="level2" value='xQTLServer/xQTLServer_eQTLs.txt.gz'>xQTLServer cis eQTLs</option>
 <option class="level1" value="null">ComminMind Consortium (4)</option>

@@ -353,7 +353,9 @@ function setParams(data){
 	if(data["magma"]!=undefined){
 		if(data.magma=="1"){
 			$('#magma').prop('checked', true)
-			$('#magma_window').val() = data.magma_window;
+			if(data.magma_window!=undefined){
+				$('#magma_window').val(data.magma_window)
+			}
 			var ds = data.magma_exp.split(":");
 			$('#magma_exp option').each(function(){
 				if(ds.indexOf($(this).val())>=0){$(this).prop('selected', true)}
