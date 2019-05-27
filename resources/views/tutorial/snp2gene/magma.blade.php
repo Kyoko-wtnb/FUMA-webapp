@@ -9,15 +9,9 @@ In this section, reference panels and gene expression data sets are described de
 	Same as described in <a href="{{ Config::get('app.subdir') }}/tutorial#refpanel">Reference panel</a> section.
 	<br/>
 
-	<h4><strong>2. UK Biobank release1</strong></h4>
+	<h4><strong>2. UK Biobank release2</strong></h4>
 	Same as described in <a href="{{ Config::get('app.subdir') }}/tutorial#refpanel">Reference panel</a> section,
 	<span style="color:red;">except further 1,000 individuals were randomly selected</span>
-	to reduce runtime of MAGMA (it takes >3 hours with 10,000 individuals).
-	<br/>
-
-	<h4><strong>3. UK Biobank release2</strong></h4>
-	Same as described in <a href="{{ Config::get('app.subdir') }}/tutorial#refpanel">Reference panel</a> section,
-	<span style="color:red;">except further 1,000 individuals were randomly selected for each white British and european reference panel</span>
 	to reduce runtime of MAGMA (it takes >3 hours with 10,000 individuals).
 	<br/>
 

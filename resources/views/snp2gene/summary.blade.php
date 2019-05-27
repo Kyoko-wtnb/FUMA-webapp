@@ -13,11 +13,12 @@
 				See tutorial for more details.">
 				<i class="fa fa-question-circle-o fa-lg"></i>
 			</a>
+			</h4>
 			<span class="into"><i class="fa fa-info"></i>
 				Statistics are available in "annov.stats.txt".
 				The file is downloadable from the "Download" tab.
 			</span>
-			</h4>
+			<br/>
 			Download the plot as
 			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","png");'>PNG</button>
 			<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("snpAnnotPlot","jpeg");'>JPG</button>

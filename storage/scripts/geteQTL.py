@@ -43,7 +43,7 @@ eqtlP = float(param_cfg.get('eqtlMap', 'eqtlMapP'))
 
 ##### files #####
 fsnps = filedir+"snps.txt"
-floci = filedir+"Genomicriskloci.txt"
+floci = filedir+"GenomicRiskLoci.txt"
 fout = filedir+"eqtl.txt"
 
 ##### write header for output file #####
@@ -66,7 +66,7 @@ for li in range(len(loci)):
 		tb = tabix.open(qtldir+"/"+feqtl)
 		eqtls = []
 		for l in tb.querys(str(chrom)+":"+str(start)+"-"+str(end)):
-			eqtls.append(l[0:10])
+			eqtls.append(l[0:9])
 		eqtls = pd.DataFrame(eqtls, columns=['chr', 'pos', 'a1', 'a2', 'ta', 'gene', 'stats', 'p', 'fdr'])
 
 		### filter on eQTLs based on position

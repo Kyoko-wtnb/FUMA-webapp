@@ -1034,7 +1034,7 @@
 					</td>
 					<td>
 						<span class="form-inline">
-							<input type="number" class="form-control" id="magma_window" name="magma_window" value="0" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();">
+							<input type="text" class="form-control" id="magma_window" name="magma_window" value="0" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();">
 							kb<br/>
 							<span class="info"><i class="fa fa-info"></i>
 								One value will set same window size both sides, two values separated by comma will set different window sizes for up- and downstream.

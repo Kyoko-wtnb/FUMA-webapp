@@ -427,7 +427,7 @@ function GeneSetTable(category){
 
 function GeneSet(id){
 	$('#GeneSet').html("");
-	var category = ['Hallmark_gene_sets', 'Positional_gene_sets', 'Curetaed_gene_sets',
+	var category = ['Hallmark_gene_sets', 'Positional_gene_sets', 'Curated_gene_sets',
 			'Chemical_and_Genetic_pertubation', 'Canonical_Pathways', 'BioCarta', 'KEGG', 'Reactome',
 			'microRNA_targets', 'TF_targets', 'Computational_gene_sets',
 			'Cancer_gene_neighborhoods', 'Cancer_modules', 'GO_bp', 'GO_cc', 'GO_mf',
