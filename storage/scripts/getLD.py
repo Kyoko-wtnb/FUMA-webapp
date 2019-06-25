@@ -38,7 +38,7 @@ class getParams:
 		maf = float(param_cfg.get('params', 'MAF'))
 		r2 = float(param_cfg.get('params', 'r2'))
 		if param_cfg.has_option('params', 'r2_2'):
-			r2_2 = float(param_cfg.has_option('params', 'r2_2'))
+			r2_2 = float(param_cfg.get('params', 'r2_2'))
 		else:
 			r2_2 = 0.1
 		mergeDist = int(param_cfg.get('params', 'mergeDist'))*1000
@@ -226,7 +226,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 		if len(gwas_tmp) == 0:
 			return [], [], []
 		gwas_in = gwas_tmp
-	gwas_in = gwas_in[gwas_in[:,poscol].argsort()]
+	gwas_in = gwas_in[np.lexsort((gwas_in[:,pcol], gwas_in[:,poscol]))]
 
 	print str(len(gwas_in))+" SNPs in chromosome "+str(chrom)
 
@@ -340,7 +340,7 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 							snp.append(str(gwas_in[jgwas, secol]))
 						canSNPs.append(snp)
 						GWASSNPs += 1
-					## process SNPs whic do not exist in input file
+					## process SNPs which do not exist in input file
 					elif refSNPs==1:
 						tmp_uid = ":".join([m[0], m[1]]+sorted([m[3], m[4]]))
 						ld.append([l_uid, tmp_uid, ld_tmp[ild, 2]])
@@ -412,10 +412,10 @@ def chr_process(ichrom, gwasfile_chr, regions, leadSNPs, params):
 
 				### get SNPs in LD
 				tb = tabix.open(ldfile)
-				ld_tb = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
+				# ld_tb = tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos))
 				ld_tmp = []
 				ld_tmp.append([l[poscol], l[rsIDcol], 1])
-				for m in ld_tb:
+				for m in tb.querys(str(chrom)+":"+str(pos)+"-"+str(pos)):
 					if int(m[1]) != pos:
 						continue
 					if float(m[6]) >= r2:

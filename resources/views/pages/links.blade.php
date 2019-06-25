@@ -270,8 +270,8 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 				<td>31 January 2018</td>
 				<td>
-					Miller et al. 2014. Transcriptional landscape of the prenatal human brain. <i>Nature</i> <b>508</b>, 199-206.<br/>
-					<a href="https://www.ncbi.nlm.nih.gov/pubmed/24695229" target="_blank">PMID:24695229</a>
+					Kang et al. 2011. Spatio-temporal transcriptome of the human brain. <i>Nature</i> <b>478</b>, 483-489.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/22031440" target="_blank">PMID:22031440</a>
 				</td>
 			</tr>
 			<tr>

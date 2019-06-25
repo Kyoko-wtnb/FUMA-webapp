@@ -62,14 +62,14 @@ leadfile = param.get('inputfiles', 'leadSNPsfile')
 regionfile = param.get('inputfiles', 'regionsfile')
 if leadfile != "NA":
 	leadfile = filedir+"input.lead"
-	tmp = pd.read_csv(leadfile, delim_whitespace=true)
+	tmp = pd.read_csv(leadfile, delim_whitespace=True)
 	tmp = tmp.as_matrix()
 	if len(tmp)==0 or len(tmp[0])<3:
 		sys.exit("Input lead SNPs file does not have enought columns.")
 
 if regionfile != "NA":
 	regionfile = filedir+"input.regions"
-	tmp = pd.read_csv(regionfile, delim_whitespace=true)
+	tmp = pd.read_csv(regionfile, delim_whitespace=True)
 	tmp = tmp.as_matrix()
 	if len(tmp)==0 or len(tmp[0])<3:
 		sys.exit("Input genomic region file does not have enought columns.")
@@ -321,27 +321,39 @@ elif chrcol is not None and poscol is not None:
 			refSNP = []
 			for l in tb.querys(str(chrom)+":"+str(start)+"-"+str(end)):
 				refSNP.append(l)
-			refSNP = np.array(refSNP)
-			poss = set(refSNP[:,1].astype(int))
-			pos = refSNP[:,1].astype(int)
-			for l in snps:
-				uid = ":".join([l[chrcol], l[poscol]]+sorted([l[neacol].upper(), l[eacol].upper()]))
-				if int(l[poscol]) in poss:
-					j = bisect_left(pos, int(l[poscol]))
-					while refSNP[j,1] == int(l[poscol]):
-						if uid == refSNP[j,2]: break
-						j += 1
-					if uid == refSNP[j,2]:
-						out.write("\t".join([refSNP[j,0], refSNP[j,1], l[neacol].upper(), l[eacol].upper(), refSNP[j,3], l[pcol]]))
-						if orcol is not None:
-							out.write("\t"+l[orcol])
-						if becol is not None:
-							out.write("\t"+l[becol])
-						if secol is not None:
-							out.write("\t"+l[secol])
-						if Ncol is not None:
-							out.write("\t"+l[Ncol])
-						out.write("\n")
+			if len(refSNP)>0:
+				refSNP = np.array(refSNP)
+				poss = set(refSNP[:,1].astype(int))
+				pos = refSNP[:,1].astype(int)
+				for l in snps:
+					uid = ":".join([l[chrcol], l[poscol]]+sorted([l[neacol].upper(), l[eacol].upper()]))
+					if int(l[poscol]) in poss:
+						j = bisect_left(pos, int(l[poscol]))
+						while refSNP[j,1] == int(l[poscol]):
+							if uid == refSNP[j,2]: break
+							j += 1
+						if uid == refSNP[j,2]:
+							out.write("\t".join([refSNP[j,0], refSNP[j,1], l[neacol].upper(), l[eacol].upper(), refSNP[j,3], l[pcol]]))
+							if orcol is not None:
+								out.write("\t"+l[orcol])
+							if becol is not None:
+								out.write("\t"+l[becol])
+							if secol is not None:
+								out.write("\t"+l[secol])
+							if Ncol is not None:
+								out.write("\t"+l[Ncol])
+							out.write("\n")
+						else:
+							out.write("\t".join([l[chrcol],l[poscol], l[neacol].upper(), l[eacol].upper(), uid, l[pcol]]))
+							if orcol is not None:
+								out.write("\t"+l[orcol])
+							if becol is not None:
+								out.write("\t"+l[becol])
+							if secol is not None:
+								out.write("\t"+l[secol])
+							if Ncol is not None:
+								out.write("\t"+l[Ncol])
+							out.write("\n")
 					else:
 						out.write("\t".join([l[chrcol],l[poscol], l[neacol].upper(), l[eacol].upper(), uid, l[pcol]]))
 						if orcol is not None:
@@ -353,7 +365,9 @@ elif chrcol is not None and poscol is not None:
 						if Ncol is not None:
 							out.write("\t"+l[Ncol])
 						out.write("\n")
-				else:
+			else:
+				for l in snps:
+					uid = ":".join([l[chrcol], l[poscol]]+sorted([l[neacol].upper(), l[eacol].upper()]))
 					out.write("\t".join([l[chrcol],l[poscol], l[neacol].upper(), l[eacol].upper(), uid, l[pcol]]))
 					if orcol is not None:
 						out.write("\t"+l[orcol])
@@ -376,33 +390,39 @@ elif chrcol is not None and poscol is not None:
 				    if snps[j,pcol] is None:
 						continue
 				    if eacol is not None:
-				        if snps[j,eacol].upper()==l[3] or snps[j,eacol].upper()==l[4]:
-				            a = "NA"
-				            if snps[j,eacol]==l[3]:
-				                a = l[4]
-				            else:
-				                a = l[3]
-				            out.write("\t".join([l[0],l[1], a, snps[j,eacol].upper(), l[2], snps[j,pcol]]))
-				            if orcol is not None:
-				                out.write("\t"+snps[j,orcol])
-				            if becol is not None:
-				                out.write("\t"+snps[j,becol])
-				            if secol is not None:
-				                out.write("\t"+snps[j,secol])
-				            if Ncol is not None:
-				                out.write("\t"+snps[j,Ncol])
-				            out.write("\n")
+						if snps[j,eacol].upper()==l[3] or snps[j,eacol].upper()==l[4]:
+							a = "NA"
+							if snps[j,eacol]==l[3]:
+								a = l[4]
+							else:
+								a = l[3]
+							if rsIDcol is None:
+								out.write("\t".join([l[0],l[1], a, snps[j,eacol].upper(), l[2], snps[j,pcol]]))
+							else:
+								out.write("\t".join([l[0],l[1], a, snps[j,eacol].upper(), snps[j,rsIDcol], snps[j,pcol]]))
+							if orcol is not None:
+								out.write("\t"+snps[j,orcol])
+							if becol is not None:
+								out.write("\t"+snps[j,becol])
+							if secol is not None:
+								out.write("\t"+snps[j,secol])
+							if Ncol is not None:
+								out.write("\t"+snps[j,Ncol])
+							out.write("\n")
 				    else:
-				        out.write("\t".join([l[0],l[1], l[3], l[4], l[2], snps[j,pcol]]))
-				        if orcol is not None:
-				            out.write("\t"+snps[j,orcol])
-				        if becol is not None:
-				            out.write("\t"+snps[j,becol])
-				        if secol is not None:
-				            out.write("\t"+snps[j,secol])
-				        if Ncol is not None:
-				            out.write("\t"+snps[j,Ncol])
-				        out.write("\n")
+						if rsIDcol is None:
+							out.write("\t".join([l[0],l[1], l[3], l[4], l[2], snps[j,pcol]]))
+						else:
+							out.write("\t".join([l[0],l[1], l[3], l[4], snps[j,rsIDcol], snps[j,pcol]]))
+						if orcol is not None:
+							out.write("\t"+snps[j,orcol])
+						if becol is not None:
+							out.write("\t"+snps[j,becol])
+						if secol is not None:
+							out.write("\t"+snps[j,secol])
+						if Ncol is not None:
+							out.write("\t"+snps[j,Ncol])
+						out.write("\n")
 		out.close()
 		return
 		##### end def Tabix() #####

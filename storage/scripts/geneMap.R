@@ -397,7 +397,7 @@ if(nrow(geneTable)>0){
 			}
 			tmp <- unique(eqtl[,c("db", "tissue", "gene")])
 			tmp$tissue <- sub(".txt.gz","",tmp$tissue)
-			tmp$tissue <- ifelse(grepl(tmp$db, tmp$tissue), tmp$tissue, paste(tmp$db, tmp$tissue, sep="/"))
+			tmp$tissue <- apply(tmp[,c("db", "tissue")], 1, function(x){if(grepl(x[1], x[2])){x[2]}else{paste(x[1], x[2], sep="/")}})
 			tmp <- with(tmp, aggregate(tissue, list(gene), paste, collapse=":"))
 			geneTable$eqtlMapts <- tmp$x[match(geneTable$ensg, tmp$Group.1)]
 			if(length(which(!is.na(eqtl$alignedDirection)))>0){
@@ -438,7 +438,7 @@ if(nrow(geneTable)>0){
 		if(nrow(annov)>0){
 			annov$gwasP <- snps$gwasP[match(annov$uniqID, snps$uniqID)]
 			if(length(which(!is.na(annov$gwasP)))>0){
-				tmp <- with(annov[!is.na(annov$gwasP),], aggregate(gwasP, list(gene), min))
+				tmp <- with(annov[!is.na(annov$gwasP),], aggregate(as.numeric(gwasP), list(gene), min))
 				tmp_table$posMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
 			}
 			annov$IndSigSNPs <- isSNPs$IndSigSNPs[match(annov$uniqID, isSNPs$uniqID)]
@@ -455,7 +455,7 @@ if(nrow(geneTable)>0){
 			tmp_eqtl <- unique(eqtl[,c("gene", "uniqID")])
 			tmp_eqtl$gwasP <- snps$gwasP[match(tmp_eqtl$uniqID, snps$uniqID)]
 			if(length(which(!is.na(tmp_eqtl$gwasP)))>0){
-				tmp <- with(tmp_eqtl[!is.na(tmp_eqtl$gwasP),], aggregate(gwasP, list(gene), min))
+				tmp <- with(tmp_eqtl[!is.na(tmp_eqtl$gwasP),], aggregate(as.numeric(gwasP), list(gene), min))
 				tmp_table$eqtlMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
 			}
 			tmp_eqtl$IndSigSNPs <- isSNPs$IndSigSNPs[match(tmp_eqtl$uniqID, isSNPs$uniqID)]
@@ -470,7 +470,7 @@ if(nrow(geneTable)>0){
 		if(nrow(ci)>0){
 			ci_snps_genes$gwasP <- snps$gwasP[match(ci_snps_genes$uniqID, snps$uniqID)]
 			if(length(which(!is.na(ci_snps_genes$gwasP)))>0){
-				tmp <- with(ci_snps_genes[!is.na(ci_snps_genes$gwasP),], aggregate(gwasP, list(gene), min))
+				tmp <- with(ci_snps_genes[!is.na(ci_snps_genes$gwasP),], aggregate(as.numeric(gwasP), list(gene), min))
 				tmp_table$ciMapP <- tmp$x[match(tmp_table$ensg, tmp$Group.1)]
 			}
 			ci_snps_genes$IndSigSNPs <- isSNPs$IndSigSNPs[match(ci_snps_genes$uniqID, isSNPs$uniqID)]

@@ -147,6 +147,10 @@ function setParams(data){
 	$('#r2').val(data.r2);
 	if(data.r2_2 != undefined){$('#r2_2').val(data.r2_2);}
 	$('#refpanel').val(data.refpanel+"/"+data.pop);
+	if($("#refpanel").val()==undefined){
+		$('#refpanel').val("1KG/Phase3/EUR");
+	}
+
 	if(data.refSNPs=="1"){$('#refSNPs').val("Yes")}
 	else($('#refSNPs').val("No"))
 	$('#maf').val(data.MAF);
@@ -1209,6 +1213,14 @@ function CheckAll(){
 			+'<i class="fa fa-check"></i> OK. MAGMA will be performed.</div></td>');
 		$(table.rows[1].cells[2]).html('<td><div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 			+'<i class="fa fa-check"></i> OK.</div></td>');
+		var mw = $('#magma_window').val().split(",")
+		$.each(mw, function(i, x){
+			if(parseFloat(x)>50){
+				$(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+					+'<i class="fa fa-check"></i> Maximum window size is limited to 50kb.</div></td>');
+				submit=false;
+			}
+		})
 		var ds = 0;
 		$('#magma_exp option').each(function(){
 			if($(this).is(":selected")){ds++;}

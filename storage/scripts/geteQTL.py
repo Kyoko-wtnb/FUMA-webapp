@@ -18,6 +18,18 @@ import ConfigParser
 import tabix
 import re
 
+##### eQTL tabix #####
+def eqtl_tabix(region, tb):
+	eqtls = []
+	try:
+		tmp = tb.querys(region)
+	except:
+		print "Tabix failed for region "+region
+	else:
+		for l in tmp:
+			eqtls.append(l[0:9])
+	return eqtls
+
 ##### check argument #####
 if len(sys.argv) < 2:
 	print "ERROR: not enough arguments\nUSAGE: ./geteQTL.py <filedir>"
@@ -64,9 +76,7 @@ for li in range(len(loci)):
 		db = reg.group(1)
 		ts = reg.group(2)
 		tb = tabix.open(qtldir+"/"+feqtl)
-		eqtls = []
-		for l in tb.querys(str(chrom)+":"+str(start)+"-"+str(end)):
-			eqtls.append(l[0:9])
+		eqtls = eqtl_tabix(str(chrom)+":"+str(start)+"-"+str(end), tb)
 		eqtls = pd.DataFrame(eqtls, columns=['chr', 'pos', 'a1', 'a2', 'ta', 'gene', 'stats', 'p', 'fdr'])
 
 		### filter on eQTLs based on position
@@ -85,6 +95,7 @@ for li in range(len(loci)):
 		## if eQTLs do not have alleles, take uniqID from snps
 		## For multi allelic SNPs, duplicated eQTLs (for later use in gene mapping)
 		if eqtls.iloc[0,2]=="NA" and eqtls.iloc[0,3]=="NA":
+			eqtls.iloc[:,1] = eqtls.iloc[:,1].astype('int')
 			eqtls = eqtls.merge(snps[snps.iloc[:,1]==chrom].iloc[:,[0,2]], on="pos", how="left")
 			eqtls = eqtls[eqtls.uniqID.isin(snps.uniqID)]
 		elif eqtls.iloc[0,2]=="NA" or eqtls.iloc[0,3]=="NA":

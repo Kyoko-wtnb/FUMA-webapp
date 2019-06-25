@@ -109,7 +109,6 @@ function geneMapSetParams(data){
 	else{$('#geneMap_eqtlMap').prop("checked", false)}
 	if(data.eqtlMaptss != "NA"){
 		var ts = data.eqtlMaptss.split(":");
-		console.log(ts)
 		if(ts.indexOf("all")>=0){
 			$('#geneMap_eqtlMapTs option').each(function(){
 				$(this).prop('selected', true);

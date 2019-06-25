@@ -1040,6 +1040,10 @@
 								One value will set same window size both sides, two values separated by comma will set different window sizes for up- and downstream.
 								e.g. 2,1 will set window sizes 2kb upstream and 1kb downstream of the genes.
 							</span>
+							<br/>
+							<span class="info"><i class="fa fa-info"></i>
+								Maximum window size is limited to 50.
+							</span>
 						</span>
 					</td>
 					<td></td>
