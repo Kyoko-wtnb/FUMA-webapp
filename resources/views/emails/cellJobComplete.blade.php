@@ -5,7 +5,7 @@
 			Your job for cell type specificity analyses
 			(job ID: {{ $jobID }}, job title: {{ $jobtitle }}) has been completed.<br/>
 			Pleas follow the link to go to the results page.<br/>
-			<a href="http://fuma.ctglab.nl/celltype/{{ $jobID }}">celltype job query</a><br/>
+			<a href="https://fuma.ctglab.nl/celltype/{{ $jobID }}">celltype job query</a><br/>
 			<br/>
 		</p>
 
