@@ -66,16 +66,15 @@ with open(fout, 'w+') as fo:
 loci = pd.read_csv(floci, sep="\t", usecols=[0,3,6,7], header=0)
 snps = pd.read_csv(fsnps, sep="\t", usecols=[0,2,3], header=0)
 
-for li in range(len(loci)):
-	chrom = loci.iloc[li,1]
-	start = loci.iloc[li,2]
-	end = loci.iloc[li,3]
-
-	for feqtl in eqtlds:
-		reg = re.match(r'(.+)\/(.+).txt.gz', feqtl)
-		db = reg.group(1)
-		ts = reg.group(2)
-		tb = tabix.open(qtldir+"/"+feqtl)
+for feqtl in eqtlds:
+	reg = re.match(r'(.+)\/(.+).txt.gz', feqtl)
+	db = reg.group(1)
+	ts = reg.group(2)
+	tb = tabix.open(qtldir+"/"+feqtl)
+	for li in range(len(loci)):
+		chrom = loci.iloc[li,1]
+		start = loci.iloc[li,2]
+		end = loci.iloc[li,3]
 		eqtls = eqtl_tabix(str(chrom)+":"+str(start)+"-"+str(end), tb)
 		eqtls = pd.DataFrame(eqtls, columns=['chr', 'pos', 'a1', 'a2', 'ta', 'gene', 'stats', 'p', 'fdr'])
 
