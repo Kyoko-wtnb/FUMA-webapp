@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>5 Aug 2019</td>
+			<td>v1.3.5b</td>
+			<td>
+				Minor bugs in the main scripts are fixed.
+			</td>
+		</tr>
+		<tr>
 			<td>27 May 2019</td>
 			<td>v1.3.5</td>
 			<td>
