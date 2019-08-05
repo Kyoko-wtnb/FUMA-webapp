@@ -62,12 +62,18 @@ Since chromatin interaction mapping is more complicated than other two mappings 
 		Both directions are considered.
 	</p>
 	<p>
-		<strong>3. Enhancer-Promoter links based on Hi-C from PsychENCODE</strong><br/>
+		<strong>3. Hi-C based data from PsychENCODE</strong><br/>
+		3.1 Enhancer-Promoter links based on Hi-C<br/>
 		The data was downloaded from <a target="_blank" href="http://resource.psychencode.org/">PsychENCODE resource</a>
 		(file: INT-16_HiC_EP_linkages.csv).<br/>
 		Promoter regions were defined as 1000 around the provided TSS site.
 		Since there is no P-value/FDR/score, all interactions were assigned to 0.
-		Only one way (enhancer -> promoter) is considered.
+		Only one way (enhancer -> promoter) is considered.<br/>
+		3.2 Promoter anchored Hi-C loops<br/>
+		The data was downloaded from <a target="_blank" href="http://resource.psychencode.org/">PsychENCODE resource</a>
+		(file: Promoter-anchored_chromatin_loops.bed).<br/>
+		Since there is no P-value/FDR/score, all interactions were assigned to 0.
+		Only one way (region -> promoter) is considered.
 	</p>
 	<p>
 		<strong>4. Enhancer-Promoter correlations from FANTOM5</strong>
