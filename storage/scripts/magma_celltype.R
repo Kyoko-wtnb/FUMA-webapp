@@ -155,7 +155,19 @@ if(step2==1){
 			        tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
 			        checked <- c(checked, t$VARIABLE[2])
 			        tmp <- tmp[tmp$MODEL!=m,]
-			      }else if(t$PS[1]>=0.5 & t$P[2]>=0.05){
+			      }else if(all(t$PS<0.2)){
+  			        if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
+  			          tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
+  			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
+  			        }else{
+  			          tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_state[tmp.sig$VARIABLE==top], "partial-joint", sep=";")
+  			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top], t$VARIABLE[2], sep=";")
+  			        }
+  			        tmp.sig$cond_state[tmp.sig$VARIABLE==t$VARIABLE[2]] <- "joint-drop"
+  			        tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
+  			        checked <- c(checked, t$VARIABLE[2])
+  			        tmp <- tmp[tmp$MODEL!=m,]
+				  }else if(t$PS[1]>=0.5 & t$P[2]>=0.05){
 			        if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
 			          tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "main"
 			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
@@ -179,7 +191,31 @@ if(step2==1){
 			        tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
 			        checked <- c(checked, t$VARIABLE[2])
 			        tmp <- tmp[tmp$MODEL!=m,]
-			      }else if(t$PS[1]>=0.2 & t$P[2]>=0.05){
+			 	  }else if(all(t$PS>=0.5)){
+  			        if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
+  			          tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
+  			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
+  			        }else{
+  			          tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_state[tmp.sig$VARIABLE==top], "partial-joint", sep=";")
+  			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top], t$VARIABLE[2], sep=";")
+  			        }
+  			        tmp.sig$cond_state[tmp.sig$VARIABLE==t$VARIABLE[2]] <- "partial-joint"
+  			        tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
+  			        #checked <- c(checked, t$VARIABLE[2])
+  			        tmp <- tmp[tmp$MODEL!=m,]
+  			      }else if(all(t$PS>=0.2)){
+  			        if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
+  			          tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
+  			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
+  			        }else{
+  			          tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_state[tmp.sig$VARIABLE==top], "partial-joint", sep=";")
+  			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top], t$VARIABLE[2], sep=";")
+  			        }
+  			        tmp.sig$cond_state[tmp.sig$VARIABLE==t$VARIABLE[2]] <- "partial-joint-drop"
+  			        tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
+  			        checked <- c(checked, t$VARIABLE[2])
+  			        tmp <- tmp[tmp$MODEL!=m,]
+  			      }else if(t$PS[1]>=0.2 & t$P[2]>=0.05){
 			          if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
 			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
 			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
@@ -191,63 +227,27 @@ if(step2==1){
 			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
 			          checked <- c(checked, t$VARIABLE[2])
 			          tmp <- tmp[tmp$MODEL!=m,]
-			        }else if(t$PS[1]>=0.2 & t$PS[2]<0.2){
-			          if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
-			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
-			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
-			          }else{
-			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_state[tmp.sig$VARIABLE==top], "partial-joint", sep=";")
-			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top], t$VARIABLE[2], sep=";")
-			          }
-			          tmp.sig$cond_state[tmp.sig$VARIABLE==t$VARIABLE[2]] <- "partial-joint-drop"
-			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
-			          checked <- c(checked, t$VARIABLE[2])
-			          tmp <- tmp[tmp$MODEL!=m,]
-			        }else if(all(t$PS<0.2)){
-			          if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
-			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
-			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
-			          }else{
-			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_state[tmp.sig$VARIABLE==top], "partial-joint", sep=";")
-			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top], t$VARIABLE[2], sep=";")
-			          }
-			          tmp.sig$cond_state[tmp.sig$VARIABLE==t$VARIABLE[2]] <- "joint-drop"
-			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
-			          checked <- c(checked, t$VARIABLE[2])
-			          tmp <- tmp[tmp$MODEL!=m,]
-			        }else if(all(t$PS>=0.5)){
-			          if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
-			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
-			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
-			          }else{
-			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_state[tmp.sig$VARIABLE==top], "partial-joint", sep=";")
-			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top], t$VARIABLE[2], sep=";")
-			          }
-			          tmp.sig$cond_state[tmp.sig$VARIABLE==t$VARIABLE[2]] <- "partial-joint"
-			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
-			          #checked <- c(checked, t$VARIABLE[2])
-			          tmp <- tmp[tmp$MODEL!=m,]
-			        }else if(all(t$PS>=0.2)){
-			          if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
-			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
-			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
-			          }else{
-			            tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_state[tmp.sig$VARIABLE==top], "partial-joint", sep=";")
-			            tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top], t$VARIABLE[2], sep=";")
-			          }
-			          tmp.sig$cond_state[tmp.sig$VARIABLE==t$VARIABLE[2]] <- "partial-joint-drop"
-			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
-			          checked <- c(checked, t$VARIABLE[2])
-			          tmp <- tmp[tmp$MODEL!=m,]
-			        }else{
-			          print(t)
+			      }else if(t$PS[1]>=0.2 & t$PS[2]<0.2){
+			        if(is.na(tmp.sig$cond_state[tmp.sig$VARIABLE==top])){
+			          tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- "partial-joint"
+			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- t$VARIABLE[2]
+	          	    }else{
+		              tmp.sig$cond_state[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_state[tmp.sig$VARIABLE==top], "partial-joint", sep=";")
+			          tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top] <- paste(tmp.sig$cond_cell_type[tmp.sig$VARIABLE==top], t$VARIABLE[2], sep=";")
 			        }
+			        tmp.sig$cond_state[tmp.sig$VARIABLE==t$VARIABLE[2]] <- "partial-joint-drop"
+			        tmp.sig$cond_cell_type[tmp.sig$VARIABLE==t$VARIABLE[2]] <- top
+			        checked <- c(checked, t$VARIABLE[2])
+			        tmp <- tmp[tmp$MODEL!=m,]
+			      }else{
+			        print(t)
 			      }
-			      tmp <- tmp[!tmp$MODEL %in% unique(tmp$MODEL[tmp$VARIABLE %in% checked]),]
 			    }
-			    tmp.sig$cond_state[is.na(tmp.sig$cond_state)] <- "indep"
-			    step1$cond_state[step1$ds==ds] <- tmp.sig$cond_state
-			    step1$cond_cell_type[step1$ds==ds] <- tmp.sig$cond_cell_type
+			    tmp <- tmp[!tmp$MODEL %in% unique(tmp$MODEL[tmp$VARIABLE %in% checked]),]
+			  }
+			  tmp.sig$cond_state[is.na(tmp.sig$cond_state)] <- "indep"
+			  step1$cond_state[step1$ds==ds] <- tmp.sig$cond_state
+			  step1$cond_cell_type[step1$ds==ds] <- tmp.sig$cond_cell_type
 			}
 		}
 		rm(tmp, tmp.sig, t)

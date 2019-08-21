@@ -169,13 +169,25 @@ systematically compare cell type associations across datasets using conditional 
 		</tr>
 		<tr>
 			<td>8</td>
-			<td>\(PS_{a,b}&ge;0.5\)</td>
-			<td>\(PS_{b,a}&lt;0.2\)</td>
+			<td>\(PS_{a,b}&ge;0.2\)</td>
+			<td>\(p_{b,a}&ge;0.05\)</td>
 			<td>partial-joint</td>
 			<td>joint-drop</td>
 			<td>
+				The association of cell type \(b\) is completely explained by cell type \(a\)
+				but there are part of association of cell type \(a\) dependent on cell type \(b\).
+				In this case, only cell type \(a\) is retained.
+			</td>
+		</tr>
+		<tr>
+			<td>9</td>
+			<td>\(PS_{a,b}&ge;0.2\)</td>
+			<td>\(PS_{b,a}&lt;0.2\)</td>
+			<td>partial-joint</td>
+			<td>partial-joint-drop</td>
+			<td>
 				The association of cell type \(b\) is mostly explained by cell type \(a\)
-				but there are part of association dependent on both cell types.
+				but there are part of associations dependent on each other.
 				In this case, only cell type \(a\) is retained.
 			</td>
 		</tr>
