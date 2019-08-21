@@ -37,9 +37,9 @@ if re.match(".+\/$", filedir) is None:
 
 cols = cols.split(":")
 
-fin = pd.read_table(filedir+f, sep="\t")
+fin = pd.read_csv(filedir+f, sep="\t")
 header = list(fin.columns.values)
-fin = fin.as_matrix()
+fin = np.array(fin)
 
 if len(fin)==0:
 	print '{"data":[]}'

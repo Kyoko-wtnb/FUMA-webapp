@@ -3,7 +3,7 @@
 	<!-- New -->
 	<h4 style="color: #00004d">Upload your GWAS summary statistics and set parameters to obtain functional annotations of the genomic loci associated with your trait.</h4>
 
-	<!-- load preciout settings -->
+	<!-- load previous settings -->
 	<span class="form-inline" style="font-size:18px;">
 		Use your previous settings from job
 		<select class="form-control" id="paramsID" name="paramsID" onchange="loadParams();">

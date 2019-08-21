@@ -92,8 +92,16 @@ def getSNPs(filedir, i, Type, eqtlplot, ciplot):
 	snpshead = snpshead_tmp
 	snps = snps[:, snps_headi]
 	snps = np.c_[snps, mapFilt]
-	snps[:, snpshead.index("RDB")] = snps[:, snpshead.index("RDB")].astype(str)
-	snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]
+
+	try:
+		snps[:, snpshead.index("RDB")].astype(float)
+	except:
+		snps[:, snpshead.index("RDB")] = snps[:, snpshead.index("RDB")].astype(str)
+		snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]
+	else:
+		snps[:, snpshead.index("RDB")] = snps[:, snpshead.index("RDB")].astype(str)
+		snps[snps[:, snpshead.index("RDB")]=="nan", snpshead.index("RDB")]=["NA"]
+		snps[snps[:, snpshead.index("RDB")]!="NA", snpshead.index("RDB")] = [x.replace(".0", "") for x in snps[snps[:, snpshead.index("RDB")]!="NA", snpshead.index("RDB")]]
 	return [snps, gl]
 
 def SortCI(ci):
