@@ -746,14 +746,21 @@ def main():
 	# 0: chr, 1: start, 2: end
 	regions = None
 	if params.regions:
-		regions = pd.read_csv(params.regions, comment="#", delim_whitespace=True)
+		regions = pd.read_csv(params.regions, comment="#", delim_whitespace=True, dtype='str')
+		regions.iloc[:,0] = regions.iloc[:,0].apply(lambda x: re.sub('x','23',re.sub('chr', '', x, flags=re.IGNORECASE), flags=re.IGNORECASE))
+		regions.iloc[:,0] = pd.to_numeric(regions.iloc[:,0], downcast='integer', errors='coerce')
+		regions.iloc[:,1] = pd.to_numeric(regions.iloc[:,1], downcast='integer', errors='coerce')
+		regions.iloc[:,2] = pd.to_numeric(regions.iloc[:,2], downcast='integer', errors='coerce')
 		regions = np.array(regions)
 
 	##### lead SNPs file #####
 	# 0: rsID, 1: chr, 2: pos
 	inleadSNPs = None
 	if params.leadSNPs:
-		inleadSNPs = pd.read_csv(params.leadSNPs, comment="#", delim_whitespace=True)
+		inleadSNPs = pd.read_csv(params.leadSNPs, comment="#", delim_whitespace=True, dtype='str')
+		inleadSNPs.iloc[:,1] = inleadSNPs.iloc[:,1].apply(lambda x: re.sub('x','23',re.sub('chr', '', x, flags=re.IGNORECASE), flags=re.IGNORECASE))
+		inleadSNPs.iloc[:,1] = pd.to_numeric(inleadSNPs.iloc[:,1], downcast='integer', errors='coerce')
+		inleadSNPs.iloc[:,2] = pd.to_numeric(inleadSNPs.iloc[:,2], downcast='integer', errors='coerce')
 		inleadSNPs = np.array(inleadSNPs)
 		#inleadSNPs = rsIDup(inleadSNPs, 0, params.dbSNPfile)
 

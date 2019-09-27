@@ -121,7 +121,7 @@ summary <- rbind(summary, c("Input genes without recognised Ensembl ID", paste(g
 
 if(length(which(toupper(bkgenes) %in% toupper(ENSG$external_gene_name)))>0){
 	tmp <- bkgenes[!toupper(bkgenes)%in%toupper(ENSG$external_gene_name) & !toupper(bkgenes)%in%toupper(ENSG$hgnc_symbol)]
-	bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name)%in%toupper(bkgenes) | oupper(ENSG$hgnc_symbol)%in%toupper(bkgenes)]
+	bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$external_gene_name)%in%toupper(bkgenes) | toupper(ENSG$hgnc_symbol)%in%toupper(bkgenes)]
 }else if(length(which(toupper(bkgenes) %in% toupper(ENSG$ensembl_gene_id)))>0){
 	tmp <- bkgenes[!toupper(bkgenes) %in% toupper(ENSG$ensembl_gene_id)]
 	bkgenes <- ENSG$ensembl_gene_id[toupper(ENSG$ensembl_gene_id) %in% toupper(bkgenes)]
