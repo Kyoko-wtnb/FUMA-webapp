@@ -37,7 +37,7 @@ class S2GController extends Controller
 		if($check->email==$email){
 			return view('pages.snp2gene', ['id'=>$jobID, 'status'=>'jobquery', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 		}else{
-			return view('pages.snp2gene', ['id'=>$jobID, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
+			return view('pages.snp2gene', ['id'=>null, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
 		}
 	}
 

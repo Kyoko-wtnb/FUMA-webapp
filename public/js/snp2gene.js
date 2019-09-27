@@ -90,8 +90,12 @@ $(document).ready(function(){
 		}
 		cur.prev().prop('selected', total);
 	});
-
-	if(status.length==0){
+	if(status.length==0 | status==null){
+		$('#downloadFiles').prop("disabled", true);
+		$('#downFileCheck input').each(function(){
+			$(this).prop("checked", false);
+			$(this).prop("disabled", true);
+		});
 	}else if(status=="fileFormatGWAS"){
 		$('a[href="#newJob"]').trigger('click');
 		$('#fileFormatError').html('<div class="alert alert-danger" style="width: auto;">'
