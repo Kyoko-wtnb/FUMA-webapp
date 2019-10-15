@@ -154,10 +154,12 @@ var loggedin = "{{ Auth::check() }}";
 						<span class="form-inline">
 							Gene expression data sets:
 							<select multiple class="form-control" name="gene_exp[]" id="gene_exp">
+								<option selected value="GTEx/v8/gtex_v8_ts_avg_log2TPM">GTEx v8: 54 tissue types</option>
+								<option selected value="GTEx/v8/gtex_v8_ts_general_avg_log2TPM">GTEx v8: 30 general tissue types</option>
 								<option value="GTEx/v7/gtex_v7_ts_avg_log2TPM">GTEx v7: 53 tissue types</option>
 								<option value="GTEx/v7/gtex_v7_ts_general_avg_log2TPM">GTEx v7: 30 general tissue types</option>
-								<option selected value="GTEx/v6/gtex_v6_ts_avg_log2RPKM">GTEx v6: 53 tissue types</option>
-								<option selected value="GTEx/v6/gtex_v6_ts_general_avg_log2RPKM">GTEx v6: 30 general tissue types</option>
+								<option value="GTEx/v6/gtex_v6_ts_avg_log2RPKM">GTEx v6: 53 tissue types</option>
+								<option value="GTEx/v6/gtex_v6_ts_general_avg_log2RPKM">GTEx v6: 30 general tissue types</option>
 								<option value="BrainSpan/bs_age_avg_log2RPKM">BrainSpan: 29 different ages of brain samples</option>
 								<option value="BrainSpan/bs_dev_avg_log2RPKM">BrainSpan: 11 general developmental stages of brain samples</option>
 							</select>

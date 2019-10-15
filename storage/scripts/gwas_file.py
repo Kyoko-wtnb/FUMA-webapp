@@ -149,7 +149,7 @@ for i in range(0, len(header)):
 		eacol = i
 	elif neacol == "NA" and re.match("^A2$|^Non_Effect_allele$|^allele2$|^alleleA$", header[i], re.IGNORECASE):
 		neacol = i
-	elif pcol == "NA" and re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$|^frequentist_add_pvalue$", header[i], re.IGNORECASE):
+	elif pcol == "NA" and re.match("^P$|^pval$|^pvalue$|^p-value$|^p_value$", header[i], re.IGNORECASE):
 		pcol = i
 	elif orcol == "NA" and re.match("^or$", header[i], re.IGNORECASE):
 		orcol = i

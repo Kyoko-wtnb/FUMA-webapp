@@ -8,8 +8,8 @@
 <div class="container" style="padding-top:50px;">
 	<div id="message" style="text-align: center;">
 		<div class="alert alert-danger" style="font-size:24px;">
-			FUMA is currently closed for an update to v1.3.4.
-			This is planned between 16th Feb 2019 8:00 CET and 17th Feb 2019 18:00 CET.
+			FUMA is currently closed for the server maintenance and update of data resources.
+			This is planned from 14th Oct 2019 8:00 CEST and 16th Oct 2019 17:00 CEST.
 			Please come back after this period.
 		</div>
 	</div>

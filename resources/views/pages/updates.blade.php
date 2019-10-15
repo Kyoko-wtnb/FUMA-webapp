@@ -19,6 +19,23 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>14 Oct 2019</td>
+			<td>v1.3.5d</td>
+			<td>
+				<strong>Update 1</strong>: GTEx v8 eQTLs and gene expression data were added to SNP2GENE and GENE2FUNC.
+				Due to the limited storage space on the server, GTEx eQTLs for all versions (v6/v7/v8) are now limited to
+				SNP-gene pairs with nominal P-value < 0.05 (before all tested SNP-gene pairs were available).
+				This does not affect your results if you used only significant SNP-gene pairs (with gene Q-value < 0.05)<br/>
+				<strong>Update 2</strong>: MsigDB was updated to v7.0.<br/>
+				<strong>Update 3</strong>: GWAS catalog was updated to e96_2019-09-24.<br/>
+				<strong>Update 4</strong>: Wikipathway was updated to v20191010.<br/>
+				<strong>Update 5</strong>: DrugBank was updated to v5.1.4.<br/>
+				<strong>Update 6</strong>: There was a bug in the script to process PsychENCODE eQTL data.
+				This bug caused to filter all PsychENCODE eQTLs during gene mapping.
+				If you used this data, it is strongly advised to re-run gene mapping (you might get more eQTLs but not less).<br/>
+			</td>
+		</tr>
+		<tr>
 			<td>5 Aug 2019</td>
 			<td>v1.3.5b</td>
 			<td>

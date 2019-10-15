@@ -40,7 +40,7 @@
 			<li><strong>BP | pos | position</strong>: genomic position (hg19)</li>
 			<li><strong>A1 | effect_allele | allele1 | alleleB</strong>: affected allele</li>
 			<li><strong>A2 | non_effect_allele | allele2 | alleleA</strong>: another allele</li>
-			<li><strong>P | pvalue | p-value | p_value | frequentist_add_pvalue | pval</strong>: P-value (Mandatory)</li>
+			<li><strong>P | pvalue | p-value | p_value | pval</strong>: P-value (Mandatory)</li>
 			<li><strong>OR</strong>: Odds Ratio</li>
 			<li><strong>Beta | be</strong>: Beta</li>
 			<li><strong>SE</strong>: Standard error</li>

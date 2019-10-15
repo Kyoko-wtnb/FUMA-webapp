@@ -456,10 +456,9 @@
 							</select>
 						</span>
 						<span class="info"><i class="fa fa-info"></i>
-							From FUMA v1.3.0, a data set of GTEx v7 has been added.<br/>
-							When the "all" option is selected, both GTEx v6 and v7 will be used.<br/>
-							To avoid this, please manually select either GTEx v6 or v7.
-							GTEx v6 is located at the bottom of the options.
+							From FUMA v1.3.0 GTEx v7, and from FUMA v1.3.5c GTEx v8 have been added.<br/>
+							When the "all" option is selected, both GTEx v6, v7 and v8 will be used.<br/>
+							To avoid this, please manually select the specific version to use.
 						</span>
 					</td>
 					<td></td>
@@ -1057,10 +1056,12 @@
 					</td>
 					<td>
 						<select multiple class="form-control" name="magma_exp[]" id="magma_exp">
+							<option selected value="GTEx/v8/gtex_v8_ts_avg_log2TPM">GTEx v8: 54 tissue types</option>
+							<option selected value="GTEx/v8/gtex_v8_ts_general_avg_log2TPM">GTEx v8: 30 general tissue types</option>
 							<option value="GTEx/v7/gtex_v7_ts_avg_log2TPM">GTEx v7: 53 tissue types</option>
 							<option value="GTEx/v7/gtex_v7_ts_general_avg_log2TPM">GTEx v7: 30 general tissue types</option>
-							<option selected value="GTEx/v6/gtex_v6_ts_avg_log2RPKM">GTEx v6: 53 tissue types</option>
-							<option selected value="GTEx/v6/gtex_v6_ts_general_avg_log2RPKM">GTEx v6: 30 general tissue types</option>
+							<option value="GTEx/v6/gtex_v6_ts_avg_log2RPKM">GTEx v6: 53 tissue types</option>
+							<option value="GTEx/v6/gtex_v6_ts_general_avg_log2RPKM">GTEx v6: 30 general tissue types</option>
 							<option value="BrainSpan/bs_age_avg_log2RPKM">BrainSpan: 29 different ages of brain samples</option>
 							<option value="BrainSpan/bs_dev_avg_log2RPKM">BrainSpan: 11 general developmental stages of brain samples</option>
 						</select>

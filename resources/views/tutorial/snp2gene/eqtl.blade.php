@@ -12,7 +12,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		GTEx eQTL v6 contains 44 different tissue types across 30 general tissue types.
 	</p>
 	<p><strong>Description</strong><br/>
-		FUMA contains all SNP-gene pairs of cis-eQTL including non-significant association.
+		FUMA contains all SNP-gene pairs of cis-eQTL with nominal P-value &lt; 0.05 (including non-significant associations).
 		Significant eQTLs are defined as FDR (gene q-value) &le; 0.05.
 		The gene FDR is pre-calculated by GTEx and every gene-tissue pair has a defined P-value threshold for eQTLs based on permutation.<br/>
 		Signed statistics are t-statistics.
@@ -148,10 +148,10 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		for significant SNP-gene association based on permutation, and
 		<span style="color: blue;">GTEx_Analysis_v7_all_associations.tar.gz</span> for every SNP-gene association test (including non-significant pairs)
 		were downloaded.<br/>
-		GTEx eQTL v6 contains 48 different tissue types across 30 general tissue types.
+		GTEx eQTL v7 contains 53 different tissue types across 30 general tissue types.
 	</p>
 	<p><strong>Description</strong><br/>
-		FUMA contains all SNP-gene pairs of cis-eQTL including non-significant association.
+		FUMA contains all SNP-gene pairs of cis-eQTL with nominal P-value &lt; 0.05 (including non-significant associations).
 		Significant eQTLs are defined as FDR (gene q-value) &le; 0.05.
 		The gene FDR is pre-calculated by GTEx and every gene-tissue pair has a defined P-value threshold for eQTLs based on permutation.<br/>
 		Signed statistics are betas.
@@ -320,7 +320,7 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	<h4><strong>10. PsychENCODE (Wang et al. 2018)</strong></h4>
 	<p><strong>Data source</strong><br/>
 		eQTL data was downloaded from <a href="http://resource.psychencode.org">http://resource.psychencode.org</a>.
-		We used significant (<span style="color:blue"> DER-08a_hg19_eQTL.significant</span>).
+		We used significant (<span style="color:blue">DER-08a_hg19_eQTL.significant</span>).
 	</p>
 	<p><strong>Description</strong><br/>
 		The available eQTLs were filtered based on an FDR &lt;0.05 and an expression &gt;0.1 FPKM in at least 10 samples.
@@ -332,11 +332,6 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	<p><strong>Samples</strong><br/>
 		The eQTLs were identified from 1387 individuals.
 		<br/>
-		<span class="info"><i class="fa fa-info"></i>
-			Alignment of risk increasing allele and eQTL tested allele was not performed for this data source,
-			since the tested alleles are not available in the original data source
-			(replaced with "NA" in the result table).
-		</span>
 	</p><br/>
 
 	<h4><strong>11. DICE (Schmiedel et al. 2018)</strong></h4>
@@ -404,6 +399,90 @@ FUMA contains several data sources of eQTLs and each data source is described in
 	</p>
 	<p><strong>Samples</strong><br/>
 		The eQTLs were identified from 25,000 peripheral blood mononuclear cells (PBMCs) from 45 donors.
+	</p><br/>
+
+	<h4><strong>13. GTEx v8</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from <a href="http://www.gtexportal.org/home/datasets">http://www.gtexportal.org/home/datasets</a>.
+		Under the section of GTEx V8, from single tissue eQTL data both <span style="color: blue;">GTEx_Analysis_v8_eQTL.tar</span>
+		for significant SNP-gene associations, and all tested pairs of SNP-gene were obtained from GCP (including non-significant pairs).<br/>
+		GTEx eQTL v8 contains 54 different tissue types across 30 general tissue types.
+	</p>
+	<p><strong>Description</strong><br/>
+		FUMA contains all SNP-gene pairs of cis-eQTL with nominal P-value &lt; 0.05 (including non-significant associations).
+		Significant eQTLs are defined as FDR (gene q-value) &le; 0.05.
+		The gene FDR is pre-calculated by GTEx and every gene-tissue pair has a defined P-value threshold for eQTLs based on permutation.<br/>
+		Signed statistics are betas.
+	</p>
+	<p><strong>Samples</strong><br/>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a href="#gtexTable_v8" data-toggle="collapse">GTEx eQTL tissue types and sample size</a><br/>
+			</div>
+			<div id="gtexTable_v8" class="panel-body collapse">
+				<span class="info"><i class="fa fa-info"></i>
+					The table contains the list of tissue types available in GTEx v8 for cis-eQTL (only tissues with genotyped sample size &ge; 70).
+				</span>
+				<table class="table table-bordered">
+					<thead>
+						<th>General tissue type</th>
+						<th>Tissue type</th>
+						<th>Genotyped sample size</th>
+					</thead>
+					<tbody>
+						<tr><td>Adipose Tissue</td><td>Adipose Subcutaneous</td><td>581</td></tr>
+						<tr><td>Adipose Tissue</td><td>Adipose Visceral Omentum</td><td>469</td></tr>
+						<tr><td>Adrenal Gland</td><td>Adrenal Gland</td><td>233</td></tr>
+						<tr><td>Blood</td><td>Cells EBV-transformed lymphocytes</td><td>147</td></tr>
+						<tr><td>Blood</td><td>Whole Blood</td><td>670</td></tr>
+						<tr><td>Blood Vessel</td><td>Artery Aorta</td><td>387</td></tr>
+						<tr><td>Blood Vessel</td><td>Artery Coronary</td><td>213</td></tr>
+						<tr><td>Blood Vessel</td><td>Artery Tibial</td><td>584</td></tr>
+						<tr><td>Brain</td><td>Brain Amygdala</td><td>129</td></tr>
+						<tr><td>Brain</td><td>Brain Anterior cingulate cortex BA24</td><td>147</td></tr>
+						<tr><td>Brain</td><td>Brain Caudate basal ganglia</td><td>194</td></tr>
+						<tr><td>Brain</td><td>Brain Cerebellar Hemisphere</td><td>175</td></tr>
+						<tr><td>Brain</td><td>Brain Cerebellum</td><td>209</td></tr>
+						<tr><td>Brain</td><td>Brain Cortex</td><td>205</td></tr>
+						<tr><td>Brain</td><td>Brain Frontal Cortex BA9</td><td>175</td></tr>
+						<tr><td>Brain</td><td>Brain Hippocampus</td><td>165</td></tr>
+						<tr><td>Brain</td><td>Brain Hypothalamus</td><td>170</td></tr>
+						<tr><td>Brain</td><td>Brain Nucleus accumbens basal ganglia</td><td>202</td></tr>
+						<tr><td>Brain</td><td>Brain Putamen basal ganglia</td><td>170</td></tr>
+						<tr><td>Brain</td><td>Brain Spinal cord cervical c-1</td><td>126</td></tr>
+						<tr><td>Brain</td><td>Brain Substantia nigra</td><td>114</td></tr>
+						<tr><td>Breast</td><td>Breast Mammary Tissue</td><td>396</td></tr>
+						<tr><td>Colon</td><td>Colon Sigmoid</td><td>318</td></tr>
+						<tr><td>Colon</td><td>Colon Transverse</td><td>368</td></tr>
+						<tr><td>Esophagus</td><td>Esophagus Gastroesophageal Junction</td><td>330</td></tr>
+						<tr><td>Esophagus</td><td>Esophagus Mucosa</td><td>497</td></tr>
+						<tr><td>Esophagus</td><td>Esophagus Muscularis</td><td>465</td></tr>
+						<tr><td>Heart</td><td>Heart Atrial Appendage</td><td>372</td></tr>
+						<tr><td>Heart</td><td>Heart Left Ventricle</td><td>386</td></tr>
+						<tr><td>Kidney</td><td>Kidney Cortex</td><td>73</td></tr>
+						<tr><td>Liver</td><td>Liver</td><td>208</td></tr>
+						<tr><td>Lung</td><td>Lung</td><td>515</td></tr>
+						<tr><td>Muscle</td><td>Muscle Skeletal</td><td>706</td></tr>
+						<tr><td>Nerve</td><td>Nerve Tibial</td><td>532</td></tr>
+						<tr><td>Ovary</td><td>Ovary</td><td>167</td></tr>
+						<tr><td>Pancreas</td><td>Pancreas</td><td>305</td></tr>
+						<tr><td>Pituitary</td><td>Pituitary</td><td>237</td></tr>
+						<tr><td>Prostate</td><td>Prostate</td><td>221</td></tr>
+						<tr><td>Salivary Gland</td><td>Minor Salivary Gland</td><td>144</td></tr>
+						<tr><td>Skin</td><td>Cells Clustured fibroblasts</td><td>483</td></tr>
+						<tr><td>Skin</td><td>Skin Not Sun Exposed Suprapubic</td><td>517</td></tr>
+						<tr><td>Skin</td><td>Skin Sun Exposed Lower leg</td><td>605</td></tr>
+						<tr><td>Small Intestine</td><td>Small Intestine Terminal Ileum</td><td>174</td></tr>
+						<tr><td>Spleen</td><td>Spleen</td><td>227</td></tr>
+						<tr><td>Stomach</td><td>Stomach</td><td>324</td></tr>
+						<tr><td>Testis</td><td>Testis</td><td>322</td></tr>
+						<tr><td>Thyroid</td><td>Thyroid</td><td>574</td></tr>
+						<tr><td>Uterus</td><td>Uterus</td><td>142</td></tr>
+						<tr><td>Vagina</td><td>Vagina</td><td>156</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
 	</p><br/>
 
 </div>

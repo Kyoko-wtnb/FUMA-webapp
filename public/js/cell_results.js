@@ -255,6 +255,8 @@ function PlotStep1(data){
 		}
 		cellwidths.push(cellwidth);
 		var width = cellwidth*data.length;
+		var legend_height = 20+ds.length*15
+		if(legend_height-height > margin.bottom-20){margin.bottom = legend_height-height+20}
 		var svg = d3.select("#step1Plot").append("svg")
 				.attr("width", width+margin.left+margin.right)
 				.attr("height", height+margin.top+margin.bottom)
@@ -379,6 +381,8 @@ function PlotStep2(data){
 		}
 		cellwidths.push(cellwidth);
 		var width = cellwidth*data.length;
+		var legend_height = 20+ds.length*15
+		if(legend_height-height > margin.bottom-20){margin.bottom = legend_height-height+20}
 		var svg = d3.select("#step2Plot").append("svg")
 				.attr("width", width+margin.left+margin.right)
 				.attr("height", height+margin.top+margin.bottom)

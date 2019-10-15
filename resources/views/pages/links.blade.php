@@ -1,4 +1,4 @@
-@extends('layouts.master')
+Dec@extends('layouts.master')
 @section('head')
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -62,7 +62,7 @@ var loggedin = "{{ Auth::check() }}";
 				<td>ANNOVAR</td>
 				<td>A variant annotation tool used to obtain functional consequences of SNPs on gene functions.</td>
 				<td>Info and download: <a href="http://annovar.openbioinformatics.org/en/latest/" target="_blank">http://annovar.openbioinformatics.org/en/latest/</a></td>
-				<td>5 December 2016</td>
+				<td>5 Dec 2016</td>
 				<td>
 					Wang, K., Li, M. and Hakonarson, H. 2010. ANNOVAR: functional annotation of genetic variants from high-throughput sequencing data. <i>Nucleic Acids Res.</i> <b>38</b>:e164<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/20601685" target="_blank">PMID:20601685</a>
@@ -88,7 +88,7 @@ var loggedin = "{{ Auth::check() }}";
 					Info: <a href="http://regulomedb.org/index" target="_blank">http://regulomedb.org/index</a><br/>
 					Data: <a href="http://regulomedb.org/downloads/RegulomeDB.dbSNP141.txt.gz" target="_blank">http://regulomedb.org/downloads/RegulomeDB.dbSNP141.txt.gz</a>
 				</td>
-				<td>5 December 2016</td>
+				<td>5 Dec 2016</td>
 				<td>
 					Boyle, AP., et al. 2012. Annotation of functional variation in personal genomes using RegulomeDB. <i>Genome Res.</i> <b>22</b>, 1790-7.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/22955989" target="_blank">PMID:22955989</a>
@@ -101,7 +101,7 @@ var loggedin = "{{ Auth::check() }}";
 					Info: <a href="http://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html" target="_blank">http://egg2.wustl.edu/roadmap/web_portal/chr_state_learning.html</a><br/>
 					Data: <a href="http://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/coreMarks/jointModel/final/all.mnemonics.bedFiles.tgz" target="_blank">http://egg2.wustl.edu/roadmap/data/byFileType/chromhmmSegmentations/ChmmModels/coreMarks/jointModel/final/all.mnemonics.bedFiles.tgz</a>
 				</td>
-				<td>5 December 2016</td>
+				<td>5 Dec 2016</td>
 				<td>
 					Roadmap Epigenomics Consortium, et al. 2015. Integrative analysis of 111 reference human epigenomes. <i>Nature.</i> <b>518</b>, 317-330.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/25693563" target="_blank">PMID:25693563</a><br/>
@@ -110,20 +110,21 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-			<td>GTEx v6/v7</td>
-				<td>eQTLs and gene expression used in the pipeline were obtained from GTEx v6.<br/>
-					For gene expression 53 tissue types are available and 44 for v6 and 48 for v7 of those which have more than 70 samples are included in eQTL analyses.
+			<td>GTEx v6/v7/v8</td>
+				<td>eQTLs and gene expression used in the pipeline were obtained from GTEx.<br/>
 				</td>
 				<td>
 					Info and data: <a href="http://www.gtexportal.org/home/" target="_blank">http://www.gtexportal.org/home/</a>
 				</td>
-				<td>21 January 2018</td>
+				<td>14 Oct 2019</td>
 				<td>
 					GTEx Consortium. 2015. Human genomics, The genotype-tissue expression (GTEx) pilot analysis: multitissue gene regulation in humans. <i>Science.</i> <b>348</b>, 648-60.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/25954001" target="_blank">PMID:25954001</a>
 					<br/>
 					GTEx Consortium. 2017. Genetic effects on gene expression across human tissues. <i>Nature.</i> <b>550</b>, 204-213.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/29022597" target="_blank">PMID:29022597</a>
+					Aguet, et al. 2019. The GTEx consortium atlas of genetic regulatory effects across human tissues. <i>bioRxiv.</i> doi: https://doi.org/10.1101/787903.<br/>
+					<a href="https://www.biorxiv.org/content/10.1101/787903v1" target="_blank">https://doi.org/10.1101/787903</a>
 				</td>
 			</tr>
 			<tr>
@@ -311,49 +312,49 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>MsigDB v6.2</td>
+				<td>MsigDB v7.0</td>
 				<td>Collection of publicly available gene sets. Data sets include e.g. KEGG, Reactome, BioCarta, GO terms and so on.</td>
 				<td>Info and data: <a href="http://software.broadinstitute.org/gsea/msigdb" target="_blank">http://software.broadinstitute.org/gsea/msigdb</a></td>
-				<td>13 Feb 2019</td>
+				<td>14 Oct 2019</td>
 				<td>
 					Liberzon, A. et al. 2011. Molecular signatures database (MSigDB) 3.0. <i>Bioinformatics.</i> <b>27</b>, 1739-40.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/21546393" target="_blank">PMID:21546393</a>
 				</td>
 			</tr>
 			<tr>
-				<td>WikiPathways v20190110</td>
+				<td>WikiPathways v20191010</td>
 				<td>The curated biological pathways.</td>
 				<td style="word-break: break-all;">
 					Info: <a href="http://wikipathways.org/index.php/WikiPathways" target="_blank">http://wikipathways.org/index.php/WikiPathways</a><br/>
 					Data: <a href=">http://data.wikipathways.org/20161110/gmt/wikipathways-20161110-gmt-Homo_sapiens.gmt" target="_blank">http://data.wikipathways.org/20161110/gmt/wikipathways-20161110-gmt-Homo_sapiens.gmt</a>
 				</td>
-				<td>13 Feb 2019</td>
+				<td>14 Oct 2019</td>
 				<td>
 					Kutmon, M., et al. 2016. WikiPathways: capturing the full diversity of pahtway knowledge. <i>Nucleic Acids Res.</i> <b>44</b>, 488-494.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/26481357" target="_blank">PMID:26481357</a>
 				</td>
 			</tr>
 			<tr>
-				<td>GWAS-catalog e96 2019-05-03</td>
-				<td>A database of reported snp-trait associations.</td>
+				<td>GWAS-catalog e96 2019-09-24</td>
+				<td>A database of reported SNP-trait associations.</td>
 				<td>
 					Info: <a href="https://www.ebi.ac.uk/gwas/" target="_blank">https://www.ebi.ac.uk/gwas/</a><br/>
 					Data: <a href="https://www.ebi.ac.uk/gwas/downloads" target="_blank">https://www.ebi.ac.uk/gwas/downloads</a>
 				</td>
-				<td>27 May 2019</td>
+				<td>14 Oct 2019</td>
 				<td>
 					MacArthur, J., et al. 2016. The new NHGRI-EBI Catalog of published genome-wide association studies (GWAS Catalog). <i>Nucleic Acids Res.</i> pii:gkw1133.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/27899670" target="_blank">PMID:27899670</a>
 				</td>
 			</tr>
 			<tr>
-				<td>DrugBank</td>
+				<td>DrugBank v5.1.4</td>
 				<td>Targeted genes (protein) of drugs in DrugBank was obtained to assign drug ID for input genes.</td>
 				<td>
 					Info: <a href="https://www.ncbi.nlm.nih.gov/pubmed/27899670" target="_blank">https://www.ncbi.nlm.nih.gov/pubmed/27899670</a><br/>
 					Data: <a href="https://www.drugbank.ca/releases/latest#protein-identifiers" target="_blank">https://www.drugbank.ca/releases/latest#protein-identifiers</a>
 				</td>
-				<td>5 December 2016</td>
+				<td>14 Oct 2019</td>
 				<td>
 					Wishart, DS., et al. 2008. DrugBank: a knowledgebase for drugs, drug actions and drug targets. <i>Nucleic Acis Res.</i> <b>36</b>, D901-6.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/18048412" target="_blank">PMID:18048412</a>
