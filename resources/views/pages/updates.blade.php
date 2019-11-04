@@ -19,6 +19,15 @@
 	</thead>
     <tbody>
 		<tr>
+			<td>4 Nov 2019</td>
+			<td>v1.3.5e</td>
+			<td>
+				There was an error during mapping hg38 to hg19 for eQTLs of GTEx v8, which caused some missing significant eQTLs.
+				It has been fixed in the current version.
+				If you have any SNP2GENE jobs with eQTL mapping using GTEx v8, it is strongly recommended to re-do gene-mapping.
+			</td>
+		</tr>
+		<tr>
 			<td>14 Oct 2019</td>
 			<td>v1.3.5d</td>
 			<td>
