@@ -199,7 +199,7 @@ def getNonCandidateSNPs(filedir, snps, min_pos, max_pos):
 	poscol = 1
 
 	tb = tabix.open(filedir+"all.txt.gz")
-	tb_snps = tb.querys(str(chrom)+":"+str(min_pos-500000)+"-"+str(max_pos+500000))
+	tb_snps = tb.querys(str(chrom)+":"+str(max([min_pos-500000,0]))+"-"+str(max_pos+500000))
 	tmp = []
 	for l in tb_snps:
 		tmp.append([int(l[0]), int(l[1]), float(l[2])])

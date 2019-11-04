@@ -99,7 +99,7 @@ chrcol = 0
 poscol = 1
 
 tb = tabix.open(filedir+"all.txt.gz")
-tb_snps = tb.querys(str(chrom)+":"+str(xMin-500000)+"-"+str(xMax+500000))
+tb_snps = tb.querys(str(chrom)+":"+str(max([xMin-500000,0]))+"-"+str(xMax+500000))
 allsnps = []
 for l in tb_snps:
 	allsnps.append([int(l[0]), int(l[1]), float(l[2])])

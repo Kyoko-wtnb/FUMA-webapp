@@ -5,8 +5,8 @@
 <p>
 	Your submitted job (job ID: {{ $jobID }}, job title: {{ $jobtitle }}) has failed.
 	This is either because of an un-caught error or a server side error.
-	Developper will contact you as soon as the problem is solved.
-	Please do not delete the job until the developper response, we need to track error log.
+	Developer will contact you as soon as the problem is solved.
+	Please do not delete the job until the developer response, we need to track error log.
 	For security reason, your input files are deleted already.
 	<br/>
 </p>
