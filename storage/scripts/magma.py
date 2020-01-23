@@ -31,7 +31,7 @@ def main():
 	mhc = int(param_cfg.get('params', 'exMHC'))
 	mhc_region = param_cfg.get('params', 'extMHC')
 	mhcopt = param_cfg.get('params', 'MHCopt')
-	if mhc==1 and mhcopt=="anot":
+	if mhc==1 and mhcopt=="annot":
 		mhc = 0
 	mhc_start = 29614758
 	mhc_end = 33170276

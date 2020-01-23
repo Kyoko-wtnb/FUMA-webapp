@@ -218,6 +218,8 @@ function expHeatPlot(id, dataset){
 
 function tsEnrich(id){
 	var data_title = {
+		'gtex_v8_ts': 'GTEx v8 54 tissue types',
+		'gtex_v8_ts_general': 'GTEx v8 30 general tissue types',
 		'gtex_v7_ts': 'GTEx v7 53 tissue types',
 		'gtex_v7_ts_general': 'GTEx v7 30 general tissue types',
 		'gtex_v6_ts': 'GTEx v6 53 tissue types',

@@ -94,7 +94,7 @@
 <option class="level2" value="GTEx/v8/Heart_Atrial_Appendage.txt.gz">GTEx Heart Atrial Appendage</option>
 <option class="level2" value="GTEx/v8/Heart_Left_Ventricle.txt.gz">GTEx Heart Left Ventricle</option>
 <option class="level1" value="null">GTEx v8 Kidney (1)</option>
-<option class="level2" value="GTEx/v8/Kidney_Cortex.txt.gz">GTEx Heart Left Ventricle</option>
+<option class="level2" value="GTEx/v8/Kidney_Cortex.txt.gz">GTEx Kidney Cortex</option>
 <option class="level1" value="null">GTEx v8 Liver (1)</option>
 <option class="level2" value="GTEx/v8/Liver.txt.gz">GTEx Liver</option>
 <option class="level1" value="null">GTEx v8 Lung (1)</option>
@@ -114,7 +114,7 @@
 <option class="level1" value="null">GTEx v8 Salivary Gland (1)</option>
 <option class="level2" value="GTEx/v8/Minor_Salivary_Gland.txt.gz">GTEx Minor Salivary Gland</option>
 <option class="level1" value="null">GTEx v8 Skin (3)</option>
-<option class="level2" value="GTEx/v8/Cells_Cultured_fibroblasts.txt.gz">GTEx Cells Transformed fibroblasts</option>
+<option class="level2" value="GTEx/v8/Cells_Cultured_fibroblasts.txt.gz">GTEx Cells Cultured fibroblasts</option>
 <option class="level2" value="GTEx/v8/Skin_Not_Sun_Exposed_Suprapubic.txt.gz">GTEx Skin Not Sun Exposed Suprapubic</option>
 <option class="level2" value="GTEx/v8/Skin_Sun_Exposed_Lower_leg.txt.gz">GTEx Skin Sun Exposed Lower leg</option>
 <option class="level1" value="null">GTEx v8 Small Intestine (1)</option>
