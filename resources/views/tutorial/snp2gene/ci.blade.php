@@ -84,7 +84,7 @@ Since chromatin interaction mapping is more complicated than other two mappings 
 	</p>
 	<h4><strong>Custom chromatin interaction matrices file format</strong></h4>
 	<p><strong>1. Input file format</strong><br/>
-		The chromatin interaction matrix should have the following 7 columns in the same order as listed below.
+		The chromatin interaction files should have the following 7 columns in the order as listed below.
 		Header line is mandatory but the column names do not need to be the same as the below as long as the order is the same.
 		Delimiter should be tab or white space(s).
 		<span style="color:red;">The input file should be gzipped and named as "(name_of_data).txt.gz"</span> in which "(name_of_data)" will be used in the result table and regional plot.<br/>

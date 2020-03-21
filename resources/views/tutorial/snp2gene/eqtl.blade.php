@@ -1,4 +1,4 @@
-P-value<h3 id="eQTLs">eQTLs</h3>
+<h3 id="eQTLs">eQTLs</h3>
 FUMA contains several data sources of eQTLs and each data source is described in this section.
 <h4><strong>eQTL data sources</strong></h4>
 <div style="padding-left: 40px;">

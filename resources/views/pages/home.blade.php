@@ -47,7 +47,7 @@ $(document).ready(function(){
 		<a target="_blank" href="https://www.nature.com/articles/s41467-017-01261-5">https://www.nature.com/articles/s41467-017-01261-5</a>
 		<br>
 		When using cell type analysis, please cite the following.<br/>
-		K. Watanabe, M. Umicevic Mirkov, C. de Leeuw, M. can den Heuvel and D. Posthuma. Genetic mapping of cell type specificity for complex traits. <i>Nat. Commun.</i> <b>10</b>:3222. (2019).<br/>
+		K. Watanabe, M. Umicevic Mirkov, C. de Leeuw, M. van den Heuvel and D. Posthuma. Genetic mapping of cell type specificity for complex traits. <i>Nat. Commun.</i> <b>10</b>:3222. (2019).<br/>
 		<a target="_blank" href="https://www.nature.com/articles/s41467-019-11181-1">https://www.nature.com/articles/s41467-019-11181-1</a>
 		<br>
 		Depending on which results you are going to report, please also cite the original study of data sources/tools used in FUMA
