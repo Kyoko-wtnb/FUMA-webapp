@@ -487,10 +487,16 @@ FUMA contains several data sources of eQTLs and each data source is described in
 
 	<h4><strong>14. eQTL Catalogue</strong></h4>
 	<p><strong>Data source</strong><br/>
-		eQTL data was downloaded from the eQTLcatalogue. The paths to individual datasets can be found at <a href="https://github.com/eQTL-Catalogue/eQTL-Catalogue-resources/blob/master/tabix/tabix_ftp_paths.tsv">https://github.com/eQTL-Catalogue/eQTL-Catalogue-resources/blob/master/tabix/tabix_ftp_paths.tsv</a>. Only the gene level (ge) files were included. The cell types and original datasets are described below. Datasets which were already present on FUMA have not been included (DICE & xQTLServer).
+		eQTL data was downloaded from the eQTLcatalogue (not from the original data source).
+		The paths to individual datasets can be found at <a href="https://github.com/eQTL-Catalogue/eQTL-Catalogue-resources/blob/master/tabix/tabix_ftp_paths.tsv">https://github.com/eQTL-Catalogue/eQTL-Catalogue-resources/blob/master/tabix/tabix_ftp_paths.tsv</a>.
+		Only the gene level (ge) files were included.
+		Details of each dataset are described below.
+		Datasets which were already present on FUMA have not been included (DICE & xQTLServer).
 	</p>
 	<p><strong>Description</strong><br/>
-		The eQTLs were lifted over from hg38 to hg19. Significant eQTLs are defined using a nominal p-value (0.00001). More information on the methods used to generate the eQTL data can be found at <a href="https://www.ebi.ac.uk/eqtl/Methods/">https://www.ebi.ac.uk/eqtl/Methods/</a>.<br/>
+		The eQTLs were mapped to hg19 from hg38 using liftOver software.
+		Significant eQTLs are defined using a nominal p-value (0.00001).
+		More information on the methods used to generate the eQTL data can be found at <a href="https://www.ebi.ac.uk/eqtl/Methods/">https://www.ebi.ac.uk/eqtl/Methods/</a>.<br/>
 	</p>
 	<p><strong>Datasets</strong><br/>
 		<div class="panel panel-default">

@@ -19,7 +19,7 @@
 	</thead>
     <tbody>
       <tr>
-  			<td>16 March 2020</td>
+  			<td>23 March 2020</td>
   			<td>v1.3.6</td>
   			<td>
   				Datasets in the eQTL Catalogue which were not already present in FUMA were added as options for eQTL mapping.
