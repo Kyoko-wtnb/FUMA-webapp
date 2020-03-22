@@ -485,6 +485,55 @@ FUMA contains several data sources of eQTLs and each data source is described in
 		</div>
 	</p><br/>
 
+	<h4><strong>14. eQTL Catalogue</strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from the eQTLcatalogue. The paths to individual datasets can be found at <a href="https://github.com/eQTL-Catalogue/eQTL-Catalogue-resources/blob/master/tabix/tabix_ftp_paths.tsv">https://github.com/eQTL-Catalogue/eQTL-Catalogue-resources/blob/master/tabix/tabix_ftp_paths.tsv</a>. Only the gene level (ge) files were included. The cell types and original datasets are described below. Datasets which were already present on FUMA have not been included (DICE & xQTLServer).
+	</p>
+	<p><strong>Description</strong><br/>
+		The eQTLs were lifted over from hg38 to hg19. Significant eQTLs are defined using a nominal p-value (0.00001). More information on the methods used to generate the eQTL data can be found at <a href="https://www.ebi.ac.uk/eqtl/Methods/">https://www.ebi.ac.uk/eqtl/Methods/</a>.<br/>
+	</p>
+	<p><strong>Datasets</strong><br/>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<a href="#eQTLcatalogueTable" data-toggle="collapse">eQTL Catalogue datasets, tissue types, and sample sizes</a><br/>
+			</div>
+			<div id="eQTLcatalogueTable" class="panel-body collapse">
+				<span class="info"><i class="fa fa-info"></i>
+					The table contains the list of datasets included from the eQTL Catalogue.
+				</span>
+				<table class="table table-bordered">
+					<thead>
+						<th>Dataset</th>
+						<th>Pubmed ID</th>
+						<th>Tissue types</th>
+						<th>Conditions</th>
+						<th>Sample size (Samples/Donors)</th>
+					</thead>
+					<tbody>
+						<tr><td>Alasoo_2018</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/29379200">29379200</a></td><td>Macrophage</td><td>Naive, IFNg, Salmonella, IFNg + Salmonella</td><td>336/84</td></tr>
+						<tr><td>BLUEPRINT</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/27863251">27863251</a></td><td>Monocytes, neutrophils, T-cells</td><td></td><td>554/197</td></tr>
+						<tr><td>BrainSeq</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/30050107">30050107</a></td><td>Dorsolateral prefrontal cortex</td><td></td><td>484/484</td></tr>
+						<tr><td>CEDAR</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/29930244">29930244</a></td><td>CD4 and CD8 T-cells, monocytes, neutrophils, platelet, B-cells, ileum, rectum, transverse colon</td><td></td><td>2338/322</td></tr>
+						<tr><td>Fairfax_2012</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/22446964">22446964</a></td><td>B-cells</td><td></td><td>282/282</td></tr>
+						<tr><td>Fairfax_2014</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/24604202">24604202</a></td><td>Monocytes</td><td>Naive, IFN24, LPS2, LPS24</td><td>1372/424</td></tr>
+						<tr><td>GENCORD</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/23755361">23755361</a></td><td>Lymphoblastoid cell lines, fibroblasts, T-cells</td><td></td><td>560/195</td></tr>
+						<tr><td>GEUVADIS</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/24037378">24037378</a></td><td>Lymphoblastoid cell lines</td><td></td><td>445/445</td></tr>
+						<tr><td>HipSci</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/28489815">28489815</a></td><td>iPSCs</td><td></td><td>322/322</td></tr>
+						<tr><td>Kasela_2017</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/28248954">28248954</a></td><td>CD4 and CD8 T-cells</td><td></td><td>533/297</td></tr>
+						<tr><td>Lepik_2017</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/28922377">28922377</a></td><td>Blood</td><td></td><td>491/491</td></tr>
+						<tr><td>Naranbhai_2015</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/26151758">26151758</a></td><td>Neutrophils</td><td></td><td>93/93</td></tr>
+						<tr><td>Nedelec_2016</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/27768889">27768889</a></td><td>Macrophages</td><td>Naive, Listeria, Salmonella</td><td>493/168</td></tr>
+						<tr><td>Quach_2016</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/27768888">27768888</a></td><td>Monocytes</td><td>Naive, LPS, Pam3CSK4, R848, IAV</td><td>969/200</td></tr>
+						<tr><td>Schwartzentruber_2018</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/29229984">29229984</a></td><td>Sensory neurons</td><td></td><td>98/98</td></tr>
+						<tr><td>TwinsUK</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/25436857">25436857</a></td><td>Fat, Lymphoblastoid cell lines, skin, blood</td><td></td><td>1364/433</td></tr>
+						<tr><td>van_de_Bunt_2015</td><td><a href="https://www.ncbi.nlm.nih.gov/pubmed/26624892">26624892</a></td><td>Pancreatic islets</td><td></td><td>117/117</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</p><br/>
+
+
 </div>
 <br/>
 <h4><strong>Alignment of risk increasing allele in GWAS and tested allele of eQTLs</strong></h4>

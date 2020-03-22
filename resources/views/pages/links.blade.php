@@ -246,6 +246,18 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
+				<td>eQTL Catalogue</td>
+				<td>Gene level eQTL data generated from a variety of studies, where all of the eQTL datasets were produced in a uniform manner.</td>
+				<td>
+					Info: <a target="_blank" href="https://www.ebi.ac.uk/eqtl/">https://www.ebi.ac.uk/eqtl/</a> <br/>
+					Data: <a target="_blank" href="https://github.com/eQTL-Catalogue/eQTL-Catalogue-resources/blob/master/tabix/tabix_ftp_paths.tsv">https://github.com/eQTL-Catalogue/eQTL-Catalogue-resources/blob/master/tabix/tabix_ftp_paths.tsv</a>
+				</td>
+				<td>16 March 2020</td>
+				<td>
+					See tutorial <a target="_blank" href="https://fuma.ctglab.nl/tutorial#eQTLs">https://fuma.ctglab.nl/tutorial#eQTLs</a>.
+				</td>
+			</tr>
+			<tr>
 				<td>FANTOM5</td>
 				<td>SNP annotations (enhancer and promoter) and enhancer-promoter correlations.</td>
 				<td>
