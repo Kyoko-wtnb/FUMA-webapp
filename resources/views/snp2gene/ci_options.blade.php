@@ -1,5 +1,5 @@
 <option value="EP/PsychENCODE/EP_links_oneway.txt.gz">PsychENCODE EP links (one way)</option>
-<option value="HiC/PsychENCODE/Promoter_anchored_loops_oneway.txt.gz">PsychENCODE Promoter anchored loops (one way)</option>
+<option value="HiC/PsychENCODE/Promoter_anchored_loops.txt.gz">PsychENCODE Promoter anchored loops</option>
 <option value="EP/FANTOM5/EP_correlation_cell_type_oneway.txt.gz">FANTOM EP correlations cell type (one way)</option>
 <option value="EP/FANTOM5/EP_correlation_organ_oneway.txt.gz">FANTOM EP correlations organ (one way)</option>
 <option value="HiC/Giusti-Rodriguez_et_al_2019/Adult_Cortex.txt.gz">HiC(Giusti-Rodriguez et al. 2019) Adult cortex</option>

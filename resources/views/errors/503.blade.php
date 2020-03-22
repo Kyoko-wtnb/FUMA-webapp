@@ -9,8 +9,6 @@
 	<div id="message" style="text-align: center;">
 		<div class="alert alert-danger" style="font-size:24px;">
 			FUMA is currently closed for the server maintenance and update of data resources.
-			This is planned from 14th Oct 2019 8:00 CEST and 16th Oct 2019 17:00 CEST.
-			Please come back after this period.
 		</div>
 	</div>
 	<div style="text-align: center;">

@@ -37,7 +37,7 @@ var page = "{{$page}}";
 var loggedin = "{{ Auth::check() }}";
 </script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
-<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?135"></script>
+<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?135e"></script>
 <script type="text/javascript" src="{!! URL::asset('js/gene2func.js') !!}?135"></script>
 @stop
 @section('content')

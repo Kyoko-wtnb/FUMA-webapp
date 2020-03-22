@@ -108,7 +108,7 @@
 				<td>Does not affect any candidates</td>
 			</tr>
 			<tr>
-				<td>Maximum lead SNP P-value (&le;)</td>
+				<td>Maximum lead SNP P-value (&lt;)</td>
 				<td>Mandatory</td>
 				<td>FUMA identifies lead SNPs with P-value less than or equal to this threshold and independent from each other.
 				</td>
@@ -119,7 +119,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td>Maximum GWAS P-value (&le;)</td>
+				<td>Maximum GWAS P-value (&lt;)</td>
 				<td>Mandatory</td>
 				<td>This is the P-value threshold for candidate SNPs in LD of independent significant SNPs.
 					This will be applied only for GWAS-tagged SNPs as SNPs which do not exist in the GWAS input but are extracted from 1000 genomes reference do not have P-value.

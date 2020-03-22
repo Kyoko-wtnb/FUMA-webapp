@@ -3,8 +3,6 @@
 FUMA is an online web application to annotate and prioritize genetic associations.
 The application is available from [http://fuma.ctglab.nl](http://fuma.ctglab.nl).
 
-Currently FUMA is only available online, API will be available in near future.
-
 ## Citation
 When using FUMA, please cite the following.  
 K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma. Functional mapping and annotation of genetic associations with FUMA. *Nat. Commun.* **8**:1826. (2017).  

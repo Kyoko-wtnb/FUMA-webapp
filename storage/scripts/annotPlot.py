@@ -29,13 +29,14 @@ def getSNPs(filedir, i, Type, eqtlplot, ciplot):
 	snpshead = list(snps.columns.values)
 	snps = snps.as_matrix()
 	ld = pd.read_csv(filedir+"ld.txt", sep="\t")
-	ld = ld.as_matrix()
+	ld = np.array(ld)
 	ind = pd.read_csv(filedir+"IndSigSNPs.txt", sep="\t")
+	ind = np.array(ind)
 	ind = ind.as_matrix()
 	lead = pd.read_csv(filedir+"leadSNPs.txt", sep="\t")
-	lead = lead.as_matrix()
+	lead = np.array(lead)
 	loci = pd.read_csv(filedir+"GenomicRiskLoci.txt", sep="\t")
-	loci = loci.as_matrix()
+	loci = np.array(loci)
 
 	if Type=="IndSigSNP":
 		ls = str(ind[i, 2])

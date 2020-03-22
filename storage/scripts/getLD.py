@@ -44,6 +44,9 @@ class getParams:
 		mergeDist = int(param_cfg.get('params', 'mergeDist'))*1000
 		MHC = int(param_cfg.get('params', 'exMHC')) # 1 to exclude, 0 to not
 		extMHC = param_cfg.get('params', 'extMHC')
+		mhcopt = param_cfg.get('params', 'MHCopt')
+		if MHC==1 and mhcopt=="magma":
+			MHC = 0
 		MHCstart = 29614758 # hg19
 		MHCend = 33170276 # hg19
 		if extMHC != "NA":
