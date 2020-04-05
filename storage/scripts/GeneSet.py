@@ -189,6 +189,6 @@ with open(filedir+"GS.txt", 'w') as out:
 with open(filedir+"GS.txt", 'a') as out:
 	for gs_tmp in gs:
 		if len(gs_tmp)>0:
-			out.write("\n".join(["\t".join(l) for l in gs_tmp]))
+			out.write("\n".join(["\t".join(l) for l in gs_tmp])+"\n")
 
 print time.time() - start

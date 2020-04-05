@@ -49,6 +49,7 @@ class celltypeProcess extends Job implements ShouldQueue
 		$script = storage_path().'/scripts/magma_celltype.R';
 		exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
+			$this->chmod($filedir);
 			DB::table('celltype') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR']);
 			if($email!=null){
@@ -56,6 +57,7 @@ class celltypeProcess extends Job implements ShouldQueue
 				return;
 			}
 		}else{
+			$this->chmod($filedir);
 			DB::table('celltype') -> where('jobID', $jobID)
 				-> update(['status'=>'OK']);
 			if($email!=null){
@@ -86,5 +88,10 @@ class celltypeProcess extends Job implements ShouldQueue
 				$m->to($user->email, $user->name)->subject("FUMA your job has been completed");
 			});
 		}
+	}
+
+	public function chmod($filedir){
+		exec("find ".$filedir." -type d -exec chmod 775 {} \;");
+		exec("find ".$filedir." -type f -exec chmod 664 {} \;");
 	}
 }

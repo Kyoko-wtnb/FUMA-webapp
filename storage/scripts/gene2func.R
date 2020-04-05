@@ -143,30 +143,31 @@ summary[summary[,2]=="", 2] <- "NA"
 write.table(summary, paste0(filedir, "summary.txt"), quote=F, row.names=F, col.names=F, sep="\t")
 write.table(geneIDs, paste0(filedir, "geneIDs.txt"), quote=F, row.names=F, sep="\t")
 
-##### gene expression #####
-for(f in gene_exp){
-	load(paste0(config$data$GeneExp, "/", f, ".RData"))
-	if(length(which(genes %in% rownames(exp)))>1){
-		exp <- exp[rownames(exp) %in% genes,]
-		out <- data.frame(ensg=rownames(exp), symbol=ENSG$external_gene_name[match(rownames(exp),ENSG$ensembl_gene_id)])
-		out <- cbind(out, exp)
-		fname <- unlist(strsplit(f, "/"))
-		write.table(out, paste0(filedir, fname[length(fname)], "_exp.txt"), quote=F, row.names=F, sep="\t")
-		load(paste0(config$data$GeneExp, "/", sub("log2", "norm", f), ".RData"))
-		exp <- exp[rownames(exp) %in% genes,]
-		out <- data.frame(ensg=rownames(exp), symbol=ENSG$external_gene_name[match(rownames(exp),ENSG$ensembl_gene_id)])
-		out <- cbind(out, exp)
-		write.table(out, paste0(filedir, sub("log2", "norm", fname[length(fname)]), "_exp.txt"), quote=F, row.names=F, sep="\t")
-	}
-}
-
-##### DEG test #####
-if(length(which(genes %in% bkgenes))>1){
+if(length(gene_exp)>0 | gene_exp!="NA"){
+	##### gene expression #####
 	for(f in gene_exp){
-		f <- sub("(.+)_avg.+", "\\1", f)
-		DEG <- DEGtest(genes, allgenes=bkgenes, adjP.method="bonferroni", file=paste0(config$data$GeneExp, "/", f, "_DEG.txt"))
-		fname <- unlist(strsplit(f, "/"))
-		write.table(DEG, paste0(filedir, fname[length(fname)], "_DEG.txt"), quote=F, row.names=F, sep="\t")
+		load(paste0(config$data$GeneExp, "/", f, ".RData"))
+		if(length(which(genes %in% rownames(exp)))>1){
+			exp <- exp[rownames(exp) %in% genes,]
+			out <- data.frame(ensg=rownames(exp), symbol=ENSG$external_gene_name[match(rownames(exp),ENSG$ensembl_gene_id)])
+			out <- cbind(out, exp)
+			fname <- unlist(strsplit(f, "/"))
+			write.table(out, paste0(filedir, fname[length(fname)], "_exp.txt"), quote=F, row.names=F, sep="\t")
+			load(paste0(config$data$GeneExp, "/", sub("log2", "norm", f), ".RData"))
+			exp <- exp[rownames(exp) %in% genes,]
+			out <- data.frame(ensg=rownames(exp), symbol=ENSG$external_gene_name[match(rownames(exp),ENSG$ensembl_gene_id)])
+			out <- cbind(out, exp)
+			write.table(out, paste0(filedir, sub("log2", "norm", fname[length(fname)]), "_exp.txt"), quote=F, row.names=F, sep="\t")
+		}
+	}
+	##### DEG test #####
+	if(length(which(genes %in% bkgenes))>1){
+		for(f in gene_exp){
+			f <- sub("(.+)_avg.+", "\\1", f)
+			DEG <- DEGtest(genes, allgenes=bkgenes, adjP.method="bonferroni", file=paste0(config$data$GeneExp, "/", f, "_DEG.txt"))
+			fname <- unlist(strsplit(f, "/"))
+			write.table(DEG, paste0(filedir, fname[length(fname)], "_DEG.txt"), quote=F, row.names=F, sep="\t")
+		}
 	}
 }
 

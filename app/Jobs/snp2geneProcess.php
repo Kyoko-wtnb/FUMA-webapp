@@ -77,7 +77,8 @@ class snp2geneProcess extends Job implements ShouldQueue
 		$script = storage_path().'/scripts/gwas_file.py';
 		exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
-		$this->rmFiles($filedir);
+			$this->rmFiles($filedir);
+			$this->chmod($filedir);
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:001']);
 
@@ -123,6 +124,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
 			$this->rmFiles($filedir);
+			$this->chmod($filedir);
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:003']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -138,6 +140,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
 			$this->rmFiles($filedir);
+			$this->chmod($filedir);
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:004']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -168,6 +171,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				$script = storage_path().'/scripts/getTopSNPs.py';
 				exec("python $script $filedir >>$logfile 2>>$errorfile");
 				$this->rmFiles($filedir);
+				$this->chmod($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'ERROR:005']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -177,6 +181,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				return;
 			}else{
 				$this->rmFiles($filedir);
+				$this->chmod($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:006']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -193,6 +198,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
 			$this->rmFiles($filedir);
+			$this->chmod($filedir);
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:007']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -208,6 +214,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
 			$this->rmFiles($filedir);
+			$this->chmod($filedir);
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:008']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -226,6 +233,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$this->rmFiles($filedir);
+				$this->chmod($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'ERROR:009']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -243,6 +251,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 			exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$this->rmFiles($filedir);
+				$this->chmod($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'ERROR:010']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -262,6 +271,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
 			$this->rmFiles($filedir);
+			$this->chmod($filedir);
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:011']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -278,6 +288,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$this->rmFiles($filedir);
+				$this->chmod($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'ERROR:012']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -292,6 +303,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		}
 
 		$this->rmFiles($filedir);
+		$this->chmod($filedir);
 
 		DB::table('SubmitJobs') -> where('jobID', $jobID)
 			-> update(['status'=>'OK']);
@@ -380,5 +392,10 @@ class snp2geneProcess extends Job implements ShouldQueue
 			exec("rm $filedir"."magma.input");
 		}
 		return;
+	}
+
+	public function chmod($filedir){
+		exec("find ".$filedir." -type d -exec chmod 775 {} \;");
+		exec("find ".$filedir." -type f -exec chmod 664 {} \;");
 	}
 }

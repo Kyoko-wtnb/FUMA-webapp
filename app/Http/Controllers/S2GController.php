@@ -199,7 +199,7 @@ class S2GController extends Controller
 
 		// create job directory
 		$filedir = config('app.jobdir').'/jobs/'.$jobID;
-		File::makeDirectory($filedir, $mode = intval(0775,8), $recursive = true);
+		File::makeDirectory($filedir, 0775, true, true);
 
 		// upload input Filesystem
 		$leadSNPs = "input.lead";

@@ -1061,9 +1061,9 @@ function CheckAll(){
 			$(table.rows[5].cells[2]).html('<td><div class="alert alert-info" style="display: table-cell; padding-top:0; padding-bottom:0;">'
 				+'<i class="fa fa-exclamation-circle"></i> Optional.</div></td>');
 			$(table.rows[6].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-				+'<i class="fa fa-exclamation-triangle"></i> Select at least one epigenome to eable tis option.</div></td>');
+				+'<i class="fa fa-exclamation-triangle"></i> Select at least one epigenome to eable this option.</div></td>');
 			$(table.rows[7].cells[2]).html('<td><div class="alert alert-warning" style="display: table-cell; padding-top:0; padding-bottom:0;">'
-				+'<i class="fa fa-exclamation-triangle"></i> Select at least one epigenome to eable tis option.</div></td>');
+				+'<i class="fa fa-exclamation-triangle"></i> Select at least one epigenome to eable this option.</div></td>');
 		}else{
 			$('#ciMapEnhFilt').prop("disabled", false);
 			$('#ciMapPromFilt').prop("disabled", false);

@@ -194,6 +194,8 @@ class G2FController extends Controller
 
 		$script = storage_path()."/scripts/GeneSet.py";
 		exec("python $script $filedir", $output2, $error2);
+		exec("find ".$filedir." -type d -exec chmod 775 {} \;");
+		exec("find ".$filedir." -type f -exec chmod 664 {} \;");
 	}
 
 	public function snp2geneGeneQuery(Request $request){

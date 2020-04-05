@@ -68,6 +68,7 @@ class geneMapProcess extends Job implements ShouldQueue
 			$script = storage_path().'/scripts/geteQTL.py';
 			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
+				$this->chmod($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'ERROR:009']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -84,6 +85,7 @@ class geneMapProcess extends Job implements ShouldQueue
 			$script = storage_path().'/scripts/getCI.R';
 			exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
+				$this->chmod($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'ERROR:010']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -102,6 +104,7 @@ class geneMapProcess extends Job implements ShouldQueue
 		$script = storage_path().'/scripts/geneMap.R';
 		exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
+			$this->chmod($filedir);
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:011']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -117,6 +120,7 @@ class geneMapProcess extends Job implements ShouldQueue
 			$script = storage_path().'/scripts/createCircosPlot.py';
 			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
+				$this->chmod($filedir);
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'ERROR:012']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -137,6 +141,7 @@ class geneMapProcess extends Job implements ShouldQueue
 		if($email != null){
 			$this->sendJobCompMail($email, $jobtitle, $jobID, $status, $msg);
 		}
+		$this->chmod($filedir);
 		return;
     }
 
@@ -202,5 +207,10 @@ class geneMapProcess extends Job implements ShouldQueue
 			"completed_at"=>$completed_at
 		]);
 		return;
+	}
+
+	public function chmod($filedir){
+		exec("find ".$filedir." -type d -exec chmod 775 {} \;");
+		exec("find ".$filedir." -type f -exec chmod 664 {} \;");
 	}
 }
