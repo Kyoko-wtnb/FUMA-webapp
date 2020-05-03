@@ -124,7 +124,7 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td>Minimum P-value of lead SNPs (&lt;)</td>
+					<td>Maximum P-value of lead SNPs (&lt;)</td>
 					<td><input type="number" class="form-control" id="leadP" name="leadP" value="5e-8" onkeyup="CheckAll();" onpaste="CheckAll();" oninput="CheckAll();"/></td>
 					<td></td>
 				</tr>
