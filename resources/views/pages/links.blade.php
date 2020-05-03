@@ -288,6 +288,20 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
+				<td>Allen Human Brain Atlas</td>
+				<td>
+					Gene expression (microarray) data of brain samples from six healthy adult donors.
+				</td>
+				<td>
+					Info and data: <a href="http://human.brain-map.org/static/download" target="_blank">http://human.brain-map.org/static/download</a>
+				</td>
+				<td>3 May 2020</td>
+				<td>
+					Hawrylycz, M.J. et al. 2012. An anatomically comprehensive atlas of the adult human brain transcriptome. <i>Nature</i> <b>489</b>, 391–399.<br/>
+					<a href="https://www.ncbi.nlm.nih.gov/pubmed/22996553" target="_blank">PMID:22996553</a>
+				</td>
+			</tr>
+			<tr>
 				<td>GSE87112 (Hi-C)</td>
 				<td>Hi-C data (significant loops) of 21 tissue/cell types. Pre-processed data (output of Fit-Hi-C) is used in FUMA.</td>
 				<td>Info and data: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112" target="_blank">https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE87112</a></td>

@@ -192,6 +192,8 @@ Route::group(['middleware'=>'auth'], function(){
 
 	Route::post('gene2func/g2f_sumTable', 'FumaController@g2f_sumTable');
 
+	Route::get('gene2func/g2f_geneSymbols/{prefix}/{id}', 'FumaController@getSymbols');
+
 	Route::post('gene2func/expDataOption', 'FumaController@expDataOption');
 
 	Route::get('gene2func/expPlot/{prefix}/{id}/{dataset}', 'FumaController@expPlot');

@@ -20,6 +20,15 @@ function summaryTable(id){
 			$('#g2f_summaryTable').html(table);
 		}
 	});
+
+	//GAMBA link
+	var url = "http://dutchconnectomelab.nl/GAMBA/"
+	url += "?genes="
+	$.getJSON(subdir+'/'+page+'/g2f_geneSymbols/'+prefix+'/'+id, function(data){
+		url += data.symbols.join(",")
+		$('#gamba_link').attr('href', url)
+		$('#gamba_link').
+	})
 }
 
 function paramTable(id){

@@ -4,6 +4,15 @@
 	<div id="g2f_summaryTable">
 	</div>
 	<br/>
+	<h4>Summary of input genes</h4>
+	<div>
+		<button class="btn btn-default">
+			<a id="gamba_link" target="_blank">
+				Test input genes in GAMBA (http://dutchconnectomelab.nl/GAMBA/)
+			</a>
+		</button>
+	</div>
+	<br/>
 
 	<h4>Download files</h4>
 	<div id="downloads">

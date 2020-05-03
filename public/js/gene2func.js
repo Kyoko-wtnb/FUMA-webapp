@@ -8,7 +8,11 @@ var exp_data_title = {
 	'gtex_v6_ts_avg_log2RPKM': 'GTEx v6 53 tissue types',
 	'gtex_v6_ts_general_avg_log2RPKM': 'GTEx v6 30 general tissue types',
 	'bs_age_avg_log2RPKM': "BrainSpan 29 different ages of brain samples",
-	"bs_dev_avg_log2RPKM": "BrainSpan 11 general developmental stages of brain samples"
+	"bs_dev_avg_log2RPKM": "BrainSpan 11 general developmental stages of brain samples",
+	"AHBA_level2_avg_MA": "Alen Human Brain Atlas 7 brain regions (level 2)",
+	"AHBA_level2_avg_MA": "Alen Human Brain Atlas 24 brain regions (level 3)",
+	"AHBA_level2_avg_MA": "Alen Human Brain Atlas 54 brain regions (level 4)",
+	"AHBA_level2_avg_MA": "Alen Human Brain Atlas 106 brain regions (level 5)",
 }
 $(document).ready(function(){
 	// hide submit buttons for imgDown

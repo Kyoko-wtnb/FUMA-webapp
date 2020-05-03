@@ -26,12 +26,14 @@
 		This is an averaged expression value per label (e.g. tissue types or developmental stage)
 		per gene following to winsorization at 50 and log 2 transformation with pseudocount 1.
 		The expression value depends on the data set, RPKM (Read Per Kilobase per Million)
-		for GTEx v6 and BrainSapn, TPM (Transcripts Per Million) for GTEx v7.
+		for GTEx v6 and BrainSapn, TPM (Transcripts Per Million) for GTEx v7/v8.
+		For Allen Human Brain Atlas, normalized microarry gene expression value as obtained from the resource.
 		This allows for comparison across labels and genes.
 		Hence, cells filled in red represent higher expression compared to cells filled in blue across genes and labels.<br/>
 		2) <strong>Average of normalized expression per label</strong><br/>
 		This is the average of normalized expression (zero mean across samples)
 		following to winsorization at 50 and log 2 transformation of the expression value with pseudocount 1.
+		For Allen Human Brain Atlas, normalized microarray gene expression value was scaled per gene.
 		This allows comparison of gene expression across labels (horizontal comparison) within a gene.
 		Thus expression values of different genes within a label (vertical comparison) are not comparable.
 		Hence, cells filled in red represents higher expression of the genes in
@@ -68,6 +70,13 @@
 		Note that for DEG sets, Bonferroni correction is performed for each of up-regulated, down-regulated and both-sided DEG sets separately.
 		</span><br/><br/>
 		Results and images are downloadable as text files and in several image file formats.
+	</p>
+	<p>
+		<span class="info"><i class="fa fa-info"></i>
+			Note that Allen Human Brain Atlas (AHBA) data is only available for level 2 and level 3 brain regions.
+			This is because the differences of gene expression patterns across brain regions are subtle and
+			the number of significant DEGs is not sufficient to perform this enrichment analysis for level 4 and level5.
+		</span>
 	</p>
 	<img src="{!! URL::asset('/image/gene2funcTs.png') !!}" style="width:60%"/>
 	<br/><br/>

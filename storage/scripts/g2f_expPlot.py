@@ -45,7 +45,7 @@ def main():
 	exp_table = np.c_[np.repeat(genes, len(label)), label*len(genes), np.reshape(exp, (1,len(genes)*len(label)))[0]]
 
 	##### norm average #####
-	exp = pd.read_csv(filedir+dataset.replace("log2", "norm")+"_exp.txt", header=0, sep="\t")
+	exp = pd.read_csv(filedir+dataset.replace("log2", "norm").replace("_MA", "_normMA")+"_exp.txt", header=0, sep="\t")
 	genes = np.array(exp.symbol)
 	exp = np.array(exp)[genes.argsort(),2:]
 	genes = genes[genes.argsort()]

@@ -491,6 +491,20 @@ class FumaController extends Controller
 		return json_encode($out);
 	}
 
+	public function g2f_geneSymbols($prefix, $id){
+		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
+		if($prefix=="public"){
+			$filedir .= 'g2f/';
+		}
+		if(file_exists($filedir."geneTable.txt")){
+			$genes = [];
+			$f = fopen($filedir."geneTable.txt", 'r');
+			while($row = fgetcsv($f, 0, "\t")){
+
+			}
+		}
+	}
+
 	public function expDataOption(Request $request){
 		$id = $request -> input('id');
 		$prefix = $request -> input('prefix');

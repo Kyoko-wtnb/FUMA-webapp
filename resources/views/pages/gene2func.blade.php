@@ -162,6 +162,10 @@ var loggedin = "{{ Auth::check() }}";
 								<option value="GTEx/v6/gtex_v6_ts_general_avg_log2RPKM">GTEx v6: 30 general tissue types</option>
 								<option value="BrainSpan/bs_age_avg_log2RPKM">BrainSpan: 29 different ages of brain samples</option>
 								<option value="BrainSpan/bs_dev_avg_log2RPKM">BrainSpan: 11 general developmental stages of brain samples</option>
+								<option value="AHBA/AHBA_level2_avg_MA">Allen Human Brain Atlas: 7 brain regions (level 2)</option>
+								<option value="AHBA/AHBA_level3_avg_MA">Allen Human Brain Atlas: 24 brain regions (level 3)</option>
+								<option value="AHBA/AHBA_level4_avg_MA">Allen Human Brain Atlas: 54 brain regions (level 4)</option>
+								<option value="AHBA/AHBA_level5_avg_MA">Allen Human Brain Atlas: 106 brain regions (level 5)</option>
 							</select>
 						</span><br/>
 						<!-- <tab><input type="checkbox" id="Xchr" name="Xchr">&nbsp;Execlude genes on X chromosome. <span style="color: #004d99">*Please check to EXCLUDE X chromosome.</span><br/> -->

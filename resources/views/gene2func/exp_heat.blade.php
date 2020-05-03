@@ -10,7 +10,7 @@
 	<span class="form-inline">
 		Expression Value:
 		<select id="expval" class="form-control" style="width: auto;">
-			<option value="log2" selected>Average expression per label (log2 transformed)</option>
+			<option value="log2" selected>Average expression per label (log2 transformed for RPKM/TPM)</option>
 			<option value="norm">Average of normalized expression per label (zero mean across samples)</option>
 		</select>
 		<a class="infoPop" data-toggle="popover" title="Expression value" data-html="true" data-content="

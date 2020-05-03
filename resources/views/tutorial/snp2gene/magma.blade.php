@@ -127,4 +127,24 @@ In this section, reference panels and gene expression data sets are described de
 		Then average of log transformed RPKM with pseudocount 1 (log2(RPKM+1)) per label (for either 11 developmental stages or 29 age groups)
 		was used as the covariates conditioning on the average across all the labels.
 	</p>
+	<h4><strong>4. Allen Human Brain Atlas</strong></h4>
+	<p><strong>Data source</strong><br/>
+		Normalized microarray gene expression data for 6 healthy adult donors were downloaded from <a href="https://human.brain-map.org/static/download" target="_blank">https://human.brain-map.org/static/download</a>.
+	</p>
+	<p><strong>Pre-process</strong><br/>
+		From 6 donors, in total 3702 samples were available.
+		In total 58,692 probs were available. Probes with missing data point >= 80% across all samples were filtered out.
+		Each prob id is assigned to single gene symbol.
+		When there are multiple probs for one gene, prob with the highest variance across all samples were kept.
+		Gene symbols were further assigned to Ensembl gene ID.
+		Only genes mapped to unique Ensembl gene ID were kept.
+		This resulted in total of 13,943 genes.
+		<br/>
+		Based on hierarchical brain region ontology obtained from Allen Human Brain Atlas,
+		a level was assigned for each ontology as the distance from the top of the ontology "Brain".
+		We then used level 2 to 5.
+		At each level, ontology with at least 5 samples were included.
+		At each level, for each ontology, average expression was computed for each gene.
+		The average across all ontologies for each level was conditioned in the MAGMA model.
+	</p>
 </div>
