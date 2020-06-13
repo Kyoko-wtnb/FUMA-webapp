@@ -433,7 +433,7 @@ function GeneSet(id){
 			'Chemical_and_Genetic_pertubation', 'Canonical_Pathways', 'BioCarta', 'KEGG', 'Reactome',
 			'microRNA_targets', 'TF_targets', 'Computational_gene_sets',
 			'Cancer_gene_neighborhoods', 'Cancer_modules', 'GO_bp', 'GO_cc', 'GO_mf',
-			'Oncogenetic_signatures', 'Immunologic_signatures', 'Wikipathways',
+			'Oncogenic_signatures', 'Immunologic_signatures', 'Wikipathways',
 			'GWAScatalog'
 		];
 	var category_title = {'Hallmark_gene_sets' : 'Hallmark gene sets (MsigDB h)',
@@ -452,7 +452,7 @@ function GeneSet(id){
 			'GO_bp' : 'GO biological processes (MsigDB c5)',
 			'GO_cc' : 'GO cellular components (MsigDB c5)',
 			'GO_mf' : 'GO molecular functions (MsigDB c5)',
-			'Oncogenetic_signatures' : 'Oncogenetic signatures (MsigDB c6)',
+			'Oncogenic_signatures' : 'Oncogenic signatures (MsigDB c6)',
 			'Immunologic_signatures' : 'Immunologic signatures (MsigDB c7)',
 			'Wikipathways' : 'WikiPathways',
 			'GWAScatalog' : 'GWAS catalog reported genes'
