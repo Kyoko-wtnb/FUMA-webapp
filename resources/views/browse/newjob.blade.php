@@ -124,7 +124,7 @@
 					</td>
 				</tr>
 				<tr>
-					<td>Minimum P-value of lead SNPs (&lt;)</td>
+					<td>Maximum P-value of lead SNPs (&lt;)</td>
 					<td><input type="number" class="form-control" id="leadP" name="leadP" value="5e-8"/></td>
 					<td>
 						<div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">

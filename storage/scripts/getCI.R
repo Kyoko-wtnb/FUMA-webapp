@@ -155,148 +155,154 @@ if(nrow(ci)==0){
 	ci$SNPs <- NA
 	ci$SNPs[tmp_snps$Group.1] <- tmp_snps$x
 	ci <- ci[!is.na(ci$SNPs),]
-	### find overlapping genes
-	ci_gr <- with(ci, GRanges(seqname=chr2, IRanges(start=start2, end=end2)))
-	overlap <- findOverlaps(ci_gr, genes_gr)
-	if(length(queryHits(overlap))==0){
-		tmp_genes <- data.frame(Group.1=NA, x=NA)
-	}else if(length(queryHits(overlap))==1){
-		tmp_genes <- data.frame(Group.1=queryHits(overlap), x=genes$ensembl_gene_id[subjectHits(overlap)], stringsAsFactors=F)
+	if(nrow(ci)==0){
+		print("No chromatin interaction was found")
+		ciSNPs <- data.frame()
+		ciProm <- data.frame()
 	}else{
-		tmp_genes <- aggregate(subjectHits(overlap), list(queryHits(overlap)), function(x){paste(genes$ensembl_gene_id[x], collapse=":")})
-	}
-	ci$genes <- NA
-	ci$genes[tmp_genes$Group.1] <- tmp_genes$x
-	ci$region1 <- gsub(" ", "", apply(ci[,2:4], 1, function(x){paste0(x[1], ":", x[2], "-", x[3])}))
-	ci$region2 <- gsub(" ", "", apply(ci[,5:7], 1, function(x){paste0(x[1], ":", x[2], "-", x[3])}))
+		### find overlapping genes
+		ci_gr <- with(ci, GRanges(seqname=chr2, IRanges(start=start2, end=end2)))
+		overlap <- findOverlaps(ci_gr, genes_gr)
+		if(length(queryHits(overlap))==0){
+			tmp_genes <- data.frame(Group.1=NA, x=NA)
+		}else if(length(queryHits(overlap))==1){
+			tmp_genes <- data.frame(Group.1=queryHits(overlap), x=genes$ensembl_gene_id[subjectHits(overlap)], stringsAsFactors=F)
+		}else{
+			tmp_genes <- aggregate(subjectHits(overlap), list(queryHits(overlap)), function(x){paste(genes$ensembl_gene_id[x], collapse=":")})
+		}
+		ci$genes <- NA
+		ci$genes[tmp_genes$Group.1] <- tmp_genes$x
+		ci$region1 <- gsub(" ", "", apply(ci[,2:4], 1, function(x){paste0(x[1], ":", x[2], "-", x[3])}))
+		ci$region2 <- gsub(" ", "", apply(ci[,5:7], 1, function(x){paste0(x[1], ":", x[2], "-", x[3])}))
 
-	##### annotate enhancers for SNPs #####
-	print("Annotating enhancers...")
-	insnps <- snps[snps$rsID %in% unique(unlist(strsplit(ci$SNPs,";"))),]
-	snps_gr <- with(insnps, GRanges(seqnames=chr, IRanges(start=pos, end=pos)))
-	ciSNPs <- data.frame()
-	write.table(paste0(loci$chr,":",loci$start,"-",loci$end), paste0(filedir, "tmp.region"), quote=F, row.names=F, col.names=F)
-	### enh
-	system(paste0("xargs -a ",filedir, "tmp.region -I {} tabix ", reg_datadir,"/enh/enh.bed.gz {} >", filedir, "tmp.reg"))
-	if(file.info(paste0(filedir, "tmp.reg"))$size>0){
-		reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
-		reg <- unique(reg)
-		colnames(reg) <- c("chr", "start", "end", "eid")
-		if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
-		if(nrow(reg)>0){
-			reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
-			reg$start <- reg$start+1
-			reg$end <- reg$end+1
-			reg_gr <- with(reg, GRanges(seqnames=chr, IRanges(start=start, end=end)))
-			overlap <- findOverlaps(snps_gr, reg_gr)
-			if(length(queryHits(overlap))>0){
-				tmp_out <- data.frame(insnps[queryHits(overlap), c("uniqID", "rsID", "chr", "pos")])
-				tmp_out$reg_region <- gsub(" ", "", apply(reg[subjectHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])}))
-				tmp_out$type <- "enh"
-				tmp_out$`tissue/cell` <- reg$eid[subjectHits(overlap)]
-				if(nrow(ciSNPs)==0){ciSNPs <- tmp_out}
-				else{ciSNPs <- rbind(ciSNPs, tmp_out)}
+		##### annotate enhancers for SNPs #####
+		print("Annotating enhancers...")
+		insnps <- snps[snps$rsID %in% unique(unlist(strsplit(ci$SNPs,";"))),]
+		snps_gr <- with(insnps, GRanges(seqnames=chr, IRanges(start=pos, end=pos)))
+		ciSNPs <- data.frame()
+		write.table(paste0(loci$chr,":",loci$start,"-",loci$end), paste0(filedir, "tmp.region"), quote=F, row.names=F, col.names=F)
+		### enh
+		system(paste0("xargs -a ",filedir, "tmp.region -I {} tabix ", reg_datadir,"/enh/enh.bed.gz {} >", filedir, "tmp.reg"))
+		if(file.info(paste0(filedir, "tmp.reg"))$size>0){
+			reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
+			reg <- unique(reg)
+			colnames(reg) <- c("chr", "start", "end", "eid")
+			if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
+			if(nrow(reg)>0){
+				reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
+				reg$start <- reg$start+1
+				reg$end <- reg$end+1
+				reg_gr <- with(reg, GRanges(seqnames=chr, IRanges(start=start, end=end)))
+				overlap <- findOverlaps(snps_gr, reg_gr)
+				if(length(queryHits(overlap))>0){
+					tmp_out <- data.frame(insnps[queryHits(overlap), c("uniqID", "rsID", "chr", "pos")])
+					tmp_out$reg_region <- gsub(" ", "", apply(reg[subjectHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])}))
+					tmp_out$type <- "enh"
+					tmp_out$`tissue/cell` <- reg$eid[subjectHits(overlap)]
+					if(nrow(ciSNPs)==0){ciSNPs <- tmp_out}
+					else{ciSNPs <- rbind(ciSNPs, tmp_out)}
+				}
 			}
 		}
-	}
-	### dyadic
-	system(paste0("xargs -a ",filedir, "tmp.region -I {} tabix ", reg_datadir,"/dyadic/dyadic.bed.gz {} >", filedir, "tmp.reg"))
-	if(file.info(paste0(filedir, "tmp.reg"))$size>0){
-		reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
-		reg <- unique(reg)
-		colnames(reg) <- c("chr", "start", "end", "eid")
-		if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
-		if(nrow(reg)>0){
-			reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
-			reg$start <- reg$start+1
-			reg$end <- reg$end+1
-			reg_gr <- with(reg, GRanges(seqnames=chr, IRanges(start=start, end=end)))
-			overlap <- findOverlaps(snps_gr, reg_gr)
-			if(length(queryHits(overlap))>0){
-				tmp_out <- data.frame(insnps[queryHits(overlap), c("uniqID", "rsID", "chr", "pos")])
-				tmp_out$reg_region <- gsub(" ", "", apply(reg[subjectHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])}))
-				tmp_out$type <- "dyadic"
-				tmp_out$`tissue/cell` <- reg$eid[subjectHits(overlap)]
-				if(nrow(ciSNPs)==0){ciSNPs <- tmp_out}
-				else{ciSNPs <- rbind(ciSNPs, tmp_out)}
+		### dyadic
+		system(paste0("xargs -a ",filedir, "tmp.region -I {} tabix ", reg_datadir,"/dyadic/dyadic.bed.gz {} >", filedir, "tmp.reg"))
+		if(file.info(paste0(filedir, "tmp.reg"))$size>0){
+			reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
+			reg <- unique(reg)
+			colnames(reg) <- c("chr", "start", "end", "eid")
+			if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
+			if(nrow(reg)>0){
+				reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
+				reg$start <- reg$start+1
+				reg$end <- reg$end+1
+				reg_gr <- with(reg, GRanges(seqnames=chr, IRanges(start=start, end=end)))
+				overlap <- findOverlaps(snps_gr, reg_gr)
+				if(length(queryHits(overlap))>0){
+					tmp_out <- data.frame(insnps[queryHits(overlap), c("uniqID", "rsID", "chr", "pos")])
+					tmp_out$reg_region <- gsub(" ", "", apply(reg[subjectHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])}))
+					tmp_out$type <- "dyadic"
+					tmp_out$`tissue/cell` <- reg$eid[subjectHits(overlap)]
+					if(nrow(ciSNPs)==0){ciSNPs <- tmp_out}
+					else{ciSNPs <- rbind(ciSNPs, tmp_out)}
+				}
 			}
 		}
-	}
 
-	##### annotate promoter to genes #####
-	print("Annotating promoters...")
-	ciProm <- data.frame()
-	reg2 <- unique(ci[,5:7])
-	reg2 <- reg2[with(reg2, order(chr2, start2)),]
-	reg2_gr <- with(reg2, GRanges(seqnames=chr2, IRanges(start=start2, end=end2)))
-	overlap <- as.data.frame(findOverlaps(reg2_gr, reg2_gr, maxgap=100000))
-	reg2_reduce <- reg2
-	reg2_reduce$start2 <- with(overlap, aggregate(subjectHits, list(queryHits), function(x){min(reg2$start2[x])}))$x
-	reg2_reduce$end2 <- with(overlap, aggregate(subjectHits, list(queryHits), function(x){max(reg2$end2[x])}))$x
-	reg2_reduce <- as.data.frame(reduce(with(reg2_reduce, GRanges(seqnames=chr2, IRanges(start=start2, end=end2)))))
-	reg2_gr <- with(reg2, GRanges(seqnames=chr2, IRanges(start=start2, end=end2)))
-	write.table(paste0(reg2_reduce$seqnames,":",reg2_reduce$start,"-",reg2_reduce$end), paste0(filedir, "tmp.region"), quote=F, row.names=F, col.names=F)
-	### prom
-	system(paste0("xargs -a ",filedir, "tmp.region -I {} tabix ", reg_datadir,"/prom/prom.bed.gz {} >", filedir, "tmp.reg"))
-	if(file.info(paste0(filedir, "tmp.reg"))$size>0){
-		reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
-		reg <- unique(reg)
-		colnames(reg) <- c("chr", "start", "end", "eid")
-		reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
-		if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
-		if(nrow(reg)>0){
-			reg$start <- reg$start+1
-			reg$end <- reg$end+1
-			reg_gr <- with(reg, GRanges(seqnames=chr, IRanges(start=start, end=end)))
-			overlap <- findOverlaps(reg_gr, genes_gr)
-			reg$genes <- NA
-			if(length(queryHits(overlap))>0){
-				tmp_genes <- aggregate(subjectHits(overlap), list(queryHits(overlap)), function(x){paste(genes$ensembl_gene_id[x], collapse=":")})
-				reg$genes[tmp_genes$Group.1] <- tmp_genes$x
-			}
-			overlap <- findOverlaps(reg2_gr, reg_gr)
-			if(length(queryHits(overlap))>0){
-				tmp_out <- data.frame(
-					region2=gsub(" ", "",apply(reg2[queryHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])})),
-					reg_region=gsub(" ", "", apply(reg[subjectHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])}))
-				)
-				tmp_out$type <- "prom"
-				tmp_out$`tissue/cell` <- reg$eid[subjectHits(overlap)]
-				tmp_out$genes <- reg$genes[subjectHits(overlap)]
-				if(nrow(ciProm)==0){ciProm <- tmp_out}
-				else{ciProm <- rbind(ciProm, tmp_out)}
+		##### annotate promoter to genes #####
+		print("Annotating promoters...")
+		ciProm <- data.frame()
+		reg2 <- unique(ci[,5:7])
+		reg2 <- reg2[with(reg2, order(chr2, start2)),]
+		reg2_gr <- with(reg2, GRanges(seqnames=chr2, IRanges(start=start2, end=end2)))
+		overlap <- as.data.frame(findOverlaps(reg2_gr, reg2_gr, maxgap=100000))
+		reg2_reduce <- reg2
+		reg2_reduce$start2 <- with(overlap, aggregate(subjectHits, list(queryHits), function(x){min(reg2$start2[x])}))$x
+		reg2_reduce$end2 <- with(overlap, aggregate(subjectHits, list(queryHits), function(x){max(reg2$end2[x])}))$x
+		reg2_reduce <- as.data.frame(reduce(with(reg2_reduce, GRanges(seqnames=chr2, IRanges(start=start2, end=end2)))))
+		reg2_gr <- with(reg2, GRanges(seqnames=chr2, IRanges(start=start2, end=end2)))
+		write.table(paste0(reg2_reduce$seqnames,":",reg2_reduce$start,"-",reg2_reduce$end), paste0(filedir, "tmp.region"), quote=F, row.names=F, col.names=F)
+		### prom
+		system(paste0("xargs -a ",filedir, "tmp.region -I {} tabix ", reg_datadir,"/prom/prom.bed.gz {} >", filedir, "tmp.reg"))
+		if(file.info(paste0(filedir, "tmp.reg"))$size>0){
+			reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
+			reg <- unique(reg)
+			colnames(reg) <- c("chr", "start", "end", "eid")
+			reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
+			if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
+			if(nrow(reg)>0){
+				reg$start <- reg$start+1
+				reg$end <- reg$end+1
+				reg_gr <- with(reg, GRanges(seqnames=chr, IRanges(start=start, end=end)))
+				overlap <- findOverlaps(reg_gr, genes_gr)
+				reg$genes <- NA
+				if(length(queryHits(overlap))>0){
+					tmp_genes <- aggregate(subjectHits(overlap), list(queryHits(overlap)), function(x){paste(genes$ensembl_gene_id[x], collapse=":")})
+					reg$genes[tmp_genes$Group.1] <- tmp_genes$x
+				}
+				overlap <- findOverlaps(reg2_gr, reg_gr)
+				if(length(queryHits(overlap))>0){
+					tmp_out <- data.frame(
+						region2=gsub(" ", "",apply(reg2[queryHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])})),
+						reg_region=gsub(" ", "", apply(reg[subjectHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])}))
+					)
+					tmp_out$type <- "prom"
+					tmp_out$`tissue/cell` <- reg$eid[subjectHits(overlap)]
+					tmp_out$genes <- reg$genes[subjectHits(overlap)]
+					if(nrow(ciProm)==0){ciProm <- tmp_out}
+					else{ciProm <- rbind(ciProm, tmp_out)}
+				}
 			}
 		}
-	}
-	### dyadic
-	system(paste0("xargs -a ",filedir, "tmp.region -I {} tabix ", reg_datadir,"/dyadic/dyadic.bed.gz {} >", filedir, "tmp.reg"))
-	if(file.info(paste0(filedir, "tmp.reg"))$size>0){
-		reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
-		reg <- unique(reg)
-		colnames(reg) <- c("chr", "start", "end", "eid")
-		reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
-		if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
-		if(nrow(reg)>0){
-			reg$start <- reg$start+1
-			reg$end <- reg$end+1
-			reg_gr <- with(reg, GRanges(seqnames=chr, IRanges(start=start, end=end)))
-			overlap <- findOverlaps(reg_gr, genes_gr)
-			reg$genes <- NA
-			if(length(queryHits(overlap))>0){
-				tmp_genes <- aggregate(subjectHits(overlap), list(queryHits(overlap)), function(x){paste(genes$ensembl_gene_id[x], collapse=":")})
-				reg$genes[tmp_genes$Group.1] <- tmp_genes$x
-			}
-			overlap <- findOverlaps(reg2_gr, reg_gr)
-			if(length(queryHits(overlap))>0){
-				tmp_out <- data.frame(
-					region2=gsub(" ", "",apply(reg2[queryHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])})),
-					reg_region=gsub(" ", "", apply(reg[subjectHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])}))
-				)
-				tmp_out$type <- "dyadic"
-				tmp_out$`tissue/cell` <- reg$eid[subjectHits(overlap)]
-				tmp_out$genes <- reg$genes[subjectHits(overlap)]
-				if(nrow(ciProm)==0){ciProm <- tmp_out}
-				else{ciProm <- rbind(ciProm, tmp_out)}
+		### dyadic
+		system(paste0("xargs -a ",filedir, "tmp.region -I {} tabix ", reg_datadir,"/dyadic/dyadic.bed.gz {} >", filedir, "tmp.reg"))
+		if(file.info(paste0(filedir, "tmp.reg"))$size>0){
+			reg <- fread(paste0(filedir, "tmp.reg"), header=F, data.table=F)
+			reg <- unique(reg)
+			colnames(reg) <- c("chr", "start", "end", "eid")
+			reg[,1:3] <- apply(reg[,1:3], 2, as.numeric)
+			if(!"all" %in% ciMapRoadmap){reg <- reg[reg$eid %in% ciMapRoadmap,]}
+			if(nrow(reg)>0){
+				reg$start <- reg$start+1
+				reg$end <- reg$end+1
+				reg_gr <- with(reg, GRanges(seqnames=chr, IRanges(start=start, end=end)))
+				overlap <- findOverlaps(reg_gr, genes_gr)
+				reg$genes <- NA
+				if(length(queryHits(overlap))>0){
+					tmp_genes <- aggregate(subjectHits(overlap), list(queryHits(overlap)), function(x){paste(genes$ensembl_gene_id[x], collapse=":")})
+					reg$genes[tmp_genes$Group.1] <- tmp_genes$x
+				}
+				overlap <- findOverlaps(reg2_gr, reg_gr)
+				if(length(queryHits(overlap))>0){
+					tmp_out <- data.frame(
+						region2=gsub(" ", "",apply(reg2[queryHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])})),
+						reg_region=gsub(" ", "", apply(reg[subjectHits(overlap),], 1, function(x){paste0(x[1],":",x[2],"-",x[3])}))
+					)
+					tmp_out$type <- "dyadic"
+					tmp_out$`tissue/cell` <- reg$eid[subjectHits(overlap)]
+					tmp_out$genes <- reg$genes[subjectHits(overlap)]
+					if(nrow(ciProm)==0){ciProm <- tmp_out}
+					else{ciProm <- rbind(ciProm, tmp_out)}
+				}
 			}
 		}
 	}
