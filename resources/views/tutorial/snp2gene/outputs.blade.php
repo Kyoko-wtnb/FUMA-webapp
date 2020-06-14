@@ -41,7 +41,7 @@
 </p>
 <p><strong>MAGMA Gene-Set Analysis</strong><br/>
 	Using the result of gene analysis (gene level p-value), (competitive) gene-set analysis is performed with default parameters with MAGMA v1.6.
-	Gene sets were obtained from Msigdb v5.2 for "Curated gene sets" and "GO terms".
+	Gene sets were obtained from Msigdb v7.0 for "Curated gene sets" and "GO terms".
 </p>
 <p><strong>MAGMA Tissue Expression Analysis (<span style="color: blue;">FUMA v1.1.0</span>)</strong><br/>
 	To test the (positive) relationship between highly expressed genes in a specific tissue and genetic associations, gene-property analysis is performed using average expression of genes per tissue type as a gene covariate.
