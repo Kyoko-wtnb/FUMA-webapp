@@ -75,7 +75,7 @@ rm(tmp_out)
 ##### Step 2 and 3 #####
 if(step2==1){
 	step1 <- step1[which(step1$P.adj<0.05),]
-	if(nrow(step1)>0){
+	if(nrow(step1)>1){
 		step2_ds <- table(step1$ds)
 		if(length(which(step2_ds>1))==0){
 			step1$cond_state <- "single"
@@ -267,7 +267,7 @@ if(step2==1){
 	}
 
 	if(step3==1){
-	  if(length(unique(step1$ds))>0){
+	  if(length(unique(step1$ds))>1){
 	    step1 <- step1[!grepl("drop", step1$cond_state),]
 	    step3_ds <- unique(step1$ds)
 	    ### condition average of the other dataset and pair-wise
