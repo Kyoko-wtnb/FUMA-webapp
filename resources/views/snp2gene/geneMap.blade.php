@@ -101,7 +101,7 @@
 					</tr>
 					<tr>
 						<td rowspan="2">RegulomeDB</td>
-						<td>Perform SNPs filtering baed on ReguomeDB score
+						<td>Perform SNPs filtering based on RegulomeDB score
 							<a class="infoPop" data-toggle="popover" title="RegulomeDB Score filtering" data-content="Please check this option to filter SNPs based on RegulomeDB score and specify the maximum score in the box below.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
@@ -318,7 +318,7 @@
 					</tr>
 					<tr>
 						<td rowspan="2">RegulomeDB</td>
-						<td>Perform SNPs filtering baed on ReguomeDB score
+						<td>Perform SNPs filtering based on RegulomeDB score
 							<a class="infoPop" data-toggle="popover" title="RegulomeDB Score filtering" data-content="Please check this option to filter SNPs based on RegulomeDB score and specify the maximum score in the box below.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>
@@ -592,7 +592,7 @@
 					</tr>
 					<tr>
 						<td rowspan="2">RegulomeDB</td>
-						<td>Perform SNPs filtering baed on ReguomeDB score
+						<td>Perform SNPs filtering based on RegulomeDB score
 							<a class="infoPop" data-toggle="popover" title="RegulomeDB Score filtering" data-content="Please check this option to filter SNPs based on RegulomeDB score and specify the maximum score in the box below.">
 								<i class="fa fa-question-circle-o fa-lg"></i>
 							</a>

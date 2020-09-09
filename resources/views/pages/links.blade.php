@@ -49,7 +49,7 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>MAGMA v1.07</td>
+				<td>MAGMA v1.08</td>
 				<td>Used for gene analysis and gene-set analysis.</td>
 				<td>Info and download: <a target="_blank" href="https://ctg.cncr.nl/software/magma">https://ctg.cncr.nl/software/magma</a></td>
 				<td>13 Feb 2019</td>

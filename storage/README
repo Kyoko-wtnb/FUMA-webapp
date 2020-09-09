@@ -9,6 +9,7 @@ Version: 1.3.4 (8 Feb 2019)
 Version: 1.3.5 (27 May 2019)
 Version: 1.3.5d (14 Oct 2019)
 
+
 This file contains description of columns for every downloadable file.
 The output files of MAGMA will be described at the bottom of this README.
 
@@ -377,6 +378,7 @@ ciMapAnnoMeth : The method of SNP filtering based on selected annotations
 ######################
 MAGMA gene analysis and gene-set analysis were performed with MAGMA v1.06.
 From FUMA v1.3.4, MAGMA was updated to v1.07.
+From FUMA v1.3.6a, MAGMA was updated to v1.08.
 This does not change the principles of the analyses but file format and the extension of the outputs for
 gene-set and gene-property were updated. Please refer to the MAGMA tutorial for details.
 The MAGMA output from FUMA is based on summary statistics.
