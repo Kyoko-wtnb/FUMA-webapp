@@ -49,10 +49,10 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>MAGMA v1.07</td>
+				<td>MAGMA v1.08</td>
 				<td>Used for gene analysis and gene-set analysis.</td>
 				<td>Info and download: <a target="_blank" href="https://ctg.cncr.nl/software/magma">https://ctg.cncr.nl/software/magma</a></td>
-				<td>13 Feb 2019</td>
+				<td>9 Sep 2020</td>
 				<td>
 					de Leeuw, C., et al. 2015. MAGMA: Generalized gene-set analysis of GWAS data. <i>PLoS Comput. Biol.</i> <b>11</b>, DOI:10.1371/journal.pcbi.1004219. <br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4401657/" target="_blank">PMCID:PMC4401657</a>

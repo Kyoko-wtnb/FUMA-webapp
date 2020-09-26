@@ -179,5 +179,5 @@ geneTable$uniprotID <- ENSG$uniprot[match(geneTable$ensg, ENSG$ensembl_gene_id)]
 geneTable$DrugBank <- NA
 load(paste(config$data$geneIDs, "/DrugBank.RData", sep=""))
 
-geneTable$DrugBank <- DrugBank$DrugBank[match(geneTable$uniprotID, DrugBank$uniprotID)]
+geneTable$DrugBank <- DrugBank$DrugBank[match(geneTable$uniprotID, DrugBank$uniportID)]
 write.table(geneTable, paste(filedir, "geneTable.txt", sep=""), quote=F, row.names=F, sep="\t")
