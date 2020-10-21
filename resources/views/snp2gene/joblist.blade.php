@@ -31,11 +31,11 @@
 					</tr>
 				</tbody>
 			</table>
-			<form action="{{ Config::get('app.subdir') }}/gene2func/geneSubmit" method="post" target="_blank">
+		<!--	<form action="{{ Config::get('app.subdir') }}/gene2func/geneSubmit" method="post" target="_blank">
 				<input type="hidden" name="_token" value="{{ csrf_token() }}">
 				<input type="hidden" id="g2fSubmitJobID" name="jobID" value=""/>
 				<input type="submit" class="btn btn-default" id="g2fSubmitBtn" name="g2fSubmitBtn">
-			</form>
+			</form> -->
 	    </div>
 	</div>
 </div>
