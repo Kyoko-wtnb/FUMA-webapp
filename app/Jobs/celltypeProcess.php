@@ -68,6 +68,7 @@ class celltypeProcess extends Job implements ShouldQueue
     }
 
 	public function sendJobCompMail($email, $title, $jobID, $status){
+		return;
 		$user = $this->user;
 		if($status=="error"){
 			$data = [

@@ -157,6 +157,7 @@ class geneMapProcess extends Job implements ShouldQueue
 	}
 
 	public function sendJobCompMail($email, $jobtitle, $jobID, $status, $msg){
+		return;
 		if($status==0 || $status==2){
 			$user = DB::table('users')->where('email', $email)->first();
 			$data = [
@@ -186,6 +187,7 @@ class geneMapProcess extends Job implements ShouldQueue
 	}
 
 	public function sendJobFailedMail($email, $jobtitle, $jobID){
+		return;
 		$user = $this->user;
 		$data = [
 			'jobtitle'=>$jobtitle,
@@ -196,6 +198,7 @@ class geneMapProcess extends Job implements ShouldQueue
 			$m->from('noreply@ctglab.nl', "FUMA web application");
 			$m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job failed");
 		});
+		return;
 	}
 
 	public function JobMonitorUpdate($jobID, $created_at, $started_at){

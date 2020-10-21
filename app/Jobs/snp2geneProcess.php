@@ -327,6 +327,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 	}
 
 	public function sendJobCompMail($email, $jobtitle, $jobID, $status, $msg){
+		return;
 		if($status==0 || $status==2){
 			$user = DB::table('users')->where('email', $email)->first();
 			$data = [
@@ -356,6 +357,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 	}
 
 	public function sendJobFailedMail($email, $jobtitle, $jobID){
+		return;
 		$user = $this->user;
 		$data = [
 			'jobtitle'=>$jobtitle,
