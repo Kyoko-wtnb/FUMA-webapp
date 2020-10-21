@@ -60,6 +60,7 @@ var loggedin = "{{ Auth::check() }}";
 	</div>
 
 	<canvas id="canvas" style="display:none;"></canvas>
+<h1 style="color: #00004d">Job submission is temporarily unavailable. Results from previous jobs can still be accessed</h1>
 
 	<div id="page-content-wrapper">
 		<div class="page-content inset">
@@ -202,10 +203,11 @@ var loggedin = "{{ Auth::check() }}";
 						</span>
 					</div>
 				</div>
+<h1 style="color: #00004d">Job submission is temporarily unavailable. Results from previous jobs can still be accessed</h1>
 
 				<div id="checkGenes"></div>
 				<div id="checkBkGenes"></div>
-				<input type="submit" value="Submit" class="btn btn-default" id="geneSubmit" name="geneSubmit"/><br/><br/>
+			<!--	<input type="submit" value="Submit" class="btn btn-default" id="geneSubmit" name="geneSubmit"/><br/><br/> -->
 				{!! Form::close() !!}
 			</div>
 

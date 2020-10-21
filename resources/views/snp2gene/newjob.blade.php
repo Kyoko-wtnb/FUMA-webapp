@@ -1,7 +1,7 @@
 <div id="newJob" class="sidePanel container" style="padding-top:50px;">
 	{!! Form::open(array('url' => 'snp2gene/newJob', 'files' => true, 'novalidate'=>'novalidate')) !!}
 	<!-- New -->
-	<h4 style="color: #00004d">Upload your GWAS summary statistics and set parameters to obtain functional annotations of the genomic loci associated with your trait.</h4>
+	<h1 style="color: #00004d">Job submission is temporarily unavailable. Results from previous jobs can still be accessed</h1>
 
 	<!-- load previous settings -->
 	<span class="form-inline" style="font-size:18px;">
@@ -1079,8 +1079,8 @@
 			This is not mandatory, but job title might help you to track your jobs.
 		</span>
 	</span><br/><br/>
-
-	<input class="btn btn-default" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
+	<h1 style="color: #00004d">Job submission is temporarily unavailable. Results from previous jobs can still be accessed</h1>
+<!--	<input class="btn btn-default" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/> -->
 	<span style="color: red; font-size:18px;">
 		<i class="fa fa-exclamation-triangle"></i> After submitting, please wait until the file is uploaded, and do not move away from the submission page.
 	</span>

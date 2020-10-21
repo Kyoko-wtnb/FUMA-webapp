@@ -52,6 +52,7 @@ var loggedin = "{{ Auth::check() }}";
 			<div id="newJob" class="sidePanel container" style="padding-top:50px;">
 				{!! Form::open(array('url' => 'celltype/submit', 'files'=>true, 'novalidate'=>'novalidate')) !!}
 				<div class="panel panel-default">
+<h1 style="color: #00004d">Job submission is temporarily unavailable. Results from previous jobs can still be accessed</h1>
 					<div class="panel-body" style="padding-bottom: 10;">
 						<h4>MAGMA gene analysis result</h4>
 						1. Select from existing SNP2GENE job<br/>
@@ -307,7 +308,8 @@ var loggedin = "{{ Auth::check() }}";
 
 				<br/>
 				<div id="CheckInput"></div>
-				<input type="submit" value="Submit" class="btn btn-default" id="cellSubmit" name="cellSubmit"/><br/><br/>
+				<h1 style="color: #00004d">Job submission is temporarily unavailable. Results from previous jobs can still be accessed</h1>
+			<!--	<input type="submit" value="Submit" class="btn btn-default" id="cellSubmit" name="cellSubmit"/><br/><br/> -->
 				{!! Form::close() !!}
 			</div>
 			@include('celltype.joblist')

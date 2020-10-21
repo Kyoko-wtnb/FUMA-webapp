@@ -1,6 +1,6 @@
 <div id="geneMap" class="sidePanel container" style="padding-top:50px;">
 	{!! Form::open(array('url' => 'snp2gene/geneMap', 'files' => true, 'novalidate'=>'novalidate')) !!}
-	<h4 style="color: #00004d">Select jobID of your existing jobs to re-perform gene mapping with different settings.</h4>
+	<!--<h4 style="color: #00004d">Select jobID of your existing jobs to re-perform gene mapping with different settings.</h4>
 	Re-dogin gene mapping does not require to upload any of input file, instead the selected job is duplicated
 	with new jobID and perform gene mapping can be performed with different parameter settings.
 	Only parameters of gene mappings can be modified, other parameters such as P-value and r2 for
@@ -9,7 +9,8 @@
 	<span class="info"><i class="fa fa-info"></i>
 		User own files for chromatin interactions need to be uploaded again.
 	</span>
-	<br/><br/>
+	<br/><br/> -->
+		<h1 style="color: #00004d">Job submission is temporarily unavailable. Results from previous jobs can still be accessed</h1>
 
 	<!-- load existing job -->
 	<span class="form-inline" style="font-size:18px;">
@@ -733,8 +734,9 @@
 			Suffix (e.g. "_copied_100" when jobID 100 is selected) will be automatically added to the title.
 		</span>
 	</span><br/><br/>
+	<h1 style="color: #00004d">Job submission is temporarily unavailable. Results from previous jobs can still be accessed</h1>
 
-	<input class="btn btn-default" type="submit" value="Submit Job" name="SubmitGeneMap" id="SubmitGeneMap"/>
+	<!-- <input class="btn btn-default" type="submit" value="Submit Job" name="SubmitGeneMap" id="SubmitGeneMap"/> -->
 	<span style="color: red; font-size:18px;">
 		<i class="fa fa-exclamation-triangle"></i> After submitting, please wait until the file is uploaded, and do not move away from the submission page.
 	</span>
