@@ -100,7 +100,7 @@ class S2GController extends Controller
 				$jobID = $job->jobID;
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
-				$this->dispatch(new snp2geneProcess($user, $jobID));
+				$this->dispatch(new snp2geneProcess($user, $jobID)); // TODO add onQueue from user role here
 			}
 		}
 		return;
@@ -115,7 +115,7 @@ class S2GController extends Controller
 				$jobID = $job->jobID;
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
-				$this->dispatch(new geneMapProcess($user, $jobID));
+				$this->dispatch(new geneMapProcess($user, $jobID)); // TODO add onQueue from user role here
 			}
 		}
 		return;

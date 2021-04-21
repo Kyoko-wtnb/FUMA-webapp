@@ -87,7 +87,7 @@ class CellController extends Controller
 				$jobID = $job->jobID;
 				DB::table('celltype') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
-				$this->dispatch(new celltypeProcess($user, $jobID));
+				$this->dispatch(new celltypeProcess($user, $jobID)); // TODO add onQueue from user role here
 			}
 		}
 		return;

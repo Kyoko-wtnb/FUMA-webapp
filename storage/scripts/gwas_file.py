@@ -3,6 +3,7 @@ import sys
 import os
 import re
 import gzip
+import site
 import pandas as pd
 import numpy as np
 import ConfigParser
@@ -77,6 +78,7 @@ if regionfile != "NA":
 ##### prepare parameters #####
 gwas = filedir+cfg.get('inputfiles', 'gwas')
 outSNPs = filedir+"input.snps"
+print("Out SNPS: ", outSNPs)
 outMAGMA = filedir+"magma.in"
 
 chrcol = param.get('inputfiles', 'chrcol').upper()

@@ -17,7 +17,8 @@ def ArrayNotIn(a1, a2):
     return list(set(range(0,len(a1)))-set(tmp))
 
 def getAnnov(snps, chrom, annovin, dbSNP):
-	tb = tabix.open(dbSNP+"/dbSNP146.chr"+str(chrom)+".vcf.gz")
+	#tb = tabix.open(dbSNP+"/dbSNP146.chr"+str(chrom)+".vcf.gz")
+	tb = tabix.open(dbSNP+"/dbSNP.chr"+str(chrom)+".vcf.gz")
 	start = min(snps[:,3].astype(int))
 	end = max(snps[:,3].astype(int))
 

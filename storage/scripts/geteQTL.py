@@ -70,6 +70,7 @@ for feqtl in eqtlds:
 	reg = re.match(r'(.+)\/(.+).txt.gz', feqtl)
 	db = reg.group(1)
 	ts = reg.group(2)
+	print("Opening eQTL: " + qtldir+"/"+feqtl)
 	tb = tabix.open(qtldir+"/"+feqtl)
 	for li in range(len(loci)):
 		chrom = loci.iloc[li,1]

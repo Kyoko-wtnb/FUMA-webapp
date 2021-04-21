@@ -7,23 +7,23 @@ regions=input.regions
 params=params.txt
 
 [data]
-dbSNP=/data/dbSNP
+dbSNP=/mnt/g/FUMA_data/dbSNP
 chr15=/data/Chr15States
-refgenome=/data/1KG/Phase3
+refgenome=/mnt/g/FUMA_data/MAGMA/1KG/Phase3
 ENSG=/data/ENSG.file.txt
 GeneSet=/data/GeneSet
-GTEx=/data/QTL/GTEx
-QTL=/data/QTL
+GTEx=/mnt/g/FUMA_data/QTL/GTEx
+QTL=/mnt/g/FUMA_data/QTL
 GWAScat=/data/GWAScatalog
-GTExExp=/data/GeneExp/GTEx
+GTExExp=/mnt/g/FUMA_data/MAGMA/GTEx
 scripts=/var/www/IPGAP/storage/scripts
 geneIDs=/data/genes
 geneScores=/data/geneScores
 circos_config=/data/circos
 
 [magma]
-magmadir=/home/kyoko/bin/MAGMA
-magmafiles=/data/MAGMA
+magmadir=/mnt/g/Projects/FUMA-main/magma/magma
+magmafiles=/mnt/g/FUMA_data/MAGMA
 
 [annovar]
 annovdir=/home/kyoko/bin/annovar

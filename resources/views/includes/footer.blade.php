@@ -12,6 +12,9 @@
 			<img class="footerimg" src="{{URL::asset('/image/ctg.svg')}}" height="70" width="180">
 		</div>
 	</div>
+	@php
+	echo $debugbarRenderer->render()
+	@endphp	
 </footer>
 <script type="text/javascript" src="{!! URL::asset('js/sweetalert.min.js') !!}"></script>
 <link rel="stylesheet" href="{!! URL::asset('css/sweetalert.css') !!}">

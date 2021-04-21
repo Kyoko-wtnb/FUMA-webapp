@@ -1,11 +1,23 @@
+@php
+	use DebugBar\StandardDebugBar;
+	$debugbar = new StandardDebugBar();
+	$debugbarRenderer = $debugbar->getJavascriptRenderer();
+@endphp
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	@php
+	echo $debugbarRenderer->renderHead()
+	@endphp
 	@include('includes.head')
 	@yield('head')
 </head>
 
 <body>
+@php
+	DebugBar::info("Debug messages initialized");
+@endphp
 	<div class="container-fluid">
 		<div id="header" class="row">
 			@include('includes.header')

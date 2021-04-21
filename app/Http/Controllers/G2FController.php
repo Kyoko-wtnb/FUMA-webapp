@@ -5,6 +5,7 @@ namespace fuma\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use fuma\SubmitJob;
 use fuma\Http\Requests;
 use fuma\Http\Controllers\Controller;
@@ -191,9 +192,14 @@ class G2FController extends Controller
 
 		$script = storage_path()."/scripts/gene2func.R";
 		exec("Rscript $script $filedir", $output, $error);
+		Log::info('gene2func.R output: ' . implode($output));
+		Log::info('gene2func.R error: ' . $error);
 
 		$script = storage_path()."/scripts/GeneSet.py";
+		Log::info('Calling: ' . $script . $filedir);
 		exec("python $script $filedir", $output2, $error2);
+		Log::info('GeneSet.py output: ' . implode($output2));
+		Log::info('GeneSet.py error: ' . $error2);
 		exec("find ".$filedir." -type d -exec chmod 775 {} \;");
 		exec("find ".$filedir." -type f -exec chmod 664 {} \;");
 	}
