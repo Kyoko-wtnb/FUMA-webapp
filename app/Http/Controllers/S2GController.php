@@ -5,6 +5,7 @@ namespace fuma\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use fuma\SubmitJob;
 use fuma\Http\Requests;
 use fuma\Http\Controllers\Controller;
@@ -26,13 +27,10 @@ class S2GController extends Controller
     public function __construct(){
 		// Protect this Controller
 		$this->middleware('auth');
-
-		// Store user
-		$this->user = Auth::user();
     }
 
 	public function authcheck($jobID){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$check = DB::table('SubmitJobs')->where('jobID', $jobID)->first();
 		if($check->email==$email){
 			return view('pages.snp2gene', ['id'=>$jobID, 'status'=>'jobquery', 'page'=>'snp2gene', 'prefix'=>'jobs']);
@@ -42,7 +40,7 @@ class S2GController extends Controller
 	}
 
 	public function getJobList(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		if($email){
 		    $results = SubmitJob::where('email', $email)
@@ -59,7 +57,8 @@ class S2GController extends Controller
     }
 
 	public function getPublicIDs(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
+		//Log::info("In getPublicIDs with email {$email}");
 
 		$results = array();
 		if($email){
@@ -73,13 +72,15 @@ class S2GController extends Controller
     }
 
 	public function getjobIDs(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
+		//Log::info("In getjobIDs with email {$email}");
+
 		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=?', [$email]);
 		return $results;
 	}
 
 	public function getGeneMapIDs(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=? AND status=="OK"', [$email]);
 		return $results;
 	}
@@ -92,9 +93,9 @@ class S2GController extends Controller
 	}
 
 	public function queueNewJobs(){
-		$user = $this->user;
+		$user = Auth::user();
 		$email = $user->email;
-		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW')->get();
+		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW')->get()->all();
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
@@ -107,9 +108,9 @@ class S2GController extends Controller
 	}
 
 	public function queueGeneMap(){
-		$user = $this->user;
+		$user = Auth::user();
 		$email = $user->email;
-		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW_geneMap')->get();
+		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW_geneMap')->get()->all();
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
@@ -123,7 +124,7 @@ class S2GController extends Controller
 
     public function checkJobStatus($jobID){
         $job = SubmitJob::where('jobID', $jobID)
-            ->where('email', $this->user->email)->first();
+            ->where('email', Auth::user()->email)->first();
         if( ! $job ){
             return "Notfound";
         }
@@ -155,7 +156,7 @@ class S2GController extends Controller
 		$date = date('Y-m-d H:i:s');
 		$jobID;
 		$filedir;
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		// $njobs = collect(DB::select('SELECT jobID FROM SubmitJobs WHERE email=? AND (status="NEW" OR status="QUEUED" OR status="RUNNING")', [$email]))->count();
 		// if($njobs>10){
 		// 	return view('pages.snp2gene', ['id' => null, 'status'=>'FullJobs', 'page'=>'snp2gene', 'prefix'=>'jobs']);
@@ -698,7 +699,7 @@ class S2GController extends Controller
 		$oldID = $request->input("geneMapID");
 		$jobID;
 		$filedir;
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		$jobtitle = "";
 		if($request->has("geneMapTitle")){
@@ -1136,8 +1137,8 @@ class S2GController extends Controller
 			if($check>0){
 				$out['g2f'] = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->first()->jobID;
 			}
-			$out['author'] = $this->user->name;
-			$out['email'] = $this->user->email;
+			$out['author'] = Auth::user()->name;
+			$out['email'] = Auth::user()->email;
 			$out['title'] = collect(DB::select('SELECT title FROM SubmitJobs WHERE jobID=?', [$id]))->first()->title;
 			return json_encode($out);
 		}else{

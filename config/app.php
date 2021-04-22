@@ -93,7 +93,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', false),
+    'debug' => env('APP_DEBUG', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -205,6 +205,7 @@ return [
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
@@ -220,6 +221,7 @@ return [
          */
         fuma\Providers\AppServiceProvider::class,
         fuma\Providers\AuthServiceProvider::class,
+        fuma\Providers\BroadcastServiceProvider::class,
         fuma\Providers\EventServiceProvider::class,
         fuma\Providers\RouteServiceProvider::class,
 
@@ -230,9 +232,6 @@ return [
 
         'Collective\Html\HtmlServiceProvider',
         'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
-        'Chumper\Zipper\ZipperServiceProvider'
-        // GeneaLabs\LaravelCaffeine\LaravelCaffeineServiceProvider::class
-
     ],
 
     /*
@@ -266,7 +265,9 @@ return [
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
+        'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
+        'Pusher' => Pusher\Pusher::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
@@ -281,7 +282,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => 'Collective\Html\FormFacade',
         'HTML' => 'Collective\Html\HtmlFacade',
-        'Zipper' => 'Chumper\Zipper\Zipper'
 
     ],
 

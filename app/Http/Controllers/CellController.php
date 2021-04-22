@@ -23,13 +23,10 @@ class CellController extends Controller
     public function __construct(){
 		// Protect this Controller
 		$this->middleware('auth');
-
-		// Store user
-		$this->user = Auth::user();
     }
 
 	public function authcheck($jobID){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$check = DB::table('celltype')->where('jobID', $jobID)->first();
 		if($check->email==$email){
 			return view('pages.celltype', ['id'=>$jobID, 'status'=>'jobquery', 'page'=>'celltype', 'prefix'=>'celltype']);
@@ -40,7 +37,7 @@ class CellController extends Controller
 
 	public function checkJobStatus($jobID){
         $job = DB::table('celltype')->where('jobID', $jobID)
-            ->where('email', $this->user->email)->first();
+            ->where('email', Auth::user()->email)->first();
         if(! $job){
             return "Notfound";
         }
@@ -48,7 +45,7 @@ class CellController extends Controller
     }
 
 	public function getS2GIDs(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=? AND status="OK"', [$email]);
 		return $results;
 	}
@@ -63,7 +60,7 @@ class CellController extends Controller
 	}
 
 	public function getJobList(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		if($email){
 		    $results = DB::table('celltype')->where('email', $email)
@@ -79,9 +76,9 @@ class CellController extends Controller
     }
 
 	public function queueNewJobs(){
-		$user = $this->user;
+		$user = Auth::user();
 		$email = $user->email;
-		$newJobs = DB::table('celltype')->where('email', $email)->where('status', 'NEW')->get();
+		$newJobs = DB::table('celltype')->where('email', $email)->where('status', 'NEW')->get()->all();
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
@@ -102,7 +99,7 @@ class CellController extends Controller
 
 	public function newJob(Request $request){
 		$date = date('Y-m-d H:i:s');
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$s2gID = $request->input('s2gID');
 		$ensg = 0;
 		if($request->has('ensg_id')){$ensg=1;}

@@ -26,13 +26,10 @@ class G2FController extends Controller
 	public function __construct(){
 		// Protect this Controller
 		$this->middleware('auth');
-
-		// Store user
-		$this->user = Auth::user();
 	}
 
 	public function authcheck($jobID){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$check = DB::table('gene2func')->where('jobID', $jobID)->first();
 		if($check->email==$email){
 			return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID, 'page'=>'gene2func', 'prefix'=>'gene2func']);
@@ -42,7 +39,7 @@ class G2FController extends Controller
 	}
 
 	public function getJobList(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		if($email){
 			$results = DB::table('gene2func')->where('email', $email)
@@ -66,7 +63,7 @@ class G2FController extends Controller
 		$date = date('Y-m-d H:i:s');
 		$jobID;
 		$filedir;
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		if($request->has('title')){
 			$title = $request->input('title');
@@ -212,7 +209,7 @@ class G2FController extends Controller
 			$date = date('Y-m-d H:i:s');
 			$jobID;
 			$filedir;
-			$email = $this->user->email;
+			$email = Auth::user()->email;
 
 			if($request->has('title')){
 				$title = $request->input('title');

@@ -46,7 +46,7 @@ class Kernel extends ConsoleKernel
           $totalNjobs = DB::table('SubmitJobs')->count();
           $totalUsers = DB::table('users')->count();
           $submittedjobs = DB::table('SubmitJobs')->whereColumn([["created_at", ">", $date], ["created_at", "<", $dateNext]])->count();
-          $running = DB::table("SubmitJobs")->where("status", "RUNNING")->get();
+          $running = DB::table("SubmitJobs")->where("status", "RUNNING")->get()->all();
           $runTable = "";
           if(count($running)>0){
             $runTable .= "<table class='table table-bordered'><thead><th>jobID</th><th>email<th><th>created_at</th></thead><tbody>";
@@ -59,7 +59,7 @@ class Kernel extends ConsoleKernel
             }
             $runTable .= "</tbody></table>";
           }
-          $queued = DB::table("SubmitJobs")->where("status", "QUEUED")->get();
+          $queued = DB::table("SubmitJobs")->where("status", "QUEUED")->get()->all();
           $queTable = "";
           if(count($queued)>0){
             $queTable .= "<table class='table table-bordered'><thead><th>jobID</th><th>email<th><th>created_at</th></thead><tbody>";
@@ -72,7 +72,7 @@ class Kernel extends ConsoleKernel
             }
             $queTable .= "</tbody></table>";
           }
-          $all = DB::table("JobMonitor")->get();
+          $all = DB::table("JobMonitor")->get()->all();
           $dateStats = [];
           $ProcessStartTimeAvg = [];
           $ProcessTimeAvg = [];
