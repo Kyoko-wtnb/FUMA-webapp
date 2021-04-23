@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class PublicResults extends Migration
+class CreatePublicResults extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class PublicResults extends Migration
      */
     public function up()
     {
-		Schema::table('PublicResults', function (Blueprint $table) {
-            $table->bigIncrements('id');
+		Schema::create('PublicResults', function (Blueprint $table) {
+            $table->increments('id');
 			$table->integer('jobID');
 			$table->integer('g2f_jobID');
 			$table->string('title');
@@ -36,8 +36,6 @@ class PublicResults extends Migration
      */
     public function down()
     {
-		Schema::table('PublicResults', function (Blueprint $table) {
-            Schema::drop('PublicResults');
-        });
+        Schema::drop('PublicResults');
     }
 }

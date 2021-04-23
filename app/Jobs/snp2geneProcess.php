@@ -316,13 +316,12 @@ class snp2geneProcess extends Job implements ShouldQueue
 	}
 
 	public function failed(){
-		$filedir = config('app.jobdir').'/jobs/'.$this->$jobID.'/';
+		$jobID = $this->jobID;
+		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
 		$logfile = $filedir."job.log";
 		$errorfile = $filedir."error.log";
 		file_put_contents($errorfile, "\n----- Mail fail error-----\n", FILE_APPEND);
 		
-		
-		$jobID = $this->jobID;
 		$user = $this->user;
         $email = $user->email;
 		$jobtitle = DB::table('SubmitJobs') -> where('jobID', $jobID)
