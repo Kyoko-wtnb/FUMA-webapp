@@ -49,6 +49,9 @@
 						</a>
 
 						<ul class="dropdown-menu" role="menu">
+							@role('Admin') {{-- Laravel-permission blade helper --}}
+                                <a href="#"><i class="fa fa-btn fa-unlock"></i>Admin</a>
+                            @endrole
 							<li><a href="{{ Config::get('app.subdir') }}/snp2gene#joblist-panel">SNP2GENE My Jobs</a></li>
 							<li><a href="{{ Config::get('app.subdir') }}/gene2func#queryhistory">GENE2FUNC History</a></li>
 							<li>

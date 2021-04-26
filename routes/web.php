@@ -34,6 +34,14 @@ Route::get('updates', function(){
 });
 //});
 
+Route::group(['middleware'=>'auth', 'prefix'=>'admin'], function() {
+	Route::resource('users', 'UserController');
+
+	Route::resource('roles', 'RoleController');
+	
+	Route::resource('permissions', 'PermissionController');
+});
+
 // Set up the auth routes
 //Route::auth();
 

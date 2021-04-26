@@ -16,7 +16,8 @@
         "predis/predis": "^1.1",
         "barryvdh/laravel-debugbar": "^2.4",
         "pusher/pusher-php-server": "~3.0",
-        "doctrine/dbal": "~2.13"
+        "doctrine/dbal": "~2.13",
+        "spatie/laravel-permission": "^2.38"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
