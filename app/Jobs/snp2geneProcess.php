@@ -332,7 +332,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 	}
 
 	public function sendJobCompMail($email, $jobtitle, $jobID, $status, $msg){
-		$filedir = config('app.jobdir').'/jobs/'.$this->$jobID.'/';
+		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
 		$logfile = $filedir."job.log";
 		file_put_contents($logfile, "\n----- Mail completion error-----\n".$status."\n".$msg, FILE_APPEND);
 
