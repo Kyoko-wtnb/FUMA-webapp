@@ -4,8 +4,16 @@ namespace fuma\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+//Importing laravel-permission models
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 class PermissionController extends Controller
 {
+    public function __construct() {
+        $this->middleware(['auth', 'isAdmin']); //isAdmin middleware lets only users with a //specific permission permission to access these resources
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -70,7 +78,7 @@ class PermissionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        return redirect('permissions');
+        return redirect('admin/permissions');
     }
 
     /**
@@ -100,7 +108,7 @@ class PermissionController extends Controller
         $input = $request->all();
         $permission->fill($input)->save();
 
-        return redirect()->route('permissions.index')
+        return redirect()->route('admin/permissions.index')
             ->with('flash_message',
              'Permission'. $permission->name.' updated!');
 
@@ -116,14 +124,14 @@ class PermissionController extends Controller
 
     //Make it impossible to delete this specific permission    
     if ($permission->name == "Administer roles & permissions") {
-            return redirect()->route('permissions.index')
+            return redirect()->route('admin/permissions.index')
             ->with('flash_message',
              'Cannot delete this Permission!');
         }
 
         $permission->delete();
 
-        return redirect()->route('permissions.index')
+        return redirect()->route('admin/permissions.index')
             ->with('flash_message',
              'Permission deleted!');
 

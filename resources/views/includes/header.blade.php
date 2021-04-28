@@ -41,19 +41,20 @@
 				@else
 					<!-- hidden logout form - logout requires HTTP POST since Laravel 5.3 -->
 					<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
-    					{{ csrf_field() }}
+						{{ csrf_field() }}
 					</form>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 							{{ Auth::user()->name }} <span class="caret"></span>
 						</a>
-
 						<ul class="dropdown-menu" role="menu">
-							@role('Admin') {{-- Laravel-permission blade helper --}}
-                                <a href="#"><i class="fa fa-btn fa-unlock"></i>Admin</a>
-                            @endrole
 							<li><a href="{{ Config::get('app.subdir') }}/snp2gene#joblist-panel">SNP2GENE My Jobs</a></li>
 							<li><a href="{{ Config::get('app.subdir') }}/gene2func#queryhistory">GENE2FUNC History</a></li>
+							<li>
+							@hasrole('Admin') 
+								<a href="/admin/users"><i class="fa fa-btn fa-unlock"></i>Admin</a>
+							@endrole
+							</li>
 							<li>
 								<a href="{{ url('/logout') }}"
     								onclick="event.preventDefault();

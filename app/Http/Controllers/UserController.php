@@ -4,6 +4,16 @@ namespace fuma\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use fuma\User;
+use Auth;
+
+//Importing laravel-permission models
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
+//Enables us to output flash messaging
+use Session;
+
 class UserController extends Controller
 {
     public function __construct() {
@@ -21,7 +31,6 @@ class UserController extends Controller
         return view('users.index')->with('users', $users);
     }
 
-    // Users create themselves we edit them - keep it simple for the first attempt
 
     /**
      * Show the form for creating a new resource.
@@ -30,7 +39,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        //Get all roles and pass it to the view
+        $roles = Role::get();
+        return view('users.create', ['roles'=>$roles]);
     }
 
     /**
@@ -41,7 +52,28 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Validate name, email and password fields
+        $this->validate($request, [
+            'name'=>'required|max:120',
+            'email'=>'required|email|unique:users',
+            'password'=>'required|min:6|confirmed'
+        ]);
+
+        $user = User::create($request->only('email', 'name', 'password')); //Retrieving only the email and password data
+
+        $roles = $request['roles']; //Retrieving the roles field
+        //Checking if a role was selected
+        if (isset($roles)) {
+
+            foreach ($roles as $role) {
+            $role_r = Role::where('id', '=', $role)->firstOrFail();            
+            $user->assignRole($role_r); //Assigning role to user
+            }
+        }        
+        //Redirect to the users.index view and display message
+        return redirect()->route('users.index')
+            ->with('flash_message',
+            'User successfully added.');
     }
 
     /**
@@ -51,7 +83,7 @@ class UserController extends Controller
     * @return \Illuminate\Http\Response
     */
     public function show($id) {
-        return redirect('users'); 
+        return redirect('admin/users'); 
     }
 
     /**
@@ -94,7 +126,7 @@ class UserController extends Controller
         else {
             $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
         }
-        return redirect()->route('users.index')
+        return redirect()->route('admin/users.index')
             ->with('flash_message',
              'User successfully edited.');
     }
@@ -110,7 +142,7 @@ class UserController extends Controller
             $user = User::findOrFail($id); 
             $user->delete();
     
-            return redirect()->route('users.index')
+            return redirect()->route('admin/users.index')
                 ->with('flash_message',
                  'User successfully deleted.');
         }

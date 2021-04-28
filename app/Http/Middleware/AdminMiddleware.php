@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace fuma\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
-use App\User;
+use fuma\User;
 
 class AdminMiddleware
 {

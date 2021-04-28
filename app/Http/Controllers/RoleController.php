@@ -4,6 +4,11 @@ namespace fuma\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Auth;
+//Importing laravel-permission models
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+
 class RoleController extends Controller
 {
 
@@ -62,7 +67,7 @@ class RoleController extends Controller
                 $role->givePermissionTo($p);
             }
     
-            return redirect()->route('roles.index')
+            return redirect()->route('admin/roles.index')
                 ->with('flash_message',
                  'Role'. $role->name.' added!'); 
         }
@@ -121,7 +126,7 @@ class RoleController extends Controller
             $role->givePermissionTo($p);  //Assign permission to role
         }
 
-        return redirect()->route('roles.index')
+        return redirect()->route('admin/roles.index')
             ->with('flash_message',
              'Role'. $role->name.' updated!');
     }
@@ -137,7 +142,7 @@ class RoleController extends Controller
         $role = Role::findOrFail($id);
         $role->delete();
 
-        return redirect()->route('roles.index')
+        return redirect()->route('admin/roles.index')
             ->with('flash_message',
              'Role deleted!');
 

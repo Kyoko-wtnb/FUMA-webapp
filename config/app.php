@@ -191,6 +191,11 @@ return [
     'providers' => [
 
         /*
+         * Debug
+         */
+        Barryvdh\Debugbar\ServiceProvider::class,
+
+        /*
          * Laravel Framework Service Providers...
          */
         Illuminate\Auth\AuthServiceProvider::class,
@@ -225,10 +230,6 @@ return [
         fuma\Providers\EventServiceProvider::class,
         fuma\Providers\RouteServiceProvider::class,
 
-        /*
-         * Debug
-         */
-        Barryvdh\Debugbar\ServiceProvider::class,
 
         /*
          * User permissions

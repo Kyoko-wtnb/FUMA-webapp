@@ -1,17 +1,16 @@
+<!DOCTYPE html>
 @php
 	use DebugBar\StandardDebugBar;
 	$debugbar = new StandardDebugBar();
 	$debugbarRenderer = $debugbar->getJavascriptRenderer();
 @endphp
-
-<!DOCTYPE html>
 <html lang="en">
 <head>
+	@include('includes.head')
+	@yield('head')
 	@php
 	echo $debugbarRenderer->renderHead()
 	@endphp
-	@include('includes.head')
-	@yield('head')
 </head>
 
 <body>
@@ -21,7 +20,7 @@
 	<div class="container-fluid">
 		<div id="header" class="row">
 			@include('includes.header')
-			
+
 			@if(Session::has('flash_message'))
             <div class="container">      
                 <div class="alert alert-success"><em> {!! session('flash_message') !!}</em>
@@ -34,15 +33,14 @@
 					@include ('errors.list') {{-- Including error file --}}
 				</div>
 			</div>
-
-			@yield('content')
 		</div>
 		<div id="main" class="row" style="padding-top:50px; padding-bottom: 50px;">
 			@yield('content')
 		</div>
-	</div>
+	</div> 	
 	<div id="foot" class="row">
 		@include('includes.footer')
 	</div>
+	
 </body>
 </html>
