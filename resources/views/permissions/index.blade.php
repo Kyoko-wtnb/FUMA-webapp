@@ -36,7 +36,7 @@
         </table>
     </div>
 
-    <a href="{{ URL::to('permissions/create') }}" class="btn btn-success">Add Permission</a>
+    <a href="{{ route('permissions.create') }}" class="btn btn-success">Add Permission</a>
 
 </div>
 

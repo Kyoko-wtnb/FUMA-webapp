@@ -21,7 +21,7 @@
         {{ Form::email('email', null, array('class' => 'form-control')) }}
     </div>
 
-    <h5><b>Give Role</b></h5>
+    <h5><b>Assign Role(s)</b></h5>
 
     <div class='form-group'>
         @foreach ($roles as $role)
@@ -30,6 +30,8 @@
 
         @endforeach
     </div>
+
+    <h5><b>Optionally change password</b></h5>
 
     <div class="form-group">
         {{ Form::label('password', 'Password') }}<br>
@@ -43,7 +45,7 @@
 
     </div>
 
-    {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
+    {{ Form::submit('Apply', array('class' => 'btn btn-primary')) }}
 
     {{ Form::close() }}
 

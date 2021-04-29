@@ -9,6 +9,8 @@ use Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
+use Session;
+
 class RoleController extends Controller
 {
 
@@ -67,7 +69,7 @@ class RoleController extends Controller
                 $role->givePermissionTo($p);
             }
     
-            return redirect()->route('admin/roles.index')
+            return redirect()->route('roles.index')
                 ->with('flash_message',
                  'Role'. $role->name.' added!'); 
         }
@@ -105,9 +107,9 @@ class RoleController extends Controller
     public function update(Request $request, $id) {
 
         $role = Role::findOrFail($id);//Get role with the given id
-    //Validate name and permission fields
+        //Validate name and permission fields
         $this->validate($request, [
-            'name'=>'required|max:10|unique:roles,name,'.$id,
+            'name'=>'required|max:20|unique:roles,name,'.$id,
             'permissions' =>'required',
         ]);
 
@@ -126,7 +128,7 @@ class RoleController extends Controller
             $role->givePermissionTo($p);  //Assign permission to role
         }
 
-        return redirect()->route('admin/roles.index')
+        return redirect()->route('roles.index')
             ->with('flash_message',
              'Role'. $role->name.' updated!');
     }
@@ -142,7 +144,7 @@ class RoleController extends Controller
         $role = Role::findOrFail($id);
         $role->delete();
 
-        return redirect()->route('admin/roles.index')
+        return redirect()->route('roles.index')
             ->with('flash_message',
              'Role deleted!');
 

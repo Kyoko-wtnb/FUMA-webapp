@@ -9,7 +9,7 @@
     <h1><i class='fa fa-user-plus'></i> Add User</h1>
     <hr>
 
-    {{ Form::open(array('url' => 'admin/users')) }}
+    {{ Form::open(array('route' => 'users.store')) }}
 
     <div class="form-group">
         {{ Form::label('name', 'Name') }}

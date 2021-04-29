@@ -34,6 +34,32 @@ Route::get('updates', function(){
 });
 //});
 
+/**
+ * Some documentation about the behind the scenes cleverness here
+ * 
+ * User, Roles and Permissions are handled by (RESTful) resource controllers
+ * which contain index(), create(), edit(), update(), and destroy()
+ * methods for teh resource in question.
+ * 
+ * The following routes are generated automatically (users example 
+ * roles and permissions are the same), note including 
+ * the "admin" prefix for clarity
+ * 
+ * HTTP                              RouteName
+ * ----                              ---------
+ * GET  /admin/users                 users.index
+ * GET  /admin/users/create          users.create
+ * POST /admin/users                 users.store
+ * GET  /admin/{user}                users.show
+ * GET  /admin/{user}/edit           users.edit
+ * PUT  /admin/users/{user}          users.update
+ * DELETE /admin/users/{user}        users.destroy
+ * 
+ * In the controllers and views(e.g. UserController, users/index.blad.php) 
+ * you find these route referenced using, for example,: 
+ * 			"redirect()->route('users.index')"
+ * 			"a href="{{ route('roles.index') }}"
+ */
 Route::group(['middleware'=>'auth', 'prefix'=>'admin'], function() {
 	Route::resource('users', 'UserController');
 

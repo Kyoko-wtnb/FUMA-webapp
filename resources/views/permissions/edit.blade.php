@@ -15,7 +15,7 @@
         {{ Form::text('name', null, array('class' => 'form-control')) }}
     </div>
     <br>
-    {{ Form::submit('Edit', array('class' => 'btn btn-primary')) }}
+    {{ Form::submit('Apply', array('class' => 'btn btn-primary')) }}
 
     {{ Form::close() }}
 
