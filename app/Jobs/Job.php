@@ -18,4 +18,12 @@ abstract class Job
     */
 
     use Queueable;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 120;
+
 }

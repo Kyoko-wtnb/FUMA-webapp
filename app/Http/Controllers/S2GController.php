@@ -16,6 +16,7 @@ use Storage;
 use File;
 use JavaScript;
 use Mail;
+use Session;
 use fuma\User;
 use fuma\Jobs\snp2geneProcess;
 use fuma\Jobs\geneMapProcess;
@@ -54,6 +55,18 @@ class S2GController extends Controller
 		$this->queueGeneMap();
 
 		return response()->json($results);
+	}
+	
+	public function getNumberScheduledJobs(){
+		$email = Auth::user()->email;
+		$results = array();
+		if($email){
+			$results = SubmitJob::where('email', $email)
+				->whereIn('status', ['QUEUED', 'RUNNING', 'NEW'])
+		        ->get();
+		}
+
+		return count($results);
     }
 
 	public function getPublicIDs(){
@@ -157,6 +170,19 @@ class S2GController extends Controller
 		$jobID;
 		$filedir;
 		$email = Auth::user()->email;
+		$numSchedJobs = $this->getNumberScheduledJobs();
+		$maxSchedJobs = $this->getMaxJobsForAuthUser();
+		if (($maxSchedJobs != -1) && ($numSchedJobs >= $maxSchedJobs)) {
+			$name = Auth::user()->name;
+			$message = <<<MSG
+Job submission temporarily blocked for user $name!<br>
+The maximum number of jobs: $maxSchedJobs, has been reached
+MSG;
+			Session::flash('alert-danger', $message);
+			return redirect("/snp2gene");
+			//return view('pages.snp2gene', ['id' => null, 'status'=> null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
+		}
+		
 		// $njobs = collect(DB::select('SELECT jobID FROM SubmitJobs WHERE email=? AND (status="NEW" OR status="QUEUED" OR status="RUNNING")', [$email]))->count();
 		// if($njobs>10){
 		// 	return view('pages.snp2gene', ['id' => null, 'status'=>'FullJobs', 'page'=>'snp2gene', 'prefix'=>'jobs']);

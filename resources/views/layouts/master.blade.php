@@ -17,23 +17,30 @@
 @php
 	DebugBar::info("Debug messages initialized");
 @endphp
-	<div class="container-fluid">
-		<div id="header" class="row">
-			@include('includes.header')
-		</div>
-		@if(Session::has('flash_message'))
-		<div class="row" style="padding-top:50px; padding-bottom: 50px;">      
-			<div class="alert alert-success"><em> {!! session('flash_message') !!}</em>
+
+	<!--div id="header" class="row"-->
+		@include('includes.header')
+	<!--/div-->
+	<div class="container-fluid text-center">
+		@if(Session::has('alert-success'))
+		<div class="center-block">      
+			<div class="alert alert-success alert-dismissable" style="display:inline-block;">
+				<button type="button" class="Close" data-dismiss="alert" aria-label="Close">x</button>
+				<em> {!! session('alert-success') !!}</em>
 			</div>
 		</div>
 		@endif 
-
-		<div class="row">
-			<div class="col-md-8 col-md-offset-2" style="padding-top:50px; padding-bottom: 50px;">              
-				@include ('errors.list') {{-- Including error file --}}
+		@if(Session::has('alert-danger'))
+		<div class="center-block">      
+			<div class="alert alert-danger alert-dismissable" style="display:inline-block;">
+				<button type="button" class="Close" data-dismiss="alert" aria-label="Close">x</button>
+				<em> {!! session('alert-danger') !!}</em>
 			</div>
 		</div>
-		<div id="main" class="row" style="padding-top:50px; padding-bottom: 50px;">
+		@endif 
+	</div>
+	<div class="container-fluid">
+		<div id="main" class="row">
 			@yield('content')
 		</div>
 	</div> 	

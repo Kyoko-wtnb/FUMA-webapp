@@ -82,4 +82,30 @@ return [
         'table' => 'failed_jobs',
     ],
 
+     /*
+    |--------------------------------------------------------------------------
+    | Job limits for Roles
+    |--------------------------------------------------------------------------
+    |
+    | These options configure the number of jobs that a usr can queue.
+    | and the maximum job length
+    | -1 indicated no limit.
+    | Timeout is in seconds
+    | Index names should correspond to role names
+    */   
+    'jobLimits' => [
+
+        'maxJobs' => [
+            'GuestRunner' => 10,
+            'NormalRunner' => 30,
+            'SuperRunner' => -1
+        ],
+
+        'timeouts' => [
+            'GuestRunner' => 3600,
+            'NormalRunner' => 36000,
+            'SuperRunner' => -1
+        ], 
+    ],
+
 ];

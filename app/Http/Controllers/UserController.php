@@ -75,11 +75,11 @@ class UserController extends Controller
     
             //Redirect to the users.index view and display message
             return redirect()->route('users.index')
-                ->with('flash_message',
+                ->with('alert-success',
                 'User successfully added.');
         } catch (\Exception $e){
             Log::error($e->getMessage());
-            return back()->with('flash_message', $e->getMessage());
+            return back()->with('alert-danger', $e->getMessage());
         }
     }
 
@@ -146,11 +146,11 @@ class UserController extends Controller
                 $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
             }
             return redirect()->route('users.index')
-                ->with('flash_message',
+                ->with('alert-success',
                 'User successfully edited.');
         } catch (\Exception $e){
             Log::error($e->getMessage());
-            return back()->with('flash_message', $e->getMessage());
+            return back()->with('alert-danger', $e->getMessage());
         }
     }
 
@@ -166,7 +166,7 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('users.index')
-            ->with('flash_message',
+            ->with('alert-success',
                 'User successfully deleted.');
     }
 

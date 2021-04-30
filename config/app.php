@@ -242,6 +242,11 @@ return [
         Collective\Html\HtmlServiceProvider::class,
         //'Collective\Html\HtmlServiceProvider',
         'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
+
+        /*
+         * Tinker command line util
+         */
+        Laravel\Tinker\TinkerServiceProvider::class,
     ],
 
     /*
