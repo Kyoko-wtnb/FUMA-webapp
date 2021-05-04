@@ -3,12 +3,31 @@
 namespace fuma\Jobs;
 
 use fuma\Jobs\Job;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Mail;
 use Illuminate\Support\Facades\DB;
 use File;
+
+class s2gProcessError
+{
+	const FILE_CHECK = -1;
+	const OK = 0;
+	const GWAS_FILE = 1;
+	const MAGMA = 2;
+	const MANHATTAN = 3;
+	const QQSNPS = 4;
+	const TOPSNPSNC = 5;
+	const TOPSNPS = 6;
+	const SNPANNOT = 7;
+	const GWASCATALOG = 8;
+	const EQTL = 9;
+	const CI = 10;
+	const GENEMAP = 11;
+	const CIMAP = 12;
+}
 
 class snp2geneProcess extends Job implements ShouldQueue
 {
@@ -21,18 +40,20 @@ class snp2geneProcess extends Job implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($user, $jobID)
+    public function __construct($user, $jobID, $timeout=null)
     {
         $this->user = $user;
-        $this->jobID = $jobID;
-    }
-
+		$this->jobID = $jobID;
+		$this->timeout = $timeout;
+	}
+	
     /**
      * Execute the job.
      *
      * @return void
      */
 	public function handle(){
+		$this->setStartTime();
 		// Update status when job is started
 		$jobID = $this->jobID;
 		$started_at = date("Y-m-d H:i:s");
@@ -50,7 +71,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		$msg = "";
 
 		//current error state
-		$status = 0;
+		$status = s2gProcessError::OK;
 
 		// file check
 		if(!file_exists(config('app.jobdir').'/jobs/'.$jobID.'/input.gwas')){
@@ -58,7 +79,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				->delete();
 			File::deleteDirectory(config('app.jobdir').'/jobs/'.$jobID);
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, -1, $msg);
+				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::FILE_CHECK, $msg);
 			return;
 			}
 		}
@@ -87,7 +108,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 			$msg = $errorout[count($errorout)-2];
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, 1, $msg);
+				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::GWAS_FILE, $msg);
 				return;
 			}
 		}
@@ -99,8 +120,19 @@ class snp2geneProcess extends Job implements ShouldQueue
 			file_put_contents($logfile, "\n----- magma.py -----\n", FILE_APPEND);
 			file_put_contents($errorfile, "\n----- magma.py -----\n", FILE_APPEND);
 			$script = storage_path().'/scripts/magma.py';
-			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+			$this->timedExec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
+				if(!is_null($this->faulted_command)) {
+					$this->rmFiles($filedir);
+					$this->chmod($filedir);
+					DB::table('SubmitJobs') -> where('jobID', $jobID)
+						-> update(['status'=>'ERROR:002']);
+					$this->JobMonitorUpdate($jobID, $created_at, $started_at);
+					if($email!=null){
+						$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::MAGMA, $msg);
+						return;
+					}
+				}
 				$errorout = file_get_contents($errorfile);
 				if(preg_match('/MAGMA ERROR/', $errorout)==1){
 					$errorout = file_get_contents($logfile);
@@ -114,7 +146,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				}else{
 					$msg = "server error";
 				}
-				$status = 2;
+				$status = s2gProcessError::MAGMA;
 			}
 		}
 
@@ -129,7 +161,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				-> update(['status'=>'ERROR:003']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, 3, $msg);
+				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::MANHATTAN, $msg);
 				return;
 			}
 		}
@@ -145,7 +177,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				-> update(['status'=>'ERROR:004']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, 4, $msg);
+				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::QQSNPS, $msg);
 				return;
 			}
 		}
@@ -176,7 +208,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 					-> update(['status'=>'ERROR:005']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 				if($email!=null){
-					$this->sendJobCompMail($email, $jobtitle, $jobID, 5, $msg);
+					$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::TOPSNPSNC, $msg);
 				}
 				return;
 			}else{
@@ -186,7 +218,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				-> update(['status'=>'ERROR:006']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 				if($email!=null){
-					$this->sendJobCompMail($email, $jobtitle, $jobID, 6, $msg);
+					$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::TOPSNPS, $msg);
 					return;
 				}
 			}
@@ -203,7 +235,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				-> update(['status'=>'ERROR:007']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, 7, $msg);
+				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::SNPANNOT, $msg);
 				return;
 			}
 		}
@@ -219,7 +251,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				-> update(['status'=>'ERROR:008']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, 8, $msg);
+				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::GWASCATALOG, $msg);
 				return;
 			}
 		}
@@ -238,7 +270,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 					-> update(['status'=>'ERROR:009']);
 				$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 				if($email!=null){
-					$this->sendJobCompMail($email, $jobtitle, $jobID, 9, $msg);
+					$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::EQTL, $msg);
 					return;
 				}
 			}
@@ -259,7 +291,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				$errorout = explode("\n", $errorout);
 				$msg = $errorout[count($errorout)-2];
 				if($email!=null){
-					$this->sendJobCompMail($email, $jobtitle, $jobID, 10, $msg);
+					$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::CI, $msg);
 					return;
 				}
 			}
@@ -276,7 +308,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				-> update(['status'=>'ERROR:011']);
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, 11, $msg);
+				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::GENEMAP, $msg);
 				return;
 			}
 		}
@@ -296,7 +328,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 				$errorout = explode("\n", $errorout);
 				$msg = $errorout[count($errorout)-2];
 				if($email!=null){
-					$this->sendJobCompMail($email, $jobtitle, $jobID, 12, $msg);
+					$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::CIMAP, $msg);
 					return;
 				}
 			}
@@ -320,6 +352,11 @@ class snp2geneProcess extends Job implements ShouldQueue
 		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
 		$logfile = $filedir."job.log";
 		$errorfile = $filedir."error.log";
+		Log::error(" Job failed: ".$jobID);
+
+		if (!is_null($this->faulted_command)){
+			file_put_contents($errorfile, "Failed due to timeout while running: ".$this->faulted_command, FILE_APPEND);
+		}
 		file_put_contents($errorfile, "\n----- Mail fail error-----\n", FILE_APPEND);
 		
 		$user = $this->user;
@@ -327,8 +364,12 @@ class snp2geneProcess extends Job implements ShouldQueue
 		$jobtitle = DB::table('SubmitJobs') -> where('jobID', $jobID)
             ->first() ->title;
         DB::table('SubmitJobs') -> where('jobID', $jobID)
-            -> update(['status'=>'JOB FAILED']);
-		$this->sendJobFailedMail($email, $jobtitle, $jobID);
+			-> update(['status'=>'JOB FAILED']);
+		if (is_null($this->faulted_command)){
+			$this->sendJobFailedMail($email, $jobtitle, $jobID);
+		} else {
+			$this->sendJobTimedoutMail($email, $jobtitle, $jobID);
+		}
 	}
 
 	public function sendJobCompMail($email, $jobtitle, $jobID, $status, $msg){
@@ -336,7 +377,10 @@ class snp2geneProcess extends Job implements ShouldQueue
 		$logfile = $filedir."job.log";
 		file_put_contents($logfile, "\n----- Mail completion error-----\n".$status."\n".$msg, FILE_APPEND);
 
-		if($status==0 || $status==2){
+		if($this->timedout) {
+			$this->sendJobTimedoutMail($email, $jobtitle, $jobID);	
+		}
+		elseif($status==s2gProcessError::OK || $status==s2gProcessError::MAGMA){
 			$user = DB::table('users')->where('email', $email)->first();
 			$data = [
 				'jobID'=>$jobID,
@@ -374,6 +418,20 @@ class snp2geneProcess extends Job implements ShouldQueue
 		Mail::send('emails.jobFailed', $data, function($m) use($user, $devemail){
 			$m->from('noreply@ctglab.nl', "FUMA web application");
 			$m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job failed");
+		});
+	}
+	
+	public function sendJobTimedoutMail($email, $jobtitle, $jobID){
+		$user = $this->user;
+		$data = [
+			'jobtitle'=>$jobtitle,
+			'jobID'=>$jobID,
+			'timeout'=>$this->timeout
+		];
+		$devemail = config('app.devemail');
+		Mail::send('emails.jobTimeout', $data, function($m) use($user, $devemail){
+			$m->from('noreply@ctglab.nl', "FUMA web application");
+			$m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job timed out");
 		});
 	}
 

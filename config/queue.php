@@ -60,8 +60,9 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
-            'queue' => 'default',
-            'retry_after' => 21600,
+            'queue' => env('REDIS_QUEUE', 'default'),
+            'retry_after' => 90,
+            'block_for' => null,
         ],
 
     ],
@@ -89,7 +90,7 @@ return [
     |
     | These options configure the number of jobs that a usr can queue.
     | and the maximum job length
-    | -1 indicated no limit.
+    | null indicates no limit.
     | Timeout is in seconds
     | Index names should correspond to role names
     */   
@@ -98,13 +99,15 @@ return [
         'maxJobs' => [
             'GuestRunner' => 10,
             'NormalRunner' => 30,
-            'SuperRunner' => -1
+            'SuperRunner' => null,
+            'TestUser' => 2,
         ],
 
         'timeouts' => [
             'GuestRunner' => 3600,
             'NormalRunner' => 36000,
-            'SuperRunner' => -1
+            'SuperRunner' => null,
+            'TestUser' => 80,
         ], 
     ],
 

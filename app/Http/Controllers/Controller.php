@@ -17,6 +17,8 @@ class Controller extends BaseController
     /**
      * Returns the job timeout for the authorized user
      * based on thier Roles. Returns 0 if no user is authorized
+     * 
+     * A null return indicates no timeout
      */
     public function getJobTimeoutForAuthUser() {
         if (is_null(Auth::user())) {
@@ -28,8 +30,8 @@ class Controller extends BaseController
         $roles = Auth::user()->roles;
         return $roles->reduce(function($carry, $item) use (&$timeouts) {
             $roleTimeout = $timeouts[$item["name"]] ?? 0;
-            if (($carry == -1) || ($roleTimeout == -1)) {
-                $carry = -1;
+            if (is_null($carry) || is_null($roleTimeout)) {
+                return null;
             } elseif ($roleTimeout > $carry) {
                 $carry = $roleTimeout;
             }
@@ -40,6 +42,8 @@ class Controller extends BaseController
     /**
      * Returns the maximum number of jobs for the authorized user
      * based on thier Roles. Returns 0 if no user is authorized
+     * 
+     * A null return indicates no limit on number of jobs
      */
     public function getMaxJobsForAuthUser() {
         if (is_null(Auth::user())) {
@@ -51,8 +55,8 @@ class Controller extends BaseController
         $roles = Auth::user()->roles;
         return $roles->reduce(function($carry, $item) use (&$maxJobs) {
             $roleMax = $maxJobs[$item["name"]] ?? 0;
-            if (($carry == -1) || ($roleMax == -1)) {
-                $carry = -1;
+            if (is_null($carry) || is_null($roleMax)) {
+                return null;
             } elseif ($roleMax > $carry) {
                 $carry = $roleMax;
             }

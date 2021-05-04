@@ -114,7 +114,9 @@ class S2GController extends Controller
 				$jobID = $job->jobID;
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
-				$this->dispatch(new snp2geneProcess($user, $jobID)); // TODO add onQueue from user role here
+				$timeout = $this->getJobTimeoutForAuthUser();
+				Log::info('Queueing with timeout: '.$timeout);
+				$this->dispatch(new snp2geneProcess($user, $jobID, $timeout)); // TODO add onQueue from user role here
 			}
 		}
 		return;
@@ -172,7 +174,7 @@ class S2GController extends Controller
 		$email = Auth::user()->email;
 		$numSchedJobs = $this->getNumberScheduledJobs();
 		$maxSchedJobs = $this->getMaxJobsForAuthUser();
-		if (($maxSchedJobs != -1) && ($numSchedJobs >= $maxSchedJobs)) {
+		if (!is_null($maxSchedJobs) && ($numSchedJobs >= $maxSchedJobs)) {
 			$name = Auth::user()->name;
 			$message = <<<MSG
 Job submission temporarily blocked for user $name!<br>
