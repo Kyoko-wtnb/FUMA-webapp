@@ -224,10 +224,10 @@ class FumaController extends Controller
 		$Chr15=0;
 		$eqtl=0;
 		$ci=0;
-		if($request -> has('annotPlot_GWASp')){$GWAS=1;}
-		if($request -> has('annotPlot_CADD')){$CADD=1;}
-		if($request -> has('annotPlot_RDB')){$RDB=1;}
-		if($request -> has('annotPlot_Chrom15')){
+		if($request->filled('annotPlot_GWASp')){$GWAS=1;}
+		if($request->filled('annotPlot_CADD')){$CADD=1;}
+		if($request->filled('annotPlot_RDB')){$RDB=1;}
+		if($request->filled('annotPlot_Chrom15')){
 			$Chr15=1;
 			$temp = $request -> input('annotPlotChr15Ts');
 			$Chr15cells = [];
@@ -240,8 +240,8 @@ class FumaController extends Controller
 		}else{
 			$Chr15cells="NA";
 		}
-		if($request -> has('annotPlot_eqtl')){$eqtl=1;}
-		if($request -> has('annotPlot_ci')){$ci=1;}
+		if($request->filled('annotPlot_eqtl')){$eqtl=1;}
+		if($request->filled('annotPlot_ci')){$ci=1;}
 
 		return view('pages.annotPlot', ['id'=>$id, 'prefix'=>$prefix, 'type'=>$type, 'rowI'=>$rowI,
 			'GWASplot'=>$GWAS, 'CADDplot'=>$CADD, 'RDBplot'=>$RDB, 'eqtlplot'=>$eqtl,
@@ -406,23 +406,23 @@ class FumaController extends Controller
 			$filedir .= 'g2f/';
 		}
 		$files = [];
-		if($request->has('summaryfile')){$files[] = "summary.txt";}
-		if($request->has('paramfile')){$files[] = "params.config";}
-		if($request->has('geneIDfile')){$files[] = "geneIDs.txt";}
-		if($request->has('expfile')){
+		if($request->filled('summaryfile')){$files[] = "summary.txt";}
+		if($request->filled('paramfile')){$files[] = "params.config";}
+		if($request->filled('geneIDfile')){$files[] = "geneIDs.txt";}
+		if($request->filled('expfile')){
 			$tmp = File::glob($filedir."*_exp.txt");
 			for($i=0; $i<count($tmp); $i++){
 				$files[] = preg_replace("/.*\/(.*_exp.txt)/", "$1", $tmp[$i]);
 			}
 		}
-		if($request->has('DEGfile')){
+		if($request->filled('DEGfile')){
 			$tmp = File::glob($filedir."*_DEG.txt");
 			for($i=0; $i<count($tmp); $i++){
 				$files[] = preg_replace("/.*\/(.*_DEG.txt)/", "$1", $tmp[$i]);
 			}
 		}
-		if($request->has('gsfile')){$files[] = "GS.txt";}
-		if($request->has('gtfile')){$files[] = "geneTable.txt";}
+		if($request->filled('gsfile')){$files[] = "GS.txt";}
+		if($request->filled('gtfile')){$files[] = "geneTable.txt";}
 
 		$zip = new \ZipArchive();
 		if($prefix=="public"){

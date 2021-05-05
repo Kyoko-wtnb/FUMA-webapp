@@ -102,15 +102,15 @@ class CellController extends Controller
 		$email = Auth::user()->email;
 		$s2gID = $request->input('s2gID');
 		$ensg = 0;
-		if($request->has('ensg_id')){$ensg=1;}
+		if($request->filled('ensg_id')){$ensg=1;}
 		if($s2gID>0){$ensg=1;}
 		$ds = implode(":", $request -> input('cellDataSets'));
 		$adjPmeth = $request -> input('adjPmeth');
 		$step2 = 0;
-		if($request->has('step2')){$step2=1;}
+		if($request->filled('step2')){$step2=1;}
 		$step3 = 0;
-		if($request->has('step3')){$step3=1;}
-		if($request->has("title")){
+		if($request->filled('step3')){$step3=1;}
+		if($request->filled("title")){
 			$title = $request -> input('title');
 		}else{
 			$title = "None";
