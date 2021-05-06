@@ -13,26 +13,15 @@
 
 Auth::routes();
 
-// Middleware group web declaration is reduntant? we are in web.php
-// Route::group(['middleware'=>'web'], function(){
-Route::get('/', function () {
-    return view('pages.home');
-});
+Route::view('/', 'pages.home');
 
 Route::get('appinfo', 'FumaController@appinfo');
 
-Route::get('tutorial', function(){
-    return view('pages.tutorial');
-});
+Route::view('tutorial', 'pages.tutorial');
 
-Route::get('links', function(){
-    return view('pages.links');
-});
+Route::view('links', 'pages.links');
 
-Route::get('updates', function(){
-    return view('pages.updates');
-});
-//});
+Route::view('updates', 'pages.updates');
 
 /**
  * Some documentation about the behind the scenes cleverness here
@@ -74,9 +63,7 @@ Route::group(['middleware'=>'auth', 'prefix'=>'admin'], function() {
 // ********************** Browse - non authenticated routes************************
 Route::group(['prefix'=>'browse'], function(){
 
-	Route::get('/', function(){
-		return view('pages.browse', ['id'=>null, 'page'=>'browse', 'prefix'=>'public']);
-	});
+	Route::view('/', 'pages.browse', ['id'=>null, 'page'=>'browse', 'prefix'=>'public']);
 
 	Route::get('getGwasList', 'BrowseController@getGwasList');
 
@@ -136,17 +123,14 @@ Route::group(['prefix'=>'browse'], function(){
 
 	Route::post('g2f_filedown', 'FumaController@g2f_filedown');
 
-	Route::get('{id}', function($id){
-		return view('pages.browse', ['id'=>$id, 'page'=>'browse', 'prefix'=>'public']);
-	});
+	Route::get('{id}', 'FumaController@browseId');
+
 });
 
 // ********************** Middleware auth group snp2gene************************
 Route::group(['middleware'=>'auth', 'prefix'=>'snp2gene'], function(){
     // ********************** SNP2GENE ************************
-	Route::get('/', function(){
-		return view('pages.snp2gene', ['id'=>null, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
-	});
+	Route::view('/', 'pages.snp2gene', ['id'=>null, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
 
 	Route::get('getJobList/{email?}/{limit?}', 'S2GController@getJobList');
 
@@ -218,9 +202,7 @@ Route::group(['middleware'=>'auth', 'prefix'=>'snp2gene'], function(){
  // ********************** Middleware auth group gene2func************************
 Route::group(['middleware'=>'auth', 'prefix'=>'gene2func'], function(){
 	// ********************** GENE2FUNC ************************
-	Route::get('/', function(){
-		return view('pages.gene2func', ['status'=>'new', 'id'=>'none', 'page'=>'gene2func', 'prefix'=>'gene2func']);
-	});
+	Route::view('/', 'pages.gene2func', ['status'=>'new', 'id'=>'none', 'page'=>'gene2func', 'prefix'=>'gene2func']);
 
 	Route::get('getG2FJobList', 'G2FController@getJobList');
 
@@ -256,9 +238,7 @@ Route::group(['middleware'=>'auth', 'prefix'=>'gene2func'], function(){
 // ********************** Middleware auth group celltype************************
 Route::group(['middleware'=>'auth', 'prefix'=>'celltype'], function(){
 	// ********************** Cell Type ************************
-	Route::get('/', function(){
-		return view('pages.celltype', ['id'=>null, 'status'=>null, 'page'=>'celltype', 'prefix'=>'celltype']);
-	});
+	Route::view('/', 'pages.celltype', ['id'=>null, 'status'=>null, 'page'=>'celltype', 'prefix'=>'celltype']);
 
 	Route::post('getS2GIDs', 'CellController@getS2GIDs');
 
