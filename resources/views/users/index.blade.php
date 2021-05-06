@@ -2,6 +2,14 @@
 
 @section('title', '| Users')
 
+@section('head')
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+var loggedin = "{{ Auth::check() }}";
+</script>
+@stop
+
 @section('content')
 
 <div class="col-lg-10 col-lg-offset-1">

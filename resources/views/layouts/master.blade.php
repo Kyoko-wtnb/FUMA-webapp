@@ -25,7 +25,7 @@
 		@if(Session::has('alert-success'))
 		<div class="center-block">      
 			<div class="alert alert-success alert-dismissable" style="display:inline-block;">
-				<button type="button" class="Close" data-dismiss="alert" aria-label="Close">x</button>
+				<span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
 				<em> {!! session('alert-success') !!}</em>
 			</div>
 		</div>
@@ -33,7 +33,7 @@
 		@if(Session::has('alert-danger'))
 		<div class="center-block">      
 			<div class="alert alert-danger alert-dismissable" style="display:inline-block;">
-				<button type="button" class="Close" data-dismiss="alert" aria-label="Close">x</button>
+				<span type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></span>
 				<em> {!! session('alert-danger') !!}</em>
 			</div>
 		</div>

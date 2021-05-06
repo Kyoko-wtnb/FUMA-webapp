@@ -409,7 +409,7 @@ MSG;
 			$posMapChr15Max = "NA";
 			$posMapChr15Meth = "NA";
 		}
-		$posMapAnnoDs = "";
+		$posMapAnnoDs = "NA";
 		if($request->has('posMapAnnoDs')) {
 			$posMapAnnoDs = $request->input('posMapAnnoDs');
 			if(count($posMapAnnoDs)==0){
@@ -484,7 +484,7 @@ MSG;
 			$eqtlMapChr15Max = "NA";
 			$eqtlMapChr15Meth = "NA";
 		}
-		$eqtlMapAnnoDs = "";
+		$eqtlMapAnnoDs = "NA";
 		if($request->has('eqtlMapAnnoDs')) {
 			$eqtlMapAnnoDs = $request -> input('eqtlMapAnnoDs');
 			if(count($eqtlMapAnnoDs)==0){
@@ -600,7 +600,7 @@ MSG;
 			$ciMapChr15Meth = "NA";
 		}
 
-		$ciMapAnnoDs = "";
+		$ciMapAnnoDs = "NA";
 		if($request->has('ciMapAnnoDs')){
 			$ciMapAnnoDs = $request -> input('ciMapAnnoDs');
 			if(count($ciMapAnnoDs)==0){
@@ -806,17 +806,21 @@ MSG;
 			$posMapChr15Max = "NA";
 			$posMapChr15Meth = "NA";
 		}
-		$posMapAnnoDs = $request -> input('geneMap_posMapAnnoDs');
-		if(count($posMapAnnoDs)==0){
-			$posMapAnnoDs = "NA";
-		}else{
-			$temp = [];
-			foreach($posMapAnnoDs as $ds){
-				if($ds != "null"){
-					$temp[] = $ds;
+
+		$posMapAnnoDs = "NA";
+		if($request->filled('geneMap_posMapAnnoDs')) {
+			$posMapAnnoDs = $request->input('geneMap_posMapAnnoDs');
+			if(count($posMapAnnoDs)==0){
+				$posMapAnnoDs = "NA";
+			}else{
+				$temp = [];
+				foreach($posMapAnnoDs as $ds){
+					if($ds != "null"){
+						$temp[] = $ds;
+					}
 				}
+				$posMapAnnoDs = implode(":", $temp);
 			}
-			$posMapAnnoDs = implode(":", $temp);
 		}
 		$posMapAnnoMeth = $request -> input('geneMap_posMapAnnoMeth');
 
@@ -878,17 +882,21 @@ MSG;
 			$eqtlMapChr15Max = "NA";
 			$eqtlMapChr15Meth = "NA";
 		}
-		$eqtlMapAnnoDs = $request -> input('geneMap_eqtlMapAnnoDs');
-		if(count($eqtlMapAnnoDs)==0){
-			$eqtlMapAnnoDs = "NA";
-		}else{
-			$temp = [];
-			foreach($eqtlMapAnnoDs as $ds){
-				if($ds != "null"){
-					$temp[] = $ds;
+
+		$eqtlMapAnnoDs = "NA";
+		if($request->filled('geneMap_eqtlMapAnnoDs')) {
+			$eqtlMapAnnoDs = $request -> input('geneMap_eqtlMapAnnoDs');
+			if(count($eqtlMapAnnoDs)==0){
+				$eqtlMapAnnoDs = "NA";
+			}else{
+				$temp = [];
+				foreach($eqtlMapAnnoDs as $ds){
+					if($ds != "null"){
+						$temp[] = $ds;
+					}
 				}
+				$eqtlMapAnnoDs = implode(":", $temp);
 			}
-			$eqtlMapAnnoDs = implode(":", $temp);
 		}
 		$eqtlMapAnnoMeth = $request -> input('geneMap_eqtlMapAnnoMeth');
 
@@ -989,17 +997,20 @@ MSG;
 			$ciMapChr15Max = "NA";
 			$ciMapChr15Meth = "NA";
 		}
-		$ciMapAnnoDs = $request -> input('geneMap_ciMapAnnoDs');
-		if(count($ciMapAnnoDs)==0){
-			$ciMapAnnoDs = "NA";
-		}else{
-			$temp = [];
-			foreach($ciMapAnnoDs as $ds){
-				if($ds != "null"){
-					$temp[] = $ds;
+		$ciMapAnnoDs = "NA";
+		if($request->filled('geneMap_ciMapAnnoDs')) {
+			$ciMapAnnoDs = $request -> input('geneMap_ciMapAnnoDs');
+			if(count($ciMapAnnoDs)==0){
+				$ciMapAnnoDs = "NA";
+			}else{
+				$temp = [];
+				foreach($ciMapAnnoDs as $ds){
+					if($ds != "null"){
+						$temp[] = $ds;
+					}
 				}
+				$ciMapAnnoDs = implode(":", $temp);
 			}
-			$ciMapAnnoDs = implode(":", $temp);
 		}
 		$ciMapAnnoMeth = $request -> input('geneMap_ciMapAnnoMeth');
 
