@@ -44,7 +44,7 @@ function InactivityTimer(path, delay){
 	var timeout;
 	function logout(){
 		swal("Session timeout", "Please login again.", "error")
-		window.location.href= path || "/logout";
+		$('#logout-form').submit();
 	}
 
 	function start(){

@@ -4,7 +4,9 @@
 
 <p>
 	Your submitted job (job ID: {{ $jobID }}, job title: {{ $jobtitle }}) has failed
-	due to a timeout. The job timeout for your user is set to  {{ $timeout }} seconds.
+	due to a timeout. The job timeout for your user is set to  {{ $timeout }} seconds,
+	the job ran for {{ $elapsed }} seconds.
+	<br/>
 	For security reason, your input files are deleted already.
 	<br/>
 </p>
