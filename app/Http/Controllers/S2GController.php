@@ -115,7 +115,7 @@ class S2GController extends Controller
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
 				$timeout = $this->getJobTimeoutForAuthUser();
-				Log::info('Queueing with timeout: '.$timeout);
+				#Log::info('Queueing with timeout: '.$timeout);
 				$this->dispatch(new snp2geneProcess($user, $jobID, $timeout)); // TODO add onQueue from user role here
 			}
 		}
@@ -131,7 +131,8 @@ class S2GController extends Controller
 				$jobID = $job->jobID;
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
-				$this->dispatch(new geneMapProcess($user, $jobID)); // TODO add onQueue from user role here
+				$timeout = $this->getJobTimeoutForAuthUser();
+				$this->dispatch(new geneMapProcess($user, $jobID, $timeout)); // TODO add onQueue from user role here
 			}
 		}
 		return;

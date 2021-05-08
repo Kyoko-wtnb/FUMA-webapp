@@ -61,7 +61,7 @@ return [
             'driver' => 'redis',
             'connection' => 'default',
             'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => 90,
+            'retry_after' => 21600,
             'block_for' => null,
         ],
 
@@ -97,17 +97,26 @@ return [
     'jobLimits' => [
 
         'maxJobs' => [
-            'GuestRunner' => 10,
-            'NormalRunner' => 30,
-            'SuperRunner' => null,
-            'TestUser' => 2,
+        /**
+         * This is an example of job limits, 
+         * the names should correspond to the Roles defined
+         * 
+         *   'GuestRunner' => 10,
+         *   'NormalRunner' => 30,
+         *   'SuperRunner' => null,
+         *   'TestUser' => 2,
+        */
         ],
 
         'timeouts' => [
-            'GuestRunner' => 3600,
-            'NormalRunner' => 36000,
-            'SuperRunner' => null,
-            'TestUser' => 80,
+        /**
+         * This is an example of job timeouts, 
+         * the names should correspond to the Roles defined
+         *   'GuestRunner' => 3600,
+         *   'NormalRunner' => 21600,
+         *   'SuperRunner' => 21600,
+         *   'TestUser' => 90,
+        */
         ], 
     ],
 

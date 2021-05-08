@@ -21,10 +21,11 @@ class celltypeProcess extends Job implements ShouldQueue
      *
      * @return void
      */
-    public function __construct($user, $jobID)
+    public function __construct($user, $jobID, $timeout=null)
     {
 		$this->user = $user;
-        $this->jobID = $jobID;
+		$this->jobID = $jobID;
+		$this->timeout = $timeout;
     }
 
     /**

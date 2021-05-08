@@ -78,7 +78,7 @@ class s2gError implements FumaErrorInfo
 	 * 
 	 */
 	public function getCode() {
-		return $code;
+		return $this->code;
 	}
 
 	/**
@@ -132,6 +132,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		$job = SubmitJob::find($jobID);
 		$jobtitle = $job->title;
 		$created_at = $job->created_at;
+		$msg = "";
 
 		$this->state = s2gError::FILE_CHECK;
 		// file check
@@ -139,7 +140,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 			$job->delete();
 			File::deleteDirectory(config('app.jobdir').'/jobs/'.$jobID);
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gProcessError::FILE_CHECK, $msg);
+				$this->sendJobCompMail($email, $jobtitle, $jobID, s2gError::FILE_CHECK, $msg);
 			return;
 			}
 		}
@@ -175,7 +176,9 @@ class snp2geneProcess extends Job implements ShouldQueue
 				file_put_contents($logfile, "\n----- magma.py -----\n", FILE_APPEND);
 				file_put_contents($errorfile, "\n----- magma.py -----\n", FILE_APPEND);
 				$script = storage_path().'/scripts/magma.py';
+				Log::info("Starting magma at: ".date("Y-m-d H:i:s"));
 				exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+				Log::info("Completed magma at: ".date("Y-m-d H:i:s"));
 				if($error != 0){
 					Log::error(sprintf("Magma error return: %d", $error));
 					$msg = 'server error';
@@ -320,7 +323,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 			// TODO Elucidate. If there is no $email we don't return ????
 			if($email!=null){
-				$this->sendJobCompMail($email, $jobtitle, $jobID, $e->code, $e->getMessage());
+				$this->sendJobCompMail($email, $jobtitle, $jobID, $e->getStatusCode(), $e->getMessage());
 				return;
 			}		
 		}
@@ -328,13 +331,14 @@ class snp2geneProcess extends Job implements ShouldQueue
 		$this->rmFiles($filedir);
 		$this->chmod($filedir);
 
+		$this->state = s2gError::OK;
 		$job->status = 'OK';
 		$job->save();
 
 		$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 
 		if($email != null){
-			$this->sendJobCompMail($email, $jobtitle, $jobID, $status, $msg);
+			$this->sendJobCompMail($email, $jobtitle, $jobID, $this->state, $msg);
 		}
 		return;
 	}
