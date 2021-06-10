@@ -14,6 +14,7 @@ use Auth;
 use Storage;
 use File;
 use JavaScript;
+use Session;
 use Mail;
 use fuma\User;
 use fuma\Jobs\snp2geneProcess;
@@ -25,7 +26,8 @@ class S2GController extends Controller
 
     public function __construct(){
 		// Protect this Controller
-		$this->middleware('auth');
+		// auth is set in routes.php this is duplicate
+		//$this->middleware('auth');
 
 		// Store user
 		$this->user = Auth::user();
@@ -56,6 +58,23 @@ class S2GController extends Controller
 		$this->queueGeneMap();
 
 		return response()->json($results);
+	}
+	
+
+    /**
+     * Return the number of scheduled jobs for the current user
+     * including all QUEUED RUNNING and NEW jobs.
+     */
+    public function getNumberScheduledJobs() {
+		$email = Auth::user()->email;
+		$results = array();
+		if($email){
+			$results = SubmitJob::where('email', $email)
+				->whereIn('status', ['QUEUED', 'RUNNING', 'NEW'])
+		        ->get();
+		}
+
+		return count($results);
     }
 
 	public function getPublicIDs(){
@@ -156,11 +175,22 @@ class S2GController extends Controller
 		$jobID;
 		$filedir;
 		$email = $this->user->email;
-		// $njobs = collect(DB::select('SELECT jobID FROM SubmitJobs WHERE email=? AND (status="NEW" OR status="QUEUED" OR status="RUNNING")', [$email]))->count();
-		// if($njobs>10){
-		// 	return view('pages.snp2gene', ['id' => null, 'status'=>'FullJobs', 'page'=>'snp2gene', 'prefix'=>'jobs']);
-		// }
-		// check file type
+		// Implement the cap on max jobs in queue
+		$numSchedJobs = $this->getNumberScheduledJobs();
+		$queueCap = $this->getQueueCap();
+		if (!is_null($queueCap) && ($numSchedJobs >= $queueCap)) {
+			// flash a warning to the user about the queue cap
+			$name = Auth::user()->name;
+			$message = <<<MSG
+Job submission temporarily blocked for user: $name!<br>
+The maximum number of jobs: $queueCap, has been reached. <br>
+Wait for some jobs to complete or delete stalled jobs.
+MSG;
+			$request->session()->flash("alert-warning", $message);
+			return redirect()->back();
+			//return view('pages.snp2gene', ['id' => null, 'status'=> null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
+		}
+
 		if($request -> hasFile('GWASsummary')){
 			$type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
 			if($type != "text/plain" && $type != "application/zip" && $type != "application/x-gzip"){

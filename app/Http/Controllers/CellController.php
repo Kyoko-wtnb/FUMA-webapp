@@ -22,8 +22,8 @@ class CellController extends Controller
 
     public function __construct(){
 		// Protect this Controller
-		$this->middleware('auth');
-
+		// auth is set in routes.php this is duplicate
+		//$this->middleware('auth');
 		// Store user
 		$this->user = Auth::user();
     }
