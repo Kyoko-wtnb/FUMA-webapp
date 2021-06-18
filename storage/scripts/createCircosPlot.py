@@ -63,6 +63,8 @@ def createConfig(c, filedir, circos_config, loci, ci, snps, genes):
 	breaks += ";-hs"+str(c)+":"+str(int((cur_pos+1000)/1000000)+1)+"-)"
 	tmp_end.append((int((cur_pos+1000)/1000000)+1)*1000000)
 	regions = np.c_[tmp_start, tmp_end]
+	if breaks[0]==';'
+		breaks=breaks[1-]
 
 	tb = tabix.open(filedir+"all.txt.gz")
 	tmp_snps = []

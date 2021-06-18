@@ -82,4 +82,20 @@ return [
         'table' => 'failed_jobs',
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Queue entry capping
+    |--------------------------------------------------------------------------
+    |
+    | These options place an upper limit on the number of NEW and RUNNING
+    | jobs a user may have in the queue. This cap is applied to snp2gene
+    | jobs and all users. The intention is to replace this with a more
+    | sophisticated, per user-group tunable, implementation in a coming FUMA release.
+    |
+    */
+    'jobLimits' => [
+        'queue_cap' => null, //set to null to remove the cap
+    ],
+
+    
 ];

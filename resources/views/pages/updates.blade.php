@@ -19,10 +19,17 @@
 	</thead>
     <tbody>
       <tr>
+        <td>18 June 2021</td>
+        <td>v1.3.7</td>
+        <td>
+          Update GWAScatlog to e100_r2021-06-08. Bug fix Circos plot.
+        </td>
+      </tr>
+      <tr>
         <td>09 September 2020</td>
         <td>v1.3.6a</td>
         <td>
-          Update MAGMA to v1.08. Bug fix for gene2func (DrugBank annotation). 
+          Update MAGMA to v1.08. Bug fix for gene2func (DrugBank annotation).
         </td>
       </tr>
       <tr>
