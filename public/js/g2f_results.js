@@ -264,7 +264,7 @@ function tsEnrich(id){
 				data.forEach(function(d){
 					if(d[0]==ds){
 						tdata.push(d)
-						if(d[2].length*5.5>maxLabel){maxLabel=d[2].length*5.5}
+						if(d[2].length*6.5>maxLabel){maxLabel=d[2].length*6.5}
 					}
 				});
 				margin.bottom = maxLabel;

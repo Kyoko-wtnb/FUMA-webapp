@@ -69,7 +69,7 @@ $(document).ready(function(){
 		---------------------------------------------*/
 		var svg;
 	    var zoom;
-		var margin = {top:50, right:250, left:60, bottom:100},
+		var margin = {top:50, right:280, left:60, bottom:100},
 	        width = 600;
 		// 5% of the genomic region is added to both side
 	    var side = (xMax_init*1-xMin_init*1)*0.05;
@@ -947,10 +947,12 @@ $(document).ready(function(){
 						.on("click", function(d){
 
 						});
+					var gene_font_size = '9px'
+					if(eqtlgenes[i].length>6){gene_font_size='7px'}
 					svg.append("text").attr("text-anchor", "middle")
 						.attr("transform", "translate("+(-margin.left/2)+","+(eqtlTop+i*55+25)+")rotate(-90)")
 						.text(eqtlgenes[i])
-						.style("font-size", "10px");
+						.style("font-size", gene_font_size);
 					if(i==eqtlgenes.length-1 && plotData["ci"].length == 0){
 						svg.append("g").attr("class", "x axis eqtlend")
 						  .attr("transform", "translate(0,"+(eqtlTop+55*i+50)+")")

@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
       <tr>
+        <td>09 September 2020</td>
+        <td>v1.3.6a</td>
+        <td>
+          Update MAGMA to v1.08. Bug fix for gene2func (DrugBank annotation). 
+        </td>
+      </tr>
+      <tr>
   			<td>23 March 2020</td>
   			<td>v1.3.6</td>
   			<td>
