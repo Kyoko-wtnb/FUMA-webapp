@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
       <tr>
+        <td>04 July 2021</td>
+        <td>v1.3.6b</td>
+        <td>
+          Fixed a minor bug in the calculation of annotation enrichment p-values. We re-analyzed results from existing jobs, and the 99th percentile absolute difference between old and new p-values was 0.00000458. However, jobs in which more than 100,000 variants were selected for further analysis may encounter larger differences, and these analyses should be re-run. 
+        </td>
+      </tr>
+     <tr>
         <td>09 September 2020</td>
         <td>v1.3.6a</td>
         <td>
