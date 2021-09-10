@@ -251,12 +251,12 @@ $(document).ready(function(){
 		                .attr("height", height+25)
 		                .attr("x", 0)
 		                .attr("y", -25)
-		                .style("fill", "transparent");
+		                .style("fill-opacity", "0");
 
 		// transparent rect for mouse over
 		svg.append("rect")
 			.attr("width", width).attr("height", height)
-			.style("fill", "transparent")
+			.style("fill-opacity", "0")
 			.style("shape-rendering", "crispEdges")
 			.on("mousemove", function(){
 			  var mousex = d3.mouse(this)[0];
