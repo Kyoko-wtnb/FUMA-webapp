@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
       <tr>
+        <td>18 September 2021</td>
+        <td>v1.3.6d</td>
+        <td>
+          Update GWAScatalog to e104_2021-09-15.
+        </td>
+      </tr>
+      <tr>
         <td>10 September 2021</td>
         <td>v1.3.6c</td>
         <td>

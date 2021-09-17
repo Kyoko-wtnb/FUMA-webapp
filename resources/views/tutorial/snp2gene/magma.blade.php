@@ -75,7 +75,8 @@ In this section, reference panels and gene expression data sets are described de
 	MAGMA gene-property analysis is run with the following command, <br/>
 	<code class="codebox">
 		magma --gene-results [input file name].genes.raw \<br/>
-		<tab>--gene-covar [file name of selected RNA-seq data set] onesided=greater condition=Average \<br/>
+		<tab>--gene-covar [file name of selected RNA-seq data set] \ <br/>
+		<tab>--model direction-covar=greater condition-hide=Average \<br/>
 		<tab>--out [output file name]
 	</code>
 </div>
