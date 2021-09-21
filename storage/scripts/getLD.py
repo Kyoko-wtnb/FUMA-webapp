@@ -784,6 +784,9 @@ def main():
 			### get annot
 			annot = getAnnot(snps, params.annot_dir)
 			tmp_uids = list(annot[:,0])
+			#overlap snps in reference with snps with annotation. Error occurs if you don't when using chr23 on ukb 10k EUR reference
+			snpsi = np.array([a[0] in tmp_uids for a in snps])
+			snps=snps[snpsi]
 			annot = annot[[tmp_uids.index(x) for x in snps[:,0]]]
 			### get lead SNPs
 			leadSNPs = getLeadSNPs(chrom, snps, IndSigSNPs, params)

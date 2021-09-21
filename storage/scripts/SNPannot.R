@@ -87,7 +87,29 @@ ref.count$prop <- ref.count$count/sum(ref.count$count)
 ref.count$enrichment <- ref.count$prop/ref.count$ref.prop
 N <- sum(ref.count$ref.count)
 n <- sum(ref.count$count)
-ref.count$fisher.P <- apply(ref.count[,c(2,4)], 1, function(x){
-	fisher.test(matrix(c(as.numeric(x[2]), n-as.numeric(x[2]), as.numeric(x[1])-as.numeric(x[2]), N-n-as.numeric(x[1])), ncol=2))$p.value
-})
+
+# This function takes input "x", which is one row with two columns from the ref.count data frame
+# The values in x are (in order):
+#    ref.count: How many times did we count this annotation for the 1KG reference panel?
+#    count: How many times did we count this annotation for our selected variants?
+# This function also uses two variables that are defined outside the function
+#    N: How many times total have we counted any annotation for the 1KG data?
+#    n: How many times total have we counted any annotation for our selected variants?
+# It uses these values to set up the following table for a Fisher exact test:
+#             | selected | nonselected | allvariants
+#    curanno  |   x[2]   |             |   x[1]
+#    othanno  |          |             |
+#    allanno  |    n     |             |    N
+calcFisher <- function(x) {
+  x <- as.numeric(x)
+  curanno_selected <- x[2]
+  othanno_selected <- n - x[2]
+  curanno_nonselected <- x[1] - x[2]
+  othanno_nonselected <- N - n - curanno_nonselected
+  data <- matrix(c(curanno_selected,othanno_selected,curanno_nonselected,othanno_nonselected), ncol=2)
+  return(fisher.test(data)$p.value)
+}
+
+ref.count$fisher.P <- apply(ref.count[,c(2,4)], 1, calcFisher)
+
 write.table(ref.count, paste(filedir, "annov.stats.txt", sep=""), quote=F, row.names=F, sep="\t")

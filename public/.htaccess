@@ -23,6 +23,10 @@
 <IfModule mod_rewrite.c>
    RewriteEngine on
 
+   # Display a "down" page to all but the specified IP addresses. 1.2.3.4 is an example, edit and replace with your own IP address.
+   # RewriteCond %{REMOTE_HOST} !^1\.2\.3\.4$
+   # RewriteRule !downpage\.html /downpage.html [R=302,L]
+
    RewriteCond %{REQUEST_FILENAME} !-f
    RewriteCond %{REQUEST_FILENAME} !-d
 
