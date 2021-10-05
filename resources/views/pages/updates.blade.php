@@ -19,10 +19,17 @@
 	</thead>
     <tbody>
       <tr>
+        <td>06 October 2021</td>
+        <td>v1.3.7</td>
+        <td>
+            Added EyeGEx eQTL data.
+        </td>
+      </tr>
+      <tr>
         <td>18 September 2021</td>
         <td>v1.3.6d</td>
         <td>
-          Update GWAScatalog to e104_2021-09-15.
+          Updated GWAScatalog to e104_2021-09-15.
         </td>
       </tr>
       <tr>
