@@ -258,6 +258,18 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
+				<td>EyeGEx</td>
+				<td>cis-eQTLs from retina.</td>
+				<td>
+					Info: <a target="_blank" href="https://gtexportal.org/home/datasets">https://gtexportal.org/home/datasets</a> <br/>
+					Data: <a href="https://storage.googleapis.com/gtex_external_datasets/eyegex_data/single_tissue_eqtl_data/Retina.nominal.eQTLs.with_thresholds.tar">https://storage.googleapis.com/gtex_external_datasets/eyegex_data/single_tissue_eqtl_data/Retina.nominal.eQTLs.with_thresholds.tar</a>
+				</td>
+				<td>06 October 2021</td>
+				<td>
+					See tutorial <a target="_blank" href="https://fuma.ctglab.nl/tutorial#eQTLs">https://fuma.ctglab.nl/tutorial#eQTLs</a>.
+				</td>
+			</tr>
+			<tr>
 				<td>FANTOM5</td>
 				<td>SNP annotations (enhancer and promoter) and enhancer-promoter correlations.</td>
 				<td>
