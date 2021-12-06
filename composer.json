@@ -1,5 +1,10 @@
 {
     "name": "laravel/laravel",
+    "config": {
+        "platform": {
+            "php": "5.6"
+        }
+    },
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
