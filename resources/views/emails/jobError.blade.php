@@ -62,6 +62,9 @@
 	}else if($status==12){
 		echo ' (Error from circos / <span style="color:blue;"><strong>'.$msg.'</strong></span>)<br/>
 		This error is most likely due to server side error. Please contact the developer for details.<br/>';
+	}else if($status==100){
+		echo ' (Unknown error in job'.$msg.'</strong></span>)<br/>
+		This may be a result of job submission failure, job abort or perhaps a server side error. If this persists please contact the developer for details.<br/>';
 	}
 	?>
 </p>
