@@ -466,10 +466,12 @@ class FumaController extends Controller
 		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
-		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
-		$out = [];
-		foreach($params as $key=>$value){
-			$out[] = [$key, $value];
+		$out = [["GENE2FUNC params not found.","GENE2FUNC Job ID:".$id]];
+		if (file_exists($filedir."params.config")) {
+			$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
+			foreach($params as $key=>$value){
+				$out[] = [$key, $value];
+			}
 		}
 		return json_encode($out);
     }
@@ -482,7 +484,7 @@ class FumaController extends Controller
 			$filedir .= 'g2f/';
 		}
 
-		$out = [["No sumary table found.","GENE2FUNC Job ID:".$id]];
+		$out = [["GENE2FUNC sumary table found.","GENE2FUNC Job ID:".$id]];
 		if (file_exists($filedir."summary.txt")) {
 			$lines = file($filedir."summary.txt");
 			$out = [];
@@ -501,8 +503,12 @@ class FumaController extends Controller
 		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
-		$params = parse_ini_file($filedir.'params.config', false, INI_SCANNER_RAW);
-		return $params['gene_exp'];
+		if (file_exists($filedir."params.config")) {
+			$params = parse_ini_file($filedir.'params.config', false, INI_SCANNER_RAW);
+			return $params['gene_exp'];
+		} else {
+			return 'NOJOB';
+		}
 	}
 
 	public function expPlot($prefix, $id, $dataset){
