@@ -31,7 +31,7 @@ class BrowseController extends Controller
 	public function getParams(Request $request){
 		$id = $request->input('id');
 		$filedir = config('app.jobdir').'/public/'.$id.'/';
-        $params = parse_ini_file($filedir."params.config");
+        $params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
         $posMap = $params['posMap'];
         $eqtlMap = $params['eqtlMap'];
         $orcol = $params['orcol'];
