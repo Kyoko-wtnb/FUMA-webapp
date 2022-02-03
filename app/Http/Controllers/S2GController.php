@@ -16,6 +16,7 @@ use File;
 use JavaScript;
 use Session;
 use Mail;
+use Log;
 use fuma\User;
 use fuma\Jobs\snp2geneProcess;
 use fuma\Jobs\geneMapProcess;
@@ -36,9 +37,11 @@ class S2GController extends Controller
 	public function authcheck($jobID){
 		$email = $this->user->email;
 		$check = DB::table('SubmitJobs')->where('jobID', $jobID)->first();
-		if($check->email==$email){
+		if(!is_null($check) and ($check->email==$email)){
 			return view('pages.snp2gene', ['id'=>$jobID, 'status'=>'jobquery', 'page'=>'snp2gene', 'prefix'=>'jobs']);
 		}else{
+			$name = $this->user->name;
+			Log::warning("S2G: authcheck function failed with jobID: $jobID for user:email: $name:$email");
 			return view('pages.snp2gene', ['id'=>null, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
 		}
 	}
