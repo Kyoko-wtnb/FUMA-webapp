@@ -543,38 +543,46 @@ function ciMapCircosPlot(id, ciMap){
 			  prefix: prefix
 	        },
 			success: function(data){
-				chr = data.split(":");
-				for(var i=0; i<chr.length; i++){
-					chr[i] = parseInt(chr[i]);
+				if (data.length === 0) {
+					chr = []
+				} else {
+					chr = data.split(":");
+					for(var i=0; i<chr.length; i++){
+						chr[i] = parseInt(chr[i]);
+					}
+					chr.sort(function(a,b){return a-b;});
 				}
-				chr.sort(function(a,b){return a-b;});
 			},
 			complete: function(){
 				var images = "";
 				var j = 0;
-				for(var i=0; i<chr.length; i++){
-					j++;
-					if(i==0){
-						images += '<div class="row"><div class="col-md-4 col-xs-4 col-sm-4">'
-							+'Chromosome '+chr[i]+'<br/>'
-							+'<a target="_blank" href="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
-							+'</div>';
-					}else if(i==chr.length-1){
-						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
-							+'Chromosome '+chr[i]+'<br/>'
-							+'<a target="_blank" href="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
-							+'</div></div>';
-					}else if(j==3){
-						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
-							+'Chromosome '+chr[i]+'<br/>'
-							+'<a target="_blank" href="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
-							+'</div></div>';
-						j=0;
-					}else{
-						images += '<div class="col-md-4 col-xs-4 col-sm-4">'
-							+'Chromosome '+chr[i]+'<br/>'
-							+'<a target="_blank" href="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
-							+'</div>';
+				if (chr.length === 0) {
+					images = '<div class="alert alert-info"><strong>Info!</strong> No circos plots available for this job.</div>'
+				} else {
+					for(var i=0; i<chr.length; i++){
+						j++;
+						if(i==0){
+							images += '<div class="row"><div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div>';
+						}else if(i==chr.length-1){
+							images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div></div>';
+						}else if(j==3){
+							images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div></div>';
+							j=0;
+						}else{
+							images += '<div class="col-md-4 col-xs-4 col-sm-4">'
+								+'Chromosome '+chr[i]+'<br/>'
+								+'<a target="_blank" href="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"><img width="80%" src="'+subdir+'/'+page+'/circos_image/'+prefix+'/'+id+'/circos_chr'+chr[i]+'.png'+'"></img></a><br/><br/>'
+								+'</div>';
+						}
 					}
 				}
 				$('#ciMapCircosPlot').html(images);
