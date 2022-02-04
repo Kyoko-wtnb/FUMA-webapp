@@ -51,7 +51,7 @@ class Kernel extends ConsoleKernel
           if(count($running)>0){
             $runTable .= "<table class='table table-bordered'><thead><th>jobID</th><th>email<th><th>created_at</th></thead><tbody>";
             foreach($running as $row){
-              $runtable .= "<tr>";
+              $runTable .= "<tr>";
               $runTable .= "<td>".$row->jobID."</td>";
               $runTable .= "<td>".$row->email."</td>";
               $runTable .= "<td>".$row->created_at."</td>";
@@ -64,7 +64,7 @@ class Kernel extends ConsoleKernel
           if(count($queued)>0){
             $queTable .= "<table class='table table-bordered'><thead><th>jobID</th><th>email<th><th>created_at</th></thead><tbody>";
             foreach($queued as $row){
-              $quetable .= "<tr>";
+              $queTable .= "<tr>";
               $queTable .= "<td>".$row->jobID."</td>";
               $queTable .= "<td>".$row->email."</td>";
               $queTable .= "<td>".$row->created_at."</td>";
