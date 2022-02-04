@@ -62,7 +62,7 @@ function expHeatMap(id){
 			data.forEach(function(d){
 				var tmp = d.split("/");
 				tmp = tmp[tmp.length-1];
-				if (tmp === 'NOJOB') {
+				if (tmp === 'NO_G2F_PARAMS') {
 					alert("No heatmap data retrieved");
 				} else {
 					$('#gene_exp_data').append('<option value="'+tmp+'">'+exp_data_title[tmp]+'</option>');

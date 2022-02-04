@@ -507,7 +507,7 @@ class FumaController extends Controller
 			$params = parse_ini_file($filedir.'params.config', false, INI_SCANNER_RAW);
 			return $params['gene_exp'];
 		} else {
-			return 'NOJOB';
+			return 'NO_G2F_PARAMS';
 		}
 	}
 
