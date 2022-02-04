@@ -34,9 +34,11 @@ class G2FController extends Controller
 	public function authcheck($jobID){
 		$email = $this->user->email;
 		$check = DB::table('gene2func')->where('jobID', $jobID)->first();
-		if($check->email==$email){
+		if(!is_null($check) and ($check->email==$email)){
 			return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID, 'page'=>'gene2func', 'prefix'=>'gene2func']);
 		}else{
+			$name = $this->user->name;
+			Log::warning("G2F: authcheck function failed with jobID: $jobID for user:email: $name:$email");
 			return view('pages.gene2func', ['status'=>null, 'id'=>$jobID, 'page'=>'gene2func', 'prefix'=>'gene2func']);
 		}
 	}
