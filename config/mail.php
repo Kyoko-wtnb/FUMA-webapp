@@ -57,6 +57,22 @@ return [
 
     'from' => ['address' => 'noreply@ctglab.nl', 'name' => 'FUMA web application'],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Global "Maintainer" Address
+    |--------------------------------------------------------------------------
+    |
+    | There may places in the application where a maintainer address is needed
+    | this item provides a central place for that information.
+    |
+    */
+
+    'maintainer' => [
+        'address' => env('MAIL_MAINTAINER_ADDRESS', 'k.watanabe@vu.nl'), 
+        'name' => env('MAIL_MAINTAINER_NAME', 'Kyoko Watanabe')
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | E-Mail Encryption Protocol

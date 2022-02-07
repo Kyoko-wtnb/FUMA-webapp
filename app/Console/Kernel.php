@@ -148,8 +148,8 @@ class Kernel extends ConsoleKernel
           file_put_contents($file, $html);
 
           Mail::send('emails.JobMonitor', $data, function($m){
-            $m->from('noreply@ctglab.nl', "FUMA web application");
-            $m->to("k.watanabe@vu.nl", "Kyoko Watanabe")->subject("FUMA Monitor Report");
+            $m->from(config('mail.from.address'), config('mail.from.name'));
+            $m->to(config('mail.maintainer.address'), config('mail.maintainer.name'))->subject("FUMA Monitor Report");
             $m->attach(storage_path()."/JobReport.html");
           });
         })->everyMinute();
