@@ -131,7 +131,7 @@ class Kernel extends ConsoleKernel
               <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
             </head>
             <body>
-            <p><h4>Process aberage time</h4>
+            <p><h4>Process average time</h4>
               $ProcessTable
             </p>
 
