@@ -52,7 +52,7 @@ class Handler extends ExceptionHandler
         if ($e instanceof TokenMismatchException) {
             Session::flash('error_message', 'Your login session has expired. Please login again');
             # Log the source of TokenMismatchExceptions to help trace route/webpage issues
-            Log::info($e->getMessage, [ "TokenMismatch occurred at URL: ".url()->current()]);
+            Log::info($e->getMessage(), [ "TokenMismatch occurred at URL: ".url()->current()]);
             # Assume it is an expired token and direct the user to login
             return redirect('/login');
         }
