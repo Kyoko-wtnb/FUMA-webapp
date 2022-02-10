@@ -69,8 +69,8 @@ return [
     */
 
     'maintainer' => [
-        'address' => env('MAIL_MAINTAINER_ADDRESS', 'k.watanabe@vu.nl'), 
-        'name' => env('MAIL_MAINTAINER_NAME', 'Kyoko Watanabe')
+        'address' => env('MAIL_MAINTAINER_ADDRESS', 'b.van.lew@vu.nl'), 
+        'name' => env('MAIL_MAINTAINER_NAME', 'Baldur van Lew')
     ],
 
     /*

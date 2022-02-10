@@ -52,10 +52,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | Specify developper's email for job filed mail
+    | Deprecated - use maintainer in mail.php
     |
     */
 
-    'devemail' => env('APP_DEVEMAIL', ''),
+    //'devemail' => env('APP_DEVEMAIL', ''),
 
     /*
     |--------------------------------------------------------------------------

@@ -383,10 +383,14 @@ class snp2geneProcess extends Job implements ShouldQueue
 			'jobtitle'=>$jobtitle,
 			'jobID'=>$jobID
 		];
-		$devemail = config('app.devemail');
+		$devemail = config('mail.maintainer.address');
 		Mail::send('emails.jobFailed', $data, function($m) use($user, $devemail){
 			$m->from('noreply@ctglab.nl', "FUMA web application");
-			$m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job failed");
+			$m->to($user->email, $user->name);
+			if (!empty($devemail)) {
+				$m->cc($devemail);
+			}
+			$m->subject("FUMA job failed");
 		});
 	}
 
