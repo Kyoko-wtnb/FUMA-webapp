@@ -340,8 +340,11 @@ class snp2geneProcess extends Job implements ShouldQueue
 		// Sometimes an early abort can prevent this.
 		$job =  DB::table('SubmitJobs') -> where('jobID', $jobID)->first();
 		if ($job) {
-			$jobtitle = DB::table('SubmitJobs') -> where('jobID', $jobID)
-				->first() ->title;
+			$jobtitle = 'Could not retrieve job title!';
+			$submittedJob = DB::table('SubmitJobs') -> where('jobID', $jobID) ->first();
+			if ($submittedJob != null) {
+				$jobtitle = $submittedJob->title;
+			}
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'JOB FAILED']);
 			$this->sendJobFailedMail($email, $jobtitle, $jobID);
