@@ -334,8 +334,6 @@ class snp2geneProcess extends Job implements ShouldQueue
 
 	public function failed(){
 		$jobID = $this->jobID;
-		$user = $this->user;
-		$email = $user->email;
 		// Vaildate that the job is in the submit table.
 		// Sometimes an early abort can prevent this.
 		$job =  DB::table('SubmitJobs') -> where('jobID', $jobID)->first();
@@ -347,7 +345,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 			}
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'JOB FAILED']);
-			$this->sendJobFailedMail($email, $jobtitle, $jobID);
+			$this->sendJobFailedMail($jobtitle, $jobID);
 		}
 	}
 
@@ -380,7 +378,7 @@ class snp2geneProcess extends Job implements ShouldQueue
 		return;
 	}
 
-	public function sendJobFailedMail($email, $jobtitle, $jobID){
+	public function sendJobFailedMail($jobtitle, $jobID){
 		$user = $this->user;
 		$data = [
 			'jobtitle'=>$jobtitle,
