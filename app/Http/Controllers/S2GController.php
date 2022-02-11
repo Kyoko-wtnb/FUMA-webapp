@@ -96,7 +96,15 @@ class S2GController extends Controller
 
 	public function getjobIDs(){
 		$email = $this->user->email;
-		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=?', [$email]);
+		$userJobs = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=?', [$email]);
+		$filedir = config('app.jobdir').'/jobs/';
+		$results = [];
+		// Filter out broken jobs that don't have params.config
+		foreach($userJobs as $job) {
+			if(file_exists($filedir.$job->jobID."params.config")) {
+				array_push($results, $job);
+			}
+		}
 		return $results;
 	}
 
@@ -109,11 +117,6 @@ class S2GController extends Controller
 	public function loadParams(Request $request){
 		$id = $request->input("id");
 		$filedir = config('app.jobdir').'/jobs/'.$id.'/';
-		if(!file_exists($filedir."params.config")) {
-			$message = "Job $id parameters are unavailable.";
-			$request->session()->flash("alert-warning", $message);
-			return "";
-		}
 		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
 		return json_encode($params);
 	}

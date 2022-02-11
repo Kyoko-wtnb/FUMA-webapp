@@ -101,10 +101,8 @@ function loadParams(){
 				alert("error for loadParams");
 			},
 			success: function(data){
-				if (data.length > 0) {
-					data = JSON.parse(data);
-					setParams(data);
-				}
+				data = JSON.parse(data);
+				setParams(data);
 			}
 		})
 	}
