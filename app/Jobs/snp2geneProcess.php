@@ -41,10 +41,15 @@ class snp2geneProcess extends Job implements ShouldQueue
 
 		$user = $this->user;
 		$email = $user->email;
-		$jobtitle = DB::table('SubmitJobs') -> where('jobID', $jobID)
-			->first() ->title;
-		$created_at = DB::table('SubmitJobs') -> where('jobID', $jobID)
-			->first() ->created_at;
+		$submittedJob = DB::table('SubmitJobs') -> where('jobID', $jobID) ->first();
+		$jobtitle = "";
+		$created_at = "";
+		if ($submittedJob != null) {
+			$jobtitle = $submittedJob->title;
+			$created_at = $submittedJob->created_at;
+		} else {
+			$this->failed();
+		}
 
 		//error message
 		$msg = "";
