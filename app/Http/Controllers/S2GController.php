@@ -101,7 +101,7 @@ class S2GController extends Controller
 		$results = [];
 		// Filter out broken jobs that don't have params.config
 		foreach($userJobs as $job) {
-			if(file_exists($filedir.$job->jobID."params.config")) {
+			if(file_exists($filedir.$job->jobID."/params.config")) {
 				array_push($results, $job);
 			}
 		}
