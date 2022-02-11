@@ -109,6 +109,11 @@ class S2GController extends Controller
 	public function loadParams(Request $request){
 		$id = $request->input("id");
 		$filedir = config('app.jobdir').'/jobs/'.$id.'/';
+		if(!file_exists($filedir."params.config")) {
+			$message = "Job $id parameters are unavailable.";
+			$request->session()->flash("alert-warning", $message);
+			return "";
+		}
 		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
 		return json_encode($params);
 	}

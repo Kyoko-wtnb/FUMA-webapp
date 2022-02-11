@@ -41,8 +41,10 @@ function loadGeneMap(){
 				alert("error for loadParams");
 			},
 			success: function(data){
-				data = JSON.parse(data);
-				geneMapSetParams(data);
+				if (data.length > 0) {
+					data = JSON.parse(data);
+					geneMapSetParams(data);
+				}
 			}
 		})
 	}
