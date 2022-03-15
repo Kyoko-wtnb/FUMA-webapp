@@ -466,12 +466,13 @@ class FumaController extends Controller
 		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
-		$out = [["GENE2FUNC params not found.","GENE2FUNC Job ID:".$id]];
 		if (file_exists($filedir."params.config")) {
 			$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
 			foreach($params as $key=>$value){
 				$out[] = [$key, $value];
 			}
+		} else {
+			$out = [["GENE2FUNC params not found.","GENE2FUNC Job ID:".$id]];
 		}
 		return json_encode($out);
     }
