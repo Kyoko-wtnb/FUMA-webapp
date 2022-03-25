@@ -482,11 +482,14 @@ class FumaController extends Controller
 			$filedir .= 'g2f/';
 		}
 
-		$lines = file($filedir."summary.txt");
-		$out = [];
-		foreach($lines as $l){
-			$l = preg_split("/\t/", chop($l));
-			$out[] = [$l[0], $l[1]];
+		$out = [["No sumary table found.","GENE2FUNC Job ID:".$id]];
+		if (file_exists($filedir."summary.txt")) {
+			$lines = file($filedir."summary.txt");
+			$out = [];
+			foreach($lines as $l){
+				$l = preg_split("/\t/", chop($l));
+				$out[] = [$l[0], $l[1]];
+			}
 		}
 		return json_encode($out);
 	}

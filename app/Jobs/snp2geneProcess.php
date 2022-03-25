@@ -54,17 +54,31 @@ class snp2geneProcess extends Job implements ShouldQueue
 
 		// file check
 		if(!file_exists(config('app.jobdir').'/jobs/'.$jobID.'/input.gwas')){
+
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				->delete();
 			File::deleteDirectory(config('app.jobdir').'/jobs/'.$jobID);
 			if($email!=null){
 				$this->sendJobCompMail($email, $jobtitle, $jobID, -1, $msg);
-			return;
+				return;
 			}
 		}
 
 		// get parameters
 		$filedir = config('app.jobdir').'/jobs/'.$jobID.'/';
+		if(!file_exists($filedir."params.config")) {
+			$msg = "Job parameters not found.";
+			$this->rmFiles($filedir);
+			$this->chmod($filedir);
+			DB::table('SubmitJobs') -> where('jobID', $jobID)
+				-> update(['status'=>'ERROR:100']);
+			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
+			if($email!=null){
+				$this->sendJobCompMail($email, $jobtitle, $jobID, 100, $msg);
+				return;
+			}
+			return;			
+		}
 		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
 
 		// log files
@@ -82,9 +96,12 @@ class snp2geneProcess extends Job implements ShouldQueue
 			DB::table('SubmitJobs') -> where('jobID', $jobID)
 				-> update(['status'=>'ERROR:001']);
 
-			$errorout = file_get_contents($errorfile);
-			$errorout = explode("\n", $errorout);
-			$msg = $errorout[count($errorout)-2];
+			$msg = "No error log found for SNP2GENE job ID: $jobID";
+			if(file_exists($errorfile)) {
+				$errorout = file_get_contents($errorfile);
+				$errorout = explode("\n", $errorout);
+				$msg = $errorout[count($errorout)-2];
+			}
 			$this->JobMonitorUpdate($jobID, $created_at, $started_at);
 			if($email!=null){
 				$this->sendJobCompMail($email, $jobtitle, $jobID, 1, $msg);

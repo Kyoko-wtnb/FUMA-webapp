@@ -942,7 +942,7 @@
 						<span class="info"><i class="fa fa-info"></i> Multiple gene type can be selected.</span>
 					</td>
 					<td>
-						<select multiple class="form-control" name="genetype[]" id="genetype">
+						<select multiple class="form-control" name="genetype[]" id="genetype" onchange="CheckAll();">
 							<option value="all">All</option>
 							<option selected value="protein_coding">Protein coding</option>
 							<option value="lincRNA:antisense:retained_intronic:sense_intronic:sense_overlapping:macro_lncRNA">lncRNA</option>

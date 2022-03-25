@@ -1181,6 +1181,19 @@ function CheckAll(){
 		$('#NewJobCiMapPanel').parent().attr("class", "panel panel-default");
 	}
 
+
+	// GeneTypes
+	table = $("#NewJobGene")["0"];
+	var genetype_count = $("#genetype :selected").length;
+	if(genetype_count==0) {
+		$(table.rows[1].cells[2]).html('<td><div class="alert alert-danger" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+		+'<i class="fa fa-check"></i> Select at least one gene type.</div></td>');
+		submit = false;
+	} else {
+		$(table.rows[1].cells[2]).html('<div class="alert alert-success" style="display: table-cell; padding-top:0; padding-bottom:0;">'
+		+ '<i class="fa fa-check"></i> OK.</div>');
+	}
+
 	//MHC table
 	tablecheck=true;
 	table = $('#NewJobMHC')[0];

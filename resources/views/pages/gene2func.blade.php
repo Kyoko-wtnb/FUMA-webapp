@@ -205,7 +205,7 @@ var loggedin = "{{ Auth::check() }}";
 
 				<div id="checkGenes"></div>
 				<div id="checkBkGenes"></div>
-				<input type="submit" value="Submit" class="btn btn-default" id="geneSubmit" name="geneSubmit"/><br/><br/>
+				<input type="submit" value="Submit" class="btn btn-primary" id="geneSubmit" name="geneSubmit"/><br/><br/>
 				{!! Form::close() !!}
 			</div>
 
