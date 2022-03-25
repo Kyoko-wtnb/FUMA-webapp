@@ -94,7 +94,7 @@ return [
     |
     */
     'jobLimits' => [
-        'queue_cap' => 2, //set to null to remove the cap
+        'queue_cap' => 10, //set to null to remove the cap
     ],
 
 
