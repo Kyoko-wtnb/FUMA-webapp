@@ -485,7 +485,6 @@ class FumaController extends Controller
 			$filedir .= 'g2f/';
 		}
 
-		$out = [["GENE2FUNC sumary table found.","GENE2FUNC Job ID:".$id]];
 		if (file_exists($filedir."summary.txt")) {
 			$lines = file($filedir."summary.txt");
 			$out = [];
@@ -493,6 +492,8 @@ class FumaController extends Controller
 				$l = preg_split("/\t/", chop($l));
 				$out[] = [$l[0], $l[1]];
 			}
+		} else {
+			$out = [["GENE2FUNC summary table not found.","GENE2FUNC Job ID:".$id]];
 		}
 		return json_encode($out);
 	}

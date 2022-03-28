@@ -1,6 +1,6 @@
 <!-- Tissue specificity bar chart -->
 <div id="tsEnrichBarPanel"  class="sidePanel container" style="padding-top:50px;">
-	<h4>Differrentially expressed genes
+	<h4>Differentially expressed genes
 		<a class="infoPop" data-toggle="popover" title="Enrichment in DEG sets"
 			data-content="Pre-calculated differentially expressed genes (DEG) sets were created for each of expression data set.
 			DEG sets are defined by a two-sided t-tests per label versus all remaining (tissue types or developmental stages).
@@ -35,4 +35,5 @@
 			</select>
 		</span>
 	</div>
+	<br/>
 </div>
