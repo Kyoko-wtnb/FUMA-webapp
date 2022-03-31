@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
       <tr>
+        <td>31 March 2022</td>
+        <td>v1.3.8</td>
+        <td>
+            Fixed a bug which caused one annotation to be dropped when filtering variants based on annotations for gene-mapping. Analyses which relied on filtering variants by annotation for gene-mapping should re-submit their jobs.
+        </td>
+      </tr>
+      <tr>
         <td>06 October 2021</td>
         <td>v1.3.7</td>
         <td>
