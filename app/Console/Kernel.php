@@ -4,9 +4,6 @@ namespace fuma\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use fuma\Http\Controllers\Controller;
-use DB;
-use Mail;
 
 class Kernel extends ConsoleKernel
 {
@@ -17,6 +14,9 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\JobStatusMonitor::class,
+        Commands\Inspire::class,
+	    Commands\ListStaleJobs::class,
+        Commands\RestartStaleJobs::class,
     ];
 
     /**

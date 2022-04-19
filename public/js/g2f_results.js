@@ -232,7 +232,7 @@ function tsEnrich(id){
 		"bs_dev": "BrainSpan 11 general developmental stages of brain samples"
 	}
 	d3.json(subdir+'/'+page+'/DEGPlot/'+prefix+"/"+id, function(data){
-		if(data==null || data==undefined || data.lenght==0){
+		if(data==null || data==undefined || data.length==0){
 			$('#DEGPlot').append('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
 			+' No differentially expressed gene information available.</span><br/></div>');
 		}else{
