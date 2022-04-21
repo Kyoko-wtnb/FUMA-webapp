@@ -36,6 +36,9 @@ Route::get('/show-autoloaders', function(){
 |
 */
 
+
+
+
 Route::group([], function(){
 	Route::get('/', function () {
 		return view('pages.home');
@@ -59,11 +62,14 @@ Route::group([], function(){
 // Set up the auth routes
 Route::auth();
 
+
 // ********************** Browse ************************
 Route::group([], function(){
 	Route::get('browse', function(){
 		return view('pages.browse', ['id'=>null, 'page'=>'browse', 'prefix'=>'public']);
 	});
+	
+	Route::post('tutorial/download_variants', 'FumaController@download_variants');
 
 	Route::get('browse/getGwasList', 'BrowseController@getGwasList');
 

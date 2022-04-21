@@ -9,6 +9,7 @@ use fuma\SubmitJob;
 use fuma\Http\Requests;
 use fuma\Http\Controllers\Controller;
 use Symfony\Component\Process\Process;
+use Log;
 use View;
 use Auth;
 use Storage;
@@ -440,6 +441,40 @@ class FumaController extends Controller
 		}
 		$zip -> close();
 		return response() -> download($zipfile);
+	}
+
+	public function download_variants(Request $request) {
+		$code = $request->input('variant_code');
+		# Log::error("Variant code $code");
+		$path = null;
+		$name = null;
+		switch ($code) {
+			case "ALL":
+				$name = "1KGphase3ALLvariants.txt.gz";
+				break;
+			case "AFR":
+				$name = "1KGphase3AFRvariants.txt.gz";
+				break;
+			case "AMR":
+				$name = "1KGphase3AMRvariants.txt.gz";
+				break;
+			case "EAS":
+				$name = "1KGphase3EASvariants.txt.gz";
+				break;
+			case "EUR":
+				$name = "1KGphase3EURvariants.txt.gz";
+				break;
+			case "SAS":
+				$name = "1KGphase3SASvariants.txt.gz";
+				break;
+			default:
+				return redirect()->back();
+
+		}
+		$path = config("app.jobdir")."/downloads/$name";
+		# Log::error("Variant path $path");
+		$headers = array('Content-Type: application/gzip');
+		return response()->download($path, $name, $headers);
 	}
 
 	public function g2f_d3text($prefix, $id, $file){
