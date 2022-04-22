@@ -214,3 +214,13 @@ div.tooltip{
 .canvasarea {
   position: absolute;
 }
+
+.fontsvg {
+  display:inline-block;
+  position:relative;
+  bottom: 0.2em;
+  font-size:1em;
+  height: 1em;
+  width: 1em;
+}
+
