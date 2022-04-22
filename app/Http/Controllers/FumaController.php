@@ -471,7 +471,7 @@ class FumaController extends Controller
 				return redirect()->back();
 
 		}
-		$path = config("app.jobdir")."/downloads/$name";
+		$path = config("app.downloadsDir")."/$name";
 		# Log::error("Variant path $path");
 		$headers = array('Content-Type: application/gzip');
 		return response()->download($path, $name, $headers);
