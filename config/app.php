@@ -46,7 +46,18 @@ return [
 
     'gwasDBdir' => env('APP_GWASDBDIR', ''),
 
-	/*
+    /*
+    |--------------------------------------------------------------------------
+    | gwasDB directory (temmporary)
+    |--------------------------------------------------------------------------
+    |
+    | Specify direcory of gwasDB (this will be moved to separate web application later on)
+    |
+    */
+
+    'downloadsDir' => env('APP_DOWNLOADS', ''),
+
+    /*
     |--------------------------------------------------------------------------
     | Developper's email address
     |--------------------------------------------------------------------------
