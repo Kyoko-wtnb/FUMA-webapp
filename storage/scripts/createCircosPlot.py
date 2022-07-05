@@ -189,7 +189,7 @@ def main():
 		for c in ci_chrom:
 			tmp = ci[ci[:,1]==c]
 			if len(tmp)>10000:
-				tmp = tmp[tmp[:,7].astype(float).argsort()]
+				tmp = tmp[tmp[:,0].astype(float).argsort()]
 				tmp = tmp[0:10000]
 			if len(ci_tmp)==0:
 				ci_tmp = tmp
