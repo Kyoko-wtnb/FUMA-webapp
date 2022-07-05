@@ -18,6 +18,13 @@
 		</tr>
 	</thead>
     <tbody>
+	<tr>
+        <td>5 July 2022</td>
+        <td>v1.3.9</td>
+        <td>
+            Fixed a bug where circos plots with more than 10k CI interactions would return an error. Now an arbitrary selection of 10k interactions is visualised. Fixed another bug where sorting genomic positions as strings would result in wrong Risk Loci boundaries in rare occasions. 
+        </td>
+      </tr>
       <tr>
         <td>31 March 2022</td>
         <td>v1.3.8</td>
