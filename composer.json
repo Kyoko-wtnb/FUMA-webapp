@@ -10,21 +10,22 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.5.9",
-        "laravel/framework": "5.2.*",
-        "laravelcollective/html": "5.2.*",
-        "laracasts/utilities": "~2.0",
+        "php": ">=5.6.4 <7.2",
+        "laravel/framework": "5.3.*",
+        "laravelcollective/html": "5.3.*",
         "chumper/zipper": "^0.6.1",
         "guzzlehttp/guzzle": "^6.2",
         "predis/predis": "^1.1",
-        "rairlie/laravel-locking-session": "^1.1"
+        "rairlie/laravel-locking-session": "^1.1",
+        "laracasts/utilities": "^3.2",
+        "doctrine/dbal": "2.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
-        "symfony/css-selector": "2.8.*|3.0.*",
-        "symfony/dom-crawler": "2.8.*|3.0.*"
+        "symfony/css-selector": "3.1.*",
+        "symfony/dom-crawler": "3.1.*"
     },
     "autoload": {
         "classmap": [

@@ -47,8 +47,17 @@
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="{{ Config::get('app.subdir') }}/snp2gene#joblist-panel">SNP2GENE My Jobs</a></li>
 							<li><a href="{{ Config::get('app.subdir') }}/gene2func#queryhistory">GENE2FUNC History</a></li>
-							<li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
+							<!-- logout via POST method -->
+							<li>
+								<a href="{{ url('/logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+									<i class="fa fa-btn fa-sign-out"></i>
+									Logout
+								</a>
+							</li>
 						</ul>
+						<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+							{{ csrf_field() }}
+						</form>
 					</li>
 				@endif
 			</ul>
