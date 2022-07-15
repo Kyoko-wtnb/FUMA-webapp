@@ -239,6 +239,7 @@ return [
         'Collective\Html\HtmlServiceProvider',
         'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
         // GeneaLabs\LaravelCaffeine\LaravelCaffeineServiceProvider::class
+        Laravel\Tinker\TinkerServiceProvider::class,
 
     ],
 
