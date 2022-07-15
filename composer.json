@@ -2,7 +2,7 @@
     "name": "laravel/laravel",
     "config": {
         "platform": {
-            "php": "5.6"
+            "php": "7.1"
         }
     },
     "description": "The Laravel Framework.",
@@ -11,8 +11,8 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4 <7.2",
-        "laravel/framework": "5.5.*",
-        "laravelcollective/html": "5.5.*",
+        "laravel/framework": "5.6.*",
+        "laravelcollective/html": "5.6.*",
         "guzzlehttp/guzzle": "^6.2",
         "predis/predis": "^1.1",
         "rairlie/laravel-locking-session": "^1.1",
@@ -46,14 +46,6 @@
         ],
         "post-create-project-cmd": [
             "php artisan key:generate"
-        ],
-        "post-install-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize"
-        ],
-        "post-update-cmd": [
-            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
         ]
     },
     "config": {
