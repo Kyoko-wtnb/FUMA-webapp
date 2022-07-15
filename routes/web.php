@@ -13,6 +13,9 @@
 
 Auth::routes();
 
+// Note that the routes containing closures cannot be cached by " php artisan route:cache"
+// in Laravel 5.7 -> 6.* but from 7 it works. 
+
 Route::group([], function(){
 	Route::get('/', function () {
 		return view('pages.home');
