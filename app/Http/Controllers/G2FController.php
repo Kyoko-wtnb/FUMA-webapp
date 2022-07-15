@@ -69,7 +69,7 @@ class G2FController extends Controller
 		$filedir;
 		$email = Auth::user()->email;
 
-		if($request->has('title')){
+		if($request->filled('title')){
 			$title = $request->input('title');
 		}else{
 			$title = "None";
@@ -85,7 +85,7 @@ class G2FController extends Controller
 		File::makeDirectory($filedir);
 		$filedir = $filedir.'/';
 
-		if($request -> has('genes')){
+		if($request -> filled('genes')){
 			$gtype = "text";
 			$gval = $request -> input('genes');
 			$gval = preg_split('/[\n\r]+/', $gval);
@@ -96,11 +96,11 @@ class G2FController extends Controller
 			$request -> file('genesfile')->move($filedir, $_FILES["genesfile"]["name"]);
 		}
 
-		if($request -> has('genetype')){
+		if($request -> filled('genetype')){
 			$bkgtype = "select";
 			$bkgval = $request -> input('genetype');
 			$bkgval = implode(':', $bkgval);
-		}else if($request -> has('bkgenes')){
+		}else if($request -> filled('bkgenes')){
 			$bkgtype = "text";
 			$bkgval = $request -> input('bkgenes');
 			$bkgval = preg_split('/[\n\r]+/', $bkgval);
@@ -132,7 +132,7 @@ class G2FController extends Controller
 
 		$gene_exp = implode(":", $request->input("gene_exp"));
 
-		if($request -> has('MHC')){
+		if($request -> filled('MHC')){
 			$MHC = 1;
 		}else{
 			$MHC = 0;
@@ -210,7 +210,7 @@ class G2FController extends Controller
 			$filedir;
 			$email = Auth::user()->email;
 
-			if($request->has('title')){
+			if($request->filled('title')){
 				$title = $request->input('title');
 			}else{
 				$title = "None";
