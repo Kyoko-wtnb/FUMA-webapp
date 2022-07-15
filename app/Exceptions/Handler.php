@@ -73,4 +73,11 @@ class Handler extends ExceptionHandler
         return parent::render($request, $e);
     }
 
+    /**
+     */
+    public function shouldReport(Exception $e)
+    {
+        $this->appExceptionHandler->shouldReport($e);
+    }
+
 }
