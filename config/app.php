@@ -238,7 +238,6 @@ return [
 
         'Collective\Html\HtmlServiceProvider',
         'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
-        'Chumper\Zipper\ZipperServiceProvider'
         // GeneaLabs\LaravelCaffeine\LaravelCaffeineServiceProvider::class
 
     ],
@@ -289,7 +288,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => 'Collective\Html\FormFacade',
         'HTML' => 'Collective\Html\HtmlFacade',
-        'Zipper' => 'Chumper\Zipper\Zipper'
 
     ],
 

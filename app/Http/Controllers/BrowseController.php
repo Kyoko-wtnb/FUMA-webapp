@@ -97,8 +97,6 @@ class BrowseController extends Controller
       if(File::exists($zipfile)){
         File::delete($zipfile);
       }
-      // Zipper::make($zipfile)->add($files);
-      // sleep(5);
       $zip -> open($zipfile, \ZipArchive::CREATE);
       $zip->addFile(storage_path().'/README', "README");
       foreach($files as $f){
