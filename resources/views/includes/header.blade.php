@@ -49,7 +49,7 @@
 							<li><a href="{{ Config::get('app.subdir') }}/gene2func#queryhistory">GENE2FUNC History</a></li>
 							<!-- logout via POST method -->
 							<li>
-								<a href="{{ url('/logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+								<a href="{{ url('/logout') }}" id="fuma-logout-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
 									<i class="fa fa-btn fa-sign-out"></i>
 									Logout
 								</a>
