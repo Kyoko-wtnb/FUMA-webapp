@@ -62,7 +62,8 @@ var Chr15cells = "{{$Chr15cells}}";
 				<input type="hidden" name="type" id="annotPlotType" val=""/>
 				<input type="hidden" name="fileName" id="annotPlotFileName" val=""/>
 				<input type="submit" id="annotPlotSubmit" class="ImgDownSubmit"/>
-			</form>    <div id="annotPlot"></div>
+			</form>    
+			<div id="annotPlot"></div>
 			<br/>
 			<div id="load" style="text-align:center;"></div>
 			<div>

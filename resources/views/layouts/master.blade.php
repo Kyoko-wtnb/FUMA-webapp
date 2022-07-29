@@ -19,6 +19,7 @@
 		</div>
 	</div>
 	@endif 
+	<div id="script_alert_block" class="container-fluid text-center"></div>
 	<div class="container-fluid">
 		<div id="main" class="row" style="padding-bottom: 50px;">
 			@yield('content')

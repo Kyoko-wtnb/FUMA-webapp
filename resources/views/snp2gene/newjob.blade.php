@@ -925,7 +925,7 @@
 					<td>
 						<select class="form-control" id="ensembl" name="ensembl">
 							<option selected value="v92">v92</option>
-							<option value="v85">v85</option>
+							<!-- REMOVED: no longer supported by biomart option value="v85">v85</option-->
 						</select>
 					</td>
 					<td>
