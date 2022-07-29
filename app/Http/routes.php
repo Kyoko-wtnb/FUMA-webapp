@@ -136,6 +136,8 @@ Route::group([], function(){
 
 // ********************** Middleware auth group************************
 Route::group(['middleware'=>['auth']], function(){
+	Route::post('{any}/logClientError', 'LoggingController@logClientError');
+
 	// ********************** SNP2GENE ************************
 	Route::get('snp2gene', function(){
 		return view('pages.snp2gene', ['id'=>null, 'status'=>null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
