@@ -238,7 +238,7 @@ paramout.close()
 # In this case, if the rsID columns is wrongly labeled, it will be problem later (not checked here)
 if chrcol is not None and poscol is not None and rsIDcol is not None and eacol is not None and neacol is not None:
 	# dbSNPfile = cfg.get('data', 'dbSNP')
-	# rsID = pd.read_csv(dbSNPfile+"/RsMerge146.txt", header=None)
+	# rsID = pd.read_csv(dbSNPfile+"/RsMerge155.txt", header=None)
 	# rsID = np.array(rsID)
 	# rsIDs = set(rsID[:,0])
 	# rsID = rsID[rsID[:,0].argsort()]
@@ -531,11 +531,11 @@ elif chrcol is None or poscol is None:
 		out.write("\tN")
 	out.write("\n")
 
-	##### update rsID to dbSNP 146 #####
+	##### update rsID to dbSNP 155 #####
 	rsIDs = set(list(gwas[:, rsIDcol]))
 	rsID = list(gwas[:, rsIDcol])
 	dbSNPfile = cfg.get('data', 'dbSNP')
-	rsID146 = open(dbSNPfile+"/RsMerge146.txt", 'r')
+	rsID146 = open(dbSNPfile+"/RsMerge155.txt", 'r')
 	for l in rsID146:
 		l = l.strip().split()
 		if l[0] in rsIDs:
@@ -552,7 +552,7 @@ elif chrcol is None or poscol is None:
 	##### process per chromosome #####
 	for chrom in range(1,24):
 		print "start chr"+str(chrom)
-		for chunk in pd.read_csv(dbSNPfile+"/dbSNP146.chr"+str(chrom)+".vcf.gz", header=None, sep="\t", dtype=str, chunksize=10000):
+		for chunk in pd.read_csv(dbSNPfile+"/dbSNP155.chr"+str(chrom)+".vcf.gz", header=None, sep="\t", dtype=str, chunksize=10000):
 			chunk = np.array(chunk)
 			for l in chunk:
 				alt = l[4].split(",")

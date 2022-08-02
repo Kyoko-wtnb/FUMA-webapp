@@ -239,7 +239,7 @@ ciMapFilt : If the interaction used for mapping 1, otherwise 0. It can be 0 due 
 # If no EID was selected, this file is empty.
 ######################
 uniqID : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.
-rsID : rsID based on dbSNP build 146
+rsID : rsID based on dbSNP build 155
 chr : chromosome
 pos : position on hg19
 reg_region : Predicted enhancer or dyadic regions

@@ -18,18 +18,26 @@
 		</tr>
 	</thead>
     <tbody>
+      <tr>
+        <td>03 August 2022</td>
+            <td>v1.4.1</td>
+            <td>
+              Updated to dbSNP v155.
+            </td>
+      </tr>
+      <tr>
 	<tr>
 		<td>27 July 2022</td>
         <td>v1.4.0</td>
         <td>
-		<strong>Major update 1: </strong> Ensembl v85 genes have been removed from the job options for SNP2GENE and GENE2FUNC. v85 is no longer available in the BioMart databases. 
+		<strong>Major update 1: </strong> Ensembl v85 genes have been removed from the job options for SNP2GENE and GENE2FUNC. v85 is no longer available in the BioMart databases.
         </td>
 	</tr>
 	<tr>
         <td>5 July 2022</td>
         <td>v1.3.9</td>
         <td>
-            Fixed a bug where circos plots with more than 10k CI interactions would return an error. Now an arbitrary selection of 10k interactions is visualised. Fixed another bug where sorting genomic positions as strings would result in wrong Risk Loci boundaries in rare occasions. 
+            Fixed a bug where circos plots with more than 10k CI interactions would return an error. Now an arbitrary selection of 10k interactions is visualised. Fixed another bug where sorting genomic positions as strings would result in wrong Risk Loci boundaries in rare occasions.
         </td>
       </tr>
       <tr>

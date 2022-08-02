@@ -83,7 +83,7 @@ class getParams:
 				secol = i
 
 		##### dbSNP file #####
-		dbSNPfile = cfg.get('data', 'dbSNP')+"/RsMerge146.npy"
+		dbSNPfile = cfg.get('data', 'dbSNP')+"/RsMerge155.npy"
 
 		##### set aprams #####
 		self.leadSNPs = leadSNPs

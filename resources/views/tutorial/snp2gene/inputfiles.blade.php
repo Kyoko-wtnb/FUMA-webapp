@@ -17,9 +17,9 @@
 	</p>
 	<p><strong>Mandatory columns</strong><br/>
 		The input file must include a P-value and either an rsID or chromosome index + genetic position on hg19 reference genome.
-		When either chromosome or position is missing, they are extracted from dbSNP build 146 based on rsID.
-		In this case, input rsID is updated to dbSNP build 146.
-		When rsID is missing, it is extracted from dbSNP build 146 based on chromosome and position.
+		When either chromosome or position is missing, they are extracted from dbSNP build 155 based on rsID.
+		In this case, input rsID is updated to dbSNP build 155.
+		When rsID is missing, it is extracted from dbSNP build 155 based on chromosome and position.
 		The column of chromosome can be a string such as "chr1" or just an integer such as 1.
 		When "chr" is attached, this will be removed in output files.
 		When the input file contains chromosome X, this will be encoded as chromosome 23, however, the input file can contain "X".
@@ -27,9 +27,9 @@
 	<p><strong>Allele columns</strong><br/>
 		Alleles are not mandatory but if only one allele is provided, that is considered to be the effect allele.
 		When two alleles are provided, the effect allele will be defined depending on column name.
-		If alleles are not provided, they will be extracted from the dbSNP build 146 and minor alleles will be assumed to be the effect alleles.
+		If alleles are not provided, they will be extracted from the dbSNP build 155 and minor alleles will be assumed to be the effect alleles.
 		Effect and non-effect alleles are not distinguished during annotations, but used for alignment with eQTLs.
-		Whenever alleles are provided, they are matched with dbSNP build 146 if extraction of rsID, chromosome or position is necessary.<br/>
+		Whenever alleles are provided, they are matched with dbSNP build 155 if extraction of rsID, chromosome or position is necessary.<br/>
 		Alleles are case insensitive.
 	</p>
 	<p><strong>Headers</strong><br/>
@@ -69,7 +69,7 @@
 	</p>
 	<p>The pipeline currently supports human genome <span style="color: red;">hg19</span>.
 		If your input file is not based on hg19, please update the genomic position using liftOver from UCSC.
-		However, there is an option for you!! When you provide only rsID without chromosome and genomic position, FUMA will extract them from dbSNP build 146 based on hg19.
+		However, there is an option for you!! When you provide only rsID without chromosome and genomic position, FUMA will extract them from dbSNP build 155 based on hg19.
 		To do this, remove columns of chromosome and genomic position or rename headers to ignore those columns.
 		Note that extracting chromosome and genomic position will take extra time.
 	</p>

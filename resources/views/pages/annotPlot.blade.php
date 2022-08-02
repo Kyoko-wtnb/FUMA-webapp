@@ -62,7 +62,7 @@ var Chr15cells = "{{$Chr15cells}}";
 				<input type="hidden" name="type" id="annotPlotType" val=""/>
 				<input type="hidden" name="fileName" id="annotPlotFileName" val=""/>
 				<input type="submit" id="annotPlotSubmit" class="ImgDownSubmit"/>
-			</form>    
+			</form>
 			<div id="annotPlot"></div>
 			<br/>
 			<div id="load" style="text-align:center;"></div>
@@ -70,7 +70,7 @@ var Chr15cells = "{{$Chr15cells}}";
 				<h4>Regulome DB</h4>
 				<div id="RDBlegend"></div>
 				*External link to RegulomeDB from SNP table (when one of the SNPs is clicked) will open a new tab.
-				rsID does not always match since RegulomeDB used dbSNP build 141 (the rsID in FUMA is dbSNP build 146).
+				rsID does not always match since RegulomeDB used dbSNP build 141 (the rsID in FUMA is dbSNP build 155).
 				Genomic position (bp on hg19) shown in the link of RegulomeDB is the position shown in the SNP table - 1, since RegulomeDB used 0 based coordinate.
 			</div>
 			<br/>

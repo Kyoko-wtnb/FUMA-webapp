@@ -4,7 +4,7 @@
 		<ul>
 			<li><strong>Genomic locus</strong> : Index of genomic rick loci.</li>
 			<li><strong>uniqID</strong> : Unique ID of SNPs consisting of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-			<li><strong>rsID</strong> : rsID of the top lead SNP based on dbSNP build 146.</li>
+			<li><strong>rsID</strong> : rsID of the top lead SNP based on dbSNP build 155.</li>
 			<li><strong>chr</strong> : chromosome of top lead SNP</li>
 			<li><strong>pos</strong> : position of top lead SNP on hg19</li>
 			<li><strong>P-value</strong> : P-value of top lead SNP (from the input file).</li>
@@ -29,7 +29,7 @@
 			<li><strong>Genomic Locus</strong> : Index of assigned genomic locus matched with "Genomic risk loci" table.
 				Multiple lead SNPs can be assigned to the same genomic locus.</li>
 			<li><strong>uniqID</strong> : Unique ID of SNPs consisting of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-			<li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
+			<li><strong>rsID</strong> : rsID based on dbSNP build 155.</li>
 			<li><strong>chr</strong> : chromosome</li>
 			<li><strong>pos</strong> : position on hg19</li>
 			<li><strong>P-value</strong> : P-value (from the input file).</li>
@@ -46,7 +46,7 @@
 			<li><strong>Genomic Locus</strong> : Index of assigned genomic locus matched with "Genomic risk loci" table.
 				Multiple independent lead SNPs can be assigned to the same genomic locus.</li>
 			<li><strong>uniqID</strong> : Unique ID of SNPs consisting of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-			<li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
+			<li><strong>rsID</strong> : rsID based on dbSNP build 155.</li>
 			<li><strong>chr</strong> : chromosome</li>
 			<li><strong>pos</strong> : position on hg19</li>
 			<li><strong>P-value</strong> : P-value (from the input file).</li>
@@ -61,7 +61,7 @@
 		Note that depending on your mapping criterion, not all candidate SNPs displaying in this table are mapped to genes.</p>
 		<ul>
 			<li><strong>uniqID</strong> : Unique ID of SNPs consisting of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-			<li><strong>rsID</strong> : rsID based on dbSNP build 146.</li>
+			<li><strong>rsID</strong> : rsID based on dbSNP build 155.</li>
 			<li><strong>chr</strong> : chromosome</li>
 			<li><strong>pos</strong> : position on hg19</li>
 			<li><strong>effect_allele</strong> : Effect/risk allele if it is provided in the input GWAS summary statistics file. If not, this is the alternative (minor) allele in 1000G.</li>
@@ -199,7 +199,7 @@
 		</p>
 		<ul>
 			<li><strong>uniqID</strong> : Unique ID of SNPs consists of chr:position:allele1:allele2 where alleles are alphabetically ordered.</li>
-			<li><strong>rsID</strong> : rsID based on dbSNP build 146</li>
+			<li><strong>rsID</strong> : rsID based on dbSNP build 155</li>
 			<li><strong>chr</strong> : chromosome</li>
 			<li><strong>pos</strong> : position on hg19</li>
 			<li><strong>reg_region</strong> : Predicted enhancer or dyadic regions</li>
