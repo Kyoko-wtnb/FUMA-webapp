@@ -109,6 +109,8 @@ class snp2geneProcess extends Job implements ShouldQueue
 			}
 		}
 
+		file_put_contents($logfile, "----- allSNPs.py -----\n", FILE_APPEND);
+		file_put_contents($errorfile, "----- allSNPs.py -----\n", FILE_APPEND);
 		$script = storage_path().'/scripts/allSNPs.py';
 		exec("python $script $filedir");
 
