@@ -18,18 +18,25 @@
 		</tr>
 	</thead>
     <tbody>
+      <tr>
+    		<td>07 September 2022</td>
+            <td>v1.4.1</td>
+            <td>
+    		Fixed a bug that caused chromosome 23 variants to be excluded from genomic risk loci when the 1KG EUR reference panel was used. This bug started on February 28 2022 and was fixed on August 30 2022. If, during this period, you have used the 1KG EUR reference panel and your data included chromosome 23, please re-run your analyses.  
+            </td>
+    	</tr>
 	<tr>
 		<td>27 July 2022</td>
         <td>v1.4.0</td>
         <td>
-		<strong>Major update 1: </strong> Ensembl v85 genes have been removed from the job options for SNP2GENE and GENE2FUNC. v85 is no longer available in the BioMart databases. 
+		<strong>Major update 1: </strong> Ensembl v85 genes have been removed from the job options for SNP2GENE and GENE2FUNC. v85 is no longer available in the BioMart databases.
         </td>
 	</tr>
 	<tr>
         <td>5 July 2022</td>
         <td>v1.3.9</td>
         <td>
-            Fixed a bug where circos plots with more than 10k CI interactions would return an error. Now an arbitrary selection of 10k interactions is visualised. Fixed another bug where sorting genomic positions as strings would result in wrong Risk Loci boundaries in rare occasions. 
+            Fixed a bug where circos plots with more than 10k CI interactions would return an error. Now an arbitrary selection of 10k interactions is visualised. Fixed another bug where sorting genomic positions as strings would result in wrong Risk Loci boundaries in rare occasions.
         </td>
       </tr>
       <tr>
