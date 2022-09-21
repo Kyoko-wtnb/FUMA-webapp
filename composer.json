@@ -1,6 +1,7 @@
 {
     "name": "laravel/laravel",
     "config": {
+        "preferred-install": "dist",
         "platform": {
             "php": "5.6"
         }
@@ -54,8 +55,5 @@
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
         ]
-    },
-    "config": {
-        "preferred-install": "dist"
     }
 }
