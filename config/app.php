@@ -48,10 +48,10 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | gwasDB directory (temmporary)
+    | downloads directory
     |--------------------------------------------------------------------------
     |
-    | Specify direcory of gwasDB (this will be moved to separate web application later on)
+    | Directory used for miscellaneous downloadable references (e.g. variant files)
     |
     */
 
@@ -109,6 +109,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Application name
+    |--------------------------------------------------------------------------
+    |
+    | This application name
+    |
+    */
+
+    'name' => env('APP_NAME', 'fuma'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
@@ -161,20 +172,6 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Logging Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the log settings for your application. Out of
-    | the box, Laravel uses the Monolog PHP logging library. This gives
-    | you a variety of powerful log handlers / formatters to utilize.
-    |
-    | Available Settings: "single", "daily", "syslog", "errorlog"
-    |
-    */
-
-    'log' => env('APP_LOG', 'single'),
 
     /*
     |--------------------------------------------------------------------------
@@ -204,6 +201,7 @@ return [
         Illuminate\Foundation\Providers\FoundationServiceProvider::class,
         Illuminate\Hashing\HashServiceProvider::class,
         Illuminate\Mail\MailServiceProvider::class,
+        Illuminate\Notifications\NotificationServiceProvider::class,
         Illuminate\Pagination\PaginationServiceProvider::class,
         Illuminate\Pipeline\PipelineServiceProvider::class,
         Illuminate\Queue\QueueServiceProvider::class,
@@ -220,13 +218,14 @@ return [
          */
         fuma\Providers\AppServiceProvider::class,
         fuma\Providers\AuthServiceProvider::class,
+        //fuma\Providers\BroadcastServiceProvider::class,
         fuma\Providers\EventServiceProvider::class,
         fuma\Providers\RouteServiceProvider::class,
 
         'Collective\Html\HtmlServiceProvider',
         'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
-        'Chumper\Zipper\ZipperServiceProvider'
         // GeneaLabs\LaravelCaffeine\LaravelCaffeineServiceProvider::class
+        Laravel\Tinker\TinkerServiceProvider::class,
 
     ],
 
@@ -260,6 +259,7 @@ return [
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
+        'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password' => Illuminate\Support\Facades\Password::class,
         'Queue' => Illuminate\Support\Facades\Queue::class,
         'Redirect' => Illuminate\Support\Facades\Redirect::class,
@@ -275,7 +275,6 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => 'Collective\Html\FormFacade',
         'HTML' => 'Collective\Html\HtmlFacade',
-        'Zipper' => 'Chumper\Zipper\Zipper'
 
     ],
 

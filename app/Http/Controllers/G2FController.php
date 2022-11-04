@@ -28,11 +28,12 @@ class G2FController extends Controller
 		// $this->middleware('auth');
 
 		// Store user
-		$this->user = Auth::user();
+		// Replace by Auth::user()
+		// $this->user = Auth::user();
 	}
 
 	public function authcheck($jobID){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$check = DB::table('gene2func')->where('jobID', $jobID)->first();
 		if($check->email==$email){
 			return view('pages.gene2func', ['status'=>'getJob', 'id'=>$jobID, 'page'=>'gene2func', 'prefix'=>'gene2func']);
@@ -42,7 +43,7 @@ class G2FController extends Controller
 	}
 
 	public function getJobList(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		if($email){
 			$results = DB::table('gene2func')->where('email', $email)
@@ -66,9 +67,9 @@ class G2FController extends Controller
 		$date = date('Y-m-d H:i:s');
 		$jobID;
 		$filedir;
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
-		if($request->has('title')){
+		if($request->filled('title')){
 			$title = $request->input('title');
 		}else{
 			$title = "None";
@@ -84,7 +85,7 @@ class G2FController extends Controller
 		File::makeDirectory($filedir);
 		$filedir = $filedir.'/';
 
-		if($request -> has('genes')){
+		if($request -> filled('genes')){
 			$gtype = "text";
 			$gval = $request -> input('genes');
 			$gval = preg_split('/[\n\r]+/', $gval);
@@ -95,11 +96,11 @@ class G2FController extends Controller
 			$request -> file('genesfile')->move($filedir, $_FILES["genesfile"]["name"]);
 		}
 
-		if($request -> has('genetype')){
+		if($request -> filled('genetype')){
 			$bkgtype = "select";
 			$bkgval = $request -> input('genetype');
 			$bkgval = implode(':', $bkgval);
-		}else if($request -> has('bkgenes')){
+		}else if($request -> filled('bkgenes')){
 			$bkgtype = "text";
 			$bkgval = $request -> input('bkgenes');
 			$bkgval = preg_split('/[\n\r]+/', $bkgval);
@@ -131,7 +132,7 @@ class G2FController extends Controller
 
 		$gene_exp = implode(":", $request->input("gene_exp"));
 
-		if($request -> has('MHC')){
+		if($request -> filled('MHC')){
 			$MHC = 1;
 		}else{
 			$MHC = 0;
@@ -141,7 +142,7 @@ class G2FController extends Controller
 		$adjPcut = $request -> input('adjPcut');
 		$minOverlap = $request -> input('minOverlap');
 
-		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$app_config = parse_ini_file(scripts_path('app.config'), false, INI_SCANNER_RAW);
 
 		// write parameters to config file
 		$paramfile = $filedir.'params.config';
@@ -190,10 +191,10 @@ class G2FController extends Controller
 	public function geneQuery(Request $request){
 		$filedir = $request -> input('filedir');
 
-		$script = storage_path()."/scripts/gene2func.R";
+		$script = scripts_path('gene2func.R');
 		exec("Rscript $script $filedir", $output, $error);
 
-		$script = storage_path()."/scripts/GeneSet.py";
+		$script = scripts_path('GeneSet.py');
 		exec("python $script $filedir", $output2, $error2);
 		exec("find ".$filedir." -type d -exec chmod 775 {} \;");
 		exec("find ".$filedir." -type f -exec chmod 664 {} \;");
@@ -207,9 +208,9 @@ class G2FController extends Controller
 			$date = date('Y-m-d H:i:s');
 			$jobID;
 			$filedir;
-			$email = $this->user->email;
+			$email = Auth::user()->email;
 
-			if($request->has('title')){
+			if($request->filled('title')){
 				$title = $request->input('title');
 			}else{
 				$title = "None";

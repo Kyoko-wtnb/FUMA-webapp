@@ -33,6 +33,13 @@
         </td>
 	</tr>
 	<tr>
+		<td>27 July 2022</td>
+        <td>v1.4.0</td>
+        <td>
+		<strong>Major update 1: </strong> Ensembl v85 genes have been removed from the job options for SNP2GENE and GENE2FUNC. v85 is no longer available in the BioMart databases.
+        </td>
+	</tr>
+	<tr>
         <td>5 July 2022</td>
         <td>v1.3.9</td>
         <td>

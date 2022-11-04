@@ -65,7 +65,7 @@ class geneMapProcess extends Job implements ShouldQueue
 		if($params['eqtlMap']==1){
 			file_put_contents($logfile, "\n----- geteQTL.py -----\n", FILE_APPEND);
 			file_put_contents($errorfile, "\n----- geteQTL.py -----\n", FILE_APPEND);
-			$script = storage_path().'/scripts/geteQTL.py';
+			$script = scripts_path('geteQTL.py');
 			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$this->chmod($filedir);
@@ -82,7 +82,7 @@ class geneMapProcess extends Job implements ShouldQueue
 		if($params['ciMap']==1){
 			file_put_contents($logfile, "\n----- getCI.R -----\n", FILE_APPEND);
 			file_put_contents($errorfile, "\n----- getCI.R -----\n", FILE_APPEND);
-			$script = storage_path().'/scripts/getCI.R';
+			$script = scripts_path('getCI.R');
 			exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$this->chmod($filedir);
@@ -101,7 +101,7 @@ class geneMapProcess extends Job implements ShouldQueue
 
 		file_put_contents($logfile, "\n----- geneMap.R -----\n", FILE_APPEND);
 		file_put_contents($errorfile, "\n----- geneMap.R -----\n", FILE_APPEND);
-		$script = storage_path().'/scripts/geneMap.R';
+		$script = scripts_path('geneMap.R');
 		exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 		if($error != 0){
 			$this->chmod($filedir);
@@ -117,7 +117,7 @@ class geneMapProcess extends Job implements ShouldQueue
 		if($params['ciMap']==1){
 			file_put_contents($logfile, "\n----- createCircosPlot.py -----\n", FILE_APPEND);
 			file_put_contents($errorfile, "\n----- createCircosPlot.py -----\n", FILE_APPEND);
-			$script = storage_path().'/scripts/createCircosPlot.py';
+			$script = scripts_path('createCircosPlot.py');
 			exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
 			if($error != 0){
 				$this->chmod($filedir);

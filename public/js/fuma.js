@@ -14,7 +14,7 @@ $(document).ready(function(){
 		});
 
 	if(loggedin==1){
-		var timer = new InactivityTimer("/logout", 7200000);
+		var timer = new InactivityTimer("/logout", 7200000); // 2 hour timeout 
 		timer.stop();
 		timer.start();
 	}
@@ -44,12 +44,12 @@ function InactivityTimer(path, delay){
 	var timeout;
 	function logout(){
 		swal("Session timeout", "Please login again.", "error")
-		window.location.href= path || "/logout";
+		document.getElementById("fuma-logout-link").click();
 	}
 
 	function start(){
 		if(!timeout){
-			timeout = setTimeout(logout, delay || 86400000);
+			timeout = setTimeout(logout, delay || 86400000); // Default 24 hours
 		}
 	}
 
