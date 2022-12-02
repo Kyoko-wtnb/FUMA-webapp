@@ -19,10 +19,17 @@
 	</thead>
     <tbody>
       <tr>
+    		<td>02 December 2022</td>
+            <td>v1.4.2</td>
+            <td>
+    		Updated the GWAS catalog to e0_r2022-11-29 in the SNP2GENE analysis.
+            </td>
+    	</tr>
+      <tr>
     		<td>07 September 2022</td>
             <td>v1.4.1</td>
             <td>
-    		Fixed a bug that caused chromosome 23 variants to be excluded from genomic risk loci when the 1KG EUR reference panel was used. This bug started on February 28 2022 and was fixed on August 30 2022. If, during this period, you have used the 1KG EUR reference panel and your data included chromosome 23, please re-run your analyses.  
+    		Fixed a bug that caused chromosome 23 variants to be excluded from genomic risk loci when the 1KG EUR reference panel was used. This bug started on February 28 2022 and was fixed on August 30 2022. If, during this period, you have used the 1KG EUR reference panel and your data included chromosome 23, please re-run your analyses.
             </td>
     	</tr>
 	<tr>

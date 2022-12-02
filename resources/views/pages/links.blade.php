@@ -359,7 +359,7 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>GWAS-catalog e104_2021-09-15</td>
+				<td>GWAS-catalog e0_r2022-11-29</td>
 				<td>A database of reported SNP-trait associations.</td>
 				<td>
 					Info: <a href="https://www.ebi.ac.uk/gwas/" target="_blank">https://www.ebi.ac.uk/gwas/</a><br/>
