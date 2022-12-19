@@ -219,8 +219,6 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="TabulaMuris_droplet_Mammary" data-section="Breast/Mouse" data-key="2">TabulaMuris_droplet_Mammary</option>
 							<option value="GSE100597_Mouse_Embryo" data-section="Embryo/Mouse" data-key="0">GSE100597_Mouse_Embryo</option>
 							<option value="MouseCellAtlas_Embryo_all" data-section="Embryo/Mouse" data-key="1">MouseCellAtlas_Embryo_all</option>
-							<option value="MouseCellAtlas_Embryonic_Mesenchyme" data-section="Embryo/Mouse" data-key="2">MouseCellAtlas_Embryonic_Mesenchyme</option>
-							<option value="MouseCellAtlas_Embryonic_Stem_Cell" data-section="Embryo/Mouse" data-key="3">MouseCellAtlas_Embryonic_Stem_Cell</option>
 							<option value="GSE92332_Mouse_Epithelium_SMARTseq" data-section="Epithelial/Mouse" data-key="0">GSE92332_Mouse_Epithelium_SMARTseq</option>
 							<option value="GSE92332_Mouse_Epithelium_droplet" data-section="Epithelial/Mouse" data-key="1">GSE92332_Mouse_Epithelium_droplet</option>
 							<option value="TabulaMuris_FACS_Diaphragm" data-section="Diaphram/Mouse" data-key="0">TabulaMuris_FACS_Diaphragm</option>
@@ -264,6 +262,8 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="TabulaMuris_droplet_Spleen" data-section="Spleen/Mouse" data-key="2">TabulaMuris_droplet_Spleen</option>
 							<option value="MouseCellAtlas_Mesenchymal_Stem_Cell_Cultured" data-section="Stem Cell/Mouse" data-key="0">MouseCellAtlas_Mesenchymal_Stem_Cell_Cultured</option>
 							<option value="MouseCellAtlas_Trophoblast_Stem_Cell" data-section="Stem Cell/Mouse" data-key="1">MouseCellAtlas_Trophoblast_Stem_Cell</option>
+							<option value="MouseCellAtlas_Embryonic_Mesenchyme" data-section="Stem Cells/Mouse" data-key="2">MouseCellAtlas_Embryonic_Mesenchyme</option>
+							<option value="MouseCellAtlas_Embryonic_Stem_Cell" data-section="Stem Cells/Mouse" data-key="3">MouseCellAtlas_Embryonic_Stem_Cell</option>
 							<option value="MouseCellAtlas_Fetal_Stomache" data-section="Stomach/Mouse" data-key="0">MouseCellAtlas_Fetal_Stomache</option>
 							<option value="MouseCellAtlas_Stomach" data-section="Stomach/Mouse" data-key="1">MouseCellAtlas_Stomach</option>
 							<option value="MouseCellAtlas_Testis" data-section="Testis/Mouse" data-key="0">MouseCellAtlas_Testis</option>
