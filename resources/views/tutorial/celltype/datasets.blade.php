@@ -39,6 +39,24 @@ Pre-process was performed as the following steps. Please see each script for mor
 	</thead>
 	<tbody>
 		<tr>
+			<td>GSE168408</td>
+			<td style="word-wrap:break-word;word-break:break-all;">
+				Website: <a target="_blank" href="http://brain.listerlab.org/">http://brain.listerlab.org/</a>,
+				Data: <a target="_blank" href="https://console.cloud.google.com/storage/browser/neuro-dev/Processed_data;tab=objects?prefix=&forceOnObjectsSortingFiltering=false">https://console.cloud.google.com/storage/browser/neuro-dev/Processed_data;tab=objects?prefix=&forceOnObjectsSortingFiltering=false</a>
+			</td>
+			<td>Human Prefrontal Cortex.<br/>
+				26 postmortem prefrontal cortex samples spanning 6 stages: Fetal, Neonatal, Infancy, Childhood, Adolescence, and Adult resulting in 154,738 single nuclei.
+				3 levels of annotation: level 1 consists of 3 cell types, level 2 consists of 18 cell types, and level 3 consists of 86 cell types. 
+				From 26,747 genes, 26,671 genes were mapped to hs ENSG ID.
+				In total, 18 data sets were created (6 stages for each of the 3 levels)
+			</td>
+			<td>Herring et al. 2022. Human prefrontal cortex gene regulatory dynamics from gestation to adulthood at single-cell resolution.
+				<i>Cell.</i> <b>185</b>, 4428-4447.<br/>
+				<a target="_blank" href="https://pubmed.ncbi.nlm.nih.gov/36318921/">PMID: 36318921</a>
+			</td>
+			<td>19 December 2022</td>
+		</tr>
+		<tr>
 			<td>Tabula Muris</td>
 			<td style="word-wrap:break-word;word-break:break-all;">
 				FACS: <a target="_blank" href="https://figshare.com/articles/Single-cell_RNA-seq_data_from_Smart-seq2_sequencing_of_FACS_sorted_cells_v2_/5829687">

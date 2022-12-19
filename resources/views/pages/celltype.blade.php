@@ -124,6 +124,24 @@ var loggedin = "{{ Auth::check() }}";
 							<option value="Linnarsson_GSE76381_Human_Midbrain" data-section="Brain/Human" data-key="10">Linnarsson_GSE76381_Human_Midbrain</option>
 							<option value="PsychENCODE_Developmental" data-section="Brain/Human" data-key="11">PsychENCODE_Developmental</option>
 							<option value="PsychENCODE_Adult" data-section="Brain/Human" data-key="12">PsychENCODE_Adult</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Fetal" data-section="Brain/Human" data-key="13">GSE168408_Human_Prefrontal_Cortex_level1_Fetal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Neonatal" data-section="Brain/Human" data-key="14">GSE168408_Human_Prefrontal_Cortex_level1_Neonatal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Infancy" data-section="Brain/Human" data-key="15">GSE168408_Human_Prefrontal_Cortex_level1_Infancy</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Childhood" data-section="Brain/Human" data-key="16">GSE168408_Human_Prefrontal_Cortex_level1_Childhood</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Adolescence" data-section="Brain/Human" data-key="17">GSE168408_Human_Prefrontal_Cortex_level1_Adolescence</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Adult" data-section="Brain/Human" data-key="18">GSE168408_Human_Prefrontal_Cortex_level1_Adult</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Fetal" data-section="Brain/Human" data-key="19">GSE168408_Human_Prefrontal_Cortex_level2_Fetal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Neonatal" data-section="Brain/Human" data-key="20">GSE168408_Human_Prefrontal_Cortex_level2_Neonatal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Infancy" data-section="Brain/Human" data-key="21">GSE168408_Human_Prefrontal_Cortex_level2_Infancy</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Childhood" data-section="Brain/Human" data-key="22">GSE168408_Human_Prefrontal_Cortex_level2_Childhood</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Adolescence" data-section="Brain/Human" data-key="23">GSE168408_Human_Prefrontal_Cortex_level2_Adolescence</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Adult" data-section="Brain/Human" data-key="24">GSE168408_Human_Prefrontal_Cortex_level2_Adult</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Fetal" data-section="Brain/Human" data-key="25">GSE168408_Human_Prefrontal_Cortex_level3_Fetal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Neonatal" data-section="Brain/Human" data-key="26">GSE168408_Human_Prefrontal_Cortex_level3_Neonatal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Infancy" data-section="Brain/Human" data-key="27">GSE168408_Human_Prefrontal_Cortex_level3_Infancy</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Childhood" data-section="Brain/Human" data-key="28">GSE168408_Human_Prefrontal_Cortex_level3_Childhood</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Adolescence" data-section="Brain/Human" data-key="29">GSE168408_Human_Prefrontal_Cortex_level3_Adolescence</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Adult" data-section="Brain/Human" data-key="30">GSE168408_Human_Prefrontal_Cortex_level3_Adult</option>
 							<option value="Allen_Mouse_ALM2_level1" data-section="Brain/Mouse" data-key="0">Allen_Mouse_ALM2_level1</option>
 							<option value="Allen_Mouse_ALM2_level2" data-section="Brain/Mouse" data-key="1">Allen_Mouse_ALM2_level2</option>
 							<option value="Allen_Mouse_ALM2_level3" data-section="Brain/Mouse" data-key="2">Allen_Mouse_ALM2_level3</option>
