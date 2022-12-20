@@ -18,6 +18,13 @@
 		</tr>
 	</thead>
     <tbody>
+		<tr>
+    		<td>20 December 2022</td>
+            <td>v1.5.0</td>
+            <td>
+    		Updated FUMA Cell Type user interphase and added scRNAseq data for human prefrontal cortex from Herring et al. 2022.
+            </td>
+    	</tr>
       <tr>
     		<td>02 December 2022</td>
             <td>v1.4.2</td>
