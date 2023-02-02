@@ -1017,7 +1017,7 @@
 					</td>
 					<td>
 						<span class="form-inline">
-							<input type="checkbox" class="form-check-input" name="magma" id="magma" checked onchange="CheckAll();">
+							<input type="checkbox" class="form-check-input" name="magma" id="magma" onchange="CheckAll();">
 						</span>
 					</td>
 					<td></td>

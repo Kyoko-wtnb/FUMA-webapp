@@ -19,6 +19,16 @@
 	</thead>
     <tbody>
 		<tr>
+    		<td>03 February 2023</td>
+            <td>v1.5.1</td>
+            <td>
+    		In SNP2GENE, make MAGMA unchecked as a default in order to reduce run time because of recent spike in job volumes. 
+			This means that users don't get MAGMA gene, gene-set, and tissue results by default. 
+			Users also can't use that job for input in the Cell Type module. 
+			If you absolutely needs the magma outputs, then you can check that option. See tutorial for details.
+            </td>
+	</tr>
+		<tr>
     		<td>20 December 2022</td>
             <td>v1.5.0</td>
             <td>

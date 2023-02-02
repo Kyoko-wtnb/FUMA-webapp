@@ -650,8 +650,8 @@
 <div style="margin-left: 40px;">
 	<h4><strong>6. MAGMA analysis</strong></h4>
 	<p>
-		MAGMA gene and gene-set analyses are performed for the input summary statistics by default,
-		but user can also select to omit MAGMA process that reduce the run time of SNP2GENE process.
+		Starting from FUMA version 1.5.1, user needs to check the magma checkbox to perform MAGMA. 
+		MAGMA gene and gene-set analyses are performed for the input summary statistics.
 		Gene expression data sets for MAGMA gene expression analysis can be also selected from here.
 	</p>
 	<table class="table table-bordered">
