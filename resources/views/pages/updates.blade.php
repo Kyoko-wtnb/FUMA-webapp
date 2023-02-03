@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
 		<tr>
+    		<td>03 February 2023</td>
+            <td>v1.5.1</td>
+            <td>
+			MAGMA will no longer run by default in the SNP2GENE module. If you would like the MAGMA gene, gene-set, and tissue analysis results or to use the SNP2GENE output as input for the Cell Type module, please select 'Perform MAGMA' (in step 6) on the submission page.
+            </td>
+	</tr>
+		<tr>
     		<td>20 December 2022</td>
             <td>v1.5.0</td>
             <td>
