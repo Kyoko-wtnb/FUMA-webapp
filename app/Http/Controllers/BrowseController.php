@@ -50,29 +50,29 @@ class BrowseController extends Controller
       $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
       // $zip = new ZipArchive();
       $files = array();
-      if($request->filled('paramfile')){ $files[] = "params.config";}
-      if($request->filled('indSNPfile')){$files[] = "IndSigSNPs.txt";}
-      if($request->filled('leadfile')){$files[] = "leadSNPs.txt";}
-      if($request->filled('locifile')){$files[] = "GenomicRiskLoci.txt";}
-      if($request->filled('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
-      if($request->filled('annovfile')){$files[] = "annov.txt";}
-      if($request->filled('annotfile')){$files[] = "annot.txt";}
-      if($request->filled('genefile')){$files[] = "genes.txt";}
-      if($request->filled('eqtlfile')){
+      if($request -> filled('paramfile')){ $files[] = "params.config";}
+      if($request -> filled('indSNPfile')){$files[] = "IndSigSNPs.txt";}
+      if($request -> filled('leadfile')){$files[] = "leadSNPs.txt";}
+      if($request -> filled('locifile')){$files[] = "GenomicRiskLoci.txt";}
+      if($request -> filled('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
+      if($request -> filled('annovfile')){$files[] = "annov.txt";}
+      if($request -> filled('annotfile')){$files[] = "annot.txt";}
+      if($request -> filled('genefile')){$files[] = "genes.txt";}
+      if($request -> filled('eqtlfile')){
 		  if(File::exists($filedir."eqtl.txt")){
 			  $files[] = "eqtl.txt";
 		  }
 	  }
-	  if($request->filled('cifile')){
+	  if($request -> filled('cifile')){
 		  if(File::exists($filedir."ci.txt")){
 			  $files[] = "ci.txt";
 			  $files[] = "ciSNPs.txt";
 			  $files[] = "ciProm.txt";
 		  }
 	  }
-      // if($request->filled('exacfile')){$files[] = $filedir."ExAC.txt";}
-      if($request->filled('gwascatfile')){$files[] = "gwascatalog.txt";}
-      if($request->filled('magmafile')){
+      // if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
+      if($request -> filled('gwascatfile')){$files[] = "gwascatalog.txt";}
+      if($request -> filled('magmafile')){
         $files[] = "magma.genes.out";
         if(File::exists($filedir."magma.sets.out")){
           $files[] = "magma.genes.raw";
@@ -97,8 +97,6 @@ class BrowseController extends Controller
       if(File::exists($zipfile)){
         File::delete($zipfile);
       }
-      // Zipper::make($zipfile)->add($files);
-      // sleep(5);
       $zip -> open($zipfile, \ZipArchive::CREATE);
       $zip->addFile(storage_path().'/README', "README");
       foreach($files as $f){

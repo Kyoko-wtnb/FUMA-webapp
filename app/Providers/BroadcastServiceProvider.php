@@ -1,6 +1,6 @@
 <?php
 
-namespace fuma\Providers;
+namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Broadcast;

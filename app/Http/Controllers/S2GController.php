@@ -15,6 +15,7 @@ use Auth;
 use Storage;
 use File;
 use JavaScript;
+use Session;
 use Mail;
 use Session;
 use fuma\User;
@@ -27,7 +28,12 @@ class S2GController extends Controller
 
     public function __construct(){
 		// Protect this Controller
-		$this->middleware('auth');
+		// auth is set in routes.php this is duplicate
+		//$this->middleware('auth');
+
+		// Store user
+		// Replaced by Auth::user()
+		// $this->user = Auth::user();
     }
 
 	public function authcheck($jobID){
@@ -57,7 +63,12 @@ class S2GController extends Controller
 		return response()->json($results);
 	}
 	
-	public function getNumberScheduledJobs(){
+
+    /**
+     * Return the number of scheduled jobs for the current user
+     * including all QUEUED RUNNING and NEW jobs.
+     */
+    public function getNumberScheduledJobs() {
 		$email = Auth::user()->email;
 		$results = array();
 		if($email){
@@ -71,7 +82,6 @@ class S2GController extends Controller
 
 	public function getPublicIDs(){
 		$email = Auth::user()->email;
-		//Log::info("In getPublicIDs with email {$email}");
 
 		$results = array();
 		if($email){
@@ -86,8 +96,6 @@ class S2GController extends Controller
 
 	public function getjobIDs(){
 		$email = Auth::user()->email;
-		//Log::info("In getjobIDs with email {$email}");
-
 		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=?', [$email]);
 		return $results;
 	}
@@ -173,24 +181,22 @@ class S2GController extends Controller
 		$jobID;
 		$filedir;
 		$email = Auth::user()->email;
+		// Implement the cap on max jobs in queue
 		$numSchedJobs = $this->getNumberScheduledJobs();
-		$maxSchedJobs = $this->getMaxJobsForAuthUser();
-		if (!is_null($maxSchedJobs) && ($numSchedJobs >= $maxSchedJobs)) {
+		$queueCap = $this->getQueueCap();
+		if (!is_null($queueCap) && ($numSchedJobs >= $queueCap)) {
+			// flash a warning to the user about the queue cap
 			$name = Auth::user()->name;
 			$message = <<<MSG
-Job submission temporarily blocked for user $name!<br>
-The maximum number of jobs: $maxSchedJobs, has been reached
+Job submission temporarily blocked for user: $name!<br>
+The maximum number of jobs: $queueCap, has been reached. <br>
+Wait for some jobs to complete or delete stalled jobs.
 MSG;
-			Session::flash('alert-danger', $message);
-			return redirect("/snp2gene");
+			$request->session()->flash("alert-warning", $message);
+			return redirect()->back();
 			//return view('pages.snp2gene', ['id' => null, 'status'=> null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
 		}
-		
-		// $njobs = collect(DB::select('SELECT jobID FROM SubmitJobs WHERE email=? AND (status="NEW" OR status="QUEUED" OR status="RUNNING")', [$email]))->count();
-		// if($njobs>10){
-		// 	return view('pages.snp2gene', ['id' => null, 'status'=>'FullJobs', 'page'=>'snp2gene', 'prefix'=>'jobs']);
-		// }
-		// check file type
+
 		if($request -> hasFile('GWASsummary')){
 			$type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
 			if($type != "text/plain" && $type != "application/zip" && $type != "application/x-gzip"){
@@ -321,18 +327,18 @@ MSG;
 		$becol = "NA";
 		$secol = "NA";
 
-		if($request->filled('chrcol')){$chrcol = $request->input('chrcol');}
-		if($request->filled('poscol')){$poscol = $request->input('poscol');}
-		if($request->filled('rsIDcol')){$rsIDcol = $request->input('rsIDcol');}
-		if($request->filled('pcol')){$pcol = $request->input('pcol');}
-		if($request->filled('eacol')){$eacol = $request->input('eacol');}
-		if($request->filled('neacol')){$neacol = $request->input('neacol');}
-		if($request->filled('orcol')){$orcol = $request->input('orcol');}
-		if($request->filled('becol')){$becol = $request->input('becol');}
-		if($request->filled('secol')){$secol = $request->input('secol');}
+		if($request -> filled('chrcol')){$chrcol = $request->input('chrcol');}
+		if($request -> filled('poscol')){$poscol = $request->input('poscol');}
+		if($request -> filled('rsIDcol')){$rsIDcol = $request->input('rsIDcol');}
+		if($request -> filled('pcol')){$pcol = $request->input('pcol');}
+		if($request -> filled('eacol')){$eacol = $request->input('eacol');}
+		if($request -> filled('neacol')){$neacol = $request->input('neacol');}
+		if($request -> filled('orcol')){$orcol = $request->input('orcol');}
+		if($request -> filled('becol')){$becol = $request->input('becol');}
+		if($request -> filled('secol')){$secol = $request->input('secol');}
 
 		// MHC region
-		if($request->filled('MHCregion')){
+		if($request -> filled('MHCregion')){
 			$exMHC=1;
 			$MHCopt = $request->input('MHCopt');
 		}else{
@@ -370,9 +376,9 @@ MSG;
 		// positional mapping
 		$posMapAnnot="NA";
 		$posMapWindowSize="NA";
-		if($request->filled('posMap')){
+		if($request -> filled('posMap')){
 			$posMap=1;
-			if($request->filled('posMapWindow')){
+			if($request -> filled('posMapWindow')){
 				$posMapWindowSize=$request -> input('posMapWindow');
 				$posMapAnnot="NA";
 			}else{
@@ -383,18 +389,18 @@ MSG;
 			$posMap=0;
 		}
 
-		if($request->filled('posMapCADDcheck')){
+		if($request -> filled('posMapCADDcheck')){
 			$posMapCADDth = $request -> input('posMapCADDth');
 		}else{
 			$posMapCADDth = 0;
 		}
-		if($request->filled('posMapRDBcheck')){
+		if($request -> filled('posMapRDBcheck')){
 			$posMapRDBth = $request -> input('posMapRDBth');
 		}else{
 			$posMapRDBth = "NA";
 		}
 
-		if($request->filled('posMapChr15check')){
+		if($request -> filled('posMapChr15check')){
 			$temp = $request -> input('posMapChr15Ts');
 			$posMapChr15 = [];
 			foreach($temp as $ts){
@@ -410,25 +416,22 @@ MSG;
 			$posMapChr15Max = "NA";
 			$posMapChr15Meth = "NA";
 		}
-		$posMapAnnoDs = "NA";
-		if($request->has('posMapAnnoDs')) {
-			$posMapAnnoDs = $request->input('posMapAnnoDs');
-			if(count($posMapAnnoDs)==0){
-				$posMapAnnoDs = "NA";
-			}else{
-				$temp = [];
-				foreach($posMapAnnoDs as $ds){
-					if($ds != "null"){
-						$temp[] = $ds;
-					}
+		$posMapAnnoDs = $request -> input('posMapAnnoDs', []);
+		if(count($posMapAnnoDs)==0){
+			$posMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($posMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
 				}
-				$posMapAnnoDs = implode(":", $temp);
 			}
+			$posMapAnnoDs = implode(":", $temp);
 		}
 		$posMapAnnoMeth = $request -> input('posMapAnnoMeth');
 
 		// eqtl mapping
-		if($request->filled('eqtlMap')){
+		if($request -> filled('eqtlMap')){
 			$eqtlMap=1;
 			$temp = $request->input('eqtlMapTs');
 			// $eqtlMapGts = $request -> input('eqtlMapGts');
@@ -452,24 +455,24 @@ MSG;
 			$eqtlMap=0;
 			$eqtlMaptss = "NA";
 		}
-		if($request->filled('sigeqtlCheck')){
+		if($request -> filled('sigeqtlCheck')){
 			$sigeqtl = 1;
 			$eqtlP = 1;
 		}else{
 			$sigeqtl = 0;
 			$eqtlP = $request -> input('eqtlP');
 		}
-		if($request->filled('eqtlMapCADDcheck')){
+		if($request -> filled('eqtlMapCADDcheck')){
 			$eqtlMapCADDth = $request -> input('eqtlMapCADDth');
 		}else{
 			$eqtlMapCADDth = 0;
 		}
-		if($request->filled('eqtlMapRDBcheck')){
+		if($request -> filled('eqtlMapRDBcheck')){
 			$eqtlMapRDBth = $request -> input('eqtlMapRDBth');
 		}else{
 			$eqtlMapRDBth = "NA";
 		}
-		if($request->filled('eqtlMapChr15check')){
+		if($request -> filled('eqtlMapChr15check')){
 			$temp = $request -> input('eqtlMapChr15Ts');
 			$eqtlMapChr15 = [];
 			foreach($temp as $ts){
@@ -485,22 +488,18 @@ MSG;
 			$eqtlMapChr15Max = "NA";
 			$eqtlMapChr15Meth = "NA";
 		}
-		$eqtlMapAnnoDs = "NA";
-		if($request->has('eqtlMapAnnoDs')) {
-			$eqtlMapAnnoDs = $request -> input('eqtlMapAnnoDs');
-			if(count($eqtlMapAnnoDs)==0){
-				$eqtlMapAnnoDs = "NA";
-			}else{
-				$temp = [];
-				foreach($eqtlMapAnnoDs as $ds){
-					if($ds != "null"){
-						$temp[] = $ds;
-					}
+		$eqtlMapAnnoDs = $request -> input('eqtlMapAnnoDs',[]);
+		if(count($eqtlMapAnnoDs)==0){
+			$eqtlMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($eqtlMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
 				}
-				$eqtlMapAnnoDs = implode(":", $temp);
 			}
+			$eqtlMapAnnoDs = implode(":", $temp);
 		}
-
 		$eqtlMapAnnoMeth = $request -> input('eqtlMapAnnoMeth');
 
 		// chromatin interaction mapping
@@ -574,17 +573,17 @@ MSG;
 		}
 
 
-		if($request->filled('ciMapCADDcheck')){
+		if($request -> filled('ciMapCADDcheck')){
 			$ciMapCADDth = $request -> input('ciMapCADDth');
 		}else{
 			$ciMapCADDth = 0;
 		}
-		if($request->filled('ciMapRDBcheck')){
+		if($request -> filled('ciMapRDBcheck')){
 			$ciMapRDBth = $request -> input('ciMapRDBth');
 		}else{
 			$ciMapRDBth = "NA";
 		}
-		if($request->filled('ciMapChr15check')){
+		if($request -> filled('ciMapChr15check')){
 			$temp = $request -> input('ciMapChr15Ts');
 			$ciMapChr15 = [];
 			foreach($temp as $ts){
@@ -600,36 +599,31 @@ MSG;
 			$ciMapChr15Max = "NA";
 			$ciMapChr15Meth = "NA";
 		}
-
-		$ciMapAnnoDs = "NA";
-		if($request->has('ciMapAnnoDs')){
-			$ciMapAnnoDs = $request -> input('ciMapAnnoDs');
-			if(count($ciMapAnnoDs)==0){
-				$ciMapAnnoDs = "NA";
-			}else{
-				$temp = [];
-				foreach($ciMapAnnoDs as $ds){
-					if($ds != "null"){
-						$temp[] = $ds;
-					}
+		$ciMapAnnoDs = $request -> input('ciMapAnnoDs',[]);
+		if(count($ciMapAnnoDs)==0){
+			$ciMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($ciMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
 				}
-				$ciMapAnnoDs = implode(":", $temp);
 			}
+			$ciMapAnnoDs = implode(":", $temp);
 		}
-
 		$ciMapAnnoMeth = $request -> input('ciMapAnnoMeth');
 
 		// MAGMA option
 		$magma = 0;
 		$magma_window = "NA";
 		$magma_exp = "NA";
-		if($request->filled('magma')){
+		if($request -> filled('magma')){
 			$magma = 1;
 			$magma_window = $request->input("magma_window");
 			$magma_exp = implode(":", $request->input('magma_exp'));
 		}
 
-		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$app_config = parse_ini_file(scripts_path('app.config'), false, INI_SCANNER_RAW);
 
 		// write parameter into a file
 		$paramfile = $filedir.'/params.config';
@@ -770,9 +764,9 @@ MSG;
 		$posMap = 0;
 		$posMapWindowSize="NA";
 		$posMapAnnot="NA";
-		if($request->filled('geneMap_posMap')){
+		if($request -> filled('geneMap_posMap')){
 			$posMap=1;
-			if($request->filled('geneMap_posMapWindow')){
+			if($request -> filled('geneMap_posMapWindow')){
 				$posMapWindowSize=$request -> input('geneMap_posMapWindow');
 				$posMapAnnot="NA";
 			}else{
@@ -780,18 +774,18 @@ MSG;
 				$posMapAnnot=implode(":",$request -> input('geneMap_posMapAnnot'));
 			}
 		}
-		if($request->filled('geneMap_posMapCADDcheck')){
+		if($request -> filled('geneMap_posMapCADDcheck')){
 			$posMapCADDth = $request -> input('geneMap_posMapCADDth');
 		}else{
 			$posMapCADDth = 0;
 		}
-		if($request->filled('geneMap_posMapRDBcheck')){
+		if($request -> filled('geneMap_posMapRDBcheck')){
 			$posMapRDBth = $request -> input('geneMap_posMapRDBth');
 		}else{
 			$posMapRDBth = "NA";
 		}
 
-		if($request->filled('geneMap_posMapChr15check')){
+		if($request -> filled('geneMap_posMapChr15check')){
 			$temp = $request -> input('geneMap_posMapChr15Ts');
 			$posMapChr15 = [];
 			foreach($temp as $ts){
@@ -807,26 +801,22 @@ MSG;
 			$posMapChr15Max = "NA";
 			$posMapChr15Meth = "NA";
 		}
-
-		$posMapAnnoDs = "NA";
-		if($request->filled('geneMap_posMapAnnoDs')) {
-			$posMapAnnoDs = $request->input('geneMap_posMapAnnoDs');
-			if(count($posMapAnnoDs)==0){
-				$posMapAnnoDs = "NA";
-			}else{
-				$temp = [];
-				foreach($posMapAnnoDs as $ds){
-					if($ds != "null"){
-						$temp[] = $ds;
-					}
+		$posMapAnnoDs = $request -> input('geneMap_posMapAnnoDs',[]);
+		if(count($posMapAnnoDs)==0){
+			$posMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($posMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
 				}
-				$posMapAnnoDs = implode(":", $temp);
 			}
+			$posMapAnnoDs = implode(":", $temp);
 		}
 		$posMapAnnoMeth = $request -> input('geneMap_posMapAnnoMeth');
 
 		// eqtl mapping
-		if($request->filled('geneMap_eqtlMap')){
+		if($request -> filled('geneMap_eqtlMap')){
 			$eqtlMap=1;
 			$temp = $request -> input('geneMap_eqtlMapTs');
 			// $eqtlMapGts = $request -> input('geneMap_eqtlMapGts');
@@ -850,24 +840,24 @@ MSG;
 			$eqtlMap=0;
 			$eqtlMaptss = "NA";
 		}
-		if($request->filled('sigeqtlCheck')){
+		if($request -> filled('sigeqtlCheck')){
 			$sigeqtl = 1;
 			$eqtlP = 1;
 		}else{
 			$sigeqtl = 0;
 			$eqtlP = $request -> input('eqtlP');
 		}
-		if($request->filled('geneMap_eqtlMapCADDcheck')){
+		if($request -> filled('geneMap_eqtlMapCADDcheck')){
 			$eqtlMapCADDth = $request -> input('geneMap_eqtlMapCADDth');
 		}else{
 			$eqtlMapCADDth = 0;
 		}
-		if($request->filled('geneMap_eqtlMapRDBcheck')){
+		if($request -> filled('geneMap_eqtlMapRDBcheck')){
 			$eqtlMapRDBth = $request -> input('geneMap_eqtlMapRDBth');
 		}else{
 			$eqtlMapRDBth = "NA";
 		}
-		if($request->filled('geneMap_eqtlMapChr15check')){
+		if($request -> filled('geneMap_eqtlMapChr15check')){
 			$temp = $request -> input('geneMap_eqtlMapChr15Ts');
 			$eqtlMapChr15 = [];
 			foreach($temp as $ts){
@@ -883,21 +873,17 @@ MSG;
 			$eqtlMapChr15Max = "NA";
 			$eqtlMapChr15Meth = "NA";
 		}
-
-		$eqtlMapAnnoDs = "NA";
-		if($request->filled('geneMap_eqtlMapAnnoDs')) {
-			$eqtlMapAnnoDs = $request -> input('geneMap_eqtlMapAnnoDs');
-			if(count($eqtlMapAnnoDs)==0){
-				$eqtlMapAnnoDs = "NA";
-			}else{
-				$temp = [];
-				foreach($eqtlMapAnnoDs as $ds){
-					if($ds != "null"){
-						$temp[] = $ds;
-					}
+		$eqtlMapAnnoDs = $request -> input('geneMap_eqtlMapAnnoDs',[]);
+		if(count($eqtlMapAnnoDs)==0){
+			$eqtlMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($eqtlMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
 				}
-				$eqtlMapAnnoDs = implode(":", $temp);
 			}
+			$eqtlMapAnnoDs = implode(":", $temp);
 		}
 		$eqtlMapAnnoMeth = $request -> input('geneMap_eqtlMapAnnoMeth');
 
@@ -972,17 +958,17 @@ MSG;
 		}
 
 
-		if($request->filled('geneMap_ciMapCADDcheck')){
+		if($request -> filled('geneMap_ciMapCADDcheck')){
 			$ciMapCADDth = $request -> input('geneMap_ciMapCADDth');
 		}else{
 			$ciMapCADDth = 0;
 		}
-		if($request >filled('geneMap_ciMapRDBcheck')){
+		if($request -> filled('geneMap_ciMapRDBcheck')){
 			$ciMapRDBth = $request -> input('geneMap_ciMapRDBth');
 		}else{
 			$ciMapRDBth = "NA";
 		}
-		if($request->filled('geneMap_ciMapChr15check')){
+		if($request -> filled('geneMap_ciMapChr15check')){
 			$temp = $request -> input('geneMap_ciMapChr15Ts');
 			$ciMapChr15 = [];
 			foreach($temp as $ts){
@@ -998,20 +984,17 @@ MSG;
 			$ciMapChr15Max = "NA";
 			$ciMapChr15Meth = "NA";
 		}
-		$ciMapAnnoDs = "NA";
-		if($request->filled('geneMap_ciMapAnnoDs')) {
-			$ciMapAnnoDs = $request -> input('geneMap_ciMapAnnoDs');
-			if(count($ciMapAnnoDs)==0){
-				$ciMapAnnoDs = "NA";
-			}else{
-				$temp = [];
-				foreach($ciMapAnnoDs as $ds){
-					if($ds != "null"){
-						$temp[] = $ds;
-					}
+		$ciMapAnnoDs = $request -> input('geneMap_ciMapAnnoDs',[]);
+		if(count($ciMapAnnoDs)==0){
+			$ciMapAnnoDs = "NA";
+		}else{
+			$temp = [];
+			foreach($ciMapAnnoDs as $ds){
+				if($ds != "null"){
+					$temp[] = $ds;
 				}
-				$ciMapAnnoDs = implode(":", $temp);
 			}
+			$ciMapAnnoDs = implode(":", $temp);
 		}
 		$ciMapAnnoMeth = $request -> input('geneMap_ciMapAnnoMeth');
 
@@ -1106,32 +1089,32 @@ MSG;
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 		// $zip = new ZipArchive();
 		$files = [];
-		if($request->filled('paramfile')){ $files[] = "params.config";}
-		if($request->filled('indSNPfile')){$files[] = "IndSigSNPs.txt";}
-		if($request->filled('leadfile')){$files[] = "leadSNPs.txt";}
-		if($request->filled('locifile')){$files[] = "GenomicRiskLoci.txt";}
-		if($request->filled('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
-		if($request->filled('annovfile')){$files[] = "annov.txt"; $files[] = "annov.stats.txt";}
-		if($request->filled('annotfile')){
+		if($request -> filled('paramfile')){ $files[] = "params.config";}
+		if($request -> filled('indSNPfile')){$files[] = "IndSigSNPs.txt";}
+		if($request -> filled('leadfile')){$files[] = "leadSNPs.txt";}
+		if($request -> filled('locifile')){$files[] = "GenomicRiskLoci.txt";}
+		if($request -> filled('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
+		if($request -> filled('annovfile')){$files[] = "annov.txt"; $files[] = "annov.stats.txt";}
+		if($request -> filled('annotfile')){
 			$files[] = "annot.txt";
 			if(File::exists($filedir."annot.bed")){$files[] = "annot.bed";}
 		}
-		if($request->filled('genefile')){$files[] = "genes.txt";}
-		if($request->filled('eqtlfile')){
+		if($request -> filled('genefile')){$files[] = "genes.txt";}
+		if($request -> filled('eqtlfile')){
 			if(File::exists($filedir."eqtl.txt")){
 				$files[] = "eqtl.txt";
 			}
 		}
-		if($request->filled('cifile')){
+		if($request -> filled('cifile')){
 			if(File::exists($filedir."ci.txt")){
 				$files[] = "ci.txt";
 				$files[] = "ciSNPs.txt";
 				$files[] = "ciProm.txt";
 			}
 		}
-		// if($request -> filled('exacfile')){$files[] = $filedir."ExAC.txt";}
-		if($request->filled('gwascatfile')){$files[] = "gwascatalog.txt";}
-		if($request->filled('magmafile')){
+		// if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
+		if($request -> filled('gwascatfile')){$files[] = "gwascatalog.txt";}
+		if($request -> filled('magmafile')){
 			$files[] = "magma.genes.out";
 			$files[] = "magma.genes.raw";
 			if(File::exists($filedir."magma.sets.out")){
@@ -1172,7 +1155,7 @@ MSG;
 			File::delete($zipfile);
 		}
 		$zip -> open($zipfile, \ZipArchive::CREATE);
-		$zip->addFile(storage_path().'/README', "README");
+		$zip->addFile(public_path().'/README', "README");
 		foreach($files as $f){
 			$zip->addFile($filedir.$f, $f);
 		}

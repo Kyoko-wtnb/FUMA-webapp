@@ -1,3 +1,5 @@
+<option class="level1" value="null">EyeGEx (1)</option>
+<option class="level2" value="EyeGEx/EyeGEx.txt.gz">EyeGEx</option>
 <option class="level1" value="null">eQTL catalogue (45)</option>
 <option class="level2" value="eQTLcatalogue/Alasoo_2018_ge_macrophage_IFNg_Salmonella.txt.gz">Alasoo 2018 macrophage IFNg Salmonella</option>
 <option class="level2" value="eQTLcatalogue/Alasoo_2018_ge_macrophage_IFNg.txt.gz">Alasoo 2018 macrophage IFNg</option>

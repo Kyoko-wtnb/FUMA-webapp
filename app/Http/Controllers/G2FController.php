@@ -25,7 +25,12 @@ class G2FController extends Controller
 
 	public function __construct(){
 		// Protect this Controller
-		$this->middleware('auth');
+		// auth is set in routes.php this is duplicate
+		// $this->middleware('auth');
+
+		// Store user
+		// Replace by Auth::user()
+		// $this->user = Auth::user();
 	}
 
 	public function authcheck($jobID){
@@ -81,7 +86,7 @@ class G2FController extends Controller
 		File::makeDirectory($filedir);
 		$filedir = $filedir.'/';
 
-		if($request->filled('genes')){
+		if($request -> filled('genes')){
 			$gtype = "text";
 			$gval = $request -> input('genes');
 			$gval = preg_split('/[\n\r]+/', $gval);
@@ -92,7 +97,7 @@ class G2FController extends Controller
 			$request->file('genesfile')->move($filedir, $_FILES["genesfile"]["name"]);
 		}
 
-		if($request->filled('genetype')){
+		if($request -> filled('genetype')){
 			$bkgtype = "select";
 			$bkgval = $request -> input('genetype');
 			$bkgval = implode(':', $bkgval);
@@ -128,7 +133,7 @@ class G2FController extends Controller
 
 		$gene_exp = implode(":", $request->input("gene_exp"));
 
-		if($request->filled('MHC')){
+		if($request -> filled('MHC')){
 			$MHC = 1;
 		}else{
 			$MHC = 0;
@@ -138,7 +143,7 @@ class G2FController extends Controller
 		$adjPcut = $request -> input('adjPcut');
 		$minOverlap = $request -> input('minOverlap');
 
-		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$app_config = parse_ini_file(scripts_path('app.config'), false, INI_SCANNER_RAW);
 
 		// write parameters to config file
 		$paramfile = $filedir.'params.config';
@@ -187,16 +192,15 @@ class G2FController extends Controller
 	public function geneQuery(Request $request){
 		$filedir = $request -> input('filedir');
 
-		$script = storage_path()."/scripts/gene2func.R";
+		$script = scripts_path('gene2func.R');
 		exec("Rscript $script $filedir", $output, $error);
-		Log::info('gene2func.R output: ' . implode($output));
-		Log::info('gene2func.R error: ' . $error);
+		# Log::info('gene2func.R output: ' . implode($output));
+		# Log::info('gene2func.R error: ' . $error);
 
-		$script = storage_path()."/scripts/GeneSet.py";
-		Log::info('Calling: ' . $script . $filedir);
+		$script = scripts_path('GeneSet.py');
 		exec("python $script $filedir", $output2, $error2);
-		Log::info('GeneSet.py output: ' . implode($output2));
-		Log::info('GeneSet.py error: ' . $error2);
+		# Log::info('GeneSet.py output: ' . implode($output2));
+		# Log::info('GeneSet.py error: ' . $error2);
 		exec("find ".$filedir." -type d -exec chmod 775 {} \;");
 		exec("find ".$filedir." -type f -exec chmod 664 {} \;");
 	}

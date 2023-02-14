@@ -16,12 +16,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Log queue failures
         Queue::failing(function (JobFailed $event) {
-            // $event->connectionName
-            // $event->job
-            // $event->exception
-            $exception = $event->exception->getMessage();
-			Log::error('Queue job fail exception error: '.$exception);
+            Log :: error('Queue failed', array_combine(['name', 'job', 'exception'], [
+                $event->connectionName,
+                $event->job->getRawBody(),
+                $event->exception->getMessage(),
+            ]));
         });
     }
 

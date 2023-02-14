@@ -140,7 +140,7 @@ var loggedin = "{{ Auth::check() }}";
 							Ensembl version:
 							<select class="form-control" id="ensembl" name="ensembl">
 								<option selected value="v92">v92</option>
-								<option value="v85">v85</option>
+								<!-- REMOVED: no longer supported by biomart option value="v85">v85</option-->
 							</select>
 						</span><br/>
 						<tab>
@@ -205,7 +205,7 @@ var loggedin = "{{ Auth::check() }}";
 
 				<div id="checkGenes"></div>
 				<div id="checkBkGenes"></div>
-				<input type="submit" value="Submit" class="btn btn-default" id="geneSubmit" name="geneSubmit"/><br/><br/>
+				<input type="submit" value="Submit" class="btn btn-primary" id="geneSubmit" name="geneSubmit"/><br/><br/>
 				{!! Form::close() !!}
 			</div>
 

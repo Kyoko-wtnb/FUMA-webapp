@@ -60,9 +60,8 @@ return [
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
-            'queue' => env('REDIS_QUEUE', 'default'),
+            'queue' => 'default',
             'retry_after' => 21600,
-            'block_for' => null,
         ],
 
     ],
@@ -85,16 +84,22 @@ return [
 
      /*
     |--------------------------------------------------------------------------
-    | Job limits for Roles
+    | Job limits
     |--------------------------------------------------------------------------
-    |
-    | These options configure the number of jobs that a usr can queue.
-    | and the maximum job length
-    | null indicates no limit.
-    | Timeout is in seconds
-    | Index names should correspond to role names
     */   
     'jobLimits' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Queue entry capping
+        |--------------------------------------------------------------------------
+        |
+        | These options place an upper limit on the number of NEW and RUNNING
+        | jobs a user may have in the queue. This cap is applied to snp2gene
+        | jobs and all users. The intention is to replace this with a more 
+        | sophisticated, per user-group tunable, implementation in a coming FUMA release.
+        |
+        */
+        'queue_cap' => 10, //set to null to remove the cap
 
         'maxJobs' => [
         /**

@@ -22,7 +22,11 @@ class CellController extends Controller
 
     public function __construct(){
 		// Protect this Controller
-		$this->middleware('auth');
+		// auth is set in routes.php this is duplicate
+		//$this->middleware('auth');
+		// Store user
+		// Replace by Auth::user()
+		// $this->user = Auth::user();
     }
 
 	public function authcheck($jobID){
@@ -84,8 +88,7 @@ class CellController extends Controller
 				$jobID = $job->jobID;
 				DB::table('celltype') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
-				$timeout = $this->getJobTimeoutForAuthUser();
-				$this->dispatch(new celltypeProcess($user, $jobID, $timeout)); // TODO add onQueue from user role here
+				$this->dispatch(new celltypeProcess($user, $jobID));
 			}
 		}
 		return;
@@ -146,7 +149,7 @@ class CellController extends Controller
 		if($request -> hasFile('genes_raw')){
 			$inputfile = $_FILES["genes_raw"]["name"];
 		}
-		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$app_config = parse_ini_file(scripts_path("app.config"), false, INI_SCANNER_RAW);
 		$paramfile = $filedir.'/params.config';
 		File::put($paramfile, "[jobinfo]\n");
 		File::append($paramfile, "created_at=$date\n");
@@ -235,7 +238,7 @@ class CellController extends Controller
 			File::delete($zipfile);
 		}
 		$zip -> open($zipfile, \ZipArchive::CREATE);
-		$zip->addFile(storage_path().'/README_cell', "README_cell");
+		$zip->addFile(public_path().'/README_cell', "README_cell");
 		foreach($files as $f){
 			if(FILE::exists($filedir.$f)){
 				$zip->addFile($filedir.$f, $f);
@@ -249,7 +252,7 @@ class CellController extends Controller
 		$id = $request->input('id');
 		$ds = $request->input('ds');
 		$filedir = config('app.jobdir').'/celltype/'.$id.'/';
-		$script = storage_path().'/scripts/celltype_perDatasetPlotData.py';
+		$script = scripts_path('celltype_perDatasetPlotData.py');
 		$json = shell_exec("python $script $filedir $ds");
 		return $json;
 	}
@@ -258,7 +261,7 @@ class CellController extends Controller
 		$id = $request->input('id');
 		$ds = $request->input('ds');
 		$filedir = config('app.jobdir').'/celltype/'.$id.'/';
-		$script = storage_path().'/scripts/celltype_stepPlotData.py';
+		$script = scripts_path('celltype_stepPlotData.py');
 		$json = shell_exec("python $script $filedir");
 		return $json;
 	}

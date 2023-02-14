@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'redis'),
+    'driver' => env('SESSION_DRIVER', 'file'),
 
     /*
     |--------------------------------------------------------------------------
@@ -139,6 +139,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Same-Site Cookies
+    |--------------------------------------------------------------------------
+    |
+    | This option determines how your cookies behave when cross-site requests
+    | take place, and can be used to mitigate CSRF attacks. By default, we
+    | do not enable this as other CSRF protection services are in place.
+    | see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+    |
+    | Supported: "lax", "strict"
+    |
+    */
+
+    'same_site' => 'lax',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Session Locking Directory
+    |--------------------------------------------------------------------------
+    |
+    | Use for session lock files by Rairlie\LockingSession\LockingSessionServiceProvider
+    | Set SESSION_LOCKDIR in the .env file.
+    |
+    */
+
+    'lockfile_dir' => env('SESSION_LOCKDIR', '/path/to/my/lockdir'),
+
+    /*
+    |--------------------------------------------------------------------------
     | HTTPS Only Cookies
     |--------------------------------------------------------------------------
     |
@@ -148,7 +176,7 @@ return [
     |
     */
 
-    'secure' => false,
+    'secure' => env('SESSION_SECURE_COOKIE', true),
 
     /*
     |--------------------------------------------------------------------------

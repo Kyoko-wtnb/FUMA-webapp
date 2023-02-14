@@ -2,13 +2,11 @@
 
 namespace fuma\Providers;
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
-
     /**
      * This namespace is applied to your controller routes.
      *
@@ -25,20 +23,22 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //
+
         parent::boot();
     }
 
     /**
      * Define the routes for the application.
      *
+     * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
-    public function map()
+    public function map(Router $router)
     {
-        $this->mapWebRoutes();
+        $this->mapWebRoutes($router);
 
-        // - no api routes currently
-        // $this->mapApiRoutes();
+        //
     }
 
     /**
@@ -46,15 +46,15 @@ class RouteServiceProvider extends ServiceProvider
      *
      * These routes all receive session state, CSRF protection, etc.
      *
+     * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
-    protected function mapWebRoutes()
+    protected function mapWebRoutes(Router $router)
     {
-        Route::group([
-            'middleware' => 'web',
-            'namespace' => $this->namespace,
+        $router->group([
+            'namespace' => $this->namespace, 'middleware' => 'web',
         ], function ($router) {
-            require base_path('routes/web.php');
+            require app_path('../routes/web.php');
         });
     }
 }

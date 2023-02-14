@@ -538,7 +538,22 @@ FUMA contains several data sources of eQTLs and each data source is described in
 			</div>
 		</div>
 	</p><br/>
-
+	
+	<h4><strong>15. EyeGEx </strong></h4>
+	<p><strong>Data source</strong><br/>
+		eQTL data was downloaded from the GTEx website <a href="https://gtexportal.org/home/datasets">https://gtexportal.org/home/datasets</a>. The file containing the cis-eQTLs can be downloaded from  <a href="https://storage.googleapis.com/gtex_external_datasets/eyegex_data/single_tissue_eqtl_data/Retina.nominal.eQTLs.with_thresholds.tar">https://storage.googleapis.com/gtex_external_datasets/eyegex_data/single_tissue_eqtl_data/Retina.nominal.eQTLs.with_thresholds.tar</a>.
+		All eQTLs identified in the data were included.
+	</p>
+	<p><strong>Description</strong><br/>
+		Please refer to the original study for more details (<a href="https://www.nature.com/articles/s41588-019-0351-9">Ratnapriya et al. 2019</a>).
+		Ensembl gene ID is used as provided in the original file. FDR adjusted P-values were calculated based on gene-level FDR threshold.
+		<br/>
+		The signed statistics are betas.
+	</p>
+	<p><strong>Samples</strong><br/>
+		The eQTLs were identified from 406 individuals.
+		<br/>
+	</p><br/>
 
 </div>
 <br/>

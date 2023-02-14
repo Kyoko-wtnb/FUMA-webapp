@@ -4,7 +4,10 @@
 <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
 <script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}"></script>
+<script type="text/javascript" src="{!! URL::asset('js/tutorial_utils.js') !!}"></script>
+<link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}?130">
 <script type="text/javascript">
+var page = "tutorial";
 var loggedin = "{{ Auth::check() }}";
 $(document).ready(function(){
 	var hashid = window.location.hash;

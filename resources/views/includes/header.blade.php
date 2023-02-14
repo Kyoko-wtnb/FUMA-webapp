@@ -56,13 +56,15 @@
 							@endrole
 							</li>
 							<li>
-								<a href="{{ url('/logout') }}"
-    								onclick="event.preventDefault();
-             						document.getElementById('logout-form').submit();">
-    								Logout
+								<a href="{{ url('/logout') }}" id="fuma-logout-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+									<i class="fa fa-btn fa-sign-out"></i>
+									Logout
 								</a>
 							</li>
 						</ul>
+						<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+							{{ csrf_field() }}
+						</form>
 					</li>
 				@endif
 			</ul>

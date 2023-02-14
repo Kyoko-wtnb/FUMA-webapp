@@ -7,8 +7,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-use Auth;
 use Config;
+use Auth;
 
 class Controller extends BaseController
 {
@@ -16,7 +16,7 @@ class Controller extends BaseController
 
     /**
      * Returns the job timeout for the authorized user
-     * based on thier Roles. Returns 0 if no user is authorized
+     * based on their Roles. Returns 0 if no user is authorized
      * 
      * A null return indicates no timeout
      */
@@ -64,4 +64,13 @@ class Controller extends BaseController
         }, 0);
     }
 
+    /*
+     * Returns the queue cap value
+     * 
+     * A null return indicates no timeout
+     */
+    public function getQueueCap() {
+        $queue_cap = config('queue.jobLimits.queue_cap', 10);
+        return $queue_cap;
+    }
 }

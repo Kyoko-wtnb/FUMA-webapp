@@ -13,7 +13,7 @@ class CreatePublicResults extends Migration
     public function up()
     {
 		Schema::create('PublicResults', function (Blueprint $table) {
-            $table->increments('id');
+            $table->bigIncrements('id')->change();
 			$table->integer('jobID');
 			$table->integer('g2f_jobID');
 			$table->string('title');
@@ -36,6 +36,8 @@ class CreatePublicResults extends Migration
      */
     public function down()
     {
-        Schema::drop('PublicResults');
+		Schema::table('PublicResults', function (Blueprint $table) {
+            Schema::drop('PublicResults');
+        });
     }
 }

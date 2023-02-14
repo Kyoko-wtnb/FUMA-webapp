@@ -47,36 +47,30 @@ class PermissionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        try {
-            $this->validate($request, [
-                'name'=>'required|max:40',
-            ]);
+        $this->validate($request, [
+            'name'=>'required|max:40',
+        ]);
 
-            $name = $request['name'];
-            $permission = new Permission();
-            $permission->name = $name;
+        $name = $request['name'];
+        $permission = new Permission();
+        $permission->name = $name;
 
-            $roles = $request['roles'];
+        $roles = $request['roles'];
 
-            $permission->save();
+        $permission->save();
 
-            if (!empty($request['roles'])) { //If one or more role is selected
-                foreach ($roles as $role) {
-                    $r = Role::where('id', '=', $role)->firstOrFail(); //Match input role to db record
+        if (!empty($request['roles'])) { //If one or more role is selected
+            foreach ($roles as $role) {
+                $r = Role::where('id', '=', $role)->firstOrFail(); //Match input role to db record
 
-                    $permission = Permission::where('name', '=', $name)->first(); //Match input //permission to db record
-                    $r->givePermissionTo($permission);
-                }
+                $permission = Permission::where('name', '=', $name)->first(); //Match input //permission to db record
+                $r->givePermissionTo($permission);
             }
-
-            return redirect()->route('permissions.index')
-                ->with('alert-success',
-                'Permission'. $permission->name.' added!');
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return back()->with('alert-danger', $e->getMessage());
         }
 
+        return redirect()->route('permissions.index')
+            ->with('alert-success',
+            'Permission'. $permission->name.' added!');
     }
 
     /**
@@ -119,8 +113,7 @@ class PermissionController extends Controller
 
         return redirect()->route('permissions.index')
             ->with('alert-success',
-             'Permission'. $permission->name.' updated!');
-
+            'Permission'. $permission->name.' updated!');
     }
     /**
      * Remove the specified resource from storage.

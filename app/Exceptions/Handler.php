@@ -4,11 +4,13 @@ namespace fuma\Exceptions;
 
 use Exception;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Auth\AuthenticationException;
+use Illuminate\Session\TokenMismatchException;
+use Session;
 
 class Handler extends ExceptionHandler
 {
@@ -22,44 +24,10 @@ class Handler extends ExceptionHandler
         HttpException::class,
         ModelNotFoundException::class,
         ValidationException::class,
+        TokenMismatchException::class,    
     ];
 
-    /**
-     * Report or log an exception.
-     *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @param  \Exception  $e
-     * @return void
-     */
-    public function report(Exception $e)
-    {
-        parent::report($e);
-    }
 
-    /**
-     * Determine if the exception should be reported.
-     *
-     * @param  \Exception  $e
-     * @return bool
-     */
-    public function shouldReport(Exception $e)
-    {
-        return true;
-    }
-
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $e
-     * @return \Illuminate\Http\Response
-     */
-    public function render($request, Exception $e)
-    {
-        return parent::render($request, $e);
-    }
-    
     /**
      * Convert an authentication exception into an unauthenticated response.
      *
@@ -75,4 +43,41 @@ class Handler extends ExceptionHandler
 
         return redirect()->guest('login');
     }
+
+    /**
+     * Report or log an exception.
+     *
+     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
+     *
+     * @param  \Exception  $e
+     * @return void
+     */
+    public function report(Exception $e)
+    {
+        parent::report($e);
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Exception  $e
+     * @return \Illuminate\Http\Response
+     */
+    public function render($request, Exception $e)
+    {
+        if ($e instanceof TokenMismatchException) {
+            Session::flash('error_message', 'Your login session has expired. Please login again');
+            return redirect('/login');
+        }
+        return parent::render($request, $e);
+    }
+
+    /**
+     */
+    public function shouldReport(Exception $e)
+    {
+        $this->appExceptionHandler->shouldReport($e);
+    }
+
 }

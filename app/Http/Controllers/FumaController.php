@@ -9,6 +9,7 @@ use fuma\SubmitJob;
 use fuma\Http\Requests;
 use fuma\Http\Controllers\Controller;
 use Symfony\Component\Process\Process;
+use Log;
 use View;
 use Auth;
 use Storage;
@@ -20,7 +21,7 @@ use Mail;
 class FumaController extends Controller
 {
 	public function appinfo(){
-		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$app_config = parse_ini_file(scripts_path("app.config"), false, INI_SCANNER_RAW);
 		$out["ver"] = $app_config['FUMA'];
 		$out["user"] = DB::table('users')->count();
 		$out["s2g"] = collect(DB::select("SELECT MAX(jobID) as max from SubmitJobs"))->first()->max;
@@ -85,7 +86,7 @@ class FumaController extends Controller
 		$search = $request -> input('search');
 		$search = $search['value'];
 
-		$script = storage_path().'/scripts/dt.py';
+		$script = scripts_path('dt.py');
 		$out = shell_exec("python $script $filedir $fin $draw $cols $order_column $order_dir $start $length $search");
 		echo $out;
 	}
@@ -194,7 +195,7 @@ class FumaController extends Controller
 
 	public function MAGMA_expPlot($prefix, $jobID){
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$jobID.'/';
-		$script = storage_path()."/scripts/magma_expPlot.py";
+		$script = scripts_path('magma_expPlot.py');
 	    $data = shell_exec("python $script $filedir");
 		return $data;
 	}
@@ -206,7 +207,7 @@ class FumaController extends Controller
       $rowI = $request->input('rowI');
       $filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
-      $script = storage_path()."/scripts/locusPlot.py";
+      $script = scripts_path('locusPlot.py');
       $out = shell_exec("python $script $filedir $rowI $type");
       return $out;
     }
@@ -224,10 +225,10 @@ class FumaController extends Controller
 		$Chr15=0;
 		$eqtl=0;
 		$ci=0;
-		if($request->filled('annotPlot_GWASp')){$GWAS=1;}
-		if($request->filled('annotPlot_CADD')){$CADD=1;}
-		if($request->filled('annotPlot_RDB')){$RDB=1;}
-		if($request->filled('annotPlot_Chrom15')){
+		if($request -> filled('annotPlot_GWASp')){$GWAS=1;}
+		if($request -> filled('annotPlot_CADD')){$CADD=1;}
+		if($request -> filled('annotPlot_RDB')){$RDB=1;}
+		if($request -> filled('annotPlot_Chrom15')){
 			$Chr15=1;
 			$temp = $request -> input('annotPlotChr15Ts');
 			$Chr15cells = [];
@@ -240,8 +241,8 @@ class FumaController extends Controller
 		}else{
 			$Chr15cells="NA";
 		}
-		if($request->filled('annotPlot_eqtl')){$eqtl=1;}
-		if($request->filled('annotPlot_ci')){$ci=1;}
+		if($request -> filled('annotPlot_eqtl')){$eqtl=1;}
+		if($request -> filled('annotPlot_ci')){$ci=1;}
 
 		return view('pages.annotPlot', ['id'=>$id, 'prefix'=>$prefix, 'type'=>$type, 'rowI'=>$rowI,
 			'GWASplot'=>$GWAS, 'CADDplot'=>$CADD, 'RDBplot'=>$RDB, 'eqtlplot'=>$eqtl,
@@ -263,7 +264,7 @@ class FumaController extends Controller
 
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 
-		$script = storage_path()."/scripts/annotPlot.py";
+		$script = scripts_path('annotPlot.py');
 	    $data = shell_exec("python $script $filedir $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells");
 		return $data;
 	}
@@ -282,7 +283,7 @@ class FumaController extends Controller
 		$params = parse_ini_file($filedir."params.config", false, INI_SCANNER_RAW);
 		$ensembl = $params['ensembl'];
 
-		$script = storage_path()."/scripts/annotPlot.R";
+		$script = scripts_path('annotPlot.R');
 		$data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl");
 		$data = explode("\n", $data);
 		$data = $data[count($data)-1];
@@ -290,7 +291,7 @@ class FumaController extends Controller
 	}
 
 	public function legendText($file){
-		$f = storage_path().'/legends/'.$file;
+		$f = scripts_path('legends/'.$file);
 		if(file_exists($f)){
 			$file = fopen($f, 'r');
 			$header = fgetcsv($file, 0, "\t");
@@ -434,12 +435,46 @@ class FumaController extends Controller
 			File::delete($zipfile);
 		}
 		$zip -> open($zipfile, \ZipArchive::CREATE);
-		$zip->addFile(storage_path().'/README_g2f', "README_g2f");
+		$zip->addFile(public_path().'/README_g2f', "README_g2f");
 		foreach($files as $f){
 			$zip->addFile($filedir.$f, $f);
 		}
 		$zip -> close();
 		return response() -> download($zipfile);
+	}
+
+	public function download_variants(Request $request) {
+		$code = $request->input('variant_code');
+		# Log::error("Variant code $code");
+		$path = null;
+		$name = null;
+		switch ($code) {
+			case "ALL":
+				$name = "1KGphase3ALLvariants.txt.gz";
+				break;
+			case "AFR":
+				$name = "1KGphase3AFRvariants.txt.gz";
+				break;
+			case "AMR":
+				$name = "1KGphase3AMRvariants.txt.gz";
+				break;
+			case "EAS":
+				$name = "1KGphase3EASvariants.txt.gz";
+				break;
+			case "EUR":
+				$name = "1KGphase3EURvariants.txt.gz";
+				break;
+			case "SAS":
+				$name = "1KGphase3SASvariants.txt.gz";
+				break;
+			default:
+				return redirect()->back();
+
+		}
+		$path = config("app.downloadsDir")."/$name";
+		# Log::error("Variant path $path");
+		$headers = array('Content-Type: application/gzip');
+		return response()->download($path, $name, $headers);
 	}
 
 	public function g2f_d3text($prefix, $id, $file){
@@ -482,11 +517,14 @@ class FumaController extends Controller
 			$filedir .= 'g2f/';
 		}
 
-		$lines = file($filedir."summary.txt");
-		$out = [];
-		foreach($lines as $l){
-			$l = preg_split("/\t/", chop($l));
-			$out[] = [$l[0], $l[1]];
+		$out = [["No sumary table found.","GENE2FUNC Job ID:".$id]];
+		if (file_exists($filedir."summary.txt")) {
+			$lines = file($filedir."summary.txt");
+			$out = [];
+			foreach($lines as $l){
+				$l = preg_split("/\t/", chop($l));
+				$out[] = [$l[0], $l[1]];
+			}
 		}
 		return json_encode($out);
 	}
@@ -507,7 +545,7 @@ class FumaController extends Controller
 		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
-		$script = storage_path()."/scripts/g2f_expPlot.py";
+		$script = scripts_path('g2f_expPlot.py');
 	    $data = shell_exec("python $script $filedir $dataset");
 		return $data;
 	}
@@ -517,7 +555,7 @@ class FumaController extends Controller
 		if($prefix=="public"){
 			$filedir .= 'g2f/';
 		}
-		$script = storage_path()."/scripts/g2f_DEGPlot.py";
+		$script = scripts_path('g2f_DEGPlot.py');
 	    $data = shell_exec("python $script $filedir");
 		return $data;
 	}

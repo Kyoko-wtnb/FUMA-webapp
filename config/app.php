@@ -58,7 +58,18 @@ return [
 
     'gwasDBdir' => env('APP_GWASDBDIR', ''),
 
-	/*
+    /*
+    |--------------------------------------------------------------------------
+    | downloads directory
+    |--------------------------------------------------------------------------
+    |
+    | Directory used for miscellaneous downloadable references (e.g. variant files)
+    |
+    */
+
+    'downloadsDir' => env('APP_DOWNLOADS', ''),
+
+    /*
     |--------------------------------------------------------------------------
     | Developper's email address
     |--------------------------------------------------------------------------
@@ -93,7 +104,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG', true),
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -107,6 +118,17 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application name
+    |--------------------------------------------------------------------------
+    |
+    | This application name
+    |
+    */
+
+    'name' => env('APP_NAME', 'fuma'),
 
     /*
     |--------------------------------------------------------------------------
@@ -191,11 +213,6 @@ return [
     'providers' => [
 
         /*
-         * Debug
-         */
-        Barryvdh\Debugbar\ServiceProvider::class,
-
-        /*
          * Laravel Framework Service Providers...
          */
         Illuminate\Auth\AuthServiceProvider::class,
@@ -216,7 +233,8 @@ return [
         Illuminate\Queue\QueueServiceProvider::class,
         Illuminate\Redis\RedisServiceProvider::class,
         Illuminate\Auth\Passwords\PasswordResetServiceProvider::class,
-        Illuminate\Session\SessionServiceProvider::class,
+        //Illuminate\Session\SessionServiceProvider::class,
+        Rairlie\LockingSession\LockingSessionServiceProvider::class,
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
@@ -226,10 +244,14 @@ return [
          */
         fuma\Providers\AppServiceProvider::class,
         fuma\Providers\AuthServiceProvider::class,
-        fuma\Providers\BroadcastServiceProvider::class,
+        //fuma\Providers\BroadcastServiceProvider::class,
         fuma\Providers\EventServiceProvider::class,
         fuma\Providers\RouteServiceProvider::class,
 
+        'Collective\Html\HtmlServiceProvider',
+        'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
+        // GeneaLabs\LaravelCaffeine\LaravelCaffeineServiceProvider::class
+        Laravel\Tinker\TinkerServiceProvider::class,
 
         /*
          * User permissions
@@ -237,16 +259,11 @@ return [
         Spatie\Permission\PermissionServiceProvider::class, 
 
         /*
-         * HTMLform builder
+         * HTMLform builder - 
+         * supplies the Form class used in the permission/role forms
+         * see https://laravelcollective.com/docs/5.8/html
          */
         Collective\Html\HtmlServiceProvider::class,
-        //'Collective\Html\HtmlServiceProvider',
-        'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
-
-        /*
-         * Tinker command line util
-         */
-        Laravel\Tinker\TinkerServiceProvider::class,
     ],
 
     /*
@@ -271,7 +288,6 @@ return [
         'Cookie' => Illuminate\Support\Facades\Cookie::class,
         'Crypt' => Illuminate\Support\Facades\Crypt::class,
         'DB' => Illuminate\Support\Facades\DB::class,
-        'DebugBar' => Barryvdh\Debugbar\Facade::class,
         'Eloquent' => Illuminate\Database\Eloquent\Model::class,
         'Event' => Illuminate\Support\Facades\Event::class,
         'File' => Illuminate\Support\Facades\File::class,

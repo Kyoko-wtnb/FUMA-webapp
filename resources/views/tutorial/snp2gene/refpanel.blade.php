@@ -29,46 +29,59 @@ In this section, each reference panel is described details.
 		However, the LD is not population specific and need caution for the definition of independent significant SNPs and lead SNPs.
 	</span>
 	<br/><br/>
-	Number of samples and SNPs in the reference panels:
-	<table class="table table-bordered" style="width:auto">
+	Number of samples and SNPs in the reference panels (click on a row to download the corresponding variant file):
+	<table class="table table-bordered table-hover" style="width:auto">
 		<thead>
 			<th>Population</th>
 			<th>Sample size</th>
 			<th>Number of SNPs</th>
+			<th>Download size</th>
 		</thead>
 		<tbody>
-			<tr>
+			<tr class="clickable" onclick='tutorialDownloadVariant("ALL")'>
 				<td>ALL</td>
 				<td>2,504</td>
 				<td>84,853,668</td>
+				<td><img class="fontsvg" src="{{URL::asset('/image/download.svg')}}"/> 870M</td>
 			</tr>
-			<tr>
+			<tr class="clickable" onclick='tutorialDownloadVariant("AFR")'>
 				<td>AFR</td>
 				<td>661</td>
 				<td>43,676,209</td>
+				<td><img class="fontsvg" src="{{URL::asset('/image/download.svg')}}"/> 461M</td>
 			</tr>
-			<tr>
+
+			<tr class="clickable" onclick='tutorialDownloadVariant("AMR")'>
 				<td>AMR</td>
 				<td>347</td>
 				<td>29,501,504</td>
+				<td><img class="fontsvg" src="{{URL::asset('/image/download.svg')}}"/> 305M</td>
 			</tr>
-			<tr>
+			<tr class="clickable" onclick='tutorialDownloadVariant("EAS")'>
 				<td>EAS</td>
 				<td>504</td>
 				<td>24,507,348</td>
+				<td><img class="fontsvg" src="{{URL::asset('/image/download.svg')}}"/> 254M</td>
 			</tr>
-			<tr>
+			<tr class="clickable" onclick='tutorialDownloadVariant("EUR")'>
 				<td>EUR</td>
 				<td>503</td>
 				<td>25,063,419</td>
+				<td><img class="fontsvg" src="{{URL::asset('/image/download.svg')}}"/> 260M</td>
 			</tr>
-			<tr>
+			<tr class="clickable" onclick='tutorialDownloadVariant("SAS")'>
 				<td>SAS</td>
 				<td>489</td>
 				<td>27,691,316</td>
+				<td><img class="fontsvg" src="{{URL::asset('/image/download.svg')}}"/> 287M</td>
 			</tr>
 		</tbody>
 	</table>
+	<form method="post" target="_blank" action="/tutorial/download_variants">
+		<input type="hidden" name="_token" value="{{ csrf_token() }}">
+		<input type="hidden" name="variant_code" id="tutorialDownloadVariantCode" value=""/>
+		<input type="submit" id="tutorialDownloadVariantSubmit" class="ImgDownSubmit" style="display: none;"/>
+	</form>
 
 	<h4><strong>2. UK Biobank release 2b</strong></h4>
 	Genotype data was obtained under application ID 16406.

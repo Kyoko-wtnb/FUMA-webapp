@@ -150,12 +150,23 @@ if(posMap==1){
 	if(posMapAnnoDs!="NA" & posMapAnnoMeth!="NA"){
 		ds <- sub(".bed.gz", "", gsub("/", "_", unlist(strsplit(posMapAnnoDs, ":"))))
 		tmp_annot <- annot[match(tmp_snps$uniqID, annot$uniqID),ds]
-		if(posMapAnnoMeth=="any"){
-			tmp_snps <- tmp_snps[which(apply(tmp_annot[,-1], 1, sum)>0),]
-		}else if(posMapAnnoMeth=="majority"){
-			tmp_snps <- tmp_snps[which(apply(tmp_annot[,-1], 1, sum)/length(ds)>0.5),]
+		#if there is more than 1 chosen annotation then use apply
+		if(class(tmp_annot) == "data.frame"){
+			if(posMapAnnoMeth=="any"){
+				tmp_snps <- tmp_snps[which(apply(tmp_annot, 1, sum)>0),]
+			}else if(posMapAnnoMeth=="majority"){
+				tmp_snps <- tmp_snps[which(apply(tmp_annot, 1, sum)/length(ds)>0.5),]
+			}else{
+				tmp_snps <- tmp_snps[which(apply(tmp_annot, 1, sum)==length(ds)),]
+			}
 		}else{
-			tmp_snps <- tmp_snps[which(apply(tmp_annot[,-1], 1, sum)==length(ds)),]
+			if(posMapAnnoMeth=="any"){
+				tmp_snps <- tmp_snps[which(tmp_annot>0),]
+			}else if(posMapAnnoMeth=="majority"){
+				tmp_snps <- tmp_snps[which(tmp_annot/length(ds)>0.5),]
+			}else{
+				tmp_snps <- tmp_snps[which(tmp_annot==length(ds)),]
+			}
 		}
 	}
 	if(is.na(posMapWindowSize)){

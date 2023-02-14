@@ -18,11 +18,81 @@
 		</tr>
 	</thead>
     <tbody>
+		<tr>
+    		<td>20 December 2022</td>
+            <td>v1.5.0</td>
+            <td>
+    		Updated FUMA Cell Type user interphase and added scRNAseq data for human prefrontal cortex from Herring et al. 2022.
+            </td>
+    	</tr>
       <tr>
+    		<td>02 December 2022</td>
+            <td>v1.4.2</td>
+            <td>
+    		Updated the GWAS catalog to e0_r2022-11-29 in the SNP2GENE analysis.
+            </td>
+    	</tr>
+      <tr>
+    		<td>07 September 2022</td>
+            <td>v1.4.1</td>
+            <td>
+    		Fixed a bug that caused chromosome 23 variants to be excluded from genomic risk loci when the 1KG EUR reference panel was used. This bug started on February 28 2022 and was fixed on August 30 2022. If, during this period, you have used the 1KG EUR reference panel and your data included chromosome 23, please re-run your analyses.
+            </td>
+    	</tr>
+	<tr>
+		<td>27 July 2022</td>
+        <td>v1.4.0</td>
+        <td>
+		<strong>Major update 1: </strong> Ensembl v85 genes have been removed from the job options for SNP2GENE and GENE2FUNC. v85 is no longer available in the BioMart databases.
+        </td>
+	</tr>
+	<tr>
+        <td>5 July 2022</td>
+        <td>v1.3.9</td>
+        <td>
+            Fixed a bug where circos plots with more than 10k CI interactions would return an error. Now an arbitrary selection of 10k interactions is visualised. Fixed another bug where sorting genomic positions as strings would result in wrong Risk Loci boundaries in rare occasions.
+        </td>
+      </tr>
+      <tr>
+        <td>31 March 2022</td>
+        <td>v1.3.8</td>
+        <td>
+            Fixed a bug which caused one annotation to be dropped when filtering variants based on annotations for gene-mapping. Analyses which relied on filtering variants by annotation for gene-mapping should re-submit their jobs.
+        </td>
+      </tr>
+      <tr>
+        <td>06 October 2021</td>
+        <td>v1.3.7</td>
+        <td>
+            Added EyeGEx eQTL data.
+        </td>
+      </tr>
+      <tr>
+        <td>18 September 2021</td>
+        <td>v1.3.6d</td>
+        <td>
+          Updated GWAScatalog to e104_2021-09-15.
+        </td>
+      </tr>
+      <tr>
+        <td>10 September 2021</td>
+        <td>v1.3.6c</td>
+        <td>
+          Fixed a minor bug to allow for transparent regional plot backgrounds. Fixed a minor bug to allow for analysis of chr23 using UKB 10k reference panel.
+        </td>
+      </tr>
+      <tr>
+        <td>04 July 2021</td>
+        <td>v1.3.6b</td>
+        <td>
+          Fixed a minor bug in the calculation of annotation enrichment p-values. We re-analyzed results from existing jobs, and the 99th percentile absolute difference between old and new p-values was 0.00000458. However, jobs in which more than 100,000 variants were selected for further analysis may encounter larger differences, and these analyses should be re-run.
+        </td>
+      </tr>
+     <tr>
         <td>09 September 2020</td>
         <td>v1.3.6a</td>
         <td>
-          Update MAGMA to v1.08. Bug fix for gene2func (DrugBank annotation). 
+          Update MAGMA to v1.08. Bug fix for gene2func (DrugBank annotation).
         </td>
       </tr>
       <tr>

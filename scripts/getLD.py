@@ -603,8 +603,8 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 			snps_tmp = snps[n]
 			nonGWASSNPs += list(snps_tmp[snps_tmp[:,7]=="NA", 0])
 			GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
-			start = min(snps[n,3].astype(int))
-			end = max(snps[n,3].astype(int))
+			start = min(list(map(int, snps[n,3])))
+			end = max(list(map(int, snps[n,3])))
 			loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ";".join(inInd), str(len(inLead)), ";".join(inLead)])
 		else:
 			rsIDs = list(leadSNPs[i,6].split(";"))
@@ -620,8 +620,8 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 			GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
 			nonGWASSNPs = unique(nonGWASSNPs)
 			GWASSNPs = unique(GWASSNPs)
-			start = min(snps_tmp[:,3].astype(int))
-			end = max(snps_tmp[:,3].astype(int))
+			start = min(list(map(int, snps[n,3])))
+			end = max(list(map(int, snps[n,3])))
 			if start <= int(loci[iloci][7]) or start-int(loci[iloci][7])<params.mergeDist:
 				loci[iloci][6] = str(min(start, int(loci[iloci][6])))
 				loci[iloci][7] = str(max(end, int(loci[iloci][7])))
@@ -677,8 +677,8 @@ def getGenomicRiskLoci(gidx, chrom, snps, ld, IndSigSNPs, leadSNPs, params):
 				snps_tmp = snps[n,]
 				nonGWASSNPs += list(snps_tmp[snps_tmp[:,7]=="NA", 0])
 				GWASSNPs += list(snps_tmp[snps_tmp[:,7]!="NA", 0])
-				start = min(snps[n,3].astype(int))
-				end = max(snps[n,3].astype(int))
+				start = min(list(map(int, snps[n,3])))
+				end = max(list(map(int, snps[n,3])))
 				loci.append([str(gidx+1)]+list(leadSNPs[i,range(0,5)])+[str(start), str(end), str(len(nonGWASSNPs)+len(GWASSNPs)), str(len(GWASSNPs)), str(len(inInd)), ";".join(inInd), str(len(inLead)), ";".join(inLead)])
 	loci = np.array(loci)
 	gidx += 1
@@ -785,6 +785,9 @@ def main():
 			### get annot
 			annot = getAnnot(snps, params.annot_dir)
 			tmp_uids = list(annot[:,0])
+			#overlap snps in reference with snps with annotation. Error occurs if you don't when using chr23 on ukb 10k EUR reference
+			snpsi = np.array([a[0] in tmp_uids for a in snps])
+			snps=snps[snpsi]
 			annot = annot[[tmp_uids.index(x) for x in snps[:,0]]]
 			### get lead SNPs
 			leadSNPs = getLeadSNPs(chrom, snps, IndSigSNPs, params)

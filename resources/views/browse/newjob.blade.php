@@ -1662,7 +1662,7 @@
 		</span>
 	</span><br/><br/>
 
-	<input class="btn btn-default" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
+	<input class="btn btn-primary" type="submit" value="Submit Job" name="SubmitNewJob" id="SubmitNewJob"/>
 	<span style="color: red; font-size:18px;">
 		<i class="fa fa-exclamation-triangle"></i> After submitting, please wait a couple of seconds until the file is uploaded, and do not move away from the submission page.
 	</span>

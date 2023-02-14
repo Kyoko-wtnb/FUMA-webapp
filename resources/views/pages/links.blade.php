@@ -258,6 +258,18 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
+				<td>EyeGEx</td>
+				<td>cis-eQTLs from retina.</td>
+				<td>
+					Info: <a target="_blank" href="https://gtexportal.org/home/datasets">https://gtexportal.org/home/datasets</a> <br/>
+					Data: <a href="https://storage.googleapis.com/gtex_external_datasets/eyegex_data/single_tissue_eqtl_data/Retina.nominal.eQTLs.with_thresholds.tar">https://storage.googleapis.com/gtex_external_datasets/eyegex_data/single_tissue_eqtl_data/Retina.nominal.eQTLs.with_thresholds.tar</a>
+				</td>
+				<td>06 October 2021</td>
+				<td>
+					See tutorial <a target="_blank" href="https://fuma.ctglab.nl/tutorial#eQTLs">https://fuma.ctglab.nl/tutorial#eQTLs</a>.
+				</td>
+			</tr>
+			<tr>
 				<td>FANTOM5</td>
 				<td>SNP annotations (enhancer and promoter) and enhancer-promoter correlations.</td>
 				<td>
@@ -347,13 +359,13 @@ var loggedin = "{{ Auth::check() }}";
 				</td>
 			</tr>
 			<tr>
-				<td>GWAS-catalog e96 2019-09-24</td>
+				<td>GWAS-catalog e0_r2022-11-29</td>
 				<td>A database of reported SNP-trait associations.</td>
 				<td>
 					Info: <a href="https://www.ebi.ac.uk/gwas/" target="_blank">https://www.ebi.ac.uk/gwas/</a><br/>
 					Data: <a href="https://www.ebi.ac.uk/gwas/downloads" target="_blank">https://www.ebi.ac.uk/gwas/downloads</a>
 				</td>
-				<td>14 Oct 2019</td>
+				<td>02 Dec 2022</td>
 				<td>
 					MacArthur, J., et al. 2016. The new NHGRI-EBI Catalog of published genome-wide association studies (GWAS Catalog). <i>Nucleic Acids Res.</i> pii:gkw1133.<br/>
 					<a href="https://www.ncbi.nlm.nih.gov/pubmed/27899670" target="_blank">PMID:27899670</a>
