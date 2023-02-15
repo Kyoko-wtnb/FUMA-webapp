@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 use fuma\User;
+use fuma\Http\Requests\UserRegistrationRequest;
+use fuma\Http\Requests\UserModifyRequest;
 use Auth;
 
 // for flash messages
@@ -47,40 +49,37 @@ class UserController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * Type hint as UserRegistrationRequest request for validation logic
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  UserRegistrationRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UserRegistrationRequest $request)
     {
-        try {
-            //Validate name, email and password fields
-            $this->validate($request, [
-                'name'=>'required|max:120',
-                'email'=>'required|email|unique:users',
-                'password'=>'required|min:8|confirmed'
-            ]);
+        //Validate name, email and password fields
+        $validated = $request->validated();
 
-            $user = User::create($request->all('email', 'name', 'password')); //Retrieving only the email and password data
+        //Password encryption is handled in the Eloquent User
+        $user = User::create([
+            'email' => $validated['email'], 
+            'name' => $validated['name'], 
+            'password' => $validated['password']
+        ]);
 
-            $roles = $request['roles']; //Retrieving the roles field
-            //Checking if a role was selected
-            if (isset($roles)) {
+        $roles = $request['roles']; //Retrieving the roles field
+        //Checking if a role was selected
+        if (isset($roles)) {
 
-                foreach ($roles as $role) {
-                    $role_r = Role::where('id', '=', $role)->firstOrFail();            
-                    $user->assignRole($role_r); //Assigning role to user
-                }
-            }   
-    
-            //Redirect to the users.index view and display message
-            return redirect()->route('users.index')
-                ->with('alert-success',
-                'User successfully added.');
-        } catch (\Exception $e){
-            Log::error($e->getMessage());
-            return back()->with('alert-danger', $e->getMessage());
-        }
+            foreach ($roles as $role) {
+                $role_r = Role::where('id', '=', $role)->firstOrFail();            
+                $user->assignRole($role_r); //Assigning role to user
+            }
+        }   
+
+        //Redirect to the users.index view and display message
+        return redirect()->route('users.index')
+            ->with('alert-success',
+            'User successfully added.');
     }
 
     /**
@@ -112,46 +111,34 @@ class UserController extends Controller
     * Update the specified resource in storage.
     * Password update is optional.
     *
-    * @param  \Illuminate\Http\Request  $request
+    * @param  Request  $request 
     * @param  int  $id
     * @return \Illuminate\Http\Response
     */
-    public function update(Request $request, $id) {
-        try {
-            Log::info('User update started');
-            $user = User::findOrFail($id); //Get role specified by id
+    public function update(UserModifyRequest $request, $id) {
+        Log::info('User update started');
+        $user = User::findOrFail($id); //Get role specified by id
 
-            //Validate name, email and (optional)password/password_confirmed fields 
-            // TODO From Laravel 6 can change to $request->validate
-            $this->validate($request, [
-                'name'=>'required|max:120',
-                'email'=>'required|email|unique:users,email,'.$id,
-                'password'=>'nullable|min:8|confirmed'
-            ]);
+        $validated = $request->validated();
+        $input = array_intersect_key($validated, array_flip(['name', 'email', 'password']));
+        // optional password update
+        if ($input['password']) {
+            $user->fill($input)->save();
+        } else {
+            $user->fill(array_except($input, 'password'))->save();
+        } 
 
-            // //Retreive the name, email and password fields
-            $input = $request->only(['name', 'email', 'password']);
-            if ($input['password']) {
-                $user->fill($input)->save();
-            } else {
-                $user->fill(array_except($input, 'password'))->save();
-            } 
+        $roles = $request['roles']; //Retrieve all roles
 
-            $roles = $request['roles']; //Retreive all roles
-
-            if (isset($roles)) {        
-                $user->roles()->sync($roles);  //If one or more role is selected associate user to roles          
-            }        
-            else {
-                $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
-            }
-            return redirect()->route('users.index')
-                ->with('alert-success',
-                'User successfully edited.');
-        } catch (\Exception $e){
-            Log::error($e->getMessage());
-            return back()->with('alert-danger', $e->getMessage());
+        if (isset($roles)) {        
+            $user->roles()->sync($roles);  //If one or more role is selected associate user to roles          
+        }        
+        else {
+            $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
         }
+        return redirect()->route('users.index')
+            ->with('alert-success',
+            'User successfully edited.');
     }
 
     /**

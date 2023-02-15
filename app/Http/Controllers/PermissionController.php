@@ -13,6 +13,10 @@ use Session;
 
 class PermissionController extends Controller
 {
+    public const VALIDATION_RULES = [
+        'name'=>'required|max:40',
+    ];
+
     public function __construct() {
         $this->middleware(['auth', 'isAdmin']); //isAdmin middleware lets only users with a //specific permission permission to access these resources
     }
@@ -47,9 +51,7 @@ class PermissionController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        $this->validate($request, [
-            'name'=>'required|max:40',
-        ]);
+        $this->validate($request, $this::VALIDATION_RULES);
 
         $name = $request['name'];
         $permission = new Permission();
@@ -105,9 +107,7 @@ class PermissionController extends Controller
      */
     public function update(Request $request, $id) {
         $permission = Permission::findOrFail($id);
-        $this->validate($request, [
-            'name'=>'required|max:40',
-        ]);
+        $this->validate($request, $this::VALIDATION_RULES);
         $input = $request->all();
         $permission->fill($input)->save();
 

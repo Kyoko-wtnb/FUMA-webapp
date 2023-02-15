@@ -9,10 +9,16 @@ use Auth;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
+use Illuminate\Support\Facades\Log;
+
 use Session;
 
 class RoleController extends Controller
 {
+    public const VALIDATION_RULES = [
+        'name'=>'required|max:20|unique:roles,name',
+        'permissions' =>'required',
+    ];
 
     public function __construct() {
         $this->middleware(['auth', 'isAdmin']);//isAdmin middleware lets only users with a //specific permission permission to access these resources
@@ -48,31 +54,26 @@ class RoleController extends Controller
      */
     public function store(Request $request) {
         //Validate name and permissions field
-            $this->validate($request, [
-                'name'=>'required|unique:roles|max:10',
-                'permissions' =>'required',
-                ]
-            );
-    
-            $name = $request['name'];
-            $role = new Role();
-            $role->name = $name;
-    
-            $permissions = $request['permissions'];
-    
-            $role->save();
+        $this->validate($request, $this::VALIDATION_RULES);
+
+        $name = $request['name'];
+        $role = Role::create(['name' => $name]);
+
+        $permissions = $request['permissions'];
+
+        $role->save();
         //Looping thru selected permissions
-            foreach ($permissions as $permission) {
-                $p = Permission::where('id', '=', $permission)->firstOrFail(); 
-             //Fetch the newly created role and assign permission
-                $role = Role::where('name', '=', $name)->first(); 
-                $role->givePermissionTo($p);
-            }
-    
-            return redirect()->route('roles.index')
-                ->with('alert-success',
-                 'Role'. $role->name.' added!'); 
+        foreach ($permissions as $permission) {
+            $p = Permission::where('id', '=', $permission)->firstOrFail(); 
+            //Fetch the newly created role and assign permission
+            $role = Role::where('name', '=', $name)->first(); 
+            $role->givePermissionTo($p);
         }
+
+        return redirect()->route('roles.index')
+            ->with('alert-success',
+                'Role'. $role->name.' added!'); 
+    }
 
     /**
      * Display the specified resource.
@@ -105,13 +106,11 @@ class RoleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-
         $role = Role::findOrFail($id);//Get role with the given id
-        //Validate name and permission fields
-        $this->validate($request, [
-            'name'=>'required|max:20|unique:roles,name,'.$id,
-            'permissions' =>'required',
-        ]);
+        //Validate name and permission fields - ignore existing id for unique
+        $rules = $this::VALIDATION_RULES;
+        $rules['name'] .= ",$id";
+        $this->validate($request, $rules);
 
         $input = $request->except(['permissions']);
         $permissions = $request['permissions'];
@@ -130,7 +129,7 @@ class RoleController extends Controller
 
         return redirect()->route('roles.index')
             ->with('alert-success',
-             'Role'. $role->name.' updated!');
+            'Role'. $role->name.' updated!');
     }
 
     /**

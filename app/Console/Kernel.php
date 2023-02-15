@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\Inspire::class,
-	Commands\ListStaleJobs::class,
+	      Commands\ListStaleJobs::class,
         Commands\RestartStaleJobs::class,
     ];
 

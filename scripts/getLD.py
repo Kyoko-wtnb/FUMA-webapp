@@ -14,7 +14,6 @@ from bisect import bisect_left
 ##### initialize parameters #####
 class getParams:
 	def __init__(self, filedir, cfg, param_cfg):
-		print("getLD filedir: ", filedir)
 		leadSNPs = param_cfg.get('inputfiles', 'leadSNPsfile')
 		if leadSNPs == "NA":
 		    print "prefedined lead SNPs are not provided"

@@ -2,10 +2,8 @@ library(data.table)
 library(kimisc)
 library(GenomicRanges)
 args <- commandArgs(TRUE)
- 
 filedir <- args[1]
 
-#curfile <- "/mnt/g/Projects/FUMA-webapp/storage/scripts/SNPannot.R"
 curfile <- thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
@@ -115,4 +113,3 @@ calcFisher <- function(x) {
 ref.count$fisher.P <- apply(ref.count[,c(2,4)], 1, calcFisher)
 
 write.table(ref.count, paste(filedir, "annov.stats.txt", sep=""), quote=F, row.names=F, sep="\t")
-

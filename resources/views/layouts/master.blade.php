@@ -6,9 +6,9 @@
 </head>
 
 <body>
-	<!--div id="header" class="row"-->
+	<div id="header" class="row">
 		@include('includes.header')
-	<!--/div-->
+	</div>
 	<div class="container-fluid text-center" style="padding-top: 50px">
 		@if(Session::has('alert-success'))
 		<div class="center-block">      

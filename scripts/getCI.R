@@ -6,7 +6,6 @@ library(kimisc)
 start_time <- Sys.time()
 
 ##### get commnad line arguments #####
-# args <- c("/mnt/g/FUMA_data/jobs/58")
 args <- commandArgs(TRUE)
 filedir <- args[1]
 if(grepl("\\/$", filedir)==F){
@@ -14,7 +13,6 @@ if(grepl("\\/$", filedir)==F){
 }
 
 ##### get config parameters #####
-# curfile <- "/mnt/g/Projects/FUMA-webapp/storage/scripts/getCI.R"
 curfile <- thisfile()
 source(paste0(dirname(curfile), '/ConfigParser.R'))
 config <- ConfigParser(file=paste0(dirname(curfile),'/app.config'))
@@ -327,6 +325,5 @@ if(nrow(ciProm)==0){
 }else{
 	write.table(ciProm, paste0(filedir, "ciProm.txt"), quote=F, row.names=F, sep="\t")
 }
-# system(paste0("rm ",filedir,"tmp.region ",filedir,"tmp.reg"))
+system(paste0("rm ",filedir,"tmp.region ",filedir,"tmp.reg"))
 print(paste0("Run time: ", Sys.time()-start_time))
-

@@ -5,7 +5,6 @@ namespace fuma\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use fuma\SubmitJob;
 use fuma\Http\Requests;
 use fuma\Http\Controllers\Controller;
@@ -17,7 +16,6 @@ use File;
 use JavaScript;
 use Session;
 use Mail;
-use Session;
 use fuma\User;
 use fuma\Jobs\snp2geneProcess;
 use fuma\Jobs\geneMapProcess;
@@ -122,9 +120,7 @@ class S2GController extends Controller
 				$jobID = $job->jobID;
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
-				$timeout = $this->getJobTimeoutForAuthUser();
-				#Log::info('Queueing with timeout: '.$timeout);
-				$this->dispatch(new snp2geneProcess($user, $jobID, $timeout)); // TODO add onQueue from user role here
+				$this->dispatch(new snp2geneProcess($user, $jobID));
 			}
 		}
 		return;
@@ -139,8 +135,7 @@ class S2GController extends Controller
 				$jobID = $job->jobID;
 				DB::table('SubmitJobs') -> where('jobID', $jobID)
 					-> update(['status'=>'QUEUED']);
-				$timeout = $this->getJobTimeoutForAuthUser();
-				$this->dispatch(new geneMapProcess($user, $jobID, $timeout)); // TODO add onQueue from user role here
+				$this->dispatch(new geneMapProcess($user, $jobID));
 			}
 		}
 		return;
@@ -265,7 +260,7 @@ MSG;
 				system("rm $filedir/$f");
 			}
 			$GWASfileup = 1;
-		}else if($request->filled('egGWAS')){
+		}else if($request -> has('egGWAS')){
 			$exfile = config('app.jobdir').'/example/CD.gwas';
 			File::copy($exfile, $filedir.'/input.gwas');
 			$GWASfileup = 1;
@@ -291,7 +286,7 @@ MSG;
 			$leadSNPsfileup = 1;
 		}
 
-		if($leadSNPsfileup==1 && $request->filled('addleadSNPs')){$addleadSNPs=1;}
+		if($leadSNPsfileup==1 && $request -> has('addleadSNPs')){$addleadSNPs=1;}
 		else if($leadSNPsfileup==0){$addleadSNPs=1;}
 		else{$addleadSNPs=0;}
 
@@ -345,11 +340,11 @@ MSG;
 			$exMHC=0;
 			$MHCopt = "NA";
 		}
-		$extMHC = $request->input('extMHCregion');
+		$extMHC = $request -> input('extMHCregion');
 		if($extMHC==null){$extMHC="NA";}
 
 		// gene type
-		$ensembl = $request->input('ensembl');
+		$ensembl = $request -> input('ensembl');
 		$genetype = implode(":", $request -> input('genetype'));
 
 		// others
@@ -360,14 +355,14 @@ MSG;
 		}else if($request->filled('Ncol')){
 			$Ncol = $request->input('Ncol');
 		}
-		$leadP = $request->input('leadP');
-		$gwasP = $request->input('gwasP');
-		$r2 = $request->input('r2');
-		$r2_2 = $request->input('r2_2');
-		$refpanel = $request->input('refpanel');
+		$leadP = $request -> input('leadP');
+		$gwasP = $request -> input('gwasP');
+		$r2 = $request -> input('r2');
+		$r2_2 = $request -> input('r2_2');
+		$refpanel = $request -> input('refpanel');
 		$pop = preg_replace('/.+\/.+\/(.+)/', '$1', $refpanel);
 		$refpanel = preg_replace('/(.+\/.+)\/.+/', '$1', $refpanel);
-		$refSNPs = $request->input('refSNPs');
+		$refSNPs = $request -> input('refSNPs');
 		if(strcmp($refSNPs, "Yes")==0){$refSNPs=1;}
 		else{$refSNPs=0;}
 		$maf = $request -> input('maf');
@@ -433,7 +428,7 @@ MSG;
 		// eqtl mapping
 		if($request -> filled('eqtlMap')){
 			$eqtlMap=1;
-			$temp = $request->input('eqtlMapTs');
+			$temp = $request -> input('eqtlMapTs');
 			// $eqtlMapGts = $request -> input('eqtlMapGts');
 			$eqtlMapTs = [];
 			$eqtlMapGts = [];
