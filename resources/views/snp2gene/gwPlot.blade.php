@@ -6,7 +6,7 @@
 		<h4 style="color: #00004d">Manhattan Plot (GWAS summary statistics)</h4>
 		<span class="info"><i class="fa fa-info"></i>
 			Manhattan plot of the input GWAS summary statistics.<br/>
-			For plotting, overlapping data points are not drawn (filtering was performed only for SNPs with P-value &ge; 1e-5, see tutorial for details).
+			For plotting, overlapping data points are not drawn (only SNPs with P-value &le; 1e-5 are kept, see tutorial for details).
 		</span><br/><br/>
 		Download the plot as
 		<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("manhattan","png");'>PNG</button>
@@ -62,7 +62,7 @@
 				<h4 style="color: #00004d">QQ plot (GWAS summary statisics)</h4>
 				<span class="info"><i class="fa fa-info"></i>
 					This is a Q-Q plot of GWAS summary statistics. <br/>
-					For plotting purposes, overlapping data points are not drawn (filtering was performed only for SNPs with P-value &ge; 1e-5, see tutorial for details).
+					For plotting purposes, overlapping data points are not drawn (Only SNPs with P-value &le; 1e-5 are kept, see tutorial for details).
 				</span><br/><br/>
 				Download the plot as
 				<button class="btn btn-default btn-xs ImgDown" onclick='ImgDown("QQplot","png");'>PNG</button>
