@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
 		<tr>
+    		<td>26 February 2023</td>
+            <td>v1.5.2</td>
+            <td>
+			Added an FAQ page.
+            </td>
+	</tr>
+		<tr>
     		<td>03 February 2023</td>
             <td>v1.5.1</td>
             <td>
