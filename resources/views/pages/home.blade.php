@@ -42,6 +42,8 @@ $(document).ready(function(){
 	</p>
 	<p>
 		<strong style="font-size: large;">News</strong><br/>
+		<b>26 February 2023: </b> FUMA is upgraded to version 1.5.2.<br/>
+		A frequently asked questions page is added. In addition, some other minor updates to wording on the website was done.<br/>
 		<b>03 February 2023: </b> FUMA is upgraded to version 1.5.1.<br/>
 		Starting from FUMA version 1.5.1, as default MAGMA is unchecked. If you want to obtain results from MAGMA, please select 'Perform MAGMA' in step 6 on the submission page. <br/>
 		For other updates, please see the <a href="{{ Config::get('app.subdir') }}/updates">Updates</a> page. 
