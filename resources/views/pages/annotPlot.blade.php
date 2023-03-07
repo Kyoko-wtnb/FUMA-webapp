@@ -1,37 +1,10 @@
-<!-- <html> -->
 @extends('layouts.simple')
-@section('head')
-<link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}?130">
-<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
-<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
-<script type="text/javascript" src="//cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
-<script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
-<meta name="csrf-token" content="{{ csrf_token() }}"/>
 
-<script type="text/javascript">
-$.ajaxSetup({
-	headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
-});
-var loggedin = "{{ Auth::check() }}";
-var id = "{{$id}}";
-var prefix = "{{$prefix}}";
-var type = "{{$type}}";
-var rowI = parseInt("{{$rowI}}");
-var GWASplot = parseInt("{{$GWASplot}}");
-var CADDplot = parseInt("{{$CADDplot}}");
-var RDBplot = parseInt("{{$RDBplot}}");
-var eqtlplot = parseInt("{{$eqtlplot}}");
-var ciplot = parseInt("{{$ciplot}}");
-var Chr15 = parseInt("{{$Chr15}}");
-var Chr15cells = "{{$Chr15cells}}";
-</script>
-<script type="text/javascript" src="{!! URL::asset('js/annotPlot.js') !!}?131"></script>
-@stop
+@section('stylesheets')
+	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+@endsection
+
+
 @section('content')
 <canvas id="canvas" style="display:none;"></canvas>
 
@@ -120,4 +93,36 @@ var Chr15cells = "{{$Chr15cells}}";
 </div>
 
 <br/><br/>
-@stop
+@endsection
+
+@section('scripts')
+	{{-- Imports from the web --}}
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+	<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
+	<script type="text/javascript" src="//cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
+	<script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
+	
+	{{-- Imports from the project --}}
+	<script type="text/javascript" src="{!! URL::asset('js/annotPlot.js') !!}?131"></script>
+
+	{{-- Hand written ones --}}
+	<script type="text/javascript">
+		$.ajaxSetup({
+			headers: {'X-CSRF-TOKEN' : $('meta[name="csrf-token"]').attr('content')}
+		});
+		var loggedin = "{{ Auth::check() }}";
+		var id = "{{$id}}";
+		var prefix = "{{$prefix}}";
+		var type = "{{$type}}";
+		var rowI = parseInt("{{$rowI}}");
+		var GWASplot = parseInt("{{$GWASplot}}");
+		var CADDplot = parseInt("{{$CADDplot}}");
+		var RDBplot = parseInt("{{$RDBplot}}");
+		var eqtlplot = parseInt("{{$eqtlplot}}");
+		var ciplot = parseInt("{{$ciplot}}");
+		var Chr15 = parseInt("{{$Chr15}}");
+		var Chr15cells = "{{$Chr15cells}}";
+	</script>
+@endsection

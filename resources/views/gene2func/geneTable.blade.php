@@ -7,7 +7,9 @@
 				<th>ENSG</th><th>entrezID</th><th>symbol</th><th>OMIM</th><th>UniProtID</th><th>DrugBank</th><th>GeneCards</th>
 			</tr>
 		</thead>
-		<tbody></tbody>
+		<tbody>
+			
+		</tbody>
 	</table>
-  <br/>
+  	<br/>
 </div>
