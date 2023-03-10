@@ -1,5 +1,5 @@
 # FUMA: Functional mapping and annotation of genetic associations
-
+This is the server side
 FUMA is an online web application to annotate and prioritize genetic associations.
 The application is available at [https://fuma.ctglab.nl](https://fuma.ctglab.nl).
 
