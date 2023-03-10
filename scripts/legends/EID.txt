@@ -1,0 +1,128 @@
+EID	Color	Group	Anatomy	Name
+E017	#E41A1C	IMR90	LUNG	IMR90 fetal lung fibroblasts Cell Line
+E002	#924965	ESC	ESC	ES-WA7 Cells
+E008	#924965	ESC	ESC	H9 Cells
+E001	#924965	ESC	ESC	ES-I3 Cells
+E015	#924965	ESC	ESC	HUES6 Cells
+E014	#924965	ESC	ESC	HUES48 Cells
+E016	#924965	ESC	ESC	HUES64 Cells
+E003	#924965	ESC	ESC	H1 Cells
+E024	#924965	ESC	ESC	ES-UCSF4  Cells
+E020	#69608A	iPSC	IPSC	iPS-20b Cells
+E019	#69608A	iPSC	IPSC	iPS-18 Cells
+E018	#69608A	iPSC	IPSC	iPS-15b Cells
+E021	#69608A	iPSC	IPSC	iPS DF 6.9 Cells
+E022	#69608A	iPSC	IPSC	iPS DF 19.11 Cells
+E007	#4178AE	ES-deriv	ESC_DERIVED	H1 Derived Neuronal Progenitor Cultured Cells
+E009	#4178AE	ES-deriv	ESC_DERIVED	H9 Derived Neuronal Progenitor Cultured Cells
+E010	#4178AE	ES-deriv	ESC_DERIVED	H9 Derived Neuron Cultured Cells
+E013	#4178AE	ES-deriv	ESC_DERIVED	hESC Derived CD56+ Mesoderm Cultured Cells
+E012	#4178AE	ES-deriv	ESC_DERIVED	hESC Derived CD56+ Ectoderm Cultured Cells
+E011	#4178AE	ES-deriv	ESC_DERIVED	hESC Derived CD184+ Endoderm Cultured Cells
+E004	#4178AE	ES-deriv	ESC_DERIVED	H1 BMP4 Derived Mesendoderm Cultured Cells
+E005	#4178AE	ES-deriv	ESC_DERIVED	H1 BMP4 Derived Trophoblast Cultured Cells
+E006	#4178AE	ES-deriv	ESC_DERIVED	H1 Derived Mesenchymal Stem Cells
+E062	#55A354	Blood & T-cell	BLOOD	Primary mononuclear cells from peripheral blood
+E034	#55A354	Blood & T-cell	BLOOD	Primary T cells from peripheral blood
+E045	#55A354	Blood & T-cell	BLOOD	Primary T cells effector/memory enriched from peripheral blood
+E033	#55A354	Blood & T-cell	BLOOD	Primary T cells from cord blood
+E044	#55A354	Blood & T-cell	BLOOD	Primary T regulatory cells from peripheral blood
+E043	#55A354	Blood & T-cell	BLOOD	Primary T helper cells from peripheral blood
+E039	#55A354	Blood & T-cell	BLOOD	Primary T helper naive cells from peripheral blood
+E041	#55A354	Blood & T-cell	BLOOD	Primary T helper cells PMA-I stimulated
+E042	#55A354	Blood & T-cell	BLOOD	Primary T helper 17 cells PMA-I stimulated
+E040	#55A354	Blood & T-cell	BLOOD	Primary T helper memory cells from peripheral blood 1
+E037	#55A354	Blood & T-cell	BLOOD	Primary T helper memory cells from peripheral blood 2
+E048	#55A354	Blood & T-cell	BLOOD	Primary T CD8+ memory cells from peripheral blood
+E038	#55A354	Blood & T-cell	BLOOD	Primary T helper naive cells from peripheral blood
+E047	#55A354	Blood & T-cell	BLOOD	Primary T CD8+ naive cells from peripheral blood
+E029	#678C69	HSC & B-cell	BLOOD	Primary monocytes from peripheral blood
+E031	#678C69	HSC & B-cell	BLOOD	Primary B cells from cord blood
+E035	#678C69	HSC & B-cell	BLOOD	Primary hematopoietic stem cells
+E051	#678C69	HSC & B-cell	BLOOD	Primary hematopoietic stem cells G-CSF-mobilized Male
+E050	#678C69	HSC & B-cell	BLOOD	Primary hematopoietic stem cells G-CSF-mobilized Female
+E036	#678C69	HSC & B-cell	BLOOD	Primary hematopoietic stem cells short term culture
+E032	#678C69	HSC & B-cell	BLOOD	Primary B cells from peripheral blood
+E046	#678C69	HSC & B-cell	BLOOD	Primary Natural Killer cells from peripheral blood
+E030	#678C69	HSC & B-cell	BLOOD	Primary neutrophils from peripheral blood
+E026	#B65C73	Mesench	STROMAL_CONNECTIVE	Bone Marrow Derived Cultured Mesenchymal Stem Cells
+E049	#B65C73	Mesench	STROMAL_CONNECTIVE	Mesenchymal Stem Cell Derived Chondrocyte Cultured Cells
+E025	#B65C73	Mesench	FAT	Adipose Derived Mesenchymal Stem Cell Cultured Cells
+E023	#B65C73	Mesench	FAT	Mesenchymal Stem Cell Derived Adipocyte Cultured Cells
+E052	#E67326	Myosat	MUSCLE	Muscle Satellite Cultured Cells
+E055	#FF9D0C	Epithelial	SKIN	Foreskin Fibroblast Primary Cells skin01
+E056	#FF9D0C	Epithelial	SKIN	Foreskin Fibroblast Primary Cells skin02
+E059	#FF9D0C	Epithelial	SKIN	Foreskin Melanocyte Primary Cells skin01
+E061	#FF9D0C	Epithelial	SKIN	Foreskin Melanocyte Primary Cells skin03
+E057	#FF9D0C	Epithelial	SKIN	Foreskin Keratinocyte Primary Cells skin02
+E058	#FF9D0C	Epithelial	SKIN	Foreskin Keratinocyte Primary Cells skin03
+E028	#FF9D0C	Epithelial	BREAST	Breast variant Human Mammary Epithelial Cells (vHMEC)
+E027	#FF9D0C	Epithelial	BREAST	Breast Myoepithelial Primary Cells
+E054	#FFD924	Neurosph	BRAIN	Ganglion Eminence derived primary cultured neurospheres
+E053	#FFD924	Neurosph	BRAIN	Cortex derived primary cultured neurospheres
+E112	#DAB92E	Thymus	THYMUS	Thymus
+E093	#DAB92E	Thymus	THYMUS	Fetal Thymus
+E071	#C5912B	Brain	BRAIN	Brain Hippocampus Middle
+E074	#C5912B	Brain	BRAIN	Brain Substantia Nigra
+E068	#C5912B	Brain	BRAIN	Brain Anterior Caudate
+E069	#C5912B	Brain	BRAIN	Brain Cingulate Gyrus
+E072	#C5912B	Brain	BRAIN	Brain Inferior Temporal Lobe
+E067	#C5912B	Brain	BRAIN	Brain Angular Gyrus
+E073	#C5912B	Brain	BRAIN	Brain_Dorsolateral_Prefrontal_Cortex
+E070	#C5912B	Brain	BRAIN	Brain Germinal Matrix
+E082	#C5912B	Brain	BRAIN	Fetal Brain Female
+E081	#C5912B	Brain	BRAIN	Fetal Brain Male
+E063	#AF5B39	Adipose	FAT	Adipose Nuclei
+E100	#C2655D	Muscle	MUSCLE	Psoas Muscle
+E108	#C2655D	Muscle	MUSCLE	Skeletal Muscle Female
+E107	#C2655D	Muscle	MUSCLE	Skeletal Muscle Male
+E089	#C2655D	Muscle	MUSCLE	Fetal Muscle Trunk
+E090	#C2655D	Muscle	MUSCLE_LEG	Fetal Muscle Leg
+E083	#D56F80	Heart	HEART	Fetal Heart
+E104	#D56F80	Heart	HEART	Right Atrium
+E095	#D56F80	Heart	HEART	Left Ventricle
+E105	#D56F80	Heart	HEART	Right Ventricle
+E065	#D56F80	Heart	VASCULAR	Aorta
+E078	#F182BC	Sm. Muscle	GI_DUODENUM	Duodenum Smooth Muscle
+E076	#F182BC	Sm. Muscle	GI_COLON	Colon Smooth Muscle
+E103	#F182BC	Sm. Muscle	GI_RECTUM	Rectal Smooth Muscle
+E111	#F182BC	Sm. Muscle	GI_STOMACH	Stomach Smooth Muscle
+E092	#C58DAA	Digestive	GI_STOMACH	Fetal Stomach
+E085	#C58DAA	Digestive	GI_INTESTINE	Fetal Intestine Small
+E084	#C58DAA	Digestive	GI_INTESTINE	Fetal Intestine Large
+E109	#C58DAA	Digestive	GI_INTESTINE	Small Intestine
+E106	#C58DAA	Digestive	GI_COLON	Sigmoid Colon
+E075	#C58DAA	Digestive	GI_COLON	Colonic Mucosa
+E101	#C58DAA	Digestive	GI_RECTUM	Rectal Mucosa Donor 29
+E102	#C58DAA	Digestive	GI_RECTUM	Rectal Mucosa Donor 31
+E110	#C58DAA	Digestive	GI_STOMACH	Stomach Mucosa
+E077	#C58DAA	Digestive	GI_DUODENUM	Duodenum Mucosa
+E079	#C58DAA	Digestive	GI_ESOPHAGUS	Esophagus
+E094	#C58DAA	Digestive	GI_STOMACH	Gastric
+E099	#999999	Other	PLACENTA	Placenta Amnion
+E086	#999999	Other	KIDNEY	Fetal Kidney
+E088	#999999	Other	LUNG	Fetal Lung
+E097	#999999	Other	OVARY	Ovary
+E087	#999999	Other	PANCREAS	Pancreatic Islets
+E080	#999999	Other	ADRENAL	Fetal Adrenal Gland
+E091	#999999	Other	PLACENTA	Placenta
+E066	#999999	Other	LIVER	Liver
+E098	#999999	Other	PANCREAS	Pancreas
+E096	#999999	Other	LUNG	Lung
+E113	#999999	Other	SPLEEN	Spleen
+E114	#000000	ENCODE2012	LUNG	A549 EtOH 0.02pct Lung Carcinoma Cell Line
+E115	#000000	ENCODE2012	BLOOD	Dnd41 TCell Leukemia Cell Line
+E116	#000000	ENCODE2012	BLOOD	GM12878 Lymphoblastoid Cells
+E117	#000000	ENCODE2012	CERVIX	HeLa-S3 Cervical Carcinoma Cell Line
+E118	#000000	ENCODE2012	LIVER	HepG2 Hepatocellular Carcinoma Cell Line
+E119	#000000	ENCODE2012	BREAST	HMEC Mammary Epithelial Primary Cells
+E120	#000000	ENCODE2012	MUSCLE	HSMM Skeletal Muscle Myoblasts Cells
+E121	#000000	ENCODE2012	MUSCLE	HSMM cell derived Skeletal Muscle Myotubes Cells
+E122	#000000	ENCODE2012	VASCULAR	HUVEC Umbilical Vein Endothelial Primary Cells
+E123	#000000	ENCODE2012	BLOOD	K562 Leukemia Cells
+E124	#000000	ENCODE2012	BLOOD	Monocytes-CD14+ RO01746 Primary Cells
+E125	#000000	ENCODE2012	BRAIN	NH-A Astrocytes Primary Cells
+E126	#000000	ENCODE2012	SKIN	NHDF-Ad Adult Dermal Fibroblast Primary Cells
+E127	#000000	ENCODE2012	SKIN	NHEK-Epidermal Keratinocyte Primary Cells
+E128	#000000	ENCODE2012	LUNG	NHLF Lung Fibroblast Primary Cells
+E129	#000000	ENCODE2012	BONE	Osteoblast Primary Cells

@@ -1,0 +1,226 @@
+body
+{ /*background: #F6F4F0;*/
+  color: #635B53;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  padding-top: 50px; /* height of sticky navbar header forces content down*/
+}
+
+img
+{
+	display: block;
+	margin: auto;
+}
+
+img.footerimg{
+	float:right;
+}
+
+#foot
+{
+  margin: 0;
+  padding: 0;
+  position: relative;
+  clear: both;
+  background-color: #222222;
+  width: 100%;
+  height: 100px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index:1000;
+}
+
+#loading {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  vertical-align:middle;
+  top: 40%;
+  /*left: 50%;*/
+  /*margin: -28px 0 0 -25px;*/
+  color: #fff;
+}
+
+.codebox {
+    background-color:#e6e6e6;
+    padding:15px;
+    font-size:0.9em;
+    display: inline-block;
+}
+
+.btn-default{
+	background-color: #ECF0F1 !important;
+}
+
+.btn-default:active{
+  background-color: #B3B6B7 !important;
+}
+
+tab {
+  padding-left: 2em;
+}
+
+.table thead{
+  text-align: center !important;
+}
+
+.table{
+  font-size: 14px;
+}
+
+table.display{
+  font-size: 16px;
+}
+
+
+.table.inputTable td{
+  padding: 2px;
+}
+.table.inputTable{
+  border-collapse: collapse;
+}
+.table.inputTable tr td{
+  vertical-align: middle;
+}
+
+.info{
+  font-size: 14px;
+  color: #000099;
+}
+
+input[type=number]{
+  width: 200px;
+  height: 30px;
+}
+input[type=text]{
+  width: 200px;
+  height: 30px;
+}
+
+table.smallTable{
+  width: 300px;
+}
+
+/* accordion button*/
+button.accordion{
+  background-color: #eee;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  height: 50px;
+  border:1px dotted black;
+  text-align: left;
+  outline: none;
+  font-size: 20px;
+  transition: 0.4s;
+}
+button.accordion.active, button.accordion:hover {
+  background-color: #ddd;
+}
+
+/*.panel-default > .panel-heading{
+  background-color: #c6d9ec;
+}*/
+
+.alert{
+  padding: 10px 10px 10px 10px;
+}
+
+/*#NewsFeed hr {
+  border-top: 2px dotted #222222;
+}*/
+
+.level1 {
+  font-weight: bold;
+}
+.level2 {
+  padding-left: 15px;
+}
+
+/*Styles for D3.js plots*/
+.axis path,
+.axis line{
+  fill: none;
+  stroke: grey;
+  /*stroke-width: 1;*/
+  /*shape-rendering: crispEdges;*/
+}
+
+.axis text{
+  font-family: sans-serif;
+  font-size: 11px;
+}
+
+.smalltext {
+  font-size: 8px !important;
+}
+
+div.tooltip{
+  position: absolute;
+  text-align: center;
+  width: 60px;
+  height: 28px;
+  padding: 2px;
+  font: 12px sans-serif;
+  background: lightsteelblue;
+  border: 0px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.tile:hover {
+  /*shape-rendering: crispEdges;*/
+  stroke: black;
+}
+
+/*.bar {
+  fill: steelblue;
+}*/
+
+/* .bar:hover {
+  fill: #ff4500;
+} */
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border-radius: 2px;
+}
+
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
+}
+
+.d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+.canvasarea {
+  position: absolute;
+}
+
+.fontsvg {
+  display:inline-block;
+  position:relative;
+  bottom: 0.2em;
+  font-size:1em;
+  height: 1em;
+  width: 1em;
+}
+
