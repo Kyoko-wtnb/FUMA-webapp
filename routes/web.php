@@ -7,6 +7,7 @@ use App\Http\Controllers\LoggingController;
 use App\Http\Controllers\S2GController;
 use App\Http\Controllers\G2FController;
 use App\Http\Controllers\CellController;
+use App\Http\Controllers\AnalysisController;
 
 
 /*
@@ -50,6 +51,14 @@ Route::get('/faq', function () {
 
 Auth::routes();
 
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::prefix('analysis')->group(function () {
+        Route::get('/{id?}', [AnalysisController::class, 'index']);
+    });
+
+});
+    
 Route::prefix('browse')->group(function () {
     Route::get('/{id?}', [BrowseController::class, 'index']);
     Route::get('/getGwasList', [BrowseController::class, 'getGwasList']);
