@@ -28,7 +28,7 @@
                                         @foreach ($value as $sub_items)
                                             <tr>
                                                 @foreach ($sub_items as $sub_sub_key => $sub_sub_value)
-                                                    @if ($sub_sub_key == 'tool_params')
+                                                    @if ($sub_sub_key == 'tool_params' && !empty($sub_sub_value))
                                                         @foreach ($sub_sub_value as $param)
                                                             @foreach ($param as $param_key => $param_value)
                                                                 @if ($param_key == 'param_name')

@@ -50,6 +50,15 @@ class ToolsParametersTableSeeder extends Seeder
                 'flag' => '-0',
                 'type' => 'test type',
             ],
+            [
+                'tool_id' => '3',
+                'param_name' => 'o',
+                'param_full_name' => 'Output file',
+                'level' => 'Basic',
+                'group' => 'Output',
+                'flag' => '-0',
+                'type' => 'test type',
+            ],
         ]);
     }
 }

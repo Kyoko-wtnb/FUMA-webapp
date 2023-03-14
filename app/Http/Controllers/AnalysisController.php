@@ -27,8 +27,8 @@ class AnalysisController extends Controller
      */
     public function index($id = null)
     {
-        $tools = User::with(['tools', 'tools.toolParams'])->get();
-      
+        $tools = User::with(['tools:id,user_id,name,version,description', 'tools.toolParams:id,tool_id,param_name'])->get(['id','name','email']);
+
         return view('pages.analysis', [
             'data' => collect(json_decode($tools, true)),
             // 'tools_parameters' => collect(json_decode($tool_parameters, true)),

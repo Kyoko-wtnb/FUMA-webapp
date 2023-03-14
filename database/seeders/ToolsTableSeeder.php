@@ -30,7 +30,16 @@ class ToolsTableSeeder extends Seeder
                 'command' => 'samtools',
                 'license' => 'mit',
                 'user_id' => 1,
-            ]
+            ],
+
+            [
+                'name' => 'samtools',
+                'version' => '1.67',
+                'description' => 'test description samtools',
+                'command' => 'samtools',
+                'license' => 'mit',
+                'user_id' => 2,
+            ],
 
 
         ]);
