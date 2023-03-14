@@ -31,7 +31,7 @@ return new class extends Migration
             // Command line settings
             $table->string('flag')->nullable();
             $table->string('delimiter')->nullable();
-            $table->unsignedTinyInteger('commant_position')->default(2);
+            $table->unsignedTinyInteger('command_position')->default(2);
             $table->boolean('required')->default(false);
             $table->boolean('auxiliary')->default(false);
 
