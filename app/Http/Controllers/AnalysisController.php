@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Tool;
+use App\Models\User;
+use App\Models\ToolParameter;
+
 
 class AnalysisController extends Controller
 {
@@ -24,9 +27,11 @@ class AnalysisController extends Controller
      */
     public function index($id = null)
     {
-        $tools = Tool::orderBy('created_at', 'desc')
-                ->get(['name', 'description', 'user_id']);
-        
-        return view('pages.analysis', ['tools' => collect(json_decode($tools, true))]);
+        $tools = User::with(['tools', 'tools.toolParams'])->get();
+      
+        return view('pages.analysis', [
+            'data' => collect(json_decode($tools, true)),
+            // 'tools_parameters' => collect(json_decode($tool_parameters, true)),
+        ]);
     }
 }
