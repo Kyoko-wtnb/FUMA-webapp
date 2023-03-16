@@ -819,8 +819,6 @@ MSG;
     {
         $date = date('Y-m-d H:i:s');
         $oldID = $request->input("geneMapID");
-        $jobID;
-        $filedir;
         $email = Auth::user()->email;
 
         $jobtitle = "";
