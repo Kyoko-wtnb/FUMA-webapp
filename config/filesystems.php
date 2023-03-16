@@ -36,6 +36,12 @@ return [
             'throw' => false,
         ],
 
+        'test_fuma' => [
+            'driver' => 'local',
+            'root' => 'E:/',
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

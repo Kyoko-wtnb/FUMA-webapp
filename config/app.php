@@ -28,6 +28,50 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Data storage directory
+    |--------------------------------------------------------------------------
+    |
+    | Specify direcory of data storage
+    |
+    */
+
+    'datadir' => env('APP_DATADIR', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | gwasDB directory (temmporary)
+    |--------------------------------------------------------------------------
+    |
+    | Specify direcory of gwasDB (this will be moved to separate web application later on)
+    |
+    */
+
+    'gwasDBdir' => env('APP_GWASDBDIR', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | downloads directory
+    |--------------------------------------------------------------------------
+    |
+    | Directory used for miscellaneous downloadable references (e.g. variant files)
+    |
+    */
+
+    'downloadsDir' => env('APP_DOWNLOADS', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Developper's email address
+    |--------------------------------------------------------------------------
+    |
+    | Specify developper's email for job filed mail
+    |
+    */
+
+    'devemail' => env('APP_DEVEMAIL', ''),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Name
     |--------------------------------------------------------------------------
     |
