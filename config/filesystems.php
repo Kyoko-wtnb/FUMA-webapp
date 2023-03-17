@@ -36,8 +36,9 @@ return [
             'throw' => false,
         ],
 
-        'test_fuma' => [
+        'fuma_reference_data' => [
             'driver' => 'local',
+            // 'read-only' => true,
             'root' => 'E:/',
             'throw' => false,
         ],
