@@ -13,6 +13,7 @@ use App\Models\SubmitJob;
 use Auth;
 // use Storage;
 use File;
+use Helper;
 // use JavaScript;
 // use Session;
 // use Mail;
@@ -151,7 +152,7 @@ class S2GController extends Controller
                 DB::table('SubmitJobs')
                     ->where('jobID', $jobID)
                     ->update(['status' => 'QUEUED']);
-                $this->dispatch(new Snp2geneProcess($user, $jobID));
+                Snp2geneProcess::dispatch($user, $jobID);
             }
         }
         return;
@@ -171,7 +172,7 @@ class S2GController extends Controller
                 $jobID = $job->jobID;
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'QUEUED']);
-                $this->dispatch(new GeneMapProcess($user, $jobID));
+                GeneMapProcess::dispatch($user, $jobID);
             }
         }
         return;
@@ -235,10 +236,10 @@ class S2GController extends Controller
             // flash a warning to the user about the queue cap
             $name = Auth::user()->name;
             $message = <<<MSG
-Job submission temporarily blocked for user: $name!<br>
-The maximum number of jobs: $queueCap, has been reached. <br>
-Wait for some jobs to complete or delete stalled jobs.
-MSG;
+                Job submission temporarily blocked for user: $name!<br>
+                The maximum number of jobs: $queueCap, has been reached. <br>
+                Wait for some jobs to complete or delete stalled jobs.
+                MSG;
             $request->session()->flash("alert-warning", $message);
             return redirect()->back();
             //return view('pages.snp2gene', ['id' => null, 'status'=> null, 'page'=>'snp2gene', 'prefix'=>'jobs']);
@@ -703,7 +704,7 @@ MSG;
             $magma_exp = implode(":", $request->input('magma_exp'));
         }
 
-        $app_config = parse_ini_file(scripts_path('app.config'), false, INI_SCANNER_RAW);
+        $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
 
         // write parameter into a file
         $paramfile = $filedir . '/params.config';

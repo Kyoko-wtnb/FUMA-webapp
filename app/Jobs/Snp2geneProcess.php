@@ -8,6 +8,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
+use Mail;
+use Helper;
+
 
 class Snp2geneProcess implements ShouldQueue
 {
@@ -51,23 +57,25 @@ class Snp2geneProcess implements ShouldQueue
         $status = 0;
 
         // file check
-        if (!file_exists(config('app.jobdir') . '/jobs/' . $jobID . '/input.gwas')) {
-
+        if (!Storage::exists(config('app.jobdir') . '/jobs/' . $jobID . '/input.gwas')) {
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->delete();
-            File::deleteDirectory(config('app.jobdir') . '/jobs/' . $jobID);
+            Storage::deleteDirectory(config('app.jobdir') . '/jobs/' . $jobID);
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, -1, $msg);
                 return;
             }
+            // There should also be a return here, in case email == null stil it should return
         }
 
         // get parameters
         $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
-        if (!file_exists($filedir . "params.config")) {
+        $filedir_abs_path = Storage::path($filedir);
+
+        if (!Storage::exists($filedir . "params.config")) {
             $msg = "Job parameters not found.";
             $this->rmFiles($filedir);
-            $this->chmod($filedir);
+            // $this->chmod($filedir);
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:100']);
             $this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -77,50 +85,70 @@ class Snp2geneProcess implements ShouldQueue
             }
             return;
         }
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+
+        $params = parse_ini_string(Storage::get($filedir . "params.config"), false, INI_SCANNER_RAW);
 
         // log files
         $logfile = $filedir . "job.log";
         $errorfile = $filedir . "error.log";
 
         //gwas_file.pl
-        file_put_contents($logfile, "----- gwas_file.py -----\n");
-        file_put_contents($errorfile, "----- gwas_file.py -----\n");
-        $script = scripts_path('gwas_file.py');
-        exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+        Storage::put($logfile, "----- gwas_file.py -----\n");
+        Storage::put($errorfile, "----- gwas_file.py -----\n");
+        $script = Helper::scripts_path('gwas_file.py');
+
+        $log_file_abs_path = Storage::path($logfile);
+        $err_file_abs_path = Storage::path($errorfile);
+
+        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $cmd . "\n");
+
+        exec($cmd, $output, $error);
+
         if ($error != 0) {
             $this->rmFiles($filedir);
-            $this->chmod($filedir);
+            // $this->chmod($filedir);
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:001']);
 
             $msg = "No error log found for SNP2GENE job ID: $jobID";
-            if (file_exists($errorfile)) {
-                $errorout = file_get_contents($errorfile);
+            if (Storage::exists($errorfile)) {
+                $errorout = Storage::get($errorfile);
                 $errorout = explode("\n", $errorout);
                 $msg = $errorout[count($errorout) - 2];
             }
             $this->JobMonitorUpdate($jobID, $created_at, $started_at);
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 1, $msg);
-                return;
+                // return; //TODO: uncomment before flight
             }
         }
 
-        file_put_contents($logfile, "----- allSNPs.py -----\n", FILE_APPEND);
-        file_put_contents($errorfile, "----- allSNPs.py -----\n", FILE_APPEND);
-        $script = scripts_path('allSNPs.py');
-        exec("python $script $filedir");
+        Storage::append($logfile, "----- allSNPs.py -----\n");
+        Storage::append($errorfile, "----- allSNPs.py -----\n");
+
+        $script = Helper::scripts_path('allSNPs.py');
+        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $cmd . "\n");
+        exec($cmd, $output, $error);
 
         if ($params['magma'] == 1) {
-            file_put_contents($logfile, "\n----- magma.py -----\n", FILE_APPEND);
-            file_put_contents($errorfile, "\n----- magma.py -----\n", FILE_APPEND);
-            $script = scripts_path('magma.py');
-            exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+            Storage::append($logfile, "----- magma.py -----\n");
+            Storage::append($errorfile, "----- magma.py -----\n");
+
+            $script = Helper::scripts_path('magma.py');
+            $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+            Storage::append($logfile, "Command to be executed:");
+            Storage::append($logfile, $cmd . "\n");
+            exec($cmd, $output, $error);
+
             if ($error != 0) {
-                $errorout = file_get_contents($errorfile);
+                $errorout = Storage::get($errorfile);
                 if (preg_match('/MAGMA ERROR/', $errorout) == 1) {
-                    $errorout = file_get_contents($logfile);
+                    $errorout = Storage::get($logfile);
                     $errorout = explode("\n", $errorout);
                     foreach ($errorout as $l) {
                         if (preg_match("/ERROR - /", $l) == 1) {
@@ -135,48 +163,59 @@ class Snp2geneProcess implements ShouldQueue
             }
         }
 
-        file_put_contents($logfile, "\n----- manhattan_filt.py -----\n", FILE_APPEND);
-        file_put_contents($errorfile, "\n----- manhattan_filt.py -----\n", FILE_APPEND);
-        $script = scripts_path('manhattan_filt.py');
-        exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+        Storage::append($logfile, "----- manhattan_filt.py -----\n");
+        Storage::append($errorfile, "----- manhattan_filt.py -----\n");
+
+        $script = Helper::scripts_path('manhattan_filt.py');
+        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $cmd . "\n");
+        exec($cmd, $output, $error);
+
+
         if ($error != 0) {
             $this->rmFiles($filedir);
-            $this->chmod($filedir);
+            // $this->chmod($filedir);
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:003']);
-            $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+            // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 3, $msg);
-                return;
+                // return; //TODO: uncomment before flight
             }
         }
 
-        file_put_contents($logfile, "\n----- QQSNPs_filt.py -----\n", FILE_APPEND);
-        file_put_contents($errorfile, "\n----- QQSNPs_filt.py -----\n", FILE_APPEND);
-        $script = scripts_path('QQSNPs_filt.py');
-        exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+        Storage::append($logfile, "----- QQSNPs_filt.py -----\n");
+        Storage::append($errorfile, "----- QQSNPs_filt.py -----\n");
+        $script = Helper::scripts_path('QQSNPs_filt.py');
+        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $cmd . "\n");
+        exec($cmd, $output, $error);
+
         if ($error != 0) {
             $this->rmFiles($filedir);
-            $this->chmod($filedir);
+            // $this->chmod($filedir);
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:004']);
-            $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+            // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 4, $msg);
-                return;
+                // return; //TODO: uncomment before flight
             }
         }
 
-        file_put_contents($logfile, "\n----- getLD.py -----\n", FILE_APPEND);
-        file_put_contents($errorfile, "\n----- getLD.py -----\n", FILE_APPEND);
-        $script = scripts_path('getLD.py');
-        // $process = new Proces("/usr/bin/perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC");
-        // $process -> start();
-        // echo "perl $script $filedir $pop $leadP $KGSNPs $gwasP $maf $r2 $gwasformat $leadfile $addleadSNPs $regionfile $mergeDist $exMHC $extMHC";
-        exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+        Storage::append($logfile, "----- getLD.py -----\n");
+        Storage::append($errorfile, "----- getLD.py -----\n");
+        $script = Helper::scripts_path('getLD.py');
+        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $cmd . "\n");
+        exec($cmd, $output, $error);
+
         if ($error != 0) {
             $NoCandidates = false;
-            $errorout = file_get_contents($errorfile);
+            $errorout = Storage::get($errorfile);
             $errorout = explode("\n", $errorout);
             foreach ($errorout as $l) {
                 if (preg_match('/No candidate SNP was identified/', $l) == 1) {
@@ -185,146 +224,175 @@ class Snp2geneProcess implements ShouldQueue
                 }
             }
             if ($NoCandidates) {
-                $script = scripts_path('getTopSNPs.py');
-                exec("python $script $filedir >>$logfile 2>>$errorfile");
+
+                $script = Helper::scripts_path('getTopSNPs.py');
+                $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+                Storage::append($logfile, "Command to be executed:");
+                Storage::append($logfile, $cmd . "\n");
+                exec($cmd, $output, $error);
+
                 $this->rmFiles($filedir);
-                $this->chmod($filedir);
+                // $this->chmod($filedir);
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:005']);
-                $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+                // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 5, $msg);
                 }
-                return;
+                // return; //TODO: uncomment before flight
             } else {
                 $this->rmFiles($filedir);
-                $this->chmod($filedir);
+                // $this->chmod($filedir);
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:006']);
-                $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+                // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 6, $msg);
-                    return;
+                    // return; //TODO: uncomment before flight
                 }
             }
         }
 
-        file_put_contents($logfile, "\n----- SNPannot.R -----\n", FILE_APPEND);
-        file_put_contents($errorfile, "\n----- SNPannot.R -----\n", FILE_APPEND);
-        $script = scripts_path('SNPannot.R');
-        exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+        Storage::append($logfile, "----- SNPannot.R -----\n");
+        Storage::append($errorfile, "----- SNPannot.R -----\n");
+        $script = Helper::scripts_path('SNPannot.R');
+        $cmd = "Rscript $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $cmd . "\n");
+        exec($cmd, $output, $error);
+
         if ($error != 0) {
             $this->rmFiles($filedir);
-            $this->chmod($filedir);
+            // $this->chmod($filedir);
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:007']);
-            $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+            // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 7, $msg);
-                return;
+                // return; //TODO: replace before flight
             }
         }
 
-        file_put_contents($logfile, "\n----- getGWAScatalog.py -----\n", FILE_APPEND);
-        file_put_contents($errorfile, "\n----- getGWAScatalog.py -----\n", FILE_APPEND);
-        $script = scripts_path('getGWAScatalog.py');
-        exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+        Storage::append($logfile, "----- getGWAScatalog.py -----\n");
+        Storage::append($errorfile, "----- getGWAScatalog.py -----\n");
+        $script = Helper::scripts_path('getGWAScatalog.py');
+        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $cmd . "\n");
+        exec($cmd, $output, $error);
+
         if ($error != 0) {
             $this->rmFiles($filedir);
-            $this->chmod($filedir);
+            // $this->chmod($filedir);
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:008']);
-            $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+            // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 8, $msg);
-                return;
+                // return; //TODO: uncomment before flight
             }
         }
 
-        #$script = scripts_path('getExAC.pl');
+        #$script = Helper::scripts_path('getExAC.pl');
         #exec("perl $script $filedir");
         if ($params['eqtlMap'] == 1) {
-            file_put_contents($logfile, "\n----- geteQTL.py -----\n", FILE_APPEND);
-            file_put_contents($errorfile, "\n----- geteQTL.py -----\n", FILE_APPEND);
-            $script = scripts_path('geteQTL.py');
-            exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+            Storage::append($logfile, "----- geteQTL.py -----\n");
+            Storage::append($errorfile, "----- geteQTL.py -----\n");
+            $script = Helper::scripts_path('geteQTL.py');
+            $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+            Storage::append($logfile, "Command to be executed:");
+            Storage::append($logfile, $cmd . "\n");
+            exec($cmd, $output, $error);
+
             if ($error != 0) {
                 $this->rmFiles($filedir);
-                $this->chmod($filedir);
+                // $this->chmod($filedir);
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:009']);
-                $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+                // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 9, $msg);
-                    return;
+                    // return; //TODO: uncomment before flight
                 }
             }
         }
 
         if ($params['ciMap'] == 1) {
-            file_put_contents($logfile, "\n----- getCI.R -----\n", FILE_APPEND);
-            file_put_contents($errorfile, "\n----- getCI.R -----\n", FILE_APPEND);
-            $script = scripts_path('getCI.R');
-            exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+            Storage::append($logfile, "----- getCI.R -----\n");
+            Storage::append($errorfile, "----- getCI.R -----\n");
+            $script = Helper::scripts_path('getCI.R');
+            $cmd = "Rscript $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+            Storage::append($logfile, "Command to be executed:");
+            Storage::append($logfile, $cmd . "\n");
+            exec($cmd, $output, $error);
+
             if ($error != 0) {
                 $this->rmFiles($filedir);
-                $this->chmod($filedir);
+                // $this->chmod($filedir);
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:010']);
-                $this->JobMonitorUpdate($jobID, $created_at, $started_at);
-                $errorout = file_get_contents($errorfile);
+                // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+                $errorout = Storage::get($errorfile);
                 $errorout = explode("\n", $errorout);
                 $msg = $errorout[count($errorout) - 2];
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 10, $msg);
-                    return;
+                    // return; //TODO: uncomment before flight
                 }
             }
         }
 
-        file_put_contents($logfile, "\n----- geneMap.R -----\n", FILE_APPEND);
-        file_put_contents($errorfile, "\n----- geneMap.R -----\n", FILE_APPEND);
-        $script = scripts_path('geneMap.R');
-        exec("Rscript $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+        Storage::append($logfile, "----- geneMap.R -----\n");
+        Storage::append($errorfile, "----- geneMap.R -----\n");
+        $script = Helper::scripts_path('geneMap.R');
+        $cmd = "Rscript $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $cmd . "\n");
+        exec($cmd, $output, $error);
+
         if ($error != 0) {
             $this->rmFiles($filedir);
-            $this->chmod($filedir);
+            // $this->chmod($filedir);
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:011']);
-            $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+            // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 11, $msg);
-                return;
+                // return; //TODO: uncomment before flight
             }
         }
 
         if ($params['ciMap'] == 1) {
-            file_put_contents($logfile, "\n----- createCircosPlot.py -----\n", FILE_APPEND);
-            file_put_contents($errorfile, "\n----- createCircosPlot.py -----\n", FILE_APPEND);
-            $script = scripts_path('createCircosPlot.py');
-            exec("python $script $filedir >>$logfile 2>>$errorfile", $output, $error);
+            Storage::append($logfile, "----- createCircosPlot.py -----\n");
+            Storage::append($errorfile, "----- createCircosPlot.py -----\n");
+            $script = Helper::scripts_path('createCircosPlot.py');
+            $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+            Storage::append($logfile, "Command to be executed:");
+            Storage::append($logfile, $cmd . "\n");
+            exec($cmd, $output, $error);
+
             if ($error != 0) {
                 $this->rmFiles($filedir);
-                $this->chmod($filedir);
+                // $this->chmod($filedir);
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:012']);
-                $this->JobMonitorUpdate($jobID, $created_at, $started_at);
-                $errorout = file_get_contents($errorfile);
+                // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+                $errorout = Storage::get($errorfile);
                 $errorout = explode("\n", $errorout);
                 $msg = $errorout[count($errorout) - 2];
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 12, $msg);
-                    return;
+                    // return; //TODO: uncomment before flight
                 }
             }
         }
 
         $this->rmFiles($filedir);
-        $this->chmod($filedir);
+        // $this->chmod($filedir);
 
         DB::table('SubmitJobs')->where('jobID', $jobID)
             ->update(['status' => 'OK']);
-        $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+        // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
 
         if ($email != null) {
             $this->sendJobCompMail($email, $jobtitle, $jobID, $status, $msg);
@@ -354,10 +422,13 @@ class Snp2geneProcess implements ShouldQueue
                 'status' => $status,
                 'msg' => $msg
             ];
-            Mail::send('emails.jobComplete', $data, function ($m) use ($user) {
-                $m->from('noreply@ctglab.nl', "FUMA web application");
-                $m->to($user->email, $user->name)->subject("FUMA your job has been completed");
-            });
+            try {
+                // Mail::send('emails.jobComplete', $data, function ($m) use ($user) {
+                //     $m->from('noreply@ctglab.nl', "FUMA web application");
+                //     $m->to($user->email, $user->name)->subject("FUMA your job has been completed");
+                // });
+            } catch (Throwable $e) {
+            }
         } else {
             $user = DB::table('users')->where('email', $email)->first();
             $data = [
@@ -366,10 +437,14 @@ class Snp2geneProcess implements ShouldQueue
                 'jobID' => $jobID,
                 'msg' => $msg
             ];
-            Mail::send('emails.jobError', $data, function ($m) use ($user) {
-                $m->from('noreply@ctglab.nl', "FUMA web application");
-                $m->to($user->email, $user->name)->subject("FUMA an error occured");
-            });
+
+            try {
+                // Mail::send('emails.jobError', $data, function ($m) use ($user) {
+                //     $m->from('noreply@ctglab.nl', "FUMA web application");
+                //     $m->to($user->email, $user->name)->subject("FUMA an error occured");
+                // });
+            } catch (Throwable $e) {
+            }
         }
         return;
     }
@@ -382,10 +457,14 @@ class Snp2geneProcess implements ShouldQueue
             'jobID' => $jobID
         ];
         $devemail = config('app.devemail');
-        Mail::send('emails.jobFailed', $data, function ($m) use ($user, $devemail) {
-            $m->from('noreply@ctglab.nl', "FUMA web application");
-            $m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job failed");
-        });
+        try {
+            // Mail::send('emails.jobFailed', $data, function ($m) use ($user, $devemail) {
+            //     $m->from('noreply@ctglab.nl', "FUMA web application");
+            //     $m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job failed");
+            // });
+        } catch (Throwable $e) {
+        }
+        return;
     }
 
     public function JobMonitorUpdate($jobID, $created_at, $started_at)
@@ -402,16 +481,20 @@ class Snp2geneProcess implements ShouldQueue
 
     public function rmFiles($filedir)
     {
-        exec("rm $filedir" . "input.gwas");
-        exec("rm $filedir" . "input.snps");
-        if (File::exists($filedir . "input.lead")) {
-            exec("rm $filedir" . "input.lead");
+        if (Storage::exists($filedir . "input.gwas")) {
+            Storage::delete($filedir . "input.gwas");
         }
-        if (File::exists($filedir . "input.regions")) {
-            exec("rm $filedir" . "input.regions");
+        if (Storage::exists($filedir . "input.snps")) {
+            Storage::delete($filedir . "input.snps");
         }
-        if (File::exists($filedir . "magma.input")) {
-            exec("rm $filedir" . "magma.input");
+        if (Storage::exists($filedir . "input.lead")) {
+            Storage::delete($filedir . "input.lead");
+        }
+        if (Storage::exists($filedir . "input.regions")) {
+            Storage::delete($filedir . "input.regions");
+        }
+        if (Storage::exists($filedir . "magma.input")) {
+            Storage::delete($filedir . "magma.input");
         }
         return;
     }
