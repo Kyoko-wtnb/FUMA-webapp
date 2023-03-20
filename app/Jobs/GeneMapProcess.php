@@ -51,7 +51,7 @@ class GeneMapProcess implements ShouldQueue
 
         // get parameters
         $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . "params.config"), false, INI_SCANNER_RAW);
 
         // log files
         $logfile = $filedir . "job.log";

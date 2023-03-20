@@ -15,8 +15,8 @@ class CreateGene2funcTable extends Migration
         Schema::create('gene2func', function (Blueprint $table) {
             $table->bigIncrements('jobID');
             $table->string('title');
-            $table->integer('snp2gene');
-            $table->string('snp2geneTitle');
+            $table->integer('snp2gene')->nullable();
+            $table->string('snp2geneTitle')->nullable();
             $table->string('email')->default('Not set');
             $table->date('created_at');
 
