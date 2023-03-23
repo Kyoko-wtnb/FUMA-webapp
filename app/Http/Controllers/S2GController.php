@@ -295,8 +295,10 @@ class S2GController extends Controller
         if ($request->hasFile('GWASsummary')) {
             $type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
             if ($type == "text/plain") {
-                $request->file('GWASsummary')->move($filedir, $GWAS);
+                Storage::put($filedir . '/' . $GWAS, file_get_contents($request->file('GWASsummary')));
+                // $request->file('GWASsummary')->move($filedir, $GWAS);
             } else if ($type == "application/zip") {
+                // TODO: swich to use storage
                 $request->file('GWASsummary')->move($filedir, "temp.zip");
                 $zip = new \ZipArchive;
                 $zip->open($filedir . '/temp.zip');
@@ -305,6 +307,7 @@ class S2GController extends Controller
                 Storage::move($filedir . '/' . $zf, $filedir . '/' . $GWAS);
                 system("rm $filedir/temp.zip");
             } else {
+                // TODO: swich to use storage
                 $f = $_FILES["GWASsummary"]["name"];
                 $request->file('GWASsummary')->move($filedir, $f);
                 system("gzip -cd $filedir/$f > $filedir/$GWAS");
@@ -321,8 +324,10 @@ class S2GController extends Controller
         if ($request->hasFile('leadSNPs')) {
             $type = mime_content_type($_FILES["leadSNPs"]["tmp_name"]);
             if ($type == "text/plain") {
+                // TODO: swich to use storage
                 $request->file('leadSNPs')->move($filedir, $leadSNPs);
             } else if ($type == "application/zip") {
+                // TODO: swich to use storage
                 $request->file('leadSNPs')->move($filedir, "temp.zip");
                 $zip = new \ZipArchive;
                 $zip->open($filedir . '/temp.zip');
@@ -330,6 +335,7 @@ class S2GController extends Controller
                 $zip->extractTo($filedir);
                 Storage::move($filedir . '/' . $zf, $filedir . '/' . $leadSNPs);
             } else {
+                // TODO: swich to use storage
                 $f = $_FILES["leadSNPs"]["name"];
                 $request->file('leadSNPs')->move($filedir, $f);
                 system("gzip -cd $filedir/$f > $filedir/$leadSNPs");
@@ -349,8 +355,10 @@ class S2GController extends Controller
         if ($request->hasFile('regions')) {
             $type = mime_content_type($_FILES["regions"]["tmp_name"]);
             if ($type == "text/plain") {
+                // TODO: swich to use storage
                 $request->file('regions')->move($filedir, $regions);
             } else if ($type == "application/zip") {
+                // TODO: swich to use storage
                 $request->file('regions')->move($filedir, "temp.zip");
                 $zip = new \ZipArchive;
                 $zip->open($filedir . '/temp.zip');
@@ -358,6 +366,7 @@ class S2GController extends Controller
                 $zip->extractTo($filedir);
                 Storage::move($filedir . '/' . $zf, $filedir . '/' . $regions);
             } else {
+                // TODO: swich to use storage
                 $f = $_FILES["regions"]["name"];
                 $request->file('regions')->move($filedir, $f);
                 system("gzip -cd $filedir/$f > $filedir/$regions");
