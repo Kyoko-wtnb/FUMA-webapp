@@ -4,41 +4,56 @@ pipeline {
         stage("Verify tooling") {
             steps {
                 sh '''
-                    docker info
                     docker version
                     docker compose version
                 '''
             }
-        }   
-        stage("Start Docker") {
+        }
+        stage("Populate .env file") {
             steps {
-                sh './vendor/bin/sail up'
+                dir("/var/jenkins_home/workspace/envs/${JOB_NAME}") {
+                    fileOperations([fileCopyOperation(excludes: '', flattenFiles: true, includes: '.env', targetLocation: "${WORKSPACE}")])
+                }
             }
         }
         stage("Run Composer Install") {
             steps {
                 sh 'docker run --rm \
                         -u "$(id -u):$(id -g)" \
-                        -v "$(pwd):/var/www/html" \
+                        -v "/home/ams375/FUMA-webapp/laradock-FUMA/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
                         -w /var/www/html \
                         laravelsail/php82-composer:latest \
                         composer install --ignore-platform-reqs'
             }
         }
-             
-        stage("Run Tests") {
+        stage("Run artisan tests") {
             steps {
-                sh './vendor/bin/sail test'
+                sh 'docker run --rm \
+                        -u "$(id -u):$(id -g)" \
+                        -v "/home/ams375/FUMA-webapp/laradock-FUMA/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
+                        -w /var/www/html \
+                        laravelsail/php82-composer:latest \
+                        php artisan test'
             }
         }
+        // stage("Start Docker") {
+        //     steps {
+        //         sh './vendor/bin/sail up'
+        //     }
+        // }
+        // stage("Run Tests") {
+        //     steps {
+        //         sh './vendor/bin/sail test'
+        //     }
+        // }
     }
-    post {
-        success {
+    // post {
+    //     // success {
                                
-        }
-        always {
-            sh 'docker compose down --remove-orphans -v'
-            sh 'docker compose ps'
-        }
-    }
+    //     // }
+    //     // always {
+    //     //     sh 'docker compose down --remove-orphans -v'
+    //     //     sh 'docker compose ps'
+    //     // }
+    // }
 }
