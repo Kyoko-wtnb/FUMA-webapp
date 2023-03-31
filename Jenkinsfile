@@ -36,24 +36,23 @@ pipeline {
                         php artisan test'
             }
         }
-        // stage("Start Docker") {
-        //     steps {
-        //         sh './vendor/bin/sail up'
-        //     }
-        // }
-        // stage("Run Tests") {
-        //     steps {
-        //         sh './vendor/bin/sail test'
-        //     }
+    }
+    post {
+        success {
+            sshagent(credentials: ['fuma_dev_srv']) {
+                sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 cd /home/ams375/FUMA-webapp && git pull origin FUMA-webapp-new'
+                // script {
+                //     try {
+                //         sh 'ssh -o StrictHostKeyChecking=no ec2-user@13.40.116.143 sudo chmod 777 /var/www/html/storage -R'
+                //     } catch (Exception e) {
+                //         echo 'Some file permissions could not be updated.'
+                //     }
+                // }
+            }                               
+        }
+        // always {
+        //     sh 'docker compose down --remove-orphans -v'
+        //     sh 'docker compose ps'
         // }
     }
-    // post {
-    //     // success {
-                               
-    //     // }
-    //     // always {
-    //     //     sh 'docker compose down --remove-orphans -v'
-    //     //     sh 'docker compose ps'
-    //     // }
-    // }
 }
