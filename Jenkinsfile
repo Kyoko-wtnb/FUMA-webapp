@@ -41,7 +41,7 @@ pipeline {
         success {
             sshagent(credentials: ['fuma_dev_srv']) {
                 sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp fetch --all'
-                sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp reset --hard origin/FUMA-webapp-new'
+                sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp reset --hard origin/FUMA-webapp-new-production'
                 // sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp pull https://github.com/vufuma/FUMA-webapp.git FUMA-webapp-new'
                 // script {
                 //     try {
