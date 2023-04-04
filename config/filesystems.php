@@ -36,6 +36,13 @@ return [
             'throw' => false,
         ],
 
+        'fuma_reference_data' => [
+            'driver' => 'local',
+            // 'read-only' => true,
+            'root' => 'E:/',
+            'throw' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

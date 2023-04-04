@@ -12,15 +12,16 @@
 		<div class="collapse navbar-collapse" id="headNav" style="padding-right: 50px;">
 			<ul class="nav navbar-nav navbar-right">
 				<!-- local_start -->
-				<li class="{{ Request::is('/') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/">Home</a></li>
-				<li class="{{ Request::is('tutorial') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/tutorial">Tutorial</a></li>
-				<li class="{{ Request::is('browse*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/browse">Browse Public Results</a></li>
-				<li class="{{ Request::is('snp2gene*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a></li>
-				<li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a></li>
-				<li class="{{ Request::is('celltype*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/celltype">Cell Type</a></li>
-				<li class="{{ Request::is('links') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/links">Links</a></li>
-				<li class="{{ Request::is('faq') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/faq">FAQs</a></li>
-				<li class="{{ Request::is('updates') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/updates">Updates</a></li>
+				<li class="{{ Request::is('/') ? 'active' : ''}}"><a href="/">Home</a></li>
+				<li class="{{ Request::is('analysis') ? 'active' : ''}}"><a href="/analysis">Analysis</a></li>
+				<li class="{{ Request::is('tutorial') ? 'active' : ''}}"><a href="/tutorial">Tutorial</a></li>
+				<li class="{{ Request::is('browse*') ? 'active' : ''}}"><a href="/browse">Browse Public Results</a></li>
+				<li class="{{ Request::is('snp2gene*') ? 'active' : ''}}"><a href="/snp2gene">SNP2GENE</a></li>
+				<li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="/gene2func">GENE2FUNC</a></li>
+				<li class="{{ Request::is('celltype*') ? 'active' : ''}}"><a href="/celltype">Cell Type</a></li>
+				<li class="{{ Request::is('links') ? 'active' : ''}}"><a href="/links">Links</a></li>
+				<li class="{{ Request::is('faq') ? 'active' : ''}}"><a href="/faq">FAQs</a></li>
+				<li class="{{ Request::is('updates') ? 'active' : ''}}"><a href="/updates">Updates</a></li>
 				<li>
 					<a id="appInfo" class="infoPop" data-placement="bottom" data-toggle="popover" data-html="true"
 						title="FUMA information"

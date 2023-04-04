@@ -3,6 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
+use App\Models\G2FQuery;
+
+use Helper;
+use Auth;
+use JavaScript;
 
 class G2FController extends Controller
 {
@@ -29,7 +37,7 @@ class G2FController extends Controller
     public function authcheck($jobID)
     {
         $email = Auth::user()->email;
-        $check = DB::table('gene2func')->where('jobID', $jobID)->first();
+        $check = G2FQuery::where('jobID', $jobID)->first();
         if ($check->email == $email) {
             return view('pages.gene2func', ['status' => 'getJob', 'id' => $jobID, 'page' => 'gene2func', 'prefix' => 'gene2func']);
         } else {
@@ -42,29 +50,28 @@ class G2FController extends Controller
         $email = Auth::user()->email;
 
         if ($email) {
-            $results = DB::table('gene2func')->where('email', $email)
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $queries = G2FQuery::where('email', $email)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
         } else {
-            $results = array();
+            $queries = array();
         }
 
-        return response()->json($results);
+        return response()->json($queries);
     }
 
     public function deleteJob(Request $request)
     {
         $jobID = $request->input('jobID');
-        File::deleteDirectory(config('app.jobdir') . '/gene2func/' . $jobID);
-        DB::table('gene2func')->where('jobID', $jobID)->delete();
+        Storage::deleteDirectory(config('app.jobdir') . '/gene2func/' . $jobID);
+        G2FQuery::where('jobID', $jobID)->delete();
         return;
     }
 
     public function gene2funcSubmit(Request $request)
     {
-        $date = date('Y-m-d H:i:s');
-        // $jobID;
-        // $filedir;
+        $G2FQuery = new G2FQuery();
+        $date = date('Y-m-d');
         $email = Auth::user()->email;
 
         if ($request->filled('title')) {
@@ -73,14 +80,15 @@ class G2FController extends Controller
             $title = "None";
         }
 
-        DB::table('gene2func')->insert(
-            ['title' => $title, 'email' => $email, 'created_at' => $date]
-        );
+        $G2FQuery->created_at = $date;
+        $G2FQuery->email = $email;
+        $G2FQuery->title = $title;
 
-        // Get jobID (automatically generated)
-        $jobID = DB::table('gene2func')->where('email', $email)->where('created_at', $date)->first()->jobID;
+        $G2FQuery->save();
+        $jobID = $G2FQuery->jobID;
+        
         $filedir = config('app.jobdir') . '/gene2func/' . $jobID;
-        File::makeDirectory($filedir);
+        Storage::makeDirectory($filedir);
         $filedir = $filedir . '/';
 
         if ($request->filled('genes')) {
@@ -140,33 +148,32 @@ class G2FController extends Controller
         $adjPcut = $request->input('adjPcut');
         $minOverlap = $request->input('minOverlap');
 
-        $app_config = parse_ini_file(scripts_path('app.config'), false, INI_SCANNER_RAW);
-
+        $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
         // write parameters to config file
         $paramfile = $filedir . 'params.config';
-        File::put($paramfile, "[jobinfo]\n");
-        File::append($paramfile, "created_at=$date\n");
-        File::append($paramfile, "title=$title\n");
+        Storage::put($paramfile, "[jobinfo]");
+        Storage::append($paramfile, "created_at=$date");
+        Storage::append($paramfile, "title=$title");
 
-        File::append($paramfile, "\n[version]\n");
-        File::append($paramfile, "FUMA=" . $app_config['FUMA'] . "\n");
-        File::append($paramfile, "MsigDB=" . $app_config['MsigDB'] . "\n");
-        File::append($paramfile, "WikiPathways=" . $app_config['WikiPathways'] . "\n");
-        File::append($paramfile, "GWAScatalog=" . $app_config['GWAScatalog'] . "\n");
+        Storage::append($paramfile, "\n[version]");
+        Storage::append($paramfile, "FUMA=" . $app_config['FUMA']);
+        Storage::append($paramfile, "MsigDB=" . $app_config['MsigDB']);
+        Storage::append($paramfile, "WikiPathways=" . $app_config['WikiPathways']);
+        Storage::append($paramfile, "GWAScatalog=" . $app_config['GWAScatalog']);
 
-        File::append($paramfile, "\n[params]\n");
-        File::append($paramfile, "gtype=$gtype\n");
-        File::append($paramfile, "gval=$gval\n");
-        File::append($paramfile, "bkgtype=$bkgtype\n");
-        File::append($paramfile, "bkgval=$bkgval\n");
-        File::append($paramfile, "ensembl=$ensembl\n");
-        File::append($paramfile, "gsFileN=$gsFileN\n");
-        File::append($paramfile, "gsFiles=$gsFiles\n");
-        File::append($paramfile, "gene_exp=$gene_exp\n");
-        File::append($paramfile, "MHC=$MHC\n");
-        File::append($paramfile, "adjPmeth=$adjPmeth\n");
-        File::append($paramfile, "adjPcut=$adjPcut\n");
-        File::append($paramfile, "minOverlap=$minOverlap\n");
+        Storage::append($paramfile, "\n[params]");
+        Storage::append($paramfile, "gtype=$gtype");
+        Storage::append($paramfile, "gval=$gval");
+        Storage::append($paramfile, "bkgtype=$bkgtype");
+        Storage::append($paramfile, "bkgval=$bkgval");
+        Storage::append($paramfile, "ensembl=$ensembl");
+        Storage::append($paramfile, "gsFileN=$gsFileN");
+        Storage::append($paramfile, "gsFiles=$gsFiles");
+        Storage::append($paramfile, "gene_exp=$gene_exp");
+        Storage::append($paramfile, "MHC=$MHC");
+        Storage::append($paramfile, "adjPmeth=$adjPmeth");
+        Storage::append($paramfile, "adjPcut=$adjPcut");
+        Storage::append($paramfile, "minOverlap=$minOverlap");
 
         JavaScript::put([
             'id' => $jobID,
@@ -190,10 +197,10 @@ class G2FController extends Controller
     {
         $filedir = $request->input('filedir');
 
-        $script = scripts_path('gene2func.R');
+        $script = Helper::scripts_path('gene2func.R');
         exec("Rscript $script $filedir", $output, $error);
 
-        $script = scripts_path('GeneSet.py');
+        $script = Helper::scripts_path('GeneSet.py');
         exec("python $script $filedir", $output2, $error2);
         exec("find " . $filedir . " -type d -exec chmod 775 {} \;");
         exec("find " . $filedir . " -type f -exec chmod 664 {} \;");
@@ -225,13 +232,13 @@ class G2FController extends Controller
             // Get jobID (automatically generated)
             $jobID = DB::table('gene2func')->where('snp2gene', $s2gID)->first()->jobID;
             $filedir = config('app.jobdir') . '/gene2func/' . $jobID;
-            File::makeDirectory($filedir);
+            Storage::makeDirectory($filedir);
             $filedir = $filedir . '/';
 
             $s2gfiledir = config('app.jobdir') . '/jobs/' . $s2gID . '/';
             $gtype = "text";
             $bkgtype = "select";
-            $params = parse_ini_file($s2gfiledir . 'params.config', false, INI_SCANNER_RAW);
+            $params = parse_ini_string(Storage::get($s2gfiledir . 'params.config'), false, INI_SCANNER_RAW);
             $ensembl = $params['ensembl'];
             $gene_exp = $params['magma_exp'];
             $MHC = $params['exMHC'];
@@ -252,24 +259,24 @@ class G2FController extends Controller
             }
 
             $paramfile = $filedir . 'params.config';
-            File::put($paramfile, "[jobinfo]\n");
-            File::append($paramfile, "created_at=$date\n");
-            File::append($paramfile, "title=$title\n");
-            File::append($paramfile, "snp2geneID=$s2gID\n");
-            File::append($paramfile, "snp2geneTitle=$s2gTitle\n");
-            File::append($paramfile, "\n[params]\n");
-            File::append($paramfile, "gtype=$gtype\n");
-            File::append($paramfile, "gval=$gval\n");
-            File::append($paramfile, "bkgtype=$bkgtype\n");
-            File::append($paramfile, "bkgval=$bkgval\n");
-            File::append($paramfile, "MHC=$MHC\n");
-            File::append($paramfile, "ensembl=$ensembl\n");
-            File::append($paramfile, "gsFileN=0\n");
-            File::append($paramfile, "gsFiles=NA\n");
-            File::append($paramfile, "gene_exp=$gene_exp\n");
-            File::append($paramfile, "adjPmeth=$adjPmeth\n");
-            File::append($paramfile, "adjPcut=$adjPcut\n");
-            File::append($paramfile, "minOverlap=$minOverlap\n");
+            Storage::put($paramfile, "[jobinfo]");
+            Storage::append($paramfile, "created_at=$date");
+            Storage::append($paramfile, "title=$title");
+            Storage::append($paramfile, "snp2geneID=$s2gID");
+            Storage::append($paramfile, "snp2geneTitle=$s2gTitle");
+            Storage::append($paramfile, "\n[params]");
+            Storage::append($paramfile, "gtype=$gtype");
+            Storage::append($paramfile, "gval=$gval");
+            Storage::append($paramfile, "bkgtype=$bkgtype");
+            Storage::append($paramfile, "bkgval=$bkgval");
+            Storage::append($paramfile, "MHC=$MHC");
+            Storage::append($paramfile, "ensembl=$ensembl");
+            Storage::append($paramfile, "gsFileN=0");
+            Storage::append($paramfile, "gsFiles=NA");
+            Storage::append($paramfile, "gene_exp=$gene_exp");
+            Storage::append($paramfile, "adjPmeth=$adjPmeth");
+            Storage::append($paramfile, "adjPcut=$adjPcut");
+            Storage::append($paramfile, "minOverlap=$minOverlap");
 
             JavaScript::put([
                 'id' => $jobID,

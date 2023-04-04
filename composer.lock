@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "973d70360d61f6f089c3d6b44be516d8",
+    "content-hash": "0a40cf701f9411626ae0a85e630341bd",
     "packages": [
         {
             "name": "brick/math",
@@ -982,6 +982,67 @@
             "time": "2021-10-07T12:57:01+00:00"
         },
         {
+            "name": "laracasts/utilities",
+            "version": "3.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laracasts/PHP-Vars-To-Js-Transformer.git",
+                "reference": "1cc5d5b9670e5be392df38e0b648fa4842c5a1f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laracasts/PHP-Vars-To-Js-Transformer/zipball/1cc5d5b9670e5be392df38e0b648fa4842c5a1f8",
+                "reference": "1cc5d5b9670e5be392df38e0b648fa4842c5a1f8",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0|^10.0",
+                "php": ">=5.5.0|>=7.2.5|>=8.0.0"
+            },
+            "require-dev": {
+                "phpspec/phpspec": ">=2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Laracasts\\Utilities\\JavaScript\\JavaScriptServiceProvider"
+                    ],
+                    "aliases": {
+                        "JavaScript": "Laracasts\\Utilities\\JavaScript\\JavaScriptFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "files": [
+                    "src/helpers.php"
+                ],
+                "psr-4": {
+                    "Laracasts\\Utilities\\JavaScript\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeffrey Way",
+                    "email": "jeffrey@laracasts.com"
+                }
+            ],
+            "description": "Transform your PHP to JavaScript",
+            "keywords": [
+                "javascript",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/laracasts/PHP-Vars-To-Js-Transformer/issues",
+                "source": "https://github.com/laracasts/PHP-Vars-To-Js-Transformer/tree/3.2.2"
+            },
+            "time": "2023-02-03T13:22:09+00:00"
+        },
+        {
             "name": "laravel/framework",
             "version": "v10.3.1",
             "source": {
@@ -1726,6 +1787,68 @@
             "time": "2023-02-18T15:32:41+00:00"
         },
         {
+            "name": "league/flysystem-read-only",
+            "version": "3.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thephpleague/flysystem-read-only.git",
+                "reference": "bc96f624a8fd3688b9ea116578cbed651572dc88"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thephpleague/flysystem-read-only/zipball/bc96f624a8fd3688b9ea116578cbed651572dc88",
+                "reference": "bc96f624a8fd3688b9ea116578cbed651572dc88",
+                "shasum": ""
+            },
+            "require": {
+                "league/flysystem": "^3.10.0",
+                "php": "^8.0.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "League\\Flysystem\\ReadOnly\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Frank de Jonge",
+                    "email": "info@frankdejonge.nl"
+                }
+            ],
+            "description": "Read-only filesystem adapter for Flysystem.",
+            "keywords": [
+                "Flysystem",
+                "Read-Only",
+                "filesystem",
+                "only",
+                "read"
+            ],
+            "support": {
+                "issues": "https://github.com/thephpleague/flysystem-read-only/issues",
+                "source": "https://github.com/thephpleague/flysystem-read-only/tree/3.10.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ecologi.com/frankdejonge",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/frankdejonge",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/league/flysystem",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-10-20T10:17:33+00:00"
+        },
+        {
             "name": "league/mime-type-detection",
             "version": "1.11.0",
             "source": {
@@ -2349,6 +2472,64 @@
                 }
             ],
             "time": "2023-02-25T19:38:58+00:00"
+        },
+        {
+            "name": "predis/predis",
+            "version": "v2.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/predis/predis.git",
+                "reference": "a77a43913a74f9331f637bb12867eb8e274814e5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/predis/predis/zipball/a77a43913a74f9331f637bb12867eb8e274814e5",
+                "reference": "a77a43913a74f9331f637bb12867eb8e274814e5",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^8.0 || ~9.4.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A flexible and feature-complete Redis client for PHP.",
+            "homepage": "http://github.com/predis/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support": {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.1.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-03-02T18:32:04+00:00"
         },
         {
             "name": "psr/container",

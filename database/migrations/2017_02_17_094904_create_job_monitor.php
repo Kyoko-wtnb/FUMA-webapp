@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGene2funcTable extends Migration
+class CreateJobMonitor extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,11 @@ class CreateGene2funcTable extends Migration
      */
     public function up()
     {
-        Schema::create('gene2func', function (Blueprint $table) {
+        Schema::create('JobMonitor', function (Blueprint $table) {
             $table->bigIncrements('jobID');
-            $table->string('title');
-            $table->integer('snp2gene')->nullable();
-            $table->string('snp2geneTitle')->nullable();
-            $table->string('email')->default('Not set');
             $table->date('created_at');
-
-            // Add indexes
-            $table->index('email');
+            $table->date('started_at');
+            $table->date('completed_at');
         });
     }
 
@@ -32,6 +27,6 @@ class CreateGene2funcTable extends Migration
      */
     public function down()
     {
-        Schema::drop('gene2func');
+        Schema::drop('JobMonitor');
     }
 }

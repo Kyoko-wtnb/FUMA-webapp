@@ -1,0 +1,3 @@
+[submodule "laradock-FUMA"]
+	path = laradock-FUMA
+	url = https://github.com/vufuma/laradock.git
