@@ -15,7 +15,7 @@ class Kernel extends HttpKernel
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-        // \GeneaLabs\LaravelCaffeine\Http\middleware\LaravelCaffeineDripMiddleware::class
+        \fuma\Http\Middleware\ConvertEmailToLowerCase::class,
     ];
 
     /**
@@ -52,6 +52,6 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \fuma\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'timeout' => \fuma\Http\Middleware\SessionTimeout::class
+        'timeout' => \fuma\Http\Middleware\SessionTimeout::class,
     ];
 }
