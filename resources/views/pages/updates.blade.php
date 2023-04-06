@@ -19,6 +19,13 @@
 	</thead>
     <tbody>
 		<tr>
+    		<td>06 April 2023</td>
+            <td>v1.5.3</td>
+            <td>
+			Registration vulnerability fixed.
+            </td>
+	</tr>
+		<tr>
     		<td>26 February 2023</td>
             <td>v1.5.2</td>
             <td>
