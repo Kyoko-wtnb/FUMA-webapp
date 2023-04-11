@@ -1,0 +1,9 @@
+FROM python:2
+
+WORKDIR /app
+
+COPY gwas_file/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app.config ./
+COPY gwas_file.py ./
