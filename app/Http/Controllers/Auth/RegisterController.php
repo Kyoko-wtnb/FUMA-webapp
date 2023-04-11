@@ -6,6 +6,7 @@ use fuma\User;
 use fuma\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use fuma\Rules\Lowercase;
 
 class RegisterController extends Controller
 {
@@ -49,7 +50,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
+            'email' => ['required', 'email', 'max:255', new Lowercase, 'unique:users'],
             'password' => 'required|min:8|confirmed',
         ]);
     }
