@@ -6,7 +6,7 @@ import re
 import pandas as pd
 import numpy as np
 import math
-import ConfigParser
+import configparser
 import tabix
 
 ##### Return index of a1 which exists in a2 #####
@@ -135,11 +135,11 @@ def main():
 		filedir += '/'
 
 	##### get Parameters #####
-	cfg = ConfigParser.ConfigParser()
+	cfg = configparser.ConfigParser()
 	cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
 	circos_config = cfg.get('data', 'circos_config')
 	circos_path = cfg.get('data', 'circos_path')
-	param = ConfigParser.RawConfigParser()
+	param = configparser.RawConfigParser()
 	param.optionxform = str
 	param.read(filedir+'params.config')
 	ciMap = int(param.get('ciMap', 'ciMap'))
