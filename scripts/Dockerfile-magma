@@ -18,3 +18,4 @@ RUN Rscript -e "install.packages('kimisc')"
 COPY app.config ./
 COPY magma.py ./
 COPY magma_gene.R ./
+COPY ConfigParser.R ./
