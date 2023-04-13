@@ -1,0 +1,9 @@
+FROM python:2
+
+WORKDIR /app
+
+COPY manhattan_filt/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app.config ./
+COPY manhattan_filt.py ./
