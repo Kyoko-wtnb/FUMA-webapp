@@ -1,0 +1,5 @@
+# geteQTL.py dependencies
+numpy
+pandas
+ConfigParser
+pytabix
