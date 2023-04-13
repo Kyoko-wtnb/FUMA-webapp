@@ -1,0 +1,3 @@
+# manhattan_filt.py dependencies
+numpy
+pandas
