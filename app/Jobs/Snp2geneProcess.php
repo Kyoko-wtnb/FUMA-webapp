@@ -65,12 +65,13 @@ class Snp2geneProcess implements ShouldQueue
                 $this->sendJobCompMail($email, $jobtitle, $jobID, -1, $msg);
                 return;
             }
+            return;
             // There should also be a return here, in case email == null stil it should return
         }
 
         // get parameters
         $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
-        $filedir_abs_path = Storage::path($filedir);
+        $ref_data_path_on_host = config('app.ref_data_on_host_path');
 
         if (!Storage::exists($filedir . "params.config")) {
             $msg = "Job parameters not found.";
@@ -95,17 +96,12 @@ class Snp2geneProcess implements ShouldQueue
         //gwas_file.pl
         Storage::put($logfile, "----- gwas_file.py -----\n");
         Storage::put($errorfile, "----- gwas_file.py -----\n");
-        $script = Helper::scripts_path('gwas_file.py');
 
-        $log_file_abs_path = Storage::path($logfile);
-        $err_file_abs_path = Storage::path($errorfile);
-
-        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
-
+        $new_cmd = "docker run --rm --name job-$jobID -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-gwas_file /bin/sh -c 'python gwas_file.py job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $cmd . "\n");
+        Storage::append($logfile, $new_cmd . "\n");
 
-        exec($cmd, $output, $error);
+        exec($new_cmd, $output, $error);
 
         if ($error != 0) {
             $this->rmFiles($filedir);
@@ -129,21 +125,19 @@ class Snp2geneProcess implements ShouldQueue
         Storage::append($logfile, "----- allSNPs.py -----\n");
         Storage::append($errorfile, "----- allSNPs.py -----\n");
 
-        $script = Helper::scripts_path('allSNPs.py');
-        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
-        Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $cmd . "\n");
-        exec($cmd, $output, $error);
+        $new_cmd = "docker run --rm --name job-$jobID -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-allsnps /bin/sh -c 'python allSNPs.py job >>job/job.log 2>>job/error.log'";
 
+        Storage::append($logfile, "Command to be executed:");
+        Storage::append($logfile, $new_cmd . "\n");
+        exec($new_cmd, $output, $error);
         if ($params['magma'] == 1) {
             Storage::append($logfile, "----- magma.py -----\n");
             Storage::append($errorfile, "----- magma.py -----\n");
 
-            $script = Helper::scripts_path('magma.py');
-            $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+            $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-magma /bin/sh -c 'python magma.py job >>job/job.log 2>>job/error.log'";
             Storage::append($logfile, "Command to be executed:");
-            Storage::append($logfile, $cmd . "\n");
-            exec($cmd, $output, $error);
+            Storage::append($logfile, $new_cmd . "\n");
+            exec($new_cmd, $output, $error);
 
             if ($error != 0) {
                 $errorout = Storage::get($errorfile);
@@ -166,13 +160,10 @@ class Snp2geneProcess implements ShouldQueue
         Storage::append($logfile, "----- manhattan_filt.py -----\n");
         Storage::append($errorfile, "----- manhattan_filt.py -----\n");
 
-        $script = Helper::scripts_path('manhattan_filt.py');
-        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+        $new_cmd = "docker run --rm --name job-$jobID -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-manhattan_filt /bin/sh -c 'python manhattan_filt.py job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $cmd . "\n");
-        exec($cmd, $output, $error);
-
-
+        Storage::append($logfile, $new_cmd . "\n");
+        exec($new_cmd, $output, $error);
         if ($error != 0) {
             $this->rmFiles($filedir);
             // $this->chmod($filedir);
@@ -187,11 +178,11 @@ class Snp2geneProcess implements ShouldQueue
 
         Storage::append($logfile, "----- QQSNPs_filt.py -----\n");
         Storage::append($errorfile, "----- QQSNPs_filt.py -----\n");
-        $script = Helper::scripts_path('QQSNPs_filt.py');
-        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+
+        $new_cmd = "docker run --rm --name job-$jobID -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-qqsnps_filt /bin/sh -c 'python QQSNPs_filt.py job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $cmd . "\n");
-        exec($cmd, $output, $error);
+        Storage::append($logfile, $new_cmd . "\n");
+        exec($new_cmd, $output, $error);
 
         if ($error != 0) {
             $this->rmFiles($filedir);
@@ -207,11 +198,11 @@ class Snp2geneProcess implements ShouldQueue
 
         Storage::append($logfile, "----- getLD.py -----\n");
         Storage::append($errorfile, "----- getLD.py -----\n");
-        $script = Helper::scripts_path('getLD.py');
-        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+
+        $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-getld /bin/sh -c 'python getLD.py job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $cmd . "\n");
-        exec($cmd, $output, $error);
+        Storage::append($logfile, $new_cmd . "\n");
+        exec($new_cmd, $output, $error);
 
         if ($error != 0) {
             $NoCandidates = false;
@@ -224,12 +215,10 @@ class Snp2geneProcess implements ShouldQueue
                 }
             }
             if ($NoCandidates) {
-
-                $script = Helper::scripts_path('getTopSNPs.py');
-                $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+                $new_cmd = "docker run --rm --name job-$jobID -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-getld /bin/sh -c 'python getTopSNPs.py job >>job/job.log 2>>job/error.log'";
                 Storage::append($logfile, "Command to be executed:");
-                Storage::append($logfile, $cmd . "\n");
-                exec($cmd, $output, $error);
+                Storage::append($logfile, $new_cmd . "\n");
+                exec($new_cmd, $output, $error);
 
                 $this->rmFiles($filedir);
                 // $this->chmod($filedir);
@@ -255,11 +244,11 @@ class Snp2geneProcess implements ShouldQueue
 
         Storage::append($logfile, "----- SNPannot.R -----\n");
         Storage::append($errorfile, "----- SNPannot.R -----\n");
-        $script = Helper::scripts_path('SNPannot.R');
-        $cmd = "Rscript $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+
+        $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-snpannot /bin/sh -c 'Rscript SNPannot.R job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $cmd . "\n");
-        exec($cmd, $output, $error);
+        Storage::append($logfile, $new_cmd . "\n");
+        exec($new_cmd, $output, $error);
 
         if ($error != 0) {
             $this->rmFiles($filedir);
@@ -275,11 +264,11 @@ class Snp2geneProcess implements ShouldQueue
 
         Storage::append($logfile, "----- getGWAScatalog.py -----\n");
         Storage::append($errorfile, "----- getGWAScatalog.py -----\n");
-        $script = Helper::scripts_path('getGWAScatalog.py');
-        $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+
+        $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-getgwascatalog /bin/sh -c 'python getGWAScatalog.py job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $cmd . "\n");
-        exec($cmd, $output, $error);
+        Storage::append($logfile, $new_cmd . "\n");
+        exec($new_cmd, $output, $error);
 
         if ($error != 0) {
             $this->rmFiles($filedir);
@@ -298,11 +287,11 @@ class Snp2geneProcess implements ShouldQueue
         if ($params['eqtlMap'] == 1) {
             Storage::append($logfile, "----- geteQTL.py -----\n");
             Storage::append($errorfile, "----- geteQTL.py -----\n");
-            $script = Helper::scripts_path('geteQTL.py');
-            $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+
+            $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-geteqtl /bin/sh -c 'python geteQTL.py job >>job/job.log 2>>job/error.log'";
             Storage::append($logfile, "Command to be executed:");
-            Storage::append($logfile, $cmd . "\n");
-            exec($cmd, $output, $error);
+            Storage::append($logfile, $new_cmd . "\n");
+            exec($new_cmd, $output, $error);
 
             if ($error != 0) {
                 $this->rmFiles($filedir);
@@ -320,11 +309,11 @@ class Snp2geneProcess implements ShouldQueue
         if ($params['ciMap'] == 1) {
             Storage::append($logfile, "----- getCI.R -----\n");
             Storage::append($errorfile, "----- getCI.R -----\n");
-            $script = Helper::scripts_path('getCI.R');
-            $cmd = "Rscript $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+
+            $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-getci /bin/sh -c 'Rscript getCI.R job >>job/job.log 2>>job/error.log'";
             Storage::append($logfile, "Command to be executed:");
-            Storage::append($logfile, $cmd . "\n");
-            exec($cmd, $output, $error);
+            Storage::append($logfile, $new_cmd . "\n");
+            exec($new_cmd, $output, $error);
 
             if ($error != 0) {
                 $this->rmFiles($filedir);
@@ -344,11 +333,11 @@ class Snp2geneProcess implements ShouldQueue
 
         Storage::append($logfile, "----- geneMap.R -----\n");
         Storage::append($errorfile, "----- geneMap.R -----\n");
-        $script = Helper::scripts_path('geneMap.R');
-        $cmd = "Rscript $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+
+        $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-genemap /bin/sh -c 'Rscript geneMap.R job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $cmd . "\n");
-        exec($cmd, $output, $error);
+        Storage::append($logfile, $new_cmd . "\n");
+        exec($new_cmd, $output, $error);
 
         if ($error != 0) {
             $this->rmFiles($filedir);
@@ -361,15 +350,14 @@ class Snp2geneProcess implements ShouldQueue
                 // return; //TODO: uncomment before flight
             }
         }
-
         if ($params['ciMap'] == 1) {
             Storage::append($logfile, "----- createCircosPlot.py -----\n");
             Storage::append($errorfile, "----- createCircosPlot.py -----\n");
-            $script = Helper::scripts_path('createCircosPlot.py');
-            $cmd = "python $script $filedir_abs_path >>$log_file_abs_path 2>>$err_file_abs_path";
+            
+            $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$jobID/:/app/job -w /app laradock-fuma-create_circos_plot /bin/sh -c 'python createCircosPlot.py job >>job/job.log 2>>job/error.log'";
             Storage::append($logfile, "Command to be executed:");
-            Storage::append($logfile, $cmd . "\n");
-            exec($cmd, $output, $error);
+            Storage::append($logfile, $new_cmd . "\n");
+            exec($new_cmd, $output, $error);
 
             if ($error != 0) {
                 $this->rmFiles($filedir);
@@ -386,8 +374,7 @@ class Snp2geneProcess implements ShouldQueue
                 }
             }
         }
-
-        $this->rmFiles($filedir);
+        // $this->rmFiles($filedir);
         // $this->chmod($filedir);
 
         DB::table('SubmitJobs')->where('jobID', $jobID)
