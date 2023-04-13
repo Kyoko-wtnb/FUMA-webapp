@@ -13,7 +13,7 @@ if(grepl("\\/$", filedir)==F){
 }
 
 ##### get config parameters #####
-curfile <- thisfile()
+curfile <- whereami::thisfile()
 source(paste0(dirname(curfile), '/ConfigParser.R'))
 config <- ConfigParser(file=paste0(dirname(curfile),'/app.config'))
 params <- ConfigParser(file=paste0(filedir, 'params.config'))
