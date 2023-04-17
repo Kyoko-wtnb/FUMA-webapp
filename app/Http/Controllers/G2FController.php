@@ -5,7 +5,6 @@ namespace fuma\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use fuma\SubmitJob;
 use fuma\Http\Requests;
 use fuma\Http\Controllers\Controller;
@@ -94,7 +93,7 @@ class G2FController extends Controller
 		}else{
 			$gtype = "file";
 			$gval = $_FILES["genesfile"]["name"];
-			$request->file('genesfile')->move($filedir, $_FILES["genesfile"]["name"]);
+			$request -> file('genesfile')->move($filedir, $_FILES["genesfile"]["name"]);
 		}
 
 		if($request -> filled('genetype')){
@@ -194,13 +193,9 @@ class G2FController extends Controller
 
 		$script = scripts_path('gene2func.R');
 		exec("Rscript $script $filedir", $output, $error);
-		# Log::info('gene2func.R output: ' . implode($output));
-		# Log::info('gene2func.R error: ' . $error);
 
 		$script = scripts_path('GeneSet.py');
 		exec("python $script $filedir", $output2, $error2);
-		# Log::info('GeneSet.py output: ' . implode($output2));
-		# Log::info('GeneSet.py error: ' . $error2);
 		exec("find ".$filedir." -type d -exec chmod 775 {} \;");
 		exec("find ".$filedir." -type f -exec chmod 664 {} \;");
 	}

@@ -19,14 +19,14 @@ class UserRegistrationRequest extends FormRequest
 
     /**
      * Validate:
-     * Common user validation + password with length & confirmition check
+     * Common user validation + password with length & confirmation check
      *
      * @return array
      */
     public function rules()
     {
         // Append required password validation
-        return User::VALIDATION_RULES + [
+        return User::getValidationRules() + [
             'password' => 'required|min:8|confirmed',
         ];
     }

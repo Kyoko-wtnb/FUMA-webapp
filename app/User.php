@@ -4,16 +4,18 @@ namespace fuma;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
-
+use fuma\Rules\Lowercase;
 
 class User extends Authenticatable
 {
     // The common validation rules for the user model are stored in 
     // the model itself are adjusted in the FormRequests (app/Http/Request/*)
-    public const VALIDATION_RULES = [
-        'name' => 'required|max:255',
-        'email'=>'required|email|max:255|unique:users,email',
-    ];
+    public static function getValidationRules() {
+        return [
+            'name' => 'required|max:255',
+            'email' => ['required', 'email', 'max:255', new Lowercase, 'unique:users'],
+        ];
+    } 
 
     use \Illuminate\Notifications\Notifiable;
     use HasRoles;
@@ -42,4 +44,5 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($password);
     }
+
 }

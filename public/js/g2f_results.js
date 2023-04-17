@@ -1,5 +1,4 @@
 function summaryTable(id){
-	console.log('Summary: ' + subdir+'/'+page+'/g2f_sumTable');
 	$.ajax({
 		url: subdir+'/'+page+'/g2f_sumTable',
 		type: "POST",
@@ -24,7 +23,6 @@ function summaryTable(id){
 }
 
 function paramTable(id){
-	console.log('Param: ' + subdir+'/'+page+'/g2f_paramTable');
 	$.ajax({
 		url: subdir+"/"+page+"/g2f_paramTable",
 		type: "POST",
@@ -49,7 +47,6 @@ function paramTable(id){
 }
 
 function expHeatMap(id){
-	console.log('Exp HeatMap: ' + subdir+'/'+page+'/expDataOption');
 	$.ajax({
 		url: subdir+'/'+page+'/expDataOption',
 		type: "POST",
@@ -81,12 +78,6 @@ function expHeatPlot(id, dataset){
 	var val = $('#expval').val("log2");
 	var tssort = $('#tsSort').val("alph");
 	var gsort = $('#geneSort').val("alph");
-	console.log("Subdir: " + subdir);
-	console.log("Page: " + page);
-	console.log("Prefix: " + prefix);
-	console.log("Id: " + id);
-	console.log("Dataset: " + dataset);
-	console.log("Data for d2.json: " + subdir+'/'+page+'/expPlot/'+prefix+'/'+id+'/'+dataset);
 
 	d3.json(subdir+'/'+page+'/expPlot/'+prefix+'/'+id+'/'+dataset, function(data){
 		if(data==null || data==undefined || data.length==0){

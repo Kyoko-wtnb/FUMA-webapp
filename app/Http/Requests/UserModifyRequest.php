@@ -28,7 +28,7 @@ class UserModifyRequest extends FormRequest
     public function rules()
     {
         // In User modification password is optional
-        $rules = User::VALIDATION_RULES + [
+        $rules = User::getValidationRules() + [
             'password'=>'nullable|min:8|confirmed'
         ];
         // Get user id from the route and exclude from the unique email test

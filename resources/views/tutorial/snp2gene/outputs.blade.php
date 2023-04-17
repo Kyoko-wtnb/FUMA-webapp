@@ -16,11 +16,11 @@
 	<ul>
 		<li>Manhattan plot: Overlapping data points (SNPs) were filtered out such that there is only one data point per pixel, but only when the average data points per pixel (x-axis) across y-axis is above 1.
 			For each pixel, the plotted data point was randomly selected.
-			This filtering was only performed for SNPs with P-value ≥ 1e-5.
+			SNPs with P-value ≥ 1e-5 are removed.
 		</li>
 		<li>Overlapping data points (SNPs) were filtered such that only one data point per pixel was kept.
 			For each pixel, the plotted data point was randomly selected.
-			This filtering was only performed for SNPs with P-value ≥ 1e-5.
+			SNPs with P-value ≥ 1e-5 are removed.
 		</li>
 	</ul>
 	<span class="info"><i class="fa fa-info"></i>
