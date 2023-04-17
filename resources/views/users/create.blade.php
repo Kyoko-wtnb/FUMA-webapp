@@ -42,7 +42,7 @@
         <div class="form-group @error('password') has-error @enderror">
             {{ Form::label('password', 'Password') }}<br>
             {{ Form::password('password', array('class' => 'form-control')) }}
-            @error('password'))
+            @error('password')
                 <span class="help-block">
                     <strong>{{ $errors->first('password') }}</strong>
                 </span>
