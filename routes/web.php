@@ -34,6 +34,11 @@ Route::group([], function(){
 	Route::get('updates', function(){
 		return view('pages.updates');
 	});
+
+
+	Route::get('faq', function(){
+		return view('pages.faq');
+	});
 });
 
 /**
