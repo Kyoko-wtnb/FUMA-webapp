@@ -223,6 +223,129 @@ class S2GController extends Controller
         // Convert the array to a JSON string.
         return response()->json($result);
     }
+
+    /*
+    *Function name: MAGMA_expPlot
+    *Input parameter: $request - an instance of the Request class
+    *Return value: a JSON-encoded string
+    *Steps:
+    **Extract the job ID from the input request.
+    **Construct a directory path based on the job ID.
+    **Search for files with names that match the pattern "magma_exp*.gsa.out" or "magma_exp*.gcov.out".
+    **Read and parse the contents of the file(s) to extract data.
+    **Sort the data by ascending p-value and add two columns to the array.
+    **Sort the data by the first column and add a new column to the array.
+    **Add each line of the array to an output array as a new JSON object.
+    **Convert the output array to a JSON-encoded string and return it as a HTTP response.
+    */
+    public function MAGMA_expPlot(Request $request)
+    {
+        $jobID = $request->input('jobID');
+        $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
+
+
+        // Find all files with names that match the pattern "magma_exp*.gsa.out" or "magma_exp*.gcov.out"
+        $files = Helper::my_glob($filedir, "/magma_exp.*\.gsa\.out/");
+        $suffix = "gsa";
+        if (count($files) === 0) {
+            $files = Helper::my_glob($filedir, "/magma_exp.*\.gcov\.out/");
+            $suffix = "gcov";
+        }
+
+        $out = [];
+        foreach ($files as $f) {
+            // Read the header of the current file to determine the names of the columns in the data
+            if ($suffix === "gsa") {
+                $contents = Storage::get($f);
+                $lines = explode("\n", $contents);
+                foreach ($lines as $line) {
+                    if (substr($line, 0, 1) !== "#") {
+                        $header = preg_split('/\s+/', $line);
+                        if (in_array("FULL_NAME", $header)) {
+                            $header = array("P", "FULL_NAME");
+                        } else {
+                            $header = array("VARIABLE", "P");
+                        }
+                        break;
+                    }
+                }
+            } else {
+                $header = array("COVAR", "P");
+            }
+
+            // Read the data from the file and store it in an array of associative arrays
+            $contents = Storage::get($f);
+            $lines = explode(PHP_EOL, $contents);
+            // Initialize the array to store the extracted data
+            $data = array();
+            $entrire_header = array();
+            // Loop through the file lines
+            $i = 0;
+            foreach ($lines as $line) {
+                // Skip lines that start with #
+                if (strpos($line, '#') === 0) {
+                    continue;
+                } elseif (empty(trim($line))) {
+                    continue;
+                }
+                $i++;
+                if ($i == 1) {
+                    $entrire_header = preg_split('/\s+/', $line);
+                } else {
+                    // Split the line into an array of values
+                    $values = array_combine($entrire_header, preg_split('/\s+/', trim($line)));
+                    // Extract only the desired columns
+                    $extracted_data = array_intersect_key($values, array_flip($header));
+                    // Add the extracted data to the output array
+                    // If the header includes "FULL_NAME", reverse the order of the columns
+                    if (in_array("FULL_NAME", $header)) {
+                        $extracted_data = array_reverse($extracted_data);
+                    }
+                    $data[] = $extracted_data;
+                }
+            }
+
+            // Sort the data by ascending p-value
+            usort($data, function ($a, $b) {
+                return floatval($a["P"]) <=> floatval($b["P"]);
+            });
+
+            // Add two columns to the data array: one with the original row index and one with a new row index
+            foreach ($data as $i => $line) {
+                $line['ascending_P_idx'] = $i;
+                $data[$i] = $line;
+            }
+
+            // Sort the data by the first column (either "VARIABLE" or "COVAR") and add a new column with a new row index
+            usort($data, function ($a, $b) {
+                return reset($a) <=> reset($b);
+            });
+
+            foreach ($data as $i => $line) {
+                $line['ascending_var_or_covar_idx'] = $i;
+                $data[$i] = $line;
+            }
+
+            // Extract the prefix of the file name (i.e., the part between "magma_exp_" and ".$suffix.out")
+            preg_match('/.*magma_exp_(.*)\.' . $suffix . '.out/', $f, $matches);
+            $c = $matches[1];
+
+            // Add each line of the data array to the output array as a new JSON object
+            foreach ($data as $line) {
+                $out[] = array(
+                    'f_name'                        => $c,
+                    'var_name'                      => reset($line),
+                    'p'                             => floatval($line['P']),
+                    'ascending_P_idx'               => $line['ascending_P_idx'],
+                    'ascending_var_or_covar_idx'    => $line['ascending_var_or_covar_idx']
+                );
+            }
+        }
+
+        // Convert the output array to a JSON-encoded string and return it
+        return response()->json($out);
+    }
+
     /**
      * Returns the queue cap value
      * 

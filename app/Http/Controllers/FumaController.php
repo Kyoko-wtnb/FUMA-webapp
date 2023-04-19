@@ -186,13 +186,14 @@ class FumaController extends Controller
         }
     }
 
-    public function MAGMA_expPlot($prefix, $jobID)
-    {
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $jobID . '/';
-        $script = scripts_path('magma_expPlot.py');
-        $data = shell_exec("python $script $filedir");
-        return $data;
-    }
+    // deprecated to be removed
+    // public function MAGMA_expPlot($prefix, $jobID)
+    // {
+    //     $filedir = config('app.jobdir') . '/' . $prefix . '/' . $jobID . '/';
+    //     $script = scripts_path('magma_expPlot.py');
+    //     $data = shell_exec("python $script $filedir");
+    //     return $data;
+    // }
 
     public function locusPlot(Request $request)
     {
