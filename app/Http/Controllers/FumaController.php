@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Helper;
 
 class FumaController extends Controller
 {
     public function appinfo()
     {
-        $app_config = parse_ini_file(scripts_path("app.config"), false, INI_SCANNER_RAW);
+        $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
         $out["ver"] = $app_config['FUMA'];
         $out["user"] = DB::table('users')->count();
         $out["s2g"] = collect(DB::select("SELECT MAX(jobID) as max from SubmitJobs"))->first()->max;
@@ -85,7 +87,7 @@ class FumaController extends Controller
         $id = $request->input('id');
         $prefix = $request->input('prefix');
         $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $out = [];
         foreach ($params as $key => $value) {
             $out[] = [$key, $value];
@@ -291,7 +293,7 @@ class FumaController extends Controller
         $eqtlgenes = $request->input("eqtlgenes");
 
         $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $ensembl = $params['ensembl'];
 
         $script = scripts_path('annotPlot.R');
@@ -531,7 +533,7 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $out = [];
         foreach ($params as $key => $value) {
             $out[] = [$key, $value];
@@ -568,7 +570,7 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $params = parse_ini_file($filedir . 'params.config', false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         return $params['gene_exp'];
     }
 

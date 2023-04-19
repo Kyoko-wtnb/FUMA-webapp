@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Helper;
 
 class CellController extends Controller
 {
@@ -166,7 +168,7 @@ class CellController extends Controller
         if ($request->hasFile('genes_raw')) {
             $inputfile = $_FILES["genes_raw"]["name"];
         }
-        $app_config = parse_ini_file(scripts_path("app.config"), false, INI_SCANNER_RAW);
+        $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
         $paramfile = $filedir . '/params.config';
         File::put($paramfile, "[jobinfo]\n");
         File::append($paramfile, "created_at=$date\n");
@@ -192,7 +194,7 @@ class CellController extends Controller
     {
         $id = $request->input('id');
         $filedir = config('app.jobdir') . '/celltype/' . $id;
-        $params = parse_ini_file($filedir . "/params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         if ($params['MAGMA'] == "v1.06") {
             $step1 = count(glob($filedir . "/*.gcov.out"));
             $step1_2 = 0;
@@ -211,7 +213,7 @@ class CellController extends Controller
     {
         $id = $request->input('id');
         $filedir = config('app.jobdir') . '/celltype/' . $id;
-        $params = parse_ini_file($filedir . "/params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $ds = explode(":", $params['datasets']);
         return json_encode($ds);
     }
@@ -221,7 +223,7 @@ class CellController extends Controller
         $id = $request->input('id');
         $prefix = $request->input('prefix');
         $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
 
         $checked = $request->input('files');
         $files = [];
