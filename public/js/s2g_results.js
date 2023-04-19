@@ -306,10 +306,27 @@ function QQplot(id){
 			+' ERROR:002 MAGMA was not able to perform.</span><br/></div>');
 		}else{
 			data.forEach(function(d){
-				d.obs = +d.obs;
-				d.exp = +d.exp;
-				d.n = +d.n;
-			});
+				let obs = [];
+				let c = 0;
+				for (let i = 0; i < value.length; i++) {
+					c++;
+					obs.push(-Math.log10(value[i]["P"]));
+				}
+				obs.sort(function (a, b) { return a - b; });
+				let step = (1 - 1 / c) / c;
+				var all_row = [];
+				for (let i = 0; i < c; i++) {
+					all_row.push({
+						obs: obs[i],
+						exp: -Math.log10(1 - i * step),
+						n: i + 1
+					});
+				}
+				all_row.forEach(function (d) {
+					d.obs = +d.obs;
+					d.exp = +d.exp;
+					d.n = +d.n;
+				});
 
 			var x = d3.scale.linear().range([0, width]);
 			var y = d3.scale.linear().range([height, 0]);

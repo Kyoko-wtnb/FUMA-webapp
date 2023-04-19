@@ -68,7 +68,7 @@ Route::prefix('browse')->group(function () {
     Route::post('/imgdown', [BrowseController::class, 'imgdown']);
 
     Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
-    Route::get('/QQplot/{prefix}/{id}/{plot}', [FumaController::class, 'QQplot']);
+    Route::get('/QQplot/{prefix}/{id}/{plot}', [FumaController::class, 'QQplot']); // deprecated to be removed
     Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']); // deprecated to be removed
     Route::post('/DTfile', [FumaController::class, 'DTfile']);
     Route::post('/paramTable', [FumaController::class, 'paramTable']);
@@ -124,7 +124,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/DTfile', [FumaController::class, 'DTfile']);
         Route::post('/DTfileServerSide', [FumaController::class, 'DTfileServerSide']);
         Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
-        Route::get('/QQplot/{prefix}/{id}/{plot}', [FumaController::class, 'QQplot']);
+        // Route::post('/QQplot', [FumaController::class, 'QQplot']); // deprecated to be removed
         // Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']); // deprecated to be removed
         Route::post('/paramTable', [FumaController::class, 'paramTable']);
         Route::post('/sumTable', [FumaController::class, 'sumTable']);

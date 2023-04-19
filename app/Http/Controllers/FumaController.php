@@ -149,44 +149,57 @@ class FumaController extends Controller
         }
     }
 
-    public function QQplot($prefix, $id, $plot)
-    {
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+    // deprecated to be removed
+    // public function QQplot(Request $request)
+    // {
+    //     $jobID = $request->input('jobID');
+    //     $fileNames = $request->input('fileNames');
+    //     $plot = $request->input('plot');
+    //     $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
 
-        if (strcmp($plot, "SNP") == 0) {
-            $file = $filedir . "QQSNPs.txt";
-            if (file_exists($file)) {
-                $f = fopen($file, 'r');
-                $all_row = array();
-                $head = fgetcsv($f, 0, "\t");
-                while ($row = fgetcsv($f, 0, "\t")) {
-                    $all_row[] = array_combine($head, $row);
-                }
-                return json_encode($all_row);
-            }
-        } else if (strcmp($plot, "Gene") == 0) {
-            $file = $filedir . "magma.genes.out";
-            if (file_exists($file)) {
-                $f = fopen($file, 'r');
-                $obs = array();
-                $exp = array();
-                $c = 0;
-                fgetcsv($f, 0, "\t");
-                while ($row = fgetcsv($f, 0, "\t")) {
-                    $c++;
-                    $obs[] = -log10($row[8]);
-                }
-                sort($obs);
-                $step = (1 - 1 / $c) / $c;
-                $head = ["obs", "exp", "n"];
-                $all_row = array();
-                for ($i = 0; $i < $c; $i++) {
-                    $all_row[] = array_combine($head, [$obs[$i], -log10(1 - $i * $step), $i + 1]);
-                }
-                return json_encode($all_row);
-            }
-        }
-    }
+    //     if (strcmp($plot, "Gene") == 0) {
+    //         $result = Helper::getFilesContents($filedir, $fileNames);
+    //         $data = $result[$fileNames[0]];
+
+    //         $obs = array();
+    //         $exp = array();
+    //         $c = 0;
+    //         foreach ($data as $row) {
+    //             $c++;
+    //             $obs[] = -log10($row["P"]);
+    //         }
+
+    //         sort($obs);
+    //         $step = (1 - 1 / $c) / $c;
+    //         $head = ["obs", "exp", "n"];
+    //         $all_row = array();
+    //         for ($i = 0; $i < $c; $i++) {
+    //             $all_row[] = array_combine($head, [$obs[$i], -log10(1 - $i * $step), $i + 1]);
+    //         }
+    //         return response()->json([$fileNames[0] => $all_row]);
+
+    //         // $file = $filedir . "magma.genes.out";
+    //         // if (Storage::exists($file)) {
+    //         //     $f = Storage::get($file);
+    //         //     $obs = array();
+    //         //     $exp = array();
+    //         //     $c = 0;
+    //         //     str_getcsv($f, "\t");
+    //         //     while ($row = str_getcsv($f, "\t")) {
+    //         //         $c++;
+    //         //         $obs[] = -log10($row[8]);
+    //         //     }
+    //         //     sort($obs);
+    //         //     $step = (1 - 1 / $c) / $c;
+    //         //     $head = ["obs", "exp", "n"];
+    //         //     $all_row = array();
+    //         //     for ($i = 0; $i < $c; $i++) {
+    //         //         $all_row[] = array_combine($head, [$obs[$i], -log10(1 - $i * $step), $i + 1]);
+    //         //     }
+    //         //     return response()->json($all_row);
+    //         // }
+    //     }
+    // }
 
     // deprecated to be removed
     // public function MAGMA_expPlot($prefix, $jobID)
