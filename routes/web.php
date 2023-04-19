@@ -110,6 +110,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/loadParams', [S2GController::class, 'loadParams']);
         Route::get('/checkJobStatus/{jobid}', [S2GController::class, 'checkJobStatus']);
         Route::post('/getParams', [S2GController::class, 'getParams']);
+        Route::post('/getFilesContents', [S2GController::class, 'getFilesContents']);
         Route::post('/Error5', [S2GController::class, 'Error5']);
         Route::get('/{jobID}', [S2GController::class, 'authcheck']);
         Route::post('/checkPublish', [S2GController::class, 'checkPublish']);

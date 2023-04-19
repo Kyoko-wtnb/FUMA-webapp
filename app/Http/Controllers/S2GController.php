@@ -212,6 +212,17 @@ class S2GController extends Controller
         return "$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol:$magma";
     }
 
+    public function getFilesContents(Request $request)
+    {
+        $jobID = $request->input('jobID');
+        $fileNames = $request->input('fileNames');
+        $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
+
+        $result = Helper::getFilesContents($filedir, $fileNames);
+
+        // Convert the array to a JSON string.
+        return response()->json($result);
+    }
     /**
      * Returns the queue cap value
      * 
