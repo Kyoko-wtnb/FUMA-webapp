@@ -5,7 +5,7 @@ import sys
 import re
 import pandas as pd
 import numpy as np
-import ConfigParser
+import configparser
 import tabix
 from bisect import bisect_left
 
@@ -50,7 +50,7 @@ def main ():
 		filedir += '/'
 
 	##### config variables #####
-	cfg = ConfigParser.ConfigParser()
+	cfg = configparser.ConfigParser()
 	cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
 
 	gwascat_file = cfg.get("data", "GWAScat")

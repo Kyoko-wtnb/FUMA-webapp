@@ -68,8 +68,8 @@ Route::prefix('browse')->group(function () {
     Route::post('/imgdown', [BrowseController::class, 'imgdown']);
 
     Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
-    Route::get('/QQplot/{prefix}/{id}/{plot}', [FumaController::class, 'QQplot']);
-    Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']);
+    Route::get('/QQplot/{prefix}/{id}/{plot}', [FumaController::class, 'QQplot']); // deprecated to be removed
+    Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']); // deprecated to be removed
     Route::post('/DTfile', [FumaController::class, 'DTfile']);
     Route::post('/paramTable', [FumaController::class, 'paramTable']);
     Route::post('/sumTable', [FumaController::class, 'sumTable']);
@@ -110,6 +110,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/loadParams', [S2GController::class, 'loadParams']);
         Route::get('/checkJobStatus/{jobid}', [S2GController::class, 'checkJobStatus']);
         Route::post('/getParams', [S2GController::class, 'getParams']);
+        Route::post('/getFilesContents', [S2GController::class, 'getFilesContents']);
+        Route::post('/MAGMA_expPlot', [S2GController::class, 'MAGMA_expPlot']);
         Route::post('/Error5', [S2GController::class, 'Error5']);
         Route::get('/{jobID}', [S2GController::class, 'authcheck']);
         Route::post('/checkPublish', [S2GController::class, 'checkPublish']);
@@ -122,8 +124,8 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/DTfile', [FumaController::class, 'DTfile']);
         Route::post('/DTfileServerSide', [FumaController::class, 'DTfileServerSide']);
         Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
-        Route::get('/QQplot/{prefix}/{id}/{plot}', [FumaController::class, 'QQplot']);
-        Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']);
+        // Route::post('/QQplot', [FumaController::class, 'QQplot']); // deprecated to be removed
+        // Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']); // deprecated to be removed
         Route::post('/paramTable', [FumaController::class, 'paramTable']);
         Route::post('/sumTable', [FumaController::class, 'sumTable']);
         Route::post('/locusPlot', [FumaController::class, 'locusPlot']);

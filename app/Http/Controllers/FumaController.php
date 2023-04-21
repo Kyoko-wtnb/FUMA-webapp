@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Helper;
 
 class FumaController extends Controller
 {
     public function appinfo()
     {
-        $app_config = parse_ini_file(scripts_path("app.config"), false, INI_SCANNER_RAW);
+        $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
         $out["ver"] = $app_config['FUMA'];
         $out["user"] = DB::table('users')->count();
         $out["s2g"] = collect(DB::select("SELECT MAX(jobID) as max from SubmitJobs"))->first()->max;
@@ -85,7 +87,7 @@ class FumaController extends Controller
         $id = $request->input('id');
         $prefix = $request->input('prefix');
         $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $out = [];
         foreach ($params as $key => $value) {
             $out[] = [$key, $value];
@@ -147,52 +149,66 @@ class FumaController extends Controller
         }
     }
 
-    public function QQplot($prefix, $id, $plot)
-    {
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+    // deprecated to be removed
+    // public function QQplot(Request $request)
+    // {
+    //     $jobID = $request->input('jobID');
+    //     $fileNames = $request->input('fileNames');
+    //     $plot = $request->input('plot');
+    //     $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
 
-        if (strcmp($plot, "SNP") == 0) {
-            $file = $filedir . "QQSNPs.txt";
-            if (file_exists($file)) {
-                $f = fopen($file, 'r');
-                $all_row = array();
-                $head = fgetcsv($f, 0, "\t");
-                while ($row = fgetcsv($f, 0, "\t")) {
-                    $all_row[] = array_combine($head, $row);
-                }
-                return json_encode($all_row);
-            }
-        } else if (strcmp($plot, "Gene") == 0) {
-            $file = $filedir . "magma.genes.out";
-            if (file_exists($file)) {
-                $f = fopen($file, 'r');
-                $obs = array();
-                $exp = array();
-                $c = 0;
-                fgetcsv($f, 0, "\t");
-                while ($row = fgetcsv($f, 0, "\t")) {
-                    $c++;
-                    $obs[] = -log10($row[8]);
-                }
-                sort($obs);
-                $step = (1 - 1 / $c) / $c;
-                $head = ["obs", "exp", "n"];
-                $all_row = array();
-                for ($i = 0; $i < $c; $i++) {
-                    $all_row[] = array_combine($head, [$obs[$i], -log10(1 - $i * $step), $i + 1]);
-                }
-                return json_encode($all_row);
-            }
-        }
-    }
+    //     if (strcmp($plot, "Gene") == 0) {
+    //         $result = Helper::getFilesContents($filedir, $fileNames);
+    //         $data = $result[$fileNames[0]];
 
-    public function MAGMA_expPlot($prefix, $jobID)
-    {
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $jobID . '/';
-        $script = scripts_path('magma_expPlot.py');
-        $data = shell_exec("python $script $filedir");
-        return $data;
-    }
+    //         $obs = array();
+    //         $exp = array();
+    //         $c = 0;
+    //         foreach ($data as $row) {
+    //             $c++;
+    //             $obs[] = -log10($row["P"]);
+    //         }
+
+    //         sort($obs);
+    //         $step = (1 - 1 / $c) / $c;
+    //         $head = ["obs", "exp", "n"];
+    //         $all_row = array();
+    //         for ($i = 0; $i < $c; $i++) {
+    //             $all_row[] = array_combine($head, [$obs[$i], -log10(1 - $i * $step), $i + 1]);
+    //         }
+    //         return response()->json([$fileNames[0] => $all_row]);
+
+    //         // $file = $filedir . "magma.genes.out";
+    //         // if (Storage::exists($file)) {
+    //         //     $f = Storage::get($file);
+    //         //     $obs = array();
+    //         //     $exp = array();
+    //         //     $c = 0;
+    //         //     str_getcsv($f, "\t");
+    //         //     while ($row = str_getcsv($f, "\t")) {
+    //         //         $c++;
+    //         //         $obs[] = -log10($row[8]);
+    //         //     }
+    //         //     sort($obs);
+    //         //     $step = (1 - 1 / $c) / $c;
+    //         //     $head = ["obs", "exp", "n"];
+    //         //     $all_row = array();
+    //         //     for ($i = 0; $i < $c; $i++) {
+    //         //         $all_row[] = array_combine($head, [$obs[$i], -log10(1 - $i * $step), $i + 1]);
+    //         //     }
+    //         //     return response()->json($all_row);
+    //         // }
+    //     }
+    // }
+
+    // deprecated to be removed
+    // public function MAGMA_expPlot($prefix, $jobID)
+    // {
+    //     $filedir = config('app.jobdir') . '/' . $prefix . '/' . $jobID . '/';
+    //     $script = scripts_path('magma_expPlot.py');
+    //     $data = shell_exec("python $script $filedir");
+    //     return $data;
+    // }
 
     public function locusPlot(Request $request)
     {
@@ -290,7 +306,7 @@ class FumaController extends Controller
         $eqtlgenes = $request->input("eqtlgenes");
 
         $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $ensembl = $params['ensembl'];
 
         $script = scripts_path('annotPlot.R');
@@ -317,14 +333,15 @@ class FumaController extends Controller
     public function circos_chr(Request $request)
     {
         $id = $request->input("id");
-        $prefix = $request->input("prefix");
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/circos/';
-        $files = File::glob($filedir . "circos_chr*.png");
-        for ($i = 0; $i < count($files); $i++) {
-            $files[$i] = preg_replace('/.+\/circos_chr(\d+)\.png/', '$1', $files[$i]);
+        $filedir = config('app.jobdir') . '/jobs/' . $id . '/circos/';
+
+        $file_paths = Helper::my_glob($filedir, "/circos_chr.*\.png/");
+        $data = array();
+        foreach ($file_paths as $path) {
+            $name = preg_replace('/.+\/circos_chr(\d+)\.png/', '$1', $path);
+            $data[$name] = base64_encode(Storage::get($path));
         }
-        $files = implode(":", $files);
-        return $files;
+        return response()->json(array($data));
     }
 
     public function circos_image($prefix, $id, $file)
@@ -338,65 +355,59 @@ class FumaController extends Controller
 
     public function circosDown(Request $request)
     {
-        $id = $request->input('id');
-        $prefix = $request->input('prefix');
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/circos/';
+        $jobID = $request->input('id');
         $type = $request->input('type');
+        $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/circos/';
         $zip = new \ZipArchive();
-        if ($prefix == "public") {
-            $zipfile = $filedir . "FUMA_public" . $id . "_circos_" . $type . ".zip";
-        } else {
-            $zipfile = $filedir . "FUMA_job" . $id . "_circos_" . $type . ".zip";
-        }
-
-        $files = File::glob($filedir . "*." . $type);
-        for ($i = 0; $i < count($files); $i++) {
-            $files[$i] = preg_replace("/.+\/(\w+\.$type)/", '$1', $files[$i]);
-        }
+        $zipfile = "job" . $jobID . "_circos_" . $type . ".zip";
 
         if ($type == "conf") {
-            $tmp = File::glob($filedir . "*.txt");
-            foreach ($tmp as $f) {
-                $f = preg_replace("/.+\/(\w+\.txt)/", '$1', $f);
-                $files[] = $f;
+            $file_paths = Helper::my_glob($filedir, "/.*\.txt/");
+            foreach ($file_paths as $path) {
+                $files[] = preg_replace("/.+\/(\w+\.txt)/", '$1', $path);
+            }
+        } else {
+            $file_paths = Helper::my_glob($filedir, "/.*\." . $type . "/");
+            foreach ($file_paths as $path) {
+                $files[] = preg_replace("/.+\/(\w+\.$type)/", '$1', $path);
             }
         }
 
-        $zip->open($zipfile, \ZipArchive::CREATE);
+        $zip->open(Storage::path($filedir . $zipfile), \ZipArchive::CREATE);
         foreach ($files as $f) {
-            $zip->addFile($filedir . $f, $f);
+            $abs_path = Storage::path($filedir . $f);
+            $zip->addFile($abs_path, $f);
         }
         $zip->close();
-        return response()->download($zipfile);
+        
+        return response()->download(Storage::path($filedir . $zipfile))->deleteFileAfterSend(true);
     }
 
     public function imgdown(Request $request)
     {
         $svg = $request->input('data');
-        $prefix = $request->input('dir');
-        $id = $request->input('id');
+        $jobID = $request->input('id');
         $type = $request->input('type');
-        $fileName = $request->input('fileName');
-        $svgfile = config('app.jobdir') . '/' . $prefix . '/' . $id . '/temp.svg';
-        $outfile = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        $fileName = $request->input('fileName') . "_FUMA_" . "jobs" . $jobID;
 
         $svg = preg_replace("/\),rotate/", ")rotate", $svg);
         $svg = preg_replace("/,skewX\(.+?\)/", "", $svg);
         $svg = preg_replace("/,scale\(.+?\)/", "", $svg);
-        $fileName .= "_FUMA_" . $prefix . $id;
+
         if ($type == "svg") {
-            file_put_contents($svgfile, $svg);
-            $outfile .= $fileName . '.svg';
-            File::move($svgfile, $outfile);
-            return response()->download($outfile);
+            $filename = $fileName . '.svg';
+            return response()->streamDownload(function () use ($svg) {
+                echo $svg;
+            }, $filename);
         } else {
-            $outfile .= $fileName . '.' . $type;
+            $fileName = $fileName . '.' . $type;
             $image = new \Imagick();
             $image->setResolution(300, 300);
             $image->readImageBlob('<?xml version="1.0"?>' . $svg);
             $image->setImageFormat($type);
-            $image->writeImage($outfile);
-            return response()->download($outfile);
+            return response()->streamDownload(function () use ($image) {
+                echo $image;
+            }, $fileName);
         }
     }
 
@@ -530,7 +541,7 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $params = parse_ini_file($filedir . "params.config", false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $out = [];
         foreach ($params as $key => $value) {
             $out[] = [$key, $value];
@@ -567,7 +578,7 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $params = parse_ini_file($filedir . 'params.config', false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         return $params['gene_exp'];
     }
 

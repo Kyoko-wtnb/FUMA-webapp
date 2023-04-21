@@ -1,0 +1,4 @@
+# magma.py dependencies
+numpy
+pandas
+ConfigParser

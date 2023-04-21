@@ -13,7 +13,7 @@ if(grepl("\\/$", filedir)==F){
 }
 
 ##### get config parameters #####
-curfile <- thisfile()
+curfile <- whereami::thisfile()
 source(paste0(dirname(curfile), '/ConfigParser.R'))
 config <- ConfigParser(file=paste0(dirname(curfile),'/app.config'))
 
@@ -28,7 +28,7 @@ posMapAnnot <- params$posMap$posMapAnnot
 posMapCADDth <- as.numeric(params$posMap$posMapCADDth)
 posMapRDBth <- params$posMap$posMapRDBth
 posMapChr15 <- params$posMap$posMapChr15
-posMapChr15Max <- as.numeric(params$posMap$posMapChr15Max)
+posMapChr15Max <- as.numeric(params$posMap$posMapChr15Max) # gives a warning
 posMapChr15Meth <- params$posMap$posMapChr15Meth
 eqtlMap <- as.numeric(params$eqtlMap$eqtlMap)
 eqtlMaptss <- params$eqtlMap$eqtlMaptss
@@ -37,7 +37,7 @@ eqtlP <- as.numeric(params$eqtlMap$eqtlMapP)
 eqtlMapCADDth <- as.numeric(params$eqtlMap$eqtlMapCADDth)
 eqtlMapRDBth <- params$eqtlMap$eqtlMapRDBth
 eqtlMapChr15 <- params$eqtlMap$eqtlMapChr15
-eqtlMapChr15Max <- as.numeric(params$eqtlMap$eqtlMapChr15Max)
+eqtlMapChr15Max <- as.numeric(params$eqtlMap$eqtlMapChr15Max) # gives a warning
 eqtlMapChr15Meth <- params$eqtlMap$eqtlMapChr15Meth
 if("posMapAnnoDs" %in% names(params$posMap)){
 	posMapAnnoDs <- params$posMap$posMapAnnoDs
@@ -59,7 +59,7 @@ if("ciMap" %in% names(params)){
 	ciMapCADDth <- as.numeric(params$ciMap$ciMapCADDth)
 	ciMapRDBth <- params$ciMap$ciMapRDBth
 	ciMapChr15 <- params$ciMap$ciMapChr15
-	ciMapChr15Max <- as.numeric(params$ciMap$ciMapChr15Max)
+	ciMapChr15Max <- as.numeric(params$ciMap$ciMapChr15Max) # gives a warning
 	ciMapChr15Meth <- params$ciMap$ciMapChr15Meth
 	if("ciMapAnnoDs" %in% names(params$ciMap)){
 		ciMapAnnoDs <- params$ciMap$ciMapAnnoDs

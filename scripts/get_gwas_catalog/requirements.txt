@@ -1,0 +1,5 @@
+# getGWAScatalog.py dependencies
+numpy
+pandas
+pytabix
+configparser

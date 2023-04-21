@@ -1,0 +1,5 @@
+# createCircosPlot.py dependencies
+numpy
+pandas
+configparser
+pytabix

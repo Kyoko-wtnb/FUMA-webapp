@@ -2,9 +2,9 @@ library(data.table)
 library(kimisc)
 library(GenomicRanges)
 args <- commandArgs(TRUE)
-filedir <- args[1]
+filedir <- paste0(args[1], "/")
 
-curfile <- thisfile()
+curfile <- whereami::thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 params <- ConfigParser(file=paste0(filedir, "params.config"))

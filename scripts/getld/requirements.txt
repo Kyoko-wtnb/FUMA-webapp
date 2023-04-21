@@ -1,0 +1,5 @@
+# getLD.py dependencies
+numpy
+pandas
+pytabix
+ConfigParser

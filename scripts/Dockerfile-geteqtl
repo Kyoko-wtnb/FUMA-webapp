@@ -1,0 +1,16 @@
+FROM python:2
+
+WORKDIR /app
+
+COPY geteqtl/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential r-base \
+    && rm -rf /var/lib/apt/lists/*
+    
+
+RUN Rscript -e "install.packages('data.table')"
+
+COPY app.config ./
+COPY geteQTL.py/ ./
+COPY align_eqtl.R/ ./

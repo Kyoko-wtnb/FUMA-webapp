@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 // User added
 
@@ -56,7 +57,7 @@ class BrowseController extends Controller
     {
         $id = $request->input('id');
         $filedir = config('app.jobdir') . '/public/' . $id . '/';
-        $params = parse_ini_file($filedir . "params.config");
+        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $posMap = $params['posMap'];
         $eqtlMap = $params['eqtlMap'];
         $orcol = $params['orcol'];
