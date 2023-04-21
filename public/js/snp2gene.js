@@ -231,6 +231,18 @@ $(document).ready(function () {
 					MAGMA_expPlot(magma, data);
 				}
 			});
+				if (ciMap == 1) {
+					$.ajax({
+						url: subdir + '/' + page + '/circos_chr',
+						type: 'POST',
+						data: {
+							id: id
+						},
+						success: function (data) {
+							ciMapCircosPlot(data);
+						}
+					});
+				}
 		}
 
 		function error5() {

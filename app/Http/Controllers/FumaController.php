@@ -333,14 +333,15 @@ class FumaController extends Controller
     public function circos_chr(Request $request)
     {
         $id = $request->input("id");
-        $prefix = $request->input("prefix");
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/circos/';
-        $files = File::glob($filedir . "circos_chr*.png");
-        for ($i = 0; $i < count($files); $i++) {
-            $files[$i] = preg_replace('/.+\/circos_chr(\d+)\.png/', '$1', $files[$i]);
+        $filedir = config('app.jobdir') . '/jobs/' . $id . '/circos/';
+
+        $file_paths = Helper::my_glob($filedir, "/circos_chr.*\.png/");
+        $data = array();
+        foreach ($file_paths as $path) {
+            $name = preg_replace('/.+\/circos_chr(\d+)\.png/', '$1', $path);
+            $data[$name] = base64_encode(Storage::get($path));
         }
-        $files = implode(":", $files);
-        return $files;
+        return response()->json(array($data));
     }
 
     public function circos_image($prefix, $id, $file)
@@ -354,36 +355,32 @@ class FumaController extends Controller
 
     public function circosDown(Request $request)
     {
-        $id = $request->input('id');
-        $prefix = $request->input('prefix');
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/circos/';
+        $jobID = $request->input('id');
         $type = $request->input('type');
+        $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/circos/';
         $zip = new \ZipArchive();
-        if ($prefix == "public") {
-            $zipfile = $filedir . "FUMA_public" . $id . "_circos_" . $type . ".zip";
-        } else {
-            $zipfile = $filedir . "FUMA_job" . $id . "_circos_" . $type . ".zip";
-        }
-
-        $files = File::glob($filedir . "*." . $type);
-        for ($i = 0; $i < count($files); $i++) {
-            $files[$i] = preg_replace("/.+\/(\w+\.$type)/", '$1', $files[$i]);
-        }
+        $zipfile = "job" . $jobID . "_circos_" . $type . ".zip";
 
         if ($type == "conf") {
-            $tmp = File::glob($filedir . "*.txt");
-            foreach ($tmp as $f) {
-                $f = preg_replace("/.+\/(\w+\.txt)/", '$1', $f);
-                $files[] = $f;
+            $file_paths = Helper::my_glob($filedir, "/.*\.txt/");
+            foreach ($file_paths as $path) {
+                $files[] = preg_replace("/.+\/(\w+\.txt)/", '$1', $path);
+            }
+        } else {
+            $file_paths = Helper::my_glob($filedir, "/.*\." . $type . "/");
+            foreach ($file_paths as $path) {
+                $files[] = preg_replace("/.+\/(\w+\.$type)/", '$1', $path);
             }
         }
 
-        $zip->open($zipfile, \ZipArchive::CREATE);
+        $zip->open(Storage::path($filedir . $zipfile), \ZipArchive::CREATE);
         foreach ($files as $f) {
-            $zip->addFile($filedir . $f, $f);
+            $abs_path = Storage::path($filedir . $f);
+            $zip->addFile($abs_path, $f);
         }
         $zip->close();
-        return response()->download($zipfile);
+        
+        return response()->download(Storage::path($filedir . $zipfile))->deleteFileAfterSend(true);
     }
 
     public function imgdown(Request $request)
