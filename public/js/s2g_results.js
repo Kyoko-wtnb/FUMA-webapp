@@ -552,7 +552,6 @@ function expImgDown(gs, type) {
 	$('#expType').val(type);
 	$('#expJobID').val(id);
 	$('#expFileName').val("magma_exp_" + gs);
-	$('#expDir').val(prefix);
 	$('#expSubmit').trigger('click');
 }
 
@@ -1594,7 +1593,6 @@ function ImgDown(name, type) {
 	$('#' + name + 'Type').val(type);
 	$('#' + name + 'ID').val(id);
 	$('#' + name + 'FileName').val(name);
-	$('#' + name + 'Dir').val(prefix);
 	$('#' + name + 'Submit').trigger('click');
 }
 

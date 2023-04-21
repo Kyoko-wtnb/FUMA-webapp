@@ -389,30 +389,28 @@ class FumaController extends Controller
     public function imgdown(Request $request)
     {
         $svg = $request->input('data');
-        $prefix = $request->input('dir');
-        $id = $request->input('id');
+        $jobID = $request->input('id');
         $type = $request->input('type');
-        $fileName = $request->input('fileName');
-        $svgfile = config('app.jobdir') . '/' . $prefix . '/' . $id . '/temp.svg';
-        $outfile = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        $fileName = $request->input('fileName') . "_FUMA_" . "jobs" . $jobID;
 
         $svg = preg_replace("/\),rotate/", ")rotate", $svg);
         $svg = preg_replace("/,skewX\(.+?\)/", "", $svg);
         $svg = preg_replace("/,scale\(.+?\)/", "", $svg);
-        $fileName .= "_FUMA_" . $prefix . $id;
+
         if ($type == "svg") {
-            file_put_contents($svgfile, $svg);
-            $outfile .= $fileName . '.svg';
-            File::move($svgfile, $outfile);
-            return response()->download($outfile);
+            $filename = $fileName . '.svg';
+            return response()->streamDownload(function () use ($svg) {
+                echo $svg;
+            }, $filename);
         } else {
-            $outfile .= $fileName . '.' . $type;
+            $fileName = $fileName . '.' . $type;
             $image = new \Imagick();
             $image->setResolution(300, 300);
             $image->readImageBlob('<?xml version="1.0"?>' . $svg);
             $image->setImageFormat($type);
-            $image->writeImage($outfile);
-            return response()->download($outfile);
+            return response()->streamDownload(function () use ($image) {
+                echo $image;
+            }, $fileName);
         }
     }
 
