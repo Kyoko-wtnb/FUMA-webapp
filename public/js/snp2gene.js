@@ -1,8 +1,3 @@
-var sigSNPtable_selected = null;
-var leadSNPtable_selected = null;
-var lociTable_selected = null;
-// var SNPtable_selected=null;
-var annotPlotSelected;
 var prefix = "jobs";
 $(document).ready(function () {
 	// hide submit buttons for imgDown
@@ -125,19 +120,15 @@ $(document).ready(function () {
 			$('#annotPlotChr15Opt').hide();
 		}
 
-		var jobStatus;
 		$.get({
 			url: subdir + '/' + page + '/checkJobStatus/' + id,
 			error: function () {
 				alert("ERROR: checkJobStatus")
 			},
 			success: function (data) {
-				jobStatus = data;
-			},
-			complete: function () {
-				if (jobStatus == "OK") {
+				if (data == "OK") {
 					loadResults();
-				} else if (jobStatus == "ERROR:005") {
+				} else if (data == "ERROR:005") {
 					error5();
 				}
 			}
@@ -159,9 +150,9 @@ $(document).ready(function () {
 				},
 				error: function () {
 					alert("JobQuery getParams error");
+					return;
 				},
 				success: function (data) {
-					// $('#test').html(data)
 					var tmp = data.split(":");
 					posMap = parseInt(tmp[0]);
 					eqtlMap = parseInt(tmp[1]);
@@ -170,67 +161,77 @@ $(document).ready(function () {
 					becol = tmp[4];
 					secol = tmp[5];
 					magma = tmp[6];
-				},
-				complete: function () {
-					// jobInfo(id);
 
-					// ciMapCircosPlot(id, ciMap);
-					// showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, secol);
-					// $('#GWplotSide').show();
-					// $('#resultsSide').show();
+					fetchData();
 				}
 			});
 
-			$.ajax({
-				url: subdir + '/' + page + '/getFilesContents',
-				type: 'POST',
-				data: {
-					jobID: id,
-					fileNames: ['manhattan.txt', 'magma.genes.out', 'QQSNPs.txt', 'magma.sets.top']
-				},
-				error: function () {
-					alert("JobQuery get file contents error");
-				},
-				success: function (data) {
-					let selectedData = {
-						"manhattan.txt": data['manhattan.txt'],
-						"magma.genes.out": data['magma.genes.out'],
-					};
-					GWplot(selectedData);
-					$('#GWplotSide').show();
+			function fetchData() {
+				$.ajax({
+					url: subdir + '/' + page + '/getFilesContents',
+					type: 'POST',
+					data: {
+						jobID: id,
+						fileNames: ['manhattan.txt', 'magma.genes.out', 'QQSNPs.txt']
+					},
+					error: function () {
+						alert("JobQuery get file contents error");
+						return;
+					},
+					success: function (data) {
+						let selectedData = {
+							"manhattan.txt": data['manhattan.txt'],
+							"magma.genes.out": data['magma.genes.out'],
+						};
+						GWplot(selectedData);
+						$('#GWplotSide').show();
 
 
-					selectedData = {
-						"QQSNPs.txt": data['QQSNPs.txt'],
-						"magma.genes.out": data['magma.genes.out'],
-					};
-					QQplot(selectedData);
+						selectedData = {
+							"QQSNPs.txt": data['QQSNPs.txt'],
+							"magma.genes.out": data['magma.genes.out'],
+						};
+						QQplot(selectedData);
+					}
+				});
 
+				if (magma == 1) {
+					$.ajax({
+						url: subdir + '/' + page + '/getFilesContents',
+						type: 'POST',
+						data: {
+							jobID: id,
+							fileNames: ['magma.sets.top']
+						},
+						error: function () {
+							alert("JobQuery get magma file contents error");
+						},
+						success: function (data) {
+							selectedData = {
+								"magma.sets.top": data['magma.sets.top'],
+							};
+							MAGMA_GStable(selectedData);
 
-					selectedData = {
-						"magma.sets.top": data['magma.sets.top'],
-					};
-					MAGMA_GStable(magma, selectedData);
-					// ciMapCircosPlot(id, ciMap);
-					// showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, secol);
-					// $('#GWplotSide').show();
-					// $('#resultsSide').show();
+						}
+					});
+
+					$.ajax({
+						url: subdir + '/' + page + '/MAGMA_expPlot',
+						type: 'POST',
+						data: {
+							jobID: id,
+						},
+						error: function () {
+							alert("JobQuery MAGMA_expPlot error");
+						},
+						success: function (data) {
+							MAGMA_expPlot(data);
+						}
+					});
+				} else {
+					$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+						+ ' MAGMA was not perform.</span><br/></div>');
 				}
-			});
-
-			$.ajax({
-				url: subdir + '/' + page + '/MAGMA_expPlot',
-				type: 'POST',
-				data: {
-					jobID: id,
-				},
-				error: function () {
-					alert("JobQuery MAGMA_expPlot error");
-				},
-				success: function (data) {
-					MAGMA_expPlot(magma, data);
-				}
-			});
 				if (ciMap == 1) {
 					$.ajax({
 						url: subdir + '/' + page + '/circos_chr',
@@ -243,6 +244,11 @@ $(document).ready(function () {
 						}
 					});
 				}
+
+				// showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, secol);
+				$('#GWplotSide').show();
+				$('#resultsSide').show();
+			}
 		}
 
 		function error5() {

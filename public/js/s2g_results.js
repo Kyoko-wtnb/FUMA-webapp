@@ -373,177 +373,157 @@ function QQplot(data) {
 	}
 }
 
-function MAGMAresults(magma, data) {
-	if (magma == 0) {
-		$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
-			+ ' MAGMA was not perform.</span><br/></div>');
-	} else {
-		MAGMA_GStable(data);
-		MAGMA_expPlot(data);
-	}
+function MAGMA_GStable(data) {
+	$('#MAGMAtable').DataTable({
+		"data": data['magma.sets.top'],
+		columns: [
+			{ data: 'FULL_NAME' },
+			{ data: 'NGENES' },
+			{ data: 'BETA' },
+			{ data: 'BETA_STD' },
+			{ data: 'SE' },
+			{ data: 'P' },
+			{ data: 'Pbon' },
+		],
+		"order": [[6, 'asc']],
+		"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+		"iDisplayLength": 10
+	});
 }
 
-function MAGMA_GStable(magma, data) {
-	if (magma == 0) {
-		$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
-			+ ' MAGMA was not perform.</span><br/></div>');
-	} else {
-		$('#MAGMAtable').DataTable({
-			"data": data['magma.sets.top'],
-			columns: [
-				{ data: 'FULL_NAME' },
-				{ data: 'NGENES' },
-				{ data: 'BETA' },
-				{ data: 'BETA_STD' },
-				{ data: 'SE' },
-				{ data: 'P' },
-				{ data: 'Pbon' },
-			],
-			"order": [[6, 'asc']],
-			"lengthMenue": [[10, 25, 50, -1], [10, 25, 50, "All"]],
-			"iDisplayLength": 10
-		});
+function MAGMA_expPlot(data) {
+	var data_title = {
+		'gtex_v8_ts_avg_log2TPM': 'GTEx v8 53 tissue types',
+		'gtex_v8_ts_general_avg_log2TPM': 'GTEx v8 30 general tissue types',
+		'gtex_v7_ts_avg_log2TPM': 'GTEx v7 53 tissue types',
+		'gtex_v7_ts_general_avg_log2TPM': 'GTEx v7 30 general tissue types',
+		'gtex_v6_ts_avg_log2RPKM': 'GTEx v6 53 tissue types',
+		'gtex_v6_ts_general_avg_log2RPKM': 'GTEx v6 30 general tissue types',
+		'bs_age_avg_log2RPKM': "BrainSpan 29 different ages of brain samples",
+		"bs_dev_avg_log2RPKM": "BrainSpan 11 general developmental stages of brain samples"
 	}
-}
 
-function MAGMA_expPlot(magma, data) {
-	if (magma == 0) {
+	if (data == null || data == undefined || data.lenght == 0) {
 		$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
-			+ ' MAGMA was not perform.</span><br/></div>');
+			+ ' There was an error, MAGMA was not able to perform.</span><br/></div>');
 	} else {
-		var data_title = {
-			'gtex_v8_ts_avg_log2TPM': 'GTEx v8 53 tissue types',
-			'gtex_v8_ts_general_avg_log2TPM': 'GTEx v8 30 general tissue types',
-			'gtex_v7_ts_avg_log2TPM': 'GTEx v7 53 tissue types',
-			'gtex_v7_ts_general_avg_log2TPM': 'GTEx v7 30 general tissue types',
-			'gtex_v6_ts_avg_log2RPKM': 'GTEx v6 53 tissue types',
-			'gtex_v6_ts_general_avg_log2RPKM': 'GTEx v6 30 general tissue types',
-			'bs_age_avg_log2RPKM': "BrainSpan 29 different ages of brain samples",
-			"bs_dev_avg_log2RPKM": "BrainSpan 11 general developmental stages of brain samples"
-		}
+		data.forEach(function (d) {
+			d['p'] = +d['p']; //P-value
+			d['ascending_P_idx'] = +d['ascending_P_idx']; //P order
+			d['ascending_var_or_covar_idx'] = +d['ascending_var_or_covar_idx']; //alph order
+		})
 
-		if (data == null || data == undefined || data.lenght == 0) {
-			$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
-				+ ' There was an error, MAGMA was not able to perform.</span><br/></div>');
-		} else {
+		var bars = [];
+		var xLabels = [];
+		var dataset = d3.set(data.map(function (d) { return d['f_name'] })).values();
+		var cellwidth = 15;
+		var margin = { top: 30, right: 30, bottom: 100, left: 80 },
+			height = 250;
+		dataset.forEach(function (ds) {
+			$('#magmaPlot').append('<div id="' + ds + 'Panel"><h4>' + data_title[ds] + '</h4></div>')
+
+			// img download buttons
+			$('#' + ds + 'Panel').append('<div id="' + ds + 'Plot">Download the plot as '
+				+ '<button class="btn btn-default btn-xs ImgDown" onclick=' + "'" + 'expImgDown("' + ds + '","png");' + "'" + '>PNG</button> '
+				+ '<button class="btn btn-default btn-xs ImgDown" onclick=' + "'" + 'expImgDown("' + ds + '","jpeg");' + "'" + '>JPG</button> '
+				+ '<button class="btn btn-default btn-xs ImgDown" onclick=' + "'" + 'expImgDown("' + ds + '","svg");' + "'" + '>SVG</button> '
+				+ '<button class="btn btn-default btn-xs ImgDown" onclick=' + "'" + 'expImgDown("' + ds + '","pdf");' + "'" + '>PDF</button></div>'
+			);
+
+			// plot
+			$('#' + ds + 'Panel').append('<div id="' + ds + '"></div>')
+			var tdata = [];
+			var maxLabel = 100;
 			data.forEach(function (d) {
-				d['p'] = +d['p']; //P-value
-				d['ascending_P_idx'] = +d['ascending_P_idx']; //P order
-				d['ascending_var_or_covar_idx'] = +d['ascending_var_or_covar_idx']; //alph order
-			})
-
-			var bars = [];
-			var xLabels = [];
-			var dataset = d3.set(data.map(function (d) { return d['f_name'] })).values();
-			var cellwidth = 15;
-			var margin = { top: 30, right: 30, bottom: 100, left: 80 },
-				height = 250;
-			dataset.forEach(function (ds) {
-				$('#magmaPlot').append('<div id="' + ds + 'Panel"><h4>' + data_title[ds] + '</h4></div>')
-
-				// img download buttons
-				$('#' + ds + 'Panel').append('<div id="' + ds + 'Plot">Download the plot as '
-					+ '<button class="btn btn-default btn-xs ImgDown" onclick=' + "'" + 'expImgDown("' + ds + '","png");' + "'" + '>PNG</button> '
-					+ '<button class="btn btn-default btn-xs ImgDown" onclick=' + "'" + 'expImgDown("' + ds + '","jpeg");' + "'" + '>JPG</button> '
-					+ '<button class="btn btn-default btn-xs ImgDown" onclick=' + "'" + 'expImgDown("' + ds + '","svg");' + "'" + '>SVG</button> '
-					+ '<button class="btn btn-default btn-xs ImgDown" onclick=' + "'" + 'expImgDown("' + ds + '","pdf");' + "'" + '>PDF</button></div>'
-				);
-
-				// plot
-				$('#' + ds + 'Panel').append('<div id="' + ds + '"></div>')
-				var tdata = [];
-				var maxLabel = 100;
-				data.forEach(function (d) {
-					if (d['f_name'] == ds) {
-						tdata.push(d)
-						if (d['var_name'].length * 5.5 > maxLabel) { maxLabel = d['var_name'].length * 5.5 }
-					}
-				});
-				margin.bottom = maxLabel;
-				var width = cellwidth * tdata.length;
-				var svg = d3.select("#" + ds).append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-					.append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-				var x = d3.scale.ordinal().rangeBands([0, width]);
-				var xAxis = d3.svg.axis().scale(x).orient("bottom");
-				x.domain(tdata.map(function (d) { return d['var_name']; }));
-				var y = d3.scale.linear().range([height, 0]);
-				var yAxis = d3.svg.axis().scale(y).orient("left");
-				y.domain([0, d3.max(tdata, function (d) { return -Math.log10(d['p']); })]);
-
-				var Pbon = 0.05 / tdata.length;
-
-				var bar = svg.selectAll("rect.expgeneral").data(tdata).enter()
-					.append("rect")
-					.attr("x", function (d) { return d['ascending_P_idx'] * cellwidth; })
-					.attr("y", function (d) { return y(-Math.log10(d['p'])); })
-					.attr("width", cellwidth - 1)
-					.attr("height", function (d) { return height - y(-Math.log10(d['p'])); })
-					.style("fill", function (d) {
-						if (d['p'] < Pbon) { return "#c00"; }
-						else { return "#5668f4"; }
-					})
-					.style("stroke", "grey");
-				bars.push(bar);
-				var xLabel = svg.append("g").selectAll(".xLabel")
-					.data(tdata).enter().append("text")
-					.text(function (d) { return d['var_name']; })
-					.style("text-anchor", "end")
-					.style("font-size", "11px")
-					.attr("transform", function (d) {
-						return "translate(" + (d['ascending_P_idx'] * cellwidth + ((cellwidth - 1) / 2) + 3) + "," + (height + 8) + ")rotate(-70)";
-					});
-				xLabels.push(xLabel);
-				svg.append("line")
-					.attr("x1", 0).attr("x2", width)
-					.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
-					.style("stroke", "black")
-					.style("stroke-dasharray", ("3,3"));
-
-				svg.append('g').attr("class", "y axis")
-					.call(yAxis)
-					.selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
-				svg.append('g').attr("class", "x axis")
-					.attr("transform", "translate(0," + (height) + ")")
-					.call(xAxis).selectAll('text').remove();
-				svg.append("text").attr("text-anchor", "middle")
-					.attr("transform", "translate(" + (-margin.left / 2 - 15) + "," + height / 2 + ")rotate(-90)")
-					.text("-log 10 P-value");
-				svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-				svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-				svg.selectAll('text').style('font-family', 'sans-serif');
-
+				if (d['f_name'] == ds) {
+					tdata.push(d)
+					if (d['var_name'].length * 5.5 > maxLabel) { maxLabel = d['var_name'].length * 5.5 }
+				}
 			});
+			margin.bottom = maxLabel;
+			var width = cellwidth * tdata.length;
+			var svg = d3.select("#" + ds).append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			function sortOptions(type) {
-				if (type == "alph") {
-					for (var i = 0; i < bars.length; i++) {
-						bars[i].transition().duration(1000)
-							.attr("x", function (d) { return d['ascending_var_or_covar_idx'] * cellwidth; });
-						xLabels[i].transition().duration(1000)
-							.attr("transform", function (d) {
-								return "translate(" + (d['ascending_var_or_covar_idx'] * cellwidth + ((cellwidth - 1) / 2) + 3) + "," + (height + 8) + ")rotate(-70)";
-							});
-					}
-				} else if (type == "p") {
-					for (var i = 0; i < bars.length; i++) {
-						bars[i].transition().duration(1000)
-							.attr("x", function (d) { return d['ascending_P_idx'] * cellwidth; });
-						xLabels[i].transition().duration(1000)
-							.attr("transform", function (d) {
-								return "translate(" + (d['ascending_P_idx'] * cellwidth + ((cellwidth - 1) / 2) + 3) + "," + (height + 8) + ")rotate(-70)";
-							});
-					}
+			var x = d3.scale.ordinal().rangeBands([0, width]);
+			var xAxis = d3.svg.axis().scale(x).orient("bottom");
+			x.domain(tdata.map(function (d) { return d['var_name']; }));
+			var y = d3.scale.linear().range([height, 0]);
+			var yAxis = d3.svg.axis().scale(y).orient("left");
+			y.domain([0, d3.max(tdata, function (d) { return -Math.log10(d['p']); })]);
+
+			var Pbon = 0.05 / tdata.length;
+
+			var bar = svg.selectAll("rect.expgeneral").data(tdata).enter()
+				.append("rect")
+				.attr("x", function (d) { return d['ascending_P_idx'] * cellwidth; })
+				.attr("y", function (d) { return y(-Math.log10(d['p'])); })
+				.attr("width", cellwidth - 1)
+				.attr("height", function (d) { return height - y(-Math.log10(d['p'])); })
+				.style("fill", function (d) {
+					if (d['p'] < Pbon) { return "#c00"; }
+					else { return "#5668f4"; }
+				})
+				.style("stroke", "grey");
+			bars.push(bar);
+			var xLabel = svg.append("g").selectAll(".xLabel")
+				.data(tdata).enter().append("text")
+				.text(function (d) { return d['var_name']; })
+				.style("text-anchor", "end")
+				.style("font-size", "11px")
+				.attr("transform", function (d) {
+					return "translate(" + (d['ascending_P_idx'] * cellwidth + ((cellwidth - 1) / 2) + 3) + "," + (height + 8) + ")rotate(-70)";
+				});
+			xLabels.push(xLabel);
+			svg.append("line")
+				.attr("x1", 0).attr("x2", width)
+				.attr("y1", y(-Math.log10(Pbon))).attr("y2", y(-Math.log10(Pbon)))
+				.style("stroke", "black")
+				.style("stroke-dasharray", ("3,3"));
+
+			svg.append('g').attr("class", "y axis")
+				.call(yAxis)
+				.selectAll('text').style('font-size', '11px').style('font-family', 'sans-serif');
+			svg.append('g').attr("class", "x axis")
+				.attr("transform", "translate(0," + (height) + ")")
+				.call(xAxis).selectAll('text').remove();
+			svg.append("text").attr("text-anchor", "middle")
+				.attr("transform", "translate(" + (-margin.left / 2 - 15) + "," + height / 2 + ")rotate(-90)")
+				.text("-log 10 P-value");
+			svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+			svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+			svg.selectAll('text').style('font-family', 'sans-serif');
+
+		});
+
+		function sortOptions(type) {
+			if (type == "alph") {
+				for (var i = 0; i < bars.length; i++) {
+					bars[i].transition().duration(1000)
+						.attr("x", function (d) { return d['ascending_var_or_covar_idx'] * cellwidth; });
+					xLabels[i].transition().duration(1000)
+						.attr("transform", function (d) {
+							return "translate(" + (d['ascending_var_or_covar_idx'] * cellwidth + ((cellwidth - 1) / 2) + 3) + "," + (height + 8) + ")rotate(-70)";
+						});
+				}
+			} else if (type == "p") {
+				for (var i = 0; i < bars.length; i++) {
+					bars[i].transition().duration(1000)
+						.attr("x", function (d) { return d['ascending_P_idx'] * cellwidth; });
+					xLabels[i].transition().duration(1000)
+						.attr("transform", function (d) {
+							return "translate(" + (d['ascending_P_idx'] * cellwidth + ((cellwidth - 1) / 2) + 3) + "," + (height + 8) + ")rotate(-70)";
+						});
 				}
 			}
-
-			d3.select('#magma_exp_order').on("change", function () {
-				sortOptions($('#magma_exp_order').val());
-			});
 		}
+
+		d3.select('#magma_exp_order').on("change", function () {
+			sortOptions($('#magma_exp_order').val());
+		});
 	}
 }
 
