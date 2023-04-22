@@ -42,6 +42,13 @@ pipeline {
             sshagent(credentials: ['fuma_dev_srv']) {
                 sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp fetch --all'
                 sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp reset --hard origin/FUMA-webapp-new-production'
+                sh "ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 docker compose -f /home/ams375/FUMA-webapp/laradock-FUMA/production_docker-compose.yml exec workspace bash -c ' \
+                                            composer install --optimize-autoloader && \
+                                            php artisan config:cache && \
+                                            php artisan event:cache && \
+                                            php artisan route:cache && \
+                                            php artisan view:cache'"
+
                 // sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp pull https://github.com/vufuma/FUMA-webapp.git FUMA-webapp-new'
                 // script {
                 //     try {
@@ -50,7 +57,7 @@ pipeline {
                 //         echo 'Some file permissions could not be updated.'
                 //     }
                 // }
-            }                               
+            }
         }
         // always {
         //     sh 'docker compose down --remove-orphans -v'
