@@ -27,7 +27,7 @@ class FumaController extends Controller
         $fin = $request->input('infile');
         $cols = $request->input('header');
         $cols = explode(":", $cols);
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        $filedir = config('app.temp_abs_path_to_jobs') . '/' . $prefix . '/' . $id . '/';
         $f = $filedir . $fin;
         if (file_exists($f)) {
             $file = fopen($f, 'r');
@@ -66,7 +66,7 @@ class FumaController extends Controller
         $prefix = $request->input('prefix');
         $fin = $request->input('infile');
         $cols = $request->input('header');
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        // $filedir = config('app.temp_abs_path_to_jobs') . '/' . $prefix . '/' . $id . '/';
 
         $draw = $request->input('draw');
         $order = $request->input('order');
@@ -77,9 +77,12 @@ class FumaController extends Controller
         $search = $request->input('search');
         $search = $search['value'];
 
-        $script = scripts_path('dt.py');
-        $out = shell_exec("python $script $filedir $fin $draw $cols $order_column $order_dir $start $length $search");
+        // $script = scripts_path('dt.py');
+        $new_cmd = "docker run --rm --name job-$id -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$id/:/app/job -w /app laradock-fuma-dt /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
+        // exec($new_cmd, $output, $error);
+        $out = shell_exec('docker ps');
         echo $out;
+        // return json_encode($out);
     }
 
     public function paramTable(Request $request)
@@ -99,7 +102,7 @@ class FumaController extends Controller
     {
         $id = $request->input('id');
         $prefix = $request->input('prefix');
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        $filedir = config('app.temp_abs_path_to_jobs') . '/' . $prefix . '/' . $id . '/';
         $table = '<table class="table table-bordered" style="width:auto;margin-right:auto; margin-left:auto; text-align: right;"><tbody>';
         $lines = file($filedir . "summary.txt");
         foreach ($lines as $l) {
