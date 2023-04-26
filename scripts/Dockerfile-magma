@@ -19,3 +19,13 @@ COPY app.config ./
 COPY magma.py ./
 COPY magma_gene.R ./
 COPY ConfigParser.R ./
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME

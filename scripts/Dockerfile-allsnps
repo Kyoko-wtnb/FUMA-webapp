@@ -8,3 +8,13 @@ RUN apt-get update && apt-get install -y tabix && rm -rf /var/lib/apt/lists/*
 
 COPY app.config ./
 COPY allSNPs.py ./
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME
