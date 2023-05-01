@@ -21,7 +21,7 @@ pipeline {
             steps {
                 sh 'docker run --rm \
                         -u "$(id -u):$(id -g)" \
-                        -v "/home/ams375/FUMA-webapp/laradock-FUMA/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
+                        -v "/home/ams375/.laradock/data/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
                         -w /var/www/html \
                         laravelsail/php82-composer:latest \
                         composer install --ignore-platform-reqs --no-interaction'
@@ -31,7 +31,7 @@ pipeline {
             steps {
                 sh 'docker run --rm \
                         -u "$(id -u):$(id -g)" \
-                        -v "/home/ams375/FUMA-webapp/laradock-FUMA/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
+                        -v "/home/ams375/.laradock/data/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
                         -w /var/www/html \
                         laravelsail/php82-composer:latest \
                         php artisan test'
