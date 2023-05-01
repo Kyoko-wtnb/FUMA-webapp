@@ -11,3 +11,13 @@ RUN Rscript -e "BiocManager::install('GenomicRanges')"
 COPY app.config ./
 COPY ConfigParser.R ./
 COPY geneMap.R ./
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME

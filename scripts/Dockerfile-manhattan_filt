@@ -7,3 +7,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY app.config ./
 COPY manhattan_filt.py ./
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME

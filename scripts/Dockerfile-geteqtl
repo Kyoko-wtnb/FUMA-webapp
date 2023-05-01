@@ -14,3 +14,13 @@ RUN Rscript -e "install.packages('data.table')"
 COPY app.config ./
 COPY geteQTL.py/ ./
 COPY align_eqtl.R/ ./
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME

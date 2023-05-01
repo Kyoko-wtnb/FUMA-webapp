@@ -1,34 +1,44 @@
-# Example config file. Create app.config with the correct settings.
-
 [inputfiles]
 gwas=input.gwas
-leadSNP=input.lead
+snps=input.snps
+leadSNPs=input.lead
 regions=input.regions
 params=params.txt
 
 [data]
 dbSNP=/data/dbSNP
 chr15=/data/Chr15States
-refgenome=/data/1KG/Phase3
-ENSG=/data/ENSG.file.txt
+refgenome=/data
+annot_bed=/data/annot_bed
+ENSG=/data/ENSG
+ENSGfile=ENSG.genes.txt
 GeneSet=/data/GeneSet
-GTEx=/data/QTL/GTEx
 QTL=/data/QTL
-GWAScat=/data/GWAScatalog
-GTExExp=/data/GeneExp/GTEx
-scripts=/var/www/IPGAP/storage/scripts
+GWAScat=/data/GWAScatalog/gwas_catalog_v1.0-associations_e0_r2022-11-29.txt.gz
+GeneExp=/data/GeneExp
+scripts=/var/www/fuma/scripts
 geneIDs=/data/genes
-geneScores=/data/geneScores
-circos_config=/data/circos
+geneScores=/data/GeneScores
+circos_config=/app/config/circos
+circos_path=/usr/local/share/circos-0.69-9/bin
 
 [magma]
-magmadir=/home/kyoko/bin/MAGMA
+magmadir=/usr/local/share/MAGMA
 magmafiles=/data/MAGMA
 
 [annovar]
-annovdir=/home/kyoko/bin/annovar
+annovdir=/usr/local/share/annovar
 humandb=/data/annovar/humandb
 
 [CI]
-CIdata=/data/CI
+CIdata=/data/3DCI
 RoadmapData=/data/Roadmap
+
+[version]
+FUMA=v1.5.2
+dbSNP=146
+MAGMA=v1.08
+ANNOVAR=2017-07-17
+MsigDB=v7.0
+WikiPathways=20191010
+GWAScatalog=e0_r2022-11-29

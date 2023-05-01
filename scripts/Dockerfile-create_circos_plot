@@ -17,3 +17,13 @@ RUN cpanm --installdeps .
 COPY app.config ./
 COPY createCircosPlot.py ./
 COPY config/circos ./config/circos
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME

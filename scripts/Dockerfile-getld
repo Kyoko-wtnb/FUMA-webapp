@@ -18,3 +18,13 @@ COPY getLD.py ./
 COPY annovar.py ./
 COPY annov_geneSNPs.pl ./
 COPY getTopSNPs.py ./
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME
