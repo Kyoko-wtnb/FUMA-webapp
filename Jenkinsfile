@@ -7,7 +7,6 @@ pipeline {
             steps {
                 sh '''
                     docker version
-                    docker compose version
                 '''
             }
         }
