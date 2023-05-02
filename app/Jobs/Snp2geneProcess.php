@@ -76,7 +76,7 @@ class Snp2geneProcess implements ShouldQueue
         if (!Storage::exists($filedir . "params.config")) {
             $msg = "Job parameters not found.";
             $this->rmFiles($filedir);
-            // $this->chmod($filedir);
+
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:100']);
             $this->JobMonitorUpdate($jobID, $created_at, $started_at);
@@ -105,7 +105,7 @@ class Snp2geneProcess implements ShouldQueue
 
         if ($error != 0) {
             $this->rmFiles($filedir);
-            // $this->chmod($filedir);
+
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:001']);
 
@@ -118,7 +118,7 @@ class Snp2geneProcess implements ShouldQueue
             $this->JobMonitorUpdate($jobID, $created_at, $started_at);
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 1, $msg);
-                // return; //TODO: uncomment before flight
+                return;
             }
         }
 
@@ -166,13 +166,13 @@ class Snp2geneProcess implements ShouldQueue
         exec($new_cmd, $output, $error);
         if ($error != 0) {
             $this->rmFiles($filedir);
-            // $this->chmod($filedir);
+
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:003']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 3, $msg);
-                // return; //TODO: uncomment before flight
+                return;
             }
         }
 
@@ -186,13 +186,13 @@ class Snp2geneProcess implements ShouldQueue
 
         if ($error != 0) {
             $this->rmFiles($filedir);
-            // $this->chmod($filedir);
+
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:004']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 4, $msg);
-                // return; //TODO: uncomment before flight
+                return;
             }
         }
 
@@ -221,23 +221,23 @@ class Snp2geneProcess implements ShouldQueue
                 exec($new_cmd, $output, $error);
 
                 $this->rmFiles($filedir);
-                // $this->chmod($filedir);
+
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:005']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 5, $msg);
                 }
-                // return; //TODO: uncomment before flight
+                return;
             } else {
                 $this->rmFiles($filedir);
-                // $this->chmod($filedir);
+
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:006']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 6, $msg);
-                    // return; //TODO: uncomment before flight
+                    return;
                 }
             }
         }
@@ -252,13 +252,13 @@ class Snp2geneProcess implements ShouldQueue
 
         if ($error != 0) {
             $this->rmFiles($filedir);
-            // $this->chmod($filedir);
+
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:007']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 7, $msg);
-                // return; //TODO: replace before flight
+                return;
             }
         }
 
@@ -272,13 +272,13 @@ class Snp2geneProcess implements ShouldQueue
 
         if ($error != 0) {
             $this->rmFiles($filedir);
-            // $this->chmod($filedir);
+
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:008']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 8, $msg);
-                // return; //TODO: uncomment before flight
+                return;
             }
         }
 
@@ -295,13 +295,13 @@ class Snp2geneProcess implements ShouldQueue
 
             if ($error != 0) {
                 $this->rmFiles($filedir);
-                // $this->chmod($filedir);
+
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:009']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 9, $msg);
-                    // return; //TODO: uncomment before flight
+                    return;
                 }
             }
         }
@@ -317,7 +317,7 @@ class Snp2geneProcess implements ShouldQueue
 
             if ($error != 0) {
                 $this->rmFiles($filedir);
-                // $this->chmod($filedir);
+
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:010']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
@@ -326,7 +326,7 @@ class Snp2geneProcess implements ShouldQueue
                 $msg = $errorout[count($errorout) - 2];
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 10, $msg);
-                    // return; //TODO: uncomment before flight
+                    return;
                 }
             }
         }
@@ -341,13 +341,13 @@ class Snp2geneProcess implements ShouldQueue
 
         if ($error != 0) {
             $this->rmFiles($filedir);
-            // $this->chmod($filedir);
+
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:011']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 11, $msg);
-                // return; //TODO: uncomment before flight
+                return;
             }
         }
         if ($params['ciMap'] == 1) {
@@ -361,7 +361,7 @@ class Snp2geneProcess implements ShouldQueue
 
             if ($error != 0) {
                 $this->rmFiles($filedir);
-                // $this->chmod($filedir);
+
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:012']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
@@ -370,12 +370,11 @@ class Snp2geneProcess implements ShouldQueue
                 $msg = $errorout[count($errorout) - 2];
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 12, $msg);
-                    // return; //TODO: uncomment before flight
+                    return;
                 }
             }
         }
-        // $this->rmFiles($filedir);
-        // $this->chmod($filedir);
+        $this->rmFiles($filedir);
 
         DB::table('SubmitJobs')->where('jobID', $jobID)
             ->update(['status' => 'OK']);
@@ -468,21 +467,21 @@ class Snp2geneProcess implements ShouldQueue
 
     public function rmFiles($filedir)
     {
-        if (Storage::exists($filedir . "input.gwas")) {
-            Storage::delete($filedir . "input.gwas");
-        }
-        if (Storage::exists($filedir . "input.snps")) {
-            Storage::delete($filedir . "input.snps");
-        }
-        if (Storage::exists($filedir . "input.lead")) {
-            Storage::delete($filedir . "input.lead");
-        }
-        if (Storage::exists($filedir . "input.regions")) {
-            Storage::delete($filedir . "input.regions");
-        }
-        if (Storage::exists($filedir . "magma.input")) {
-            Storage::delete($filedir . "magma.input");
-        }
+        // if (Storage::exists($filedir . "input.gwas")) {
+        //     Storage::delete($filedir . "input.gwas");
+        // }
+        // if (Storage::exists($filedir . "input.snps")) {
+        //     Storage::delete($filedir . "input.snps");
+        // }
+        // if (Storage::exists($filedir . "input.lead")) {
+        //     Storage::delete($filedir . "input.lead");
+        // }
+        // if (Storage::exists($filedir . "input.regions")) {
+        //     Storage::delete($filedir . "input.regions");
+        // }
+        // if (Storage::exists($filedir . "magma.input")) {
+        //     Storage::delete($filedir . "magma.input");
+        // }
         return;
     }
 
