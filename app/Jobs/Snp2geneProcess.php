@@ -80,6 +80,7 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:100']);
             $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 100, $msg);
                 return;
@@ -116,6 +117,7 @@ class Snp2geneProcess implements ShouldQueue
                 $msg = $errorout[count($errorout) - 2];
             }
             $this->JobMonitorUpdate($jobID, $created_at, $started_at);
+            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 1, $msg);
                 return;
@@ -170,6 +172,7 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:003']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 3, $msg);
                 return;
@@ -190,6 +193,7 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:004']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 4, $msg);
                 return;
@@ -225,6 +229,7 @@ class Snp2geneProcess implements ShouldQueue
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:005']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+                return;
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 5, $msg);
                 }
@@ -235,6 +240,7 @@ class Snp2geneProcess implements ShouldQueue
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:006']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+                return;
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 6, $msg);
                     return;
@@ -256,6 +262,7 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:007']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 7, $msg);
                 return;
@@ -276,6 +283,7 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:008']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 8, $msg);
                 return;
@@ -299,6 +307,7 @@ class Snp2geneProcess implements ShouldQueue
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:009']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+                return;
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 9, $msg);
                     return;
@@ -321,6 +330,7 @@ class Snp2geneProcess implements ShouldQueue
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:010']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+                return;
                 $errorout = Storage::get($errorfile);
                 $errorout = explode("\n", $errorout);
                 $msg = $errorout[count($errorout) - 2];
@@ -345,6 +355,7 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:011']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 11, $msg);
                 return;
@@ -365,6 +376,7 @@ class Snp2geneProcess implements ShouldQueue
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:012']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
+                return;
                 $errorout = Storage::get($errorfile);
                 $errorout = explode("\n", $errorout);
                 $msg = $errorout[count($errorout) - 2];
