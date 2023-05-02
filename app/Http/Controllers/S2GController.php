@@ -359,6 +359,14 @@ class S2GController extends Controller
 
     public function newJob(Request $request)
     {
+        $acceptable_mime_types = array(
+            "text/plain",
+            "application/zip",
+            "application/x-zip",
+            "application/x-gzip",
+            "application/gzip",
+            "application/x-zip-compressed"
+        );
         $date = date('Y-m-d H:i:s');
         $email = Auth::user()->email;
         // Implement the cap on max jobs in queue
@@ -379,7 +387,7 @@ class S2GController extends Controller
 
         if ($request->hasFile('GWASsummary')) {
             $type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
-            if ($type != "text/plain" && $type != "application/zip" && $type != "application/x-gzip") {
+            if (!in_array($type, $acceptable_mime_types)) {
                 $jobID = null;
                 return view('pages.snp2gene', ['id' => null, 'status' => 'fileFormatGWAS', 'page' => 'snp2gene', 'prefix' => 'jobs']);
             }
@@ -427,26 +435,7 @@ class S2GController extends Controller
 
         // GWAS smmary stats file
         if ($request->hasFile('GWASsummary')) {
-            $type = mime_content_type($_FILES["GWASsummary"]["tmp_name"]);
-            if ($type == "text/plain") {
-                Storage::put($filedir . '/' . $GWAS, file_get_contents($request->file('GWASsummary')));
-                // $request->file('GWASsummary')->move($filedir, $GWAS);
-            } else if ($type == "application/zip") {
-                // TODO: swich to use storage
-                $request->file('GWASsummary')->move($filedir, "temp.zip");
-                $zip = new \ZipArchive;
-                $zip->open($filedir . '/temp.zip');
-                $zf = $zip->getNameIndex(0);
-                $zip->extractTo($filedir);
-                Storage::move($filedir . '/' . $zf, $filedir . '/' . $GWAS);
-                system("rm $filedir/temp.zip");
-            } else {
-                // TODO: swich to use storage
-                $f = $_FILES["GWASsummary"]["name"];
-                $request->file('GWASsummary')->move($filedir, $f);
-                system("gzip -cd $filedir/$f > $filedir/$GWAS");
-                system("rm $filedir/$f");
-            }
+            $this->filePreprocessAndStore($request->file('GWASsummary'), $GWAS, $filedir);
             $GWASfileup = 1;
         } else if ($request->has('egGWAS')) {
             $exfile = config('app.jobdir') . '/example/CD.gwas';
@@ -456,24 +445,7 @@ class S2GController extends Controller
 
         // pre-defined lead SNPS file
         if ($request->hasFile('leadSNPs')) {
-            $type = mime_content_type($_FILES["leadSNPs"]["tmp_name"]);
-            if ($type == "text/plain") {
-                // TODO: swich to use storage
-                $request->file('leadSNPs')->move($filedir, $leadSNPs);
-            } else if ($type == "application/zip") {
-                // TODO: swich to use storage
-                $request->file('leadSNPs')->move($filedir, "temp.zip");
-                $zip = new \ZipArchive;
-                $zip->open($filedir . '/temp.zip');
-                $zf = $zip->getNameIndex(0);
-                $zip->extractTo($filedir);
-                Storage::move($filedir . '/' . $zf, $filedir . '/' . $leadSNPs);
-            } else {
-                // TODO: swich to use storage
-                $f = $_FILES["leadSNPs"]["name"];
-                $request->file('leadSNPs')->move($filedir, $f);
-                system("gzip -cd $filedir/$f > $filedir/$leadSNPs");
-            }
+            $this->filePreprocessAndStore($request->file('leadSNPs'), $leadSNPs, $filedir);
             $leadSNPsfileup = 1;
         }
 
@@ -487,24 +459,7 @@ class S2GController extends Controller
 
         // pre-defined genomic region file
         if ($request->hasFile('regions')) {
-            $type = mime_content_type($_FILES["regions"]["tmp_name"]);
-            if ($type == "text/plain") {
-                // TODO: swich to use storage
-                $request->file('regions')->move($filedir, $regions);
-            } else if ($type == "application/zip") {
-                // TODO: swich to use storage
-                $request->file('regions')->move($filedir, "temp.zip");
-                $zip = new \ZipArchive;
-                $zip->open($filedir . '/temp.zip');
-                $zf = $zip->getNameIndex(0);
-                $zip->extractTo($filedir);
-                Storage::move($filedir . '/' . $zf, $filedir . '/' . $regions);
-            } else {
-                // TODO: swich to use storage
-                $f = $_FILES["regions"]["name"];
-                $request->file('regions')->move($filedir, $f);
-                system("gzip -cd $filedir/$f > $filedir/$regions");
-            }
+            $this->filePreprocessAndStore($request->file('regions'), $regions, $filedir);
             $regionsfileup = 1;
         }
 
@@ -846,7 +801,7 @@ class S2GController extends Controller
         }
 
         $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
-    
+
         // write parameter into a file
         $paramfile = $filedir . '/params.config';
         Storage::put($paramfile, "[jobinfo]");
@@ -1547,6 +1502,53 @@ class S2GController extends Controller
         $filedir = config('app.jobdir') . '/public/' . $id;
         DB::table('PublicResults')->where('jobID', $jobID)->delete();
         Storage::deletedirectory($filedir);
+        return;
+    }
+
+    private function filePreprocessAndStore($file, $file_name, $filedir)
+    {
+        $acceptable_zip_mime_types = array(
+            "application/zip",
+            "application/x-zip",
+            "application/x-zip-compressed"
+        );
+
+        $acceptable_gzip_mime_types = array(
+            "application/x-gzip",
+            "application/gzip"
+        );
+
+        $type = $file->getClientMimeType();
+        if ($type == "text/plain") {
+            Storage::put($filedir . '/' . $file_name, file_get_contents($file));
+        } else if (in_array($type, $acceptable_zip_mime_types)) {
+            Storage::put($filedir . '/' . 'temp', file_get_contents($file));
+
+            $zip = new \ZipArchive;
+            $zip->open(Storage::path($filedir . '/temp'));
+
+
+            $zf = $zip->getNameIndex(0);
+            $zip->extractTo(Storage::path($filedir));
+            $zip->close();
+
+            Storage::move($filedir . '/' . $zf, $filedir . '/' . $file_name);
+            Storage::delete($filedir . '/temp');
+        } else if (in_array($type, $acceptable_gzip_mime_types)) {
+            Storage::put($filedir . '/' . 'temp', file_get_contents($file));
+
+            $buffer_size = 4096; // The number of bytes that needs to be read at a specific time, 4KB here
+            $file = gzopen(Storage::path($filedir . '/temp'), 'rb'); //Opening the file in binary mode
+            $out_file = fopen(Storage::path($filedir . '/' . $file_name), 'wb');
+            // Keep repeating until the end of the input file
+            while (!gzeof($file)) {
+                fwrite($out_file, gzread($file, $buffer_size)); //Read buffer-size bytes.
+            }
+            fclose($out_file); //Close the files once they are done with
+            gzclose($file);
+
+            Storage::delete($filedir . '/temp');
+        }
         return;
     }
 }
