@@ -13,4 +13,15 @@ class SubmitJob extends Model
     protected $table = 'SubmitJobs';
     // Custom primary key
     protected $primaryKey = 'jobID';
+
+    /**
+     * Prepare a date for array / JSON serialization.
+     *
+     * @param  \DateTimeInterface  $date
+     * @return string
+     */
+    protected function serializeDate($date)
+    {
+        return $date->format('Y-m-d H:i:s');
+    }
 }
