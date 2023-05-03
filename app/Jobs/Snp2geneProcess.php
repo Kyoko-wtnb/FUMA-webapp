@@ -98,7 +98,7 @@ class Snp2geneProcess implements ShouldQueue
         Storage::put($logfile, "----- gwas_file.py -----\n");
         Storage::put($errorfile, "----- gwas_file.py -----\n");
 
-        $new_cmd = "docker run --rm --name job-$jobID -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-gwas_file /bin/sh -c 'python gwas_file.py job >>job/job.log 2>>job/error.log'";
+        $new_cmd = "docker run --rm --name job-$jobID -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-gwas_file /bin/sh -c 'python gwas_file.py job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
         Storage::append($logfile, $new_cmd . "\n");
 

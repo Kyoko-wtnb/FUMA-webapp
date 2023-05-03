@@ -16,8 +16,8 @@ class CreateJobTable extends Migration
             $table->bigIncrements('jobID');
             $table->string('email')->default('Not set');
             $table->string('title')->default('Not set');
-            $table->date('created_at');
-            $table->date('updated_at');
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
             $table->string('status')->default('NEW');
 
             // Add indexes
