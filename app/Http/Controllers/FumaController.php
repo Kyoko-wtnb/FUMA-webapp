@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Helper;
 use DB;
 
@@ -65,10 +66,8 @@ class FumaController extends Controller
     public function DTfileServerSide(Request $request)
     {
         $id = $request->input('id');
-        $prefix = $request->input('prefix');
         $fin = $request->input('infile');
         $cols = $request->input('header');
-        // $filedir = config('app.temp_abs_path_to_jobs') . '/' . $prefix . '/' . $id . '/';
 
         $draw = $request->input('draw');
         $order = $request->input('order');
@@ -79,12 +78,73 @@ class FumaController extends Controller
         $search = $request->input('search');
         $search = $search['value'];
 
-        // $script = scripts_path('dt.py');
-        $new_cmd = "docker run --rm --name job-$id -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$id/:/app/job -w /app laradock-fuma-dt /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
-        // exec($new_cmd, $output, $error);
-        $out = shell_exec('docker ps');
+        $uuid = Str::uuid();
+        $new_cmd = "docker run --rm --name job-$id-$uuid -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$id/:/app/job -w /app laradock-fuma-dt /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
+        $out = shell_exec($new_cmd);
         echo $out;
-        // return json_encode($out);
+
+
+        // TODO: The following code (result of chatgpt) with some modifications could be used as a drop in replacement
+        // for the dt.py code and thus to replace the docker container.
+
+        // function read_csv($filedir, $filename) {
+        //     $data = array();
+        //     $file = fopen($filedir.$filename, "r");
+        //     $header = fgetcsv($file, 0, "\t");
+        
+        //     while ($row = fgetcsv($file, 0, "\t")) {
+        //         array_push($data, $row);
+        //     }
+        
+        //     fclose($file);
+        //     return array("header" => $header, "data" => $data);
+        // }
+        
+        // function dt($filedir, $filename, $draw, $headers, $sort_col, $sort_dir, $start, $length, $search = null) {
+        //     if ($search) {
+        //         $search = strtolower($search);
+        //     }
+        
+        //     $cols = explode(":", $headers);
+        //     $fin = read_csv($filedir, $filename)["data"];
+        //     $header = read_csv($filedir, $filename)["header"];
+        //     $hind = array_map(function($x) use ($header) { return array_search($x, $header); }, $cols);
+        //     $fin = array_map(function($row) use ($hind) { return array_intersect_key($row, array_flip($hind)); }, $fin);
+        
+        //     $total = count($fin);
+        //     $filt = $total;
+        
+        //     if ($search) {
+        //         $n = array();
+        //         foreach ($hind as $i) {
+        //             $tmp = array_filter($fin, function($row) use ($i, $search) {
+        //                 return (strpos(strtolower($row[$i]), $search) !== false);
+        //             });
+        //             $n = array_merge($n, array_keys($tmp));
+        //         }
+        //         $n = array_unique($n);
+        //         $fin = array_intersect_key($fin, array_flip($n));
+        //         $filt = count($fin);
+        //     }
+        
+        //     if ($filt > 0) {
+        //         usort($fin, function($a, $b) use ($sort_col, $sort_dir) {
+        //             $cmp = strcmp($a[$sort_col], $b[$sort_col]);
+        //             return ($sort_dir == 'asc') ? $cmp : -$cmp;
+        //         });
+        //         $fin = array_slice($fin, $start, $length);
+        //     } else {
+        //         $fin = array();
+        //     }
+        
+        //     $out = array(
+        //         "draw" => $draw,
+        //         "recordsTotal" => $total,
+        //         "recordsFiltered" => $filt,
+        //         "data" => $fin
+        //     );
+        //     return json_encode($out);
+        // }
     }
 
     public function paramTable(Request $request)
