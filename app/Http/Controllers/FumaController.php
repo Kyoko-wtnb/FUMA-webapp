@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Helper;
+use DB;
 
 class FumaController extends Controller
 {
     public function appinfo()
     {
-        $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
-        $out["ver"] = $app_config['FUMA'];
+        // $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
+        // $out["ver"] = $app_config['FUMA'];
+        $out["ver"] = 'To be removed';
         $out["user"] = DB::table('users')->count();
         $out["s2g"] = collect(DB::select("SELECT MAX(jobID) as max from SubmitJobs"))->first()->max;
         $out["g2f"] = collect(DB::select("SELECT MAX(jobID) as max from gene2func"))->first()->max;
