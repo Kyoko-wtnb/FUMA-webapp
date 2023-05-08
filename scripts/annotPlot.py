@@ -5,7 +5,7 @@ import re
 import pandas as pd
 import numpy as np
 import math
-import ConfigParser
+import configparser
 import json
 import tabix
 
@@ -27,15 +27,15 @@ def unique(a):
 def getSNPs(filedir, i, Type, eqtlplot, ciplot):
 	snps = pd.read_csv(filedir+"snps.txt", sep="\t")
 	snpshead = list(snps.columns.values)
-	snps = snps.as_matrix()
+	snps = snps.values
 	ld = pd.read_csv(filedir+"ld.txt", sep="\t")
-	ld = ld.as_matrix()
+	ld = ld.values
 	ind = pd.read_csv(filedir+"IndSigSNPs.txt", sep="\t")
-	ind = ind.as_matrix()
+	ind = ind.values
 	lead = pd.read_csv(filedir+"leadSNPs.txt", sep="\t")
-	lead = lead.as_matrix()
+	lead = lead.values
 	loci = pd.read_csv(filedir+"GenomicRiskLoci.txt", sep="\t")
-	loci = loci.as_matrix()
+	loci = loci.values
 
 	if Type=="IndSigSNP":
 		ls = str(ind[i, 2])
@@ -223,7 +223,7 @@ def getChr15(filedir, snps, Chr15, Chr15cells, chr15dir):
 	if int(Chr15)==1:
 		annot = pd.read_csv(filedir+"annot.txt", sep="\t")
 		annothead = list(annot.columns.values)
-		annot = annot.as_matrix()
+		annot = annot.values
 		annot = annot[ArrayIn(annot[:,0], snps[:,0])]
 		if Chr15cells[0]=="all":
 		    Chr15cells = list(annothead[3:len(annothead)])
@@ -240,11 +240,12 @@ def getChr15(filedir, snps, Chr15, Chr15cells, chr15dir):
 			tb = tabix.open(chr15dir+"/"+str(i)+"_core15.bed.gz")
 			tmp = tb.querys(str(chrom)+":"+str(start)+"-"+str(end))
 			for l in tmp:
-				if int(l[1]<start):
-					l[1] = str(start)
-				if int(l[2] > str(end)):
-					l[2] = str(end)
-				Chr15data.append([i, int(l[1]), int(l[2]), int(l[3])])
+				l = list(map(int, l))
+				if l[1] < start:
+					l[1] = start
+				if l[2] > end:
+					l[2] = end
+				Chr15data.append([i, l[1], l[2], l[3]])
 		# Chr15data = np.array(Chr15data)
 		return [snps, Chr15data]
 	else:
@@ -254,7 +255,7 @@ def geteQTLs(filedir, snps, eqtlplot):
 	if eqtlplot==1:
 		eqtl = pd.read_csv(filedir+"eqtl.txt", sep="\t")
 		eqtlhead = list(eqtl.columns.values)
-		eqtl = eqtl.as_matrix()
+		eqtl = eqtl.values
 		eqtl = eqtl[ArrayIn(eqtl[:,0], snps[:,0])]
 		snps = np.c_[snps, ["NA"]*len(snps)]
 
@@ -298,11 +299,11 @@ def main():
 		filedir += '/'
 
 	##### get Parameters #####
-	cfg = ConfigParser.ConfigParser()
+	cfg = configparser.ConfigParser()
 	cfg.read(os.path.dirname(os.path.realpath(__file__))+'/app.config')
 	chr15dir = cfg.get('data', 'chr15')
 
-	param = ConfigParser.RawConfigParser()
+	param = configparser.RawConfigParser()
 	param.optionxform = str
 	param.read(filedir+'params.config')
 	posMapAnnot = param.get('posMap', 'posMapAnnot')
@@ -353,6 +354,6 @@ def main():
 	out["xMax"] = max_pos
 	out["xMin_init"] = min(snps[:,2])
 	out["xMax_init"] = max(snps[:,2])
-	print json.dumps(out)
+	print(json.dumps(out))
 
 if __name__ == "__main__": main()

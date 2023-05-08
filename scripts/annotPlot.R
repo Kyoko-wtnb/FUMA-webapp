@@ -13,7 +13,7 @@ ciplot <- as.numeric(args[7])
 ensg_v <- args[8]
 
 
-curfile <- thisfile()
+curfile <- whereami::thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 

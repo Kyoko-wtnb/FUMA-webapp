@@ -332,15 +332,24 @@ class FumaController extends Controller
         }
 
         return view('pages.annotPlot', [
-            'id' => $id, 'prefix' => $prefix, 'type' => $type, 'rowI' => $rowI,
-            'GWASplot' => $GWAS, 'CADDplot' => $CADD, 'RDBplot' => $RDB, 'eqtlplot' => $eqtl,
-            'ciplot' => $ci, 'Chr15' => $Chr15, 'Chr15cells' => $Chr15cells
+            'id' => $id,
+            'prefix' => $prefix,
+            'type' => $type,
+            'rowI' => $rowI,
+            'GWASplot' => $GWAS,
+            'CADDplot' => $CADD,
+            'RDBplot' => $RDB,
+            'eqtlplot' => $eqtl,
+            'ciplot' => $ci,
+            'Chr15' => $Chr15,
+            'Chr15cells' => $Chr15cells,
+            'page' => 'snp2gene/annotPlot'
         ]);
     }
 
     public function annotPlotGetData(Request $request)
     {
-        $id = $request->input("id");
+        $jobID = $request->input("id");
         $prefix = $request->input("prefix");
         $type = $request->input("type");
         $rowI = $request->input("rowI");
@@ -352,16 +361,20 @@ class FumaController extends Controller
         $Chr15 = $request->input("Chr15");
         $Chr15cells = $request->input("Chr15cells");
 
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        // $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
 
-        $script = scripts_path('annotPlot.py');
-        $data = shell_exec("python $script $filedir $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells");
+        $uuid = Str::uuid();
+        $ref_data_path_on_host = config('app.ref_data_on_host_path');
+
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-annot_plot /bin/sh -c 'python annotPlot.py job/ $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells'";
+
+        $data = shell_exec($cmd);
         return $data;
     }
 
     public function annotPlotGetGenes(Request $request)
     {
-        $id = $request->input("id");
+        $jobID = $request->input("id");
         $prefix = $request->input("prefix");
         $chrom = $request->input("chrom");
         $eqtlplot = $request->input("eqtlplot");
@@ -370,29 +383,30 @@ class FumaController extends Controller
         $xMax = $request->input("xMax");
         $eqtlgenes = $request->input("eqtlgenes");
 
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $jobID . '/';
         $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $ensembl = $params['ensembl'];
 
-        $script = scripts_path('annotPlot.R');
-        $data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl");
+        $uuid = Str::uuid();
+        $ref_data_path_on_host = config('app.ref_data_on_host_path');
+
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-annot_plot /bin/sh -c 'Rscript annotPlot.R job/ $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl'";
+
+        $data = shell_exec($cmd);
         $data = explode("\n", $data);
         $data = $data[count($data) - 1];
         return $data;
     }
 
-    public function legendText($file)
+    public function legendText(Request $request)
     {
-        $f = scripts_path('legends/' . $file);
-        if (file_exists($f)) {
-            $file = fopen($f, 'r');
-            $header = fgetcsv($file, 0, "\t");
-            $all_rows = array();
-            while ($row = fgetcsv($file, 0, "\t")) {
-                $all_rows[] = array_combine($header, $row);
-            }
-            return json_encode($all_rows);
-        }
+        $fileNames = $request->input('fileNames');
+        $filedir = config('app.jobdir') . '/legends/';
+
+        $result = Helper::getFilesContents($filedir, $fileNames);
+
+        // Convert the array to a JSON string.
+        return response()->json($result);
     }
 
     public function circos_chr(Request $request)
