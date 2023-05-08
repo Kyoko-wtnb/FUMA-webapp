@@ -65,7 +65,7 @@ class FumaController extends Controller
 
     public function DTfileServerSide(Request $request)
     {
-        $id = $request->input('id');
+        $jobID = $request->input('id');
         $fin = $request->input('infile');
         $cols = $request->input('header');
 
@@ -79,7 +79,7 @@ class FumaController extends Controller
         $search = $search['value'];
 
         $uuid = Str::uuid();
-        $new_cmd = "docker run --rm --name job-$id-$uuid -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$id/:/app/job -w /app laradock-fuma-dt /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
+        $new_cmd = "docker run --rm --name job-$jobID-$uuid -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-dt /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
         $out = shell_exec($new_cmd);
         echo $out;
 
