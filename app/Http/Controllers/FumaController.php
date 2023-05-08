@@ -277,14 +277,15 @@ class FumaController extends Controller
 
     public function locusPlot(Request $request)
     {
-        $id = $request->input('id');
+        $jobID = $request->input('id');
         $prefix = $request->input('prefix');
         $type = $request->input('type');
         $rowI = $request->input('rowI');
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        // $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
 
-        $script = scripts_path('locusPlot.py');
-        $out = shell_exec("python $script $filedir $rowI $type");
+        $uuid = Str::uuid();
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-locus_plot /bin/sh -c 'python locusPlot.py job/ $rowI $type'";
+        $out = shell_exec($cmd);
         return $out;
     }
 

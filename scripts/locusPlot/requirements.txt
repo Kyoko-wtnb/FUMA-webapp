@@ -1,0 +1,4 @@
+# locusPlot.py dependencies
+numpy
+pandas
+pytabix
