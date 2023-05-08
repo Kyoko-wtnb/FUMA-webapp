@@ -245,7 +245,7 @@ $(document).ready(function () {
 					});
 				}
 
-				// showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, secol);
+				showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, secol);
 				$('#GWplotSide').show();
 				$('#resultsSide').show();
 			}
