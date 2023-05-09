@@ -24,7 +24,7 @@ class geneMapProcess extends Job implements ShouldQueue
     public function __construct($user, $jobID)
     {
 		$this->user = $user;
-        $this->jobID = $jobID;
+		$this->jobID = $jobID;
     }
 
     /**

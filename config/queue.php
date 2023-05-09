@@ -82,20 +82,47 @@ return [
         'table' => 'failed_jobs',
     ],
 
-    /*
+     /*
     |--------------------------------------------------------------------------
-    | Queue entry capping
+    | Job limits
     |--------------------------------------------------------------------------
-    |
-    | These options place an upper limit on the number of NEW and RUNNING
-    | jobs a user may have in the queue. This cap is applied to snp2gene
-    | jobs and all users. The intention is to replace this with a more 
-    | sophisticated, per user-group tunable, implementation in a coming FUMA release.
-    |
-    */
+    */   
     'jobLimits' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Queue entry capping
+        |--------------------------------------------------------------------------
+        |
+        | These options place an upper limit on the number of NEW and RUNNING
+        | jobs a user may have in the queue. This cap is applied to snp2gene
+        | jobs and all users. The intention is to replace this with a more 
+        | sophisticated, per user-group tunable, implementation in a coming FUMA release.
+        |
+        */
         'queue_cap' => 10, //set to null to remove the cap
-    ],
 
+        'maxJobs' => [
+        /**
+         * This is an example of job limits, 
+         * the names should correspond to the Roles defined
+         * 
+         *   'GuestRunner' => 10,
+         *   'NormalRunner' => 30,
+         *   'SuperRunner' => null,
+         *   'TestUser' => 2,
+        */
+        ],
+
+        'timeouts' => [
+        /**
+         * This is an example of job timeouts, 
+         * the names should correspond to the Roles defined
+         *   'GuestRunner' => 3600,
+         *   'NormalRunner' => 21600,
+         *   'SuperRunner' => 21600,
+         *   'TestUser' => 90,
+        */
+        ], 
+    ],
 
 ];

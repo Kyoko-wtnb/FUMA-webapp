@@ -7,23 +7,28 @@
         }
     },
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
         "php": ">=5.6.4 <7.4",
         "laravel/framework": "5.8.*",
         "laravelcollective/html": "5.8.*",
-        "guzzlehttp/guzzle": "^6.2",
-        "predis/predis": "^1.1",
-        "rairlie/laravel-locking-session": "^1.1",
         "laracasts/utilities": "^3.2",
-        "doctrine/dbal": "2.*",
+        "guzzlehttp/guzzle": "^6.2",
+        "rairlie/laravel-locking-session": "^1.1",
+        "predis/predis": "^1.1",
+        "pusher/pusher-php-server": "~3.0",
+        "doctrine/dbal": "~2.13",
+        "spatie/laravel-permission": "^2.38",
         "laravel/tinker": "^1.0"
     },
     "require-dev": {
         "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "7.*",
+        "phpunit/phpunit": "9.5",
         "symfony/css-selector": "3.1.*",
         "symfony/dom-crawler": "3.1.*",
         "fakerphp/faker": "^1.19"

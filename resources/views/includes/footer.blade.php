@@ -13,10 +13,15 @@
 		</div>
 	</div>
 </footer>
+<script type="text/javascipt">
+	$(".alert button.close").click(function (e) {
+		$(this).parent().fadeOut('slow');
+	});
+</script>
 <script type="text/javascript" src="{!! URL::asset('js/sweetalert.min.js') !!}"></script>
 <link rel="stylesheet" href="{!! URL::asset('css/sweetalert.css') !!}">
 <script type="text/javascript" src="{!! URL::asset('js/HoldOn.min.js') !!}"></script>
 <link rel="stylesheet" href="{!! URL::asset('css/HoldOn.min.css') !!}">
 <script type="text/javascript" src="{!! URL::asset('js/fuma.js') !!}?131"></script>
-<script src="{!! URL::asset('js/google_analytics.js') !!}"></script>
+<script type="text/javascript" src="{!! URL::asset('js/google_analytics.js') !!}"></script>
 <link rel="icon" href="{!! URL::asset('image/FUMAicon.png') !!}">
