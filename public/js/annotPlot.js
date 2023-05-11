@@ -39,7 +39,7 @@ $(document).ready(function () {
 				xMax_init = plotData["xMax_init"];
 				eqtlgenes = plotData["eqtlgenes"];
 			}
-			catch(e) {
+			catch (e) {
 				if (e instanceof SyntaxError) {
 					display_dismissable_warning(`Could not parse result of annotPlot/getData data<br/> ${e}`, id);
 				} else {
@@ -66,7 +66,7 @@ $(document).ready(function () {
 					try {
 						genes = JSON.parse(data);
 					}
-					catch(e) {
+					catch (e) {
 						if (e instanceof SyntaxError) {
 							display_dismissable_warning(`Could not parse result of annotPlot/getGenes data<br/> ${e}`, id);
 						} else {
@@ -1518,57 +1518,73 @@ function RDBlegend() {
 		.attr("width", width + margin.left + margin.right)
 		.attr("height", height + margin.top + margin.bottom)
 		.append('g').attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	d3.json("legendText/RDB.txt", function (data) {
-		svg.append("text")
-			.attr("x", 0)
-			.attr("y", 0)
-			.text("RegulomeDB Categorical Scores")
-			.style("font-size", "14px");
-		var curHeight = 20;
-		svg.append("rect")
-			.attr("x", 0)
-			.attr("y", 6)
-			.attr("height", 1)
-			.attr("width", 550);
-		svg.append("rect")
-			.attr("x", 0)
-			.attr("y", curHeight + 5)
-			.attr("height", 1)
-			.attr("width", 550);
 
-		svg.append("text")
-			.attr("x", 5)
-			.attr("y", curHeight)
-			.text("Category")
-			.style("font-size", "13px");
-		svg.append("text")
-			.attr("x", (500 + 60) / 2)
-			.attr("y", curHeight)
-			.text("Description")
-			.style("font-size", "13px");
-		data.forEach(function (d) {
-			if (d.Category == "") {
-				curHeight += 5;
-			}
+	let FileName = "RDB.txt";
+	$.ajax({
+		url: subdir + '/' + page + '/legendText',
+		type: 'POST',
+		data: {
+			fileNames: [FileName]
+		},
+		error: function () {
+			alert("JobQuery get file contents error");
+			return;
+		},
+		success: function (data) {
+			data = data[FileName]
+			console.log(data);
+			svg.append("text")
+				.attr("x", 0)
+				.attr("y", 0)
+				.text("RegulomeDB Categorical Scores")
+				.style("font-size", "14px");
+			var curHeight = 20;
+			svg.append("rect")
+				.attr("x", 0)
+				.attr("y", 6)
+				.attr("height", 1)
+				.attr("width", 550);
+			svg.append("rect")
+				.attr("x", 0)
+				.attr("y", curHeight + 5)
+				.attr("height", 1)
+				.attr("width", 550);
+
 			svg.append("text")
 				.attr("x", 5)
-				.attr("y", curHeight + 15)
-				.text(d.Category)
+				.attr("y", curHeight)
+				.text("Category")
 				.style("font-size", "13px");
 			svg.append("text")
-				.attr("x", 60)
-				.attr("y", curHeight + 15)
-				.text(d.Description)
+				.attr("x", (500 + 60) / 2)
+				.attr("y", curHeight)
+				.text("Description")
 				.style("font-size", "13px");
-			curHeight += 15;
 
-		});
-		svg.append("rect")
-			.attr("x", 0)
-			.attr("y", curHeight + 5)
-			.attr("height", 1)
-			.attr("width", 550);
-		svg.selectAll('text').style("font-family", "sans-serif");
+			data.forEach(function (d) {
+				if (d.Category == "") {
+					curHeight += 5;
+				}
+				svg.append("text")
+					.attr("x", 5)
+					.attr("y", curHeight + 15)
+					.text(d.Category)
+					.style("font-size", "13px");
+				svg.append("text")
+					.attr("x", 60)
+					.attr("y", curHeight + 15)
+					.text(d.Description)
+					.style("font-size", "13px");
+				curHeight += 15;
+
+			});
+			svg.append("rect")
+				.attr("x", 0)
+				.attr("y", curHeight + 5)
+				.attr("height", 1)
+				.attr("width", 550);
+			svg.selectAll('text').style("font-family", "sans-serif");
+		}
 	});
 }
 
@@ -1581,94 +1597,109 @@ function EIDlegend(cells) {
 		.attr("height", height + margin.top + margin.bottom)
 		.append('g').attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-	d3.json("legendText/EID.txt", function (data) {
-		svg.append("text")
-			.attr("x", 0)
-			.attr("y", 0)
-			.text("Epigenome ID")
-			.style("font-size", "14px");
-		var curHeight = 20;
-		svg.append("rect")
-			.attr("x", 0)
-			.attr("y", 6)
-			.attr("height", 1)
-			.attr("width", 750);
-		svg.append("rect")
-			.attr("x", 0)
-			.attr("y", curHeight + 3)
-			.attr("height", 1)
-			.attr("width", 750);
 
-		svg.append("text")
-			.attr("x", 5)
-			.attr("y", curHeight)
-			.text("EID")
-			.style("font-size", "13px");
-		svg.append("text")
-			.attr("x", 50)
-			.attr("y", curHeight)
-			.text("Color")
-			.style("font-size", "13px");
-		svg.append("text")
-			.attr("x", 120)
-			.attr("y", curHeight)
-			.text("Group")
-			.style("font-size", "13px");
-		svg.append("text")
-			.attr("x", 210)
-			.attr("y", curHeight)
-			.text("Anatomy")
-			.style("font-size", "13px");
-		svg.append("text")
-			.attr("x", 370)
-			.attr("y", curHeight)
-			.text("Standerdized epigenome name")
-			.style("font-size", "13px");
+	let FileName = "EID.txt";
+	$.ajax({
+		url: subdir + '/' + page + '/legendText',
+		type: 'POST',
+		data: {
+			fileNames: [FileName]
+		},
+		error: function () {
+			alert("JobQuery get file contents error");
+			return;
+		},
+		success: function (data) {
+			data = data[FileName]
 
-		data.forEach(function (d) {
-			if (cells.indexOf(d.EID) >= 0) {
-				svg.append("text")
-					.attr("x", 5)
-					.attr("y", curHeight + 15)
-					.text(d.EID)
-					.style("font-size", "13px");
-				svg.append("rect")
-					.attr("x", 50)
-					.attr("y", curHeight + 4)
-					.attr("width", 60)
-					.attr("height", 15)
-					.attr("fill", d.Color);
-				svg.append("text")
-					.attr("x", 50)
-					.attr("y", curHeight + 15)
-					.text(d.Color)
-					.style("fill", function () { if (d.Color == "#000000") { return "white" } else { return "black" } })
-					.style("font-size", "13px");
-				svg.append("text")
-					.attr("x", 120)
-					.attr("y", curHeight + 15)
-					.text(d.Group)
-					.style("font-size", "13px");
-				svg.append("text")
-					.attr("x", 210)
-					.attr("y", curHeight + 15)
-					.text(d.Anatomy)
-					.style("font-size", "13px");
-				svg.append("text")
-					.attr("x", 370)
-					.attr("y", curHeight + 15)
-					.text(d.Name)
-					.style("font-size", "13px");
-				curHeight += 15;
+			svg.append("text")
+				.attr("x", 0)
+				.attr("y", 0)
+				.text("Epigenome ID")
+				.style("font-size", "14px");
+			var curHeight = 20;
+			svg.append("rect")
+				.attr("x", 0)
+				.attr("y", 6)
+				.attr("height", 1)
+				.attr("width", 750);
+			svg.append("rect")
+				.attr("x", 0)
+				.attr("y", curHeight + 3)
+				.attr("height", 1)
+				.attr("width", 750);
 
-			}
-		});
-		svg.append("rect")
-			.attr("x", 0)
-			.attr("y", curHeight + 5)
-			.attr("height", 1)
-			.attr("width", 750);
-		svg.selectAll('text').style("font-family", "sans-serif");
+			svg.append("text")
+				.attr("x", 5)
+				.attr("y", curHeight)
+				.text("EID")
+				.style("font-size", "13px");
+			svg.append("text")
+				.attr("x", 50)
+				.attr("y", curHeight)
+				.text("Color")
+				.style("font-size", "13px");
+			svg.append("text")
+				.attr("x", 120)
+				.attr("y", curHeight)
+				.text("Group")
+				.style("font-size", "13px");
+			svg.append("text")
+				.attr("x", 210)
+				.attr("y", curHeight)
+				.text("Anatomy")
+				.style("font-size", "13px");
+			svg.append("text")
+				.attr("x", 370)
+				.attr("y", curHeight)
+				.text("Standerdized epigenome name")
+				.style("font-size", "13px");
+
+			data.forEach(function (d) {
+				if (cells.indexOf(d.EID) >= 0) {
+					svg.append("text")
+						.attr("x", 5)
+						.attr("y", curHeight + 15)
+						.text(d.EID)
+						.style("font-size", "13px");
+					svg.append("rect")
+						.attr("x", 50)
+						.attr("y", curHeight + 4)
+						.attr("width", 60)
+						.attr("height", 15)
+						.attr("fill", d.Color);
+					svg.append("text")
+						.attr("x", 50)
+						.attr("y", curHeight + 15)
+						.text(d.Color)
+						.style("fill", function () { if (d.Color == "#000000") { return "white" } else { return "black" } })
+						.style("font-size", "13px");
+					svg.append("text")
+						.attr("x", 120)
+						.attr("y", curHeight + 15)
+						.text(d.Group)
+						.style("font-size", "13px");
+					svg.append("text")
+						.attr("x", 210)
+						.attr("y", curHeight + 15)
+						.text(d.Anatomy)
+						.style("font-size", "13px");
+					svg.append("text")
+						.attr("x", 370)
+						.attr("y", curHeight + 15)
+						.text(d.Name)
+						.style("font-size", "13px");
+					curHeight += 15;
+
+				}
+			});
+			svg.append("rect")
+				.attr("x", 0)
+				.attr("y", curHeight + 5)
+				.attr("height", 1)
+				.attr("width", 750);
+			svg.selectAll('text').style("font-family", "sans-serif");
+		}
 	});
 }
 

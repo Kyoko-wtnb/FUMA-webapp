@@ -4,14 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Helper;
+use DB;
 
 class FumaController extends Controller
 {
     public function appinfo()
     {
-        $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
-        $out["ver"] = $app_config['FUMA'];
+        // $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
+        // $out["ver"] = $app_config['FUMA'];
+        $out["ver"] = 'To be removed';
         $out["user"] = DB::table('users')->count();
         $out["s2g"] = collect(DB::select("SELECT MAX(jobID) as max from SubmitJobs"))->first()->max;
         $out["g2f"] = collect(DB::select("SELECT MAX(jobID) as max from gene2func"))->first()->max;
@@ -62,11 +65,9 @@ class FumaController extends Controller
 
     public function DTfileServerSide(Request $request)
     {
-        $id = $request->input('id');
-        $prefix = $request->input('prefix');
+        $jobID = $request->input('id');
         $fin = $request->input('infile');
         $cols = $request->input('header');
-        // $filedir = config('app.temp_abs_path_to_jobs') . '/' . $prefix . '/' . $id . '/';
 
         $draw = $request->input('draw');
         $order = $request->input('order');
@@ -77,12 +78,73 @@ class FumaController extends Controller
         $search = $request->input('search');
         $search = $search['value'];
 
-        // $script = scripts_path('dt.py');
-        $new_cmd = "docker run --rm --name job-$id -v /home/tasos51/WSL-shared/FUMA-webapp-new/storage/app/fuma/jobs/$id/:/app/job -w /app laradock-fuma-dt /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
-        // exec($new_cmd, $output, $error);
-        $out = shell_exec('docker ps');
+        $uuid = Str::uuid();
+        $new_cmd = "docker run --rm --name job-$jobID-$uuid -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-dt /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
+        $out = shell_exec($new_cmd);
         echo $out;
-        // return json_encode($out);
+
+
+        // TODO: The following code (result of chatgpt) with some modifications could be used as a drop in replacement
+        // for the dt.py code and thus to replace the docker container.
+
+        // function read_csv($filedir, $filename) {
+        //     $data = array();
+        //     $file = fopen($filedir.$filename, "r");
+        //     $header = fgetcsv($file, 0, "\t");
+        
+        //     while ($row = fgetcsv($file, 0, "\t")) {
+        //         array_push($data, $row);
+        //     }
+        
+        //     fclose($file);
+        //     return array("header" => $header, "data" => $data);
+        // }
+        
+        // function dt($filedir, $filename, $draw, $headers, $sort_col, $sort_dir, $start, $length, $search = null) {
+        //     if ($search) {
+        //         $search = strtolower($search);
+        //     }
+        
+        //     $cols = explode(":", $headers);
+        //     $fin = read_csv($filedir, $filename)["data"];
+        //     $header = read_csv($filedir, $filename)["header"];
+        //     $hind = array_map(function($x) use ($header) { return array_search($x, $header); }, $cols);
+        //     $fin = array_map(function($row) use ($hind) { return array_intersect_key($row, array_flip($hind)); }, $fin);
+        
+        //     $total = count($fin);
+        //     $filt = $total;
+        
+        //     if ($search) {
+        //         $n = array();
+        //         foreach ($hind as $i) {
+        //             $tmp = array_filter($fin, function($row) use ($i, $search) {
+        //                 return (strpos(strtolower($row[$i]), $search) !== false);
+        //             });
+        //             $n = array_merge($n, array_keys($tmp));
+        //         }
+        //         $n = array_unique($n);
+        //         $fin = array_intersect_key($fin, array_flip($n));
+        //         $filt = count($fin);
+        //     }
+        
+        //     if ($filt > 0) {
+        //         usort($fin, function($a, $b) use ($sort_col, $sort_dir) {
+        //             $cmp = strcmp($a[$sort_col], $b[$sort_col]);
+        //             return ($sort_dir == 'asc') ? $cmp : -$cmp;
+        //         });
+        //         $fin = array_slice($fin, $start, $length);
+        //     } else {
+        //         $fin = array();
+        //     }
+        
+        //     $out = array(
+        //         "draw" => $draw,
+        //         "recordsTotal" => $total,
+        //         "recordsFiltered" => $filt,
+        //         "data" => $fin
+        //     );
+        //     return json_encode($out);
+        // }
     }
 
     public function paramTable(Request $request)
@@ -215,14 +277,15 @@ class FumaController extends Controller
 
     public function locusPlot(Request $request)
     {
-        $id = $request->input('id');
+        $jobID = $request->input('id');
         $prefix = $request->input('prefix');
         $type = $request->input('type');
         $rowI = $request->input('rowI');
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        // $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
 
-        $script = scripts_path('locusPlot.py');
-        $out = shell_exec("python $script $filedir $rowI $type");
+        $uuid = Str::uuid();
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-locus_plot /bin/sh -c 'python locusPlot.py job/ $rowI $type'";
+        $out = shell_exec($cmd);
         return $out;
     }
 
@@ -270,15 +333,24 @@ class FumaController extends Controller
         }
 
         return view('pages.annotPlot', [
-            'id' => $id, 'prefix' => $prefix, 'type' => $type, 'rowI' => $rowI,
-            'GWASplot' => $GWAS, 'CADDplot' => $CADD, 'RDBplot' => $RDB, 'eqtlplot' => $eqtl,
-            'ciplot' => $ci, 'Chr15' => $Chr15, 'Chr15cells' => $Chr15cells
+            'id' => $id,
+            'prefix' => $prefix,
+            'type' => $type,
+            'rowI' => $rowI,
+            'GWASplot' => $GWAS,
+            'CADDplot' => $CADD,
+            'RDBplot' => $RDB,
+            'eqtlplot' => $eqtl,
+            'ciplot' => $ci,
+            'Chr15' => $Chr15,
+            'Chr15cells' => $Chr15cells,
+            'page' => 'snp2gene/annotPlot'
         ]);
     }
 
     public function annotPlotGetData(Request $request)
     {
-        $id = $request->input("id");
+        $jobID = $request->input("id");
         $prefix = $request->input("prefix");
         $type = $request->input("type");
         $rowI = $request->input("rowI");
@@ -290,16 +362,20 @@ class FumaController extends Controller
         $Chr15 = $request->input("Chr15");
         $Chr15cells = $request->input("Chr15cells");
 
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        // $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
 
-        $script = scripts_path('annotPlot.py');
-        $data = shell_exec("python $script $filedir $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells");
+        $uuid = Str::uuid();
+        $ref_data_path_on_host = config('app.ref_data_on_host_path');
+
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-annot_plot /bin/sh -c 'python annotPlot.py job/ $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells'";
+
+        $data = shell_exec($cmd);
         return $data;
     }
 
     public function annotPlotGetGenes(Request $request)
     {
-        $id = $request->input("id");
+        $jobID = $request->input("id");
         $prefix = $request->input("prefix");
         $chrom = $request->input("chrom");
         $eqtlplot = $request->input("eqtlplot");
@@ -308,29 +384,30 @@ class FumaController extends Controller
         $xMax = $request->input("xMax");
         $eqtlgenes = $request->input("eqtlgenes");
 
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
+        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $jobID . '/';
         $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $ensembl = $params['ensembl'];
 
-        $script = scripts_path('annotPlot.R');
-        $data = shell_exec("Rscript $script $filedir $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl");
+        $uuid = Str::uuid();
+        $ref_data_path_on_host = config('app.ref_data_on_host_path');
+
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-annot_plot /bin/sh -c 'Rscript annotPlot.R job/ $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl'";
+
+        $data = shell_exec($cmd);
         $data = explode("\n", $data);
         $data = $data[count($data) - 1];
         return $data;
     }
 
-    public function legendText($file)
+    public function legendText(Request $request)
     {
-        $f = scripts_path('legends/' . $file);
-        if (file_exists($f)) {
-            $file = fopen($f, 'r');
-            $header = fgetcsv($file, 0, "\t");
-            $all_rows = array();
-            while ($row = fgetcsv($file, 0, "\t")) {
-                $all_rows[] = array_combine($header, $row);
-            }
-            return json_encode($all_rows);
-        }
+        $fileNames = $request->input('fileNames');
+        $filedir = config('app.jobdir') . '/legends/';
+
+        $result = Helper::getFilesContents($filedir, $fileNames);
+
+        // Convert the array to a JSON string.
+        return response()->json($result);
     }
 
     public function circos_chr(Request $request)

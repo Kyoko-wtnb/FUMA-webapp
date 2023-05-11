@@ -544,7 +544,7 @@ function ciMapCircosPlot(data) {
 	// 	sortedJson[key] = data[key];
 	// }
 	// data = sortedJson;
-	
+
 	var images = '<div class="row">';
 
 	for (var key in data) {
@@ -592,8 +592,10 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 			data = JSON.parse(data);
 			var table = '<table class="table table-condensed table-bordered" style="width: 90%; text-align: right;"><tbody>'
 			data.forEach(function (d) {
-				if (d['chr'] != "created_at") { d['bp'] = d['bp'].replace(/:/g, ', '); }
-				table += '<tr><td>' + d['chr'] + '</td><td>' + d['bp'] + '</td></tr>'
+				if (d[0] != "created_at") {
+					d[1] = d[1].replace(/:/g, ', ');
+				}
+				table += '<tr><td>' + d[0] + '</td><td>' + d[1] + '</td></tr>'
 			})
 			table += '</tbody></table>'
 			$('#paramTable').html(table);
@@ -611,8 +613,22 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 			$('#sumTable').append(data);
 		},
 		complete: function () {
-			PlotSNPAnnot(id);
-			PlotLocuSum(id);
+			$.ajax({
+				url: subdir + '/' + page + '/getFilesContents',
+				type: 'POST',
+				data: {
+					jobID: id,
+					fileNames: ['annov.stats.txt', 'interval_sum.txt']
+				},
+				error: function () {
+					alert("JobQuery get file contents error");
+					return;
+				},
+				success: function (data) {
+					PlotSNPAnnot(data['annov.stats.txt']);
+					PlotLocuSum(data['interval_sum.txt']);
+				}
+			});
 		}
 	});
 
@@ -1000,512 +1016,503 @@ function showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, seco
 
 		$('#selectedLeadSNP').html(out);
 	});
+}
 
-	function locusPlot(data, type, chr) {
-		// create plot space
-		var colorScale = d3.scale.linear().domain([0.0, 0.5, 1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
-		var margin = { top: 50, right: 50, bottom: 60, left: 50 },
-			width = 700 - margin.right - margin.left,
-			height = 300 - margin.top - margin.bottom;
-		// set range
-		var x = d3.scale.linear().range([0, width]);
-		var y = d3.scale.linear().range([height, 0]);
+function locusPlot(data, type, chr) {
+	// create plot space
+	var colorScale = d3.scale.linear().domain([0.0, 0.5, 1.0]).range(["#2c7bb6", "#ffffbf", "#d7191c"]).interpolate(d3.interpolateHcl);
+	var margin = { top: 50, right: 50, bottom: 60, left: 50 },
+		width = 700 - margin.right - margin.left,
+		height = 300 - margin.top - margin.bottom;
+	// set range
+	var x = d3.scale.linear().range([0, width]);
+	var y = d3.scale.linear().range([height, 0]);
 
-		var svg = d3.select("#locusPlot").append("svg")
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-			.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var svg = d3.select("#locusPlot").append("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		var legData = [];
-		for (i = 10; i > 0; i--) {
-			legData.push(i * 0.1);
-		}
-		// legend
-		var legendGwas = svg.selectAll(".legendGWAS")
-			.data(legData)
-			.enter()
-			.append("g").attr("class", "legend")
-		legendGwas.append("rect")
-			.attr("x", width + 10)
-			.attr("y", function (d) { return 10 + (10 - d * 10) * 10 })
-			.attr("width", 20)
-			.attr("height", 10)
-			.style("fill", function (d) { return colorScale(d) });
-		legendGwas.append("text")
-			.attr("text-anchor", "start")
-			.attr("x", width + 32)
-			.attr("y", function (d) { return 20 + (10 - d * 10) * 10 })
-			.text(function (d) { return Math.round(d * 100) / 100 })
-			.style("font-size", "10px");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (width + 20) + ",5)")
-			.text("r2").style("font-size", "10px");
+	var legData = [];
+	for (i = 10; i > 0; i--) {
+		legData.push(i * 0.1);
+	}
+	// legend
+	var legendGwas = svg.selectAll(".legendGWAS")
+		.data(legData)
+		.enter()
+		.append("g").attr("class", "legend")
+	legendGwas.append("rect")
+		.attr("x", width + 10)
+		.attr("y", function (d) { return 10 + (10 - d * 10) * 10 })
+		.attr("width", 20)
+		.attr("height", 10)
+		.style("fill", function (d) { return colorScale(d) });
+	legendGwas.append("text")
+		.attr("text-anchor", "start")
+		.attr("x", width + 32)
+		.attr("y", function (d) { return 20 + (10 - d * 10) * 10 })
+		.text(function (d) { return Math.round(d * 100) / 100 })
+		.style("font-size", "10px");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (width + 20) + ",5)")
+		.text("r2").style("font-size", "10px");
 
-		svg.append("circle")
-			.attr("cx", 145).attr("cy", height + 45).attr("r", 4.5)
-			.style("fill", "#4d0099").style("stroke", "black").style("strole-width", "2");
-		svg.append("text").attr("text-anchor", "top")
-			.attr("x", 150).attr("y", height + 50)
-			.text("Top lead SNP");
-		svg.append("circle")
-			.attr("cx", 250).attr("cy", height + 45).attr("r", 4)
-			.style("fill", "#9933ff").style("stroke", "black").style("strole-width", "2");
-		svg.append("text").attr("text-anchor", "top")
-			.attr("x", 255).attr("y", height + 50)
-			.text("Lead SNPs");
-		svg.append("circle")
-			.attr("cx", 340).attr("cy", height + 45).attr("r", 3.5)
-			.style("fill", "red").style("stroke", "black").style("strole-width", "2");
-		svg.append("text").attr("text-anchor", "top")
-			.attr("x", 345).attr("y", height + 50)
-			.text("Independent significant SNPs");
+	svg.append("circle")
+		.attr("cx", 145).attr("cy", height + 45).attr("r", 4.5)
+		.style("fill", "#4d0099").style("stroke", "black").style("strole-width", "2");
+	svg.append("text").attr("text-anchor", "top")
+		.attr("x", 150).attr("y", height + 50)
+		.text("Top lead SNP");
+	svg.append("circle")
+		.attr("cx", 250).attr("cy", height + 45).attr("r", 4)
+		.style("fill", "#9933ff").style("stroke", "black").style("strole-width", "2");
+	svg.append("text").attr("text-anchor", "top")
+		.attr("x", 255).attr("y", height + 50)
+		.text("Lead SNPs");
+	svg.append("circle")
+		.attr("cx", 340).attr("cy", height + 45).attr("r", 3.5)
+		.style("fill", "red").style("stroke", "black").style("strole-width", "2");
+	svg.append("text").attr("text-anchor", "top")
+		.attr("x", 345).attr("y", height + 50)
+		.text("Independent significant SNPs");
 
-		data.snps.forEach(function (d) {
-			d.pos = +d.pos;
-			d.gwasP = +d.gwasP;
-			d.r2 = +d.r2;
-			d.ld = +d.ld;
+	data.snps.forEach(function (d) {
+		d.pos = +d.pos;
+		d.gwasP = +d.gwasP;
+		d.r2 = +d.r2;
+		d.ld = +d.ld;
+	});
+
+	data.allsnps.forEach(function (d) {
+		d[0] = +d[0]; //pos
+		d[1] = +d[1]; //P
+	});
+
+	var side = (d3.max(data.allsnps, function (d) { return d[0] }) - d3.min(data.allsnps, function (d) { return d[0] })) * 0.05;
+	x.domain([d3.min(data.allsnps, function (d) { return d[0] }) - side, d3.max(data.allsnps, function (d) { return d[0] }) + side]);
+	y.domain([0, Math.max(d3.max(data.snps, function (d) { return -Math.log10(d.gwasP) }), d3.max(data.allsnps, function (d) { return -Math.log10(d[1]) }))]);
+	var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
+	var yAxis = d3.svg.axis().scale(y).orient("left");
+	// tip
+	var tip = d3.tip().attr("class", "d3-tip")
+		.offset([-10, 0])
+		.html(function (d) {
+			var out = "rsID: " + d.rsID + "<br/>BP: " + d.pos + "<br/>P: " + d.gwasP + "<br/>MAF: " + d.MAF
+				+ "<br/>r2: " + d.r2 + "<br/>Ind. Sig. SNP: " + d.IndSigSNP;
+			if (orcol != "NA") { out += "<br/>OR: " + d.or; }
+			if (becol != "NA") { out += "<br/>Beta: " + d.beta; }
+			if (secol != "NA") { out += "<br/>SE: " + d.se; }
+			return out;
 		});
+	svg.call(tip);
+	// zoom
+	var zoom = d3.behavior.zoom().x(x).scaleExtent([1, 10]).on("zoom", zoomed);
+	svg.call(zoom);
+	// add rect
+	svg.append("rect").attr("width", width).attr("height", height)
+		.style("fill", "transparent")
+		.style("shape-rendering", "crispEdges");
 
-		data.allsnps.forEach(function (d) {
-			d['chr'] = +d['chr']; //pos
-			d['bp'] = +d['bp']; //P
-		});
+	// dot plot for gwas tagged SNPs
+	// SNPs not in LD
+	svg.selectAll("dot").data(data.allsnps).enter()
+		.append("circle")
+		.attr("class", "nonLD")
+		.attr("r", 3).attr("cx", function (d) { return x(d[0]); })
+		.attr("cy", function (d) { return y(-Math.log10(d[1])); })
+		.style('fill', "grey");
+	// SNPs in LD
+	svg.selectAll("dot").data(data.snps.filter(function (d) { if (d.gwasP != -1 && d.ld == 1) { return d; } })).enter()
+		.append("circle")
+		.attr("class", "dot")
+		.attr("r", 3).attr("cx", function (d) { return x(d.pos); })
+		.attr("cy", function (d) { return y(-Math.log10(d.gwasP)); })
+		.style('fill', function (d) { return colorScale(d.r2); })
+		.on("mouseover", tip.show)
+		.on("mouseout", tip.hide);
+	// add rect for 1KG SNPs
+	svg.selectAll("rect.KGSNPs").data(data.snps.filter(function (d) { if (d.gwasP == -1) { return d; } })).enter()
+		.append("rect")
+		.attr("class", "KGSNPs")
+		.attr("x", function (d) { return x(d.pos) })
+		.attr("y", -20)
+		.attr("height", "10")
+		.attr("width", "3")
+		.style('fill', function (d) { if (d.ld == 0) { return "grey"; } else { return colorScale(d.r2); } })
+		.on("mouseover", tip.show)
+		.on("mouseout", tip.hide);
 
-		var side = (d3.max(data.allsnps, function (d) { return d['chr'] }) - d3.min(data.allsnps, function (d) { return d['chr'] })) * 0.05;
-		x.domain([d3.min(data.allsnps, function (d) { return d['chr'] }) - side, d3.max(data.allsnps, function (d) { return d['chr'] }) + side]);
-		y.domain([0, Math.max(d3.max(data.snps, function (d) { return -Math.log10(d.gwasP) }), d3.max(data.allsnps, function (d) { return -Math.log10(d['bp']) }))]);
-		var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
-		var yAxis = d3.svg.axis().scale(y).orient("left");
-		// tip
-		var tip = d3.tip().attr("class", "d3-tip")
-			.offset([-10, 0])
-			.html(function (d) {
-				var out = "rsID: " + d.rsID + "<br/>BP: " + d.pos + "<br/>P: " + d.gwasP + "<br/>MAF: " + d.MAF
-					+ "<br/>r2: " + d.r2 + "<br/>Ind. Sig. SNP: " + d.IndSigSNP;
-				if (orcol != "NA") { out += "<br/>OR: " + d.or; }
-				if (becol != "NA") { out += "<br/>Beta: " + d.beta; }
-				if (secol != "NA") { out += "<br/>SE: " + d.se; }
-				return out;
-			});
-		svg.call(tip);
-		// zoom
-		var zoom = d3.behavior.zoom().x(x).scaleExtent([1, 10]).on("zoom", zoomed);
-		svg.call(zoom);
-		// add rect
-		svg.append("rect").attr("width", width).attr("height", height)
-			.style("fill", "transparent")
-			.style("shape-rendering", "crispEdges");
+	svg.selectAll("dot.leadSNPs").data(data.snps.filter(function (d) { if (d.ld > 1) { return d; } })).enter()
+		.append("circle")
+		.attr("class", "leadSNPs")
+		.attr("cx", function (d) { return x(d.pos) })
+		.attr("cy", function (d) { return y(-Math.log10(d.gwasP)); })
+		.attr("r", function (d) {
+			if (d.ld == 2) { return 3.5; }
+			else if (d.ld == 3) { return 4; }
+			else if (d.ld == 4) { return 4.5; }
+		})
+		.style("fill", function (d) {
+			if (d.ld == 2) { return colorScale(d.r2); }
+			else if (d.ld == 3) { return "#9933ff" }
+			else if (d.ld == 4) { return "#4d0099" }
+		})
+		.style("stroke", "black").style("stroke-width", "2")
+		.on("mouseover", tip.show)
+		.on("mouseout", tip.hide);
+	// axis labels
+	svg.append("g").attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")").call(xAxis);
+	svg.append("g").attr("class", "y axis").call(yAxis);
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (-margin.left / 2 - 5) + "," + (height / 2) + ")rotate(-90)")
+		.text("-log10 P-value");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (width / 2) + "," + (height + 32) + ")")
+		.text("Chromosome " + chr);
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (-margin.left / 2) + ", -15)")
+		.style("font-size", "8px")
+		.text("1000G SNPs");
 
-		// dot plot for gwas tagged SNPs
-		// SNPs not in LD
-		svg.selectAll("dot").data(data.allsnps).enter()
-			.append("circle")
-			.attr("class", "nonLD")
-			.attr("r", 3).attr("cx", function (d) { return x(d['chr']); })
-			.attr("cy", function (d) { return y(-Math.log10(d['bp'])); })
-			.style('fill', "grey");
-		// SNPs in LD
-		svg.selectAll("dot").data(data.snps.filter(function (d) { if (d.gwasP != -1 && d.ld == 1) { return d; } })).enter()
-			.append("circle")
-			.attr("class", "dot")
-			.attr("r", 3).attr("cx", function (d) { return x(d.pos); })
+	function zoomed() {
+		svg.select(".x.axis").call(xAxis);
+		svg.selectAll(".nonLD").attr("cx", function (d) { return x(d[0]); })
+			.attr("cy", function (d) { return y(-Math.log10(d[1])); })
+			.style("fill", function (d) { if (x(d[0]) < 0 || x(d[0]) > width) { return "transparent"; } else { return "grey"; } });
+		svg.selectAll(".dot").attr("cx", function (d) { return x(d.pos); })
 			.attr("cy", function (d) { return y(-Math.log10(d.gwasP)); })
-			.style('fill', function (d) { return colorScale(d.r2); })
-			.on("mouseover", tip.show)
-			.on("mouseout", tip.hide);
-		// add rect for 1KG SNPs
-		svg.selectAll("rect.KGSNPs").data(data.snps.filter(function (d) { if (d.gwasP == -1) { return d; } })).enter()
-			.append("rect")
-			.attr("class", "KGSNPs")
+			.style("fill", function (d) { if (x(d.pos) < 0 || x(d.pos) > width) { return "transparent"; } else if (d.ld == 0) { return "grey"; } else { return colorScale(d.r2); } });
+		svg.selectAll(".KGSNPs")
 			.attr("x", function (d) { return x(d.pos) })
 			.attr("y", -20)
-			.attr("height", "10")
-			.attr("width", "3")
-			.style('fill', function (d) { if (d.ld == 0) { return "grey"; } else { return colorScale(d.r2); } })
-			.on("mouseover", tip.show)
-			.on("mouseout", tip.hide);
-
-		svg.selectAll("dot.leadSNPs").data(data.snps.filter(function (d) { if (d.ld > 1) { return d; } })).enter()
-			.append("circle")
-			.attr("class", "leadSNPs")
-			.attr("cx", function (d) { return x(d.pos) })
+			.style('fill', function (d) { if (x(d.pos) < 0 || x(d.pos) > width) { return "transparent"; } else if (d.ld == 0) { return "grey"; } else { return colorScale(d.r2); } });
+		svg.selectAll(".leadSNPs")
+			.attr("cx", function (d) { return x(d.pos); })
 			.attr("cy", function (d) { return y(-Math.log10(d.gwasP)); })
-			.attr("r", function (d) {
-				if (d.ld == 2) { return 3.5; }
-				else if (d.ld == 3) { return 4; }
-				else if (d.ld == 4) { return 4.5; }
-			})
 			.style("fill", function (d) {
-				if (d.ld == 2) { return colorScale(d.r2); }
+				if (x(d.pos) < 0 || x(d.pos) > width) { return "transparent"; }
+				else if (d.ld == 2) { return colorScale(d.r2); }
 				else if (d.ld == 3) { return "#9933ff" }
 				else if (d.ld == 4) { return "#4d0099" }
 			})
-			.style("stroke", "black").style("stroke-width", "2")
-			.on("mouseover", tip.show)
-			.on("mouseout", tip.hide);
-		// axis labels
-		svg.append("g").attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")").call(xAxis);
-		svg.append("g").attr("class", "y axis").call(yAxis);
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (-margin.left / 2 - 5) + "," + (height / 2) + ")rotate(-90)")
-			.text("-log10 P-value");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (width / 2) + "," + (height + 32) + ")")
-			.text("Chromosome " + chr);
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (-margin.left / 2) + ", -15)")
-			.style("font-size", "8px")
-			.text("1000G SNPs");
+			.style("stroke", function (d) { if (x(d.pos) < 0 || x(d.pos) > width) { return "transparent"; } else { return "black"; } });
+	}
 
-		function zoomed() {
-			svg.select(".x.axis").call(xAxis);
-			svg.selectAll(".nonLD").attr("cx", function (d) { return x(d['chr']); })
-				.attr("cy", function (d) { return y(-Math.log10(d['bp'])); })
-				.style("fill", function (d) { if (x(d['chr']) < 0 || x(d['chr']) > width) { return "transparent"; } else { return "grey"; } });
-			svg.selectAll(".dot").attr("cx", function (d) { return x(d.pos); })
-				.attr("cy", function (d) { return y(-Math.log10(d.gwasP)); })
-				.style("fill", function (d) { if (x(d.pos) < 0 || x(d.pos) > width) { return "transparent"; } else if (d.ld == 0) { return "grey"; } else { return colorScale(d.r2); } });
-			svg.selectAll(".KGSNPs")
-				.attr("x", function (d) { return x(d.pos) })
-				.attr("y", -20)
-				.style('fill', function (d) { if (x(d.pos) < 0 || x(d.pos) > width) { return "transparent"; } else if (d.ld == 0) { return "grey"; } else { return colorScale(d.r2); } });
-			svg.selectAll(".leadSNPs")
-				.attr("cx", function (d) { return x(d.pos); })
-				.attr("cy", function (d) { return y(-Math.log10(d.gwasP)); })
-				.style("fill", function (d) {
-					if (x(d.pos) < 0 || x(d.pos) > width) { return "transparent"; }
-					else if (d.ld == 2) { return colorScale(d.r2); }
-					else if (d.ld == 3) { return "#9933ff" }
-					else if (d.ld == 4) { return "#4d0099" }
-				})
-				.style("stroke", function (d) { if (x(d.pos) < 0 || x(d.pos) > width) { return "transparent"; } else { return "black"; } });
-		}
-
-		d3.select('#plotClear').on('click', reset);
-		function reset() {
-			d3.transition().duration(750).tween("zoom", function () {
-				var ix = d3.interpolate(x.domain(), [d3.min(data.allsnps, function (d) { return d['chr'] }) - side, d3.max(data.allsnps, function (d) { return d['chr'] }) + side]);
-				return function (t) {
-					zoom.x(x.domain(ix(t)));
-					zoomed();
-				}
-			});
-		}
+	d3.select('#plotClear').on('click', reset);
+	function reset() {
+		d3.transition().duration(750).tween("zoom", function () {
+			var ix = d3.interpolate(x.domain(), [d3.min(data.allsnps, function (d) { return d[0] }) - side, d3.max(data.allsnps, function (d) { return d[0] }) + side]);
+			return function (t) {
+				zoom.x(x.domain(ix(t)));
+				zoomed();
+			}
+		});
 	}
 }
 
-function PlotSNPAnnot(id) {
-	var file = "annov.stats.txt";
-
+function PlotSNPAnnot(data) {
 	var margin = { top: 20, right: 80, bottom: 90, left: 40 },
 		width = 500 - margin.right - margin.left,
 		height = 250 - margin.top - margin.bottom;
 
-	d3.json("d3text/" + prefix + "/" + id + "/" + file, function (data) {
-		data.forEach(function (d) {
-			d.prop = + d.prop;
-			d.enrichment = + d.enrichment;
-			d['fisher.P'] = + d['fisher.P']; // fisher.P
-		});
-		data.sort(function (a, b) {
-			return b.prop - a.prop;
-		})
-		var max_e = d3.max(data, function (d) { if (d.enrichment > 0) { return Math.log2(d.enrichment) } });
-		max_e = Math.ceil(max_e * 100) / 100
-		var min_e = d3.min(data, function (d) { if (d.enrichment > 0) { return Math.log2(d.enrichment) } });
-		min_e = Math.ceil(min_e * 100) / 100
-		var colorScale = d3.scale.linear().domain([min_e, 0, max_e]).range(["#0000ff", "#ffffe6", "#ff0000"]);
-		var x_element = data.map(function (d) { return d.annot; });
-		var x = d3.scale.ordinal().domain(x_element).rangeRoundBands([0, width], 0.1);
-		var y = d3.scale.linear().range([height, 0]);
-		var xAxis = d3.svg.axis().scale(x).orient("bottom");
-		var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
-		var svg = d3.select('#snpAnnotPlot').append('svg')
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-			.append('g').attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-		var tip = d3.tip()
-			.attr('class', 'd3-tip')
-			.offset([-5, 0])
-			.html(function (d) {
-				return 'count: ' + d.count
-					+ '<br/>proportion: ' + Number(d.prop).toPrecision(3)
-					+ '<br/>enrichment: ' + Number(d.enrichment).toPrecision(3) + '<br/>P: ' + Number(Number(d['fisher.P']).toPrecision(3)).toExponential(2);
-			})
-		svg.call(tip);
-		y.domain([0, d3.max(data, function (d) { return d.prop }) * 1.05]);
-		// legend
-		var t = [];
-		for (var i = 0; i < 15; i++) { t.push(i); }
-		svg.append('text')
-			.attr("x", width + 10)
-			.attr("y", 10)
-			.text("-log2(E)")
-			.style("font-size", "10px");
-		svg.selectAll(".legend").data(t).enter().append("g")
-			.append("rect")
-			.attr("class", 'legendRect')
-			.attr("x", width + 10)
-			.attr("y", function (d) { return (d - 1) * 5 + 18 })
-			.attr("width", 20)
-			.attr("height", 5)
-			.attr("fill", function (d) { return colorScale(max_e - d * ((max_e - min_e) / (t.length - 1))) });
-		svg.selectAll("text.legend").data([0, 14]).enter().append("g")
-			.append("text")
-			.attr("text-anchor", "start")
-			.attr("class", "legenedText")
-			.attr("x", width + 32)
-			.attr("y", function (d) { return (d - 1) * 5 + 25 })
-			.text(function (d) { return Math.round((max_e - d * ((max_e - min_e) / (t.length - 1))) * 100) / 100 })
-			.style("font-size", "10px");
-		svg.append("text")
-			.attr("x", width + 10)
-			.attr("y", 105)
-			.text("* p<0.05")
-			.style("font-size", "10px")
-		svg.append("text")
-			.attr("x", width + 10)
-			.attr("y", 120)
-			.text("** p<0.05/" + x_element.length)
-			.style("font-size", "10px")
-
-		// background bar for small proportion
-		svg.selectAll('.backbar').data(data).enter().append('rect').attr("class", "backbar")
-			.attr("x", function (d) { return x(d.annot); })
-			.attr("width", x.rangeBand())
-			.attr("y", y(d3.max(data, function (d) { return d.prop }) / 2))
-			.attr("height", height - y(d3.max(data, function (d) { return d.prop }) / 2))
-			.attr("fill", "transparent")
-			.attr("opacity", 0)
-			.on("mouseover", tip.show)
-			.on("mouseout", tip.hide);
-
-		// plot main bar
-		svg.selectAll('.bar').data(data).enter().append('rect').attr("class", "bar")
-			.attr("x", function (d) { return x(d.annot); })
-			.attr("width", x.rangeBand())
-			.attr("y", function (d) { return y(d.prop); })
-			.attr("height", function (d) { return height - y(d.prop); })
-			.attr("fill", function (d) { return colorScale(Math.log2(d.enrichment)) })
-			.on("mouseover", tip.show)
-			.on("mouseout", tip.hide);
-
-		// significance
-		svg.selectAll('text.p').data(data.filter(function (d) { if (d['fisher.P'] < 0.05) { return d } })).enter()
-			.append('text')
-			.attr("x", function (d) { return x(d.annot) + (width * 0.5 / x_element.length) * 0.7; })
-			.attr("y", function (d) { return y(d.prop) * 1.02; })
-			.attr("text-anchor", "start")
-			.text(function (d) {
-				if (d['fisher.p'] < 0.05 / x_element.length) { return "**" }
-				else { return "*" }
-			});
-
-		// axis
-		svg.append('g').attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis).selectAll('text')
-			.attr("transform", function (d) { return "rotate(-65)"; })
-			.attr("dy", "-.45em")
-			.attr("dx", "-.65em")
-			.style("text-anchor", "end");
-		svg.append('g').attr("class", "y axis")
-			.call(yAxis)
-			.append("text")
-			.attr("transform", "rotate(-90)")
-			.attr("dy", ".71em")
-			.style("text-anchor", "end");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(-28," + (height / 2) + ")rotate(-90)")
-			.text("Proportion");
-		svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
-		svg.selectAll('text').style('font-family', 'sans-serif');
-		svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
-
+	data.forEach(function (d) {
+		d.prop = + d.prop;
+		d.enrichment = + d.enrichment;
+		d['fisher.P'] = + d['fisher.P']; // fisher.P
 	});
+	data.sort(function (a, b) {
+		return b.prop - a.prop;
+	})
+	var max_e = d3.max(data, function (d) { if (d.enrichment > 0) { return Math.log2(d.enrichment) } });
+	max_e = Math.ceil(max_e * 100) / 100
+	var min_e = d3.min(data, function (d) { if (d.enrichment > 0) { return Math.log2(d.enrichment) } });
+	min_e = Math.ceil(min_e * 100) / 100
+	var colorScale = d3.scale.linear().domain([min_e, 0, max_e]).range(["#0000ff", "#ffffe6", "#ff0000"]);
+	var x_element = data.map(function (d) { return d.annot; });
+	var x = d3.scale.ordinal().domain(x_element).rangeRoundBands([0, width], 0.1);
+	var y = d3.scale.linear().range([height, 0]);
+	var xAxis = d3.svg.axis().scale(x).orient("bottom");
+	var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
+	var svg = d3.select('#snpAnnotPlot').append('svg')
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append('g').attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var tip = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([-5, 0])
+		.html(function (d) {
+			return 'count: ' + d.count
+				+ '<br/>proportion: ' + Number(d.prop).toPrecision(3)
+				+ '<br/>enrichment: ' + Number(d.enrichment).toPrecision(3) + '<br/>P: ' + Number(Number(d['fisher.P']).toPrecision(3)).toExponential(2);
+		})
+	svg.call(tip);
+	y.domain([0, d3.max(data, function (d) { return d.prop }) * 1.05]);
+	// legend
+	var t = [];
+	for (var i = 0; i < 15; i++) { t.push(i); }
+	svg.append('text')
+		.attr("x", width + 10)
+		.attr("y", 10)
+		.text("-log2(E)")
+		.style("font-size", "10px");
+	svg.selectAll(".legend").data(t).enter().append("g")
+		.append("rect")
+		.attr("class", 'legendRect')
+		.attr("x", width + 10)
+		.attr("y", function (d) { return (d - 1) * 5 + 18 })
+		.attr("width", 20)
+		.attr("height", 5)
+		.attr("fill", function (d) { return colorScale(max_e - d * ((max_e - min_e) / (t.length - 1))) });
+	svg.selectAll("text.legend").data([0, 14]).enter().append("g")
+		.append("text")
+		.attr("text-anchor", "start")
+		.attr("class", "legenedText")
+		.attr("x", width + 32)
+		.attr("y", function (d) { return (d - 1) * 5 + 25 })
+		.text(function (d) { return Math.round((max_e - d * ((max_e - min_e) / (t.length - 1))) * 100) / 100 })
+		.style("font-size", "10px");
+	svg.append("text")
+		.attr("x", width + 10)
+		.attr("y", 105)
+		.text("* p<0.05")
+		.style("font-size", "10px")
+	svg.append("text")
+		.attr("x", width + 10)
+		.attr("y", 120)
+		.text("** p<0.05/" + x_element.length)
+		.style("font-size", "10px")
+
+	// background bar for small proportion
+	svg.selectAll('.backbar').data(data).enter().append('rect').attr("class", "backbar")
+		.attr("x", function (d) { return x(d.annot); })
+		.attr("width", x.rangeBand())
+		.attr("y", y(d3.max(data, function (d) { return d.prop }) / 2))
+		.attr("height", height - y(d3.max(data, function (d) { return d.prop }) / 2))
+		.attr("fill", "transparent")
+		.attr("opacity", 0)
+		.on("mouseover", tip.show)
+		.on("mouseout", tip.hide);
+
+	// plot main bar
+	svg.selectAll('.bar').data(data).enter().append('rect').attr("class", "bar")
+		.attr("x", function (d) { return x(d.annot); })
+		.attr("width", x.rangeBand())
+		.attr("y", function (d) { return y(d.prop); })
+		.attr("height", function (d) { return height - y(d.prop); })
+		.attr("fill", function (d) { return colorScale(Math.log2(d.enrichment)) })
+		.on("mouseover", tip.show)
+		.on("mouseout", tip.hide);
+
+	// significance
+	svg.selectAll('text.p').data(data.filter(function (d) { if (d['fisher.P'] < 0.05) { return d } })).enter()
+		.append('text')
+		.attr("x", function (d) { return x(d.annot) + (width * 0.5 / x_element.length) * 0.7; })
+		.attr("y", function (d) { return y(d.prop) * 1.02; })
+		.attr("text-anchor", "start")
+		.text(function (d) {
+			if (d['fisher.p'] < 0.05 / x_element.length) { return "**" }
+			else { return "*" }
+		});
+
+	// axis
+	svg.append('g').attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis).selectAll('text')
+		.attr("transform", function (d) { return "rotate(-65)"; })
+		.attr("dy", "-.45em")
+		.attr("dx", "-.65em")
+		.style("text-anchor", "end");
+	svg.append('g').attr("class", "y axis")
+		.call(yAxis)
+		.append("text")
+		.attr("transform", "rotate(-90)")
+		.attr("dy", ".71em")
+		.style("text-anchor", "end");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(-28," + (height / 2) + ")rotate(-90)")
+		.text("Proportion");
+	svg.selectAll('path').style('fill', 'none').style('stroke', 'grey');
+	svg.selectAll('text').style('font-family', 'sans-serif');
+	svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
 }
 
-function PlotLocuSum(id) {
-	var file = "interval_sum.txt";
-
-	d3.json("d3text/" + prefix + "/" + id + "/" + file, function (data) {
-		data.forEach(function (d) {
-			d.nSNPs = +d.nSNPs;
-			d.size = +(d.size / 1000);
-			d.nGenes = +d.nGenes;
-			d.nWithinGene = +d.nWithinGene;
-		});
-		var y_element = data.map(function (d) { return d.label; });
-		var margin = { top: 60, right: 30, bottom: 70, left: 180 },
-			width = 600,
-			height = 15 * y_element.length;
-		var y = d3.scale.ordinal().domain(y_element).rangeBands([0, height], 0.1);
-		var yAxis = d3.svg.axis().scale(y).orient("left");
-		var svg = d3.select('#lociPlot').append('svg')
-			.attr("class", 'plotSVG')
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
-			.append('g').attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-		var tip_size = d3.tip()
-			.attr('class', 'd3-tip')
-			.offset([0, 0])
-			.html(function (d) { return d.size + " kb"; });
-		svg.call(tip_size);
-		var tip_nSNPs = d3.tip()
-			.attr('class', 'd3-tip')
-			.offset([0, 0])
-			.html(function (d) { return d.nSNPs; });
-		svg.call(tip_nSNPs);
-		var tip_nGenes = d3.tip()
-			.attr('class', 'd3-tip')
-			.offset([0, 0])
-			.html(function (d) { return d.nGenes; });
-		svg.call(tip_nGenes);
-		var tip_nWithinGene = d3.tip()
-			.attr('class', 'd3-tip')
-			.offset([0, 0])
-			.html(function (d) { return d.nWithinGene; });
-		svg.call(tip_nWithinGene);
-		var currentWidth = 0;
-		var eachWidth = 140;
-		// plot nSNPs
-		var x = d3.scale.linear().range([currentWidth, currentWidth + eachWidth]);
-		var xAxis = d3.svg.axis().scale(x).orient("bottom");
-		x.domain([0, d3.max(data, function (d) { return d.size })]);
-		svg.selectAll('rect.size').data(data).enter().append("rect").attr("class", "bar")
-			.attr("x", x(0))
-			.attr("width", function (d) { return x(d.size) })
-			.attr("y", function (d) { return y(d.label) })
-			.attr("height", y.rangeBand())
-			.attr("fill", "lightgreen")
-			.on("mouseover", tip_size.show)
-			.on("mouseout", tip_size.hide);
-		svg.append('g').attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis).selectAll("text")
-			.style("text-anchor", "end")
-			.attr("transform", function (d) { return "translate(-12,3)rotate(-65)"; });
-		svg.append('g').attr("class", "y axis")
-			.call(yAxis)
-			.append("text").attr("transform", "rotate(-90)")
-			.attr("dy", ".71em")
-			.style("text-anchor", "end");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(-50,-5)")
-			.text("Genomic loci");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-5) + ")")
-			.style("text-anchor", "middle")
-			.text("Size (kb)");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 20) + ")")
-			.style("text-anchor", "middle")
-			.text("Size (kb)");
-		currentWidth += eachWidth + 10;
-		// plot size
-		x = d3.scale.linear().range([currentWidth, currentWidth + eachWidth]);
-		xAxis = d3.svg.axis().scale(x).orient("bottom");
-		x.domain([0, d3.max(data, function (d) { return d.nSNPs; })]);
-		svg.selectAll('rect.size').data(data).enter().append("rect").attr("class", "bar")
-			.attr("x", x(0))
-			.attr("width", function (d) { return x(d.nSNPs) - currentWidth })
-			.attr("y", function (d) { return y(d.label) })
-			.attr("height", y.rangeBand())
-			.attr("fill", "skyblue")
-			.on("mouseover", tip_nSNPs.show)
-			.on("mouseout", tip_nSNPs.hide);
-		svg.append('g').attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis).selectAll("text")
-			.style("text-anchor", "end")
-			.attr("transform", function (d) { return "translate(-12,3)rotate(-65)"; });
-		// .attr("dx","-.65em").attr("dy", "-.2em");
-		svg.append('g').attr("class", "y axis")
-			.attr("transform", "translate(" + currentWidth + ",0)")
-			.call(yAxis).selectAll("text").remove();
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-5) + ")")
-			.style("text-anchor", "middle")
-			.text("#SNPs");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 20) + ")")
-			.style("text-anchor", "middle")
-			.text("#SNPs");
-		currentWidth += eachWidth + 10;
-
-		// plot nGene
-		x = d3.scale.linear().range([currentWidth, currentWidth + eachWidth]);
-		xAxis = d3.svg.axis().scale(x).orient("bottom");
-		x.domain([0, d3.max(data, function (d) { return d.nGenes; })]);
-		svg.selectAll('rect.size').data(data).enter().append("rect").attr("class", "bar")
-			.attr("x", x(0))
-			.attr("width", function (d) { return x(d.nGenes) - currentWidth })
-			.attr("y", function (d) { return y(d.label) })
-			.attr("height", y.rangeBand())
-			.attr("fill", "orange")
-			.on("mouseover", tip_nGenes.show)
-			.on("mouseout", tip_nGenes.hide);
-		svg.append('g').attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis).selectAll("text")
-			.style("text-anchor", "end")
-			.attr("transform", function (d) { return "translate(-12,3)rotate(-65)"; });
-		svg.append('g').attr("class", "y axis")
-			.attr("transform", "translate(" + currentWidth + ",0)")
-			.call(yAxis).selectAll("text").remove();
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-5) + ")")
-			.style("text-anchor", "middle")
-			.text("#mapped genes");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 20) + ")")
-			.style("text-anchor", "middle")
-			.text("#mapped genes");
-		currentWidth += eachWidth + 10;
-
-		// plot nWithinGene
-		x = d3.scale.linear().range([currentWidth, currentWidth + eachWidth]);
-		xAxis = d3.svg.axis().scale(x).orient("bottom");
-		x.domain([0, d3.max(data, function (d) { return d.nWithinGene; })]);
-		svg.selectAll('rect.size').data(data).enter().append("rect").attr("class", "bar")
-			.attr("x", x(0))
-			.attr("width", function (d) { return x(d.nWithinGene) - currentWidth })
-			.attr("y", function (d) { return y(d.label) })
-			.attr("height", y.rangeBand())
-			.attr("fill", "pink")
-			.on("mouseover", tip_nWithinGene.show)
-			.on("mouseout", tip_nWithinGene.hide);
-		svg.append('g').attr("class", "x axis")
-			.attr("transform", "translate(0," + height + ")")
-			.call(xAxis).selectAll("text")
-			.style("text-anchor", "end")
-			.attr("transform", function (d) { return "translate(-12,3)rotate(-65)"; });
-		svg.append('g').attr("class", "y axis")
-			.attr("transform", "translate(" + currentWidth + ",0)")
-			.call(yAxis).selectAll("text").remove();
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-20) + ")")
-			.style("text-anchor", "middle")
-			.text("#genes physically");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-5) + ")")
-			.style("text-anchor", "middle")
-			.text("located in loci");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 20) + ")")
-			.style("text-anchor", "middle")
-			.text("#genes physically");
-		svg.append("text").attr("text-anchor", "middle")
-			.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 5) + ")")
-			.style("text-anchor", "middle")
-			.text("located in loci");
-		svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
-		svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
-		svg.selectAll('text').style('font-family', 'sans-serif');
-		svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
+function PlotLocuSum(data) {
+	data.forEach(function (d) {
+		d.nSNPs = +d.nSNPs;
+		d.size = +(d.size / 1000);
+		d.nGenes = +d.nGenes;
+		d.nWithinGene = +d.nWithinGene;
 	});
+	var y_element = data.map(function (d) { return d.label; });
+	var margin = { top: 60, right: 30, bottom: 70, left: 180 },
+		width = 600,
+		height = 15 * y_element.length;
+	var y = d3.scale.ordinal().domain(y_element).rangeBands([0, height], 0.1);
+	var yAxis = d3.svg.axis().scale(y).orient("left");
+	var svg = d3.select('#lociPlot').append('svg')
+		.attr("class", 'plotSVG')
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+		.append('g').attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var tip_size = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([0, 0])
+		.html(function (d) { return d.size + " kb"; });
+	svg.call(tip_size);
+	var tip_nSNPs = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([0, 0])
+		.html(function (d) { return d.nSNPs; });
+	svg.call(tip_nSNPs);
+	var tip_nGenes = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([0, 0])
+		.html(function (d) { return d.nGenes; });
+	svg.call(tip_nGenes);
+	var tip_nWithinGene = d3.tip()
+		.attr('class', 'd3-tip')
+		.offset([0, 0])
+		.html(function (d) { return d.nWithinGene; });
+	svg.call(tip_nWithinGene);
+	var currentWidth = 0;
+	var eachWidth = 140;
+	// plot nSNPs
+	var x = d3.scale.linear().range([currentWidth, currentWidth + eachWidth]);
+	var xAxis = d3.svg.axis().scale(x).orient("bottom");
+	x.domain([0, d3.max(data, function (d) { return d.size })]);
+	svg.selectAll('rect.size').data(data).enter().append("rect").attr("class", "bar")
+		.attr("x", x(0))
+		.attr("width", function (d) { return x(d.size) })
+		.attr("y", function (d) { return y(d.label) })
+		.attr("height", y.rangeBand())
+		.attr("fill", "lightgreen")
+		.on("mouseover", tip_size.show)
+		.on("mouseout", tip_size.hide);
+	svg.append('g').attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis).selectAll("text")
+		.style("text-anchor", "end")
+		.attr("transform", function (d) { return "translate(-12,3)rotate(-65)"; });
+	svg.append('g').attr("class", "y axis")
+		.call(yAxis)
+		.append("text").attr("transform", "rotate(-90)")
+		.attr("dy", ".71em")
+		.style("text-anchor", "end");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(-50,-5)")
+		.text("Genomic loci");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-5) + ")")
+		.style("text-anchor", "middle")
+		.text("Size (kb)");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 20) + ")")
+		.style("text-anchor", "middle")
+		.text("Size (kb)");
+	currentWidth += eachWidth + 10;
+	// plot size
+	x = d3.scale.linear().range([currentWidth, currentWidth + eachWidth]);
+	xAxis = d3.svg.axis().scale(x).orient("bottom");
+	x.domain([0, d3.max(data, function (d) { return d.nSNPs; })]);
+	svg.selectAll('rect.size').data(data).enter().append("rect").attr("class", "bar")
+		.attr("x", x(0))
+		.attr("width", function (d) { return x(d.nSNPs) - currentWidth })
+		.attr("y", function (d) { return y(d.label) })
+		.attr("height", y.rangeBand())
+		.attr("fill", "skyblue")
+		.on("mouseover", tip_nSNPs.show)
+		.on("mouseout", tip_nSNPs.hide);
+	svg.append('g').attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis).selectAll("text")
+		.style("text-anchor", "end")
+		.attr("transform", function (d) { return "translate(-12,3)rotate(-65)"; });
+	// .attr("dx","-.65em").attr("dy", "-.2em");
+	svg.append('g').attr("class", "y axis")
+		.attr("transform", "translate(" + currentWidth + ",0)")
+		.call(yAxis).selectAll("text").remove();
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-5) + ")")
+		.style("text-anchor", "middle")
+		.text("#SNPs");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 20) + ")")
+		.style("text-anchor", "middle")
+		.text("#SNPs");
+	currentWidth += eachWidth + 10;
+
+	// plot nGene
+	x = d3.scale.linear().range([currentWidth, currentWidth + eachWidth]);
+	xAxis = d3.svg.axis().scale(x).orient("bottom");
+	x.domain([0, d3.max(data, function (d) { return d.nGenes; })]);
+	svg.selectAll('rect.size').data(data).enter().append("rect").attr("class", "bar")
+		.attr("x", x(0))
+		.attr("width", function (d) { return x(d.nGenes) - currentWidth })
+		.attr("y", function (d) { return y(d.label) })
+		.attr("height", y.rangeBand())
+		.attr("fill", "orange")
+		.on("mouseover", tip_nGenes.show)
+		.on("mouseout", tip_nGenes.hide);
+	svg.append('g').attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis).selectAll("text")
+		.style("text-anchor", "end")
+		.attr("transform", function (d) { return "translate(-12,3)rotate(-65)"; });
+	svg.append('g').attr("class", "y axis")
+		.attr("transform", "translate(" + currentWidth + ",0)")
+		.call(yAxis).selectAll("text").remove();
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-5) + ")")
+		.style("text-anchor", "middle")
+		.text("#mapped genes");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 20) + ")")
+		.style("text-anchor", "middle")
+		.text("#mapped genes");
+	currentWidth += eachWidth + 10;
+
+	// plot nWithinGene
+	x = d3.scale.linear().range([currentWidth, currentWidth + eachWidth]);
+	xAxis = d3.svg.axis().scale(x).orient("bottom");
+	x.domain([0, d3.max(data, function (d) { return d.nWithinGene; })]);
+	svg.selectAll('rect.size').data(data).enter().append("rect").attr("class", "bar")
+		.attr("x", x(0))
+		.attr("width", function (d) { return x(d.nWithinGene) - currentWidth })
+		.attr("y", function (d) { return y(d.label) })
+		.attr("height", y.rangeBand())
+		.attr("fill", "pink")
+		.on("mouseover", tip_nWithinGene.show)
+		.on("mouseout", tip_nWithinGene.hide);
+	svg.append('g').attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis).selectAll("text")
+		.style("text-anchor", "end")
+		.attr("transform", function (d) { return "translate(-12,3)rotate(-65)"; });
+	svg.append('g').attr("class", "y axis")
+		.attr("transform", "translate(" + currentWidth + ",0)")
+		.call(yAxis).selectAll("text").remove();
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-20) + ")")
+		.style("text-anchor", "middle")
+		.text("#genes physically");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (-5) + ")")
+		.style("text-anchor", "middle")
+		.text("located in loci");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 20) + ")")
+		.style("text-anchor", "middle")
+		.text("#genes physically");
+	svg.append("text").attr("text-anchor", "middle")
+		.attr("transform", "translate(" + (currentWidth + eachWidth / 2) + "," + (height + margin.bottom - 5) + ")")
+		.style("text-anchor", "middle")
+		.text("located in loci");
+	svg.selectAll('.axis').selectAll('path').style('fill', 'none').style('stroke', 'grey');
+	svg.selectAll('.axis').selectAll('line').style('fill', 'none').style('stroke', 'grey');
+	svg.selectAll('text').style('font-family', 'sans-serif');
+	svg.selectAll('.axis').selectAll('text').style('font-size', '11px');
 }
 
 function Chr15Select() {

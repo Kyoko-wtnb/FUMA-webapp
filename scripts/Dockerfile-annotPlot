@@ -1,0 +1,27 @@
+FROM python:3
+
+WORKDIR /app
+
+COPY annotPlot/requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential r-base \
+    && rm -rf /var/lib/apt/lists/*
+    
+RUN Rscript -e "install.packages(c('rprojroot', 'whereami', 'data.table', 'kimisc', 'rjson', 'BiocManager'))"
+RUN Rscript -e "BiocManager::install('biomaRt')"
+
+COPY app.config ./
+COPY annotPlot.py ./
+COPY annotPlot.R ./
+COPY ConfigParser.R ./
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME

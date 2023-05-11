@@ -130,7 +130,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/sumTable', [FumaController::class, 'sumTable']);
         Route::post('/locusPlot', [FumaController::class, 'locusPlot']);
         Route::get('/d3text/{prefix}/{id}/{file}', [FumaController::class, 'd3text']);
-        Route::get('/legendText/{file}', [FumaController::class, 'legendText']);
+        Route::post('/annotPlot/legendText', [FumaController::class, 'legendText']);
         Route::post('/annotPlot', [FumaController::class, 'annotPlot']);
         Route::post('/annotPlot/getData', [FumaController::class, 'annotPlotGetData']);
         Route::post('/annotPlot/getGenes', [FumaController::class, 'annotPlotGetGenes']);

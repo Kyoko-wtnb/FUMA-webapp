@@ -1,7 +1,7 @@
 @extends('layouts.simple')
 
 @section('stylesheets')
-	<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+	<link href="https://cdn.datatables.net/v/dt/dt-1.13.4/b-2.3.6/sl-1.6.2/datatables.min.css" rel="stylesheet"/>	
 @endsection
 
 
@@ -97,16 +97,13 @@
 
 @section('scripts')
 	{{-- Imports from the web --}}
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.0/js/bootstrap-select.min.js"></script>
+
+	<script src="https://cdn.datatables.net/v/dt/dt-1.13.4/b-2.3.6/sl-1.6.2/datatables.min.js"></script>
+
 	<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
-	<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
-	<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
-	<script type="text/javascript" src="//cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
 	<script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
 	
-	{{-- Imports from the project --}}
-	<script type="text/javascript" src="{!! URL::asset('js/annotPlot.js') !!}?131"></script>
-
 	{{-- Hand written ones --}}
 	<script type="text/javascript">
 		$.ajaxSetup({
@@ -124,5 +121,10 @@
 		var ciplot = parseInt("{{$ciplot}}");
 		var Chr15 = parseInt("{{$Chr15}}");
 		var Chr15cells = "{{$Chr15cells}}";
+		var page = "{{$page}}";
+		var subdir = "{{ Config::get('app.subdir') }}";
 	</script>
+
+	{{-- Imports from the project --}}
+	<script type="text/javascript" src="{!! URL::asset('js/annotPlot.js') !!}?131"></script>
 @endsection
