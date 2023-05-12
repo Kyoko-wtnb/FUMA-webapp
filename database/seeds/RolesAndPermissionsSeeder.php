@@ -8,9 +8,13 @@ use fuma\User;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
-    function roleExists($role) 
+    function roleExists($role)
     {
-        return Count(Role::findByName($role)->get()) > 0;
+        try {
+            return Count(Role::findByName($role)->get()) > 0;
+        } catch (Exception $e) {
+            return FALSE;
+        }
     }
 
     /**
