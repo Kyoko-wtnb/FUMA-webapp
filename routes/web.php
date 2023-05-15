@@ -8,6 +8,7 @@ use App\Http\Controllers\S2GController;
 use App\Http\Controllers\G2FController;
 use App\Http\Controllers\CellController;
 use App\Http\Controllers\AnalysisController;
+use App\Http\Controllers\AdminController;
 
 
 /*
@@ -55,6 +56,14 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::prefix('analysis')->group(function () {
         Route::get('/{id?}', [AnalysisController::class, 'index']);
+    });
+
+});
+
+Route::group(['middleware' => ['auth']], function () {
+
+    Route::prefix('admin')->group(function () {
+        Route::get('/{id?}', [AdminController::class, 'index']);
     });
 
 });

@@ -1,5 +1,5 @@
 <div id="geneMap" class="sidePanel container" style="padding-top:50px;">
-	{!! Form::open(array('url' => 'snp2gene/geneMap', 'files' => true, 'novalidate'=>'novalidate')) !!}
+	{{ html()->form('POST', '/snp2gene/geneMap')->acceptsFiles()->novalidate()->open() }}
 	<h4 style="color: #00004d">Select jobID of your existing jobs to re-perform gene mapping with different settings.</h4>
 	Re-dogin gene mapping does not require to upload any of input file, instead the selected job is duplicated
 	with new jobID and perform gene mapping can be performed with different parameter settings.
@@ -738,5 +738,5 @@
 	<span style="color: red; font-size:18px;">
 		<i class="fa fa-exclamation-triangle"></i> After submitting, please wait until the file is uploaded, and do not move away from the submission page.
 	</span>
-	{!! Form::close() !!}
+	{{ html()->form()->close() }}
 </div>
