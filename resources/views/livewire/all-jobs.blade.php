@@ -58,17 +58,17 @@
                                                     <th>Service</th>
                                                     <th>Status</th>
                                                     <th>Service</th>
-                                                <tr>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    @foreach ($job['containers'] as $container)
+                                                @foreach ($job['containers'] as $container)
+                                                    <tr>
                                                         <td>{{ $container['name'] }}</td>
                                                         <td>{{ $container['service_name'] }}</td>
                                                         <td>{{ $container['status'] }}</td>
                                                         <td>{{ $container['state'] }}</td>
-                                                    @endforeach
-                                                <tr>
+                                                    </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     @endif
