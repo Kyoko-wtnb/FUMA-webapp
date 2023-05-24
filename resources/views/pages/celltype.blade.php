@@ -255,13 +255,7 @@
 								<option value="TabulaMuris_FACS_all" data-section="Other/Mouse" data-key="4">TabulaMuris_FACS_all</option>
 								<option value="TabulaMuris_droplet_all" data-section="Other/Mouse" data-key="5">TabulaMuris_droplet_all</option>
 							</select>
-							</div>
-
-							<script>
-							var params = { sortable: true };
-							$("select#cellDataSets").treeMultiselect({searchable: true, searchParams: ['section', 'text'], hideSidePanel: true, startCollapsed: true});
-							</script>
-							
+							</div>							
 						</div>
 					</div>
 					<div class="panel panel-default">
@@ -329,18 +323,11 @@
 	<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
 	<script type="text/javascript" src="//cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
-	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.0/js/bootstrap-select.min.js"></script>
 	<script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 	<script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 	<script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/tree-multiselect@2.6.3/dist/jquery.tree-multiselect.min.js"></script>
-	
-	{{-- Imports from the project --}}
-	<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
-	<script type="text/javascript" src="{!! URL::asset('js/cell_results.js') !!}?135"></script>
-	<script type="text/javascript" src="{!! URL::asset('js/celltype.js') !!}?134"></script>
 
 	{{-- Hand written ones --}}
 	<script type="text/javascript">
@@ -353,5 +340,15 @@
 		var prefix = "{{$prefix}}";
 		var subdir = "{{ Config::get('app.subdir') }}";
 		var loggedin = "{{ Auth::check() }}";
+	</script>
+
+	{{-- Imports from the project --}}
+	<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
+	<script type="text/javascript" src="{!! URL::asset('js/cell_results.js') !!}?135"></script>
+	<script type="text/javascript" src="{!! URL::asset('js/celltype.js') !!}?134"></script>
+
+	<script>
+		var params = { sortable: true };
+		$("select#cellDataSets").treeMultiselect({searchable: true, searchParams: ['section', 'text'], hideSidePanel: true, startCollapsed: true});
 	</script>
 @endsection
