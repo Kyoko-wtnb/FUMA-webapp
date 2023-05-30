@@ -34,7 +34,7 @@
 			<div class="page-content inset">
 				<!-- Submit genes -->
 				<div id="newquery" class="sidePanel container" style="padding-top:50px;">
-					{!! Form::open(array('url' => 'gene2func/submit', 'files'=>true, 'novalidate'=>'novalidate')) !!}
+					{{ html()->form('POST', '/gene2func/submit')->acceptsFiles()->novalidate()->open() }}
 					<!-- <h3>Input list of genes</h3> -->
 					<div class="row">
 						<div class="col-md-6 col-xs-6 col-sm-6">
@@ -175,7 +175,7 @@
 					<div id="checkGenes"></div>
 					<div id="checkBkGenes"></div>
 					<input type="submit" value="Submit" class="btn btn-primary" id="geneSubmit" name="geneSubmit"/><br/><br/>
-					{!! Form::close() !!}
+					{{ html()->form()->close() }}
 				</div>
 
 				<!-- job list -->

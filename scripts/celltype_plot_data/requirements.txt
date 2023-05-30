@@ -1,0 +1,4 @@
+# celltype_stepPlotData.py/celltype_perDatasetPlotData.py dependencies
+numpy
+pandas
+ConfigParser

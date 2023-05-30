@@ -15,7 +15,7 @@ class CreateCelltypeTable extends Migration
     {
         Schema::create('celltype', function (Blueprint $table) {
             $table->bigIncrements('jobID');
-	    $table->string('title');
+	        $table->string('title');
             $table->string('email')->default('Not set');
             $table->integer('snp2gene');
             $table->string('snp2geneTitle');

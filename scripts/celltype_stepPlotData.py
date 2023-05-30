@@ -4,7 +4,6 @@ import os
 import re
 import numpy as np
 import pandas as pd
-import ConfigParser
 import json
 
 def ArrayIn(a1, a2):
@@ -29,7 +28,13 @@ def main():
 	else:
 		data1 = pd.read_csv(filedir+"magma_celltype_step1.txt", header=0, sep="\t", usecols=["Dataset", "Cell_type", "P", "P.adj"])
 		data1 = np.array(data1)
-		data1 = data1[data1[:,3]<0.05,0:3]
+
+		# # Remove rows with invalid values in the fourth column
+		# valid_rows = ~np.isnan(data1[:, 3])
+		# data1 = data1[valid_rows]
+		# Perform the comparison
+		data1 = data1[data1[:, 3] < 0.05, 0:3]
+		
 		data1 = np.c_[data1, [0]*len(data1)]
 
 	## duplicated cell types

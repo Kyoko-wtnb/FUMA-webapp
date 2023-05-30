@@ -10,6 +10,8 @@
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.0/css/bootstrap-select.min.css"/>
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
 
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.13.2/themes/smoothness/jquery-ui.css">
+
 <link rel="stylesheet" href="{!! URL::asset('css/style.css') !!}"/>
 <link rel="stylesheet" href="{!! URL::asset('css/sidebar.css') !!}"/>
 <link rel="stylesheet" href="{!! URL::asset('css/sweetalert.css') !!}"/>

@@ -207,7 +207,7 @@ function checkInput(){
 	var g = document.getElementById('genes').value;
 	var gfile = $('#genesfile').val().length;
 	if(g.length==0 && gfile==0){
-		$('#GeneCheck').html('<div class="alert alert-danger" style="padding-bottom: 10; padding-top: 10;">Please either copy-paste or upload a liet of genes to test.</div>');
+		$('#GeneCheck').html('<div class="alert alert-danger" style="padding-bottom: 10; padding-top: 10;">Please either copy-paste or upload a list of genes to test.</div>');
 		$('#geneSubmit').attr("disabled", true);
 	}else if(g.length>0 && gfile>0){
 		$('#GeneCheck').html('<div class="alert alert-warning" style="padding-bottom: 10; padding-top: 10;">OK. Genes in the text box will be used. To use uploaded file, please clear the text box.</div>');

@@ -8,7 +8,7 @@ if(grepl("\\/$", filedir)==F){
 	filedir <- paste0(filedir, '/')
 }
 
-curfile <- thisfile()
+curfile <- whereami::thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 magmafiles <- config$magma$magmafiles
