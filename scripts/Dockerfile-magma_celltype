@@ -1,0 +1,26 @@
+FROM r-base:4.2.3
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl unzip build-essential r-base \
+    && curl https://ctg.cncr.nl/software/MAGMA/prog/magma_v1.10_static.zip -o magma_v1.10_static.zip\
+    && unzip magma_v1.10_static.zip -d /usr/local/share/MAGMA \
+    && chmod +x /usr/local/share/MAGMA/* \
+    && rm magma_v1.10_static.zip \
+    && rm -rf /var/lib/apt/lists/*
+    
+RUN Rscript -e "install.packages(c('rprojroot', 'whereami', 'data.table', 'kimisc'))"
+
+COPY app.config ./
+COPY magma_celltype.R ./
+COPY ConfigParser.R ./
+
+# Configure non-root user.
+ARG USERNAME
+ARG PUID
+ARG PGID
+
+RUN groupadd --gid ${PGID} $USERNAME && \
+    useradd -l --non-unique --uid ${PUID} --gid ${PGID} $USERNAME
+
+USER $USERNAME

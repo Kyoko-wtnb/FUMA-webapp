@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Helper;
 use Auth;
+use Illuminate\Support\Str;
+use App\Jobs\CelltypeProcess;
 
 class CellController extends Controller
 {
@@ -61,7 +63,7 @@ class CellController extends Controller
     public function checkMagmaFile(Request $request)
     {
         $id = $request->input('id');
-        if (File::exists(config('app.jobdir') . '/jobs/' . $id . "/magma.genes.raw")) {
+        if (Storage::exists(config('app.jobdir') . '/jobs/' . $id . "/magma.genes.raw")) {
             return 1;
         } else {
             return 0;
@@ -95,7 +97,8 @@ class CellController extends Controller
                 $jobID = $job->jobID;
                 DB::table('celltype')->where('jobID', $jobID)
                     ->update(['status' => 'QUEUED']);
-                $this->dispatch(new CelltypeProcess($user, $jobID));
+
+                CelltypeProcess::dispatch($user, $jobID);
             }
         }
         return;
@@ -104,7 +107,7 @@ class CellController extends Controller
     public function deleteJob(Request $request)
     {
         $jobID = $request->input('jobID');
-        File::deleteDirectory(config('app.jobdir') . '/celltype/' . $jobID);
+        Storage::deleteDirectory(config('app.jobdir') . '/celltype/' . $jobID);
         DB::table('celltype')->where('jobID', $jobID)->delete();
         return;
     }
@@ -142,25 +145,25 @@ class CellController extends Controller
                 ->first()->title;
         }
         if ($s2gID == 0) {
-            DB::table('celltype')->insert(
+            $jobID = DB::table('celltype')->insertGetId(
                 ['title' => $title, 'email' => $email, 'created_at' => $date, 'status' => 'NEW']
             );
         } else {
-            DB::table('celltype')->insert(
+            $jobID = DB::table('celltype')->insertGetId(
                 [
                     'title' => $title, 'email' => $email, 'snp2gene' => $s2gID,
                     'snp2geneTitle' => $s2gTitle, 'created_at' => $date, 'status' => 'NEW'
                 ]
             );
         }
-        $jobID = DB::table('celltype')->where('email', $email)->where('created_at', $date)->first()->jobID;
+
         $filedir = config('app.jobdir') . '/celltype/' . $jobID;
-        File::makeDirectory($filedir);
+        Storage::makeDirectory($filedir);
         if ($s2gID == 0) {
-            $request->file('genes_raw')->move($filedir, "magma.genes.raw");
+            Storage::putFileAs($filedir, $request->file('genes_raw'), 'magma.genes.raw');
         } else {
             $s2gfiledir = config('app.jobdir') . '/jobs/' . $s2gID . '/';
-            File::copy($s2gfiledir . 'magma.genes.raw', $filedir . '/magma.genes.raw');
+            Storage::copy($s2gfiledir . 'magma.genes.raw', $filedir . '/magma.genes.raw');
         }
 
         if ($s2gID == 0) {
@@ -172,22 +175,22 @@ class CellController extends Controller
         }
         $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
         $paramfile = $filedir . '/params.config';
-        File::put($paramfile, "[jobinfo]\n");
-        File::append($paramfile, "created_at=$date\n");
-        File::append($paramfile, "title=$title\n");
+        Storage::put($paramfile, "[jobinfo]");
+        Storage::append($paramfile, "created_at=$date");
+        Storage::append($paramfile, "title=$title");
 
-        File::append($paramfile, "\n[version]\n");
-        File::append($paramfile, "FUMA=" . $app_config['FUMA'] . "\n");
-        File::append($paramfile, "MAGMA=" . $app_config['MAGMA'] . "\n");
+        Storage::append($paramfile, "\n[version]");
+        Storage::append($paramfile, "FUMA=" . $app_config['FUMA']);
+        Storage::append($paramfile, "MAGMA=" . $app_config['MAGMA']);
 
-        File::append($paramfile, "\n[params]\n");
-        File::append($paramfile, "snp2geneID=$s2gID\n");
-        File::append($paramfile, "inputfile=$inputfile\n");
-        File::append($paramfile, "ensg_id=$ensg\n");
-        File::append($paramfile, "datasets=$ds\n");
-        File::append($paramfile, "adjPmeth=$adjPmeth\n");
-        File::append($paramfile, "step2=$step2\n");
-        File::append($paramfile, "step3=$step3\n");
+        Storage::append($paramfile, "\n[params]");
+        Storage::append($paramfile, "snp2geneID=$s2gID");
+        Storage::append($paramfile, "inputfile=$inputfile");
+        Storage::append($paramfile, "ensg_id=$ensg");
+        Storage::append($paramfile, "datasets=$ds");
+        Storage::append($paramfile, "adjPmeth=$adjPmeth");
+        Storage::append($paramfile, "step2=$step2");
+        Storage::append($paramfile, "step3=$step3");
 
         return redirect("/celltype#joblist");
     }
@@ -196,17 +199,18 @@ class CellController extends Controller
     {
         $id = $request->input('id');
         $filedir = config('app.jobdir') . '/celltype/' . $id;
-        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . '/params.config'), false, INI_SCANNER_RAW);
         if ($params['MAGMA'] == "v1.06") {
             $step1 = count(glob($filedir . "/*.gcov.out"));
             $step1_2 = 0;
             $step2 = 0;
             $step3 = 0;
         } else {
-            $step1 = count(glob($filedir . "/*.gsa.out"));
-            $step1_2 = (int) File::exists($filedir . "/step1_2_summary.txt");
-            $step2 = (int) File::exists($filedir . "/magma_celltype_step2.txt");
-            $step3 = (int) File::exists($filedir . "/magma_celltype_step3.txt");
+            // $step1 = count(glob($filedir . "/*.gsa.out"));
+            $step1 = count(Helper::my_glob($filedir, "/.*\.gsa\.out/"));
+            $step1_2 = (int) Storage::exists($filedir . "/step1_2_summary.txt");
+            $step2 = (int) Storage::exists($filedir . "/magma_celltype_step2.txt");
+            $step3 = (int) Storage::exists($filedir . "/magma_celltype_step3.txt");
         }
         return json_encode([$step1, $step1_2, $step2, $step3]);
     }
@@ -215,7 +219,7 @@ class CellController extends Controller
     {
         $id = $request->input('id');
         $filedir = config('app.jobdir') . '/celltype/' . $id;
-        $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
+        $params = parse_ini_string(Storage::get($filedir . '/params.config'), false, INI_SCANNER_RAW);
         $ds = explode(":", $params['datasets']);
         return json_encode($ds);
     }
@@ -256,39 +260,52 @@ class CellController extends Controller
             $files[] = "magma_celltype_step3.txt";
         }
 
-        $zip = new \ZipArchive();
+        # check if zip file exists, if yes, delete it
         $zipfile = $filedir . "FUMA_celltype" . $id . ".zip";
-        if (File::exists($zipfile)) {
-            File::delete($zipfile);
+        if (Storage::exists($zipfile)) {
+            Storage::delete($zipfile);
         }
-        $zip->open($zipfile, \ZipArchive::CREATE);
-        $zip->addFile(public_path() . '/README_cell', "README_cell");
+
+        # create zip file and open it
+        $zip = new \ZipArchive();
+        $zip->open(Storage::path($zipfile), \ZipArchive::CREATE);
+
+        # add README file if exists in the public storage
+        if (Storage::disk('public')->exists('README_cell.txt')) {
+            $zip->addFile(Storage::disk('public')->path('README_cell.txt'), "README_cell");
+        }
+
+        # for each file, check if exists in the storage and add to zip file
         foreach ($files as $f) {
-            if (FILE::exists($filedir . $f)) {
-                $zip->addFile($filedir . $f, $f);
+            if (Storage::exists($filedir . $f)) {
+                $abs_path = Storage::path($filedir . $f);
+                $zip->addFile($abs_path, $f);
             }
         }
+
+        # close zip file
         $zip->close();
-        return response()->download($zipfile);
+
+        # download zip file and delete it after download
+        return response()->download(Storage::path($zipfile))->deleteFileAfterSend(true);
     }
 
     public function getPerDatasetData(Request $request)
     {
-        $id = $request->input('id');
+        $jobID = $request->input('id');
         $ds = $request->input('ds');
-        $filedir = config('app.jobdir') . '/celltype/' . $id . '/';
-        $script = scripts_path('celltype_perDatasetPlotData.py');
-        $json = shell_exec("python $script $filedir $ds");
+        $uuid = Str::uuid();
+        $cmd = "docker run --rm --name job-cell-$jobID-$uuid -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-celltype_plot_data /bin/sh -c 'python celltype_perDatasetPlotData.py job/ $ds'";
+        $json = shell_exec($cmd);
         return $json;
     }
 
     public function getStepPlotData(Request $request)
     {
-        $id = $request->input('id');
-        $ds = $request->input('ds');
-        $filedir = config('app.jobdir') . '/celltype/' . $id . '/';
-        $script = scripts_path('celltype_stepPlotData.py');
-        $json = shell_exec("python $script $filedir");
+        $jobID = $request->input('id');
+        $uuid = Str::uuid();
+        $cmd = "docker run --rm --name job-cell-$jobID-$uuid -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-celltype_plot_data /bin/sh -c 'python celltype_stepPlotData.py job/'";
+        $json = shell_exec($cmd);
         return $json;
     }
 }
