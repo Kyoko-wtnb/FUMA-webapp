@@ -1,0 +1,8 @@
+# g2f dependencies
+statsmodels==0.10.0
+numpy
+pandas
+scipy
+joblib
+multiprocessing
+ConfigParser

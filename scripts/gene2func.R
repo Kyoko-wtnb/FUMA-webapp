@@ -45,7 +45,7 @@ DEGtest <- function(genes, allgenes, adjP.method="BH", file){
 filedir <- args[1]
 
 ##### get params #####
-curfile <- thisfile()
+curfile <- whereami::thisfile()
 source(paste(dirname(curfile), '/ConfigParser.R', sep=""))
 config <- ConfigParser(file=paste(dirname(curfile),'/app.config', sep=""))
 
