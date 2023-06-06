@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -11,10 +10,9 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\App;
 
 use Mail;
-use Helper;
-
 
 class Snp2geneProcess implements ShouldQueue
 {
@@ -81,7 +79,6 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:100']);
             $this->JobMonitorUpdate($jobID, $created_at, $started_at);
-            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 100, $msg);
                 return;
@@ -98,7 +95,7 @@ class Snp2geneProcess implements ShouldQueue
         //gwas_file.pl
         Storage::put($logfile, "----- gwas_file.py -----\n");
         Storage::put($errorfile, "----- gwas_file.py -----\n");
-        
+
         $uuid = Str::uuid();
         $new_cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-gwas_file /bin/sh -c 'python gwas_file.py job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
@@ -119,7 +116,6 @@ class Snp2geneProcess implements ShouldQueue
                 $msg = $errorout[count($errorout) - 2];
             }
             $this->JobMonitorUpdate($jobID, $created_at, $started_at);
-            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 1, $msg);
                 return;
@@ -177,7 +173,6 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:003']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 3, $msg);
                 return;
@@ -199,7 +194,6 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:004']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 4, $msg);
                 return;
@@ -237,18 +231,16 @@ class Snp2geneProcess implements ShouldQueue
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:005']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-                return;
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 5, $msg);
+                    return;
                 }
-                return;
             } else {
                 $this->rmFiles($filedir);
 
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:006']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-                return;
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 6, $msg);
                     return;
@@ -271,7 +263,6 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:007']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 7, $msg);
                 return;
@@ -293,15 +284,12 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:008']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 8, $msg);
                 return;
             }
         }
 
-        #$script = Helper::scripts_path('getExAC.pl');
-        #exec("perl $script $filedir");
         if ($params['eqtlMap'] == 1) {
             Storage::append($logfile, "----- geteQTL.py -----\n");
             Storage::append($errorfile, "----- geteQTL.py -----\n");
@@ -318,7 +306,6 @@ class Snp2geneProcess implements ShouldQueue
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:009']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-                return;
                 if ($email != null) {
                     $this->sendJobCompMail($email, $jobtitle, $jobID, 9, $msg);
                     return;
@@ -342,7 +329,6 @@ class Snp2geneProcess implements ShouldQueue
                 DB::table('SubmitJobs')->where('jobID', $jobID)
                     ->update(['status' => 'ERROR:010']);
                 // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-                return;
                 $errorout = Storage::get($errorfile);
                 $errorout = explode("\n", $errorout);
                 $msg = $errorout[count($errorout) - 2];
@@ -368,7 +354,6 @@ class Snp2geneProcess implements ShouldQueue
             DB::table('SubmitJobs')->where('jobID', $jobID)
                 ->update(['status' => 'ERROR:011']);
             // $this->JobMonitorUpdate($jobID, $created_at, $started_at); //TODO: to be replaced (it crashes if it's called twice or more because it tries to insert the same id)
-            return;
             if ($email != null) {
                 $this->sendJobCompMail($email, $jobtitle, $jobID, 11, $msg);
                 return;
@@ -377,7 +362,7 @@ class Snp2geneProcess implements ShouldQueue
         if ($params['ciMap'] == 1) {
             Storage::append($logfile, "----- createCircosPlot.py -----\n");
             Storage::append($errorfile, "----- createCircosPlot.py -----\n");
-            
+
             $uuid = Str::uuid();
             $new_cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-create_circos_plot /bin/sh -c 'python createCircosPlot.py job >>job/job.log 2>>job/error.log'";
             Storage::append($logfile, "Command to be executed:");
@@ -426,36 +411,38 @@ class Snp2geneProcess implements ShouldQueue
 
     public function sendJobCompMail($email, $jobtitle, $jobID, $status, $msg)
     {
-        if ($status == 0 || $status == 2) {
-            $user = DB::table('users')->where('email', $email)->first();
-            $data = [
-                'jobID' => $jobID,
-                'jobtitle' => $jobtitle,
-                'status' => $status,
-                'msg' => $msg
-            ];
-            try {
-                // Mail::send('emails.jobComplete', $data, function ($m) use ($user) {
-                //     $m->from('noreply@ctglab.nl', "FUMA web application");
-                //     $m->to($user->email, $user->name)->subject("FUMA your job has been completed");
-                // });
-            } catch (Throwable $e) {
-            }
-        } else {
-            $user = DB::table('users')->where('email', $email)->first();
-            $data = [
-                'status' => $status,
-                'jobtitle' => $jobtitle,
-                'jobID' => $jobID,
-                'msg' => $msg
-            ];
+        if (App::isProduction()) {
+            if ($status == 0 || $status == 2) {
+                $user = DB::table('users')->where('email', $email)->first();
+                $data = [
+                    'jobID' => $jobID,
+                    'jobtitle' => $jobtitle,
+                    'status' => $status,
+                    'msg' => $msg
+                ];
+                try {
+                    Mail::send('emails.jobComplete', $data, function ($m) use ($user) {
+                        $m->from('noreply@ctglab.nl', "FUMA web application");
+                        $m->to($user->email, $user->name)->subject("FUMA your job has been completed");
+                    });
+                } catch (Throwable $e) {
+                }
+            } else {
+                $user = DB::table('users')->where('email', $email)->first();
+                $data = [
+                    'status' => $status,
+                    'jobtitle' => $jobtitle,
+                    'jobID' => $jobID,
+                    'msg' => $msg
+                ];
 
-            try {
-                // Mail::send('emails.jobError', $data, function ($m) use ($user) {
-                //     $m->from('noreply@ctglab.nl', "FUMA web application");
-                //     $m->to($user->email, $user->name)->subject("FUMA an error occured");
-                // });
-            } catch (Throwable $e) {
+                try {
+                    Mail::send('emails.jobError', $data, function ($m) use ($user) {
+                        $m->from('noreply@ctglab.nl', "FUMA web application");
+                        $m->to($user->email, $user->name)->subject("FUMA an error occured");
+                    });
+                } catch (Throwable $e) {
+                }
             }
         }
         return;
@@ -463,18 +450,20 @@ class Snp2geneProcess implements ShouldQueue
 
     public function sendJobFailedMail($email, $jobtitle, $jobID)
     {
-        $user = $this->user;
-        $data = [
-            'jobtitle' => $jobtitle,
-            'jobID' => $jobID
-        ];
-        $devemail = config('app.devemail');
-        try {
-            // Mail::send('emails.jobFailed', $data, function ($m) use ($user, $devemail) {
-            //     $m->from('noreply@ctglab.nl', "FUMA web application");
-            //     $m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job failed");
-            // });
-        } catch (Throwable $e) {
+        if (App::isProduction()) {
+            $user = $this->user;
+            $data = [
+                'jobtitle' => $jobtitle,
+                'jobID' => $jobID
+            ];
+            $devemail = config('app.devemail');
+            try {
+                Mail::send('emails.jobFailed', $data, function ($m) use ($user, $devemail) {
+                    $m->from('noreply@ctglab.nl', "FUMA web application");
+                    $m->to($user->email, $user->name)->cc($devemail)->subject("FUMA job failed");
+                });
+            } catch (Throwable $e) {
+            }
         }
         return;
     }
@@ -509,11 +498,5 @@ class Snp2geneProcess implements ShouldQueue
         //     Storage::delete($filedir . "magma.input");
         // }
         return;
-    }
-
-    public function chmod($filedir)
-    {
-        exec("find " . $filedir . " -type d -exec chmod 775 {} \;");
-        exec("find " . $filedir . " -type f -exec chmod 664 {} \;");
     }
 }
