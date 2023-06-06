@@ -114,13 +114,10 @@ class S2GController extends Controller
         return $results;
     }
 
-    public function getGeneMapIDs()
-    {   // TODO: the name of this func should be getFinishedjobsIDs since retrieves the jobes with ok status
-        // so to snp2gene and then to the tab redo gene mapping, the result of this func is shown is the 
-        // dropdown jobID 
-        $email = Auth::user()->email;
-        // $results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=? AND status="OK"', [$email]);
-        $results = SubmitJob::where('email', $email)
+    public function getFinishedjobsIDs()
+    { 
+        $user_id = Auth::user()->id;
+        $results = SubmitJob::where('user_id', $user_id)
             ->where('status', 'OK')
             ->get(['jobID', 'title']);
         return $results;
