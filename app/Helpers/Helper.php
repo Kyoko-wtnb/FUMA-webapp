@@ -68,7 +68,7 @@ class Helper
 
         // filter the ones that match the filename.* 
         $matchingFiles = preg_grep($pattern, $allFiles);
-
+        $matchingFiles = array_values($matchingFiles);
         // return the matching filenames
         return $matchingFiles;
     }
