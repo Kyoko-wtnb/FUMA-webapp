@@ -3,21 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-// use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+
 use App\Models\SubmitJob;
-// use fuma\Http\Requests;
-// use Symfony\Component\Process\Process;
-// use View;
-use Auth;
-use Helper;
-// use JavaScript;
-// use Session;
-// use Mail;
-// use fuma\User;
 use App\Jobs\Snp2geneProcess;
 use App\Jobs\GeneMapProcess;
+
+use Auth;
+use Helper;
+use File;
 
 class S2GController extends Controller
 {
@@ -909,6 +904,9 @@ class S2GController extends Controller
         Storage::append($paramfile, "ciMapChr15Meth=$ciMapChr15Meth");
         Storage::append($paramfile, "ciMapAnnoDs=$ciMapAnnoDs");
         Storage::append($paramfile, "ciMapAnnoMeth=$ciMapAnnoMeth");
+
+        $this->queueNewJobs();
+
         return redirect("/snp2gene#joblist-panel");
     }
 
@@ -936,11 +934,15 @@ class S2GController extends Controller
 
         // copie old job to new ID
         $filedir = config('app.jobdir') . '/jobs/' . $jobID;
-        // $oldfiledir = config('app.jobdir').'/jobs/'.$oldID;
-        // File::makeDirectory($filedir, $mode = 0755, $recursive = true);
-        Storage::copyDirectory(config('app.jobdir') . '/jobs/' . $oldID, $filedir);
-        system("rm $filedir/*.svg $filedir/*.png $filedir/*.pdf $filedir/*.jpg");
-        system("rm -r $filedir/circos");
+        $oldfiledir = config('app.jobdir') . '/jobs/' . $oldID;
+        File::copyDirectory(Storage::path($oldfiledir), Storage::path($filedir));
+
+        // remove old files
+        Storage::delete(Helper::my_glob($filedir, "/.*\.svg/"));
+        Storage::delete(Helper::my_glob($filedir, "/.*\.png/"));
+        Storage::delete(Helper::my_glob($filedir, "/.*\.pdf/"));
+        Storage::delete(Helper::my_glob($filedir, "/.*\.jpg/"));
+        Storage::deleteDirectory($filedir . '/circos');
 
         // positional mapping
         $posMap = 0;
@@ -1189,68 +1191,71 @@ class S2GController extends Controller
         // write parameter into a file
         $paramfile = $filedir . '/params.config';
         Storage::put($paramfile, "");
-        $oldparam = fopen(config('app.jobdir') . '/jobs/' . $oldID . '/params.config', 'r');
+        $oldparam = fopen(Storage::path($oldfiledir . '/params.config'), 'r');
         while ($line = fgets($oldparam)) {
             if (preg_match('/^\n/', $line)) {
                 continue;
             } else if (preg_match('/\[jobinfo\]/', $line)) {
-                Storage::append($paramfile, $line);
+                Storage::append($paramfile, $line, null);
             } else if (preg_match('/posMap|eqtlMap|ciMap/', $line)) {
                 continue;
             } else if (preg_match('/^title/', $line)) {
                 Storage::append($paramfile, "title=" . $jobtitle . "\n");
             } else if (preg_match('/^created_at/', $line)) {
-                Storage::append($paramfile, "created_at=" . $date . "\n");
+                Storage::append($paramfile, "created_at=" . $date, null);
             } else if (preg_match('/^\[/', $line)) {
-                Storage::append($paramfile, "\n" . $line);
-            } else {
                 Storage::append($paramfile, $line);
+            } else {
+                Storage::append($paramfile, $line, null);
             }
         }
 
-        Storage::append($paramfile, "\n[posMap]\n");
-        Storage::append($paramfile, "posMap=$posMap\n");
-        // Storage::append($paramfile, "posMapWindow=$posMapWindow\n");
-        Storage::append($paramfile, "posMapWindowSize=$posMapWindowSize\n");
-        Storage::append($paramfile, "posMapAnnot=$posMapAnnot\n");
-        Storage::append($paramfile, "posMapCADDth=$posMapCADDth\n");
-        Storage::append($paramfile, "posMapRDBth=$posMapRDBth\n");
-        Storage::append($paramfile, "posMapChr15=$posMapChr15\n");
-        Storage::append($paramfile, "posMapChr15Max=$posMapChr15Max\n");
-        Storage::append($paramfile, "posMapChr15Meth=$posMapChr15Meth\n");
-        Storage::append($paramfile, "posMapAnnoDs=$posMapAnnoDs\n");
-        Storage::append($paramfile, "posMapAnnoMeth=$posMapAnnoMeth\n");
+        Storage::append($paramfile, "[posMap]");
+        Storage::append($paramfile, "posMap=$posMap");
+        // Storage::append($paramfile, "posMapWindow=$posMapWindow");
+        Storage::append($paramfile, "posMapWindowSize=$posMapWindowSize");
+        Storage::append($paramfile, "posMapAnnot=$posMapAnnot");
+        Storage::append($paramfile, "posMapCADDth=$posMapCADDth");
+        Storage::append($paramfile, "posMapRDBth=$posMapRDBth");
+        Storage::append($paramfile, "posMapChr15=$posMapChr15");
+        Storage::append($paramfile, "posMapChr15Max=$posMapChr15Max");
+        Storage::append($paramfile, "posMapChr15Meth=$posMapChr15Meth");
+        Storage::append($paramfile, "posMapAnnoDs=$posMapAnnoDs");
+        Storage::append($paramfile, "posMapAnnoMeth=$posMapAnnoMeth");
 
-        Storage::append($paramfile, "\n[eqtlMap]\n");
-        Storage::append($paramfile, "eqtlMap=$eqtlMap\n");
-        Storage::append($paramfile, "eqtlMaptss=$eqtlMaptss\n");
-        Storage::append($paramfile, "eqtlMapSig=$sigeqtl\n");
-        Storage::append($paramfile, "eqtlMapP=$eqtlP\n");
-        Storage::append($paramfile, "eqtlMapCADDth=$eqtlMapCADDth\n");
-        Storage::append($paramfile, "eqtlMapRDBth=$eqtlMapRDBth\n");
-        Storage::append($paramfile, "eqtlMapChr15=$eqtlMapChr15\n");
-        Storage::append($paramfile, "eqtlMapChr15Max=$eqtlMapChr15Max\n");
-        Storage::append($paramfile, "eqtlMapChr15Meth=$eqtlMapChr15Meth\n");
-        Storage::append($paramfile, "eqtlMapAnnoDs=$eqtlMapAnnoDs\n");
-        Storage::append($paramfile, "eqtlMapAnnoMeth=$eqtlMapAnnoMeth\n");
+        Storage::append($paramfile, "\n[eqtlMap]");
+        Storage::append($paramfile, "eqtlMap=$eqtlMap");
+        Storage::append($paramfile, "eqtlMaptss=$eqtlMaptss");
+        Storage::append($paramfile, "eqtlMapSig=$sigeqtl");
+        Storage::append($paramfile, "eqtlMapP=$eqtlP");
+        Storage::append($paramfile, "eqtlMapCADDth=$eqtlMapCADDth");
+        Storage::append($paramfile, "eqtlMapRDBth=$eqtlMapRDBth");
+        Storage::append($paramfile, "eqtlMapChr15=$eqtlMapChr15");
+        Storage::append($paramfile, "eqtlMapChr15Max=$eqtlMapChr15Max");
+        Storage::append($paramfile, "eqtlMapChr15Meth=$eqtlMapChr15Meth");
+        Storage::append($paramfile, "eqtlMapAnnoDs=$eqtlMapAnnoDs");
+        Storage::append($paramfile, "eqtlMapAnnoMeth=$eqtlMapAnnoMeth");
 
-        Storage::append($paramfile, "\n[ciMap]\n");
-        Storage::append($paramfile, "ciMap=$ciMap\n");
-        Storage::append($paramfile, "ciMapBuiltin=$ciMapBuiltin\n");
-        Storage::append($paramfile, "ciMapFileN=$ciMapFileN\n");
-        Storage::append($paramfile, "ciMapFiles=$ciMapFiles\n");
-        Storage::append($paramfile, "ciMapFDR=$ciMapFDR\n");
-        Storage::append($paramfile, "ciMapPromWindow=$ciMapPromWindow\n");
-        Storage::append($paramfile, "ciMapRoadmap=$ciMapRoadmap\n");
-        Storage::append($paramfile, "ciMapEnhFilt=$ciMapEnhFilt\n");
-        Storage::append($paramfile, "ciMapPromFilt=$ciMapPromFilt\n");
-        Storage::append($paramfile, "ciMapCADDth=$ciMapCADDth\n");
-        Storage::append($paramfile, "ciMapRDBth=$ciMapRDBth\n");
-        Storage::append($paramfile, "ciMapChr15=$ciMapChr15\n");
-        Storage::append($paramfile, "ciMapChr15Max=$ciMapChr15Max\n");
-        Storage::append($paramfile, "ciMapChr15Meth=$ciMapChr15Meth\n");
-        Storage::append($paramfile, "ciMapAnnoDs=$ciMapAnnoDs\n");
-        Storage::append($paramfile, "ciMapAnnoMeth=$ciMapAnnoMeth\n");
+        Storage::append($paramfile, "\n[ciMap]");
+        Storage::append($paramfile, "ciMap=$ciMap");
+        Storage::append($paramfile, "ciMapBuiltin=$ciMapBuiltin");
+        Storage::append($paramfile, "ciMapFileN=$ciMapFileN");
+        Storage::append($paramfile, "ciMapFiles=$ciMapFiles");
+        Storage::append($paramfile, "ciMapFDR=$ciMapFDR");
+        Storage::append($paramfile, "ciMapPromWindow=$ciMapPromWindow");
+        Storage::append($paramfile, "ciMapRoadmap=$ciMapRoadmap");
+        Storage::append($paramfile, "ciMapEnhFilt=$ciMapEnhFilt");
+        Storage::append($paramfile, "ciMapPromFilt=$ciMapPromFilt");
+        Storage::append($paramfile, "ciMapCADDth=$ciMapCADDth");
+        Storage::append($paramfile, "ciMapRDBth=$ciMapRDBth");
+        Storage::append($paramfile, "ciMapChr15=$ciMapChr15");
+        Storage::append($paramfile, "ciMapChr15Max=$ciMapChr15Max");
+        Storage::append($paramfile, "ciMapChr15Meth=$ciMapChr15Meth");
+        Storage::append($paramfile, "ciMapAnnoDs=$ciMapAnnoDs");
+        Storage::append($paramfile, "ciMapAnnoMeth=$ciMapAnnoMeth");
+
+        $this->queueGeneMap();
+        
         return redirect("/snp2gene#joblist-panel");
     }
 
@@ -1347,18 +1352,16 @@ class S2GController extends Controller
                 $files[] = "magma_exp.gcov.out";
                 $files[] = "magma_exp_general.gcov.out";
             }
-            $tmp = Storage::glob($filedir . "magma_exp_*.gcov.out");
+            $tmp = Helper::my_glob($filedir, "/magma_exp_.*\.gcov\.out/");
             for ($i = 0; $i < count($tmp); $i++) {
                 $files[] = preg_replace("/.+\/(magma_exp_*)/", '$1', $tmp[$i]);
             }
-            $tmp = Storage::glob($filedir . "magma_exp_*.gsa.out");
+            $tmp = Helper::my_glob($filedir, "/magma_exp_.*\.gsa\.out/");
             for ($i = 0; $i < count($tmp); $i++) {
                 $files[] = preg_replace("/.+\/(magma_exp_*)/", '$1', $tmp[$i]);
             }
         }
 
-
-        $zip = new \ZipArchive();
         if ($prefix == "gwas") {
             $zipfile = $filedir . "FUMA_gwas" . $id . ".zip";
         } else {
@@ -1368,13 +1371,29 @@ class S2GController extends Controller
         if (Storage::exists($zipfile)) {
             Storage::delete($zipfile);
         }
-        $zip->open($zipfile, \ZipArchive::CREATE);
-        $zip->addFile(public_path() . '/README', "README");
-        foreach ($files as $f) {
-            $zip->addFile($filedir . $f, $f);
+
+        # create zip file and open it
+        $zip = new \ZipArchive();
+        $zip->open(Storage::path($zipfile), \ZipArchive::CREATE);
+
+        # add README file if exists in the public storage
+        if (Storage::disk('public')->exists('README')) {
+            $zip->addFile(Storage::disk('public')->path('README'), "README");
         }
+
+        # for each file, check if exists in the storage and add to zip file
+        foreach ($files as $f) {
+            if (Storage::exists($filedir . $f)) {
+                $abs_path = Storage::path($filedir . $f);
+                $zip->addFile($abs_path, $f);
+            }
+        }
+
+        # close zip file
         $zip->close();
-        return response()->download($zipfile);
+
+        # download zip file and delete it after download
+        return response()->download(Storage::path($zipfile))->deleteFileAfterSend(true);
     }
 
     public function checkPublish(Request $request)
