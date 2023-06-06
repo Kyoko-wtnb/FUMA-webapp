@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Facade;
 
 return [
 
+    'abs_path_of_g2f_jobs_on_host' => env('ABS_PATH_OF_G2F_JOBS_ON_HOST'),
     'abs_path_of_cell_jobs_on_host' => env('ABS_PATH_OF_CELL_JOBS_ON_HOST'),
     'abs_path_of_jobs_on_host' => env('ABS_PATH_OF_JOBS_ON_HOST', ''), 
     'temp_abs_path_to_jobs' => env('TEMP_ABS_PATH_TO_JOBS', ''),

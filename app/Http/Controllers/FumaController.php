@@ -525,13 +525,13 @@ class FumaController extends Controller
             $files[] = "geneIDs.txt";
         }
         if ($request->filled('expfile')) {
-            $tmp = File::glob($filedir . "*_exp.txt");
+            $tmp = Helper::my_glob($filedir, "/.*\_exp.txt/");
             for ($i = 0; $i < count($tmp); $i++) {
                 $files[] = preg_replace("/.*\/(.*_exp.txt)/", "$1", $tmp[$i]);
             }
         }
         if ($request->filled('DEGfile')) {
-            $tmp = File::glob($filedir . "*_DEG.txt");
+            $tmp = Helper::my_glob($filedir, "/.*\_DEG.txt/");
             for ($i = 0; $i < count($tmp); $i++) {
                 $files[] = preg_replace("/.*\/(.*_DEG.txt)/", "$1", $tmp[$i]);
             }
@@ -543,22 +543,37 @@ class FumaController extends Controller
             $files[] = "geneTable.txt";
         }
 
-        $zip = new \ZipArchive();
         if ($prefix == "public") {
             $zipfile = $filedir . "FUMA_gene2func_public" . $id . ".zip";
         } else {
             $zipfile = $filedir . "FUMA_gene2func" . $id . ".zip";
         }
-        if (File::exists($zipfile)) {
-            File::delete($zipfile);
+        if (Storage::exists($zipfile)) {
+            Storage::delete($zipfile);
         }
-        $zip->open($zipfile, \ZipArchive::CREATE);
-        $zip->addFile(public_path() . '/README_g2f', "README_g2f");
+
+        # create zip file and open it
+        $zip = new \ZipArchive();
+        $zip->open(Storage::path($zipfile), \ZipArchive::CREATE);
+                
+        # add README file if exists in the public storage
+        if (Storage::disk('public')->exists('README_g2f.txt')) {
+            $zip->addFile(Storage::disk('public')->path('README_g2f.txt'), "README_g2f");
+        }
+
+        # for each file, check if exists in the storage and add to zip file
         foreach ($files as $f) {
-            $zip->addFile($filedir . $f, $f);
+            if (Storage::exists($filedir . $f)) {
+                $abs_path = Storage::path($filedir . $f);
+                $zip->addFile($abs_path, $f);
+            }
         }
+
+        # close zip file
         $zip->close();
-        return response()->download($zipfile);
+
+        # download zip file and delete it after download
+        return response()->download(Storage::path($zipfile))->deleteFileAfterSend(true);
     }
 
     public function download_variants(Request $request)
@@ -601,16 +616,12 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $f = $filedir . $file;
-        if (file_exists($f)) {
-            $file = fopen($f, 'r');
-            $header = fgetcsv($file, 0, "\t");
-            $all_rows = array();
-            while ($row = fgetcsv($file, 0, "\t")) {
-                $all_rows[] = array_combine($header, $row);
-            }
-            echo json_encode($all_rows);
+
+        if (Storage::exists($filedir . $file)) {
+            $file = Helper::getFilesContents($filedir, [$file]);
+            return response()->json($file);
         }
+        return response()->json([]);
     }
 
     public function g2f_paramTable(Request $request)
@@ -639,8 +650,8 @@ class FumaController extends Controller
         }
 
         $out = [["No sumary table found.", "GENE2FUNC Job ID:" . $id]];
-        if (file_exists($filedir . "summary.txt")) {
-            $lines = file($filedir . "summary.txt");
+        if (Storage::exists($filedir . "summary.txt")) {
+            $lines = file(Storage::path($filedir . "summary.txt"));
             $out = [];
             foreach ($lines as $l) {
                 $l = preg_split("/\t/", chop($l));
@@ -668,8 +679,9 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $script = scripts_path('g2f_expPlot.py');
-        $data = shell_exec("python $script $filedir $dataset");
+        $uuid = Str::uuid();
+        $cmd = "docker run --rm --name job-g2f-$id-$uuid -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job laradock-fuma-g2f /bin/sh -c 'python g2f_expPlot.py job/ $dataset'";
+        $data = shell_exec($cmd);
         return $data;
     }
 
@@ -679,8 +691,9 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $script = scripts_path('g2f_DEGPlot.py');
-        $data = shell_exec("python $script $filedir");
+        $uuid = Str::uuid();
+        $cmd = "docker run --rm --name job-g2f-$id-$uuid -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job laradock-fuma-g2f /bin/sh -c 'python g2f_DEGPlot.py job/'";
+        $data = shell_exec($cmd);
         return $data;
     }
 
@@ -692,8 +705,8 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        if (file_exists($filedir . "geneTable.txt")) {
-            $f = fopen($filedir . "geneTable.txt", 'r');
+        if (Storage::exists($filedir . "geneTable.txt")) {
+            $f = fopen(Storage::path($filedir . "geneTable.txt"), 'r');
             $head = fgetcsv($f, 0, "\t");
             $head[] = "GeneCard";
             $all_rows = [];

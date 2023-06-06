@@ -159,7 +159,7 @@ $(document).ready(function(){
 			url: "geneQuery",
 			type: "POST",
 			data: {
-				filedir: filedir
+				id: id
 			},
 			beforeSend: function(){
 				var options = {

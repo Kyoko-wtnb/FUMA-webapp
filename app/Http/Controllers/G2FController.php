@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 use App\Models\G2FQuery;
 
 use Helper;
 use Auth;
-use JavaScript;
 
 class G2FController extends Controller
 {
@@ -175,7 +175,7 @@ class G2FController extends Controller
         Storage::append($paramfile, "adjPcut=$adjPcut");
         Storage::append($paramfile, "minOverlap=$minOverlap");
 
-        JavaScript::put([
+        $data = [
             'id' => $jobID,
             'filedir' => $filedir,
             'gtype' => $gtype,
@@ -188,22 +188,23 @@ class G2FController extends Controller
             'adjPmeth' => $adjPmeth,
             'adjPcut' => $adjPcut,
             'minOverlap' => $minOverlap
-        ]);
+        ];
 
-        return view('pages.gene2func', ['status' => 'query', 'id' => $jobID, 'page' => 'gene2func', 'prefix' => 'gene2func']);
+        return view('pages.gene2func', ['status' => 'query', 'id' => $jobID, 'page' => 'gene2func', 'prefix' => 'gene2func', 'data' => $data]);
     }
 
     public function geneQuery(Request $request)
     {
-        $filedir = $request->input('filedir');
+        $ref_data_path_on_host = config('app.ref_data_on_host_path');
+        $jobID = $request->input('id');
 
-        $script = Helper::scripts_path('gene2func.R');
-        exec("Rscript $script $filedir", $output, $error);
+        $uuid = Str::uuid();
+        $cmd = "docker run --rm --name job-g2f-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-g2f /bin/sh -c 'Rscript gene2func.R job/'";
+        exec($cmd, $output, $error);
 
-        $script = Helper::scripts_path('GeneSet.py');
-        exec("python $script $filedir", $output2, $error2);
-        exec("find " . $filedir . " -type d -exec chmod 775 {} \;");
-        exec("find " . $filedir . " -type f -exec chmod 664 {} \;");
+        $uuid = Str::uuid();
+        $cmd = "docker run --rm --name job-g2f-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-g2f /bin/sh -c 'python GeneSet.py job/'";
+        exec($cmd, $output, $error);
     }
 
     public function snp2geneGeneQuery(Request $request)
@@ -248,7 +249,7 @@ class G2FController extends Controller
             $minOverlap = 2;
 
             $gval = null;
-            $f = fopen($s2gfiledir . "genes.txt", 'r');
+            $f = fopen(Storage::path($s2gfiledir . 'genes.txt'), 'r');
             fgetcsv($f, 0, "\t");
             while ($row = fgetcsv($f, 0, "\t")) {
                 if ($gval == null) {
@@ -278,7 +279,7 @@ class G2FController extends Controller
             Storage::append($paramfile, "adjPcut=$adjPcut");
             Storage::append($paramfile, "minOverlap=$minOverlap");
 
-            JavaScript::put([
+            $data = [
                 'id' => $jobID,
                 'filedir' => $filedir,
                 'gtype' => $gtype,
@@ -291,8 +292,9 @@ class G2FController extends Controller
                 'adjPmeth' => $adjPmeth,
                 'adjPcut' => $adjPcut,
                 'minOverlap' => $minOverlap
-            ]);
-            return view('pages.gene2func', ['status' => 'query', 'id' => $jobID, 'page' => 'gene2func', 'prefix' => 'gene2func']);
+            ];
+
+            return view('pages.gene2func', ['status' => 'query', 'id' => $jobID, 'page' => 'gene2func', 'prefix' => 'gene2func', 'data' => $data]);
         } else {
             $jobID = $checkExists->jobID;
             return redirect("gene2func/" . $jobID);

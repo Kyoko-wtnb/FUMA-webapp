@@ -1,10 +1,8 @@
 #!/usr/bin/python
 import sys
-import os
 import re
 import pandas as pd
 import numpy as np
-import math
 import json
 import glob
 

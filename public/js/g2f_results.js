@@ -458,6 +458,7 @@ function GeneSet(id){
 			'GWAScatalog' : 'GWAS catalog reported genes'
 		};
 	d3.json(subdir+'/'+page+'/g2f_d3text/'+prefix+'/'+id+'/GS.txt', function(data){
+		data = data['GS.txt'];
 		if(data == undefined || data == null){
 			$('#GeneSet').html('<div style="text-align:center; padding-top:100px; padding-bottom:100px;"><span style="color: red; font-size: 24px;"><i class="fa fa-ban"></i> The number of input genes exist in selected background genes was 0 or 1.</span></br>'
 			+'The hypergeometric test is only performed if more than 2 genes are available.</div>');
