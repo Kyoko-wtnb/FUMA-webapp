@@ -35,6 +35,6 @@ class SubmitJob extends Model
 
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(SubmitJob::class);
+        return $this->belongsTo(SubmitJob::class, 'parent_id');
     }
 }

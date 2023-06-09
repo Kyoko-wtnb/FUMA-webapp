@@ -54,6 +54,8 @@ class S2GController extends Controller
 
         if ($user_id) {
             $results = SubmitJob::where('user_id', $user_id)
+                ->wherein('type', ['snp2gene', 'geneMap'])
+
                 ->orderBy('created_at', 'desc')
                 ->get();
         } else {
@@ -61,7 +63,6 @@ class S2GController extends Controller
         }
 
         $this->queueNewJobs();
-        $this->queueGeneMap();
 
         return response()->json($results);
     }
@@ -78,6 +79,8 @@ class S2GController extends Controller
         $results = array();
         if ($user_id) {
             $results = SubmitJob::where('user_id', $user_id)
+                ->wherein('type', ['snp2gene', 'geneMap'])
+
                 ->whereIn('status', ['QUEUED', 'RUNNING', 'NEW'])
                 ->get();
         }
@@ -110,14 +113,18 @@ class S2GController extends Controller
         $user_id = Auth::user()->id;
 
         $results = SubmitJob::where('user_id', $user_id)
+            ->wherein('type', ['snp2gene', 'geneMap'])
+
             ->get(['jobID', 'title']);
         return $results;
     }
 
     public function getFinishedjobsIDs()
-    { 
+    {
         $user_id = Auth::user()->id;
         $results = SubmitJob::where('user_id', $user_id)
+            ->wherein('type', ['snp2gene', 'geneMap'])
+
             ->where('status', 'OK')
             ->get(['jobID', 'title']);
         return $results;
@@ -135,32 +142,11 @@ class S2GController extends Controller
     {
         $user = Auth::user();
         $user_id = Auth::user()->id;
-        $newJobs = DB::table('SubmitJobs')
-                    ->where('user_id', $user_id)
-                    ->where('status', 'NEW')
-                    ->get()
-                    ->all();
-        if (count($newJobs) > 0) {
-            foreach ($newJobs as $job) {
-                $jobID = $job->jobID;
-                DB::table('SubmitJobs')
-                    ->where('jobID', $jobID)
-                    ->update(['status' => 'QUEUED']);
-                Snp2geneProcess::dispatch($user, $jobID);
-            }
-        }
-        return;
-    }
-
-    public function queueGeneMap()
-    {
-        $user = Auth::user();
-        $user_id = Auth::user()->id;
-        $newJobs = DB::table('SubmitJobs')
-                    ->where('user_id', $user_id)
-                    ->where('status', 'geneMap')
-                    ->get()
-                    ->all();
+        $newJobs = SubmitJob::where('user_id', $user_id)
+            ->wherein('type', ['snp2gene', 'geneMap'])
+            ->where('status', 'NEW')
+            ->get()
+            ->all();
         if (count($newJobs) > 0) {
             foreach ($newJobs as $job) {
                 $jobID = $job->jobID;
@@ -175,10 +161,7 @@ class S2GController extends Controller
 
     public function checkJobStatus($jobID)
     {
-        $user_id = Auth::user()->id;
-        $job = SubmitJob::where('jobID', $jobID)
-            ->where('user_id', $user_id)
-            ->first();
+        $job = SubmitJob::find($jobID);
         if (!$job) {
             return "Notfound";
         }
@@ -934,7 +917,7 @@ class S2GController extends Controller
         $submitJob->type = 'geneMap';
         $submitJob->parent_id = $oldID;
         $submitJob->title = $jobtitle;
-        $submitJob->status = 'geneMap';
+        $submitJob->status = 'NEW';
         $submitJob->save();
 
         // Get jobID (automatically generated)
@@ -1262,8 +1245,8 @@ class S2GController extends Controller
         Storage::append($paramfile, "ciMapAnnoDs=$ciMapAnnoDs");
         Storage::append($paramfile, "ciMapAnnoMeth=$ciMapAnnoMeth");
 
-        $this->queueGeneMap();
-        
+        $this->queueNewJobs();
+
         return redirect("/snp2gene#joblist-panel");
     }
 
@@ -1285,7 +1268,7 @@ class S2GController extends Controller
     {
         $jobID = $request->input('jobID');
         Storage::deleteDirectory(config('app.jobdir') . '/jobs/' . $jobID);
-        DB::table('SubmitJobs')->where('jobID', $jobID)->delete();
+        SubmitJob::find($jobID)->delete();
         return;
     }
 

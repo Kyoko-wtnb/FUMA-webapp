@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-use App\Models\G2FQuery;
+use App\Models\SubmitJob;
 
 use Helper;
 use Auth;
@@ -37,7 +36,7 @@ class G2FController extends Controller
     public function authcheck($jobID)
     {
         $email = Auth::user()->email;
-        $check = G2FQuery::where('jobID', $jobID)->first();
+        $check = SubmitJob::find($jobID);
         if ($check->email == $email) {
             return view('pages.gene2func', ['status' => 'getJob', 'id' => $jobID, 'page' => 'gene2func', 'prefix' => 'gene2func']);
         } else {
@@ -47,12 +46,14 @@ class G2FController extends Controller
 
     public function getJobList()
     {
-        $email = Auth::user()->email;
+        $user_id = Auth::user()->id;
 
-        if ($email) {
-            $queries = G2FQuery::where('email', $email)
-                        ->orderBy('created_at', 'desc')
-                        ->get();
+        if ($user_id) {
+            $queries = SubmitJob::with('parent:jobID,title')
+                ->where('user_id', $user_id)
+                ->where('type', 'gene2func')
+                ->orderBy('created_at', 'desc')
+                ->get();
         } else {
             $queries = array();
         }
@@ -64,15 +65,15 @@ class G2FController extends Controller
     {
         $jobID = $request->input('jobID');
         Storage::deleteDirectory(config('app.jobdir') . '/gene2func/' . $jobID);
-        G2FQuery::where('jobID', $jobID)->delete();
+        SubmitJob::find($jobID)->delete();
         return;
     }
 
     public function gene2funcSubmit(Request $request)
     {
-        $G2FQuery = new G2FQuery();
-        $date = date('Y-m-d');
+        $date = date('Y-m-d H:i:s');
         $email = Auth::user()->email;
+        $user_id = Auth::user()->id;
 
         if ($request->filled('title')) {
             $title = $request->input('title');
@@ -80,13 +81,17 @@ class G2FController extends Controller
             $title = "None";
         }
 
-        $G2FQuery->created_at = $date;
-        $G2FQuery->email = $email;
-        $G2FQuery->title = $title;
+        $submitJob = new SubmitJob();
 
-        $G2FQuery->save();
-        $jobID = $G2FQuery->jobID;
-        
+        $submitJob->email = $email;
+        $submitJob->user_id = $user_id;
+        $submitJob->type = 'gene2func';
+        $submitJob->title = $title;
+        $submitJob->status = 'NEW';
+        $submitJob->save();
+
+        $jobID = $submitJob->jobID;
+
         $filedir = config('app.jobdir') . '/gene2func/' . $jobID;
         Storage::makeDirectory($filedir);
         $filedir = $filedir . '/';
@@ -198,25 +203,34 @@ class G2FController extends Controller
         $ref_data_path_on_host = config('app.ref_data_on_host_path');
         $jobID = $request->input('id');
 
+        $job = SubmitJob::find($jobID);
+        $job->status = 'RUNNING';
+        $job->started_at = date("Y-m-d H:i:s");
+        $job->save();
+
+
         $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-g2f-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-g2f /bin/sh -c 'Rscript gene2func.R job/'";
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-g2f /bin/sh -c 'Rscript gene2func.R job/'";
         exec($cmd, $output, $error);
 
         $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-g2f-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-g2f /bin/sh -c 'python GeneSet.py job/'";
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-g2f /bin/sh -c 'python GeneSet.py job/'";
         exec($cmd, $output, $error);
+
+        $job->status = config('snp2gene_status_codes.15.short_name');
+        $job->completed_at = date("Y-m-d H:i:s");
+        $job->save();
     }
 
     public function snp2geneGeneQuery(Request $request)
     {
         $s2gID = $request->input('jobID');
 
-        $checkExists = DB::table('gene2func')->where('snp2gene', $s2gID)->first();
+        $checkExists = SubmitJob::where('parent_id', $s2gID)->first();
         if ($checkExists == null) {
             $date = date('Y-m-d H:i:s');
-            // $jobID;
-            // $filedir;
             $email = Auth::user()->email;
+            $user_id = Auth::user()->id;
 
             if ($request->filled('title')) {
                 $title = $request->input('title');
@@ -224,14 +238,19 @@ class G2FController extends Controller
                 $title = "None";
             }
 
-            $s2gTitle = DB::table('SubmitJobs')->where('jobID', $s2gID)->first()->title;
+            $s2gTitle = SubmitJob::find($s2gID)->title;
 
-            DB::table('gene2func')->insert(
-                ['title' => $title, 'email' => $email, 'snp2gene' => $s2gID, 'snp2geneTitle' => $s2gTitle, 'created_at' => $date]
-            );
+            $submitJob = new SubmitJob();
+            $submitJob->email = $email;
+            $submitJob->user_id = $user_id;
+            $submitJob->parent_id = $s2gID;
+            $submitJob->type = 'gene2func';
+            $submitJob->title = $title;
+            $submitJob->status = 'NEW';
+            $submitJob->save();
 
             // Get jobID (automatically generated)
-            $jobID = DB::table('gene2func')->where('snp2gene', $s2gID)->first()->jobID;
+            $jobID = $submitJob->jobID;
             $filedir = config('app.jobdir') . '/gene2func/' . $jobID;
             Storage::makeDirectory($filedir);
             $filedir = $filedir . '/';
