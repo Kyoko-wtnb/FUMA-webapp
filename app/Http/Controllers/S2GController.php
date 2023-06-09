@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\SubmitJob;
 use App\Jobs\Snp2geneProcess;
-use App\Jobs\GeneMapProcess;
 
 use Auth;
 use Helper;
@@ -51,10 +50,10 @@ class S2GController extends Controller
 
     public function getJobList()
     {
-        $email = Auth::user()->email;
+        $user_id = Auth::user()->id;
 
-        if ($email) {
-            $results = SubmitJob::where('email', $email)
+        if ($user_id) {
+            $results = SubmitJob::where('user_id', $user_id)
                 ->orderBy('created_at', 'desc')
                 ->get();
         } else {
@@ -74,10 +73,11 @@ class S2GController extends Controller
      */
     public function getNumberScheduledJobs()
     {
-        $email = Auth::user()->email;
+        $user_id = Auth::user()->id;
+
         $results = array();
-        if ($email) {
-            $results = SubmitJob::where('email', $email)
+        if ($user_id) {
+            $results = SubmitJob::where('user_id', $user_id)
                 ->whereIn('status', ['QUEUED', 'RUNNING', 'NEW'])
                 ->get();
         }
@@ -107,9 +107,9 @@ class S2GController extends Controller
 
     public function getjobIDs()
     {
-        $email = Auth::user()->email;
-        // $results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=?', [$email]);
-        $results = SubmitJob::where('email', $email)
+        $user_id = Auth::user()->id;
+
+        $results = SubmitJob::where('user_id', $user_id)
             ->get(['jobID', 'title']);
         return $results;
     }
@@ -134,8 +134,12 @@ class S2GController extends Controller
     public function queueNewJobs()
     {
         $user = Auth::user();
-        $email = $user->email;
-        $newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW')->get()->all();
+        $user_id = Auth::user()->id;
+        $newJobs = DB::table('SubmitJobs')
+                    ->where('user_id', $user_id)
+                    ->where('status', 'NEW')
+                    ->get()
+                    ->all();
         if (count($newJobs) > 0) {
             foreach ($newJobs as $job) {
                 $jobID = $job->jobID;
@@ -151,18 +155,19 @@ class S2GController extends Controller
     public function queueGeneMap()
     {
         $user = Auth::user();
-        $email = $user->email;
+        $user_id = Auth::user()->id;
         $newJobs = DB::table('SubmitJobs')
-            ->where('email', $email)
-            ->where('status', 'NEW_geneMap')
-            ->get()
-            ->all();
+                    ->where('user_id', $user_id)
+                    ->where('status', 'geneMap')
+                    ->get()
+                    ->all();
         if (count($newJobs) > 0) {
             foreach ($newJobs as $job) {
                 $jobID = $job->jobID;
-                DB::table('SubmitJobs')->where('jobID', $jobID)
+                DB::table('SubmitJobs')
+                    ->where('jobID', $jobID)
                     ->update(['status' => 'QUEUED']);
-                GeneMapProcess::dispatch($user, $jobID);
+                Snp2geneProcess::dispatch($user, $jobID);
             }
         }
         return;
@@ -170,10 +175,9 @@ class S2GController extends Controller
 
     public function checkJobStatus($jobID)
     {
-        $email = Auth::user()->email;
-
+        $user_id = Auth::user()->id;
         $job = SubmitJob::where('jobID', $jobID)
-            ->where('email', $email)
+            ->where('user_id', $user_id)
             ->first();
         if (!$job) {
             return "Notfound";
@@ -361,6 +365,7 @@ class S2GController extends Controller
         );
         $date = date('Y-m-d H:i:s');
         $email = Auth::user()->email;
+        $user_id = Auth::user()->id;
         // Implement the cap on max jobs in queue
         $numSchedJobs = $this->getNumberScheduledJobs();
         $queueCap = $this->getQueueCap();
@@ -406,6 +411,8 @@ class S2GController extends Controller
         // Create new job in database
         $submitJob = new SubmitJob;
         $submitJob->email = $email;
+        $submitJob->user_id = $user_id;
+        $submitJob->type = 'snp2gene';
         $submitJob->title = $jobtitle;
         $submitJob->status = 'NEW';
         $submitJob->save();
@@ -912,6 +919,7 @@ class S2GController extends Controller
         $date = date('Y-m-d H:i:s');
         $oldID = $request->input("geneMapID");
         $email = Auth::user()->email;
+        $user_id = Auth::user()->id;
 
         $jobtitle = "";
         if ($request->filled("geneMapTitle")) {
@@ -922,8 +930,11 @@ class S2GController extends Controller
         // Create new job in database
         $submitJob = new SubmitJob;
         $submitJob->email = $email;
+        $submitJob->user_id = $user_id;
+        $submitJob->type = 'geneMap';
+        $submitJob->parent_id = $oldID;
         $submitJob->title = $jobtitle;
-        $submitJob->status = 'NEW_geneMap';
+        $submitJob->status = 'geneMap';
         $submitJob->save();
 
         // Get jobID (automatically generated)
