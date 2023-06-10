@@ -37,11 +37,9 @@ class S2GController extends Controller
 
     public function authcheck($jobID)
     {
-        $email = Auth::user()->email;
-        $check = DB::table('SubmitJobs')
-            ->where('jobID', $jobID)
-            ->first();
-        if ($check->email == $email) {
+        $check = SubmitJob::find($jobID);
+
+        if ($check->jobID == $jobID) {
             return view('pages.snp2gene', ['id' => $jobID, 'status' => 'jobquery', 'page' => 'snp2gene', 'prefix' => 'jobs']);
         } else {
             return view('pages.snp2gene', ['id' => null, 'status' => null, 'page' => 'snp2gene', 'prefix' => 'jobs']);

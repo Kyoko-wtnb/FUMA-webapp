@@ -35,9 +35,8 @@ class G2FController extends Controller
 
     public function authcheck($jobID)
     {
-        $email = Auth::user()->email;
         $check = SubmitJob::find($jobID);
-        if ($check->email == $email) {
+        if ($check->jobID == $jobID) {
             return view('pages.gene2func', ['status' => 'getJob', 'id' => $jobID, 'page' => 'gene2func', 'prefix' => 'gene2func']);
         } else {
             return view('pages.gene2func', ['status' => null, 'id' => $jobID, 'page' => 'gene2func', 'prefix' => 'gene2func']);
