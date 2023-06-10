@@ -295,7 +295,7 @@ class CellController extends Controller
         $jobID = $request->input('id');
         $ds = $request->input('ds');
         $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-cell-$jobID-$uuid -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-celltype_plot_data /bin/sh -c 'python celltype_perDatasetPlotData.py job/ $ds'";
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-celltype_plot_data /bin/sh -c 'python celltype_perDatasetPlotData.py job/ $ds'";
         $json = shell_exec($cmd);
         return $json;
     }
@@ -304,7 +304,7 @@ class CellController extends Controller
     {
         $jobID = $request->input('id');
         $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-cell-$jobID-$uuid -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-celltype_plot_data /bin/sh -c 'python celltype_stepPlotData.py job/'";
+        $cmd = "docker run --rm --name job-$jobID-$uuid -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-celltype_plot_data /bin/sh -c 'python celltype_stepPlotData.py job/'";
         $json = shell_exec($cmd);
         return $json;
     }

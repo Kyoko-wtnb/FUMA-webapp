@@ -52,7 +52,7 @@ class CelltypeProcess implements ShouldQueue
         Storage::put($errorfile, "----- magma_celltype.R -----\n");
         
         $uuid = Str::uuid();
-        $new_cmd = "docker run --rm --name job-cell-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-magma_celltype /bin/sh -c 'Rscript magma_celltype.R job >>job/job.log 2>>job/error.log'";
+        $new_cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-magma_celltype /bin/sh -c 'Rscript magma_celltype.R job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
         Storage::append($logfile, $new_cmd . "\n");
 
