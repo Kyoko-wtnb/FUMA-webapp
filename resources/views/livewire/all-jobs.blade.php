@@ -45,6 +45,7 @@
                                 @endif
                                 <td> {{ $job['jobID'] }} </td>
                                 <td> {{ $job['title'] }} </td>
+                                <td> {{ $job['type'] }} </td>
                                 <td> {{ $job['created_at'] }} </td>
                                 <td> {{ $job['status'] }} </td>
                                 <td>
