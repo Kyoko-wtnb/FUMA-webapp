@@ -680,7 +680,7 @@ class FumaController extends Controller
             $filedir .= 'g2f/';
         }
         $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-g2f-$id-$uuid -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job laradock-fuma-g2f /bin/sh -c 'python g2f_expPlot.py job/ $dataset'";
+        $cmd = "docker run --rm --name job-$id-$uuid -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job laradock-fuma-g2f /bin/sh -c 'python g2f_expPlot.py job/ $dataset'";
         $data = shell_exec($cmd);
         return $data;
     }
@@ -692,7 +692,7 @@ class FumaController extends Controller
             $filedir .= 'g2f/';
         }
         $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-g2f-$id-$uuid -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job laradock-fuma-g2f /bin/sh -c 'python g2f_DEGPlot.py job/'";
+        $cmd = "docker run --rm --name job-$id-$uuid -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job laradock-fuma-g2f /bin/sh -c 'python g2f_DEGPlot.py job/'";
         $data = shell_exec($cmd);
         return $data;
     }

@@ -177,7 +177,7 @@ function getJobList(){
 					val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">Go to results</a>';
 				}
 				items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title
-					+"</td><td>"+val.snp2gene+"</td><td>"+val.snp2geneTitle
+					+"</td><td>"+(val.parent != null ? val.parent.jobID : '-')+"</td><td>"+(val.parent != null ? val.parent.title : '-')
 					+"</td><td>"+val.created_at+"</td><td>"+val.status
 					+'</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
 					+val.jobID+'"/></td></tr>';

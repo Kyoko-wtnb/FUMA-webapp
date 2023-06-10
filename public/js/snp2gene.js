@@ -465,7 +465,7 @@ function getJobList() {
 					}
 
 					items = items + "<tr><td>" + val.jobID + "</td><td>" + val.title
-						+ "</td><td>" + val.created_at + "</td><td>" + val.status + "</td><td>" + g2fbutton
+						+ "</td><td>" + val.created_at + "</td><td>" + (val.started_at != null ? val.started_at : '-') + "</td><td>" + (val.completed_at != null ? val.completed_at : '-') + "</td><td>" + val.status + "</td><td>" + g2fbutton
 						+ '</td><td>' + publish + '</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
 						+ val.jobID + '"/></td></tr>';
 				});

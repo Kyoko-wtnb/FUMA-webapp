@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 use Illuminate\Database\Eloquent\Model;
 
 class SubmitJob extends Model
@@ -23,5 +26,15 @@ class SubmitJob extends Model
     protected function serializeDate($date)
     {
         return $date->format('Y-m-d H:i:s');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(SubmitJob::class, 'parent_id');
     }
 }

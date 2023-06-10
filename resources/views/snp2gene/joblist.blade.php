@@ -12,6 +12,8 @@
 						<th>Job ID</th>
 						<th>Job name</th>
 						<th>Submit date</th>
+						<th>Started at</th>
+						<th>Completed at</th>
 						<th>Status
 							<a class="infoPop" data-toggle="popover" data-html="true" data-content="<b>NEW: </b>The job has been submitted.<br/>
 								<b>QUEUED</b>: The job has been dispatched to queue.<br/><b>RUNNING</b>: The job is running.<br/>

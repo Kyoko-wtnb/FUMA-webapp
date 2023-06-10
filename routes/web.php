@@ -114,7 +114,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/getPublicIDs', [S2GController::class, 'getPublicIDs']);
         Route::post('/newJob', [S2GController::class, 'newJob']);
         Route::post('/getjobIDs', [S2GController::class, 'getjobIDs']);
-        Route::post('/getGeneMapIDs', [S2GController::class, 'getGeneMapIDs']);
+        Route::post('/getGeneMapIDs', [S2GController::class, 'getFinishedjobsIDs']);
         Route::post('/geneMap', [S2GController::class, 'geneMap']);
         Route::post('/loadParams', [S2GController::class, 'loadParams']);
         Route::get('/checkJobStatus/{jobid}', [S2GController::class, 'checkJobStatus']);
