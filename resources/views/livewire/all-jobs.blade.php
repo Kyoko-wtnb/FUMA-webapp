@@ -19,6 +19,7 @@
                             <tr>
                                 <th>Job ID</th>
                                 <th>Job name</th>
+                                <th>Type</th>
                                 <th>Submit date</th>
                                 <th>Status
                                     <a class="infoPop" data-toggle="popover" data-html="true"
@@ -45,6 +46,7 @@
                                 @endif
                                 <td> {{ $job['jobID'] }} </td>
                                 <td> {{ $job['title'] }} </td>
+                                <td> {{ $job['type'] }} </td>
                                 <td> {{ $job['created_at'] }} </td>
                                 <td> {{ $job['status'] }} </td>
                                 <td>

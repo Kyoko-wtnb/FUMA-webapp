@@ -37,6 +37,30 @@ class AllJobs extends Component
             $column_names = array_values($column_names);
         }
 
+        $index = array_search('uuid', $column_names);
+        if ($index !== FALSE) {
+            unset($column_names[$index]);
+            $column_names = array_values($column_names);
+        }
+
+        $index = array_search('parent_id', $column_names);
+        if ($index !== FALSE) {
+            unset($column_names[$index]);
+            $column_names = array_values($column_names);
+        }
+
+        $index = array_search('started_at', $column_names);
+        if ($index !== FALSE) {
+            unset($column_names[$index]);
+            $column_names = array_values($column_names);
+        }
+
+        $index = array_search('completed_at', $column_names);
+        if ($index !== FALSE) {
+            unset($column_names[$index]);
+            $column_names = array_values($column_names);
+        }
+
         $columns = implode(', "|", ', $column_names);
 
         $results = SubmitJob::select('email', DB::raw('GROUP_CONCAT(' . $columns . ' ORDER BY created_at DESC) as columns'))
@@ -56,6 +80,8 @@ class AllJobs extends Component
                     ),
                     'name' => array(
                         'job-'. $tmp['jobID'],
+                        // 'job-g2f-'. $tmp['jobID'],
+                        // 'job-cell-'. $tmp['jobID'],
                     ),
                 );
                 $parameters = 'filters=' . json_encode($parameters);
