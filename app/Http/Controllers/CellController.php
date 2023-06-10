@@ -9,6 +9,8 @@ use Helper;
 use Auth;
 use Illuminate\Support\Str;
 use App\Jobs\CelltypeProcess;
+use App\Models\SubmitJob;
+
 
 class CellController extends Controller
 {
@@ -34,9 +36,9 @@ class CellController extends Controller
 
     public function authcheck($jobID)
     {
-        $email = Auth::user()->email;
-        $check = DB::table('celltype')->where('jobID', $jobID)->first();
-        if ($check->email == $email) {
+        $check = SubmitJob::find($jobID);
+
+        if ($check->jobID == $jobID) {
             return view('pages.celltype', ['id' => $jobID, 'status' => 'jobquery', 'page' => 'celltype', 'prefix' => 'celltype']);
         } else {
             return view('pages.celltype', ['id' => null, 'status' => null, 'page' => 'celltype', 'prefix' => 'celltype']);
@@ -45,8 +47,8 @@ class CellController extends Controller
 
     public function checkJobStatus($jobID)
     {
-        $job = DB::table('celltype')->where('jobID', $jobID)
-            ->where('email', Auth::user()->email)->first();
+        $job = SubmitJob::find($jobID);
+
         if (!$job) {
             return "Notfound";
         }
@@ -55,8 +57,11 @@ class CellController extends Controller
 
     public function getS2GIDs()
     {
-        $email = Auth::user()->email;
-        $results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=? AND status="OK"', [$email]);
+        $user_id = Auth::user()->id;
+        $results = SubmitJob::where('user_id', $user_id)
+            ->where('type', 'snp2gene')
+            ->where('status', 'OK')
+            ->get(['jobID', 'title']);
         return $results;
     }
 
@@ -72,32 +77,38 @@ class CellController extends Controller
 
     public function getJobList()
     {
-        $email = Auth::user()->email;
+        $user_id = Auth::user()->id;
 
-        if ($email) {
-            $results = DB::table('celltype')->where('email', $email)
+        if ($user_id) {
+            $queries = SubmitJob::with('parent:jobID,title')
+                ->where('user_id', $user_id)
+                ->where('type', 'celltype')
                 ->orderBy('created_at', 'desc')
                 ->get();
         } else {
-            $results = array();
+            $queries = array();
         }
 
         $this->queueNewJobs();
 
-        return response()->json($results);
+        return response()->json($queries);
     }
 
     public function queueNewJobs()
     {
         $user = Auth::user();
-        $email = $user->email;
-        $newJobs = DB::table('celltype')->where('email', $email)->where('status', 'NEW')->get()->all();
+        $user_id = $user->id;
+        $newJobs = SubmitJob::where('user_id', $user_id)
+            ->where('type', 'celltype')
+            ->where('status', 'NEW')
+            ->get()
+            ->all();
         if (count($newJobs) > 0) {
             foreach ($newJobs as $job) {
                 $jobID = $job->jobID;
-                DB::table('celltype')->where('jobID', $jobID)
+                DB::table('SubmitJobs')
+                    ->where('jobID', $jobID)
                     ->update(['status' => 'QUEUED']);
-
                 CelltypeProcess::dispatch($user, $jobID);
             }
         }
@@ -108,7 +119,7 @@ class CellController extends Controller
     {
         $jobID = $request->input('jobID');
         Storage::deleteDirectory(config('app.jobdir') . '/celltype/' . $jobID);
-        DB::table('celltype')->where('jobID', $jobID)->delete();
+        SubmitJob::find($jobID)->delete();
         return;
     }
 
@@ -116,6 +127,8 @@ class CellController extends Controller
     {
         $date = date('Y-m-d H:i:s');
         $email = Auth::user()->email;
+        $user_id = Auth::user()->id;
+
         $s2gID = $request->input('s2gID');
         $ensg = 0;
         if ($request->filled('ensg_id')) {
@@ -139,23 +152,17 @@ class CellController extends Controller
         } else {
             $title = "None";
         }
-        $s2gTitle = "None";
-        if ($s2gID > 0) {
-            $s2gTitle = DB::table('SubmitJobs')->where('jobID', $s2gID)
-                ->first()->title;
-        }
-        if ($s2gID == 0) {
-            $jobID = DB::table('celltype')->insertGetId(
-                ['title' => $title, 'email' => $email, 'created_at' => $date, 'status' => 'NEW']
-            );
-        } else {
-            $jobID = DB::table('celltype')->insertGetId(
-                [
-                    'title' => $title, 'email' => $email, 'snp2gene' => $s2gID,
-                    'snp2geneTitle' => $s2gTitle, 'created_at' => $date, 'status' => 'NEW'
-                ]
-            );
-        }
+
+        // Create new job in database
+        $submitJob = new SubmitJob;
+        $submitJob->email = $email;
+        $submitJob->user_id = $user_id;
+        $submitJob->type = 'celltype';
+        $submitJob->parent_id = $s2gID;
+        $submitJob->title = $title;
+        $submitJob->status = 'NEW';
+        $submitJob->save();
+        $jobID = $submitJob->jobID;
 
         $filedir = config('app.jobdir') . '/celltype/' . $jobID;
         Storage::makeDirectory($filedir);

@@ -136,4 +136,12 @@ return [
         'email_message' => '',
         'type' => 'err',
     ],
+
+    17 => [
+        'short_name' => 'ERROR:cellType',
+        'long_name' => '',
+        'description' => '',
+        'email_message' => '',
+        'type' => 'err',
+    ],
 ];

@@ -9,7 +9,9 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
+
+use App\Models\SubmitJob;
+use JobHelper;
 
 // in the old one the CelltypeProcess class extends Job. Check what is the different
 class CelltypeProcess implements ShouldQueue
@@ -19,6 +21,13 @@ class CelltypeProcess implements ShouldQueue
 
     protected $user;
     protected $jobID;
+
+    /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
 
     /**
      * Create a new job instance.
@@ -34,13 +43,15 @@ class CelltypeProcess implements ShouldQueue
      */
     public function handle(): void
     {
-        // Update status
-        $email = $this->user->email;
+        // Update status when job is started
         $jobID = $this->jobID;
-        DB::table('celltype')->where('jobID', $jobID)
-            ->update(['status' => 'RUNNING']);
-        $title = DB::table('celltype')->where('jobID', $jobID)
-            ->first()->title;
+        $started_at = date("Y-m-d H:i:s");
+        SubmitJob::where('jobID', $jobID)
+            ->update([
+                'status' => 'RUNNING',
+                'started_at' => $started_at,
+                'uuid' => $this->job->uuid()
+            ]);
 
         $filedir = config('app.jobdir') . '/celltype/' . $jobID . '/';
         $ref_data_path_on_host = config('app.ref_data_on_host_path');
@@ -58,53 +69,19 @@ class CelltypeProcess implements ShouldQueue
 
         exec($new_cmd, $output, $error);
 
-
         if ($error != 0) {
-            // $this->chmod($filedir);
-            DB::table('celltype')->where('jobID', $jobID)
-                ->update(['status' => 'ERROR']);
-            if ($email != null) {
-                $this->sendJobCompMail($email, $title, $jobID, 'error');
-                return;
-            }
-        } else {
-            // $this->chmod($filedir);
-            DB::table('celltype')->where('jobID', $jobID)
-                ->update(['status' => 'OK']);
-            if ($email != null) {
-                $this->sendJobCompMail($email, $title, $jobID, 'OK');
-                return;
-            }
+            JobHelper::rmFiles($filedir);
+            JobHelper::JobTerminationHandling($jobID, 17, 'CellType error occured');
+            return;
         }
+
+        JobHelper::rmFiles($filedir);
+        JobHelper::JobTerminationHandling($jobID, 15);
+        return;
     }
 
-    public function sendJobCompMail($email, $title, $jobID, $status)
+    public function failed(): void
     {
-        $user = $this->user;
-        // if ($status == "error") {
-        //     $data = [
-        //         'jobtitle' => $title,
-        //         'jobID' => $jobID,
-        //     ];
-        //     Mail::send('emails.cellJobError', $data, function ($m) use ($user) {
-        //         $m->from('noreply@ctglab.nl', "FUMA web application");
-        //         $m->to($user->email, $user->name)->subject("FUMA an error occured");
-        //     });
-        // } else {
-        //     $data = [
-        //         'jobtitle' => $title,
-        //         'jobID' => $jobID,
-        //     ];
-        //     Mail::send('emails.cellJobComplete', $data, function ($m) use ($user) {
-        //         $m->from('noreply@ctglab.nl', "FUMA web application");
-        //         $m->to($user->email, $user->name)->subject("FUMA your job has been completed");
-        //     });
-        // }
-    }
-
-    public function chmod($filedir)
-    {
-        exec("find " . $filedir . " -type d -exec chmod 775 {} \;");
-        exec("find " . $filedir . " -type f -exec chmod 664 {} \;");
+        JobHelper::JobTerminationHandling($this->jobID, 16);
     }
 }
