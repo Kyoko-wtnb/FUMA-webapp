@@ -19,6 +19,7 @@
                             <tr>
                                 <th>Job ID</th>
                                 <th>Job name</th>
+                                <th>Type</th>
                                 <th>Submit date</th>
                                 <th>Status
                                     <a class="infoPop" data-toggle="popover" data-html="true"
