@@ -118,8 +118,10 @@ class S2GController extends Controller
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
-				DB::table('SubmitJobs') -> where('jobID', $jobID)
-					-> update(['status'=>'QUEUED']);
+				DB::transaction(function () {
+					DB::table('SubmitJobs') -> where('jobID', $jobID)
+						-> update(['status'=>'QUEUED']);
+				});
 				$this->dispatch(new snp2geneProcess($user, $jobID));
 			}
 		}
@@ -133,8 +135,10 @@ class S2GController extends Controller
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
-				DB::table('SubmitJobs') -> where('jobID', $jobID)
-					-> update(['status'=>'QUEUED']);
+				DB::transaction(function () {
+					DB::table('SubmitJobs') -> where('jobID', $jobID)
+						-> update(['status'=>'QUEUED']);
+				});
 				$this->dispatch(new geneMapProcess($user, $jobID));
 			}
 		}
