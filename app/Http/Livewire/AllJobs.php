@@ -79,9 +79,7 @@ class AllJobs extends Component
                         'com.docker.compose.project=laradock-fuma',
                     ),
                     'name' => array(
-                        'job-'. $tmp['jobID'],
-                        // 'job-g2f-'. $tmp['jobID'],
-                        // 'job-cell-'. $tmp['jobID'],
+                        'job-'. $tmp['jobID'] . '-',
                     ),
                 );
                 $parameters = 'filters=' . json_encode($parameters);

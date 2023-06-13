@@ -151,7 +151,7 @@ class S2GController extends Controller
                 DB::table('SubmitJobs')
                     ->where('jobID', $jobID)
                     ->update(['status' => 'QUEUED']);
-                Snp2geneProcess::dispatch($user, $jobID);
+                Snp2geneProcess::dispatch($user, $jobID)->afterCommit();
             }
         }
         return;

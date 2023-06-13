@@ -109,7 +109,7 @@ class CellController extends Controller
                 DB::table('SubmitJobs')
                     ->where('jobID', $jobID)
                     ->update(['status' => 'QUEUED']);
-                CelltypeProcess::dispatch($user, $jobID);
+                CelltypeProcess::dispatch($user, $jobID)->afterCommit();
             }
         }
         return;
