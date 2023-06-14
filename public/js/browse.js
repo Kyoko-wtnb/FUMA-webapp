@@ -179,21 +179,21 @@ function getGwasList(){
 	  .empty()
 	  .append('<tr><td colspan="6" style="text-align:center;">Retrieving data</td></tr>');
 
-	$.getJSON( subdir + "/browse/getGwasList", function( data ) {
+	$.getJSON(subdir + "/browse/getGwasList", function( data ) {
 		var items = '<tr><td colspan="6" style="text-align: center;">No Available GWAS Found</td></tr>';
 		if(data.length){
 			items = '';
 			$.each( data, function( key, val ) {
-				val.title = '<a href="'+subdir+'/browse/'+val.id+'">'+val.title+'</a>';
+				// val.title = '<a href="'+subdir+'/browse/'+val.jobID+'">'+val.title+'</a>';
 				// if(val.sumstats_link != "NA"){
 				if(val.sumstats_link.startsWith("http") | val.sumstats_link.startsWith("ftp")){
 					val.sumstats_link = '<a href="'+val.sumstats_link+'" target="_blank">'+val.sumstats_link+'</a>'
 				}
-				items = items + "<tr><td>"+val.id+"</td><td>"+val.title+"</td><td>"+val.author+"</td><td>"
-					+val.email+"</td><td>"+val.phenotype+"</td><td>"+val.publication+"</td>"
+				items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"+val.author+"</td><td>"
+					+val.publication_email+"</td><td>"+val.phenotype+"</td><td>"+val.publication+"</td>"
 					+'<td style="word-wrap:break-word;word-break:break-all;">'
 					+val.sumstats_link+"</td><td>"+val.sumstats_ref+"</td><td>"+val.notes+"</td><td>"
-					+val.created_at+"</td><td>"+val.update_at+"</td></tr>";
+					+val.published_at+"</td></tr>";
 			});
 		}
 

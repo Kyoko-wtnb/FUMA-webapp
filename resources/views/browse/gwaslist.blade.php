@@ -20,16 +20,15 @@
 	            <thead>
 	                <tr>
 	                    <th>ID</th>
-						<th>title</th>
-						<th>author</th>
-						<th>email</th>
-						<th>phenotype</th>
-						<th>publication</th>
-						<th>sumstats</th>
-						<th>sumstats reference</th>
-						<th>notes</th>
-	                    <th>created date</th>
-	                    <th>last update</th>
+						<th>Title</th>
+						<th>Author</th>
+						<th>Email</th>
+						<th>Phenotype</th>
+						<th>Publication</th>
+						<th>Sumstats</th>
+						<th>Sumstats reference</th>
+						<th>Notes</th>
+	                    <th>Publication date</th>
 	                </tr>
 	            </thead>
 	            <tbody>

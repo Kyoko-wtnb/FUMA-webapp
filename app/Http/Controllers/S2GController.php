@@ -1387,129 +1387,85 @@ class S2GController extends Controller
 
     public function checkPublish(Request $request)
     {
-        $id = $request->input('id');
+        $job_id = $request->input('id');
+        $job = SubmitJob::find($job_id);
         $out = [];
-        $out['publish'] = collect(DB::select('SELECT jobID FROM PublicResults WHERE jobID=?', [$id]))->count();
-        if ($out['publish'] == 0) {
-            $check = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->count();
-            if ($check > 0) {
-                $out['g2f'] = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->first()->jobID;
-            }
-            $out['author'] = Auth::user()->name;
-            $out['email'] = Auth::user()->email;
-            $out['title'] = collect(DB::select('SELECT title FROM SubmitJobs WHERE jobID=?', [$id]))->first()->title;
-            return json_encode($out);
+
+        $out['publish'] = $job->is_public;
+        $out['title'] = $job->title;
+        $out['g2f'] = $job->child->jobID;
+
+        if ($job->author != null) {
+            $out['author'] = $job->author;
         } else {
-            $out['entry'] = collect(DB::select('SELECT * FROM PublicResults WHERE jobID=?', [$id]))->first();
-            return json_encode($out);
+            $out['author'] = $job->user->name;
         }
+
+        if ($job->publication_email != null) {
+            $out['email'] = $job->publication_email;
+        } else {
+            $out['email'] = $job->user->email;
+        }
+
+        if ($job->phenotype != null) {
+            $out['phenotype'] = $job->phenotype;
+        } else {
+            $out['phenotype'] = "";
+        }
+
+        if ($job->publication != null) {
+            $out['publication'] = $job->publication;
+        } else {
+            $out['publication'] = "";
+        }
+
+        if ($job->publication_link != null) {
+            $out['publication_link'] = $job->publication_link;
+        } else {
+            $out['publication_link'] = "";
+        }
+
+        if ($job->sumstats_ref != null) {
+            $out['sumstats_ref'] = $job->sumstats_ref;
+        } else {
+            $out['sumstats_ref'] = "";
+        }
+
+        if ($job->notes != null) {
+            $out['notes'] = $job->notes;
+        } else {
+            $out['notes'] = "";
+        }
+
+        return json_encode($out);
     }
 
-    public function publish(Request $request) // TODO: should be modified
+    public function publish(Request $request)
     {
-        $date = date('Y-m-d');
         $jobID = $request->input('jobID');
-        $g2f_jobID = $request->input('g2f_jobID');
-        $title = $request->input('title');
-        $author = $request->input('author');
-        $email = $request->input('email');
-        $pheno = $request->input('phenotype');
-        $publication = $request->input('publication');
-        $sumstats_link = $request->input('sumstats_link');
-        $sumstats_ref = $request->input('sumstats_ref');
-        $notes = $request->input('notes');
-
-        if (strlen($pheno) == 0) {
-            $pheno = 'NA';
-        }
-        if (strlen($publication) == 0) {
-            $publication = 'NA';
-        }
-        if (strlen($sumstats_link) == 0) {
-            $sumstats_link = 'NA';
-        }
-        if (strlen($sumstats_ref) == 0) {
-            $sumstats_ref = 'NA';
-        }
-        if (strlen($notes) == 0) {
-            $notes = 'NA';
-        }
-
-        DB::table('PublicResults')->insert(
+        SubmitJob::where('jobID', $jobID)->update(
             [
-                'jobID' => $jobID, 'g2f_jobID' => $g2f_jobID, 'title' => $title,
-                'author' => $author, 'email' => $email, 'phenotype' => $pheno,
-                'publication' => $publication, 'sumstats_link' => $sumstats_link,
-                'sumstats_ref' => $sumstats_ref, 'notes' => $notes,
-                'created_at' => $date, 'update_at' => $date
+                'is_public'             => 1,
+                'title'                 => $request->input('title'),
+                'author'                => $request->input('author'),
+                'publication_email'     => $request->input('email'),
+                'phenotype'             => $request->input('phenotype'),
+                'publication'           => $request->input('publication'),
+                'sumstats_link'         => $request->input('sumstats_link'),
+                'sumstats_ref'          => $request->input('sumstats_ref'),
+                'notes'                 => $request->input('notes'),
+                'published_at'          => date('Y-m-d H:i:s')
             ]
         );
-
-        $id = collect(DB::select('SELECT id FROM PublicResults WHERE jobID=?', [$jobID]))->first()->id;
-        $filedir = config('app.jobdir') . '/public/' . $id;
-        Storage::makeDirectory($filedir);
-        exec('cp -r ' . config('app.jobdir') . '/jobs/' . $jobID . '/* ' . $filedir . '/');
-        exec('rm ' . $filedir . '/*.zip');
-        if (strlen($g2f_jobID) > 0) {
-            Storage::makeDirectory($filedir . '/g2f');
-            exec('cp -r ' . config('app.jobdir') . '/gene2func/' . $g2f_jobID . '/* ' . $filedir . '/g2f/');
-            exec('rm ' . $filedir . '/g2f/*.zip');
-        }
-        return;
-    }
-
-    public function updatePublicRes(Request $request)
-    {
-        $date = date('Y-m-d');
-        $jobID = $request->input('jobID');
-        $update = array();
-        $update['g2f_jobID'] = $request->input('g2f_jobID');
-        $update['title'] = $request->input('title');
-        $update['author'] = $request->input('author');
-        $update['email'] = $request->input('email');
-        $update['phenotype'] = $request->input('phenotype');
-        $update['publication'] = $request->input('publication');
-        $update['sumstats_link'] = $request->input('sumstats_link');
-        $update['sumstats_ref'] = $request->input('sumstats_ref');
-        $update['notes'] = $request->input('notes');
-
-        if (strlen($update['phenotype']) == 0) {
-            $pheno = 'NA';
-        }
-        if (strlen($update['publication']) == 0) {
-            $publication = 'NA';
-        }
-        if (strlen($update['sumstats_link']) == 0) {
-            $sumstats_link = 'NA';
-        }
-        if (strlen($update['sumstats_ref']) == 0) {
-            $sumstats_ref = 'NA';
-        }
-        if (strlen($update['notes']) == 0) {
-            $notes = 'NA';
-        }
-
-        $current = collect(DB::select('SELECT g2f_jobID,title,author,email,phenotype,publication,sumstats_link,sumstats_ref,notes FROM PublicResults WHERE jobID=?', [$jobID]))->first();
-        $updated = false;
-        foreach ($current as $k => $v) {
-            if ($v != $update[$k]) {
-                DB::table('PublicResults')->where('jobID', $jobID)->update([$k => $update[$k]]);
-                $updated = true;
-            }
-        }
-        if ($updated) {
-            DB::table('PublicResults')->where('jobID', $jobID)->update(['update_at' => $date]);
-        }
         return;
     }
 
     public function deletePublicRes(Request $request)
     {
         $jobID = $request->input('jobID');
-        $id = collect(DB::select('SELECT id FROM PublicResults WHERE jobID=?', [$jobID]))->first()->id;
-        $filedir = config('app.jobdir') . '/public/' . $id;
-        DB::table('PublicResults')->where('jobID', $jobID)->delete();
-        Storage::deletedirectory($filedir);
+        $job = SubmitJob::find($jobID);
+        $job->is_public = 0;
+        $job->save();
         return;
     }
 

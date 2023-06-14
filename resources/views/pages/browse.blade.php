@@ -60,10 +60,14 @@
 
 @section('scripts')
 	{{-- Imports from the web --}}
-	<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.0/js/bootstrap-select.min.js"></script>
+	<script src="https://cdn.datatables.net/v/dt/dt-1.13.4/b-2.3.6/sl-1.6.2/datatables.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 
-	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.0/js/bootstrap-select.min.js"></script>
+	{{-- <script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.0/js/bootstrap-select.min.js"></script> --}}
 	
 	<script type="text/javascript" src="//cdn.datatables.net/select/1.2.0/js/dataTables.select.min.js"></script>
 	<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js"></script>
@@ -79,12 +83,6 @@
 	<script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 	<script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
 
-	{{-- Imports from the project --}}
-	<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
-	<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?135"></script>
-	<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?135"></script>
-	<script type="text/javascript" src="{!! URL::asset('js/browse.js') !!}?135"></script>
-
 	{{-- Hand written ones --}}
 	<script type="text/javascript">
 		$.ajaxSetup({
@@ -96,4 +94,9 @@
 		var loggedin = "{{ Auth::check() }}";
 	</script>
 
+	{{-- Imports from the project --}}
+	<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
+	<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?135"></script>
+	<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?135"></script>
+	<script type="text/javascript" src="{!! URL::asset('js/browse.js') !!}?135"></script>
 @endsection

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -36,5 +37,10 @@ class SubmitJob extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(SubmitJob::class, 'parent_id');
+    }
+
+    public function child(): HasOne
+    {
+        return $this->hasOne(SubmitJob::class, 'parent_id')->withDefault(['jobID' => null]);
     }
 }

@@ -28,38 +28,21 @@ class AllJobs extends Component
     {
         $client = new DockerClient('/var/run/docker.sock');
 
-        $tableName = (new SubmitJob())->getTable();
-        $column_names = DB::getSchemaBuilder()->getColumnListing($tableName);
+        // $tableName = (new SubmitJob())->getTable();
+        // $column_names = DB::getSchemaBuilder()->getColumnListing($tableName);
+        // $index = array_search('email', $column_names);
+        // if ($index !== FALSE) {
+        //     unset($column_names[$index]);
+        //     $column_names = array_values($column_names);
+        // }
 
-        $index = array_search('email', $column_names);
-        if ($index !== FALSE) {
-            unset($column_names[$index]);
-            $column_names = array_values($column_names);
-        }
-
-        $index = array_search('uuid', $column_names);
-        if ($index !== FALSE) {
-            unset($column_names[$index]);
-            $column_names = array_values($column_names);
-        }
-
-        $index = array_search('parent_id', $column_names);
-        if ($index !== FALSE) {
-            unset($column_names[$index]);
-            $column_names = array_values($column_names);
-        }
-
-        $index = array_search('started_at', $column_names);
-        if ($index !== FALSE) {
-            unset($column_names[$index]);
-            $column_names = array_values($column_names);
-        }
-
-        $index = array_search('completed_at', $column_names);
-        if ($index !== FALSE) {
-            unset($column_names[$index]);
-            $column_names = array_values($column_names);
-        }
+        $column_names = [
+            'jobID',
+            'title',
+            'type',
+            'created_at',
+            'status',
+        ];
 
         $columns = implode(', "|", ', $column_names);
 
