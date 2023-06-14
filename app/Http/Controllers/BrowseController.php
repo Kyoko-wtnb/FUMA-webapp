@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SubmitJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -42,21 +43,41 @@ class BrowseController extends Controller
 
     public function getGwasList()
     {
-        $results = DB::select('SELECT id, title, author, email, phenotype, publication, sumstats_link, sumstats_ref, notes, created_at, update_at FROM PublicResults ORDER BY ID DESC');
+        $results = SubmitJob::where('is_public', 1)
+            ->orderBy('published_at', 'desc')
+            ->get([
+                'jobID',
+                'title',
+                'author',
+                'publication_email',
+                'phenotype',
+                'publication',
+                'sumstats_link',
+                'sumstats_ref',
+                'notes',
+                'published_at'
+            ])
+            ->toArray();
+
+        foreach ($results as &$result) {
+            foreach ($result as &$field) {
+                $field = (is_null($field) ? '' : $field);
+            }
+        }
+
         return response()->json($results);
     }
 
     public function checkG2F(Request $request)
     {
-        $id = $request->input('id');
-        $results = collect(DB::select('SELECT g2f_jobID FROM PublicResults WHERE id=?', [$id]))->first();
-        return $results->g2f_jobID;
+        $job_id = $request->input('id');
+        return SubmitJob::find($job_id)->child->jobID;
     }
 
     public function getParams(Request $request)
     {
         $id = $request->input('id');
-        $filedir = config('app.jobdir') . '/public/' . $id . '/';
+        $filedir = config('app.jobdir') . '/jobs/' . $id . '/';
         $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $posMap = $params['posMap'];
         $eqtlMap = $params['eqtlMap'];

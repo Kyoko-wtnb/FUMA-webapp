@@ -361,7 +361,7 @@ $(document).ready(function () {
 
 	$('#publishUpdate').on('click', function () {
 		$.ajax({
-			url: subdir + '/' + page + '/updatePublicRes',
+			url: subdir + '/' + page + '/publish',
 			type: 'POST',
 			data: {
 				jobID: $('#publish_s2g_jobID').val(),
@@ -527,19 +527,19 @@ function publish(id, data) {
 function edit(id, data) {
 	$('#publish_s2g_jobID').val(id);
 	$('#publish_s2g_jobID_text').html(id);
-	if (data.entry.g2f_jobID != undefined) {
-		$('#publish_g2f_jobID').val(data.entry.g2f_jobID);
+	if (data.g2f_jobID != undefined) {
+		$('#publish_g2f_jobID').val(data.g2f);
 	} else {
 		$('#publish_g2f_jobID').val('');
 	}
-	$('#publish_title').val(data.entry.title);
-	$('#publish_author').val(data.entry.author);
-	$('#publish_email').val(data.entry.email);
-	$('#publish_phenotype').val(data.entry.phenotype);
-	$('#publish_publication').val(data.entry.publication);
-	$('#publish_sumstats_link').val(data.entry.sumstats_link);
-	$('#publish_sumstats_ref').val(data.entry.sumstats_ref);
-	$('#publish_notes').val(data.entry.notes);
+	$('#publish_title').val(data.title);
+	$('#publish_author').val(data.author);
+	$('#publish_email').val(data.email);
+	$('#publish_phenotype').val(data.phenotype);
+	$('#publish_publication').val(data.publication);
+	$('#publish_sumstats_link').val(data.sumstats_link);
+	$('#publish_sumstats_ref').val(data.sumstats_ref);
+	$('#publish_notes').val(data.notes);
 	checkPublishInput()
 	$('#publishSubmit').hide();
 	$('#publishUpdate').show();

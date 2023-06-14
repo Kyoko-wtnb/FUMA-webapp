@@ -67,10 +67,11 @@ Route::group(['middleware' => ['auth']], function () {
     });
 
 });
-    
+
 Route::prefix('browse')->group(function () {
-    Route::get('/{id?}', [BrowseController::class, 'index']);
+    Route::get('/', [BrowseController::class, 'index']);
     Route::get('/getGwasList', [BrowseController::class, 'getGwasList']);
+    Route::get('/{id}', [BrowseController::class, 'index']);
     Route::post('/checkG2F', [BrowseController::class, 'checkG2F']);
     Route::post('/getParams', [BrowseController::class, 'getParams']);
     Route::post('/filedown', [BrowseController::class, 'filedown']);
@@ -125,7 +126,6 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('/{jobID}', [S2GController::class, 'authcheck']);
         Route::post('/checkPublish', [S2GController::class, 'checkPublish']);
         Route::post('/publish', [S2GController::class, 'publish']);
-        Route::post('/updatePublicRes', [S2GController::class, 'updatePublicRes']);
         Route::post('/deletePublicRes', [S2GController::class, 'deletePublicRes']);
         Route::post('/filedown', [S2GController::class, 'filedown']);
         Route::post('/deleteJob', [S2GController::class, 'deleteJob']);
