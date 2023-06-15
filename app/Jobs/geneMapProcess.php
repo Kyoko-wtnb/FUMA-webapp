@@ -145,7 +145,7 @@ class geneMapProcess extends Job implements ShouldQueue
 		return;
     }
 
-	public function failed(){
+	public function failed($exception){
 		$jobID = $this->jobID;
 		$user = $this->user;
 		$email = $user->email;
