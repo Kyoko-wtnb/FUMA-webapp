@@ -118,7 +118,7 @@ class S2GController extends Controller
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
-				DB::transaction(function () {
+				DB::transaction(function () use ($jobID){
 					DB::table('SubmitJobs') -> where('jobID', $jobID)
 						-> update(['status'=>'QUEUED']);
 				});
@@ -135,7 +135,7 @@ class S2GController extends Controller
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
-				DB::transaction(function () {
+				DB::transaction(function () use ($jobID){
 					DB::table('SubmitJobs') -> where('jobID', $jobID)
 						-> update(['status'=>'QUEUED']);
 				});
