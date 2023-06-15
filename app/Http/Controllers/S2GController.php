@@ -1492,7 +1492,7 @@ class S2GController extends Controller
         );
 
         $type = $file->getClientMimeType();
-        if ($type == "text/plain") {
+        if ($type == "text/plain" || $type == "application/octet-stream") {
             Storage::put($filedir . '/' . $file_name, file_get_contents($file));
         } else if (in_array($type, $acceptable_zip_mime_types)) {
             Storage::put($filedir . '/' . 'temp', file_get_contents($file));
