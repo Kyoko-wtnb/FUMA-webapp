@@ -5,21 +5,25 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Models\SubmitJob;
+use App\Models\User;
+
 use Helper;
-use DB;
 
 class FumaController extends Controller
 {
     public function appinfo()
     {
-        // $app_config = parse_ini_file(Helper::scripts_path('app.config'), false, INI_SCANNER_RAW);
-        // $out["ver"] = $app_config['FUMA'];
-        $out["ver"] = 'To be removed';
-        $out["user"] = DB::table('users')->count();
-        $out["s2g"] = collect(DB::select("SELECT MAX(jobID) as max from SubmitJobs"))->first()->max;
-        $out["g2f"] = collect(DB::select("SELECT MAX(jobID) as max from gene2func"))->first()->max;
-        $out["run"] = collect(DB::select("SELECT COUNT(jobID) as count from SubmitJobs WHERE status='RUNNING'"))->first()->count;
-        $out["que"] = collect(DB::select("SELECT COUNT(jobID) as count from SubmitJobs WHERE status='QUEUED'"))->first()->count;
+        $out["user"] = User::get()->count();
+
+        $out["s2g"] = SubmitJob::where('type', 'snp2gene')->get()->count();
+
+        $out["g2f"] = SubmitJob::where('type', 'gene2func')->get()->count();
+
+        $out["run"] = SubmitJob::where('status', 'RUNNING')->get()->count();
+
+        $out["que"] = SubmitJob::where('status', 'QUEUED')->get()->count();
+
         return json_encode($out);
     }
 
