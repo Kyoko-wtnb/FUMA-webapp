@@ -9,7 +9,6 @@ use App\Models\SubmitJob;
 use App\Models\User;
 
 use Helper;
-use DB;
 
 class FumaController extends Controller
 {
@@ -18,11 +17,11 @@ class FumaController extends Controller
         $out["user"] = User::get()->count();
 
         $out["s2g"] = SubmitJob::where('type', 'snp2gene')->get()->count();
-
         $out["g2f"] = SubmitJob::where('type', 'gene2func')->get()->count();
+        $out["cellType"] = SubmitJob::where('type', 'celltype')->get()->count();
+
 
         $out["run"] = SubmitJob::where('status', 'RUNNING')->get()->count();
-
         $out["que"] = SubmitJob::where('status', 'QUEUED')->get()->count();
 
         return json_encode($out);
