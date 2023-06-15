@@ -19,6 +19,7 @@
 				<li class="{{ Request::is('gene2func*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/gene2func">GENE2FUNC</a></li>
 				<li class="{{ Request::is('celltype*') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/celltype">Cell Type</a></li>
 				<li class="{{ Request::is('links') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/links">Links</a></li>
+				<li class="{{ Request::is('faq') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/faq">FAQs</a></li>
 				<li class="{{ Request::is('updates') ? 'active' : ''}}"><a href="{{ Config::get('app.subdir') }}/updates">Updates</a></li>
 				<li>
 					<a id="appInfo" class="infoPop" data-placement="bottom" data-toggle="popover" data-html="true"
@@ -43,12 +44,24 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 							{{ Auth::user()->name }} <span class="caret"></span>
 						</a>
-
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="{{ Config::get('app.subdir') }}/snp2gene#joblist-panel">SNP2GENE My Jobs</a></li>
 							<li><a href="{{ Config::get('app.subdir') }}/gene2func#queryhistory">GENE2FUNC History</a></li>
-							<li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
+							<li>
+							@hasrole('Admin') 
+								<a href="/admin/users"><i class="fa fa-btn fa-unlock"></i>Admin</a>
+							@endrole
+							</li>
+							<li>
+								<a href="{{ url('/logout') }}" id="fuma-logout-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+									<i class="fa fa-btn fa-sign-out"></i>
+									Logout
+								</a>
+							</li>
 						</ul>
+						<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+							{{ csrf_field() }}
+						</form>
 					</li>
 				@endif
 			</ul>

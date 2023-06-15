@@ -46,7 +46,7 @@ class RestartStaleJobs extends Command
         $user_info = DB::table('users')->where('email', "{$job->email}")->first();
         // Is the job already queued, the user id and job id are in the payload of a jobs entry.
         // If sothen we are done
-        $queued_jobs = DB::table('jobs')->where('payload', 'LIKE', '%snp2geneProcess%%i:{$user_info->id}%%{$job->jobID}%')->get();
+        $queued_jobs = DB::table('jobs')->where('payload', 'LIKE', '%snp2geneProcess%%i:{$user_info->id}%%{$job->jobID}%')->get()->all();
 	if (count($queued_jobs) > 0) {
 	    $this->info("Job: {$job->jobID} is already queued");
             return;

@@ -30,11 +30,12 @@ class S2GController extends Controller
 		//$this->middleware('auth');
 
 		// Store user
-		$this->user = Auth::user();
+		// Replaced by Auth::user()
+		// $this->user = Auth::user();
     }
 
 	public function authcheck($jobID){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$check = DB::table('SubmitJobs')->where('jobID', $jobID)->first();
 		if($check->email==$email){
 			return view('pages.snp2gene', ['id'=>$jobID, 'status'=>'jobquery', 'page'=>'snp2gene', 'prefix'=>'jobs']);
@@ -44,7 +45,7 @@ class S2GController extends Controller
 	}
 
 	public function getJobList(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		if($email){
 		    $results = SubmitJob::where('email', $email)
@@ -78,7 +79,7 @@ class S2GController extends Controller
     }
 
 	public function getPublicIDs(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		$results = array();
 		if($email){
@@ -92,13 +93,13 @@ class S2GController extends Controller
     }
 
 	public function getjobIDs(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=?', [$email]);
 		return $results;
 	}
 
 	public function getGeneMapIDs(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=? AND status=="OK"', [$email]);
 		return $results;
 	}
@@ -111,14 +112,16 @@ class S2GController extends Controller
 	}
 
 	public function queueNewJobs(){
-		$user = $this->user;
+		$user = Auth::user();
 		$email = $user->email;
-		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW')->get();
+		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW')->get()->all();
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
-				DB::table('SubmitJobs') -> where('jobID', $jobID)
-					-> update(['status'=>'QUEUED']);
+				DB::transaction(function () use ($jobID){
+					DB::table('SubmitJobs') -> where('jobID', $jobID)
+						-> update(['status'=>'QUEUED']);
+				});
 				$this->dispatch(new snp2geneProcess($user, $jobID));
 			}
 		}
@@ -126,14 +129,16 @@ class S2GController extends Controller
 	}
 
 	public function queueGeneMap(){
-		$user = $this->user;
+		$user = Auth::user();
 		$email = $user->email;
-		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW_geneMap')->get();
+		$newJobs = DB::table('SubmitJobs')->where('email', $email)->where('status', 'NEW_geneMap')->get()->all();
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
-				DB::table('SubmitJobs') -> where('jobID', $jobID)
-					-> update(['status'=>'QUEUED']);
+				DB::transaction(function () use ($jobID){
+					DB::table('SubmitJobs') -> where('jobID', $jobID)
+						-> update(['status'=>'QUEUED']);
+				});
 				$this->dispatch(new geneMapProcess($user, $jobID));
 			}
 		}
@@ -142,7 +147,7 @@ class S2GController extends Controller
 
     public function checkJobStatus($jobID){
         $job = SubmitJob::where('jobID', $jobID)
-            ->where('email', $this->user->email)->first();
+            ->where('email', Auth::user()->email)->first();
         if( ! $job ){
             return "Notfound";
         }
@@ -174,7 +179,7 @@ class S2GController extends Controller
 		$date = date('Y-m-d H:i:s');
 		$jobID;
 		$filedir;
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		// Implement the cap on max jobs in queue
 		$numSchedJobs = $this->getNumberScheduledJobs();
 		$queueCap = $this->getQueueCap();
@@ -211,7 +216,7 @@ MSG;
 			}
 		}
 
-		if($request->has("NewJobTitle")){
+		if($request->filled("NewJobTitle")){
 			$jobtitle = $request -> input('NewJobTitle');
 		}else{
 			$jobtitle="None";
@@ -321,18 +326,18 @@ MSG;
 		$becol = "NA";
 		$secol = "NA";
 
-		if($request -> has('chrcol')){$chrcol = $request->input('chrcol');}
-		if($request -> has('poscol')){$poscol = $request->input('poscol');}
-		if($request -> has('rsIDcol')){$rsIDcol = $request->input('rsIDcol');}
-		if($request -> has('pcol')){$pcol = $request->input('pcol');}
-		if($request -> has('eacol')){$eacol = $request->input('eacol');}
-		if($request -> has('neacol')){$neacol = $request->input('neacol');}
-		if($request -> has('orcol')){$orcol = $request->input('orcol');}
-		if($request -> has('becol')){$becol = $request->input('becol');}
-		if($request -> has('secol')){$secol = $request->input('secol');}
+		if($request -> filled('chrcol')){$chrcol = $request->input('chrcol');}
+		if($request -> filled('poscol')){$poscol = $request->input('poscol');}
+		if($request -> filled('rsIDcol')){$rsIDcol = $request->input('rsIDcol');}
+		if($request -> filled('pcol')){$pcol = $request->input('pcol');}
+		if($request -> filled('eacol')){$eacol = $request->input('eacol');}
+		if($request -> filled('neacol')){$neacol = $request->input('neacol');}
+		if($request -> filled('orcol')){$orcol = $request->input('orcol');}
+		if($request -> filled('becol')){$becol = $request->input('becol');}
+		if($request -> filled('secol')){$secol = $request->input('secol');}
 
 		// MHC region
-		if($request -> has('MHCregion')){
+		if($request -> filled('MHCregion')){
 			$exMHC=1;
 			$MHCopt = $request->input('MHCopt');
 		}else{
@@ -349,9 +354,9 @@ MSG;
 		// others
 		$N="NA";
 		$Ncol="NA";
-		if($request->has('N')){
+		if($request->filled('N')){
 			$N = $request->input('N');
-		}else if($request->has('Ncol')){
+		}else if($request->filled('Ncol')){
 			$Ncol = $request->input('Ncol');
 		}
 		$leadP = $request -> input('leadP');
@@ -370,9 +375,9 @@ MSG;
 		// positional mapping
 		$posMapAnnot="NA";
 		$posMapWindowSize="NA";
-		if($request -> has('posMap')){
+		if($request -> filled('posMap')){
 			$posMap=1;
-			if($request -> has('posMapWindow')){
+			if($request -> filled('posMapWindow')){
 				$posMapWindowSize=$request -> input('posMapWindow');
 				$posMapAnnot="NA";
 			}else{
@@ -383,18 +388,18 @@ MSG;
 			$posMap=0;
 		}
 
-		if($request -> has('posMapCADDcheck')){
+		if($request -> filled('posMapCADDcheck')){
 			$posMapCADDth = $request -> input('posMapCADDth');
 		}else{
 			$posMapCADDth = 0;
 		}
-		if($request -> has('posMapRDBcheck')){
+		if($request -> filled('posMapRDBcheck')){
 			$posMapRDBth = $request -> input('posMapRDBth');
 		}else{
 			$posMapRDBth = "NA";
 		}
 
-		if($request -> has('posMapChr15check')){
+		if($request -> filled('posMapChr15check')){
 			$temp = $request -> input('posMapChr15Ts');
 			$posMapChr15 = [];
 			foreach($temp as $ts){
@@ -425,7 +430,7 @@ MSG;
 		$posMapAnnoMeth = $request -> input('posMapAnnoMeth');
 
 		// eqtl mapping
-		if($request -> has('eqtlMap')){
+		if($request -> filled('eqtlMap')){
 			$eqtlMap=1;
 			$temp = $request -> input('eqtlMapTs');
 			// $eqtlMapGts = $request -> input('eqtlMapGts');
@@ -449,24 +454,24 @@ MSG;
 			$eqtlMap=0;
 			$eqtlMaptss = "NA";
 		}
-		if($request -> has('sigeqtlCheck')){
+		if($request -> filled('sigeqtlCheck')){
 			$sigeqtl = 1;
 			$eqtlP = 1;
 		}else{
 			$sigeqtl = 0;
 			$eqtlP = $request -> input('eqtlP');
 		}
-		if($request -> has('eqtlMapCADDcheck')){
+		if($request -> filled('eqtlMapCADDcheck')){
 			$eqtlMapCADDth = $request -> input('eqtlMapCADDth');
 		}else{
 			$eqtlMapCADDth = 0;
 		}
-		if($request -> has('eqtlMapRDBcheck')){
+		if($request -> filled('eqtlMapRDBcheck')){
 			$eqtlMapRDBth = $request -> input('eqtlMapRDBth');
 		}else{
 			$eqtlMapRDBth = "NA";
 		}
-		if($request -> has('eqtlMapChr15check')){
+		if($request -> filled('eqtlMapChr15check')){
 			$temp = $request -> input('eqtlMapChr15Ts');
 			$eqtlMapChr15 = [];
 			foreach($temp as $ts){
@@ -500,9 +505,9 @@ MSG;
 		$ciMap = 0;
 		$ciMapFileN = 0;
 		$ciMapFiles = "NA";
-		if($request->has('ciMap')){
+		if($request->filled('ciMap')){
 			$ciMap = 1;
-			if($request->has('ciMapBuiltin')){
+			if($request->filled('ciMapBuiltin')){
 				$temp = $request->input('ciMapBuiltin');
 				$ciMapBuiltin = [];
 				foreach($temp as $dat){
@@ -525,7 +530,7 @@ MSG;
 						$tmp_filename = $_FILES["ciMapFile".$id]["name"];
 						$request -> file("ciMapFile".$id)->move($filedir, $tmp_filename);
 						$tmp_datatype="undefined";
-						if($request->has("ciMapType".$id)){
+						if($request->filled("ciMapType".$id)){
 							$tmp_datatype = $request->input("ciMapType".$id);
 						}
 						$ciMapFiles[] = $tmp_datatype."/user_upload/".$tmp_filename;
@@ -536,12 +541,12 @@ MSG;
 			}
 
 			$ciMapFDR = $request->input('ciMapFDR');
-			if($request->has('ciMapPromWindow')){
+			if($request->filled('ciMapPromWindow')){
 				$ciMapPromWindow = $request->input('ciMapPromWindow');
 			}else{
 				$ciMapPromWindow = "250-500";
 			}
-			if($request->has('ciMapRoadmap')){
+			if($request->filled('ciMapRoadmap')){
 				$temp = $request->input('ciMapRoadmap');
 				$ciMapRoadmap = [];
 				foreach($temp as $dat){
@@ -553,9 +558,9 @@ MSG;
 			}else{
 				$ciMapRoadmap="NA";
 			}
-			if($request->has('ciMapEnhFilt')){$ciMapEnhFilt = 1;}
+			if($request->filled('ciMapEnhFilt')){$ciMapEnhFilt = 1;}
 			else{$ciMapEnhFilt=0;}
-			if($request->has('ciMapPromFilt')){$ciMapPromFilt = 1;}
+			if($request->filled('ciMapPromFilt')){$ciMapPromFilt = 1;}
 			else{$ciMapPromFilt=0;}
 		}else{
 			$ciMapBuiltin = "NA";
@@ -567,17 +572,17 @@ MSG;
 		}
 
 
-		if($request -> has('ciMapCADDcheck')){
+		if($request -> filled('ciMapCADDcheck')){
 			$ciMapCADDth = $request -> input('ciMapCADDth');
 		}else{
 			$ciMapCADDth = 0;
 		}
-		if($request -> has('ciMapRDBcheck')){
+		if($request -> filled('ciMapRDBcheck')){
 			$ciMapRDBth = $request -> input('ciMapRDBth');
 		}else{
 			$ciMapRDBth = "NA";
 		}
-		if($request -> has('ciMapChr15check')){
+		if($request -> filled('ciMapChr15check')){
 			$temp = $request -> input('ciMapChr15Ts');
 			$ciMapChr15 = [];
 			foreach($temp as $ts){
@@ -611,13 +616,13 @@ MSG;
 		$magma = 0;
 		$magma_window = "NA";
 		$magma_exp = "NA";
-		if($request -> has('magma')){
+		if($request -> filled('magma')){
 			$magma = 1;
 			$magma_window = $request->input("magma_window");
 			$magma_exp = implode(":", $request->input('magma_exp'));
 		}
 
-		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$app_config = parse_ini_file(scripts_path('app.config'), false, INI_SCANNER_RAW);
 
 		// write parameter into a file
 		$paramfile = $filedir.'/params.config';
@@ -728,10 +733,10 @@ MSG;
 		$oldID = $request->input("geneMapID");
 		$jobID;
 		$filedir;
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		$jobtitle = "";
-		if($request->has("geneMapTitle")){
+		if($request->filled("geneMapTitle")){
 			$jobtitle = $request -> input('geneMapTitle');
 		}
 		$jobtitle .= "_copied_".$oldID;
@@ -758,9 +763,9 @@ MSG;
 		$posMap = 0;
 		$posMapWindowSize="NA";
 		$posMapAnnot="NA";
-		if($request -> has('geneMap_posMap')){
+		if($request -> filled('geneMap_posMap')){
 			$posMap=1;
-			if($request -> has('geneMap_posMapWindow')){
+			if($request -> filled('geneMap_posMapWindow')){
 				$posMapWindowSize=$request -> input('geneMap_posMapWindow');
 				$posMapAnnot="NA";
 			}else{
@@ -768,18 +773,18 @@ MSG;
 				$posMapAnnot=implode(":",$request -> input('geneMap_posMapAnnot'));
 			}
 		}
-		if($request -> has('geneMap_posMapCADDcheck')){
+		if($request -> filled('geneMap_posMapCADDcheck')){
 			$posMapCADDth = $request -> input('geneMap_posMapCADDth');
 		}else{
 			$posMapCADDth = 0;
 		}
-		if($request -> has('geneMap_posMapRDBcheck')){
+		if($request -> filled('geneMap_posMapRDBcheck')){
 			$posMapRDBth = $request -> input('geneMap_posMapRDBth');
 		}else{
 			$posMapRDBth = "NA";
 		}
 
-		if($request -> has('geneMap_posMapChr15check')){
+		if($request -> filled('geneMap_posMapChr15check')){
 			$temp = $request -> input('geneMap_posMapChr15Ts');
 			$posMapChr15 = [];
 			foreach($temp as $ts){
@@ -810,7 +815,7 @@ MSG;
 		$posMapAnnoMeth = $request -> input('geneMap_posMapAnnoMeth');
 
 		// eqtl mapping
-		if($request -> has('geneMap_eqtlMap')){
+		if($request -> filled('geneMap_eqtlMap')){
 			$eqtlMap=1;
 			$temp = $request -> input('geneMap_eqtlMapTs');
 			// $eqtlMapGts = $request -> input('geneMap_eqtlMapGts');
@@ -834,24 +839,24 @@ MSG;
 			$eqtlMap=0;
 			$eqtlMaptss = "NA";
 		}
-		if($request -> has('sigeqtlCheck')){
+		if($request -> filled('sigeqtlCheck')){
 			$sigeqtl = 1;
 			$eqtlP = 1;
 		}else{
 			$sigeqtl = 0;
 			$eqtlP = $request -> input('eqtlP');
 		}
-		if($request -> has('geneMap_eqtlMapCADDcheck')){
+		if($request -> filled('geneMap_eqtlMapCADDcheck')){
 			$eqtlMapCADDth = $request -> input('geneMap_eqtlMapCADDth');
 		}else{
 			$eqtlMapCADDth = 0;
 		}
-		if($request -> has('geneMap_eqtlMapRDBcheck')){
+		if($request -> filled('geneMap_eqtlMapRDBcheck')){
 			$eqtlMapRDBth = $request -> input('geneMap_eqtlMapRDBth');
 		}else{
 			$eqtlMapRDBth = "NA";
 		}
-		if($request -> has('geneMap_eqtlMapChr15check')){
+		if($request -> filled('geneMap_eqtlMapChr15check')){
 			$temp = $request -> input('geneMap_eqtlMapChr15Ts');
 			$eqtlMapChr15 = [];
 			foreach($temp as $ts){
@@ -885,9 +890,9 @@ MSG;
 		$ciMap = 0;
 		$ciMapFileN = 0;
 		$ciMapFiles = "NA";
-		if($request->has('geneMap_ciMap')){
+		if($request->filled('geneMap_ciMap')){
 			$ciMap = 1;
-			if($request->has('geneMap_ciMapBuiltin')){
+			if($request->filled('geneMap_ciMapBuiltin')){
 				$temp = $request->input('geneMap_ciMapBuiltin');
 				$ciMapBuiltin = [];
 				foreach($temp as $dat){
@@ -910,7 +915,7 @@ MSG;
 						$tmp_filename = $_FILES["ciMapFile".$id]["name"];
 						$request -> file("ciMapFile".$id)->move($filedir, $tmp_filename);
 						$tmp_datatype="undefined";
-						if($request->has("ciMapType".$id)){
+						if($request->filled("ciMapType".$id)){
 							$tmp_datatype = $request->input("ciMapType".$id);
 						}
 						$ciMapFiles[] = $tmp_datatype."/user_upload/".$tmp_filename;
@@ -921,12 +926,12 @@ MSG;
 			}
 
 			$ciMapFDR = $request->input('geneMap_ciMapFDR');
-			if($request->has('geneMap_ciMapPromWindow')){
+			if($request->filled('geneMap_ciMapPromWindow')){
 				$ciMapPromWindow = $request->input('geneMap_ciMapPromWindow');
 			}else{
 				$ciMapPromWindow = "250-500";
 			}
-			if($request->has('geneMap_ciMapRoadmap')){
+			if($request->filled('geneMap_ciMapRoadmap')){
 				$temp = $request->input('geneMap_ciMapRoadmap');
 				$ciMapRoadmap = [];
 				foreach($temp as $dat){
@@ -938,9 +943,9 @@ MSG;
 			}else{
 				$ciMapRoadmap="NA";
 			}
-			if($request->has('geneMap_ciMapEnhFilt')){$ciMapEnhFilt = 1;}
+			if($request->filled('geneMap_ciMapEnhFilt')){$ciMapEnhFilt = 1;}
 			else{$ciMapEnhFilt=0;}
-			if($request->has('geneMap_ciMapPromFilt')){$ciMapPromFilt = 1;}
+			if($request->filled('geneMap_ciMapPromFilt')){$ciMapPromFilt = 1;}
 			else{$ciMapPromFilt=0;}
 		}else{
 			$ciMapBuiltin = "NA";
@@ -952,17 +957,17 @@ MSG;
 		}
 
 
-		if($request -> has('geneMap_ciMapCADDcheck')){
+		if($request -> filled('geneMap_ciMapCADDcheck')){
 			$ciMapCADDth = $request -> input('geneMap_ciMapCADDth');
 		}else{
 			$ciMapCADDth = 0;
 		}
-		if($request -> has('geneMap_ciMapRDBcheck')){
+		if($request -> filled('geneMap_ciMapRDBcheck')){
 			$ciMapRDBth = $request -> input('geneMap_ciMapRDBth');
 		}else{
 			$ciMapRDBth = "NA";
 		}
-		if($request -> has('geneMap_ciMapChr15check')){
+		if($request -> filled('geneMap_ciMapChr15check')){
 			$temp = $request -> input('geneMap_ciMapChr15Ts');
 			$ciMapChr15 = [];
 			foreach($temp as $ts){
@@ -1083,23 +1088,23 @@ MSG;
 		$filedir = config('app.jobdir').'/'.$prefix.'/'.$id.'/';
 		// $zip = new ZipArchive();
 		$files = [];
-		if($request -> has('paramfile')){ $files[] = "params.config";}
-		if($request -> has('indSNPfile')){$files[] = "IndSigSNPs.txt";}
-		if($request -> has('leadfile')){$files[] = "leadSNPs.txt";}
-		if($request -> has('locifile')){$files[] = "GenomicRiskLoci.txt";}
-		if($request -> has('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
-		if($request -> has('annovfile')){$files[] = "annov.txt"; $files[] = "annov.stats.txt";}
-		if($request -> has('annotfile')){
+		if($request -> filled('paramfile')){ $files[] = "params.config";}
+		if($request -> filled('indSNPfile')){$files[] = "IndSigSNPs.txt";}
+		if($request -> filled('leadfile')){$files[] = "leadSNPs.txt";}
+		if($request -> filled('locifile')){$files[] = "GenomicRiskLoci.txt";}
+		if($request -> filled('snpsfile')){$files[] = "snps.txt"; $files[] = "ld.txt";}
+		if($request -> filled('annovfile')){$files[] = "annov.txt"; $files[] = "annov.stats.txt";}
+		if($request -> filled('annotfile')){
 			$files[] = "annot.txt";
 			if(File::exists($filedir."annot.bed")){$files[] = "annot.bed";}
 		}
-		if($request -> has('genefile')){$files[] = "genes.txt";}
-		if($request -> has('eqtlfile')){
+		if($request -> filled('genefile')){$files[] = "genes.txt";}
+		if($request -> filled('eqtlfile')){
 			if(File::exists($filedir."eqtl.txt")){
 				$files[] = "eqtl.txt";
 			}
 		}
-		if($request -> has('cifile')){
+		if($request -> filled('cifile')){
 			if(File::exists($filedir."ci.txt")){
 				$files[] = "ci.txt";
 				$files[] = "ciSNPs.txt";
@@ -1107,8 +1112,8 @@ MSG;
 			}
 		}
 		// if($request -> has('exacfile')){$files[] = $filedir."ExAC.txt";}
-		if($request -> has('gwascatfile')){$files[] = "gwascatalog.txt";}
-		if($request -> has('magmafile')){
+		if($request -> filled('gwascatfile')){$files[] = "gwascatalog.txt";}
+		if($request -> filled('magmafile')){
 			$files[] = "magma.genes.out";
 			$files[] = "magma.genes.raw";
 			if(File::exists($filedir."magma.sets.out")){
@@ -1149,7 +1154,7 @@ MSG;
 			File::delete($zipfile);
 		}
 		$zip -> open($zipfile, \ZipArchive::CREATE);
-		$zip->addFile(storage_path().'/README', "README");
+		$zip->addFile(public_path().'/README', "README");
 		foreach($files as $f){
 			$zip->addFile($filedir.$f, $f);
 		}
@@ -1166,8 +1171,8 @@ MSG;
 			if($check>0){
 				$out['g2f'] = collect(DB::select('SELECT jobID FROM gene2func WHERE snp2gene=?', [$id]))->first()->jobID;
 			}
-			$out['author'] = $this->user->name;
-			$out['email'] = $this->user->email;
+			$out['author'] = Auth::user()->name;
+			$out['email'] = Auth::user()->email;
 			$out['title'] = collect(DB::select('SELECT title FROM SubmitJobs WHERE jobID=?', [$id]))->first()->title;
 			return json_encode($out);
 		}else{

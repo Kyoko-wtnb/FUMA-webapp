@@ -25,11 +25,12 @@ class CellController extends Controller
 		// auth is set in routes.php this is duplicate
 		//$this->middleware('auth');
 		// Store user
-		$this->user = Auth::user();
+		// Replace by Auth::user()
+		// $this->user = Auth::user();
     }
 
 	public function authcheck($jobID){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$check = DB::table('celltype')->where('jobID', $jobID)->first();
 		if($check->email==$email){
 			return view('pages.celltype', ['id'=>$jobID, 'status'=>'jobquery', 'page'=>'celltype', 'prefix'=>'celltype']);
@@ -40,7 +41,7 @@ class CellController extends Controller
 
 	public function checkJobStatus($jobID){
         $job = DB::table('celltype')->where('jobID', $jobID)
-            ->where('email', $this->user->email)->first();
+            ->where('email', Auth::user()->email)->first();
         if(! $job){
             return "Notfound";
         }
@@ -48,7 +49,7 @@ class CellController extends Controller
     }
 
 	public function getS2GIDs(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$results = DB::select('SELECT jobID, title FROM SubmitJobs WHERE email=? AND status="OK"', [$email]);
 		return $results;
 	}
@@ -63,7 +64,7 @@ class CellController extends Controller
 	}
 
 	public function getJobList(){
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 
 		if($email){
 		    $results = DB::table('celltype')->where('email', $email)
@@ -79,14 +80,16 @@ class CellController extends Controller
     }
 
 	public function queueNewJobs(){
-		$user = $this->user;
+		$user = Auth::user();
 		$email = $user->email;
-		$newJobs = DB::table('celltype')->where('email', $email)->where('status', 'NEW')->get();
+		$newJobs = DB::table('celltype')->where('email', $email)->where('status', 'NEW')->get()->all();
 		if(count($newJobs)>0){
 			foreach($newJobs as $job){
 				$jobID = $job->jobID;
-				DB::table('celltype') -> where('jobID', $jobID)
-					-> update(['status'=>'QUEUED']);
+				DB::transaction(function () use ($jobID){
+					DB::table('celltype') -> where('jobID', $jobID)
+						-> update(['status'=>'QUEUED']);	
+				});
 				$this->dispatch(new celltypeProcess($user, $jobID));
 			}
 		}
@@ -102,18 +105,18 @@ class CellController extends Controller
 
 	public function newJob(Request $request){
 		$date = date('Y-m-d H:i:s');
-		$email = $this->user->email;
+		$email = Auth::user()->email;
 		$s2gID = $request->input('s2gID');
 		$ensg = 0;
-		if($request->has('ensg_id')){$ensg=1;}
+		if($request->filled('ensg_id')){$ensg=1;}
 		if($s2gID>0){$ensg=1;}
 		$ds = implode(":", $request -> input('cellDataSets'));
 		$adjPmeth = $request -> input('adjPmeth');
 		$step2 = 0;
-		if($request->has('step2')){$step2=1;}
+		if($request->filled('step2')){$step2=1;}
 		$step3 = 0;
-		if($request->has('step3')){$step3=1;}
-		if($request->has("title")){
+		if($request->filled('step3')){$step3=1;}
+		if($request->filled("title")){
 			$title = $request -> input('title');
 		}else{
 			$title = "None";
@@ -148,7 +151,7 @@ class CellController extends Controller
 		if($request -> hasFile('genes_raw')){
 			$inputfile = $_FILES["genes_raw"]["name"];
 		}
-		$app_config = parse_ini_file(storage_path()."/scripts/app.config", false, INI_SCANNER_RAW);
+		$app_config = parse_ini_file(scripts_path("app.config"), false, INI_SCANNER_RAW);
 		$paramfile = $filedir.'/params.config';
 		File::put($paramfile, "[jobinfo]\n");
 		File::append($paramfile, "created_at=$date\n");
@@ -237,7 +240,7 @@ class CellController extends Controller
 			File::delete($zipfile);
 		}
 		$zip -> open($zipfile, \ZipArchive::CREATE);
-		$zip->addFile(storage_path().'/README_cell', "README_cell");
+		$zip->addFile(public_path().'/README_cell', "README_cell");
 		foreach($files as $f){
 			if(FILE::exists($filedir.$f)){
 				$zip->addFile($filedir.$f, $f);
@@ -251,7 +254,7 @@ class CellController extends Controller
 		$id = $request->input('id');
 		$ds = $request->input('ds');
 		$filedir = config('app.jobdir').'/celltype/'.$id.'/';
-		$script = storage_path().'/scripts/celltype_perDatasetPlotData.py';
+		$script = scripts_path('celltype_perDatasetPlotData.py');
 		$json = shell_exec("python $script $filedir $ds");
 		return $json;
 	}
@@ -260,7 +263,7 @@ class CellController extends Controller
 		$id = $request->input('id');
 		$ds = $request->input('ds');
 		$filedir = config('app.jobdir').'/celltype/'.$id.'/';
-		$script = storage_path().'/scripts/celltype_stepPlotData.py';
+		$script = scripts_path('celltype_stepPlotData.py');
 		$json = shell_exec("python $script $filedir");
 		return $json;
 	}

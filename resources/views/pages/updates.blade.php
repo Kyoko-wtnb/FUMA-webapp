@@ -18,11 +18,53 @@
 		</tr>
 	</thead>
     <tbody>
+        <tr>
+            <td>12 May 2023</td>
+            <td>v1.5.4</td>
+            <td>
+                        User roles and permissions added.
+            </td>
+        </tr>
+	<tr>
+    	    <td>06 April 2023</td>
+            <td>v1.5.3</td>
+            <td>
+			Registration vulnerability fixed.
+            </td>
+	</tr>
+	<tr>
+    	    <td>26 February 2023</td>
+            <td>v1.5.2</td>
+            <td>
+			Added an FAQ page.
+            </td>
+	</tr>
+		<tr>
+    		<td>03 February 2023</td>
+            <td>v1.5.1</td>
+            <td>
+			MAGMA will no longer run by default in the SNP2GENE module. If you would like the MAGMA gene, gene-set, and tissue analysis results or to use the SNP2GENE output as input for the Cell Type module, please select 'Perform MAGMA' (in step 6) on the submission page.
+            </td>
+	</tr>
+		<tr>
+    		<td>20 December 2022</td>
+            <td>v1.5.0</td>
+            <td>
+    		Updated FUMA Cell Type user interphase and added scRNAseq data for human prefrontal cortex from Herring et al. 2022.
+            </td>
+    	</tr>
+      <tr>
+    		<td>02 December 2022</td>
+            <td>v1.4.2</td>
+            <td>
+    		Updated the GWAS catalog to e0_r2022-11-29 in the SNP2GENE analysis.
+            </td>
+    	</tr>
       <tr>
     		<td>07 September 2022</td>
             <td>v1.4.1</td>
             <td>
-    		Fixed a bug that caused chromosome 23 variants to be excluded from genomic risk loci when the 1KG EUR reference panel was used. This bug started on February 28 2022 and was fixed on August 30 2022. If, during this period, you have used the 1KG EUR reference panel and your data included chromosome 23, please re-run your analyses.  
+    		Fixed a bug that caused chromosome 23 variants to be excluded from genomic risk loci when the 1KG EUR reference panel was used. This bug started on February 28 2022 and was fixed on August 30 2022. If, during this period, you have used the 1KG EUR reference panel and your data included chromosome 23, please re-run your analyses.
             </td>
     	</tr>
 	<tr>

@@ -13,6 +13,10 @@
 <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
 <script src="//labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script type="text/javascript" src="//d3js.org/queue.v1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tree-multiselect@2.6.3/dist/jquery.tree-multiselect.min.js"></script>
+<link href="{{ asset('/css/tree_multiselect.css') }}" rel="stylesheet">
 
 <meta name="csrf-token" content="{{ csrf_token() }}"/>
 <script type="text/javascript">
@@ -94,170 +98,197 @@ var loggedin = "{{ Auth::check() }}";
 							In addition, step 2 is only performed after multiple testing correction across all the cell types tested in the step 1
 							regardless of duplications of the cell types.
 							It is strongly recommended to carefully select datasets to test beforehand.
-						</span>
-						<select multiple size="10" class="form-control" id="cellDataSets" name="cellDataSets[]" onchange="CheckInput();">
-							<option value="PsychENCODE_Developmental">PsychENCODE_Developmental</option>
-							<option value="PsychENCODE_Adult">PsychENCODE_Adult</option>
-							<option value="GSE97478_Mouse_Striatum_Cortex">GSE97478_Mouse_Striatum_Cortex</option>
-							<option value="GSE106707_Mouse_Striatum_Cortex">GSE106707_Mouse_Striatum_Cortex</option>
-							<option value="Allen_Human_LGN_level1">Allen_Human_LGN_level1</option>
-							<option value="Allen_Human_LGN_level2">Allen_Human_LGN_level2</option>
-							<option value="Allen_Human_MTG_level1">Allen_Human_MTG_level1</option>
-							<option value="Allen_Human_MTG_level2">Allen_Human_MTG_level2</option>
-							<option value="Allen_Mouse_ALM2_level1">Allen_Mouse_ALM2_level1</option>
-							<option value="Allen_Mouse_ALM2_level2">Allen_Mouse_ALM2_level2</option>
-							<option value="Allen_Mouse_ALM2_level3">Allen_Mouse_ALM2_level3</option>
-							<option value="Allen_Mouse_LGd2_level1">Allen_Mouse_LGd2_level1</option>
-							<option value="Allen_Mouse_LGd2_level2">Allen_Mouse_LGd2_level2</option>
-							<option value="Allen_Mouse_LGd2_level3">Allen_Mouse_LGd2_level3</option>
-							<option value="Allen_Mouse_VISp2_level1">Allen_Mouse_VISp2_level1</option>
-							<option value="Allen_Mouse_VISp2_level2">Allen_Mouse_VISp2_level2</option>
-							<option value="Allen_Mouse_VISp2_level3">Allen_Mouse_VISp2_level3</option>
-							<option value="Allen_Mouse_ALM_level1">Allen_Mouse_ALM_level1</option>
-							<option value="Allen_Mouse_ALM_level2">Allen_Mouse_ALM_level2</option>
-							<option value="Allen_Mouse_LGd_level1">Allen_Mouse_LGd_level1</option>
-							<option value="Allen_Mouse_LGd_level2">Allen_Mouse_LGd_level2</option>
-							<option value="Allen_Mouse_VISp_level1">Allen_Mouse_VISp_level1</option>
-							<option value="Allen_Mouse_VISp_level2">Allen_Mouse_VISp_level2</option>
-							<option value="DroNc_Human_Hippocampus">DroNc_Human_Hippocampus</option>
-							<option value="DroNc_Mouse_Hippocampus">DroNc_Mouse_Hippocampus</option>
-							<option value="DropViz_all_level1">DropViz_all_level1</option>
-							<option value="DropViz_all_level2">DropViz_all_level2</option>
-							<option value="DropViz_CB_level1">DropViz_CB_level1</option>
-							<option value="DropViz_CB_level2">DropViz_CB_level2</option>
-							<option value="DropViz_ENT_level1">DropViz_ENT_level1</option>
-							<option value="DropViz_ENT_level2">DropViz_ENT_level2</option>
-							<option value="DropViz_FC_level1">DropViz_FC_level1</option>
-							<option value="DropViz_FC_level2">DropViz_FC_level2</option>
-							<option value="DropViz_GP_level1">DropViz_GP_level1</option>
-							<option value="DropViz_GP_level2">DropViz_GP_level2</option>
-							<option value="DropViz_HC_level1">DropViz_HC_level1</option>
-							<option value="DropViz_HC_level2">DropViz_HC_level2</option>
-							<option value="DropViz_PC_level1">DropViz_PC_level1</option>
-							<option value="DropViz_PC_level2">DropViz_PC_level2</option>
-							<option value="DropViz_SN_level1">DropViz_SN_level1</option>
-							<option value="DropViz_SN_level2">DropViz_SN_level2</option>
-							<option value="DropViz_STR_level1">DropViz_STR_level1</option>
-							<option value="DropViz_STR_level2">DropViz_STR_level2</option>
-							<option value="DropViz_TH_level1">DropViz_TH_level1</option>
-							<option value="DropViz_TH_level2">DropViz_TH_level2</option>
-							<option value="GSE100597_Mouse_Embryo">GSE100597_Mouse_Embryo</option>
-							<option value="GSE104276_Human_Prefrontal_cortex_all_ages">GSE104276_Human_Prefrontal_cortex_all_ages</option>
-							<option value="GSE104276_Human_Prefrontal_cortex_per_ages">GSE104276_Human_Prefrontal_cortex_per_ages</option>
-							<option value="GSE106678_Mouse_Cortex">GSE106678_Mouse_Cortex</option>
-							<option value="GSE67835_Human_Cortex">GSE67835_Human_Cortex</option>
-							<option value="GSE67835_Human_Cortex_woFetal">GSE67835_Human_Cortex_woFetal</option>
-							<option value="GSE81547_Human_Pancreas">GSE81547_Human_Pancreas</option>
-							<option value="GSE82187_Mouse_Striatum">GSE82187_Mouse_Striatum</option>
-							<option value="GSE84133_Human_Pancreas">GSE84133_Human_Pancreas</option>
-							<option value="GSE84133_Mouse_Pancreas">GSE84133_Mouse_Pancreas</option>
-							<option value="GSE87544_Mouse_Hypothalamus">GSE87544_Mouse_Hypothalamus</option>
-							<option value="GSE89164_Mouse_Hindbrain">GSE89164_Mouse_Hindbrain</option>
-							<option value="GSE89232_Human_Blood">GSE89232_Human_Blood</option>
-							<option value="GSE92332_Mouse_Epithelium_SMARTseq">GSE92332_Mouse_Epithelium_SMARTseq</option>
-							<option value="GSE92332_Mouse_Epithelium_droplet">GSE92332_Mouse_Epithelium_droplet</option>
-							<option value="GSE93374_Mouse_Arc_ME_level1">GSE93374_Mouse_Arc_ME_level1</option>
-							<option value="GSE93374_Mouse_Arc_ME_level2">GSE93374_Mouse_Arc_ME_level2</option>
-							<option value="GSE93374_Mouse_Arc_ME_neurons">GSE93374_Mouse_Arc_ME_neurons</option>
-							<option value="GSE98816_Mouse_Brain_Vascular">GSE98816_Mouse_Brain_Vascular</option>
-							<option value="GSE99235_Mouse_Lung_Vascular">GSE99235_Mouse_Lung_Vascular</option>
-							<option value="Linnarsson_GSE101601_Human_Temporal_cortex">Linnarsson_GSE101601_Human_Temporal_cortex</option>
-							<option value="Linnarsson_GSE101601_Mouse_Somatosensory_cortex">Linnarsson_GSE101601_Mouse_Somatosensory_cortex</option>
-							<option value="Linnarsson_GSE103840_Mouse_Dorsal_horn">Linnarsson_GSE103840_Mouse_Dorsal_horn</option>
-							<option value="Linnarsson_GSE104323_Mouse_Dentate_gyrus">Linnarsson_GSE104323_Mouse_Dentate_gyrus</option>
-							<option value="Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level1">Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level1</option>
-							<option value="Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level2">Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level2</option>
-							<option value="Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level3">Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level3</option>
-							<option value="Linnarsson_GSE60361_Mouse_Cortex_Hippocampus_level1">Linnarsson_GSE60361_Mouse_Cortex_Hippocampus_level1</option>
-							<option value="Linnarsson_GSE60361_Mouse_Cortex_Hippocampus_level2">Linnarsson_GSE60361_Mouse_Cortex_Hippocampus_level2</option>
-							<option value="Linnarsson_GSE67602_Mouse_Skin_Epidermis">Linnarsson_GSE67602_Mouse_Skin_Epidermis</option>
-							<option value="Linnarsson_GSE74672_Mouse_Hypothalamus_Neurons_level2">Linnarsson_GSE74672_Mouse_Hypothalamus_Neurons_level2</option>
-							<option value="Linnarsson_GSE74672_Mouse_Hypothalamus_level1">Linnarsson_GSE74672_Mouse_Hypothalamus_level1</option>
-							<option value="Linnarsson_GSE75330_Mouse_Oligodendrocytes">Linnarsson_GSE75330_Mouse_Oligodendrocytes</option>
-							<option value="Linnarsson_GSE76381_Human_Midbrain">Linnarsson_GSE76381_Human_Midbrain</option>
-							<option value="Linnarsson_GSE76381_Mouse_Midbrain">Linnarsson_GSE76381_Mouse_Midbrain</option>
-							<option value="Linnarsson_GSE78845_Mouse_Ganglia">Linnarsson_GSE78845_Mouse_Ganglia</option>
-							<option value="Linnarsson_GSE95315_Mouse_Dentate_gyrus">Linnarsson_GSE95315_Mouse_Dentate_gyrus</option>
-							<option value="Linnarsson_GSE95752_Mouse_Dentate_gyrus">Linnarsson_GSE95752_Mouse_Dentate_gyrus</option>
-							<option value="Linnarsson_MouseBrainAtlas_level5">Linnarsson_MouseBrainAtlas_level5</option>
-							<option value="Linnarsson_MouseBrainAtlas_level6_rank1">Linnarsson_MouseBrainAtlas_level6_rank1</option>
-							<option value="Linnarsson_MouseBrainAtlas_level6_rank2">Linnarsson_MouseBrainAtlas_level6_rank2</option>
-							<option value="Linnarsson_MouseBrainAtlas_level6_rank3">Linnarsson_MouseBrainAtlas_level6_rank3</option>
-							<option value="Linnarsson_MouseBrainAtlas_level6_rank4">Linnarsson_MouseBrainAtlas_level6_rank4</option>
-							<option value="MouseCellAtlas_all">MouseCellAtlas_all</option>
-							<option value="MouseCellAtlas_Adult_all">MouseCellAtlas_Adult_all</option>
-							<option value="MouseCellAtlas_Bladder">MouseCellAtlas_Bladder</option>
-							<option value="MouseCellAtlas_Bone_Marrow">MouseCellAtlas_Bone_Marrow</option>
-							<option value="MouseCellAtlas_Brain">MouseCellAtlas_Brain</option>
-							<option value="MouseCellAtlas_Embryo_all">MouseCellAtlas_Embryo_all</option>
-							<option value="MouseCellAtlas_Embryonic_Mesenchyme">MouseCellAtlas_Embryonic_Mesenchyme</option>
-							<option value="MouseCellAtlas_Embryonic_Stem_Cell">MouseCellAtlas_Embryonic_Stem_Cell</option>
-							<option value="MouseCellAtlas_Fetal_Brain">MouseCellAtlas_Fetal_Brain</option>
-							<option value="MouseCellAtlas_Fetal_Intestine">MouseCellAtlas_Fetal_Intestine</option>
-							<option value="MouseCellAtlas_Fetal_Liver">MouseCellAtlas_Fetal_Liver</option>
-							<option value="MouseCellAtlas_Fetal_Lung">MouseCellAtlas_Fetal_Lung</option>
-							<option value="MouseCellAtlas_Fetal_Stomache">MouseCellAtlas_Fetal_Stomache</option>
-							<option value="MouseCellAtlas_Kidney">MouseCellAtlas_Kidney</option>
-							<option value="MouseCellAtlas_Liver">MouseCellAtlas_Liver</option>
-							<option value="MouseCellAtlas_Lung">MouseCellAtlas_Lung</option>
-							<option value="MouseCellAtlas_Mammary_Gland">MouseCellAtlas_Mammary_Gland</option>
-							<option value="MouseCellAtlas_Mesenchymal_Stem_Cell_Cultured">MouseCellAtlas_Mesenchymal_Stem_Cell_Cultured</option>
-							<option value="MouseCellAtlas_Muscle">MouseCellAtlas_Muscle</option>
-							<option value="MouseCellAtlas_Neonatal_Calvaria">MouseCellAtlas_Neonatal_Calvaria</option>
-							<option value="MouseCellAtlas_Neonatal_Heart">MouseCellAtlas_Neonatal_Heart</option>
-							<option value="MouseCellAtlas_Neonatal_Muscle">MouseCellAtlas_Neonatal_Muscle</option>
-							<option value="MouseCellAtlas_Neonatal_Rib">MouseCellAtlas_Neonatal_Rib</option>
-							<option value="MouseCellAtlas_Neonatal_Skin">MouseCellAtlas_Neonatal_Skin</option>
-							<option value="MouseCellAtlas_Neonatal_all">MouseCellAtlas_Neonatal_all</option>
-							<option value="MouseCellAtlas_Ovary">MouseCellAtlas_Ovary</option>
-							<option value="MouseCellAtlas_Pancreas">MouseCellAtlas_Pancreas</option>
-							<option value="MouseCellAtlas_Peripheral_Blood">MouseCellAtlas_Peripheral_Blood</option>
-							<option value="MouseCellAtlas_Placenta">MouseCellAtlas_Placenta</option>
-							<option value="MouseCellAtlas_Prostate">MouseCellAtlas_Prostate</option>
-							<option value="MouseCellAtlas_Small_Intestine">MouseCellAtlas_Small_Intestine</option>
-							<option value="MouseCellAtlas_Spleen">MouseCellAtlas_Spleen</option>
-							<option value="MouseCellAtlas_Stomach">MouseCellAtlas_Stomach</option>
-							<option value="MouseCellAtlas_Testis">MouseCellAtlas_Testis</option>
-							<option value="MouseCellAtlas_Thymus">MouseCellAtlas_Thymus</option>
-							<option value="MouseCellAtlas_Trophoblast_Stem_Cell">MouseCellAtlas_Trophoblast_Stem_Cell</option>
-							<option value="MouseCellAtlas_Uterus">MouseCellAtlas_Uterus</option>
-							<option value="PBMC_10x_68k">PBMC_10x_68k</option>
-							<option value="TabulaMuris_FACS_all">TabulaMuris_FACS_all</option>
-							<option value="TabulaMuris_FACS_Aorta">TabulaMuris_FACS_Aorta</option>
-							<option value="TabulaMuris_FACS_Bladder">TabulaMuris_FACS_Bladder</option>
-							<option value="TabulaMuris_FACS_Brain">TabulaMuris_FACS_Brain</option>
-							<option value="TabulaMuris_FACS_Brain_Myeloid">TabulaMuris_FACS_Brain_Myeloid</option>
-							<option value="TabulaMuris_FACS_Brain_Non-Myeloid">TabulaMuris_FACS_Brain_Non-Myeloid</option>
-							<option value="TabulaMuris_FACS_Diaphragm">TabulaMuris_FACS_Diaphragm</option>
-							<option value="TabulaMuris_FACS_Fat">TabulaMuris_FACS_Fat</option>
-							<option value="TabulaMuris_FACS_Heart">TabulaMuris_FACS_Heart</option>
-							<option value="TabulaMuris_FACS_Kidney">TabulaMuris_FACS_Kidney</option>
-							<option value="TabulaMuris_FACS_Large_Intestine">TabulaMuris_FACS_Large_Intestine</option>
-							<option value="TabulaMuris_FACS_Limb_Muscle">TabulaMuris_FACS_Limb_Muscle</option>
-							<option value="TabulaMuris_FACS_Liver">TabulaMuris_FACS_Liver</option>
-							<option value="TabulaMuris_FACS_Lung">TabulaMuris_FACS_Lung</option>
-							<option value="TabulaMuris_FACS_Mammary_Gland">TabulaMuris_FACS_Mammary_Gland</option>
-							<option value="TabulaMuris_FACS_Marrow">TabulaMuris_FACS_Marrow</option>
-							<option value="TabulaMuris_FACS_Pancreas">TabulaMuris_FACS_Pancreas</option>
-							<option value="TabulaMuris_FACS_Skin">TabulaMuris_FACS_Skin</option>
-							<option value="TabulaMuris_FACS_Spleen">TabulaMuris_FACS_Spleen</option>
-							<option value="TabulaMuris_FACS_Thymus">TabulaMuris_FACS_Thymus</option>
-							<option value="TabulaMuris_FACS_Tongue">TabulaMuris_FACS_Tongue</option>
-							<option value="TabulaMuris_FACS_Trachea">TabulaMuris_FACS_Trachea</option>
-							<option value="TabulaMuris_droplet_all">TabulaMuris_droplet_all</option>
-							<option value="TabulaMuris_droplet_Bladder">TabulaMuris_droplet_Bladder</option>
-							<option value="TabulaMuris_droplet_Heart">TabulaMuris_droplet_Heart</option>
-							<option value="TabulaMuris_droplet_Kidney">TabulaMuris_droplet_Kidney</option>
-							<option value="TabulaMuris_droplet_Liver">TabulaMuris_droplet_Liver</option>
-							<option value="TabulaMuris_droplet_Lung">TabulaMuris_droplet_Lung</option>
-							<option value="TabulaMuris_droplet_Mammary">TabulaMuris_droplet_Mammary</option>
-							<option value="TabulaMuris_droplet_Marrow">TabulaMuris_droplet_Marrow</option>
-							<option value="TabulaMuris_droplet_Muscle">TabulaMuris_droplet_Muscle</option>
-							<option value="TabulaMuris_droplet_Spleen">TabulaMuris_droplet_Spleen</option>
-							<option value="TabulaMuris_droplet_Thymus">TabulaMuris_droplet_Thymus</option>
-							<option value="TabulaMuris_droplet_Tongue">TabulaMuris_droplet_Tongue</option>
-							<option value="TabulaMuris_droplet_Trachea">TabulaMuris_droplet_Trachea</option>
+						</span> <br>
+
+						<div>
+						<select multiple="multiple" class="form-control" style="display: none;" id="cellDataSets" name="cellDataSets[]" onchange="CheckInput();">
+							<option value="TabulaMuris_FACS_Aorta" data-section="Aorta/Mouse" data-key="0">TabulaMuris_FACS_Aorta</option>
+							<option value="MouseCellAtlas_Bladder" data-section="Bladder/Mouse" data-key="0">MouseCellAtlas_Bladder</option>
+							<option value="TabulaMuris_FACS_Bladder" data-section="Bladder/Mouse" data-key="1">TabulaMuris_FACS_Bladder</option>
+							<option value="TabulaMuris_droplet_Bladder" data-section="Bladder/Mouse" data-key="2">TabulaMuris_droplet_Bladder</option>
+							<option value="GSE89232_Human_Blood" data-section="Blood/Human" data-key="0">GSE89232_Human_Blood</option>
+							<option value="MouseCellAtlas_Peripheral_Blood" data-section="Blood/Mouse" data-key="0">MouseCellAtlas_Peripheral_Blood</option>
+							<option value="MouseCellAtlas_Bone_Marrow" data-section="Bone Marrow/Mouse" data-key="0">MouseCellAtlas_Bone_Marrow</option>
+							<option value="TabulaMuris_FACS_Marrow" data-section="Bone Marrow/Mouse" data-key="1">TabulaMuris_FACS_Marrow</option>
+							<option value="TabulaMuris_droplet_Marrow" data-section="Bone Marrow/Mouse" data-key="2">TabulaMuris_droplet_Marrow</option>
+							<option value="Allen_Human_LGN_level1" data-section="Brain/Human" data-key="0">Allen_Human_LGN_level1</option>
+							<option value="Allen_Human_LGN_level2" data-section="Brain/Human" data-key="1">Allen_Human_LGN_level2</option>
+							<option value="Allen_Human_MTG_level1" data-section="Brain/Human" data-key="2">Allen_Human_MTG_level1</option>
+							<option value="Allen_Human_MTG_level2" data-section="Brain/Human" data-key="3">Allen_Human_MTG_level2</option>
+							<option value="DroNc_Human_Hippocampus" data-section="Brain/Human" data-key="4">DroNc_Human_Hippocampus</option>
+							<option value="GSE104276_Human_Prefrontal_cortex_all_ages" data-section="Brain/Human" data-key="5">GSE104276_Human_Prefrontal_cortex_all_ages</option>
+							<option value="GSE104276_Human_Prefrontal_cortex_per_ages" data-section="Brain/Human" data-key="6">GSE104276_Human_Prefrontal_cortex_per_ages</option>
+							<option value="GSE67835_Human_Cortex" data-section="Brain/Human" data-key="7">GSE67835_Human_Cortex</option>
+							<option value="GSE67835_Human_Cortex_woFetal" data-section="Brain/Human" data-key="8">GSE67835_Human_Cortex_woFetal</option>
+							<option value="Linnarsson_GSE101601_Human_Temporal_cortex" data-section="Brain/Human" data-key="9">Linnarsson_GSE101601_Human_Temporal_cortex</option>
+							<option value="Linnarsson_GSE76381_Human_Midbrain" data-section="Brain/Human" data-key="10">Linnarsson_GSE76381_Human_Midbrain</option>
+							<option value="PsychENCODE_Developmental" data-section="Brain/Human" data-key="11">PsychENCODE_Developmental</option>
+							<option value="PsychENCODE_Adult" data-section="Brain/Human" data-key="12">PsychENCODE_Adult</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Fetal" data-section="Brain/Human" data-key="13">GSE168408_Human_Prefrontal_Cortex_level1_Fetal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Neonatal" data-section="Brain/Human" data-key="14">GSE168408_Human_Prefrontal_Cortex_level1_Neonatal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Infancy" data-section="Brain/Human" data-key="15">GSE168408_Human_Prefrontal_Cortex_level1_Infancy</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Childhood" data-section="Brain/Human" data-key="16">GSE168408_Human_Prefrontal_Cortex_level1_Childhood</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Adolescence" data-section="Brain/Human" data-key="17">GSE168408_Human_Prefrontal_Cortex_level1_Adolescence</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level1_Adult" data-section="Brain/Human" data-key="18">GSE168408_Human_Prefrontal_Cortex_level1_Adult</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Fetal" data-section="Brain/Human" data-key="19">GSE168408_Human_Prefrontal_Cortex_level2_Fetal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Neonatal" data-section="Brain/Human" data-key="20">GSE168408_Human_Prefrontal_Cortex_level2_Neonatal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Infancy" data-section="Brain/Human" data-key="21">GSE168408_Human_Prefrontal_Cortex_level2_Infancy</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Childhood" data-section="Brain/Human" data-key="22">GSE168408_Human_Prefrontal_Cortex_level2_Childhood</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Adolescence" data-section="Brain/Human" data-key="23">GSE168408_Human_Prefrontal_Cortex_level2_Adolescence</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level2_Adult" data-section="Brain/Human" data-key="24">GSE168408_Human_Prefrontal_Cortex_level2_Adult</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Fetal" data-section="Brain/Human" data-key="25">GSE168408_Human_Prefrontal_Cortex_level3_Fetal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Neonatal" data-section="Brain/Human" data-key="26">GSE168408_Human_Prefrontal_Cortex_level3_Neonatal</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Infancy" data-section="Brain/Human" data-key="27">GSE168408_Human_Prefrontal_Cortex_level3_Infancy</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Childhood" data-section="Brain/Human" data-key="28">GSE168408_Human_Prefrontal_Cortex_level3_Childhood</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Adolescence" data-section="Brain/Human" data-key="29">GSE168408_Human_Prefrontal_Cortex_level3_Adolescence</option>
+							<option value="GSE168408_Human_Prefrontal_Cortex_level3_Adult" data-section="Brain/Human" data-key="30">GSE168408_Human_Prefrontal_Cortex_level3_Adult</option>
+							<option value="Allen_Mouse_ALM2_level1" data-section="Brain/Mouse" data-key="0">Allen_Mouse_ALM2_level1</option>
+							<option value="Allen_Mouse_ALM2_level2" data-section="Brain/Mouse" data-key="1">Allen_Mouse_ALM2_level2</option>
+							<option value="Allen_Mouse_ALM2_level3" data-section="Brain/Mouse" data-key="2">Allen_Mouse_ALM2_level3</option>
+							<option value="Allen_Mouse_LGd2_level1" data-section="Brain/Mouse" data-key="3">Allen_Mouse_LGd2_level1</option>
+							<option value="Allen_Mouse_LGd2_level2" data-section="Brain/Mouse" data-key="4">Allen_Mouse_LGd2_level2</option>
+							<option value="Allen_Mouse_LGd2_level3" data-section="Brain/Mouse" data-key="5">Allen_Mouse_LGd2_level3</option>
+							<option value="Allen_Mouse_VISp2_level1" data-section="Brain/Mouse" data-key="6">Allen_Mouse_VISp2_level1</option>
+							<option value="Allen_Mouse_VISp2_level2" data-section="Brain/Mouse" data-key="7">Allen_Mouse_VISp2_level2</option>
+							<option value="Allen_Mouse_VISp2_level3" data-section="Brain/Mouse" data-key="8">Allen_Mouse_VISp2_level3</option>
+							<option value="Allen_Mouse_ALM_level1" data-section="Brain/Mouse" data-key="9">Allen_Mouse_ALM_level1</option>
+							<option value="Allen_Mouse_ALM_level2" data-section="Brain/Mouse" data-key="10">Allen_Mouse_ALM_level2</option>
+							<option value="Allen_Mouse_LGd_level1" data-section="Brain/Mouse" data-key="11">Allen_Mouse_LGd_level1</option>
+							<option value="Allen_Mouse_LGd_level2" data-section="Brain/Mouse" data-key="12">Allen_Mouse_LGd_level2</option>
+							<option value="Allen_Mouse_VISp_level1" data-section="Brain/Mouse" data-key="13">Allen_Mouse_VISp_level1</option>
+							<option value="Allen_Mouse_VISp_level2" data-section="Brain/Mouse" data-key="14">Allen_Mouse_VISp_level2</option>
+							<option value="DroNc_Mouse_Hippocampus" data-section="Brain/Mouse" data-key="15">DroNc_Mouse_Hippocampus</option>
+							<option value="DropViz_all_level1" data-section="Brain/Mouse" data-key="16">DropViz_all_level1</option>
+							<option value="DropViz_all_level2" data-section="Brain/Mouse" data-key="17">DropViz_all_level2</option>
+							<option value="DropViz_CB_level1" data-section="Brain/Mouse" data-key="18">DropViz_CB_level1</option>
+							<option value="DropViz_CB_level2" data-section="Brain/Mouse" data-key="19">DropViz_CB_level2</option>
+							<option value="DropViz_ENT_level1" data-section="Brain/Mouse" data-key="20">DropViz_ENT_level1</option>
+							<option value="DropViz_ENT_level2" data-section="Brain/Mouse" data-key="21">DropViz_ENT_level2</option>
+							<option value="DropViz_FC_level1" data-section="Brain/Mouse" data-key="22">DropViz_FC_level1</option>
+							<option value="DropViz_FC_level2" data-section="Brain/Mouse" data-key="23">DropViz_FC_level2</option>
+							<option value="DropViz_GP_level1" data-section="Brain/Mouse" data-key="24">DropViz_GP_level1</option>
+							<option value="DropViz_GP_level2" data-section="Brain/Mouse" data-key="25">DropViz_GP_level2</option>
+							<option value="DropViz_HC_level1" data-section="Brain/Mouse" data-key="26">DropViz_HC_level1</option>
+							<option value="DropViz_HC_level2" data-section="Brain/Mouse" data-key="27">DropViz_HC_level2</option>
+							<option value="DropViz_PC_level1" data-section="Brain/Mouse" data-key="28">DropViz_PC_level1</option>
+							<option value="DropViz_PC_level2" data-section="Brain/Mouse" data-key="29">DropViz_PC_level2</option>
+							<option value="DropViz_SN_level1" data-section="Brain/Mouse" data-key="30">DropViz_SN_level1</option>
+							<option value="DropViz_SN_level2" data-section="Brain/Mouse" data-key="31">DropViz_SN_level2</option>
+							<option value="DropViz_STR_level1" data-section="Brain/Mouse" data-key="32">DropViz_STR_level1</option>
+							<option value="DropViz_STR_level2" data-section="Brain/Mouse" data-key="33">DropViz_STR_level2</option>
+							<option value="DropViz_TH_level1" data-section="Brain/Mouse" data-key="34">DropViz_TH_level1</option>
+							<option value="DropViz_TH_level2" data-section="Brain/Mouse" data-key="35">DropViz_TH_level2</option>
+							<option value="GSE106678_Mouse_Cortex" data-section="Brain/Mouse" data-key="36">GSE106678_Mouse_Cortex</option>
+							<option value="GSE82187_Mouse_Striatum" data-section="Brain/Mouse" data-key="37">GSE82187_Mouse_Striatum</option>
+							<option value="GSE87544_Mouse_Hypothalamus" data-section="Brain/Mouse" data-key="38">GSE87544_Mouse_Hypothalamus</option>
+							<option value="GSE89164_Mouse_Hindbrain" data-section="Brain/Mouse" data-key="39">GSE89164_Mouse_Hindbrain</option>
+							<option value="GSE93374_Mouse_Arc_ME_level1" data-section="Brain/Mouse" data-key="40">GSE93374_Mouse_Arc_ME_level1</option>
+							<option value="GSE93374_Mouse_Arc_ME_level2" data-section="Brain/Mouse" data-key="41">GSE93374_Mouse_Arc_ME_level2</option>
+							<option value="GSE93374_Mouse_Arc_ME_neurons" data-section="Brain/Mouse" data-key="42">GSE93374_Mouse_Arc_ME_neurons</option>
+							<option value="GSE98816_Mouse_Brain_Vascular" data-section="Brain/Mouse" data-key="43">GSE98816_Mouse_Brain_Vascular</option>
+							<option value="Linnarsson_GSE101601_Mouse_Somatosensory_cortex" data-section="Brain/Mouse" data-key="44">Linnarsson_GSE101601_Mouse_Somatosensory_cortex</option>
+							<option value="Linnarsson_GSE103840_Mouse_Dorsal_horn" data-section="Brain/Mouse" data-key="45">Linnarsson_GSE103840_Mouse_Dorsal_horn</option>
+							<option value="Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level1" data-section="Brain/Mouse" data-key="46">Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level1</option>
+							<option value="Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level2" data-section="Brain/Mouse" data-key="47">Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level2</option>
+							<option value="Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level3" data-section="Brain/Mouse" data-key="48">Linnarsson_GSE59739_Mouse_Dorsal_root_ganglion_level3</option>
+							<option value="Linnarsson_GSE60361_Mouse_Cortex_Hippocampus_level1" data-section="Brain/Mouse" data-key="49">Linnarsson_GSE60361_Mouse_Cortex_Hippocampus_level1</option>
+							<option value="Linnarsson_GSE60361_Mouse_Cortex_Hippocampus_level2" data-section="Brain/Mouse" data-key="50">Linnarsson_GSE60361_Mouse_Cortex_Hippocampus_level2</option>
+							<option value="Linnarsson_GSE74672_Mouse_Hypothalamus_Neurons_level2" data-section="Brain/Mouse" data-key="51">Linnarsson_GSE74672_Mouse_Hypothalamus_Neurons_level2</option>
+							<option value="Linnarsson_GSE74672_Mouse_Hypothalamus_level1" data-section="Brain/Mouse" data-key="52">Linnarsson_GSE74672_Mouse_Hypothalamus_level1</option>
+							<option value="Linnarsson_GSE75330_Mouse_Oligodendrocytes" data-section="Brain/Mouse" data-key="53">Linnarsson_GSE75330_Mouse_Oligodendrocytes</option>
+							<option value="Linnarsson_GSE76381_Mouse_Midbrain" data-section="Brain/Mouse" data-key="54">Linnarsson_GSE76381_Mouse_Midbrain</option>
+							<option value="Linnarsson_GSE78845_Mouse_Ganglia" data-section="Brain/Mouse" data-key="55">Linnarsson_GSE78845_Mouse_Ganglia</option>
+							<option value="Linnarsson_GSE95752_Mouse_Dentate_gyrus" data-section="Brain/Mouse" data-key="56">Linnarsson_GSE95752_Mouse_Dentate_gyrus</option>
+							<option value="Linnarsson_GSE95315_Mouse_Dentate_gyrus" data-section="Brain/Mouse" data-key="57">Linnarsson_GSE95315_Mouse_Dentate_gyrus</option>
+							<option value="Linnarsson_GSE104323_Mouse_Dentate_gyrus" data-section="Brain/Mouse" data-key="58">Linnarsson_GSE104323_Mouse_Dentate_gyrus</option>
+							<option value="MouseCellAtlas_Brain" data-section="Brain/Mouse" data-key="59">MouseCellAtlas_Brain</option>
+							<option value="MouseCellAtlas_Fetal_Brain" data-section="Brain/Mouse" data-key="60">MouseCellAtlas_Fetal_Brain</option>
+							<option value="MouseCellAtlas_Neonatal_Calvaria" data-section="Brain/Mouse" data-key="61">MouseCellAtlas_Neonatal_Calvaria</option>
+							<option value="TabulaMuris_FACS_Brain" data-section="Brain/Mouse" data-key="62">TabulaMuris_FACS_Brain</option>
+							<option value="TabulaMuris_FACS_Brain_Myeloid" data-section="Brain/Mouse" data-key="63">TabulaMuris_FACS_Brain_Myeloid</option>
+							<option value="TabulaMuris_FACS_Brain_Non-Myeloid" data-section="Brain/Mouse" data-key="64">TabulaMuris_FACS_Brain_Non-Myeloid</option>
+							<option value="GSE106707_Mouse_Striatum_Cortex" data-section="Brain/Mouse" data-key="65">GSE106707_Mouse_Striatum_Cortex</option>
+							<option value="GSE97478_Mouse_Striatum_Cortex" data-section="Brain/Mouse" data-key="66">GSE97478_Mouse_Striatum_Cortex</option>
+							<option value="Linnarsson_MouseBrainAtlas_level5" data-section="Brain/Mouse" data-key="67">Linnarsson_MouseBrainAtlas_level5</option>
+							<option value="Linnarsson_MouseBrainAtlas_level6_rank1" data-section="Brain/Mouse" data-key="68">Linnarsson_MouseBrainAtlas_level6_rank1</option>
+							<option value="Linnarsson_MouseBrainAtlas_level6_rank2" data-section="Brain/Mouse" data-key="69">Linnarsson_MouseBrainAtlas_level6_rank2</option>
+							<option value="Linnarsson_MouseBrainAtlas_level6_rank3" data-section="Brain/Mouse" data-key="70">Linnarsson_MouseBrainAtlas_level6_rank3</option>
+							<option value="Linnarsson_MouseBrainAtlas_level6_rank4" data-section="Brain/Mouse" data-key="71">Linnarsson_MouseBrainAtlas_level6_rank4</option>
+							<option value="MouseCellAtlas_Mammary_Gland" data-section="Breast/Mouse" data-key="0">MouseCellAtlas_Mammary_Gland</option>
+							<option value="TabulaMuris_FACS_Mammary_Gland" data-section="Breast/Mouse" data-key="1">TabulaMuris_FACS_Mammary_Gland</option>
+							<option value="TabulaMuris_droplet_Mammary" data-section="Breast/Mouse" data-key="2">TabulaMuris_droplet_Mammary</option>
+							<option value="GSE100597_Mouse_Embryo" data-section="Embryo/Mouse" data-key="0">GSE100597_Mouse_Embryo</option>
+							<option value="MouseCellAtlas_Embryo_all" data-section="Embryo/Mouse" data-key="1">MouseCellAtlas_Embryo_all</option>
+							<option value="GSE92332_Mouse_Epithelium_SMARTseq" data-section="Epithelial/Mouse" data-key="0">GSE92332_Mouse_Epithelium_SMARTseq</option>
+							<option value="GSE92332_Mouse_Epithelium_droplet" data-section="Epithelial/Mouse" data-key="1">GSE92332_Mouse_Epithelium_droplet</option>
+							<option value="TabulaMuris_FACS_Diaphragm" data-section="Diaphram/Mouse" data-key="0">TabulaMuris_FACS_Diaphragm</option>
+							<option value="TabulaMuris_FACS_Fat" data-section="Fat/Mouse" data-key="0">TabulaMuris_FACS_Fat</option>
+							<option value="MouseCellAtlas_Neonatal_Heart" data-section="Heart/Mouse" data-key="0">MouseCellAtlas_Neonatal_Heart</option>
+							<option value="TabulaMuris_FACS_Heart" data-section="Heart/Mouse" data-key="1">TabulaMuris_FACS_Heart</option>
+							<option value="TabulaMuris_droplet_Heart" data-section="Heart/Mouse" data-key="2">TabulaMuris_droplet_Heart</option>
+							<option value="MouseCellAtlas_Kidney" data-section="Kidney/Mouse" data-key="0">MouseCellAtlas_Kidney</option>
+							<option value="TabulaMuris_FACS_Kidney" data-section="Kidney/Mouse" data-key="1">TabulaMuris_FACS_Kidney</option>
+							<option value="TabulaMuris_droplet_Kidney" data-section="Kidney/Mouse" data-key="2">TabulaMuris_droplet_Kidney</option>
+							<option value="TabulaMuris_FACS_Large_Intestine" data-section="Large Intestine/Mouse" data-key="0">TabulaMuris_FACS_Large_Intestine</option>
+							<option value="MouseCellAtlas_Fetal_Liver" data-section="Liver/Mouse" data-key="0">MouseCellAtlas_Fetal_Liver</option>
+							<option value="MouseCellAtlas_Liver" data-section="Liver/Mouse" data-key="1">MouseCellAtlas_Liver</option>
+							<option value="TabulaMuris_FACS_Liver" data-section="Liver/Mouse" data-key="2">TabulaMuris_FACS_Liver</option>
+							<option value="TabulaMuris_droplet_Liver" data-section="Liver/Mouse" data-key="3">TabulaMuris_droplet_Liver</option>
+							<option value="GSE99235_Mouse_Lung_Vascular" data-section="Lung/Mouse" data-key="0">GSE99235_Mouse_Lung_Vascular</option>
+							<option value="MouseCellAtlas_Fetal_Lung" data-section="Lung/Mouse" data-key="1">MouseCellAtlas_Fetal_Lung</option>
+							<option value="MouseCellAtlas_Lung" data-section="Lung/Mouse" data-key="2">MouseCellAtlas_Lung</option>
+							<option value="TabulaMuris_FACS_Lung" data-section="Lung/Mouse" data-key="3">TabulaMuris_FACS_Lung</option>
+							<option value="TabulaMuris_droplet_Lung" data-section="Lung/Mouse" data-key="4">TabulaMuris_droplet_Lung</option>
+							<option value="MouseCellAtlas_Muscle" data-section="Muscle/Mouse" data-key="0">MouseCellAtlas_Muscle</option>
+							<option value="TabulaMuris_FACS_Limb_Muscle" data-section="Muscle/Mouse" data-key="1">TabulaMuris_FACS_Limb_Muscle</option>
+							<option value="MouseCellAtlas_Neonatal_Muscle" data-section="Muscle/Mouse" data-key="2">MouseCellAtlas_Neonatal_Muscle</option>
+							<option value="TabulaMuris_droplet_Muscle" data-section="Muscle/Mouse" data-key="3">TabulaMuris_droplet_Muscle</option>
+							<option value="MouseCellAtlas_Ovary" data-section="Ovary/Mouse" data-key="0">MouseCellAtlas_Ovary</option>
+							<option value="GSE81547_Human_Pancreas" data-section="Pancreas/Human" data-key="0">GSE81547_Human_Pancreas</option>
+							<option value="GSE84133_Human_Pancreas" data-section="Pancreas/Human" data-key="1">GSE84133_Human_Pancreas</option>
+							<option value="GSE84133_Mouse_Pancreas" data-section="Pancreas/Mouse" data-key="0">GSE84133_Mouse_Pancreas</option>
+							<option value="MouseCellAtlas_Pancreas" data-section="Pancreas/Mouse" data-key="1">MouseCellAtlas_Pancreas</option>
+							<option value="TabulaMuris_FACS_Pancreas" data-section="Pancreas/Mouse" data-key="2">TabulaMuris_FACS_Pancreas</option>
+							<option value="MouseCellAtlas_Placenta" data-section="Placenta/Mouse" data-key="0">MouseCellAtlas_Placenta</option>
+							<option value="MouseCellAtlas_Prostate" data-section="Prostate/Mouse" data-key="0">MouseCellAtlas_Prostate</option>
+							<option value="MouseCellAtlas_Neonatal_Rib" data-section="Ribs/Mouse" data-key="0">MouseCellAtlas_Neonatal_Rib</option>
+							<option value="Linnarsson_GSE67602_Mouse_Skin_Epidermis" data-section="Skin/Mouse" data-key="0">Linnarsson_GSE67602_Mouse_Skin_Epidermis</option>
+							<option value="TabulaMuris_FACS_Skin" data-section="Skin/Mouse" data-key="1">TabulaMuris_FACS_Skin</option>
+							<option value="MouseCellAtlas_Neonatal_Skin" data-section="Skin/Mouse" data-key="2">MouseCellAtlas_Neonatal_Skin</option>
+							<option value="MouseCellAtlas_Fetal_Intestine" data-section="Intestine/Mouse" data-key="0">MouseCellAtlas_Fetal_Intestine</option>
+							<option value="MouseCellAtlas_Small_Intestine" data-section="Small Intestine/Mouse" data-key="0">MouseCellAtlas_Small_Intestine</option>
+							<option value="MouseCellAtlas_Spleen" data-section="Spleen/Mouse" data-key="0">MouseCellAtlas_Spleen</option>
+							<option value="TabulaMuris_FACS_Spleen" data-section="Spleen/Mouse" data-key="1">TabulaMuris_FACS_Spleen</option>
+							<option value="TabulaMuris_droplet_Spleen" data-section="Spleen/Mouse" data-key="2">TabulaMuris_droplet_Spleen</option>
+							<option value="MouseCellAtlas_Mesenchymal_Stem_Cell_Cultured" data-section="Stem Cell/Mouse" data-key="0">MouseCellAtlas_Mesenchymal_Stem_Cell_Cultured</option>
+							<option value="MouseCellAtlas_Trophoblast_Stem_Cell" data-section="Stem Cell/Mouse" data-key="1">MouseCellAtlas_Trophoblast_Stem_Cell</option>
+							<option value="MouseCellAtlas_Embryonic_Mesenchyme" data-section="Stem Cell/Mouse" data-key="2">MouseCellAtlas_Embryonic_Mesenchyme</option>
+							<option value="MouseCellAtlas_Embryonic_Stem_Cell" data-section="Stem Cell/Mouse" data-key="3">MouseCellAtlas_Embryonic_Stem_Cell</option>
+							<option value="MouseCellAtlas_Fetal_Stomache" data-section="Stomach/Mouse" data-key="0">MouseCellAtlas_Fetal_Stomache</option>
+							<option value="MouseCellAtlas_Stomach" data-section="Stomach/Mouse" data-key="1">MouseCellAtlas_Stomach</option>
+							<option value="MouseCellAtlas_Testis" data-section="Testis/Mouse" data-key="0">MouseCellAtlas_Testis</option>
+							<option value="MouseCellAtlas_Thymus" data-section="Thymus/Mouse" data-key="0">MouseCellAtlas_Thymus</option>
+							<option value="TabulaMuris_FACS_Thymus" data-section="Thymus/Mouse" data-key="1">TabulaMuris_FACS_Thymus</option>
+							<option value="TabulaMuris_droplet_Thymus" data-section="Thymus/Mouse" data-key="2">TabulaMuris_droplet_Thymus</option>
+							<option value="TabulaMuris_FACS_Tongue" data-section="Tongue/Mouse" data-key="0">TabulaMuris_FACS_Tongue</option>
+							<option value="TabulaMuris_droplet_Tongue" data-section="Tongue/Mouse" data-key="1">TabulaMuris_droplet_Tongue</option>
+							<option value="TabulaMuris_FACS_Trachea" data-section="Trachea/Mouse" data-key="0">TabulaMuris_FACS_Trachea</option>
+							<option value="TabulaMuris_droplet_Trachea" data-section="Trachea/Mouse" data-key="1">TabulaMuris_droplet_Trachea</option>
+							<option value="MouseCellAtlas_Uterus" data-section="Uterus/Mouse" data-key="0">MouseCellAtlas_Uterus</option>
+							<option value="MouseCellAtlas_all" data-section="Other/Mouse" data-key="0">MouseCellAtlas_all</option>
+							<option value="MouseCellAtlas_Adult_all" data-section="Other/Mouse" data-key="1">MouseCellAtlas_Adult_all</option>
+							<option value="MouseCellAtlas_Neonatal_all" data-section="Other/Mouse" data-key="2">MouseCellAtlas_Neonatal_all</option>
+							<option value="PBMC_10x_68k" data-section="Other/Human" data-key="3">PBMC_10x_68k</option>
+							<option value="TabulaMuris_FACS_all" data-section="Other/Mouse" data-key="4">TabulaMuris_FACS_all</option>
+							<option value="TabulaMuris_droplet_all" data-section="Other/Mouse" data-key="5">TabulaMuris_droplet_all</option>
 						</select>
+						</div>
+
+						<script>
+						var params = { sortable: true };
+						$("select#cellDataSets").treeMultiselect({searchable: true, searchParams: ['section', 'text'], hideSidePanel: true, startCollapsed: true});
+						</script>
+						
 					</div>
 				</div>
 				<div class="panel panel-default">

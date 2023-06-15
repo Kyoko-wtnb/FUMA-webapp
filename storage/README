@@ -175,16 +175,7 @@ ciMapts (ciMap): Tissue/cell types of mapped chromatin interactions.
 minGwasP : The minimum P-value of mapped SNPs.
 IndSigSNPs : rsID of the independent significant SNPs that are in LD with the mapped SNPs.
 	Note that this column does not represent SNPs that are mapped to the gene.
-	The actual mapped SNPs are available in gene_snps.txt file.
 GenomicLocus : Index of genomic loci where mapped SNPs are from. Multiple loci can be assigned with ":" delimiter.
-
-######################
-# gene_snps.txt
-# All pairs of SNP-gene used for mappings.
-######################
-gene: Ensembl gene ID
-uniqID: unique ID of a SNP mapped to the gene
-type: Type of mapping (posMap/eqtlMap/ciMap)
 
 ######################
 # eqtl.txt

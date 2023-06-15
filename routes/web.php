@@ -1,43 +1,20 @@
 <?php
-Route::get('/show-autoloaders', function(){
-    foreach(spl_autoload_functions() as $callback)
-    {
-        if(is_string($callback))
-        {
-            echo '- ',$callback,"\n<br>\n";
-        }
 
-        else if(is_array($callback))
-        {
-            if(is_object($callback[0]))
-            {
-                echo '- ',get_class($callback[0]);
-            }
-            elseif(is_string($callback[0]))
-            {
-                echo '- ',$callback[0];
-            }
-            echo '::',$callback[1],"\n<br>\n";            
-        }
-        else
-        {
-            var_dump($callback);
-        }
-    }
-});
 /*
 |--------------------------------------------------------------------------
-| Application Routes
+| Web Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register all of the routes for an application.
-| It's a breeze. Simply tell Laravel the URIs it should respond to
-| and give it the controller to call when that URI is requested.
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
 |
 */
 
+Auth::routes();
 
-
+// Note that the routes containing closures cannot be cached by " php artisan route:cache"
+// in Laravel 5.7 -> 6.* but from 7 it works. 
 
 Route::group([], function(){
 	Route::get('/', function () {
@@ -57,10 +34,51 @@ Route::group([], function(){
 	Route::get('updates', function(){
 		return view('pages.updates');
 	});
+
+	Route::get('faq', function(){
+		return view('pages.faq');
+	});
 });
 
-// Set up the auth routes
-Route::auth();
+/**
+ * Some documentation about the behind the scenes cleverness here
+ * 
+ * User, Roles and Permissions are handled by (RESTful) resource controllers
+ * which contain index(), create(), edit(), update(), and destroy()
+ * methods for teh resource in question.
+ * 
+ * The following routes are generated automatically (users example 
+ * roles and permissions are the same), note including 
+ * the "admin" prefix for clarity
+ * 
+ * HTTP                              RouteName
+ * ----                              ---------
+ * GET  /admin/users                 users.index
+ * GET  /admin/users/create          users.create
+ * POST /admin/users                 users.store
+ * GET  /admin/{user}                users.show
+ * GET  /admin/{user}/edit           users.edit
+ * PUT  /admin/users/{user}          users.update
+ * DELETE /admin/users/{user}        users.destroy
+ * 
+ * In the controllers and views(e.g. UserController, users/index.blad.php) 
+ * you find these route referenced using, for example,: 
+ * 			"redirect()->route('users.index')"
+ * 			"a href="{{ route('roles.index') }}"
+ */
+Route::group([
+		'middleware'=>[
+				'auth',
+				'web'
+		], 
+		'prefix'=>'admin'
+], function() {
+	Route::resource('users', 'UserController');
+
+	Route::resource('roles', 'RoleController');
+	
+	Route::resource('permissions', 'PermissionController');
+});
 
 
 // ********************** Browse ************************

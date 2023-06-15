@@ -23,6 +23,7 @@ $(document).ready(function(){
 	</div>
 	<br/>
 	<p>
+		<strong style="font-size: large;">About FUMA</strong><br/>
 		FUMA is a platform that can be used to annotate, prioritize, visualize and interpret GWAS results.
 		<br/>
 		The <a href="{{ Config::get('app.subdir') }}/snp2gene">SNP2GENE</a> function takes GWAS summary statistics as an input,
@@ -38,12 +39,23 @@ $(document).ready(function(){
 	</p>
 	<p>
 		Please post any questions, suggestions and bug reports on Google Forum: <a target="_blank" href="https://groups.google.com/forum/#!forum/fuma-gwas-users">FUMA GWAS users</a>.<br/>
-		If you would like to be in the mailing list, please send an email to k.watanabe@vu.nl. Only major updates will be announced through email (low traffic).
 	</p>
 	<p>
-		<strong>Citation:</strong><br/>
+		<strong style="font-size: large;">News</strong><br/>
+		<b>12 May 2023: </b> FUMA is upgraded to version 1.5.4.<br/>
+		User roles and permissions were added for resource management purposes.<br/>
+		<b>06 April 2023: </b> FUMA is upgraded to version 1.5.3.<br/>
+		Registration vulnerability is fixed. Registration with invalid email addresses is not allowed anymore.<br/>
+		<b>26 February 2023: </b> FUMA is upgraded to version 1.5.2.<br/>
+		A frequently asked questions page is added. In addition, some other minor updates to wording on the website was done.<br/>
+		<b>03 February 2023: </b> FUMA is upgraded to version 1.5.1.<br/>
+		Starting from FUMA version 1.5.1, as default MAGMA is unchecked. If you want to obtain results from MAGMA, please select 'Perform MAGMA' in step 6 on the submission page. <br/>
+		For other updates, please see the <a href="{{ Config::get('app.subdir') }}/updates">Updates</a> page. 
+	</p>
+	<p>
+		<strong style="font-size: large;">Citation</strong><br/>
 		When using FUMA, please cite the following.<br/>
-		K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma. Functional mapping and annotation of genetic associations with FUMA. <i>Nat. Commun.</i> <b>8</b>:1826. (2017).<br/>
+		K. Watanabe, E. Taskesen, A. van Bochoven and D. Posthuma. Functional mapping and annotation of genetic associations with FUMA. <i>Nat. Commun.</i> <b>8</b>:1826. (2017).<br/><a href="{{ Config::get('app.subdir') }}/links">links</a>
 		<a target="_blank" href="https://www.nature.com/articles/s41467-017-01261-5">https://www.nature.com/articles/s41467-017-01261-5</a>
 		<br>
 		When using cell type analysis, please cite the following.<br/>
