@@ -18,8 +18,22 @@
 		</tr>
 	</thead>
     <tbody>
-		<tr>
-    		<td>26 February 2023</td>
+        <tr>
+            <td>12 May 2023</td>
+            <td>v1.5.4</td>
+            <td>
+                        User roles and permissions added.
+            </td>
+        </tr>
+	<tr>
+    	    <td>06 April 2023</td>
+            <td>v1.5.3</td>
+            <td>
+			Registration vulnerability fixed.
+            </td>
+	</tr>
+	<tr>
+    	    <td>26 February 2023</td>
             <td>v1.5.2</td>
             <td>
 			Added an FAQ page.

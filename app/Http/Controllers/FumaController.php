@@ -598,4 +598,9 @@ class FumaController extends Controller
 		}
 	}
 
+	//pages.browse', ['id'=>$id, 'page'=>'browse', 'prefix'=>'public'])
+	public function browseId($id) {
+		return view('pages.browse', ['id'=>$id, 'page'=>'browse', 'prefix'=>'public']);
+	}
+
 }

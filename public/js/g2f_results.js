@@ -59,6 +59,7 @@ function expHeatMap(id){
 		},
 		success: function(data){
 			data = data.split(":");
+			console.log("HeatMap data: " + data);
 			data.forEach(function(d){
 				var tmp = d.split("/");
 				tmp = tmp[tmp.length-1];

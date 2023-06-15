@@ -42,6 +42,10 @@ $(document).ready(function(){
 	</p>
 	<p>
 		<strong style="font-size: large;">News</strong><br/>
+		<b>12 May 2023: </b> FUMA is upgraded to version 1.5.4.<br/>
+		User roles and permissions were added for resource management purposes.<br/>
+		<b>06 April 2023: </b> FUMA is upgraded to version 1.5.3.<br/>
+		Registration vulnerability is fixed. Registration with invalid email addresses is not allowed anymore.<br/>
 		<b>26 February 2023: </b> FUMA is upgraded to version 1.5.2.<br/>
 		A frequently asked questions page is added. In addition, some other minor updates to wording on the website was done.<br/>
 		<b>03 February 2023: </b> FUMA is upgraded to version 1.5.1.<br/>
