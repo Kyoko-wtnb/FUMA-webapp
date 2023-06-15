@@ -33,6 +33,7 @@ $(document).ready(function(){
 				$('#FUMAuser').html(data.user);
 				$('#FUMAs2g').html(data.s2g);
 				$('#FUMAg2f').html(data.g2f);
+				$('#FUMAcellType').html(data.cellType);
 				$('#FUMArun').html(data.run);
 				$('#FUMAque').html(data.que);
 			}

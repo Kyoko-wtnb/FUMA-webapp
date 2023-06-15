@@ -31,6 +31,7 @@
 						Total users: <span id="FUMAuser"></span><br/>
 						Total SNP2GENE jobs: <span id="FUMAs2g"></span><br/>
 						Total GENE2FUNC jobs: <span id="FUMAg2f"></span><br/>
+						Total CellType jobs: <span id="FUMAcellType"></span><br/>
 						Currently running jobs: <span id="FUMArun"></span><br/>
 						Currently queued jobs: <span id="FUMAque"></span></div>'>
 						<i class="fa fa-info-circle fa-lg"></i>
