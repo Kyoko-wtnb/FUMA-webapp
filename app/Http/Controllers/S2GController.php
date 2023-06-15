@@ -347,9 +347,22 @@ class S2GController extends Controller
         $date = date('Y-m-d H:i:s');
         $email = Auth::user()->email;
         $user_id = Auth::user()->id;
+        $exfile = config('app.jobdir') . '/example/CD.gwas';
+        
         // Implement the cap on max jobs in queue
         $numSchedJobs = $this->getNumberScheduledJobs();
         $queueCap = $this->getQueueCap();
+
+        if ($request->has('egGWAS')) {
+            if (!Storage::exists($exfile)) {
+                $message = <<<MSG
+                Example file is missing from the server. Please contact the administrator.
+                MSG;
+                $request->session()->flash("alert-warning", $message);
+                return redirect()->back();
+            }
+        }
+
         if (!is_null($queueCap) && ($numSchedJobs >= $queueCap)) {
             // flash a warning to the user about the queue cap
             $name = Auth::user()->name;
@@ -410,17 +423,13 @@ class S2GController extends Controller
         $GWAS = "input.gwas";
         $regions = "input.regions";
         $leadSNPsfileup = 0;
-        $GWASfileup = 0;
         $regionsfileup = 0;
 
         // GWAS smmary stats file
         if ($request->hasFile('GWASsummary')) {
             $this->filePreprocessAndStore($request->file('GWASsummary'), $GWAS, $filedir);
-            $GWASfileup = 1;
         } else if ($request->has('egGWAS')) {
-            $exfile = config('app.jobdir') . '/example/CD.gwas';
             Storage::copy($exfile, $filedir . '/input.gwas');
-            $GWASfileup = 1;
         }
 
         // pre-defined lead SNPS file
