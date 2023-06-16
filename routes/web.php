@@ -112,7 +112,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::prefix('snp2gene')->group(function () {
         Route::get('/', [S2GController::class, 'index']);
         Route::get('/getJobList/{email?}/{limit?}', [S2GController::class, 'getJobList']);
-        Route::get('/getPublicIDs', [S2GController::class, 'getPublicIDs']);
         Route::post('/newJob', [S2GController::class, 'newJob']);
         Route::post('/getjobIDs', [S2GController::class, 'getjobIDs']);
         Route::post('/getGeneMapIDs', [S2GController::class, 'getFinishedjobsIDs']);

@@ -86,26 +86,6 @@ class S2GController extends Controller
         return count($results);
     }
 
-    public function getPublicIDs()
-    {
-        $email = Auth::user()->email;
-        $results = array();
-
-        if ($email) {
-            $rows = DB::select('SELECT jobID from PublicResults WHERE email=?', [$email]);
-
-            // TODO: make a new model PublicResults -> uncomment the following -> delete the DB::select above
-            // $rows = PublicResults::where('email', $email)
-            //     ->get(['jobID']);
-
-            foreach ($rows as $r) {
-                $results[] = (int) $r->jobID;
-            }
-        }
-
-        return response()->json($results);
-    }
-
     public function getjobIDs()
     {
         $user_id = Auth::user()->id;
