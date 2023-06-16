@@ -144,4 +144,12 @@ return [
         'email_message' => '',
         'type' => 'err',
     ],
+
+    17 => [
+        'short_name' => 'ERROR:timeout',
+        'long_name' => '',
+        'description' => '',
+        'email_message' => '',
+        'type' => 'err',
+    ],
 ];

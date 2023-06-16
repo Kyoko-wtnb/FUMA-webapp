@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\TimeoutExceededException;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use App\Models\SubmitJob;
@@ -20,11 +21,11 @@ class Snp2geneProcess implements ShouldQueue
     protected $jobID;
 
     /**
-     * The number of times the job may be attempted.
+     * The number of seconds the job can run before timing out.
      *
      * @var int
      */
-    public $tries = 1;
+    public $timeout = 3600;
 
     /**
      * Create a new job instance.
@@ -476,8 +477,12 @@ class Snp2geneProcess implements ShouldQueue
         return true;
     }
 
-    public function failed(): void
+    public function failed($exception): void
     {
-        JobHelper::JobTerminationHandling($this->jobID, 16);
+        if ($exception instanceof TimeoutExceededException) {
+            JobHelper::JobTerminationHandling($this->jobID, 17);
+        } else {
+            JobHelper::JobTerminationHandling($this->jobID, 16);
+        }
     }
 }
