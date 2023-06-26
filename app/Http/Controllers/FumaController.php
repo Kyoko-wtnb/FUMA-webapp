@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+use App\CustomClasses\DockerApi\DockerNamesBuilder;
 use App\Models\SubmitJob;
 use App\Models\User;
 
@@ -82,9 +82,11 @@ class FumaController extends Controller
         $search = $request->input('search');
         $search = $search['value'];
 
-        $uuid = Str::uuid();
-        $new_cmd = "docker run --rm --name job-$jobID-$uuid -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-dt /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
-        $out = shell_exec($new_cmd);
+        $container_name = DockerNamesBuilder::containerName($jobID);
+        $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'dt');
+
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
+        $out = shell_exec($cmd);
         echo $out;
 
 
@@ -287,8 +289,10 @@ class FumaController extends Controller
         $rowI = $request->input('rowI');
         // $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
 
-        $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-$jobID-$uuid -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-locus_plot /bin/sh -c 'python locusPlot.py job/ $rowI $type'";
+        $container_name = DockerNamesBuilder::containerName($jobID);
+        $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'locus_plot');
+
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python locusPlot.py job/ $rowI $type'";
         $out = shell_exec($cmd);
         return $out;
     }
@@ -368,10 +372,12 @@ class FumaController extends Controller
 
         // $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
 
-        $uuid = Str::uuid();
+        $container_name = DockerNamesBuilder::containerName($jobID);
+        $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'annot_plot');
+
         $ref_data_path_on_host = config('app.ref_data_on_host_path');
 
-        $cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-annot_plot /bin/sh -c 'python annotPlot.py job/ $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python annotPlot.py job/ $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells'";
 
         $data = shell_exec($cmd);
         return $data;
@@ -392,10 +398,12 @@ class FumaController extends Controller
         $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $ensembl = $params['ensembl'];
 
-        $uuid = Str::uuid();
+        $container_name = DockerNamesBuilder::containerName($jobID);
+        $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'annot_plot');
+
         $ref_data_path_on_host = config('app.ref_data_on_host_path');
 
-        $cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app laradock-fuma-annot_plot /bin/sh -c 'Rscript annotPlot.R job/ $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'Rscript annotPlot.R job/ $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl'";
 
         $data = shell_exec($cmd);
         $data = explode("\n", $data);
@@ -683,8 +691,11 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-$id-$uuid -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job laradock-fuma-g2f /bin/sh -c 'python g2f_expPlot.py job/ $dataset'";
+
+        $container_name = DockerNamesBuilder::containerName($id);
+        $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'g2f');
+
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job " . $image_name . " /bin/sh -c 'python g2f_expPlot.py job/ $dataset'";
         $data = shell_exec($cmd);
         return $data;
     }
@@ -695,8 +706,11 @@ class FumaController extends Controller
         if ($prefix == "public") {
             $filedir .= 'g2f/';
         }
-        $uuid = Str::uuid();
-        $cmd = "docker run --rm --name job-$id-$uuid -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job laradock-fuma-g2f /bin/sh -c 'python g2f_DEGPlot.py job/'";
+
+        $container_name = DockerNamesBuilder::containerName($id);
+        $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'g2f');
+
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job " . $image_name . " /bin/sh -c 'python g2f_DEGPlot.py job/'";
         $data = shell_exec($cmd);
         return $data;
     }
