@@ -138,15 +138,15 @@ return [
     ],
 
     17 => [
-        'short_name' => 'ERROR:cellType',
+        'short_name' => 'ERROR:timeout',
         'long_name' => '',
         'description' => '',
         'email_message' => '',
         'type' => 'err',
     ],
 
-    17 => [
-        'short_name' => 'ERROR:timeout',
+    18 => [
+        'short_name' => 'ERROR:cellType',
         'long_name' => '',
         'description' => '',
         'email_message' => '',
