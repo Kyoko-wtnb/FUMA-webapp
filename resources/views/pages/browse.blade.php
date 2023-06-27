@@ -98,5 +98,6 @@
 	<script type="text/javascript" src="{!! URL::asset('js/sidebar.js') !!}?131"></script>
 	<script type="text/javascript" src="{!! URL::asset('js/s2g_results.js') !!}?135"></script>
 	<script type="text/javascript" src="{!! URL::asset('js/g2f_results.js') !!}?135"></script>
+	<script type="text/javascript" src="{!! URL::asset('js/helpers.js') !!}?135"></script>
 	<script type="text/javascript" src="{!! URL::asset('js/browse.js') !!}?135"></script>
 @endsection

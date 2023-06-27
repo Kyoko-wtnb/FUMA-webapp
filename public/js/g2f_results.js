@@ -22,7 +22,7 @@ function summaryTable(id){
 	});
 }
 
-function paramTable(id){
+function parametersTable(id){
 	$.ajax({
 		url: subdir+"/"+page+"/g2f_paramTable",
 		type: "POST",
@@ -37,7 +37,10 @@ function paramTable(id){
 			data = JSON.parse(data);
 			var table = '<table class="table table-condensed table-bordered" style="width: 90%; text-align: right;"><tbody>'
 			data.forEach(function(d){
-				if(d[0]!="created_at"){d[1] = d[1].replace(/:/g, ', ');}
+				if(d[0]!="created_at")
+				{
+					d[1] = d[1].replace(/:/g, ', ');
+				}
 				table += '<tr><td>'+d[0]+'</td><td>'+d[1]+'</td></tr>'
 			})
 			table += '</tbody></table>'

@@ -74,29 +74,35 @@ Route::prefix('browse')->group(function () {
     Route::get('/{id}', [BrowseController::class, 'index']);
     Route::post('/checkG2F', [BrowseController::class, 'checkG2F']);
     Route::post('/getParams', [BrowseController::class, 'getParams']);
+    Route::post('/getFilesContents', [S2GController::class, 'getFilesContents']);
+    Route::post('/MAGMA_expPlot', [S2GController::class, 'MAGMA_expPlot']);
+    Route::post('/circos_chr', [FumaController::class, 'circos_chr']);
+    Route::post('/paramTable', [FumaController::class, 'paramTable']);
+    Route::post('/DTfile', [FumaController::class, 'DTfile']);
+    Route::post('/DTfileServerSide', [FumaController::class, 'DTfileServerSide']);
+    Route::post('/locusPlot', [FumaController::class, 'locusPlot']);
+    Route::post('/sumTable', [FumaController::class, 'sumTable']);
+    Route::post('/g2f_sumTable', [FumaController::class, 'g2f_sumTable']);
+    Route::post('/g2f_paramTable', [FumaController::class, 'g2f_paramTable']);
+    Route::post('/expDataOption', [FumaController::class, 'expDataOption']);
+
+
+
+
+
     Route::post('/filedown', [BrowseController::class, 'filedown']);
     Route::post('/imgdown', [BrowseController::class, 'imgdown']);
 
     Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
-    Route::get('/QQplot/{prefix}/{id}/{plot}', [FumaController::class, 'QQplot']); // deprecated to be removed
-    Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']); // deprecated to be removed
-    Route::post('/DTfile', [FumaController::class, 'DTfile']);
-    Route::post('/paramTable', [FumaController::class, 'paramTable']);
-    Route::post('/sumTable', [FumaController::class, 'sumTable']);
-    Route::post('/DTfileServerSide', [FumaController::class, 'DTfileServerSide']);
+
     Route::get('/d3text/{prefix}/{id}/{file}', [FumaController::class, 'd3text']);
     Route::get('/g2f_d3text/{prefix}/{id}/{file}', [FumaController::class, 'g2f_d3text']);
-    Route::post('/locusPlot', [FumaController::class, 'locusPlot']);
-    Route::post('/circos_chr', [FumaController::class, 'circos_chr']);
     Route::get('/circos_image/{prefix}/{id}/{file}', [FumaController::class, 'circos_image']);
     Route::post('/circosDown', [FumaController::class, 'circosDown']);
     Route::post('/annotPlot', [FumaController::class, 'annotPlot']);
     Route::post('/annotPlot/getData', [FumaController::class, 'annotPlotGetData']);
     Route::post('/annotPlot/getGenes', [FumaController::class, 'annotPlotGetGenes']);
     Route::get('/legendText/{file}', [FumaController::class, 'legendText']);
-    Route::post('/g2f_paramTable', [FumaController::class, 'g2f_paramTable']);
-    Route::post('/g2f_sumTable', [FumaController::class, 'g2f_sumTable']);
-    Route::post('/expDataOption', [FumaController::class, 'expDataOption']);
     Route::get('/expPlot/{prefix}/{id}/{dataset}', [FumaController::class, 'expPlot']);
     Route::get('/DEGPlot/{prefix}/{id}', [FumaController::class, 'DEGPlot']);
     Route::post('/geneTable', [FumaController::class, 'geneTable']);

@@ -641,9 +641,7 @@ class FumaController extends Controller
         $id = $request->input('id');
         $prefix = $request->input('prefix');
         $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
-        if ($prefix == "public") {
-            $filedir .= 'g2f/';
-        }
+
         $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $out = [];
         foreach ($params as $key => $value) {

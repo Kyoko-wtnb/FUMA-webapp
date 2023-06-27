@@ -38,6 +38,10 @@ class BrowseController extends Controller
      */
     public function index($id = null)
     {
+        if (!is_null($id) && !SubmitJob::find($id)->is_public) {
+            return redirect()->route('login');
+        }
+
         return view('pages.browse', ['id' => $id, 'page' => 'browse', 'prefix' => 'public']);
     }
 
@@ -71,13 +75,18 @@ class BrowseController extends Controller
     public function checkG2F(Request $request)
     {
         $job_id = $request->input('id');
-        return SubmitJob::find($job_id)->child->jobID;
+        
+        if (is_null($child_id = SubmitJob::find($job_id)->child->jobID)) {
+            return response()->json(['status' => 'error', 'message' => 'No G2F job found.']);
+        }
+
+        return $child_id;
     }
 
     public function getParams(Request $request)
     {
-        $id = $request->input('id');
-        $filedir = config('app.jobdir') . '/jobs/' . $id . '/';
+        $jobID = $request->input('jobID');
+        $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
         $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $posMap = $params['posMap'];
         $eqtlMap = $params['eqtlMap'];
