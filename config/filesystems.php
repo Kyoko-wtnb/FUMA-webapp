@@ -78,6 +78,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        storage_path('app/fuma') => '/fuma-jobs',
     ],
 
 ];
