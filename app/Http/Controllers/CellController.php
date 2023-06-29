@@ -305,7 +305,7 @@ class CellController extends Controller
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'celltype_plot_data');
         
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python celltype_perDatasetPlotData.py job/ $ds'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_cell_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python celltype_perDatasetPlotData.py job/ $ds'";
         $json = shell_exec($cmd);
         return $json;
     }
@@ -317,7 +317,7 @@ class CellController extends Controller
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'celltype_plot_data');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python celltype_stepPlotData.py job/'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_cell_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python celltype_stepPlotData.py job/'";
         $json = shell_exec($cmd);
         return $json;
     }

@@ -85,7 +85,7 @@ class FumaController extends Controller
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'dt');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python dt.py job/ $fin $draw $cols $order_column $order_dir $start $length $search'";
         $out = shell_exec($cmd);
         echo $out;
 
@@ -292,7 +292,7 @@ class FumaController extends Controller
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'locus_plot');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python locusPlot.py job/ $rowI $type'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python locusPlot.py job/ $rowI $type'";
         $out = shell_exec($cmd);
         return $out;
     }
@@ -377,7 +377,7 @@ class FumaController extends Controller
 
         $ref_data_path_on_host = config('app.ref_data_on_host_path');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python annotPlot.py job/ $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'python annotPlot.py job/ $type $rowI $GWASplot $CADDplot $RDBplot $eqtlplot $ciplot $Chr15 $Chr15cells'";
 
         $data = shell_exec($cmd);
         return $data;
@@ -403,7 +403,7 @@ class FumaController extends Controller
 
         $ref_data_path_on_host = config('app.ref_data_on_host_path');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'Rscript annotPlot.R job/ $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job -w /app " . $image_name . " /bin/sh -c 'Rscript annotPlot.R job/ $chrom $xMin $xMax $eqtlgenes $eqtlplot $ciplot $ensembl'";
 
         $data = shell_exec($cmd);
         $data = explode("\n", $data);
@@ -693,7 +693,7 @@ class FumaController extends Controller
         $container_name = DockerNamesBuilder::containerName($id);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'g2f');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job " . $image_name . " /bin/sh -c 'python g2f_expPlot.py job/ $dataset'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_g2f_jobs_on_host') . "/$id/:/app/job " . $image_name . " /bin/sh -c 'python g2f_expPlot.py job/ $dataset'";
         $data = shell_exec($cmd);
         return $data;
     }
@@ -708,7 +708,7 @@ class FumaController extends Controller
         $container_name = DockerNamesBuilder::containerName($id);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'g2f');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_g2f_jobs_on_host') . "/$id/:/app/job " . $image_name . " /bin/sh -c 'python g2f_DEGPlot.py job/'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_g2f_jobs_on_host') . "/$id/:/app/job " . $image_name . " /bin/sh -c 'python g2f_DEGPlot.py job/'";
         $data = shell_exec($cmd);
         return $data;
     }

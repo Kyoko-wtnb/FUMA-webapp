@@ -189,7 +189,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'gwas_file');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python gwas_file.py job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python gwas_file.py job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
 
@@ -219,7 +219,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'allsnps');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python allSNPs.py job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python allSNPs.py job >>job/job.log 2>>job/error.log'";
 
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
@@ -249,7 +249,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'magma');
 
-        $new_cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python magma.py job >>job/job.log 2>>job/error.log'";
+        $new_cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python magma.py job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $new_cmd . "\n");
         exec($new_cmd, $output, $error);
@@ -285,7 +285,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'manhattan_filt');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python manhattan_filt.py job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python manhattan_filt.py job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
@@ -306,7 +306,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'qqsnps_filt');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python QQSNPs_filt.py job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python QQSNPs_filt.py job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
@@ -328,7 +328,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'getld');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python getLD.py job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python getLD.py job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
@@ -347,7 +347,7 @@ class Snp2geneProcess implements ShouldQueue
                 $container_name = DockerNamesBuilder::containerName($jobID);
                 $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'getld');
 
-                $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python getTopSNPs.py job >>job/job.log 2>>job/error.log'";
+                $cmd = "docker run --rm --name " . $container_name . " -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python getTopSNPs.py job >>job/job.log 2>>job/error.log'";
                 Storage::append($this->logfile, "Command to be executed:");
                 Storage::append($this->logfile, $cmd . "\n");
                 exec($cmd, $output, $error);
@@ -372,7 +372,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'snpannot');
         
-        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'Rscript SNPannot.R job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'Rscript SNPannot.R job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
@@ -394,7 +394,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'getgwascatalog');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python getGWAScatalog.py job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python getGWAScatalog.py job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
@@ -416,7 +416,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'geteqtl');
         
-        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python geteQTL.py job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python geteQTL.py job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
@@ -438,7 +438,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'getci');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'Rscript getCI.R job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'Rscript getCI.R job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
@@ -465,7 +465,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'genemap');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'Rscript geneMap.R job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'Rscript geneMap.R job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
@@ -487,7 +487,7 @@ class Snp2geneProcess implements ShouldQueue
         $container_name = DockerNamesBuilder::containerName($jobID);
         $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'create_circos_plot');
 
-        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_of_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python createCircosPlot.py job >>job/job.log 2>>job/error.log'";
+        $cmd = "docker run --rm --name " . $container_name . " -v $this->ref_data_path_on_host:/data -v " . config('app.abs_path_to_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'python createCircosPlot.py job >>job/job.log 2>>job/error.log'";
         Storage::append($this->logfile, "Command to be executed:");
         Storage::append($this->logfile, $cmd . "\n");
         exec($cmd, $output, $error);
