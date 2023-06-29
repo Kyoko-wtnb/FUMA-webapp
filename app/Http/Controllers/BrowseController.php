@@ -97,7 +97,8 @@ class BrowseController extends Controller
         if (array_key_exists('ciMap', $params)) {
             $ciMap = $params['ciMap'];
         }
-        echo "$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol";
+        $magma = $params['magma'];
+        return "$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol:$magma";
     }
 
     public function filedown(Request $request)
