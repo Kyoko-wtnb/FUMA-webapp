@@ -235,8 +235,8 @@ $(document).ready(function(){
 				});
 			}
 
-			paramTable(subdir, 'browse', 'gene2func', g2f);
-			sumTable(subdir, 'browse', 'gene2func', g2f);
+			paramTable(subdir, 'browse', 'jobs', id);
+			sumTable(subdir, 'browse', 'jobs', id);
 
 			$.ajax({
                 url: subdir + '/' + page + '/getFilesContents',
