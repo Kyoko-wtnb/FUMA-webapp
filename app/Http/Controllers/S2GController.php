@@ -50,17 +50,9 @@ class S2GController extends Controller
     {
         $user_id = Auth::user()->id;
 
-        if ($user_id) {
-            $results = SubmitJob::where('user_id', $user_id)
-                ->wherein('type', ['snp2gene', 'geneMap'])
+        $results = (new SubmitJob)->getJobList_snp2gene_and_geneMap_only($user_id);
 
-                ->orderBy('created_at', 'desc')
-                ->get();
-        } else {
-            $results = array();
-        }
-
-        $this->queueNewJobs();
+        $this->queueNewJobs(); // TODO: move this to a cron job
 
         return response()->json($results);
     }
