@@ -60,4 +60,11 @@ class SubmitJob extends Model
             ->wherein('status', ['QUEUED', 'RUNNING', 'NEW'])
             ->get();
     }
+
+    public function getJob_ids_and_titles_snp2gene_and_geneMap_only($user_id): Collection
+    {
+        return $this->where('user_id', $user_id)
+            ->wherein('type', ['snp2gene', 'geneMap'])
+            ->get(['jobID', 'title']);
+    }
 }

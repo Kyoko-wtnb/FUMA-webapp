@@ -73,10 +73,8 @@ class S2GController extends Controller
     {
         $user_id = Auth::user()->id;
 
-        $results = SubmitJob::where('user_id', $user_id)
-            ->wherein('type', ['snp2gene', 'geneMap'])
+        $results = (new SubmitJob)->getJob_ids_and_titles_snp2gene_and_geneMap_only($user_id);
 
-            ->get(['jobID', 'title']);
         return $results;
     }
 
