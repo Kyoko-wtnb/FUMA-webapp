@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Artisan;
 
 class S2GTest extends TestCase
 {
-    private $user;
     protected static $db_inited = false;
 
     protected static function initDB()
@@ -23,11 +22,11 @@ class S2GTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        static::initDB();
 
-        // if (!static::$db_inited) {
-        //     static::$db_inited = true;
-        // }
+        if (!static::$db_inited) {
+            static::$db_inited = true;
+            static::initDB();
+        }
     }
 
     public function test_getJobList_with_non_loged_in_user(): void
@@ -39,8 +38,8 @@ class S2GTest extends TestCase
 
     public function test_getJobList_with_loged_in_user(): void
     {
-        $this->user = User::first();
-        $this->actingAs($this->user);
+        $user = User::first();
+        $this->actingAs($user);
 
         $response = $this->get('/snp2gene/getJobList');
 
@@ -103,7 +102,7 @@ class S2GTest extends TestCase
         $object = App::make(S2GController::class);
 
         $res = $this->invokeMethod($object, 'getNumberScheduledJobs', array(1));
-        $this->assertTrue($res === 3);
+        $this->assertTrue($res === 2);
     }
 
     public function test_getNumberScheduledJobs_if_jobs_does_not_exist(): void
