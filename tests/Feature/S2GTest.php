@@ -113,4 +113,43 @@ class S2GTest extends TestCase
         $res = $this->invokeMethod($object, 'getNumberScheduledJobs', array(100));
         $this->assertTrue($res === 0);
     }
+
+    public function test_getjobIDs_with_non_loged_in_user(): void
+    {
+        $response = $this->post('/snp2gene/getjobIDs');
+
+        $response->assertRedirect('login');
+    }
+
+    public function test_getjobIDs_with_loged_in_user_jobs_exist(): void
+    {
+        $user = User::find(1);
+        $this->actingAs($user);
+
+        $response = $this->post('/snp2gene/getjobIDs');
+        # assert if the response is 200
+        # assert if the response is json object
+        # assert the response's json structure
+        $response->assertStatus(200)
+                ->assertJson([])
+                ->assertJsonStructure([
+            '*' => [
+                "jobID",
+                "title"
+            ]
+        ]);
+    }
+
+    public function test_getjobIDs_with_loged_in_user_jobs_does_not_exist(): void
+    {
+        $user = User::find(2);
+        $this->actingAs($user);
+
+        $response = $this->post('/snp2gene/getjobIDs');
+
+        # assert if the response is 200
+        # assert if the response is an empty json object
+        $response->assertStatus(200)
+                ->assertExactJson([]);
+    }
 }
