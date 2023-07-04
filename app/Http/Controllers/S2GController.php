@@ -57,24 +57,15 @@ class S2GController extends Controller
         return response()->json($results);
     }
 
-
     /**
-     * Return the number of scheduled jobs for the current user
+     * Return the number of scheduled (snp2gene and geneMap jobs only) jobs for the current user
      * including all QUEUED RUNNING and NEW jobs.
+     * @param int $user_id The user id
+     * @return int
      */
-    public function getNumberScheduledJobs()
+    private function getNumberScheduledJobs($user_id): int
     {
-        $user_id = Auth::user()->id;
-
-        $results = array();
-        if ($user_id) {
-            $results = SubmitJob::where('user_id', $user_id)
-                ->wherein('type', ['snp2gene', 'geneMap'])
-
-                ->whereIn('status', ['QUEUED', 'RUNNING', 'NEW'])
-                ->get();
-        }
-
+        $results = (new SubmitJob)->getNumberOfScheduledJobs_snp2gene_and_geneMap_only($user_id);
         return count($results);
     }
 
@@ -322,7 +313,7 @@ class S2GController extends Controller
         $exfile = config('app.jobdir') . '/example/CD.gwas';
         
         // Implement the cap on max jobs in queue
-        $numSchedJobs = $this->getNumberScheduledJobs();
+        $numSchedJobs = $this->getNumberScheduledJobs($user_id);
         $queueCap = $this->getQueueCap();
 
         if ($request->has('egGWAS')) {

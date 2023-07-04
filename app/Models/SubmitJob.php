@@ -52,4 +52,12 @@ class SubmitJob extends Model
             ->orderBy('created_at', 'desc')
             ->get();
     }
+
+    public function getNumberOfScheduledJobs_snp2gene_and_geneMap_only($user_id): Collection
+    {
+        return $this->where('user_id', $user_id)
+            ->wherein('type', ['snp2gene', 'geneMap'])
+            ->wherein('status', ['QUEUED', 'RUNNING', 'NEW'])
+            ->get();
+    }
 }
