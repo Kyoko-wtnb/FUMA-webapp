@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\SubmitJob;
 use App\Jobs\Snp2geneProcess;
+use App\CustomClasses\myFile;
 
 use Auth;
 use Helper;
@@ -49,11 +49,8 @@ class S2GController extends Controller
     public function getJobList()
     {
         $user_id = Auth::user()->id;
-
         $results = (new SubmitJob)->getJobList_snp2gene_and_geneMap_only($user_id);
-
         $this->queueNewJobs(); // TODO: move this to a cron job
-
         return response()->json($results);
     }
 
@@ -65,27 +62,21 @@ class S2GController extends Controller
      */
     private function getNumberScheduledJobs($user_id): int
     {
-        $results = (new SubmitJob)->getNumberOfScheduledJobs_snp2gene_and_geneMap_only($user_id);
+        $results = (new SubmitJob)->getScheduledJobs_snp2gene_and_geneMap_only($user_id);
         return count($results);
     }
 
     public function getjobIDs()
     {
         $user_id = Auth::user()->id;
-
         $results = (new SubmitJob)->getJob_ids_and_titles_snp2gene_and_geneMap_only($user_id);
-
         return $results;
     }
 
     public function getFinishedjobsIDs()
     {
         $user_id = Auth::user()->id;
-        $results = SubmitJob::where('user_id', $user_id)
-            ->wherein('type', ['snp2gene', 'geneMap'])
-
-            ->where('status', 'OK')
-            ->get(['jobID', 'title']);
+        $results = (new SubmitJob)->getOkJob_ids_and_titles_snp2gene_and_geneMap_only($user_id);
         return $results;
     }
 
@@ -97,25 +88,17 @@ class S2GController extends Controller
         return json_encode($params);
     }
 
-    public function queueNewJobs()
+    private function queueNewJobs()
     {
         $user = Auth::user();
-        $user_id = Auth::user()->id;
-        $newJobs = SubmitJob::where('user_id', $user_id)
-            ->wherein('type', ['snp2gene', 'geneMap'])
-            ->where('status', 'NEW')
-            ->get()
-            ->all();
-        if (count($newJobs) > 0) {
+        $newJobs = (new SubmitJob)->getNewJobs_snp2gene_and_geneMap_only($user->id);
+
+        if ($newJobs->count() > 0) {
             foreach ($newJobs as $job) {
-                $jobID = $job->jobID;
-                DB::table('SubmitJobs')
-                    ->where('jobID', $jobID)
-                    ->update(['status' => 'QUEUED']);
-                Snp2geneProcess::dispatch($user, $jobID)->afterCommit();
+                (new SubmitJob)->updateStatus($job->jobID, 'QUEUED');
+                Snp2geneProcess::dispatch($user, $job->jobID)->afterCommit();
             }
         }
-        return;
     }
 
     public function checkJobStatus($jobID)
@@ -130,24 +113,21 @@ class S2GController extends Controller
     public function getParams(Request $request)
     {
         $jobID = $request->input('jobID');
-        $date = date('Y-m-d H:i:s');
-        DB::table('SubmitJobs')
-            ->where('jobID', $jobID)
-            ->update(['updated_at' => $date]);
 
         $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
         $params = parse_ini_string(Storage::get($filedir . "params.config"), false, INI_SCANNER_RAW);
-        $posMap = $params['posMap'];
-        $eqtlMap = $params['eqtlMap'];
-        $orcol = $params['orcol'];
-        $becol = $params['becol'];
-        $secol = $params['secol'];
-        $ciMap = 0;
-        if (array_key_exists('ciMap', $params)) {
-            $ciMap = $params['ciMap'];
-        }
-        $magma = $params['magma'];
-        return "$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol:$magma";
+
+        $res = "";
+        
+        if (array_key_exists('posMap', $params)) {$res = "{$res}:{$params['posMap']}";}
+        if (array_key_exists('eqtlMap', $params)) {$res = "{$res}:{$params['eqtlMap']}";}
+        if (array_key_exists('orcol', $params)) {$res = "{$res}:{$params['orcol']}";}
+        if (array_key_exists('becol', $params)) {$res = "{$res}:{$params['becol']}";}
+        if (array_key_exists('secol', $params)) {$res = "{$res}:{$params['secol']}";}
+        if (array_key_exists('ciMap', $params)) {$res = "{$res}:{$params['ciMap']}";}
+        if (array_key_exists('magma', $params)) {$res = "{$res}:{$params['magma']}";}
+
+        return $res;
     }
 
     public function getFilesContents(Request $request)
@@ -289,10 +269,9 @@ class S2GController extends Controller
      * 
      * A null return indicates no timeout
      */
-    public function getQueueCap()
+    private function getQueueCap()
     {
-        $queue_cap = config('queue.jobLimits.queue_cap', 10);
-        return $queue_cap;
+        return config('queue.jobLimits.queue_cap', 10);
     }
 
     public function newJob(Request $request)
@@ -388,14 +367,14 @@ class S2GController extends Controller
 
         // GWAS smmary stats file
         if ($request->hasFile('GWASsummary')) {
-            $this->filePreprocessAndStore($request->file('GWASsummary'), $GWAS, $filedir);
+            myFile::fileValidationAndStore($request->file('GWASsummary'), $GWAS, $filedir);
         } else if ($request->has('egGWAS')) {
             Storage::copy($exfile, $filedir . '/input.gwas');
         }
 
         // pre-defined lead SNPS file
         if ($request->hasFile('leadSNPs')) {
-            $this->filePreprocessAndStore($request->file('leadSNPs'), $leadSNPs, $filedir);
+            myFile::fileValidationAndStore($request->file('leadSNPs'), $leadSNPs, $filedir);
             $leadSNPsfileup = 1;
         }
 
@@ -409,7 +388,7 @@ class S2GController extends Controller
 
         // pre-defined genomic region file
         if ($request->hasFile('regions')) {
-            $this->filePreprocessAndStore($request->file('regions'), $regions, $filedir);
+            myFile::fileValidationAndStore($request->file('regions'), $regions, $filedir);
             $regionsfileup = 1;
         }
 

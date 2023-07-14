@@ -53,7 +53,7 @@ class SubmitJob extends Model
             ->get();
     }
 
-    public function getNumberOfScheduledJobs_snp2gene_and_geneMap_only($user_id): Collection
+    public function getScheduledJobs_snp2gene_and_geneMap_only($user_id): Collection
     {
         return $this->where('user_id', $user_id)
             ->wherein('type', ['snp2gene', 'geneMap'])
@@ -66,5 +66,27 @@ class SubmitJob extends Model
         return $this->where('user_id', $user_id)
             ->wherein('type', ['snp2gene', 'geneMap'])
             ->get(['jobID', 'title']);
+    }
+
+    public function getOkJob_ids_and_titles_snp2gene_and_geneMap_only($user_id): Collection
+    {
+        return $this->where('user_id', $user_id)
+            ->wherein('type', ['snp2gene', 'geneMap'])
+            ->where('status', 'OK')
+            ->get(['jobID', 'title']);
+    }
+
+    public function getNewJobs_snp2gene_and_geneMap_only($user_id): Collection
+    {
+        return $this->where('user_id', $user_id)
+            ->wherein('type', ['snp2gene', 'geneMap'])
+            ->where('status', 'NEW')
+            ->get();
+    }
+
+    public function updateStatus($job_id, $status): void
+    {
+        $this->where('jobID', $job_id)
+            ->update(['status' => $status]);
     }
 }

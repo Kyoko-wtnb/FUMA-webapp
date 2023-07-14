@@ -79,7 +79,51 @@ class SubmitJobsTableSeeder extends Seeder
                 'published_at' => null,
                 'created_at' => now(),
                 'updated_at' => now()
-            ]
+            ],
+            [
+                'email' => 'test@gmail.com',
+                'title' => 'test4',
+                'status' => 'OK',
+                'user_id' => 1,
+                'type' => 'snp2gene',
+                'started_at' => null,
+                'completed_at' => null,
+                'parent_id' => null,
+                'uuid' => null,
+                'is_public' => false,
+                'author' => 'Dimitri',
+                'publication_email' => 'test@gmail.com',
+                'phenotype' => null,
+                'publication' => null,
+                'sumstats_link' => null,
+                'sumstats_ref' => null,
+                'notes' => null,
+                'published_at' => null,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'email' => 'test@gmail.com',
+                'title' => 'test5',
+                'status' => 'NEW',
+                'user_id' => 1,
+                'type' => 'snp2gene',
+                'started_at' => null,
+                'completed_at' => null,
+                'parent_id' => null,
+                'uuid' => null,
+                'is_public' => false,
+                'author' => 'Dimitri',
+                'publication_email' => 'test@gmail.com',
+                'phenotype' => null,
+                'publication' => null,
+                'sumstats_link' => null,
+                'sumstats_ref' => null,
+                'notes' => null,
+                'published_at' => null,
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
         ]);
     }
 }
