@@ -6,7 +6,7 @@ var xMax;
 var xMin_init;
 var xMax_init;
 var eqtlgenes;
-
+prefix = 'jobs';
 $(document).ready(function () {
 	$('.ImgDownSubmit').hide();
 

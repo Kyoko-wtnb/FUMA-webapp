@@ -105,8 +105,7 @@ class BrowseController extends Controller
     {
         $id = $request->input('id');
         $prefix = $request->input('prefix');
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
-        // $zip = new ZipArchive();
+        $filedir = config('app.jobdir') . '/jobs/' . $id . '/';
         $files = array();
         if ($request->filled('paramfile')) {
             $files[] = "params.config";
@@ -134,12 +133,12 @@ class BrowseController extends Controller
             $files[] = "genes.txt";
         }
         if ($request->filled('eqtlfile')) {
-            if (File::exists($filedir . "eqtl.txt")) {
+            if (Storage::exists($filedir . "eqtl.txt")) {
                 $files[] = "eqtl.txt";
             }
         }
         if ($request->filled('cifile')) {
-            if (File::exists($filedir . "ci.txt")) {
+            if (Storage::exists($filedir . "ci.txt")) {
                 $files[] = "ci.txt";
                 $files[] = "ciSNPs.txt";
                 $files[] = "ciProm.txt";
@@ -151,14 +150,14 @@ class BrowseController extends Controller
         }
         if ($request->filled('magmafile')) {
             $files[] = "magma.genes.out";
-            if (File::exists($filedir . "magma.sets.out")) {
+            if (Storage::exists($filedir . "magma.sets.out")) {
                 $files[] = "magma.genes.raw";
                 $files[] = "magma.sets.out";
-                if (File::exists($filedir . "magma.setgenes.out")) {
+                if (Storage::exists($filedir . "magma.setgenes.out")) {
                     $files[] = "magma.setgenes.out";
                 }
             }
-            if (File::exists($filedir . "magma_exp.gcov.out")) {
+            if (Storage::exists($filedir . "magma_exp.gcov.out")) {
                 $files[] = "magma_exp.gcov.out";
                 $files[] = "magma_exp_general.gcov.out";
             }
@@ -171,16 +170,32 @@ class BrowseController extends Controller
             $zipfile = $filedir . "FUMA_job" . $id . ".zip";
         }
 
-        if (File::exists($zipfile)) {
-            File::delete($zipfile);
+        if (Storage::exists($zipfile)) {
+            Storage::delete($zipfile);
         }
-        $zip->open($zipfile, \ZipArchive::CREATE);
-        $zip->addFile(storage_path() . '/README', "README");
+
+        # create zip file and open it
+        $zip = new \ZipArchive();
+        $zip->open(Storage::path($zipfile), \ZipArchive::CREATE);
+
+        # add README file if exists in the public storage
+        if (Storage::disk('public')->exists('README')) {
+            $zip->addFile(Storage::disk('public')->path('README'), "README");
+        }
+
+        # for each file, check if exists in the storage and add to zip file
         foreach ($files as $f) {
-            $zip->addFile($filedir . $f, $f);
+            if (Storage::exists($filedir . $f)) {
+                $abs_path = Storage::path($filedir . $f);
+                $zip->addFile($abs_path, $f);
+            }
         }
+
+        # close zip file
         $zip->close();
-        return response()->download($zipfile);
+
+        # download zip file and delete it after download
+        return response()->download(Storage::path($zipfile))->deleteFileAfterSend(true);
     }
 
     public function imgdown(Request $request)

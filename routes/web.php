@@ -85,13 +85,12 @@ Route::prefix('browse')->group(function () {
     Route::post('/g2f_sumTable', [FumaController::class, 'g2f_sumTable']);
     Route::post('/g2f_paramTable', [FumaController::class, 'g2f_paramTable']);
     Route::post('/expDataOption', [FumaController::class, 'expDataOption']);
+    Route::post('/filedown', [FumaController::class, 'filedown']);
+    Route::post('/imgdown', [FumaController::class, 'imgdown']);
+    Route::post('/annotPlot/getData', [FumaController::class, 'annotPlotGetData']);
+    Route::post('/annotPlot/getGenes', [FumaController::class, 'annotPlotGetGenes']);
 
 
-
-
-
-    Route::post('/filedown', [BrowseController::class, 'filedown']);
-    Route::post('/imgdown', [BrowseController::class, 'imgdown']);
 
     Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
 
@@ -100,8 +99,7 @@ Route::prefix('browse')->group(function () {
     Route::get('/circos_image/{prefix}/{id}/{file}', [FumaController::class, 'circos_image']);
     Route::post('/circosDown', [FumaController::class, 'circosDown']);
     Route::post('/annotPlot', [FumaController::class, 'annotPlot']);
-    Route::post('/annotPlot/getData', [FumaController::class, 'annotPlotGetData']);
-    Route::post('/annotPlot/getGenes', [FumaController::class, 'annotPlotGetGenes']);
+
     Route::get('/legendText/{file}', [FumaController::class, 'legendText']);
     Route::get('/expPlot/{prefix}/{id}/{dataset}', [FumaController::class, 'expPlot']);
     Route::get('/DEGPlot/{prefix}/{id}', [FumaController::class, 'DEGPlot']);

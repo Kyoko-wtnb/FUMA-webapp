@@ -2,7 +2,7 @@ var sigSNPtable_selected=null;
 var leadSNPtable_selected=null;
 var lociTable_selected=null;
 var annotPlotSelected;
-var prefix = "public";
+var prefix = "jobs";
 var geneTable;
 var exp_data_title = {
 	'gtex_v7_ts_avg_log2TPM': 'GTEx v7 53 tissue types',
