@@ -83,16 +83,12 @@ Route::prefix('browse')->group(function () {
     Route::post('/locusPlot', [FumaController::class, 'locusPlot']);
     Route::post('/sumTable', [FumaController::class, 'sumTable']);
     Route::post('/g2f_sumTable', [FumaController::class, 'g2f_sumTable']);
-    Route::post('/g2f_paramTable', [FumaController::class, 'g2f_paramTable']);
+    Route::post('/g2f_paramTable', [FumaController::class, 'paramTable']);
     Route::post('/expDataOption', [FumaController::class, 'expDataOption']);
     Route::post('/filedown', [FumaController::class, 'filedown']);
     Route::post('/imgdown', [FumaController::class, 'imgdown']);
     Route::post('/annotPlot/getData', [FumaController::class, 'annotPlotGetData']);
     Route::post('/annotPlot/getGenes', [FumaController::class, 'annotPlotGetGenes']);
-
-
-
-    Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
 
     Route::get('/d3text/{prefix}/{id}/{file}', [FumaController::class, 'd3text']);
     Route::get('/g2f_d3text/{prefix}/{id}/{file}', [FumaController::class, 'g2f_d3text']);
@@ -135,9 +131,6 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::post('/DTfile', [FumaController::class, 'DTfile']);
         Route::post('/DTfileServerSide', [FumaController::class, 'DTfileServerSide']);
-        Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
-        // Route::post('/QQplot', [FumaController::class, 'QQplot']); // deprecated to be removed
-        // Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']); // deprecated to be removed
         Route::post('/paramTable', [FumaController::class, 'paramTable']);
         Route::post('/sumTable', [FumaController::class, 'sumTable']);
         Route::post('/locusPlot', [FumaController::class, 'locusPlot']);
@@ -163,7 +156,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/deleteJob', [G2FController::class, 'deleteJob']);
 
         Route::post('/g2f_filedown', [FumaController::class, 'g2f_filedown']);
-        Route::post('/g2f_paramTable', [FumaController::class, 'g2f_paramTable']);
+        Route::post('/g2f_paramTable', [FumaController::class, 'paramTable']);
         Route::post('/g2f_sumTable', [FumaController::class, 'g2f_sumTable']);
         Route::post('/expDataOption', [FumaController::class, 'expDataOption']);
         Route::get('/expPlot/{prefix}/{id}/{dataset}', [FumaController::class, 'expPlot']);
