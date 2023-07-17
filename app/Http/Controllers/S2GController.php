@@ -117,17 +117,17 @@ class S2GController extends Controller
         $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
         $params = parse_ini_string(Storage::get($filedir . "params.config"), false, INI_SCANNER_RAW);
 
-        $res = "";
-        
-        if (array_key_exists('posMap', $params)) {$res = "{$res}:{$params['posMap']}";}
-        if (array_key_exists('eqtlMap', $params)) {$res = "{$res}:{$params['eqtlMap']}";}
-        if (array_key_exists('orcol', $params)) {$res = "{$res}:{$params['orcol']}";}
-        if (array_key_exists('becol', $params)) {$res = "{$res}:{$params['becol']}";}
-        if (array_key_exists('secol', $params)) {$res = "{$res}:{$params['secol']}";}
-        if (array_key_exists('ciMap', $params)) {$res = "{$res}:{$params['ciMap']}";}
-        if (array_key_exists('magma', $params)) {$res = "{$res}:{$params['magma']}";}
+        $res = [];
 
-        return $res;
+        if (array_key_exists('posMap', $params)) {$res['posMap'] = $params['posMap'];}
+        if (array_key_exists('eqtlMap', $params)) {$res['eqtlMap'] = $params['eqtlMap'];}
+        if (array_key_exists('orcol', $params)) {$res['orcol'] = $params['orcol'];}
+        if (array_key_exists('becol', $params)) {$res['becol'] = $params['becol'];}
+        if (array_key_exists('secol', $params)) {$res['secol'] = $params['secol'];}
+        if (array_key_exists('ciMap', $params)) {$res['ciMap'] = $params['ciMap'];}
+        if (array_key_exists('magma', $params)) {$res['magma'] = $params['magma'];}
+
+        return response()->json($res);
     }
 
     public function getFilesContents(Request $request)

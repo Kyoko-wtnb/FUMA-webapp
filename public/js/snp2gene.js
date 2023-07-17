@@ -153,14 +153,13 @@ $(document).ready(function () {
 					return;
 				},
 				success: function (data) {
-					var tmp = data.split(":");
-					posMap = parseInt(tmp[0]);
-					eqtlMap = parseInt(tmp[1]);
-					ciMap = parseInt(tmp[2])
-					orcol = tmp[3];
-					becol = tmp[4];
-					secol = tmp[5];
-					magma = tmp[6];
+					posMap = parseInt(data['posMap']);
+					eqtlMap = parseInt(data['eqtlMap']);
+					ciMap = parseInt(data['ciMap'])
+					orcol = data['orcol'];
+					becol = data['becol'];
+					secol = data['secol'];
+					magma = data['magma'];
 
 					fetchData();
 				}
