@@ -1344,47 +1344,14 @@ class S2GController extends Controller
         $out['title'] = $job->title;
         $out['g2f'] = $job->child->jobID;
 
-        if ($job->author != null) {
-            $out['author'] = $job->author;
-        } else {
-            $out['author'] = $job->user->name;
-        }
-
-        if ($job->publication_email != null) {
-            $out['email'] = $job->publication_email;
-        } else {
-            $out['email'] = $job->user->email;
-        }
-
-        if ($job->phenotype != null) {
-            $out['phenotype'] = $job->phenotype;
-        } else {
-            $out['phenotype'] = "";
-        }
-
-        if ($job->publication != null) {
-            $out['publication'] = $job->publication;
-        } else {
-            $out['publication'] = "";
-        }
-
-        if ($job->publication_link != null) {
-            $out['publication_link'] = $job->publication_link;
-        } else {
-            $out['publication_link'] = "";
-        }
-
-        if ($job->sumstats_ref != null) {
-            $out['sumstats_ref'] = $job->sumstats_ref;
-        } else {
-            $out['sumstats_ref'] = "";
-        }
-
-        if ($job->notes != null) {
-            $out['notes'] = $job->notes;
-        } else {
-            $out['notes'] = "";
-        }
+        $out['author'] = is_null($job->author) ? $job->user->name : $job->author;
+        $out['email'] = is_null($job->publication_email) ? $job->user->email : $job->publication_email;
+        
+        $out['phenotype'] = is_null($job->phenotype) ? "" : $job->phenotype;
+        $out['publication'] = is_null($job->publication) ? "" : $job->publication;
+        $out['publication_link'] = is_null($job->sumstats_link) ? "" : $job->sumstats_link;
+        $out['sumstats_ref'] = is_null($job->sumstats_ref) ? "" : $job->sumstats_ref;
+        $out['notes'] = is_null($job->notes) ? "" : $job->notes;
 
         return json_encode($out);
     }

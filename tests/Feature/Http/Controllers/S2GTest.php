@@ -457,20 +457,22 @@ class S2GTest extends TestCase
 
     public function test_getFilesContents_with_logged_in_user_existent_files_provided(): void
     {
-        // $user = User::find(1);
-        // $this->actingAs($user);
+        // This function assumes htat the a job folder with id = 1 alreadt exists
+        // Ideally, this function should create a dummy job folder and its files and then test it
+        $user = User::find(1);
+        $this->actingAs($user);
 
-        // $job_id = 1;
+        $job_id = 1;
 
-        // $response = $this->post('/snp2gene/getFilesContents', [
-        //     'jobID' => $job_id,
-        //     'fileNames' => ['input.snps', 'input.gwas']
-        // ]);
+        $response = $this->post('/snp2gene/getFilesContents', [
+            'jobID' => $job_id,
+            'fileNames' => ['input.snps', 'input.gwas']
+        ]);
 
-        // $response->assertStatus(200);
+        $response->assertStatus(200);
 
-        // # assert if the response is a json object
-        // $response->assertJson([]);
+        # assert if the response is a json object
+        $response->assertJson([]);
     }
 
     public function test_getFilesContents_with_logged_in_user_non_existent_files_provided(): void
@@ -532,19 +534,206 @@ class S2GTest extends TestCase
     {
     }
 
-    public function test_checkPublish(): void
+    public function test_checkPublish_with_non_logged_in_user(): void
     {
+        $response = $this->post('/snp2gene/checkPublish');
+
+        $response->assertStatus(302)
+            ->assertRedirect('login');
     }
 
-    public function test_publish(): void
+    public function test_checkPublish_with_logged_in_user_all_records_are_null(): void
     {
+        $user = User::find(1);
+        $this->actingAs($user);
+
+        $job_id = 4;
+
+        $response = $this->post('/snp2gene/checkPublish', [
+            'id' => $job_id,
+        ]);
+
+        $response->assertStatus(200);
+
+        $job = SubmitJob::find($job_id);
+        $data = [
+            'publish' => $job->is_public,
+            'title' => $job->title,
+            'g2f' => $job->child->jobID,
+            'author' => $job->user->name,
+            'email' => $job->user->email,
+            'phenotype' => '',
+            'publication' => '',
+            'publication_link' => '',
+            'sumstats_ref' => '',
+            'notes' => ''
+        ];
+        $response->assertJson($data, false);
     }
 
-    public function test_deletePublicRes(): void
+    public function test_checkPublish_with_logged_in_user_neither_records_is_null(): void
     {
+        $user = User::find(1);
+        $this->actingAs($user);
+
+        $job_id = 5;
+
+        $response = $this->post('/snp2gene/checkPublish', [
+            'id' => $job_id,
+        ]);
+
+        $response->assertStatus(200);
+
+        $job = SubmitJob::find($job_id);
+        $data = [
+            'publish' => $job->is_public,
+            'title' => $job->title,
+            'g2f' => $job->child->jobID,
+            'author' => $job->author,
+            'email' => $job->publication_email,
+            'phenotype' => $job->phenotype,
+            'publication' => $job->publication,
+            'publication_link' => $job->sumstats_link,
+            'sumstats_ref' => $job->sumstats_ref,
+            'notes' => $job->notes
+        ];
+        $response->assertJson($data, false);
     }
 
-    public function test_filePreprocessAndStore(): void
+    public function test_checkPublish_with_logged_in_user_job_does_not_exist(): void
     {
+        $user = User::find(1);
+        $this->actingAs($user);
+
+        $job_id = 100;
+
+        $response = $this->post('/snp2gene/checkPublish', [
+            'id' => $job_id,
+        ]);
+
+        $response->assertStatus(500);
+    }
+
+    public function test_publish_with_non_logged_in_user(): void
+    {
+        $response = $this->post('/snp2gene/publish');
+
+        $response->assertStatus(302)
+            ->assertRedirect('login');
+    }
+
+    public function test_publish_with_logged_in_user_job_exists(): void
+    {
+        $user = User::find(1);
+        $this->actingAs($user);
+
+        $job_id = 1;
+
+        $title = 'test title';
+        $author = 'test author';
+        $publication_email = 'test email';
+        $phenotype = 'test phenotype';
+        $publication = 'test publication';
+        $sumstats_link = 'test sumstats_link';
+        $sumstats_ref = 'test sumstats_ref';
+        $notes = 'test notes';
+
+
+        $response = $this->post('/snp2gene/publish', [
+            'jobID'                 => $job_id,
+
+            'title'                 => $title,
+            'author'                => $author,
+            'email'                 => $publication_email,
+            'phenotype'             => $phenotype,
+            'publication'           => $publication,
+            'sumstats_link'         => $sumstats_link,
+            'sumstats_ref'          => $sumstats_ref,
+            'notes'                 => $notes
+        ]);
+
+        $response->assertStatus(200);
+
+        $job = SubmitJob::find($job_id);
+
+        $this->assertEquals($title, $job->title);
+        $this->assertEquals($author, $job->author);
+        $this->assertEquals($publication_email, $job->publication_email);
+        $this->assertEquals($phenotype, $job->phenotype);
+        $this->assertEquals($publication, $job->publication);
+        $this->assertEquals($sumstats_link, $job->sumstats_link);
+        $this->assertEquals($sumstats_ref, $job->sumstats_ref);
+        $this->assertEquals($notes, $job->notes);
+    }
+
+    public function test_publish_with_logged_in_user_job_does_not_exist(): void
+    {
+        $user = User::find(1);
+        $this->actingAs($user);
+
+        $job_id = 100;
+
+        $title = 'test title';
+        $author = 'test author';
+        $publication_email = 'test email';
+        $phenotype = 'test phenotype';
+        $publication = 'test publication';
+        $sumstats_link = 'test sumstats_link';
+        $sumstats_ref = 'test sumstats_ref';
+        $notes = 'test notes';
+
+        $response = $this->post('/snp2gene/publish', [
+            'jobID'                 => $job_id,
+
+            'title'                 => $title,
+            'author'                => $author,
+            'email'                 => $publication_email,
+            'phenotype'             => $phenotype,
+            'publication'           => $publication,
+            'sumstats_link'         => $sumstats_link,
+            'sumstats_ref'          => $sumstats_ref,
+            'notes'                 => $notes
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertNull(SubmitJob::find($job_id));
+    }
+
+    public function test_deletePublicRes_with_non_logged_in_user(): void
+    {
+        $response = $this->post('/snp2gene/deletePublicRes');
+
+        $response->assertStatus(302)
+            ->assertRedirect('login');
+    }
+
+    public function test_deletePublicRes_with_logged_in_user_job_exists(): void
+    {
+        $user = User::find(1);
+        $this->actingAs($user);
+
+        $job_id = 1;
+
+        $response = $this->post('/snp2gene/deletePublicRes', [
+            'jobID' => $job_id
+        ]);
+
+        $response->assertStatus(200);
+
+        $this->assertFalse(boolval(SubmitJob::find($job_id)->is_public));
+    }
+
+    public function test_deletePublicRes_with_logged_in_user_job_does_not_exist(): void
+    {
+        $user = User::find(1);
+        $this->actingAs($user);
+
+        $job_id = 100;
+
+        $response = $this->post('/snp2gene/deletePublicRes', [
+            'jobID' => $job_id
+        ]);
+
+        $response->assertStatus(500);
     }
 }
