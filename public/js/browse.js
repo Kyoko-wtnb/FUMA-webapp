@@ -289,7 +289,7 @@ function getGwasList(){
 				if(val.sumstats_link.startsWith("http") | val.sumstats_link.startsWith("ftp")){
 					val.sumstats_link = '<a href="'+val.sumstats_link+'" target="_blank">'+val.sumstats_link+'</a>'
 				}
-				items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"+val.author+"</td><td>"
+				items = items + "<tr><td>"+val.old_id+"</td><td>"+val.title+"</td><td>"+val.author+"</td><td>"
 					+val.publication_email+"</td><td>"+val.phenotype+"</td><td>"+val.publication+"</td>"
 					+'<td style="word-wrap:break-word;word-break:break-all;">'
 					+val.sumstats_link+"</td><td>"+val.sumstats_ref+"</td><td>"+val.notes+"</td><td>"

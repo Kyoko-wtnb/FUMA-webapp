@@ -50,7 +50,7 @@ class BrowseController extends Controller
         $results = SubmitJob::where('is_public', 1)
             ->orderBy('published_at', 'desc')
             ->get([
-                'jobID',
+                'old_id',
                 'title',
                 'author',
                 'publication_email',
