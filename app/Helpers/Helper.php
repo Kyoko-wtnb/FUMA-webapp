@@ -26,7 +26,7 @@ class Helper
 
             if (empty($records)) {
                 // Handle case where no records were found
-                // ...
+                continue;
             }
 
             // Split the first record into an array of headers.
@@ -52,7 +52,6 @@ class Helper
         }
         return $result;
     }
-
 
     /**
      * This is a private function called "my_glob" that takes two parameters: $filedir (string) and $pattern (string).
