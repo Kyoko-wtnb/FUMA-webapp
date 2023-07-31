@@ -293,25 +293,26 @@ class BrowseController extends Controller
 
     public function geneTable(Request $request)
     {
+        // TODO: make this function using column names instead of column indecies
         $jobID = $request->input('id');
         $filedir = config('app.jobdir') . '/public/' . $jobID . '/g2f/';
-        if (file_exists($filedir . "geneTable.txt")) {
-            $f = fopen($filedir . "geneTable.txt", 'r');
+        if (Storage::exists($filedir . "geneTable.txt")) {
+            $f = fopen(Storage::path($filedir . "geneTable.txt"), 'r');
             $head = fgetcsv($f, 0, "\t");
             $head[] = "GeneCard";
             $all_rows = [];
             while ($row = fgetcsv($f, 0, "\t")) {
-                if (strcmp($row[3], "NA") != 0) {
-                    $row[3] = '<a href="https://www.omim.org/entry/' . $row[3] . '" target="_blank">' . $row[3] . '</a>';
+                if (strcmp($row[4], "NA") != 0) {
+                    $row[4] = '<a href="https://www.omim.org/entry/' . $row[4] . '" target="_blank">' . $row[4] . '</a>';
                 }
-                if (strcmp($row[5], "NA") != 0) {
-                    $db = explode(":", $row[5]);
-                    $row[5] = "";
+                if (strcmp($row[6], "NA") != 0) {
+                    $db = explode(":", $row[6]);
+                    $row[6] = "";
                     foreach ($db as $i) {
-                        if (strlen($row[5]) == 0) {
-                            $row[5] = '<a href="https://www.drugbank.ca/drugs/' . $i . '" target="_blank">' . $i . '</a>';
+                        if (strlen($row[6]) == 0) {
+                            $row[6] = '<a href="https://www.drugbank.ca/drugs/' . $i . '" target="_blank">' . $i . '</a>';
                         } else {
-                            $row[5] .= ', <a href="https://www.drugbank.ca/drugs/' . $i . '" target="_blank">' . $i . '</a>';
+                            $row[6] .= ', <a href="https://www.drugbank.ca/drugs/' . $i . '" target="_blank">' . $i . '</a>';
                         }
                     }
                 }
@@ -320,9 +321,9 @@ class BrowseController extends Controller
             }
 
             $json = array('data' => $all_rows);
-            echo json_encode($json);
+            return json_encode($json);
         } else {
-            echo '{"data": []}';
+            return '{"data": []}';
         }
     }
 
