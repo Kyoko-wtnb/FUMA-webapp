@@ -54,15 +54,12 @@ Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::prefix('analysis')->group(function () {
-        Route::get('/{id?}', [AnalysisController::class, 'index']);
-    });
-
-});
-
-Route::group(['middleware' => ['auth']], function () {
-
     Route::prefix('admin')->group(function () {
+        Route::get('/jobs', [AdminController::class, 'showJobs']);
+        Route::get('/analysis', [AdminController::class, 'showAnalysis']);
+        // Route::get('/jobs', [AdminController::class, 'showJobs']);
+        // Route::get('/jobs', [AdminController::class, 'showJobs']);
+        
         Route::get('/{id?}', [AdminController::class, 'index']);
     });
 
