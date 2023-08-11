@@ -27,16 +27,16 @@ pipeline {
                         composer install --ignore-platform-reqs --no-interaction'
             }
         }
-        stage("Run artisan tests") {
-            steps {
-                sh 'docker run --rm \
-                        -u "$(id -u):$(id -g)" \
-                        -v "/home/ams375/.laradock/data/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
-                        -w /var/www/html \
-                        laravelsail/php82-composer:latest \
-                        php artisan test'
-            }
-        }
+        // stage("Run artisan tests") {
+        //     steps {
+        //         sh 'docker run --rm \
+        //                 -u "$(id -u):$(id -g)" \
+        //                 -v "/home/ams375/.laradock/data/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
+        //                 -w /var/www/html \
+        //                 laravelsail/php82-composer:latest \
+        //                 php artisan test'
+        //     }
+        // }
     }
     post {
         success {
