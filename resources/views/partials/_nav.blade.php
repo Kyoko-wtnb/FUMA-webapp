@@ -13,7 +13,6 @@
 			<ul class="nav navbar-nav navbar-right">
 				<!-- local_start -->
 				<li class="{{ Request::is('/') ? 'active' : ''}}"><a href="/">Home</a></li>
-				<li class="{{ Request::is('analysis') ? 'active' : ''}}"><a href="/analysis">Analysis</a></li>
 				<li class="{{ Request::is('admin') ? 'active' : ''}}"><a href="/admin">Admin Dashboard</a></li>
 				<li class="{{ Request::is('tutorial') ? 'active' : ''}}"><a href="/tutorial">Tutorial</a></li>
 				<li class="{{ Request::is('browse*') ? 'active' : ''}}"><a href="/browse">Browse Public Results</a></li>

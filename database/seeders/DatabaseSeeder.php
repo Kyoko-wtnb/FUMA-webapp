@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             ToolsTableSeeder::class,
             ToolsParametersTableSeeder::class,
+            SubmitJobsTableSeeder::class,
         ]);
 
         // \App\Models\User::factory(10)->create();

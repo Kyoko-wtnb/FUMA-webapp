@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\SubmitJob;
-use App\CustomClasees\DockerClient;
+use App\CustomClasses\DockerApi\DockerFactory;
 
 
 use Livewire\Component;
@@ -26,7 +26,7 @@ class AllJobs extends Component
 
     public function getRunningJobs()
     {
-        $client = new DockerClient('/var/run/docker.sock');
+        $client = new DockerFactory();
 
         // $tableName = (new SubmitJob())->getTable();
         // $column_names = DB::getSchemaBuilder()->getColumnListing($tableName);
@@ -66,7 +66,7 @@ class AllJobs extends Component
                     ),
                 );
                 $parameters = 'filters=' . json_encode($parameters);
-                $dockerContainers  = $client->dispatchCommand('/containers/json', $parameters);
+                $dockerContainers = $client->dispatchCommand('/var/run/docker.sock', 'GET', '/containers/json', $parameters);
                 
                 $tmp['containers'] = array();
                 

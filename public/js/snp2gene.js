@@ -153,14 +153,13 @@ $(document).ready(function () {
 					return;
 				},
 				success: function (data) {
-					var tmp = data.split(":");
-					posMap = parseInt(tmp[0]);
-					eqtlMap = parseInt(tmp[1]);
-					ciMap = parseInt(tmp[2])
-					orcol = tmp[3];
-					becol = tmp[4];
-					secol = tmp[5];
-					magma = tmp[6];
+					posMap = parseInt(data['posMap']);
+					eqtlMap = parseInt(data['eqtlMap']);
+					ciMap = parseInt(data['ciMap'])
+					orcol = data['orcol'];
+					becol = data['becol'];
+					secol = data['secol'];
+					magma = data['magma'];
 
 					fetchData();
 				}
@@ -445,37 +444,35 @@ function getJobList() {
 		.empty()
 		.append('<tr><td colspan="6" style="text-align:center;">Retrieving data</td></tr>');
 	$.getJSON(subdir + '/' + page + '/getJobList', function (data) {
-		$.getJSON(subdir + '/' + page + '/getPublicIDs', function (pids) {
-			var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
-			if (data.length) {
-				items = '';
-				$.each(data, function (key, val) {
-					var g2fbutton = 'Not available';
-					var publish = 'Not available';
-					if (pids.indexOf(val.jobID) >= 0) {
-						val.status = '<a href="' + subdir + '/' + page + '/' + val.jobID + '">Go to results</a>';
-						g2fbutton = '<button class="btn btn-default btn-xs" value="' + val.jobID + '" onclick="g2fbtn(' + val.jobID + ');">GENE2FUNC</button>';
-						publish = '<button class="btn btn-default btn-xs" value="' + val.jobID + '" onclick="checkPublish(' + val.jobID + ');">Edit</button>';
-					} else if (val.status == 'OK') {
-						val.status = '<a href="' + subdir + '/' + page + '/' + val.jobID + '">Go to results</a>';
-						g2fbutton = '<button class="btn btn-default btn-xs" value="' + val.jobID + '" onclick="g2fbtn(' + val.jobID + ');">GENE2FUNC</button>';
-						publish = '<button class="btn btn-default btn-xs" value="' + val.jobID + '" onclick="checkPublish(' + val.jobID + ');">Publish</button>';
-					} else if (val.status == 'ERROR:005') {
-						val.status = '<a href="' + subdir + '/' + page + '/' + val.jobID + '">ERROR:005</a>';
-					}
+		var items = '<tr><td colspan="6" style="text-align: center;">No Jobs Found</td></tr>';
+		if (data.length) {
+			items = '';
+			$.each(data, function (key, val) {
+				var g2fbutton = 'Not available';
+				var publish = 'Not available';
+				if (val.is_public) {
+					val.status = '<a href="' + subdir + '/' + page + '/' + val.jobID + '">Go to results</a>';
+					g2fbutton = '<button class="btn btn-default btn-xs" value="' + val.jobID + '" onclick="g2fbtn(' + val.jobID + ');">GENE2FUNC</button>';
+					publish = '<button class="btn btn-default btn-xs" value="' + val.jobID + '" onclick="checkPublish(' + val.jobID + ');">Edit</button>';
+				} else if (val.status == 'OK') {
+					val.status = '<a href="' + subdir + '/' + page + '/' + val.jobID + '">Go to results</a>';
+					g2fbutton = '<button class="btn btn-default btn-xs" value="' + val.jobID + '" onclick="g2fbtn(' + val.jobID + ');">GENE2FUNC</button>';
+					publish = '<button class="btn btn-default btn-xs" value="' + val.jobID + '" onclick="checkPublish(' + val.jobID + ');">Publish</button>';
+				} else if (val.status == 'ERROR:005') {
+					val.status = '<a href="' + subdir + '/' + page + '/' + val.jobID + '">ERROR:005</a>';
+				}
 
-					items = items + "<tr><td>" + val.jobID + "</td><td>" + val.title
-						+ "</td><td>" + val.created_at + "</td><td>" + (val.started_at != null ? val.started_at : '-') + "</td><td>" + (val.completed_at != null ? val.completed_at : '-') + "</td><td>" + val.status + "</td><td>" + g2fbutton
-						+ '</td><td>' + publish + '</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
-						+ val.jobID + '"/></td></tr>';
-				});
-			}
+				items = items + "<tr><td>" + val.jobID + "</td><td>" + val.title
+					+ "</td><td>" + val.created_at + "</td><td>" + (val.started_at != null ? val.started_at : '-') + "</td><td>" + (val.completed_at != null ? val.completed_at : '-') + "</td><td>" + val.status + "</td><td>" + g2fbutton
+					+ '</td><td>' + publish + '</td><td style="text-align: center;"><input type="checkbox" class="deleteJobCheck" value="'
+					+ val.jobID + '"/></td></tr>';
+			});
+		}
 
-			// Put list in table
-			$('#joblist-panel table tbody')
-				.empty()
-				.append(items);
-		});
+		// Put list in table
+		$('#joblist-panel table tbody')
+			.empty()
+			.append(items);
 	});
 }
 

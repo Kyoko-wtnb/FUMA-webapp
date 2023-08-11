@@ -7,27 +7,25 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Str;
+use Illuminate\Queue\TimeoutExceededException;
+use App\CustomClasses\DockerApi\DockerNamesBuilder;
 use Illuminate\Support\Facades\Storage;
-
 use App\Models\SubmitJob;
 use JobHelper;
 
-// in the old one the CelltypeProcess class extends Job. Check what is the different
 class CelltypeProcess implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    // use InteractsWithQueue, SerializesModels; // this was the old one. Check if the can be used interchangeably
 
     protected $user;
     protected $jobID;
 
     /**
-     * The number of times the job may be attempted.
+     * The number of seconds the job can run before timing out.
      *
      * @var int
      */
-    public $tries = 1;
+    public $timeout = 3600;
 
     /**
      * Create a new job instance.
@@ -62,16 +60,18 @@ class CelltypeProcess implements ShouldQueue
         Storage::put($logfile, "----- magma_celltype.R -----\n");
         Storage::put($errorfile, "----- magma_celltype.R -----\n");
         
-        $uuid = Str::uuid();
-        $new_cmd = "docker run --rm --name job-$jobID-$uuid -v $ref_data_path_on_host:/data -v " . config('app.abs_path_of_cell_jobs_on_host') . "/$jobID/:/app/job laradock-fuma-magma_celltype /bin/sh -c 'Rscript magma_celltype.R job >>job/job.log 2>>job/error.log'";
+        $container_name = DockerNamesBuilder::containerName($jobID);
+        $image_name = DockerNamesBuilder::imageName('laradock-fuma', 'magma_celltype');
+                
+        $cmd = "docker run --rm --name " . $container_name . " -v $ref_data_path_on_host:/data -v " . config('app.abs_path_to_cell_jobs_on_host') . "/$jobID/:/app/job " . $image_name . " /bin/sh -c 'Rscript magma_celltype.R job >>job/job.log 2>>job/error.log'";
         Storage::append($logfile, "Command to be executed:");
-        Storage::append($logfile, $new_cmd . "\n");
+        Storage::append($logfile, $cmd . "\n");
 
-        exec($new_cmd, $output, $error);
+        exec($cmd, $output, $error);
 
         if ($error != 0) {
             JobHelper::rmFiles($filedir);
-            JobHelper::JobTerminationHandling($jobID, 17, 'CellType error occured');
+            JobHelper::JobTerminationHandling($jobID, 18, 'CellType error occured');
             return;
         }
 
@@ -80,8 +80,12 @@ class CelltypeProcess implements ShouldQueue
         return;
     }
 
-    public function failed(): void
+    public function failed($exception): void
     {
-        JobHelper::JobTerminationHandling($this->jobID, 16);
+        if ($exception instanceof TimeoutExceededException) {
+            JobHelper::JobTerminationHandling($this->jobID, 17);
+        } else {
+            JobHelper::JobTerminationHandling($this->jobID, 16);
+        }
     }
 }

@@ -54,15 +54,12 @@ Auth::routes();
 
 Route::group(['middleware' => ['auth']], function () {
 
-    Route::prefix('analysis')->group(function () {
-        Route::get('/{id?}', [AnalysisController::class, 'index']);
-    });
-
-});
-
-Route::group(['middleware' => ['auth']], function () {
-
     Route::prefix('admin')->group(function () {
+        Route::get('/jobs', [AdminController::class, 'showJobs']);
+        Route::get('/analysis', [AdminController::class, 'showAnalysis']);
+        // Route::get('/jobs', [AdminController::class, 'showJobs']);
+        // Route::get('/jobs', [AdminController::class, 'showJobs']);
+        
         Route::get('/{id?}', [AdminController::class, 'index']);
     });
 
@@ -74,29 +71,29 @@ Route::prefix('browse')->group(function () {
     Route::get('/{id}', [BrowseController::class, 'index']);
     Route::post('/checkG2F', [BrowseController::class, 'checkG2F']);
     Route::post('/getParams', [BrowseController::class, 'getParams']);
-    Route::post('/filedown', [BrowseController::class, 'filedown']);
-    Route::post('/imgdown', [BrowseController::class, 'imgdown']);
-
-    Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
-    Route::get('/QQplot/{prefix}/{id}/{plot}', [FumaController::class, 'QQplot']); // deprecated to be removed
-    Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']); // deprecated to be removed
-    Route::post('/DTfile', [FumaController::class, 'DTfile']);
+    Route::post('/getFilesContents', [S2GController::class, 'getFilesContents']);
+    Route::post('/MAGMA_expPlot', [S2GController::class, 'MAGMA_expPlot']);
+    Route::post('/circos_chr', [FumaController::class, 'circos_chr']);
     Route::post('/paramTable', [FumaController::class, 'paramTable']);
-    Route::post('/sumTable', [FumaController::class, 'sumTable']);
+    Route::post('/DTfile', [FumaController::class, 'DTfile']);
     Route::post('/DTfileServerSide', [FumaController::class, 'DTfileServerSide']);
+    Route::post('/locusPlot', [FumaController::class, 'locusPlot']);
+    Route::post('/sumTable', [FumaController::class, 'sumTable']);
+    Route::post('/g2f_sumTable', [FumaController::class, 'g2f_sumTable']);
+    Route::post('/g2f_paramTable', [FumaController::class, 'paramTable']);
+    Route::post('/expDataOption', [FumaController::class, 'expDataOption']);
+    Route::post('/filedown', [FumaController::class, 'filedown']);
+    Route::post('/imgdown', [FumaController::class, 'imgdown']);
+    Route::post('/annotPlot/getData', [FumaController::class, 'annotPlotGetData']);
+    Route::post('/annotPlot/getGenes', [FumaController::class, 'annotPlotGetGenes']);
+
     Route::get('/d3text/{prefix}/{id}/{file}', [FumaController::class, 'd3text']);
     Route::get('/g2f_d3text/{prefix}/{id}/{file}', [FumaController::class, 'g2f_d3text']);
-    Route::post('/locusPlot', [FumaController::class, 'locusPlot']);
-    Route::post('/circos_chr', [FumaController::class, 'circos_chr']);
     Route::get('/circos_image/{prefix}/{id}/{file}', [FumaController::class, 'circos_image']);
     Route::post('/circosDown', [FumaController::class, 'circosDown']);
     Route::post('/annotPlot', [FumaController::class, 'annotPlot']);
-    Route::post('/annotPlot/getData', [FumaController::class, 'annotPlotGetData']);
-    Route::post('/annotPlot/getGenes', [FumaController::class, 'annotPlotGetGenes']);
+
     Route::get('/legendText/{file}', [FumaController::class, 'legendText']);
-    Route::post('/g2f_paramTable', [FumaController::class, 'g2f_paramTable']);
-    Route::post('/g2f_sumTable', [FumaController::class, 'g2f_sumTable']);
-    Route::post('/expDataOption', [FumaController::class, 'expDataOption']);
     Route::get('/expPlot/{prefix}/{id}/{dataset}', [FumaController::class, 'expPlot']);
     Route::get('/DEGPlot/{prefix}/{id}', [FumaController::class, 'DEGPlot']);
     Route::post('/geneTable', [FumaController::class, 'geneTable']);
@@ -112,7 +109,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::prefix('snp2gene')->group(function () {
         Route::get('/', [S2GController::class, 'index']);
         Route::get('/getJobList/{email?}/{limit?}', [S2GController::class, 'getJobList']);
-        Route::get('/getPublicIDs', [S2GController::class, 'getPublicIDs']);
         Route::post('/newJob', [S2GController::class, 'newJob']);
         Route::post('/getjobIDs', [S2GController::class, 'getjobIDs']);
         Route::post('/getGeneMapIDs', [S2GController::class, 'getFinishedjobsIDs']);
@@ -132,9 +128,6 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::post('/DTfile', [FumaController::class, 'DTfile']);
         Route::post('/DTfileServerSide', [FumaController::class, 'DTfileServerSide']);
-        Route::get('/manhattan/{prefix}/{id}/{file}', [FumaController::class, 'manhattan']);
-        // Route::post('/QQplot', [FumaController::class, 'QQplot']); // deprecated to be removed
-        // Route::get('/MAGMA_expPlot/{prefix}/{id}', [FumaController::class, 'MAGMA_expPlot']); // deprecated to be removed
         Route::post('/paramTable', [FumaController::class, 'paramTable']);
         Route::post('/sumTable', [FumaController::class, 'sumTable']);
         Route::post('/locusPlot', [FumaController::class, 'locusPlot']);
@@ -160,7 +153,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::post('/deleteJob', [G2FController::class, 'deleteJob']);
 
         Route::post('/g2f_filedown', [FumaController::class, 'g2f_filedown']);
-        Route::post('/g2f_paramTable', [FumaController::class, 'g2f_paramTable']);
+        Route::post('/g2f_paramTable', [FumaController::class, 'paramTable']);
         Route::post('/g2f_sumTable', [FumaController::class, 'g2f_sumTable']);
         Route::post('/expDataOption', [FumaController::class, 'expDataOption']);
         Route::get('/expPlot/{prefix}/{id}/{dataset}', [FumaController::class, 'expPlot']);

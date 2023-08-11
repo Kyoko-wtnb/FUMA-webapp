@@ -38,6 +38,10 @@ class BrowseController extends Controller
      */
     public function index($id = null)
     {
+        if (!is_null($id) && !SubmitJob::find($id)->is_public) {
+            return redirect()->route('login');
+        }
+
         return view('pages.browse', ['id' => $id, 'page' => 'browse', 'prefix' => 'public']);
     }
 
@@ -46,7 +50,7 @@ class BrowseController extends Controller
         $results = SubmitJob::where('is_public', 1)
             ->orderBy('published_at', 'desc')
             ->get([
-                'jobID',
+                'old_id',
                 'title',
                 'author',
                 'publication_email',
@@ -71,13 +75,18 @@ class BrowseController extends Controller
     public function checkG2F(Request $request)
     {
         $job_id = $request->input('id');
-        return SubmitJob::find($job_id)->child->jobID;
+        
+        if (is_null($child_id = SubmitJob::find($job_id)->child->jobID)) {
+            return response()->json(['status' => 'error', 'message' => 'No G2F job found.']);
+        }
+
+        return $child_id;
     }
 
     public function getParams(Request $request)
     {
-        $id = $request->input('id');
-        $filedir = config('app.jobdir') . '/jobs/' . $id . '/';
+        $jobID = $request->input('jobID');
+        $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
         $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $posMap = $params['posMap'];
         $eqtlMap = $params['eqtlMap'];
@@ -88,15 +97,15 @@ class BrowseController extends Controller
         if (array_key_exists('ciMap', $params)) {
             $ciMap = $params['ciMap'];
         }
-        echo "$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol";
+        $magma = $params['magma'];
+        return "$posMap:$eqtlMap:$ciMap:$orcol:$becol:$secol:$magma";
     }
 
     public function filedown(Request $request)
     {
         $id = $request->input('id');
         $prefix = $request->input('prefix');
-        $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/';
-        // $zip = new ZipArchive();
+        $filedir = config('app.jobdir') . '/jobs/' . $id . '/';
         $files = array();
         if ($request->filled('paramfile')) {
             $files[] = "params.config";
@@ -124,12 +133,12 @@ class BrowseController extends Controller
             $files[] = "genes.txt";
         }
         if ($request->filled('eqtlfile')) {
-            if (File::exists($filedir . "eqtl.txt")) {
+            if (Storage::exists($filedir . "eqtl.txt")) {
                 $files[] = "eqtl.txt";
             }
         }
         if ($request->filled('cifile')) {
-            if (File::exists($filedir . "ci.txt")) {
+            if (Storage::exists($filedir . "ci.txt")) {
                 $files[] = "ci.txt";
                 $files[] = "ciSNPs.txt";
                 $files[] = "ciProm.txt";
@@ -141,14 +150,14 @@ class BrowseController extends Controller
         }
         if ($request->filled('magmafile')) {
             $files[] = "magma.genes.out";
-            if (File::exists($filedir . "magma.sets.out")) {
+            if (Storage::exists($filedir . "magma.sets.out")) {
                 $files[] = "magma.genes.raw";
                 $files[] = "magma.sets.out";
-                if (File::exists($filedir . "magma.setgenes.out")) {
+                if (Storage::exists($filedir . "magma.setgenes.out")) {
                     $files[] = "magma.setgenes.out";
                 }
             }
-            if (File::exists($filedir . "magma_exp.gcov.out")) {
+            if (Storage::exists($filedir . "magma_exp.gcov.out")) {
                 $files[] = "magma_exp.gcov.out";
                 $files[] = "magma_exp_general.gcov.out";
             }
@@ -161,16 +170,32 @@ class BrowseController extends Controller
             $zipfile = $filedir . "FUMA_job" . $id . ".zip";
         }
 
-        if (File::exists($zipfile)) {
-            File::delete($zipfile);
+        if (Storage::exists($zipfile)) {
+            Storage::delete($zipfile);
         }
-        $zip->open($zipfile, \ZipArchive::CREATE);
-        $zip->addFile(storage_path() . '/README', "README");
+
+        # create zip file and open it
+        $zip = new \ZipArchive();
+        $zip->open(Storage::path($zipfile), \ZipArchive::CREATE);
+
+        # add README file if exists in the public storage
+        if (Storage::disk('public')->exists('README')) {
+            $zip->addFile(Storage::disk('public')->path('README'), "README");
+        }
+
+        # for each file, check if exists in the storage and add to zip file
         foreach ($files as $f) {
-            $zip->addFile($filedir . $f, $f);
+            if (Storage::exists($filedir . $f)) {
+                $abs_path = Storage::path($filedir . $f);
+                $zip->addFile($abs_path, $f);
+            }
         }
+
+        # close zip file
         $zip->close();
-        return response()->download($zipfile);
+
+        # download zip file and delete it after download
+        return response()->download(Storage::path($zipfile))->deleteFileAfterSend(true);
     }
 
     public function imgdown(Request $request)
@@ -268,25 +293,26 @@ class BrowseController extends Controller
 
     public function geneTable(Request $request)
     {
+        // TODO: make this function using column names instead of column indecies
         $jobID = $request->input('id');
         $filedir = config('app.jobdir') . '/public/' . $jobID . '/g2f/';
-        if (file_exists($filedir . "geneTable.txt")) {
-            $f = fopen($filedir . "geneTable.txt", 'r');
+        if (Storage::exists($filedir . "geneTable.txt")) {
+            $f = fopen(Storage::path($filedir . "geneTable.txt"), 'r');
             $head = fgetcsv($f, 0, "\t");
             $head[] = "GeneCard";
             $all_rows = [];
             while ($row = fgetcsv($f, 0, "\t")) {
-                if (strcmp($row[3], "NA") != 0) {
-                    $row[3] = '<a href="https://www.omim.org/entry/' . $row[3] . '" target="_blank">' . $row[3] . '</a>';
+                if (strcmp($row[4], "NA") != 0) {
+                    $row[4] = '<a href="https://www.omim.org/entry/' . $row[4] . '" target="_blank">' . $row[4] . '</a>';
                 }
-                if (strcmp($row[5], "NA") != 0) {
-                    $db = explode(":", $row[5]);
-                    $row[5] = "";
+                if (strcmp($row[6], "NA") != 0) {
+                    $db = explode(":", $row[6]);
+                    $row[6] = "";
                     foreach ($db as $i) {
-                        if (strlen($row[5]) == 0) {
-                            $row[5] = '<a href="https://www.drugbank.ca/drugs/' . $i . '" target="_blank">' . $i . '</a>';
+                        if (strlen($row[6]) == 0) {
+                            $row[6] = '<a href="https://www.drugbank.ca/drugs/' . $i . '" target="_blank">' . $i . '</a>';
                         } else {
-                            $row[5] .= ', <a href="https://www.drugbank.ca/drugs/' . $i . '" target="_blank">' . $i . '</a>';
+                            $row[6] .= ', <a href="https://www.drugbank.ca/drugs/' . $i . '" target="_blank">' . $i . '</a>';
                         }
                     }
                 }
@@ -295,9 +321,9 @@ class BrowseController extends Controller
             }
 
             $json = array('data' => $all_rows);
-            echo json_encode($json);
+            return json_encode($json);
         } else {
-            echo '{"data": []}';
+            return '{"data": []}';
         }
     }
 

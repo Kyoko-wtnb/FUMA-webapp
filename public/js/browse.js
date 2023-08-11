@@ -2,7 +2,7 @@ var sigSNPtable_selected=null;
 var leadSNPtable_selected=null;
 var lociTable_selected=null;
 var annotPlotSelected;
-var prefix = "public";
+var prefix = "jobs";
 var geneTable;
 var exp_data_title = {
 	'gtex_v7_ts_avg_log2TPM': 'GTEx v7 53 tissue types',
@@ -102,15 +102,29 @@ $(document).ready(function(){
 				alert('checkG2F error');
 			},
 			success: function(data){
-				if(data.length>0){g2f = 1;}
+				if(data.length>0){g2f = data;}
 			},
 			complete: function(){
-				loadResults(g2f);
+				loadResults();
+								
+				if(g2f){
+					prefix = 'gene2func';
+					summaryTable(g2f);
+					parametersTable(g2f);
+					expHeatMap(g2f);
+					tsEnrich(g2f);
+					GeneSet(g2f);
+					GeneTable(g2f);
+					$('#gene_exp_data').on('change', function(){
+						expHeatPlot(id, $('#gene_exp_data').val())
+					})
+					$('#resultsSideG2F').show();
+				}
 			}
 		})
 	}
 
-	function loadResults(g2f){
+	function loadResults() {
 		var posMap;
 		var eqtlMap;
 		var ciMap;
@@ -119,16 +133,16 @@ $(document).ready(function(){
 		var secol;
 		var magma;
 		$.ajax({
-			url: subdir+'/'+page+'/getParams',
+			url: '/browse' + '/getParams',
 			type: 'POST',
-			data:{
-				id: id
+			data: {
+				jobID: id
 			},
-			error: function(){
+			error: function () {
 				alert("JobQuery getParams error");
+				return;
 			},
-			success: function(data){
-				// $('#test').html(data)
+			success: function (data) {
 				var tmp = data.split(":");
 				posMap = parseInt(tmp[0]);
 				eqtlMap = parseInt(tmp[1]);
@@ -137,28 +151,114 @@ $(document).ready(function(){
 				becol = tmp[4];
 				secol = tmp[5];
 				magma = tmp[6];
-			},
-			complete: function(){
-				GWplot(id);
-				QQplot(id);
-				MAGMAresults(id);
-				ciMapCircosPlot(id, ciMap);
-				showResultTables(prefix, id, posMap, eqtlMap, ciMap, orcol, becol, secol);
-				$('#resultsSide').show();
-				if(g2f==1){
-					summaryTable(id);
-					paramTable(id);
-					expHeatMap(id);
-					tsEnrich(id);
-					GeneSet(id);
-					GeneTable(id);
-					$('#gene_exp_data').on('change', function(){
-						expHeatPlot(id, $('#gene_exp_data').val())
-					})
-					$('#resultsSideG2F').show();
-				}
+
+				fetchData();
 			}
 		});
+
+		function fetchData() {
+			$.ajax({
+				url: '/browse' + '/getFilesContents',
+				type: 'POST',
+				data: {
+					jobID: id,
+					fileNames: ['manhattan.txt', 'magma.genes.out', 'QQSNPs.txt']
+				},
+				error: function () {
+					alert("JobQuery get file contents error");
+					return;
+				},
+				success: function (data) {
+					let selectedData = {
+						"manhattan.txt": data['manhattan.txt'],
+						"magma.genes.out": data['magma.genes.out'],
+					};
+					GWplot(selectedData);
+					$('#GWplotSide').show();
+
+
+					selectedData = {
+						"QQSNPs.txt": data['QQSNPs.txt'],
+						"magma.genes.out": data['magma.genes.out'],
+					};
+					QQplot(selectedData);
+				}
+			});
+
+			if (magma == 1) {
+				$.ajax({
+					url: '/browse' + '/getFilesContents',
+					type: 'POST',
+					data: {
+						jobID: id,
+						fileNames: ['magma.sets.top']
+					},
+					error: function () {
+						alert("JobQuery get magma file contents error");
+					},
+					success: function (data) {
+						selectedData = {
+							"magma.sets.top": data['magma.sets.top'],
+						};
+						MAGMA_GStable(selectedData);
+
+					}
+				});
+
+				$.ajax({
+					url: '/browse' + '/MAGMA_expPlot',
+					type: 'POST',
+					data: {
+						jobID: id,
+					},
+					error: function () {
+						alert("JobQuery MAGMA_expPlot error");
+					},
+					success: function (data) {
+						MAGMA_expPlot(data);
+					}
+				});
+			} else {
+				$('#magmaPlot').html('<div style="text-align:center; padding-top:50px; padding-bottom:50px;"><span style="color: red; font-size: 22px;"><i class="fa fa-ban"></i>'
+					+ ' MAGMA was not perform.</span><br/></div>');
+			}
+			if (ciMap == 1) {
+				$.ajax({
+					url: '/browse' + '/circos_chr',
+					type: 'POST',
+					data: {
+						id: id
+					},
+					success: function (data) {
+						ciMapCircosPlot(data);
+					}
+				});
+			}
+
+			paramTable(subdir, 'browse', 'jobs', id);
+			sumTable(subdir, 'browse', 'jobs', id);
+
+			$.ajax({
+                url: subdir + '/' + page + '/getFilesContents',
+                type: 'POST',
+                data: {
+                    jobID: id,
+                    fileNames: ['annov.stats.txt', 'interval_sum.txt']
+                },
+                error: function () {
+                    alert("JobQuery get file contents error");
+                    return;
+                },
+                success: function (data) {
+                    PlotSNPAnnot(data['annov.stats.txt']);
+                    PlotLocuSum(data['interval_sum.txt']);
+                }
+            });
+
+			showResultTables('jobs', id, posMap, eqtlMap, ciMap, orcol, becol, secol);
+			$('#GWplotSide').show();
+			$('#resultsSide').show();
+		}
 	}
 
 	// download file selection
@@ -184,12 +284,12 @@ function getGwasList(){
 		if(data.length){
 			items = '';
 			$.each( data, function( key, val ) {
-				// val.title = '<a href="'+subdir+'/browse/'+val.jobID+'">'+val.title+'</a>';
+				val.title = '<a href="'+subdir+'/browse/'+val.jobID+'">'+val.title+'</a>';
 				// if(val.sumstats_link != "NA"){
 				if(val.sumstats_link.startsWith("http") | val.sumstats_link.startsWith("ftp")){
 					val.sumstats_link = '<a href="'+val.sumstats_link+'" target="_blank">'+val.sumstats_link+'</a>'
 				}
-				items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"+val.author+"</td><td>"
+				items = items + "<tr><td>"+val.old_id+"</td><td>"+val.title+"</td><td>"+val.author+"</td><td>"
 					+val.publication_email+"</td><td>"+val.phenotype+"</td><td>"+val.publication+"</td>"
 					+'<td style="word-wrap:break-word;word-break:break-all;">'
 					+val.sumstats_link+"</td><td>"+val.sumstats_ref+"</td><td>"+val.notes+"</td><td>"

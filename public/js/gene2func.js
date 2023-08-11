@@ -100,7 +100,7 @@ $(document).ready(function(){
 
 		checkInput();
 		summaryTable(id);
-		paramTable(id);
+		parametersTable(id);
 		expHeatMap(id);
 		tsEnrich(id);
 		GeneSet(id);
