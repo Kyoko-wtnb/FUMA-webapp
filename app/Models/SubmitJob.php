@@ -89,4 +89,30 @@ class SubmitJob extends Model
         $this->where('jobID', $job_id)
             ->update(['status' => $status]);
     }
+
+    public function find_public_job_from_id($id): SubmitJob | NULL
+    {
+        $job = $this->where('old_id', $id)
+            ->where('is_public', 1)
+            ->first();
+
+        if ($job != NULL) {
+            return $job;
+        } else {
+            return $this->find($id);
+        }
+    }
+
+    public function get_public_job_id_from_old_or_not_id($id): int
+    {
+        $job = $this->where('old_id', $id)
+            ->where('is_public', 1)
+            ->first();
+
+        if ($job != NULL) {
+            return $job->jobID;
+        } else {
+            return $this->find($id)->jobID;
+        }
+    }
 }

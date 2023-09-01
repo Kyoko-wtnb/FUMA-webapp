@@ -38,7 +38,7 @@ class BrowseController extends Controller
      */
     public function index($id = null)
     {
-        if (!is_null($id) && !SubmitJob::find($id)->is_public) {
+        if (!is_null($id) && !(new SubmitJob)->find_public_job_from_id($id)) {
             return redirect()->route('login');
         }
 
@@ -50,6 +50,7 @@ class BrowseController extends Controller
         $results = SubmitJob::where('is_public', 1)
             ->orderBy('published_at', 'desc')
             ->get([
+                'jobID',
                 'old_id',
                 'title',
                 'author',
@@ -74,9 +75,9 @@ class BrowseController extends Controller
 
     public function checkG2F(Request $request)
     {
-        $job_id = $request->input('id');
+        $old_id = $request->input('id');
         
-        if (is_null($child_id = SubmitJob::find($job_id)->child->jobID)) {
+        if (is_null($child_id = (new SubmitJob)->find_public_job_from_id($old_id)->child->jobID)) {
             return response()->json(['status' => 'error', 'message' => 'No G2F job found.']);
         }
 
@@ -85,7 +86,7 @@ class BrowseController extends Controller
 
     public function getParams(Request $request)
     {
-        $jobID = $request->input('jobID');
+        $jobID = (new SubmitJob)->get_public_job_id_from_old_or_not_id($request->input('jobID'));
         $filedir = config('app.jobdir') . '/jobs/' . $jobID . '/';
         $params = parse_ini_string(Storage::get($filedir . 'params.config'), false, INI_SCANNER_RAW);
         $posMap = $params['posMap'];
@@ -103,7 +104,7 @@ class BrowseController extends Controller
 
     public function filedown(Request $request)
     {
-        $id = $request->input('id');
+        $id = (new SubmitJob)->get_public_job_id_from_old_or_not_id($request->input('id'));
         $prefix = $request->input('prefix');
         $filedir = config('app.jobdir') . '/jobs/' . $id . '/';
         $files = array();
@@ -202,7 +203,7 @@ class BrowseController extends Controller
     {
         $svg = $request->input('data');
         $prefix = $request->input('dir');
-        $id = $request->input('id');
+        $id = (new SubmitJob)->get_public_job_id_from_old_or_not_id($request->input('id'));
         $type = $request->input('type');
         $fileName = $request->input('fileName');
         $svgfile = config('app.jobdir') . '/' . $prefix . '/' . $id . '/temp.svg';
@@ -294,7 +295,7 @@ class BrowseController extends Controller
     public function geneTable(Request $request)
     {
         // TODO: make this function using column names instead of column indecies
-        $jobID = $request->input('id');
+        $jobID = (new SubmitJob)->get_public_job_id_from_old_or_not_id($request->input('id'));
         $filedir = config('app.jobdir') . '/public/' . $jobID . '/g2f/';
         if (Storage::exists($filedir . "geneTable.txt")) {
             $f = fopen(Storage::path($filedir . "geneTable.txt"), 'r');
@@ -329,7 +330,7 @@ class BrowseController extends Controller
 
     public function g2f_filedown(Request $request)
     {
-        $id = $request->input('id');
+        $id = (new SubmitJob)->get_public_job_id_from_old_or_not_id($request->input('id'));
         $prefix = $request->input('prefix');
         $filedir = config('app.jobdir') . '/' . $prefix . '/' . $id . '/g2f/';
         $files = [];
