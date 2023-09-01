@@ -28,14 +28,6 @@ class AllJobs extends Component
     {
         $client = new DockerFactory();
 
-        // $tableName = (new SubmitJob())->getTable();
-        // $column_names = DB::getSchemaBuilder()->getColumnListing($tableName);
-        // $index = array_search('email', $column_names);
-        // if ($index !== FALSE) {
-        //     unset($column_names[$index]);
-        //     $column_names = array_values($column_names);
-        // }
-
         $column_names = [
             'jobID',
             'title',
@@ -44,9 +36,16 @@ class AllJobs extends Component
             'status',
         ];
 
-        $columns = implode(', "|", ', $column_names);
+        $separator = chr(29); // Specify your desired separator here
+        
+        $escaped_columns = array_map(function ($columnName) use ($separator) {
+            return "REPLACE(`$columnName`, ',', ' ')"; // Replace commas with space
+        }, $column_names);
 
-        $results = SubmitJob::select('email', DB::raw('GROUP_CONCAT(' . $columns . ' ORDER BY created_at DESC) as columns'))
+        $column_list = implode(", '$separator', ", $escaped_columns);
+
+        $results = SubmitJob::select('email', DB::raw("GROUP_CONCAT($column_list ORDER BY created_at DESC) as columns"))
+            ->whereNotIn('status', ['OK', 'ERROR'])
             ->groupBy('email')
             ->get();
 
@@ -55,21 +54,21 @@ class AllJobs extends Component
             $columns = explode(',', $item->columns);
             $columns = array_map(function ($column) use ($column_names, $client) {
                 // for each job 
-                $tmp = array_combine($column_names, explode('|', $column));
+                $tmp = array_combine($column_names, explode(chr(29), $column));
 
                 $parameters = array(
                     'label' => array(
                         'com.docker.compose.project=laradock-fuma',
                     ),
                     'name' => array(
-                        'job-'. $tmp['jobID'] . '-',
+                        'job-' . $tmp['jobID'] . '-',
                     ),
                 );
                 $parameters = 'filters=' . json_encode($parameters);
                 $dockerContainers = $client->dispatchCommand('/var/run/docker.sock', 'GET', '/containers/json', $parameters);
-                
+
                 $tmp['containers'] = array();
-                
+
                 foreach ($dockerContainers as $container) {
                     array_push($tmp['containers'], array(
                         'name' => implode(', ', $container['Names']),
