@@ -12,8 +12,10 @@ fuma_new_tmp.users;
 --
 INSERT INTO
 fuma_new.SubmitJobs(jobID, old_id, email, title, created_at, updated_at, status, user_id, type)
-SELECT jobID, jobID, email as job_mail, title, created_at, updated_at, status, (SELECT id FROM fuma_new_tmp.users WHERE email = job_mail), 'snp2gene' FROM
-fuma_new_tmp.SubmitJobs;
+SELECT sj.jobID, sj.jobID, sj.email as job_mail, sj.title, sj.created_at, sj.updated_at, sj.status, u.id as user_id, 'snp2gene'
+FROM fuma_new_tmp.SubmitJobs sj
+JOIN fuma_new_tmp.users u ON sj.email = u.email
+	AND u.id IS NOT NULL;
 -- --------------------------------------------------------
 
 --
@@ -263,6 +265,7 @@ SELECT
     sj.jobID AS parent_id
 FROM
     fuma_new_tmp.celltype ct
-LEFT JOIN fuma_new_tmp.users u ON ct.email = u.email
+JOIN fuma_new_tmp.users u ON ct.email = u.email
+	AND u.email is NOT NULL
 LEFT JOIN fuma_new.SubmitJobs sj ON ct.snp2gene = sj.jobID AND sj.type = 'snp2gene';
 -- --------------------------------------------------------

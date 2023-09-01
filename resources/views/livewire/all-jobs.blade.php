@@ -37,11 +37,11 @@
                             @foreach ($user['jobs'] as $job)
                                 @if ($job['status'] == 'OK')
                                     <tr class="bg-success">
-                                    @elseif ($job['status'] == 'ERROR')
+                                @elseif ($job['status'] == 'ERROR')
                                     <tr class="bg-danger">
-                                    @elseif ($job['status'] == 'QUEUED')
+                                @elseif ($job['status'] == 'QUEUED')
                                     <tr class="bg-warning">
-                                    @else
+                                @else
                                     <tr>
                                 @endif
                                 <td> {{ $job['jobID'] }} </td>
