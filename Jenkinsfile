@@ -1,4 +1,10 @@
 String optimization_command = "composer install --optimize-autoloader \\&\\& php artisan config:cache \\&\\& php artisan event:cache \\&\\& php artisan route:cache \\&\\& php artisan view:cache"
+String abs_path_of_jenkins_home_on_host = "/home/ams375/.laradock/data/jenkins/jenkins_home"
+String abs_path_of_project_root_on_host = "/home/ams375/FUMA-webapp"
+
+// ssh config
+String user_on_main_server = "ams375"
+String ip_of_main_server = "130.37.53.89"
 
 pipeline {
     agent any
@@ -21,7 +27,7 @@ pipeline {
             steps {
                 sh 'docker run --rm \
                         -u "$(id -u):$(id -g)" \
-                        -v "/home/ams375/.laradock/data/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
+                        -v "\\'${abs_path_of_jenkins_home_on_host}\\'/workspace/${JOB_NAME}:/var/www/html" \
                         -w /var/www/html \
                         laravelsail/php82-composer:latest \
                         composer install --ignore-platform-reqs --no-interaction'
@@ -31,7 +37,7 @@ pipeline {
         //     steps {
         //         sh 'docker run --rm \
         //                 -u "$(id -u):$(id -g)" \
-        //                 -v "/home/ams375/.laradock/data/jenkins/jenkins_home/workspace/${JOB_NAME}:/var/www/html" \
+        //                 -v "\\'${abs_path_of_jenkins_home_on_host}\\'/workspace/${JOB_NAME}:/var/www/html" \
         //                 -w /var/www/html \
         //                 laravelsail/php82-composer:latest \
         //                 php artisan test'
@@ -41,9 +47,9 @@ pipeline {
     post {
         success {
             sshagent(credentials: ['fuma_dev_srv']) {
-                sh "ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp fetch --all"
-                sh "ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp reset --hard origin/FUMA-webapp-new-production"
-                sh "ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 docker compose -f /home/ams375/FUMA-webapp/laradock-FUMA/production_docker-compose.yml exec --user laradock workspace bash -c \\'${optimization_command}\\'"
+                sh "ssh -o StrictHostKeyChecking=no \\'${user_on_main_server}\\'@\\'${ip_of_main_server}\\' git -C \\'${abs_path_of_project_root_on_host}\\' fetch --all"
+                sh "ssh -o StrictHostKeyChecking=no \\'${user_on_main_server}\\'@\\'${ip_of_main_server}\\' git -C \\'${abs_path_of_project_root_on_host}\\' reset --hard origin/FUMA-webapp-new-production"
+                sh "ssh -o StrictHostKeyChecking=no \\'${user_on_main_server}\\'@\\'${ip_of_main_server}\\' docker compose -f \\'${abs_path_of_project_root_on_host}\\'/laradock-FUMA/production_docker-compose.yml exec --user laradock workspace bash -c \\'${optimization_command}\\'"
 
                 // sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp pull https://github.com/vufuma/FUMA-webapp.git FUMA-webapp-new'
                 // script {
