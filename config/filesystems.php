@@ -78,7 +78,9 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
-        storage_path('app/fuma') => '/fuma-jobs',
+
+        # comment out this line if you want to store jobs in the default storage location /storage/app/fuma
+        storage_path('app/' . config('app.jobdir')) => env('ABSOLUTE_PATH_TO_JOBS_DIR_ON_HOST'),
     ],
 
 ];
