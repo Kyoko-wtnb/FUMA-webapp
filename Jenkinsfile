@@ -25,31 +25,31 @@ pipeline {
         }
         stage("Run Composer Install") {
             steps {
-                sh 'docker run --rm \
-                        -u "$(id -u):$(id -g)" \
-                        -v "\\'${abs_path_of_jenkins_home_on_host}\\'/workspace/${JOB_NAME}:/var/www/html" \
-                        -w /var/www/html \
-                        laravelsail/php82-composer:latest \
-                        composer install --ignore-platform-reqs --no-interaction'
+                sh "docker run --rm \
+                    -u \$(id -u):\$(id -g) \
+                    -v ${abs_path_of_jenkins_home_on_host}/workspace/${JOB_NAME}:/var/www/html \
+                    -w /var/www/html \
+                    laravelsail/php82-composer:latest \
+                    composer install --ignore-platform-reqs --no-interaction"
             }
         }
         // stage("Run artisan tests") {
         //     steps {
-        //         sh 'docker run --rm \
-        //                 -u "$(id -u):$(id -g)" \
-        //                 -v "\\'${abs_path_of_jenkins_home_on_host}\\'/workspace/${JOB_NAME}:/var/www/html" \
+        //         sh "docker run --rm \
+        //                 -u \$(id -u):\$(id -g) \
+        //                 -v ${abs_path_of_jenkins_home_on_host}/workspace/${JOB_NAME}:/var/www/html \
         //                 -w /var/www/html \
         //                 laravelsail/php82-composer:latest \
-        //                 php artisan test'
+        //                 php artisan test"
         //     }
         // }
     }
     post {
         success {
             sshagent(credentials: ['fuma_dev_srv']) {
-                sh "ssh -o StrictHostKeyChecking=no \\'${user_on_main_server}\\'@\\'${ip_of_main_server}\\' git -C \\'${abs_path_of_project_root_on_host}\\' fetch --all"
-                sh "ssh -o StrictHostKeyChecking=no \\'${user_on_main_server}\\'@\\'${ip_of_main_server}\\' git -C \\'${abs_path_of_project_root_on_host}\\' reset --hard origin/FUMA-webapp-new-production"
-                sh "ssh -o StrictHostKeyChecking=no \\'${user_on_main_server}\\'@\\'${ip_of_main_server}\\' docker compose -f \\'${abs_path_of_project_root_on_host}\\'/laradock-FUMA/production_docker-compose.yml exec --user laradock workspace bash -c \\'${optimization_command}\\'"
+                sh "ssh -o StrictHostKeyChecking=no ${user_on_main_server}@${ip_of_main_server} git -C ${abs_path_of_project_root_on_host} fetch --all"
+                sh "ssh -o StrictHostKeyChecking=no ${user_on_main_server}@${ip_of_main_server} git -C ${abs_path_of_project_root_on_host} reset --hard origin/FUMA-webapp-new-production"
+                sh "ssh -o StrictHostKeyChecking=no ${user_on_main_server}@${ip_of_main_server} docker compose -f ${abs_path_of_project_root_on_host}/laradock-FUMA/production_docker-compose.yml exec --user laradock workspace bash -c \\'${optimization_command}\\'"
 
                 // sh 'ssh -o StrictHostKeyChecking=no ams375@130.37.53.89 git -C /home/ams375/FUMA-webapp pull https://github.com/vufuma/FUMA-webapp.git FUMA-webapp-new'
                 // script {
