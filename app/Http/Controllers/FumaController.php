@@ -218,7 +218,7 @@ class FumaController extends Controller
     public function legendText(Request $request)
     {
         $fileNames = $request->input('fileNames');
-        $filedir = config('app.jobdir') . '/legends/';
+        $filedir = 'public/legends/';
 
         $result = Helper::getFilesContents($filedir, $fileNames);
 
