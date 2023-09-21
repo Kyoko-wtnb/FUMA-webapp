@@ -30,7 +30,7 @@ class UpdateController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.updates.create');
     }
 
     /**
@@ -54,7 +54,9 @@ class UpdateController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('admin.updates.edit', [
+            'id' => $id,
+        ]);
     }
 
     /**

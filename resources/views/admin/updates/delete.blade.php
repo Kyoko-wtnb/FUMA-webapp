@@ -29,7 +29,7 @@
                     <h2>Recent <b>Updates</b></h2>
                 </div>
                 <div class="col-sm-1">
-                    <a href="updates/create" type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</a>
+                    <button type="button" class="btn btn-info add-new"><i class="fa fa-plus"></i> Add New</button>
                 </div>
             </div>
         </div>
@@ -57,7 +57,7 @@
                         <td>{{ $update['updated_at'] }}</td>
                         <td>{{ $update['writer'] }}</td>
                         <td style="text-align:center;">
-                            <a href="updates/{{ $update['id'] }}/edit" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+                            <a href="" class="edit" title="Edit" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
                             <a href="" class="delete" title="Delete" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>
                             @if ($update['is_visible'] == 1)
                                 <a class="visibility" title="Visible" data-toggle="tooltip"><i class="material-icons">&#xe8f4;</i></a>
