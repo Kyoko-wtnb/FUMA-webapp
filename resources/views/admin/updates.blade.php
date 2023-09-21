@@ -73,7 +73,6 @@
 @endsection
 
 @section('scripts')
-    @livewireScripts
     {{-- Imports from the web --}}
 
     {{-- Hand written ones --}}
