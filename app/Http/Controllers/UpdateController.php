@@ -68,8 +68,13 @@ class UpdateController extends Controller
      */
     public function showUpdates()
     {
+
+        $updates = Update::all(['created_at', 'title', 'version', 'description', 'is_visible'])
+            ->where('is_visible', 1)
+            ->sortByDesc('created_at');
+
         return view('pages.updates', [
-            'updates' => Update::all(['created_at', 'title', 'version', 'description']),
+            'updates' => $updates,
         ]);
     }
 
