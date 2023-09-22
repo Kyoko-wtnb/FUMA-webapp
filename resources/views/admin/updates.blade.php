@@ -69,11 +69,11 @@
             </thead>
             <tbody>
                 @foreach ($updates as $update)
-                    <tr>
+                    <tr style="word-wrap: break-word">
                         <td>{{ $update['id'] }}</td>
                         <td>{{ $update['title'] }}</td>
                         <td>{{ $update['version'] }}</td>
-                        <td style="word-wrap: break-word">{{ $update['description'] }}</td>
+                        <td>{{ $update['description'] }}</td>
                         <td>{{ $update['created_at'] }}</td>
                         <td>{{ $update['updated_at'] }}</td>
                         <td>{{ $update['writer'] }}</td>
