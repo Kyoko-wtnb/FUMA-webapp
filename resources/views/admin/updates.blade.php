@@ -73,7 +73,7 @@
                         <td>{{ $update['id'] }}</td>
                         <td>{{ $update['title'] }}</td>
                         <td>{{ $update['version'] }}</td>
-                        <td>{{ $update['description'] }}</td>
+                        <td>{!! $update['description'] !!}</td>
                         <td>{{ $update['created_at'] }}</td>
                         <td>{{ $update['updated_at'] }}</td>
                         <td>{{ $update['writer'] }}</td>

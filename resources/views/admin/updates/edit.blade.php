@@ -329,7 +329,7 @@
         };
 
         window.onload = initializer();
-        writingArea.textContent = '{{ $update->description }}';
+        writingArea.innerHTML = '{!! $update['description'] !!}';
     </script>
 
     <script>

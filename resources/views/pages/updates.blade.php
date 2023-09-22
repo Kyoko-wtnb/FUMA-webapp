@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container" style="padding-top: 50px;">
-        <table class="table table-bordered">
+        <table class="table table-bordered" style="table-layout: fixed;">
             <thead>
                 <tr>
                     <th style="width: 15%;">Date</th>
@@ -14,11 +14,11 @@
             <tbody>
                 @isset($updates)
                     @foreach ($updates as $update)
-                        <tr>
+                        <tr style="word-wrap: break-word">
                             <td>{{ $update['created_at'] }}</td>
                             <td>{{ $update['title'] }}</td>
                             <td>{{ $update['version'] }}</td>
-                            <td style="word-wrap: break-word">{{ $update['description'] }}</td>
+                            <td>{!! $update['description'] !!}</td>
                         </tr>
                     @endforeach
                 @endisset
