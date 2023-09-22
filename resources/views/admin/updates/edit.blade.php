@@ -80,10 +80,21 @@
         <div class="table-title">
             <div class="row">
                 <div class="col-sm-10">
-                    <h2>Edit {{ $id }} update</h2>
+                    <h2>Edit update: <b>{{ $update->title }} | {{ $update->version }}</b></h2>
                 </div>
             </div>
         </div>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="container">
             <div class="options">
                 <!-- Text Format -->
@@ -167,7 +178,31 @@
                     <label for="backColor">Highlight Color</label>
                 </div>
             </div>
-            <div id="text-input" contenteditable="true"></div>
+            {{ html()->form('PUT', url('admin/updates', $update->id))->open() }}
+            <div style="text-align:right;">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" value="{{ $update->title }}">
+
+                <label for="ver">Version:</label>
+                <input type="text" id="ver" name="version" value="{{ $update->version }}">
+
+                <label for="writer">Writer:</label>
+                <input type="text" id="writer" name="writer" value="{{ $update->writer }}">
+
+            </div><br>
+
+            <div style="text-align:right;">
+                <label for="visible">Visible:</label>
+                <input type="checkbox" id="visible" name="is_visible"
+                    @if ($update->is_visible) checked @endif />
+            </div>
+
+            <label>Enter descrition here:</label>
+            <div id="text-input" contenteditable="true" name="text"></div><br>
+            <input type="hidden" id="hiddeninput" name="description" />
+
+            <input class="btn btn-info" id="save" type="submit" value="Save" name="submit" />
+            {{ html()->form()->close() }}
         </div>
     </div>
 @endsection
@@ -294,6 +329,17 @@
         };
 
         window.onload = initializer();
+        writingArea.textContent = '{{ $update->description }}';
     </script>
+
+    <script>
+        $(function() {
+            $('#save').click(function() {
+                var mysave = $('#text-input').html();
+                $('#hiddeninput').val(mysave);
+            });
+        });
+    </script>
+
     {{-- Imports from the project --}}
 @endsection

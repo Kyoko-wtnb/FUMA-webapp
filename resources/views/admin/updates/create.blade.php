@@ -63,10 +63,11 @@
         }
 
         #text-input {
-            margin-top: 10px;
+            margin-top: 1px;
             border: 1px solid #dddddd;
             padding: 20px;
             height: 50vh;
+            overflow: auto;
         }
 
         .active {
@@ -84,6 +85,17 @@
                 </div>
             </div>
         </div>
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <div class="container">
             <div class="options">
                 <!-- Text Format -->
@@ -167,7 +179,30 @@
                     <label for="backColor">Highlight Color</label>
                 </div>
             </div>
-            <div id="text-input" contenteditable="true"></div>
+            {{ html()->form('POST', url('admin/updates'))->open() }}
+            <div style="text-align:right;">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title">
+
+                <label for="ver">Version:</label>
+                <input type="text" id="ver" name="version">
+
+                <label for="writer">Writer:</label>
+                <input type="text" id="writer" name="writer">
+
+            </div><br>
+
+            <div style="text-align:right;">
+                <label for="visible">Visible:</label>
+                <input type="checkbox" id="visible" name="is_visible" checked />
+            </div>
+
+            <label>Enter descrition here:</label>
+            <div id="text-input" contenteditable="true" name="text"></div><br>
+            <input type="hidden" id="hiddeninput" name="description" />
+
+            <input class="btn btn-info" id="save" type="submit" value="Save" name="submit" />
+            {{ html()->form()->close() }}
         </div>
     </div>
 @endsection
@@ -294,6 +329,15 @@
         };
 
         window.onload = initializer();
+    </script>
+
+    <script>
+        $(function() {
+            $('#save').click(function() {
+                var mysave = $('#text-input').html();
+                $('#hiddeninput').val(mysave);
+            });
+        });
     </script>
 
     {{-- Imports from the project --}}

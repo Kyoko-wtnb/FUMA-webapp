@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Update;
+use Session;
 
 class UpdateController extends Controller
 {
@@ -12,14 +13,6 @@ class UpdateController extends Controller
      */
     public function index()
     {
-
-        // $tools = User::with(['tools:id,user_id,name,version,description', 'tools.toolParams:id,tool_id,param_name'])->get(['id', 'name', 'email']);
-
-        // return view('admin.analysis', [
-        //     'data' => collect(json_decode($tools, true)),
-        //     // 'tools_parameters' => collect(json_decode($tool_parameters, true)),
-        // ]);
-
         return view('admin.updates', [
             'updates' => Update::all(),
         ]);
@@ -38,7 +31,28 @@ class UpdateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request['user_id'] = auth()->user()->id;
+
+        if (isset($request['is_visible'])) {
+            if ($request['is_visible'] == "on") {
+                $request['is_visible'] = 1;
+            }
+        } else {
+            $request['is_visible'] = 0;
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|max:255',
+            'version' => 'required|max:255',
+            'writer' => 'required|max:255',
+            'is_visible' => 'required|boolean',
+            'description' => 'required',
+            'user_id' => 'required|integer',
+        ]);
+
+        Update::create($validated);
+
+        return redirect('/admin/updates');
     }
 
     /**
@@ -50,12 +64,24 @@ class UpdateController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     */
+    public function showUpdates()
+    {
+        return view('pages.updates', [
+            'updates' => Update::all(['created_at', 'title', 'version', 'description']),
+        ]);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
+        $update = Update::findOrFail($id);
+
         return view('admin.updates.edit', [
-            'id' => $id,
+            'update' => $update,
         ]);
     }
 
@@ -64,7 +90,30 @@ class UpdateController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $update = Update::findOrFail($id);
+
+        $request['user_id'] = auth()->user()->id;
+
+        if (isset($request['is_visible'])) {
+            if ($request['is_visible'] == "on") {
+                $request['is_visible'] = 1;
+            }
+        } else {
+            $request['is_visible'] = 0;
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|max:255',
+            'version' => 'required|max:255',
+            'writer' => 'required|max:255',
+            'is_visible' => 'required|boolean',
+            'description' => 'required',
+            'user_id' => 'required|integer',
+        ]);
+
+        $update->update($validated);
+
+        return redirect('/admin/updates')->with(['status' => 'Successfully updated the update!']);
     }
 
     /**
@@ -72,6 +121,11 @@ class UpdateController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $update = Update::find($id);
+
+        $update->delete();
+
+        // redirect
+        return redirect()->back()->with(['status' => 'Successfully deleted the update!']);
     }
 }

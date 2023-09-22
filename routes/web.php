@@ -42,9 +42,7 @@ Route::get('/links', function () {
     return view('pages.links');
 });
 
-Route::get('/updates', function () {
-    return view('pages.updates');
-});
+Route::get('/updates', [UpdateController::class, 'showUpdates']);
 
 Route::get('/faq', function () {
     return view('pages.faq');

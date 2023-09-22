@@ -11,6 +11,13 @@ class Update extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['title', 'version', 'writer', 'description', 'is_visible', 'user_id'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
