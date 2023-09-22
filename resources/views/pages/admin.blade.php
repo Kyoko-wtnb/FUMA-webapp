@@ -14,6 +14,7 @@
             <li><a href="#">Admin</a></li>
             <li><a href="/admin/jobs">Jobs</a></li>
             <li><a href="/admin/analysis">Analysis</a></li>
+            <li><a href="/admin/updates">Updates</a></li>
         </ul>
     </div>
 @endsection

@@ -12,7 +12,7 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index($id = null)
+    public function index()
     {
         return view('pages.admin');
     }

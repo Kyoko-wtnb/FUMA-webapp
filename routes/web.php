@@ -7,8 +7,8 @@ use App\Http\Controllers\LoggingController;
 use App\Http\Controllers\S2GController;
 use App\Http\Controllers\G2FController;
 use App\Http\Controllers\CellController;
-use App\Http\Controllers\AnalysisController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UpdateController;
 
 
 /*
@@ -42,9 +42,7 @@ Route::get('/links', function () {
     return view('pages.links');
 });
 
-Route::get('/updates', function () {
-    return view('pages.updates');
-});
+Route::get('/updates', [UpdateController::class, 'showUpdates']);
 
 Route::get('/faq', function () {
     return view('pages.faq');
@@ -57,10 +55,12 @@ Route::group(['middleware' => ['auth']], function () {
     Route::prefix('admin')->group(function () {
         Route::get('/jobs', [AdminController::class, 'showJobs']);
         Route::get('/analysis', [AdminController::class, 'showAnalysis']);
-        // Route::get('/jobs', [AdminController::class, 'showJobs']);
-        // Route::get('/jobs', [AdminController::class, 'showJobs']);
-        
-        Route::get('/{id?}', [AdminController::class, 'index']);
+
+        Route::resources([
+            'updates' => UpdateController::class,
+        ]);
+
+        Route::get('/', [AdminController::class, 'index']);
     });
 
 });
