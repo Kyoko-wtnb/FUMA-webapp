@@ -9,6 +9,7 @@ use App\Http\Controllers\G2FController;
 use App\Http\Controllers\CellController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UpdateController;
+use App\Http\Controllers\AdvancedJobsSearchController;
 
 
 /*
@@ -54,6 +55,12 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::prefix('admin')->group(function () {
         Route::get('/jobs', [AdminController::class, 'showJobs']);
+
+        Route::prefix('search-jobs')->group(function () {
+            Route::get('/', [AdvancedJobsSearchController::class, 'index']);
+            Route::post('/', [AdvancedJobsSearchController::class, 'search']);
+        });
+
         Route::get('/analysis', [AdminController::class, 'showAnalysis']);
 
         Route::resources([
@@ -62,7 +69,6 @@ Route::group(['middleware' => ['auth']], function () {
 
         Route::get('/', [AdminController::class, 'index']);
     });
-
 });
 
 Route::prefix('browse')->group(function () {
