@@ -59,6 +59,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::prefix('search-jobs')->group(function () {
             Route::get('/', [AdvancedJobsSearchController::class, 'index']);
             Route::post('/', [AdvancedJobsSearchController::class, 'search']);
+            Route::post('/action', [AdvancedJobsSearchController::class, 'containerAction']);
         });
 
         Route::get('/analysis', [AdminController::class, 'showAnalysis']);

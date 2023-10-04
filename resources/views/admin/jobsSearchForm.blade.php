@@ -1,6 +1,36 @@
 @extends('layouts.master')
 
 @section('stylesheets')
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        table.table td button.pause {
+            color: #313b33;
+            background: none;
+            border: none;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        table.table td button.play {
+            color: #11c22f;
+            background: none;
+            border: none;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        table.table td button.delete {
+            color: #E34724;
+            background: none;
+            border: none;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        table.table td i {
+            font-size: 19px;
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -21,6 +51,12 @@
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
+            </div>
+        @endif
+
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
             </div>
         @endif
 
@@ -137,6 +173,7 @@
                                                             <th>Service</th>
                                                             <th>Status</th>
                                                             <th>State</th>
+                                                            <th></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -146,6 +183,20 @@
                                                                 <td>{{ $container['service_name'] }}</td>
                                                                 <td>{{ $container['status'] }}</td>
                                                                 <td>{{ $container['state'] }}</td>
+                                                                <td style="text-align:center;">
+                                                                    {{ html()->form('POST', url('admin/search-jobs/action'))->open() }}
+                                                                    <input type="hidden" name="container_name" value="{{ $container['name'] }}">
+                                                                    @if ($container['state'] == 'running')
+                                                                        <button class="pause" title="Pause" name="pause" value= "pause" data-toggle="tooltip"><i
+                                                                                class="material-icons">&#xe034;</i></button>
+                                                                    @elseif ($container['state'] == 'paused')
+                                                                        <button class="play" title="Play" name="play" value= "play" data-toggle="tooltip"><i
+                                                                                class="material-icons">&#xe037;</i></button>
+                                                                    @endif
+                                                                        <button class="delete" title="Delete" name="delete" value= "delete" data-toggle="tooltip"><i
+                                                                                class="material-icons">&#xE872;</i></button>
+                                                                    {{ html()->form()->close() }}
+                                                                </td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>

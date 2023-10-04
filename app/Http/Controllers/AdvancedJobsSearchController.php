@@ -112,6 +112,56 @@ class AdvancedJobsSearchController extends Controller
             ->withInput();
     }
 
+    public function containerAction(Request $request)
+    {
+        $validated = $request->validate([
+            'delete' => 'required_without_all:pause,play|in:delete',
+            'pause' => 'required_without_all:delete,play|in:pause',
+            'play' => 'required_without_all:delete,pause|in:play',
+            'container_name' => 'required|string',
+        ]);
+
+        $container_name = substr($validated['container_name'], 1);
+
+        $client = new DockerFactory();
+
+        $success_message = '';
+
+        if (isset($validated['delete'])) {
+            $dockerContainerRequest = $client->kill($container_name);
+            $success_message = 'Container: ' . $container_name . ' is successfully killed!';
+        } elseif (isset($validated['pause'])) {
+            $dockerContainerRequest = $client->pause($container_name);
+            $success_message = 'Container: ' . $container_name . ' is successfully paused!';
+        } elseif (isset($validated['play'])) {
+            $dockerContainerRequest = $client->unpause($container_name);
+            $success_message = 'Container: ' . $container_name . ' is successfully unpaused!';
+        }
+
+        // Since we have validated that either one of the above is set, we can use the same code for all of them
+        // without checking again if we run a docker command. In any case one of the above senarios will be executed.
+        if ($dockerContainerRequest->getCurlError()) {
+            // there was an error with the curl request
+            // print the curl error message and curl error code 
+            $err = 'Curl Error: ' . $dockerContainerRequest->getCurlError() . '   Http Response Code: ' . $dockerContainerRequest->getHttpResponseCode();
+            return redirect()->action([AdvancedJobsSearchController::class, 'index'])->withErrors(['err' => $err]);
+        }
+
+        if ($dockerContainerRequest->getHttpResponseCode() == "204") {
+            // the container was deleted successfully
+            // there in no message from docker api
+            // print the http response code $dockerContainerRequest->getHttpResponseCode()
+            return redirect()->action([AdvancedJobsSearchController::class, 'index'])->with(['status' => $success_message]);
+        } else {
+            // there is a message from the docker api
+            // print the message $dockerContainerRequest->getMessage()
+            // print the http response code $dockerContainerRequest->getHttpResponseCode()
+            $err = 'Message: ' . $dockerContainerRequest->getMessage() . '   Http Response Code: ' . $dockerContainerRequest->getHttpResponseCode();
+
+            return redirect()->action([AdvancedJobsSearchController::class, 'index'])->withErrors(['err' => $err]);
+        }
+    }
+
     /**
      * This function is used to search for jobs based on the parameters provided.
      * The function is called from the search function in this controller.
