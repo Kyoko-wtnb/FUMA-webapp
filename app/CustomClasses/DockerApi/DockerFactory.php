@@ -213,6 +213,64 @@ class DockerFactory
     }
 
     /**
+     * pause: 
+     *  API requests.
+     *
+     * @param string
+     */
+    public static function pause(
+        string $id = null,
+        string $socketPath = '/var/run/docker.sock',
+        string $requestType = 'POST'
+    ) {
+        $obj = new static();
+        $obj->setId($id);
+
+        if (!is_null($obj->Id)) {
+            $resposne = $obj->dispatchCommand(
+                $socketPath,
+                $requestType,
+                '/containers/' . $obj->Id . '/pause'
+            );
+
+            if (isset($resposne['message'])) {
+                $obj->message = $resposne['message'];
+            }
+        }
+
+        return $obj;
+    }
+
+    /**
+     * unpause: 
+     *  API requests.
+     *
+     * @param string
+     */
+    public static function unpause(
+        string $id = null,
+        string $socketPath = '/var/run/docker.sock',
+        string $requestType = 'POST'
+    ) {
+        $obj = new static();
+        $obj->setId($id);
+
+        if (!is_null($obj->Id)) {
+            $resposne = $obj->dispatchCommand(
+                $socketPath,
+                $requestType,
+                '/containers/' . $obj->Id . '/unpause'
+            );
+
+            if (isset($resposne['message'])) {
+                $obj->message = $resposne['message'];
+            }
+        }
+
+        return $obj;
+    }
+
+    /**
      * remove: 
      *  API requests.
      *
