@@ -22,7 +22,6 @@ class AdvancedJobsSearchController extends Controller
 
     public function search(Request $request)
     {
-        session()->forget('jobs');
         $client = new DockerFactory();
 
         $column_names = [
@@ -46,6 +45,15 @@ class AdvancedJobsSearchController extends Controller
         $status = (isset($request->status)) ? $request->status : NULL;
 
         $data = $this->search_jobs($column_names, $with, $validated['email'], $validated['job_id'], $status);
+
+        if ($data['jobs'] != NULL) {
+            $data['count'] = $data['jobs']->count();
+
+            if ($data['count'] > 10000) {
+                $data['err'] = 'Too many jobs found. Please narrow down your search.';
+                $data['jobs'] = NULL;
+            }
+        }
 
         if ($data['jobs'] != NULL) {
             // this query is a bit complex so bear with me
@@ -93,13 +101,6 @@ class AdvancedJobsSearchController extends Controller
             });
 
             // dd($data['users']);
-
-            $data['count'] = $data['jobs']->count();
-
-            if ($data['count'] > 10000) {
-                $data['err'] = 'Too many jobs found. Please narrow down your search.';
-                $data['jobs'] = NULL;
-            }
         }
 
         if ($data['jobs'] == NULL || $data['users']->isEmpty()) {
