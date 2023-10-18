@@ -45,6 +45,11 @@ class SubmitJob extends Model
         return $this->hasOne(SubmitJob::class, 'parent_id')->withDefault(['jobID' => null]);
     }
 
+    public function childs(): HasMany
+    {
+        return $this->hasMany(SubmitJob::class, 'parent_id');
+    }
+
     public function getJobList_snp2gene_and_geneMap_only($user_id): Collection
     {
         return $this->where('user_id', $user_id)

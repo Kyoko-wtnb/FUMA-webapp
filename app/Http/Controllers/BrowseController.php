@@ -77,11 +77,14 @@ class BrowseController extends Controller
     {
         $old_id = $request->input('id');
         
-        if (is_null($child_id = (new SubmitJob)->find_public_job_from_id($old_id)->child->jobID)) {
+        $public_job = (new SubmitJob)->find_public_job_from_id($old_id);
+        $public_job_gene2func_child = $public_job->childs->where('type', 'gene2func')->first();
+
+        if (is_null($public_job_gene2func_child)) {
             return response()->json(['status' => 'error', 'message' => 'No G2F job found.']);
         }
 
-        return $child_id;
+        return $public_job_gene2func_child->jobID;
     }
 
     public function getParams(Request $request)

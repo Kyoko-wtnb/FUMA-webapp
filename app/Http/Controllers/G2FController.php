@@ -228,7 +228,9 @@ class G2FController extends Controller
     {
         $s2gID = $request->input('jobID');
 
-        $checkExists = SubmitJob::where('parent_id', $s2gID)->first();
+        $checkExists = SubmitJob::where('parent_id', $s2gID)
+            ->where('type', 'gene2func')
+            ->first();
         if ($checkExists == null) {
             $date = date('Y-m-d H:i:s');
             $email = Auth::user()->email;

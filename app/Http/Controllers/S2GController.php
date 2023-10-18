@@ -1342,7 +1342,9 @@ class S2GController extends Controller
 
         $out['publish'] = $job->is_public;
         $out['title'] = $job->title;
-        $out['g2f'] = $job->child->jobID;
+
+        $out['g2f'] = $job->childs->where('type', 'gene2func')->first();
+        $out['g2f'] = is_null($out['g2f']) ? NULL : $out['g2f']->jobID;
 
         $out['author'] = is_null($job->author) ? $job->user->name : $job->author;
         $out['email'] = is_null($job->publication_email) ? $job->user->email : $job->publication_email;
