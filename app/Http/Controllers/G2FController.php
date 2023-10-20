@@ -48,9 +48,10 @@ class G2FController extends Controller
         $user_id = Auth::user()->id;
 
         if ($user_id) {
-            $queries = SubmitJob::with('parent:jobID,title')
+            $queries = SubmitJob::with('parent:jobID,title,removed_at')
                 ->where('user_id', $user_id)
                 ->where('type', 'gene2func')
+                ->whereNull('removed_at')
                 ->orderBy('created_at', 'desc')
                 ->get();
         } else {
@@ -63,9 +64,7 @@ class G2FController extends Controller
     public function deleteJob(Request $request)
     {
         $jobID = $request->input('jobID');
-        Storage::deleteDirectory(config('app.jobdir') . '/gene2func/' . $jobID);
-        SubmitJob::find($jobID)->delete();
-        return;
+        return Helper::deleteJob(config('app.jobdir') . '/gene2func/', $jobID);
     }
 
     public function gene2funcSubmit(Request $request)
@@ -202,7 +201,9 @@ class G2FController extends Controller
         $ref_data_path_on_host = config('app.ref_data_on_host_path');
         $jobID = $request->input('id');
 
-        $job = SubmitJob::find($jobID);
+        $job = SubmitJob::where('jobID', $jobID)
+            ->whereNull('removed_at')
+            ->first();
         $job->status = 'RUNNING';
         $job->started_at = date("Y-m-d H:i:s");
         $job->save();
@@ -230,6 +231,7 @@ class G2FController extends Controller
 
         $checkExists = SubmitJob::where('parent_id', $s2gID)
             ->where('type', 'gene2func')
+            ->whereNull('removed_at')
             ->first();
         if ($checkExists == null) {
             $date = date('Y-m-d H:i:s');

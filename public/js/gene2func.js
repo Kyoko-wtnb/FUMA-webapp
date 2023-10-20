@@ -82,6 +82,12 @@ $(document).ready(function(){
 							error: function(){
 								alert("error at deleteJob");
 							},
+							success: function (resdata) {
+								// chech if resdata is null
+								if (resdata != "") {
+									alert(resdata);
+								}
+							},
 							complete: function(){
 								updateList();
 							}
@@ -254,6 +260,11 @@ function updateList(){
 		if(data.length){
 			items = '';
 			$.each( data, function( key, val ) {
+
+				if (val.parent != null && val.parent.removed_at != null) {
+					val.parent = null;
+				}
+
 				var status = '<a href="'+subdir+'/gene2func/'+val.jobID+'">load results</a>';
 				items = items + "<tr><td>"+val.jobID+"</td><td>"+val.title+"</td><td>"
 					+(val.parent != null ? val.parent.jobID : '-')+"</td><td>"+(val.parent != null ? val.parent.title : '-')+"</td><td>"

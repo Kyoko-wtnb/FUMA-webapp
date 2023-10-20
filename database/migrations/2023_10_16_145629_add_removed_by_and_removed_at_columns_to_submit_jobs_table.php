@@ -12,10 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('SubmitJobs', function (Blueprint $table) {
-            $table->foreignId('parent_id')
+            $table->timestamp('removed_at')->nullable();
+
+            $table->foreignId('removed_by')
                 ->nullable()
-                ->references('jobID')
-                ->on('SubmitJobs');
+                ->constrained('users')
+                ->onUpdate('cascade')
+                ->onDelete('restrict');
+
         });
     }
 
@@ -25,7 +29,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('SubmitJobs', function (Blueprint $table) {
-            $table->dropConstrainedForeignId('parent_id');
+            $table->dropColumn('removed_at');
+            
+            $table->dropConstrainedForeignId('removed_by');
         });
     }
 };

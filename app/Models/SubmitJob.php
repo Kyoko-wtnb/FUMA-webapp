@@ -36,6 +36,11 @@ class SubmitJob extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function removed_by_user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'removed_by');
+    }
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(SubmitJob::class, 'parent_id');
@@ -55,6 +60,7 @@ class SubmitJob extends Model
     {
         return $this->where('user_id', $user_id)
             ->wherein('type', ['snp2gene', 'geneMap'])
+            ->whereNull('removed_at')
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -64,6 +70,7 @@ class SubmitJob extends Model
         return $this->where('user_id', $user_id)
             ->wherein('type', ['snp2gene', 'geneMap'])
             ->wherein('status', ['QUEUED', 'RUNNING', 'NEW'])
+            ->whereNull('removed_at')
             ->get();
     }
 
@@ -71,6 +78,7 @@ class SubmitJob extends Model
     {
         return $this->where('user_id', $user_id)
             ->wherein('type', ['snp2gene', 'geneMap'])
+            ->whereNull('removed_at')
             ->get(['jobID', 'title']);
     }
 
@@ -79,6 +87,7 @@ class SubmitJob extends Model
         return $this->where('user_id', $user_id)
             ->wherein('type', ['snp2gene', 'geneMap'])
             ->where('status', 'OK')
+            ->whereNull('removed_at')
             ->get(['jobID', 'title']);
     }
 
@@ -87,6 +96,16 @@ class SubmitJob extends Model
         return $this->where('user_id', $user_id)
             ->wherein('type', ['snp2gene', 'geneMap'])
             ->where('status', 'NEW')
+            ->whereNull('removed_at')
+            ->get();
+    }
+
+    public function getNewJobs_celltype_only($user_id): Collection
+    {
+        return $this->where('user_id', $user_id)
+            ->wherein('type', ['celltype'])
+            ->where('status', 'NEW')
+            ->whereNull('removed_at')
             ->get();
     }
 
@@ -100,12 +119,15 @@ class SubmitJob extends Model
     {
         $job = $this->where('old_id', $id)
             ->where('is_public', 1)
+            ->whereNull('removed_at')
             ->first();
 
         if ($job != NULL) {
             return $job;
         } else {
-            return $this->find($id);
+            return $this->where('jobID', $id)
+                ->whereNull('removed_at')
+                ->first();  
         }
     }
 
@@ -113,12 +135,16 @@ class SubmitJob extends Model
     {
         $job = $this->where('old_id', $id)
             ->where('is_public', 1)
+            ->whereNull('removed_at')
             ->first();
 
         if ($job != NULL) {
             return $job->jobID;
         } else {
-            return $this->find($id)->jobID;
+            return $this->where('jobID', $id)
+                ->whereNull('removed_at')
+                ->first()
+                ->jobID;
         }
     }
 }

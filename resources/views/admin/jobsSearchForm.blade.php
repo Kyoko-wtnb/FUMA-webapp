@@ -143,6 +143,8 @@
                                                 <i class="fa fa-question-circle-o fa-lg"></i>
                                             </a>
                                         </th>
+                                        <th>Removed at</th>
+                                        <th>Removed by</th>
                                         <th>Containers</th>
                                     </tr>
                                 </thead>
@@ -162,6 +164,12 @@
                                         <td> {{ $job->type }} </td>
                                         <td> {{ $job->created_at }} </td>
                                         <td> {{ $job->status }} </td>
+                                        <td> {{ $job->removed_at }} </td>
+                                        <td>
+                                            @isset($job->removed_by_user)
+                                                {{ $job->removed_by_user->email }}
+                                            @endisset
+                                        </td>
                                         <td>
                                             @if (empty($job->containers))
                                                 No containers

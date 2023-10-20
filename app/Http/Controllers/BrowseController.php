@@ -2,22 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SubmitJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
-// User added
+use App\Models\SubmitJob;
 
-// use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-// use fuma\SubmitJob;
-// use fuma\Http\Requests;
-// use Symfony\Component\Process\Process;
-// use View;
-// use Auth;
-// use Storage;
 use File;
-// use JavaScript;
 
 class BrowseController extends Controller
 {
@@ -48,6 +38,7 @@ class BrowseController extends Controller
     public function getGwasList()
     {
         $results = SubmitJob::where('is_public', 1)
+            ->whereNull('removed_at')
             ->orderBy('published_at', 'desc')
             ->get([
                 'jobID',
@@ -76,9 +67,12 @@ class BrowseController extends Controller
     public function checkG2F(Request $request)
     {
         $old_id = $request->input('id');
-        
+
         $public_job = (new SubmitJob)->find_public_job_from_id($old_id);
-        $public_job_gene2func_child = $public_job->childs->where('type', 'gene2func')->first();
+        $public_job_gene2func_child = $public_job->childs
+            ->where('type', 'gene2func')
+            ->whereNull('removed_at')
+            ->first();
 
         if (is_null($public_job_gene2func_child)) {
             return response()->json(['status' => 'error', 'message' => 'No G2F job found.']);

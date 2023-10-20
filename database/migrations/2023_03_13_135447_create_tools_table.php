@@ -36,7 +36,7 @@ return new class extends Migration
         Schema::dropIfExists('tools');
 
         Schema::table('tools', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            $table->dropConstrainedForeignId(['user_id']);
         });
     }
 };

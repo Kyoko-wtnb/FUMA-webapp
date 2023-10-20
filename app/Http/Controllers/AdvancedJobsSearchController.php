@@ -31,10 +31,13 @@ class AdvancedJobsSearchController extends Controller
             'created_at',
             'status',
             'user_id',
+            'removed_at',
+            'removed_by',
         ];
 
         $with = [
             'user:id,email',
+            'removed_by_user:id,email',
         ];
 
         $validated = $request->validate([

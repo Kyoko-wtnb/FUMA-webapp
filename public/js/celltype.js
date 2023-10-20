@@ -75,6 +75,12 @@ $(document).ready(function(){
 							error: function(){
 								alert("error at deleteJob");
 							},
+							success: function (resdata) {
+								// chech if resdata is null
+								if (resdata != "") {
+									alert(resdata);
+								}
+							},
 							complete: function(){
 								getJobList();
 							}
@@ -173,6 +179,11 @@ function getJobList(){
 		if(data.length){
 			items = '';
 			$.each( data, function( key, val ) {
+
+				if (val.parent != null && val.parent.removed_at != null) {
+					val.parent = null;
+				}
+				
 				if(val.status == 'OK'){
 					val.status = '<a href="'+subdir+'/'+page+'/'+val.jobID+'">Go to results</a>';
 				}

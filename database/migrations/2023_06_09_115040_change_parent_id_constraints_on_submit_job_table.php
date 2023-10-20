@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('SubmitJobs', function (Blueprint $table) {
-            $table->dropForeign(['parent_id']);
+            $table->dropConstrainedForeignId(['parent_id']);
 
             $table->foreign('parent_id')
                 ->nullable()
@@ -29,7 +29,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('SubmitJobs', function (Blueprint $table) {
-            $table->dropForeign('parent_id');
+            $table->dropConstrainedForeignId('parent_id');
         });
     }
 };

@@ -3,6 +3,8 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Storage;
+use App\Models\SubmitJob;
+use Auth;
 
 class Helper
 {
@@ -70,5 +72,29 @@ class Helper
         $matchingFiles = array_values($matchingFiles);
         // return the matching filenames
         return $matchingFiles;
+    }
+
+    /**
+     * This is a public function called "deleteJob" that takes two parameters: $filedir (string) and $jobID (integer).
+     * It finds the job with the given ID using the "find" method.
+     * It then checks if the job is running or queued. If it is, it returns an error message.
+     * Otherwise, it sets the "removed_at" and "removed_by" fields of the job to the current date and time and the ID of the current user, respectively.
+     * It then saves the job and deletes the directory containing the job files using the "Storage::deleteDirectory" method.
+     */
+    public static function deleteJob($filedir, $jobID)
+    {
+        $job = SubmitJob::find($jobID);
+        
+        // check if job is running or queued
+        if (in_array($job->status, ['RUNNING', 'QUEUED'])) {
+            return "You can't delete running or queued jobs. PLease try again later.";
+        }
+
+        $job->removed_at = date('Y-m-d H:i:s');
+        $job->removed_by = Auth::user()->id;
+        $job->save();
+
+        Storage::deleteDirectory($filedir . $jobID);
+        // check if deleteDirectory failed
     }
 }

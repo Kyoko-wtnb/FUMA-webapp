@@ -62,7 +62,7 @@ return new class extends Migration
         Schema::dropIfExists('tools_parameters');
 
         Schema::table('tools_parameters', function (Blueprint $table) {
-            $table->dropForeign(['tool_id']);
+            $table->dropConstrainedForeignId(['tool_id']);
             $table->dropUnique(['tool_id', 'param_name']);
             $table->dropUnique(['tool_id', 'flag']);
         });

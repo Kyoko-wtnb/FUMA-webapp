@@ -61,6 +61,7 @@ class CellController extends Controller
         $results = SubmitJob::where('user_id', $user_id)
             ->where('type', 'snp2gene')
             ->where('status', 'OK')
+            ->whereNull('removed_at')
             ->get(['jobID', 'title']);
         return $results;
     }
@@ -80,9 +81,10 @@ class CellController extends Controller
         $user_id = Auth::user()->id;
 
         if ($user_id) {
-            $queries = SubmitJob::with('parent:jobID,title')
+            $queries = SubmitJob::with('parent:jobID,title,removed_at')
                 ->where('user_id', $user_id)
                 ->where('type', 'celltype')
+                ->whereNull('removed_at')
                 ->orderBy('created_at', 'desc')
                 ->get();
         } else {
@@ -98,18 +100,12 @@ class CellController extends Controller
     {
         $user = Auth::user();
         $user_id = $user->id;
-        $newJobs = SubmitJob::where('user_id', $user_id)
-            ->where('type', 'celltype')
-            ->where('status', 'NEW')
-            ->get()
-            ->all();
+        $newJobs = (new SubmitJob)->getNewJobs_celltype_only($user->id);
+
         if (count($newJobs) > 0) {
             foreach ($newJobs as $job) {
-                $jobID = $job->jobID;
-                DB::table('SubmitJobs')
-                    ->where('jobID', $jobID)
-                    ->update(['status' => 'QUEUED']);
-                CelltypeProcess::dispatch($user, $jobID)->afterCommit();
+                (new SubmitJob)->updateStatus($job->jobID, 'QUEUED');
+                CelltypeProcess::dispatch($user, $job->jobID)->afterCommit();
             }
         }
         return;
@@ -118,9 +114,7 @@ class CellController extends Controller
     public function deleteJob(Request $request)
     {
         $jobID = $request->input('jobID');
-        Storage::deleteDirectory(config('app.jobdir') . '/celltype/' . $jobID);
-        SubmitJob::find($jobID)->delete();
-        return;
+        return Helper::deleteJob(config('app.jobdir') . '/celltype/', $jobID);
     }
 
     public function newJob(Request $request)

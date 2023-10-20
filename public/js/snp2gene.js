@@ -47,6 +47,12 @@ $(document).ready(function () {
 							error: function () {
 								alert("error at deleteJob");
 							},
+							success: function (resdata) {
+								// chech if resdata is null
+								if (resdata != "") {
+									alert(resdata);
+								}
+							},
 							complete: function () {
 								getJobList();
 								getjobIDs();

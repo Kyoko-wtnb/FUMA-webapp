@@ -119,13 +119,27 @@ class S2GController extends Controller
 
         $res = [];
 
-        if (array_key_exists('posMap', $params)) {$res['posMap'] = $params['posMap'];}
-        if (array_key_exists('eqtlMap', $params)) {$res['eqtlMap'] = $params['eqtlMap'];}
-        if (array_key_exists('orcol', $params)) {$res['orcol'] = $params['orcol'];}
-        if (array_key_exists('becol', $params)) {$res['becol'] = $params['becol'];}
-        if (array_key_exists('secol', $params)) {$res['secol'] = $params['secol'];}
-        if (array_key_exists('ciMap', $params)) {$res['ciMap'] = $params['ciMap'];}
-        if (array_key_exists('magma', $params)) {$res['magma'] = $params['magma'];}
+        if (array_key_exists('posMap', $params)) {
+            $res['posMap'] = $params['posMap'];
+        }
+        if (array_key_exists('eqtlMap', $params)) {
+            $res['eqtlMap'] = $params['eqtlMap'];
+        }
+        if (array_key_exists('orcol', $params)) {
+            $res['orcol'] = $params['orcol'];
+        }
+        if (array_key_exists('becol', $params)) {
+            $res['becol'] = $params['becol'];
+        }
+        if (array_key_exists('secol', $params)) {
+            $res['secol'] = $params['secol'];
+        }
+        if (array_key_exists('ciMap', $params)) {
+            $res['ciMap'] = $params['ciMap'];
+        }
+        if (array_key_exists('magma', $params)) {
+            $res['magma'] = $params['magma'];
+        }
 
         return response()->json($res);
     }
@@ -288,7 +302,7 @@ class S2GController extends Controller
         $email = Auth::user()->email;
         $user_id = Auth::user()->id;
         $exfile = config('app.jobdir') . '/example/CD.gwas';
-        
+
         // Implement the cap on max jobs in queue
         $numSchedJobs = $this->getNumberScheduledJobs($user_id);
         $queueCap = $this->getQueueCap();
@@ -1214,9 +1228,7 @@ class S2GController extends Controller
     public function deleteJob(Request $request)
     {
         $jobID = $request->input('jobID');
-        Storage::deleteDirectory(config('app.jobdir') . '/jobs/' . $jobID);
-        SubmitJob::find($jobID)->delete();
-        return;
+        return Helper::deleteJob(config('app.jobdir') . '/jobs/', $jobID);
     }
 
     public function filedown(Request $request)
@@ -1343,12 +1355,15 @@ class S2GController extends Controller
         $out['publish'] = $job->is_public;
         $out['title'] = $job->title;
 
-        $out['g2f'] = $job->childs->where('type', 'gene2func')->first();
+        $out['g2f'] = $job->childs
+            ->where('type', 'gene2func')
+            ->whereNull('removed_at')
+            ->first();
         $out['g2f'] = is_null($out['g2f']) ? NULL : $out['g2f']->jobID;
 
         $out['author'] = is_null($job->author) ? $job->user->name : $job->author;
         $out['email'] = is_null($job->publication_email) ? $job->user->email : $job->publication_email;
-        
+
         $out['phenotype'] = is_null($job->phenotype) ? "" : $job->phenotype;
         $out['publication'] = is_null($job->publication) ? "" : $job->publication;
         $out['publication_link'] = is_null($job->sumstats_link) ? "" : $job->sumstats_link;
