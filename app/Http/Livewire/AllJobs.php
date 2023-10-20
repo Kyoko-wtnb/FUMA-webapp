@@ -45,8 +45,9 @@ class AllJobs extends Component
         $column_list = implode(", '$separator', ", $escaped_columns);
 
         $results = SubmitJob::select('email', DB::raw("GROUP_CONCAT($column_list ORDER BY created_at DESC) as columns"))
-            ->whereNotIn('status', ['OK', 'ERROR'])
+            ->whereNotIn('status', ['OK', 'ERROR', 'JOB FAILED', 'QUEUED'])
             ->groupBy('email')
+            ->orderByRaw('MAX(CASE WHEN status = "RUNNING" THEN 1 ELSE 0 END) DESC')
             ->get();
 
         $this->users = $results->map(function ($item) use ($column_names, $client) {
