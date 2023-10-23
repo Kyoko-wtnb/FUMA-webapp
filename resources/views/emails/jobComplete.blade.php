@@ -4,7 +4,7 @@
 		<p>
 			Your job (job ID: {{ $jobID }}, job title: {{ $jobtitle }}) has been completed.<br/>
 			Pleas follow the link to go to the results page.<br/>
-			<a href="{{env('APP_URL')}}/snp2gene/{{ $jobID }}">SNP2GENE job query</a><br/>
+			<a href="{{ config('app.url') }}/snp2gene/{{ $jobID }}">SNP2GENE job query</a><br/>
 			<br/>
 		</p>
 
