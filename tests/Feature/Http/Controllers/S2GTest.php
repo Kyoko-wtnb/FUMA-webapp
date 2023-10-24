@@ -16,12 +16,12 @@ use App\Models\SubmitJob;
 
 class S2GTest extends TestCase
 {
-    use RefreshDatabase;
+    use RefreshDatabase; // it will migrate and seed the database before each test (literally before each function test below)
     protected static $db_inited = false;
 
     protected static function initDB()
     {
-        Artisan::call('migrate:fresh --seed --database=mysql_testing');
+        Artisan::call('migrate:fresh --seed');
     }
 
     protected function setUp(): void
