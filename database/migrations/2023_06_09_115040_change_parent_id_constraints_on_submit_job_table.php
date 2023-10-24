@@ -12,9 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('SubmitJobs', function (Blueprint $table) {
-            $table->dropConstrainedForeignId(['parent_id']);
+            $table->dropConstrainedForeignId('parent_id');
+        });
 
-            $table->foreign('parent_id')
+        Schema::table('SubmitJobs', function (Blueprint $table) {
+            $table->foreignId('parent_id')
                 ->nullable()
                 ->references('jobID')
                 ->on('SubmitJobs')
