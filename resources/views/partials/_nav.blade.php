@@ -50,7 +50,12 @@
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="{{ Config::get('app.subdir') }}/snp2gene#joblist-panel">SNP2GENE My Jobs</a></li>
 							<li><a href="{{ Config::get('app.subdir') }}/gene2func#queryhistory">GENE2FUNC History</a></li>
-							<!-- logout via POST method -->
+							@hasrole('Admin')
+								<li><a href="{{ url('/admin/users') }}">
+									<i class="fa fa-btn fa-unlock"></i>
+									Admin
+								</a></li>
+							@endrole
 							<li>
 								<a href="{{ url('/logout') }}" id="fuma-logout-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
 									<i class="fa fa-btn fa-sign-out"></i>

@@ -10,6 +10,9 @@ use App\Http\Controllers\CellController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UpdateController;
 use App\Http\Controllers\AdvancedJobsSearchController;
+use App\Http\Controllers\RolesPermissions\UserController;
+use App\Http\Controllers\RolesPermissions\PermissionController;
+use App\Http\Controllers\RolesPermissions\RoleController;
 
 
 /*
@@ -23,34 +26,74 @@ use App\Http\Controllers\AdvancedJobsSearchController;
 |
 */
 
+Route::group([], function(){
 
-Route::get('/', function () {
-    return view('pages.home');
-});
+    Route::get('/', function () {
+        return view('pages.home');
+    });
 
-Route::get('/home', function () {
-    return view('pages.home');
-});
+    Route::get('/home', function () {
+        return view('pages.home');
+    });
 
-Route::get('appinfo', [FumaController::class, 'appinfo']);
+    Route::get('appinfo', [FumaController::class, 'appinfo']);
 
-Route::get('/tutorial', function () {
-    return view('pages.tutorial');
-});
-Route::post('tutorial/download_variants', [FumaController::class, 'download_variants']);
+    Route::get('/tutorial', function () {
+        return view('pages.tutorial');
+    });
+    Route::post('tutorial/download_variants', [FumaController::class, 'download_variants']);
 
-Route::get('/links', function () {
-    return view('pages.links');
-});
+    Route::get('/links', function () {
+        return view('pages.links');
+    });
 
-Route::get('/updates', [UpdateController::class, 'showUpdates']);
+    Route::get('/updates', [UpdateController::class, 'showUpdates']);
 
-Route::get('/faq', function () {
-    return view('pages.faq');
+    Route::get('/faq', function () {
+        return view('pages.faq');
+    });
 });
 
 Auth::routes();
 
+/**
+ * Some documentation about the behind the scenes cleverness here
+ * 
+ * User, Roles and Permissions are handled by (RESTful) resource controllers
+ * which contain index(), create(), edit(), update(), and destroy()
+ * methods for the resource in question.
+ * 
+ * The Route::resource generates the following routes 
+ * automatically 
+ * 
+ * HTTP                              RouteName
+ * ----                              ---------
+ * GET  /admin/users                 users.index
+ * GET  /admin/users/create          users.create
+ * POST /admin/users                 users.store
+ * GET  /admin/{user}                users.show
+ * GET  /admin/{user}/edit           users.edit
+ * PUT  /admin/users/{user}          users.update
+ * DELETE /admin/users/{user}        users.destroy
+ * 
+ * In the controllers and views(e.g. UserController, users/index.blad.php) 
+ * you find these route referenced using, for example,: 
+ * 			"redirect()->route('users.index')"
+ * 			"a href="{{ route('roles.index') }}"
+ */
+Route::group([
+        'middleware'=>['auth'], 
+        'prefix'=>'admin'
+    ], function() {
+        Route::resources([
+            'users' => UserController::class,
+            'roles' => RoleController::class,
+            'permissions' => PermissionController::class,
+        ]);
+    }
+);
+
+// Add isAdmin to route middleware list
 Route::group(['middleware' => ['auth']], function () {
 
     Route::prefix('admin')->group(function () {
